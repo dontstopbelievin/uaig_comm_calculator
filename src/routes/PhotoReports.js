@@ -222,9 +222,9 @@ export default class PhotoReport extends React.Component {
     return (
       <div className="container">
         <ul className="header">
-          <li><NavLink exact activeClassName="active" activeStyle={{color:"red", fontWeight:"bold"}} to="/photoReports/form" replace>Заявление</NavLink></li>
-          <li><NavLink activeClassName="active" activeStyle={{color:"red", fontWeight:"bold"}} to="/photoReports/consideration" replace>Рассмотрение</NavLink></li>
-          <li><NavLink activeClassName="active" activeStyle={{color:"red", fontWeight:"bold"}} to="/photoReports/answer" replace>Ответ</NavLink></li>
+          <li><NavLink exact activeClassName="active" activeStyle={{color:"black"}} to="/photoReports/form" replace>Заявление</NavLink></li>
+          <li><NavLink activeClassName="active" activeStyle={{color:"black"}} to="/photoReports/consideration" replace>Рассмотрение</NavLink></li>
+          <li><NavLink activeClassName="active" activeStyle={{color:"black"}} to="/photoReports/answer" replace>Ответ</NavLink></li>
         </ul>
         <Switch>
           <Route path="/photoreports/form" component={PhotoReportForm} />

@@ -259,9 +259,12 @@ ul.header {
   width: fit-content;
   margin: auto;
   margin-top: 5px;
-  background-color: #135EAD;
+  background-color: silver;
   line-height: 1,5;
   padding: 5px;
+  border: black solid;
+  border-width: 1px;
+  border-radius: 5px;
 }
 
 ul.header li a {
