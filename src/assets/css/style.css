@@ -1,0 +1,404 @@
+@import 'material-design/bootstrap-material-design.css';
+@import 'https://js.arcgis.com/4.5/esri/css/main.css';
+
+.viewDiv {
+  padding: 0;
+  margin: 0;
+  height: 600px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.viewDivUrban {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.apz-list {
+  padding: 15px 20px;
+}
+
+
+.apz-list li {
+  line-height: 1.5;
+  padding: 10px 15px;
+  list-style-type: none;
+    margin: 10px 0 0 15px;
+    font-size: 16px;
+    font-weight: bold;
+
+}
+
+.apz-list li:hover {
+  background: #ccc;
+  cursor: pointer;
+}
+
+.apz-list li:active {
+  background: #000
+}
+
+.apz-detailed {
+  font-size: 10pt;
+}
+
+/*.navbar {
+    margin-bottom: 30px;
+}*/
+
+#mapid { 
+	height: 520px; 
+	width: 100%; 
+}
+
+#tabIcon {
+    float: right;
+}
+
+.middle-height {
+	height: 100%;
+	z-index: 0;
+}
+
+.bg-blue {
+    background-color: rgba(19, 94, 173, 1)!important;
+}
+thead {
+    background-color: #d3e8ef;
+}
+
+#container {
+  overflow: hidden;
+}
+
+.logo {
+    padding: 20px 0;
+}
+
+.logo img {
+    
+}
+
+.slide {
+  width: 100%;
+  height: 600px;
+  background: url('http://almaty.uaig.kz/wp-content/uploads/2017/08/cropped-1.jpg') top center no-repeat;
+  background-size: cover;
+  text-align: center;
+  color: #fff;
+  font-weight: bold;
+  padding: 200px 50px;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+}
+
+.block-title {
+  margin-top: 75px;
+}
+
+.block-title h2 {
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.promo-block {
+  margin-top: 50px;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+  text-align: center;
+  color: #fff;
+}
+
+.promo-block a {
+  border-color: #fff !important;
+}
+
+.promo1 {
+  padding: 40px;
+  background-color: #7abf82;
+}
+
+.promo2 {
+  padding: 40px;
+  background-color: #7ebec5;
+}
+
+.promo3 {
+  padding: 40px;
+  background-color: #db8c8c;
+}
+
+.promo4 {
+  padding: 40px;
+  background-color: #494572;
+}
+
+.block-content {
+  margin-top: 50px;
+}
+
+.block-content h2 {
+  text-align: center;
+  text-transform: uppercase;
+}
+
+footer {
+  margin-top: 75px;
+  background-color: #222;
+  padding: 50px 0;
+  color: #fff;
+  /*border-bottom: 25px solid rgba(0, 0, 0, 0.32);*/
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: #e9ecef;
+}
+
+.navbar-light .navbar-nav .active>.nav-link, .navbar-light .navbar-nav .nav-link.active, .navbar-light .navbar-nav .nav-link.show, .navbar-light .navbar-nav .show>.nav-link {
+    color: #f8f9fa;
+}
+
+.navbar-light  .navbar-nav .nav-link.disabled {
+    color: rgba(255, 255, 255, 0.47);
+}
+
+/* Form Progress */
+    .progressBar {
+        width: 100%;
+        margin: 20px auto;
+        text-align: center;
+    }
+    .progressBar .circle,
+    .progressBar .bar {
+        display: inline-block;
+        background: #fff;
+        width: 40px;
+        height: 40px;
+        border-radius: 40px;
+        border: 1px solid #d5d5da;
+    }
+
+    .progressBar .bar {
+        position: relative;
+        width: 100px;
+        height: 6px;
+        top: -55px;
+        margin-left: 0px;
+        margin-right: 0px;
+        border-left: none;
+        border-right: none;
+        border-radius: 0;
+    }
+
+    .progressBar .circle .label {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        border-radius: 32px;
+        margin-top: 3px;
+        color: #b5b5ba;
+        font-size: 17px;
+    }
+
+    .progressBar .circle .title {
+        color: #b5b5ba;
+        font-size: 13px;
+        line-height: 1;
+        margin-left: 0px;
+    }
+
+    /* Done / Active */
+    .progressBar .bar.done,
+    .progressBar .circle.done {
+        background: #eee;
+    }
+
+    .progressBar .bar.active {
+        background: linear-gradient(to right, #EEE 40%, #FFF 60%);
+    }
+
+    .progressBar .circle.done .label {
+        color: #FFF;
+        background: #8bc435;
+        box-shadow: inset 0 0 2px rgba(0,0,0,.2);
+    }
+
+    .progressBar .circle.done .title {
+        color: #444;
+    }
+
+    .progressBar .circle.active .label {
+        color: #FFF;
+        background: #0c95be;
+        box-shadow: inset 0 0 2px rgba(0,0,0,.2);
+    }
+
+    .progressBar .circle.active .title {
+        color: #0c95be;
+    }
+
+.panel-heading {
+	background: #cbc7c7;
+	padding: 0;
+	font-weight: bold;
+}
+
+.panel-body {
+	padding: 0;
+	border-bottom: ridge;
+}
+
+ul.header li {
+  display: inline;
+  list-style-type: none;
+  margin: 0;
+}
+
+ul.header {
+  width: fit-content;
+  margin: auto;
+  margin-top: 5px;
+  background-color: #135EAD;
+  line-height: 1,5;
+  padding: 5px;
+}
+
+ul.header li a {
+  color: #FFF;
+  font-weight: normal;
+  text-decoration: none;
+  padding: 5px;
+  display: inline-block;
+}
+
+/* Map */
+#viewDiv {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.zoom-btns {
+  float: left;
+  transition: opacity .25s ease-in-out;
+  -moz-transition: opacity .25s ease-in-out;
+  -webkit-transition: opacity .25s ease-in-out;
+}
+
+.button {
+  display: inline-block;
+  position: relative;
+  margin: 5px;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  font-size: 2em;
+  background-color: #fff;
+  color: #646464;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.button.circle {
+  border-radius: 50%;
+}
+
+.button:hover {
+  opacity: 0.8;
+  color: rgba(0, 0, 0, 0.25);
+}
+
+.button.raised {
+  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition-delay: 0.2s;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.25);
+}
+
+.button.raised:active {
+  box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2);
+  transition-delay: 0s;
+}
+
+.disable {
+  opacity: 0.8;
+  color: rgba(0, 0, 0, 0.25);
+}
+
+.disable:hover {
+  opacity: 0.8;
+  color: rgba(0, 0, 0, 0.25);
+}
+
+.material-icons {
+  font-size: 1.2em;
+  line-height: 50px;
+}
+
+/* Dropdown styles*/
+.parent {
+  display: block;
+  position: relative;
+  float: left;
+  line-height: 30px;
+  background-color: #fff;
+  border: #000 1px solid;
+}
+
+  .parent button {
+    margin: 10px;
+    color: #000;
+    text-decoration: none;
+  }
+
+  .parent:hover > ul {
+    display: block;
+    position: absolute;
+    z-index: 1;
+  }
+
+.child {
+  display: none;
+}
+
+  .child li {
+    background-color: #E4EFF7;
+    line-height: 30px;
+    border-bottom: #CCC 1px solid;
+    border-right: #CCC 1px solid;
+    width: 100%;
+  }
+
+    .child li button {
+      color: #000000;
+    }
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0px;
+  min-width: 10em;
+}
+
+  ul ul ul {
+    left: 100%;
+    top: 0;
+    margin-left: 1px;
+  }
+
+/*li:hover {
+  background-color: #95B4CA;
+}*/
+
+.parent li:hover {
+  background-color: #F0F0F0;
+}
+
+.expand {
+  font-size: 12px;
+  float: right;
+  margin-right: 5px;
+}
+/* Dropdown styles END*/
