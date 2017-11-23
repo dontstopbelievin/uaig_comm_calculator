@@ -603,7 +603,7 @@ export default class Citizen extends React.Component {
     var acceptedForms = this.state.acceptedForms;
     var declinedForms = this.state.declinedForms;
     return (
-      <div className="container">
+      <div className="content container">
         <div className="row">
           <style dangerouslySetInnerHTML={{__html: `
             .apz-list {

@@ -26,7 +26,7 @@ export default class Temporary extends React.Component {
   render() {
     //console.log("rendering the CitizenComponent");
     return (
-      <div className="container">
+      <div className="content container">
         <h2>Вам еще не задана роль</h2>
       </div>
     )
