@@ -6,52 +6,39 @@ export default class Urban extends React.Component {
     super();
 
     this.state = {
-      apzListForms: []
+      apzListForms: [],
+      showDetails: false,
+      Applicant: "",
+      Address: "",
+      Phone: "",
+      Customer: "",
+      Designer: "",
+      ProjectName: "",
+      ProjectAddress: "",
+      ApzDate: ""
     }
 
     this.getApzFormList = this.getApzFormList.bind(this);
   }
 
-  test(e) {
+  details(e) {
     // console.log(e);
-    var string = '';
-    Object.keys(e).forEach(function(k){
-      switch (k) {
-         case "Applicant": 
-          string += '<div class="row"><div class="col-6"><b>Заявитель</b>:</div> <div class="col-6">' + e[k]+'</div></div>'; 
-          break;
-         case "Address": 
-          string += '<div class="row"><div class="col-6"><b>Адрес</b>:</div> <div class="col-6">' + e[k]+'</div></div>'; 
-          break;
-         case "Phone": 
-          string += '<div class="row"><div class="col-6"><b>Телефон</b>:</div> <div class="col-6">' + e[k]+'</div></div>'; 
-          break;
-         case "Customer": 
-          string += '<div class="row"><div class="col-6"><b>Заказчик</b>:</div> <div class="col-6">' + e[k]+'</div></div>'; 
-          break;
-         case "Designer": 
-          string += '<div class="row"><div class="col-6"><b>Проектировщик</b>:</div> <div class="col-6">' + e[k]+'</div></div>'; 
-          break;
-         case "ProjectName": 
-          string += '<div class="row"><div class="col-6"><b>Наименование Проекта</b>:</div> <div class="col-6">' + e[k]+'</div></div>'; 
-          break;
-         case "ProjectAddress": 
-          string += '<div class="row"><div class="col-6"><b>Адрес Проекта</b>:</div> <div class="col-6">' + e[k]+'</div></div>'; 
-          break;
-         case "ApzDate":
-          var jDate = new Date(e[k]);
-          var curr_date = jDate.getDate();
-          var curr_month = jDate.getMonth() + 1;
-          var curr_year = jDate.getFullYear();
-          var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
-
-          string += '<div class="row"><div class="col-6"><b>Дата заявки</b>:</div> <div class="col-6">' + formated_date+'</div></div>'; 
-          break;
-         default: break;
-      }
-    });
-    string += '<div class="row" style="position: absolute; bottom: 10px;"><div class="col-md-12"><button class="btn btn-raised btn-success">Одобрить</button> <button class="btn btn-raised btn-danger">Отклонить</button></div></div>';
-    document.getElementById("apz-detailed").innerHTML = string;
+    this.setState({ showDetails: true });
+    this.setState({ Applicant: e.Applicant });
+    this.setState({ Address: e.Address });
+    this.setState({ Phone: e.Phone });
+    this.setState({ Customer: e.Customer });
+    this.setState({ Designer: e.Designer });
+    this.setState({ ProjectName: e.ProjectName });
+    this.setState({ ProjectAddress: e.ProjectAddress });
+    this.setState(function(){
+      var jDate = new Date(e.ApzDate);
+      var curr_date = jDate.getDate();
+      var curr_month = jDate.getMonth() + 1;
+      var curr_year = jDate.getFullYear();
+      var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
+      return { ApzDate: formated_date }
+   });
   }
 
   getApzFormList() {
@@ -176,14 +163,14 @@ export default class Urban extends React.Component {
 
   componentWillMount() {
     //console.log("UrbanComponent will mount");
-    if(sessionStorage.getItem('tokenInfo')){
+    if(sessionStorage.getItem('tokenInfo')) {
       var userRole = sessionStorage.getItem('userRole');
       this.props.history.replace('/' + userRole);
       var userName = sessionStorage.getItem('userName');
       this.setState({username: userName});
-    }else {
+    } else {
       this.props.history.replace('/');
-    }   
+    } 
   }
 
   componentDidMount() {
@@ -199,7 +186,7 @@ export default class Urban extends React.Component {
     //console.log("rendering the UrbanComponent");
     var apzListForms = this.state.apzListForms;
     return (
-      <div className="container">
+      <div className="content container">
         <div className="row">
           <style dangerouslySetInnerHTML={{__html: ``}} />
             <div className="col-md-3">
@@ -217,7 +204,7 @@ export default class Urban extends React.Component {
               {
                 apzListForms.map(function(apzListForm, i){
                 return(
-                    <li key={i} onClick={this.test.bind(this, apzListForm)}>
+                    <li key={i} onClick={this.details.bind(this, apzListForm)}>
                       {apzListForm.ProjectName}
                     </li>
                   )
@@ -237,6 +224,16 @@ export default class Urban extends React.Component {
             </button>*/}
           </div>
           <div id="apz-detailed" className="col-md-3 apz-detailed card" style={{paddingTop: '10px'}}>
+            <div className={this.state.showDetails ? 'row' : 'invisible'}>
+              <div className="col-6"><b>Заявитель</b>:</div> <div className="col-6">{this.state.Applicant}</div>
+              <div className="col-6"><b>Адрес</b>:</div> <div className="col-6">{this.state.Address}</div>
+              <div className="col-6"><b>Телефон</b>:</div> <div className="col-6">{this.state.Phone}</div>
+              <div className="col-6"><b>Заказчик</b>:</div> <div className="col-6">{this.state.Customer}</div>
+              <div className="col-6"><b>Разработчик</b>:</div> <div className="col-6">{this.state.Designer}</div>
+              <div className="col-6"><b>Название проекта</b>:</div> <div className="col-6">{this.state.ProjectName}</div>
+              <div className="col-6"><b>Адрес проекта</b>:</div> <div className="col-6">{this.state.ProjectAddress}</div>
+              <div className="col-6"><b>Дата заявления</b>:</div> <div className="col-6">{this.state.ApzDate}</div>
+            </div>
           </div>
         </div>
       </div>

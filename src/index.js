@@ -14,6 +14,7 @@ import Provider from './routes/Provider';
 import Project from './routes/Project';
 import PhotoReports from './routes/PhotoReports';
 import Admin from './routes/Admin';
+import Files from './routes/Files';
 import Footer from './components/Footer';
 
 window.jQuery = require('jquery');
@@ -59,6 +60,7 @@ export default class Main extends React.Component {
               <Route path="/project" render={(props) => (<Project {...props} />)} />
               <Route path="/photoreports" render={(props) => (<PhotoReports {...props} />)} />
               <Route path="/admin" render={(props) => (<Admin {...props} />)} />
+              <Route path="/files" render={(props) => (<Files {...props} />)} />
             </Switch>
             <Footer />
           </div>

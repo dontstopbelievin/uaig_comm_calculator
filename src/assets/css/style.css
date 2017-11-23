@@ -1,6 +1,10 @@
 @import 'material-design/bootstrap-material-design.css';
 @import 'https://js.arcgis.com/4.5/esri/css/main.css';
 
+.content {
+  padding: 50px 0;
+}
+
 .viewDiv {
   padding: 0;
   margin: 0;

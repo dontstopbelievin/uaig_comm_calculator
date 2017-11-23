@@ -21,7 +21,7 @@ export default class Provider extends React.Component {
   render() {
     //console.log("rendering the ProviderComponent");
     return (
-      <div className="container">
+      <div className="content container">
         <h2>Hello, Provider!</h2>
       </div>
     )

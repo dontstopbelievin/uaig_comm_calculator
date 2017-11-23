@@ -41,12 +41,19 @@ class LogoutBtn extends Component {
   render() {
     return(
       <div className="row userInfo">
-        <button onClick={this.gotoCabinet} type="button" className="btn btn-outline-secondary" data-toggle="collapse">
-          <span>{sessionStorage.getItem('userName')} <i className="glyphicon glyphicon-user"></i></span>
-        </button>&nbsp;
-        <button type="button" className="btn btn-outline-secondary" data-toggle="collapse" onClick={this.onLogout}>
-          Выйти
-        </button>
+        <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
+          <li className="nav-item dropdown">
+            <button className="btn btn-outline-secondary" href="#" id="cabinetDropdownMenuLink" data-toggle="dropdown">
+              <span>{sessionStorage.getItem('userName')} <i className="glyphicon glyphicon-user"></i></span>
+            </button>
+            <div className="dropdown-menu" aria-labelledby="cabinetDropdownMenuLink">
+              <button onClick={this.gotoCabinet} className="dropdown-item">Список заявлений</button>
+              <Link to={"/files"} replace className="dropdown-item" activeclassname="active">Мои файлы</Link>
+              <button  className="dropdown-item">Изменить пароль</button>
+              <button onClick={this.onLogout} className="dropdown-item" href="#">Выход</button>
+            </div>
+          </li>
+        </ul>
       </div>
     )
   }
@@ -137,9 +144,7 @@ export default class Header extends Component {
                 <Link to={'/project'} replace className="nav-link" activeclassname="active">Проект</Link>
               </li>
               <li className="nav-item dropdown">
-                <button className="nav-link dropdown-toggle" style={navBtnStyle} href="#" 
-                        id="navbarDropdownMenuLink" data-toggle="dropdown" 
-                        aria-haspopup="true" aria-expanded="false">
+                <button className="nav-link dropdown-toggle" style={navBtnStyle} href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" >
                   Государственные услуги
                 </button>
                 <style dangerouslySetInnerHTML={{__html: `
