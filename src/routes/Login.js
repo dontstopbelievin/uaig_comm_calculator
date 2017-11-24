@@ -27,22 +27,16 @@ export default class Login extends Component {
 
   onUpdateLogStatus(status) {
     sessionStorage.setItem('logStatus', status);
-    // window.updateLogStatus(status);
   }
 
   onUpdateUsername(name) {
     sessionStorage.setItem('userName', name);
-    // window.updateUsername(name);
   }
 
   //user login function
   login(e) {
     e.preventDefault();
     console.log("login function started");
-    var tokenKey = "tokenInfo";
-    var userNameKey = "userName";
-    var userRoleKey = "userRole";
-    var logStatusKey = "logStatus";
     var username = this.state.username.trim();
     var pwd = this.state.pwd.trim();
     var params = 'grant_type=password&username=' + username + '&password='+ pwd;
@@ -64,55 +58,30 @@ export default class Login extends Component {
     //========================================
 
     if (!username || !pwd) {
-            return;
-        }
-    var xhr = new XMLHttpRequest();
-        xhr.open("post", window.url + "Token", true);
-    //Send the proper header information along with the request
-    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
-    xhr.onload = function(e) {
-      var loading = document.getElementById('loginModal');
-      loading.style.cssText = 'position: relative; z-index: -1; -webkit-filter: blur(5px); -moz-filter: blur(5px); -o-filter: blur(5px); -ms-filter: blur(5px); filter: blur(5px);';
-
-      if (xhr.status === 200) {
-        console.log("success"); //console.log(e.target.response);
-              // сохраняем в хранилище sessionStorage токен доступа
-        sessionStorage.setItem(tokenKey, JSON.parse(e.target.response).access_token);
-        sessionStorage.setItem(userNameKey, JSON.parse(e.target.response).userName);
-        sessionStorage.setItem(userRoleKey, JSON.parse(e.target.response).role);
-        sessionStorage.setItem(logStatusKey, true);
-        if(JSON.parse(e.target.response).role === "Urban") {
-          this.onUpdateLogStatus(true);
-          this.onUpdateUsername(JSON.parse(e.target.response).userName);
-          console.log(JSON.parse(e.target.response).userName);
-          this.props.history.push('/urban');
-        } else if(JSON.parse(e.target.response).role === "Temporary"){
-          this.onUpdateLogStatus(true);
-          this.onUpdateUsername(JSON.parse(e.target.response).userName);
-          console.log(JSON.parse(e.target.response).userName);
-          this.props.history.push('/temporary');
-        } else if(JSON.parse(e.target.response).role === "Citizen"){
-          this.onUpdateLogStatus(true);
-          this.onUpdateUsername(JSON.parse(e.target.response).userName);
-          console.log(JSON.parse(e.target.response).userName);
-          this.props.history.push('/citizen');
-        } else if(JSON.parse(e.target.response).role === "Provider"){
-          this.onUpdateLogStatus(true);
-          this.onUpdateUsername(JSON.parse(e.target.response).userName);
-          console.log(JSON.parse(e.target.response).userName);
-          this.props.history.push('/provider');
-        } else if(JSON.parse(e.target.response).role === "Admin"){
-          this.onUpdateLogStatus(true);
-          this.onUpdateUsername(JSON.parse(e.target.response).userName);
-          console.log(JSON.parse(e.target.response).userName);
-          this.props.history.push('/admin');
+      return;
+    } 
+    else {
+      var xhr = new XMLHttpRequest();
+      xhr.open("post", window.url + "Token", true);
+      //Send the proper header information along with the request
+      xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
+      xhr.onload = function(e) {
+        var loading = document.getElementById('loginModal');
+        loading.style.cssText = 'position: relative; z-index: -1; -webkit-filter: blur(5px); -moz-filter: blur(5px); -o-filter: blur(5px); -ms-filter: blur(5px); filter: blur(5px);';
+        if (xhr.status === 200) {
+          console.log("success"); //console.log(e.target.response);
+          sessionStorage.setItem('tokenInfo', JSON.parse(e.target.response).access_token);
+          sessionStorage.setItem('userName', JSON.parse(e.target.response).userName);
+          sessionStorage.setItem('userRole', JSON.parse(e.target.response).role);
+          sessionStorage.setItem('logStatus', true);
+          this.props.history.replace('/');
+        } else if(xhr.status === 400) {
+          alert("The user name or password is incorrect.");
+          loading.style.cssText = '';
         }
-      } else if(xhr.status === 400) {
-        alert("The user name or password is incorrect.");
-        loading.style.cssText = '';
-      }
-        }.bind(this);
-        xhr.send(params);
+      }.bind(this);
+      xhr.send(params);
+    }
   }
 
   componentWillMount() {

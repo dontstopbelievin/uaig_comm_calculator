@@ -18,47 +18,61 @@ export default class Guest extends React.Component {
     //console.log("rendering the GuestComponent");
     return (
       <div>
-        <div className="slide">
+        {/*<div className="slide">
           <h1>УПРАВЛЕНИЕ АРХИТЕКТУРЫ И ГРАДОСТРОИТЕЛЬСТВА ГОРОДА АЛМАТЫ</h1>
           <h2>Официальный сайт</h2>
-        </div>
+        </div>*/}
 
-        <div className="row block-title">
-          <div className="col-12">
-            <h2>Государственные услуги</h2>
-          </div>
-        </div>
-
-        <div className="row promo-block">
-          <div className="col-6 promo1">
-            <h3>Регистрация участка</h3>
-            <a className="btn btn-outline-secondary" >Подать заявку</a>
-          </div>
-          <div className="col-6 promo2">
-            <h3>Статус заявления</h3>
-            <a className="btn btn-outline-secondary" >Проверить</a>
-          </div>
-          <div className="col-6 promo3">
-            <h3>Вопрос руководству</h3>
-            <a className="btn btn-outline-secondary" >Задать вопрос</a>
-          </div>
-          <div className="col-6 promo4">
-            <h3>Нормативные акты</h3>
-            <a className="btn btn-outline-secondary" >Подробнее</a>
-          </div>
-        
-        </div>
         <div className="container">
-          <div className="row block-title">
-            <div className="col-12">
-              <h2>{/* title */}</h2>
+          <div className="row">
+            <div className="col-9 jumbotron block-main">
+              <h2>Государственные услуги</h2>
+              <div className="block-content">
+                <button type="button" class="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Выдача справки по определению адреса объектов недвижимости</button>
+                <button type="button" class="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Выдача архитектурно-планировочного задания</button>
+                <button type="button" class="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Выдача решения на реконструкцию (перепланировку, переоборудование)</button>
+                <button type="button" class="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Выдача решения о строительстве культовых зданий, определении их месторасположения</button>
+                <button type="button" class="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Выдача решения о перепрофилировании зданий в культовые здания</button>
+                <button type="button" class="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Предоставление земельного участка для строительства объекта в черте населенного пункта</button>
+              </div>
+              <div className="row promo-block">
+                <div className="col-6 promo1">
+                  <h5>Выдача справки по определению адреса объектов недвижимости</h5>
+                  <a className="btn btn-outline-secondary" >Подать заявку</a>
+                </div>
+                <div className="col-6 promo2">
+                  <h5>Выдача архитектурно-планировочного задания</h5>
+                  <a className="btn btn-outline-secondary" >Подать заявку</a>
+                </div>
+                <div className="col-6 promo3">
+                  <h5>Выдача решения на реконструкцию (перепланировку, переоборудование)</h5>
+                  <a className="btn btn-outline-secondary" >Подать заявку</a>
+                </div>
+                <div className="col-6 promo4">
+                  <h5>Выдача решения о строительстве культовых зданий (сооружений), определении их месторасположения</h5>
+                  <a className="btn btn-outline-secondary" >Подать заявку</a>
+                </div>
+                <div className="col-6 promo1">
+                  <h5>Выдача решения о перепрофилировании (изменении функционального назначения) зданий (сооружений) в культовые здания (сооружения)</h5>
+                  <a className="btn btn-outline-secondary" >Подать заявку</a>
+                </div>
+                <div className="col-6 promo2">
+                  <h5>Предоставление земельного участка для строительства объекта в черте населенного пункта</h5>
+                  <a className="btn btn-outline-secondary" >Подать заявку</a>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="block-content">
-            {/* text */}
-          </div>
-        </div>  
+
+            <div className="col-3 block-main">
+              <center><h3>Новости</h3></center>
+
+            </div> 
+
+          </div>  
+        </div>
+
       </div>
+
 
       
     )
