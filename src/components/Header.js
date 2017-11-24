@@ -128,7 +128,7 @@ export default class Header extends Component {
                 <Link to={'/Map'} replace className="nav-link" activeclassname="active">Карта</Link>
               </li>
               <li className="nav-item">
-                <Link to={'/Photos'} replace className="nav-link" activeclassname="active">Галерея</Link>
+                <Link to={'/Photos'} replace className="nav-link" activeclassname="active">Новости</Link>
               </li>
               <li className="nav-item">
                 <Link to={'/photoreports'} replace className="nav-link" activeclassname="active">Фотоотчеты</Link>

@@ -282,23 +282,23 @@ export default class Admin extends React.Component {
                   <div className="col-xs-2 col-sm-2 col-md-2" style={columnStyle}>Логин</div>
                   <div className="col-xs-2 col-sm-2 col-md-2"style={columnStyle}>Почта</div>
                   <div className="col-xs-5 col-sm-5 col-md-5" style={columnStyle}>
-                    <div className="button-group" style={{display: 'inline', marginRight: '3px'}}>
-                      <button type="button" className="btn btn-primary btn-sm" onClick={this.toggleCreateNewRole}>
+                    <div className="button-group" style={{display: 'inline'}}>
+                      <button style={{margin: '0'}} type="button" className="btn btn-primary btn-sm" onClick={this.toggleCreateNewRole}>
                         Добавить
                       </button>
                       {!this.state.createNewRoleHidden && <ul style={createRoleDropdownStyle} >
                         <form onSubmit={this.submitNewRole}>
                           <input type="text" className="form-control" placeholder=""
                                             value={this.state.newRoleName} onChange={this.onRoleNameChange} />
-                                <button type="submit" className="btn btn-primary btn-sm">Добавить</button>
-                              </form>
+                          <button type="submit" className="btn btn-primary btn-sm">Добавить</button>
+                        </form>
                       </ul>}
                     </div> / 
-                    <div className="button-group" style={{display: 'inline', marginLeft: '3px',marginRight: '3px'}}>
-                      <button type="button" className="btn btn-danger btn-sm dropdown-toggle" data-toggle="dropdown">
+                    <div className="btn-group" style={{display: 'inline'}}>
+                      <button type="button" className="btn btn-danger btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Удалить <span className="caret"></span>
                       </button>
-                      <ul className="dropdown-menu" style={{position: 'absolute', minWidth: 'auto'}} >
+                      <div className="dropdown-menu" style={{minWidth: 'fit-content'}}>
                       {
                         roles.map(function(role, i){
                         return(
@@ -310,7 +310,7 @@ export default class Admin extends React.Component {
                         )
                         }.bind(this))
                       }
-                      </ul>
+                      </div>
                     </div> роль
                   </div>
                   <div className="col-xs-2 col-sm-2 col-md-2" style={columnStyle}>Управление</div>
@@ -320,7 +320,7 @@ export default class Admin extends React.Component {
                 this.state.users.map(function(user, index){
                   return(
                     <div key={index} className="panel-body container-fluid">
-                      <div className="row">
+                      <div className="row" style={{padding: '5px 0'}}>
                         <div className="col-xs-1 col-sm-1 col-md-1" style={columnStyle}>
                           {index + 1}
                         </div>
@@ -331,26 +331,26 @@ export default class Admin extends React.Component {
                           {user.UserEmail}
                         </div>
                         <div className="col-xs-5 col-sm-5 col-md-5" style={columnStyle}>
-                          <div className="dropdown" style={{display: 'inline', marginRight: '3px'}}>
-                            <button type="button" className="btn btn-warning btn-sm dropdown-toggle" data-toggle="dropdown">
+                          <div className="btn-group" style={{margin: '0'}}>
+                            <button type="button" className="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                               <span className="glyphicon glyphicon-plus"></span> 
-                              <span className="caret"></span>
                             </button>
-                            <ul className="dropdown-menu" style={{minWidth: 'auto'}} >
+                            <div className="dropdown-menu" style={{minWidth: 'fit-content', margin: '0', padding: '0'}}>
+                              <ul className="main-dd-menu">
                               {
                                 roles.map(function(role, i){
                                   if(role.RoleName === 'Urban') {
                                     return(
-                                      <ul key={i} id="menu" style={{display: 'inline', marginRight: '3px'}}>
-                                        <li className="parent" style={{margin: '5px'}}><button href="#">{role.RoleName} <span className="expand">»</span></button>
-                                          <ul className="child">
-                                            <li><button href="#">Head</button></li>
-                                            <li className="parent"><button href="#">Region <span className="expand">»</span></button>
-                                              <ul className="child">
+                                        <li key={i}><button className="btn btn-raised btn-info">{role.RoleName} <span className="expand">»</span></button>
+                                          <ul className="submenu">
+                                            <li><button className="btn btn-outline-secondary">Head</button></li>
+                                            <li>
+                                              <button className="btn btn-outline-secondary">Region <span className="expand">»</span></button>
+                                              <ul className="submenu">
                                                 {
                                                   regions.map(function(region, i){
                                                     return(
-                                                      <li key={i}><button href="#">{region.RegionName}</button></li>
+                                                      <li key={i}><button className="btn btn-outline-secondary">{region.RegionName}</button></li>
                                                     )
                                                   })
                                                 }
@@ -358,62 +358,98 @@ export default class Admin extends React.Component {
                                             </li>
                                           </ul>
                                         </li>
-                                      </ul>
                                     )
                                   }
                                   else if(role.RoleName === 'Citizen') {
                                     return(
-                                      <ul key={i} id="menu" style={{display: 'inline', marginRight: '3px'}}>
-                                        <li className="parent" style={{margin: '5px'}}><button href="#">{role.RoleName} <span className="expand">»</span></button>
-                                          <ul className="child">
-                                            <li><button href="#">Физ. лицо</button></li>
-                                            <li><button href="#">Юр. лицо</button></li>
+                                        <li key={i}><button className="btn btn-raised btn-primary">{role.RoleName} <span className="expand">»</span></button>
+                                          <ul className="submenu">
+                                            <li><button className="btn btn-outline-secondary">Физ. лицо</button></li>
+                                            <li><button className="btn btn-outline-secondary">Юр. лицо</button></li>
                                           </ul>
                                         </li>
-                                      </ul>
                                     )
                                   }
                                   else if(role.RoleName === 'Provider') {
                                     return(
-                                      <ul key={i} id="menu" style={{display: 'inline', marginRight: '3px'}}>
-                                        <li className="parent" style={{margin: '5px'}}><button href="#">{role.RoleName} <span className="expand">»</span></button>
-                                          <ul className="child">
-                                            <li><button href="#">Water</button></li>
-                                            <li><button href="#">Gas</button></li>
-                                            <li><button href="#">Electricity</button></li>
-                                            <li><button href="#">Heat</button></li>
+                                        <li key={i}><button className="btn btn-raised btn-danger">{role.RoleName} <span className="expand">»</span></button>
+                                          <ul className="submenu">
+                                            <li><button className="btn btn-outline-secondary">Water</button></li>
+                                            <li><button className="btn btn-outline-secondary">Gas</button></li>
+                                            <li><button className="btn btn-outline-secondary">Electricity</button></li>
+                                            <li><button className="btn btn-outline-secondary">Heat</button></li>
                                           </ul>
                                         </li>
-                                      </ul>
                                     )
                                   }
                                   else {
                                     return(
-                                      <ul key={i} id="menu" style={{display: 'inline', marginRight: '3px'}}>
-                                        <li className="parent" style={{margin: '5px'}}>
-                                          <a style={{color: '#000'}} onClick={this.addRoleToUser.bind(this, user.UserId, role.RoleId)}>
+                                        <li key={i}>
+                                          <button className="btn btn-raised btn-secondary" onClick={this.addRoleToUser.bind(this, user.UserId, role.RoleId)}>
                                             {role.RoleName}
-                                          </a>
+                                          </button>
                                         </li>
-                                      </ul>
                                     )
                                   }
                                 }.bind(this))
                               }
-                            </ul> 
+                              </ul>
+                            </div>
                           </div>
                           {
                             user.RoleNames.map(function(r, i){
-                              return(
-                                <div key={i} className="btn-group" style={{margin: '0'}}>
-                                  <button type="button" className="btn btn-sm btn-default" style={{cursor: 'auto'}}>
-                                    {r.RoleName}
-                                  </button>
-                                  <button type="button" className="btn btn-sm btn-default" onClick={this.removeRoleFromUser.bind(this, user.UserId, r.RoleId)}>
-                                    <span className="glyphicon glyphicon-remove text-danger"></span>
-                                  </button>
-                                </div>
-                              )
+                              if(r.RoleName === 'Urban') {
+                                return(
+                                  <div key={i} className="btn-group" style={{margin: '0 5px 0 0'}}>
+                                    <button type="button" className="btn btn-sm btn-raised btn-info" style={{cursor: 'auto'}}>
+                                      {r.RoleName}
+                                    </button>
+                                    <button type="button" className="btn btn-raised btn-info" style={{padding: '0 5px'}}
+                                            onClick={this.removeRoleFromUser.bind(this, user.UserId, r.RoleId)}>
+                                      <span className="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                  </div>
+                                )
+                              }
+                              else if(r.RoleName === 'Citizen') {
+                                return(
+                                  <div key={i} className="btn-group" style={{margin: '0 5px 0 0'}}>
+                                    <button type="button" className="btn btn-sm btn-raised btn-primary" style={{cursor: 'auto'}}>
+                                      {r.RoleName}
+                                    </button>
+                                    <button type="button" className="btn btn-raised btn-primary" style={{padding: '0 5px'}}
+                                            onClick={this.removeRoleFromUser.bind(this, user.UserId, r.RoleId)}>
+                                      <span className="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                  </div>
+                                )
+                              }
+                              else if(r.RoleName === 'Provider') {
+                                return(
+                                  <div key={i} className="btn-group" style={{margin: '0 5px 0 0'}}>
+                                    <button type="button" className="btn btn-sm btn-raised btn-danger" style={{cursor: 'auto'}}>
+                                      {r.RoleName}
+                                    </button>
+                                    <button type="button" className="btn btn-raised btn-danger" style={{padding: '0 5px'}}
+                                            onClick={this.removeRoleFromUser.bind(this, user.UserId, r.RoleId)}>
+                                      <span className="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                  </div>
+                                )
+                              }
+                              else {
+                                return(
+                                  <div key={i} className="btn-group" style={{margin: '0 5px 0 0'}}>
+                                    <button type="button" className="btn btn-sm btn-raised btn-secondary" style={{cursor: 'auto'}}>
+                                      {r.RoleName}
+                                    </button>
+                                    <button type="button" className="btn btn-raised btn-secondary" style={{padding: '0 5px'}}
+                                            onClick={this.removeRoleFromUser.bind(this, user.UserId, r.RoleId)}>
+                                      <span className="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                  </div>
+                                )
+                              }
                             }.bind(this))
                           }
                         </div>
@@ -424,12 +460,12 @@ export default class Admin extends React.Component {
                         </div>
                       </div>
                     </div>
-                  );
+                  )
                 }.bind(this))
               }
             </div>
           </div>
-            </div>
+        </div>
       </div>
     )
   }
