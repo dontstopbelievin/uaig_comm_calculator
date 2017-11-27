@@ -64,10 +64,10 @@ export default class Login extends Component {
     //========================================
 
     if (!username || !pwd) {
-            return;
-        }
+      return;
+    }
     var xhr = new XMLHttpRequest();
-        xhr.open("post", window.url + "Token", true);
+    xhr.open("post", window.url + "Token", true);
     //Send the proper header information along with the request
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
     xhr.onload = function(e) {
@@ -76,7 +76,7 @@ export default class Login extends Component {
 
       if (xhr.status === 200) {
         console.log("success"); //console.log(e.target.response);
-              // сохраняем в хранилище sessionStorage токен доступа
+        // сохраняем в хранилище sessionStorage токен доступа
         sessionStorage.setItem(tokenKey, JSON.parse(e.target.response).access_token);
         sessionStorage.setItem(userNameKey, JSON.parse(e.target.response).userName);
         sessionStorage.setItem(userRoleKey, JSON.parse(e.target.response).role);

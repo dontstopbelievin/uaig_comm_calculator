@@ -397,3 +397,28 @@ ul:after {
 
 ul:after { clear: both; }
 /* END Dropdown styles*/
+
+/* Button colors. */
+.btn-provider{
+  background-color: #B579D2;
+  border: #B579D2;
+  color: white;
+}
+
+.btn-urban{
+  background-color: #00E25B;
+  border: #00E25B;
+  color: white;
+}
+
+.btn-citizen{
+  background-color: #879CA7;
+  border: #879CA7;
+  color: white;
+}
+
+.btn-region{
+  background-color: #FBC846;
+  border: #FBC846;
+  color: white;
+}
