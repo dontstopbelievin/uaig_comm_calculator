@@ -156,19 +156,19 @@ export default class Header extends Component {
           <div className="container collapse navbar-collapse" id="navbarTogglerDemo03">
             <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
               <li className="nav-item">
-                <NavLink to={'/'} replace className="nav-link" activeclassname="active">Главная</NavLink>
+                <NavLink to={'/home'} replace className="nav-link">Главная</NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to={'/Map'} replace className="nav-link" activeclassname="active">Карта</NavLink>
+                <NavLink to={'/Map'} replace className="nav-link">Карта</NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to={'/Photos'} replace className="nav-link" activeclassname="active">Галерея</NavLink>
+                <NavLink to={'/Photos'} replace className="nav-link">Галерея</NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to={'/photoreports'} replace className="nav-link" activeclassname="active">Фотоотчеты</NavLink>
+                <NavLink to={'/photoreports'} replace className="nav-link">Фотоотчеты</NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to={'/project'} replace className="nav-link" activeclassname="active">Проект</NavLink>
+                <NavLink to={'/project'} replace className="nav-link">Проект</NavLink>
               </li>
               <li className="nav-item dropdown">
                 <button className="nav-link dropdown-toggle" style={navBtnStyle} href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" >

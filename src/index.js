@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { HashRouter, Route, Switch } from 'react-router-dom';
+import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 import Header from './components/Header';
 import Guest from './routes/Guest';
 import MapView from './routes/Map';
@@ -48,7 +48,7 @@ export default class Main extends React.Component {
           <div>
             <Route component={Header} />
             <Switch>
-              <Route exact path="/" render={(props) => (<Guest {...props} />)} />
+              <Route exact path="/home" render={(props) => (<Guest {...props} />)} />
               <Route path="/map" render={(props) => (<MapView {...props} />)} />
               <Route path="/photos" render={(props) => (<Photos {...props} />)} />
               <Route path="/login" render={(props) => (<Login {...props} />)} />
@@ -61,6 +61,7 @@ export default class Main extends React.Component {
               <Route path="/photoreports" render={(props) => (<PhotoReports {...props} />)} />
               <Route path="/admin" render={(props) => (<Admin {...props} />)} />
               <Route path="/files" render={(props) => (<Files {...props} />)} />
+              <Redirect from="/" to="/home" />
             </Switch>
             <Footer />
           </div>
