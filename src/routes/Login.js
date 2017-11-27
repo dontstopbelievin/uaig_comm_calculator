@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import PreloaderIcon, {ICON_TYPE} from 'react-preloader-icon';
 
 export default class Login extends Component {
   constructor(props) {
@@ -8,7 +9,8 @@ export default class Login extends Component {
 
     this.state = {
       username: "", 
-      pwd: ""
+      pwd: "",
+      loadingVisible: false
     }
 
     this.onUsernameChange = this.onUsernameChange.bind(this);
@@ -61,13 +63,12 @@ export default class Login extends Component {
       return;
     } 
     else {
+      this.setState({loadingVisible: true});
       var xhr = new XMLHttpRequest();
       xhr.open("post", window.url + "Token", true);
       //Send the proper header information along with the request
       xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
       xhr.onload = function(e) {
-        var loading = document.getElementById('loginModal');
-        loading.style.cssText = 'position: relative; z-index: -1; -webkit-filter: blur(5px); -moz-filter: blur(5px); -o-filter: blur(5px); -ms-filter: blur(5px); filter: blur(5px);';
         if (xhr.status === 200) {
           console.log("success"); //console.log(e.target.response);
           sessionStorage.setItem('tokenInfo', JSON.parse(e.target.response).access_token);
@@ -77,7 +78,7 @@ export default class Login extends Component {
           this.props.history.replace('/');
         } else if(xhr.status === 400) {
           alert("The user name or password is incorrect.");
-          loading.style.cssText = '';
+          this.setState({loadingVisible: false});
         }
       }.bind(this);
       xhr.send(params);
@@ -107,6 +108,13 @@ export default class Login extends Component {
       <div>
         <div id="loginModal" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div className="modal-dialog" role="document">
+            <div id="loading">
+              {
+                this.state.loadingVisible
+                  ? <Loading />
+                  : <div></div>
+              }
+            </div>
             <div className="modal-content">
               <div className="modal-header">
                 <Link to="/">
@@ -141,5 +149,13 @@ export default class Login extends Component {
         </div>
       </div>
     )
+  }
+}
+
+class Loading extends Component {
+  render() {
+    return (
+      <PreloaderIcon type={ICON_TYPE.OVAL} size={32} strokeWidth={8} strokeColor="#135ead" duration={800} />
+      )
   }
 }

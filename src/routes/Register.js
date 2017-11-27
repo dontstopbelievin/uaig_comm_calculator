@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import PreloaderIcon, {ICON_TYPE} from 'react-preloader-icon';
 
 export default class Register extends React.Component {
   constructor() {
@@ -8,7 +9,8 @@ export default class Register extends React.Component {
       username: "", 
       email: "", 
       pwd: "", 
-      confirmPwd: ""
+      confirmPwd: "",
+      loadingVisible: false
     }
 
     this.onUsernameChange = this.onUsernameChange.bind(this);
@@ -55,6 +57,7 @@ export default class Register extends React.Component {
       return;
     }
 
+    this.setState({loadingVisible: true});
     var xhr = new XMLHttpRequest();
     xhr.open("post", window.url + "api/Account/Register", true);
     //Send the proper header information along with the request
@@ -64,9 +67,10 @@ export default class Register extends React.Component {
         alert("Вы успешно зарегистрировались!\n Можете войти через созданный аккаунт!");
       }else {
         console.log(xhr.response);
+        this.setState({loadingVisible: false}); 
         //alert("Ошибка " + xhr.status + ': ' + xhr.statusText);
       }
-    }
+    }.bind(this);
     //console.log(data);
     xhr.send(data);
   }
@@ -93,6 +97,13 @@ export default class Register extends React.Component {
       <div>
         <div className="" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div className="modal-dialog" role="document">
+            <div id="loading">
+              {
+                this.state.loadingVisible
+                  ? <Loading />
+                  : <div></div>
+              }
+            </div>
             <div className="modal-content">
               <div className="modal-header">
                 <Link to="/">
@@ -103,35 +114,43 @@ export default class Register extends React.Component {
                 <h4 className="modal-title" id="myModalLabel">Регистрация</h4>
               </div>
               <div className="modal-body">
-                <form id="registerForm">
+                <form id="registerForm" onSubmit={this.register}>
                   <div className="form-group">
                     <label htmlFor="UserName" className="control-label">Логин:</label>
-                    <input type="text" className="form-control" value={this.state.username} onChange={this.onUsernameChange} />
+                    <input type="text" className="form-control" required value={this.state.username} onChange={this.onUsernameChange} />
                   </div>
                   <div className="form-group">
                     <label htmlFor="Email" className="control-label">Почта:</label>
-                    <input type="email" className="form-control" value={this.state.email} onChange={this.onEmailChange} />
+                    <input type="email" className="form-control" required value={this.state.email} onChange={this.onEmailChange} />
                   </div>
                   <div className="form-group">
                     <label htmlFor="Pwd" className="control-label">Пароль:</label>
-                    <input type="password" className="form-control" value={this.state.pwd} onChange={this.onPwdChange} />
+                    <input type="password" className="form-control" required value={this.state.pwd} onChange={this.onPwdChange} />
                   </div>
                   <div className="form-group">
                     <label htmlFor="ConfirmPwd" className="control-label">Подтвердите Пароль:</label>
-                    <input type="password" className="form-control" value={this.state.confirmPwd} onChange={this.onConfirmPwdChange} />
+                    <input type="password" className="form-control" required value={this.state.confirmPwd} onChange={this.onConfirmPwdChange} />
+                  </div>
+                  <div className="modal-footer">
+                    <button type="submit" className="btn btn-primary">Регистрация</button>
+                    <Link to="/" style={{marginRight:'5px'}}>
+                      <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
+                    </Link>
                   </div>
                 </form>
-              </div>
-              <div className="modal-footer">
-                <Link to="/" style={{marginRight:'5px'}}>
-                  <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
-                </Link>
-                <button type="submit"  onClick={this.register} className="btn btn-primary">Регистрация</button>
               </div>
             </div>
           </div>
         </div>
       </div>
     )
+  }
+}
+
+class Loading extends Component {
+  render() {
+    return (
+      <PreloaderIcon type={ICON_TYPE.OVAL} size={32} strokeWidth={8} strokeColor="#135ead" duration={800} />
+      )
   }
 }

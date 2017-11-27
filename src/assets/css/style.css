@@ -85,6 +85,16 @@ thead {
     
 }
 
+.preloader-icon {
+  position: absolute;
+  z-index: 5;
+  margin: auto;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 25%;
+  background: rgba(285,285,285,0.5);
+}
+
 .slide {
   width: 100%;
   height: 600px;
