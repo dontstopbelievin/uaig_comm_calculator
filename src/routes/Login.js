@@ -39,6 +39,10 @@ export default class Login extends Component {
   login(e) {
     e.preventDefault();
     console.log("login function started");
+    var tokenKey = "tokenInfo";
+    var userNameKey = "userName";
+    var userRoleKey = "userRoles";
+    var logStatusKey = "logStatus";
     var username = this.state.username.trim();
     var pwd = this.state.pwd.trim();
     var params = 'grant_type=password&username=' + username + '&password='+ pwd;
@@ -64,32 +68,44 @@ export default class Login extends Component {
     } 
     else {
       this.setState({loadingVisible: true});
+      
       var xhr = new XMLHttpRequest();
-      xhr.open("post", window.url + "Token", true);
+      xhr.open("post", window.url + "Token", true);
       //Send the proper header information along with the request
       xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
-      xhr.onload = function(e) {
+      xhr.onload = function(e) {
         if (xhr.status === 200) {
-          console.log("success"); //console.log(e.target.response);
-          sessionStorage.setItem('tokenInfo', JSON.parse(e.target.response).access_token);
-          sessionStorage.setItem('userName', JSON.parse(e.target.response).userName);
-          sessionStorage.setItem('userRole', JSON.parse(e.target.response).role);
-          sessionStorage.setItem('logStatus', true);
-          this.props.history.replace('/');
-        } else if(xhr.status === 400) {
-          alert("The user name or password is incorrect.");
           this.setState({loadingVisible: false});
+          console.log("success");
+          //console.log(e.target.response);
+          var roles = [JSON.parse(e.target.response).role1];
+          if(JSON.parse(e.target.response).role2)
+            roles.push(JSON.parse(e.target.response).role2);
+          if(JSON.parse(e.target.response).role3)
+            roles.push(JSON.parse(e.target.response).role3);
+          // сохраняем в хранилище sessionStorage токен доступа
+          sessionStorage.setItem(tokenKey, JSON.parse(e.target.response).access_token);
+          sessionStorage.setItem(userNameKey, JSON.parse(e.target.response).userName);
+          sessionStorage.setItem(userRoleKey, JSON.stringify(roles));
+          sessionStorage.setItem(logStatusKey, true);
+          this.props.history.push('/');
+        } 
+        else if(xhr.status === 400) {
+          this.setState({loadingVisible: false});
+          alert("The user name or password is incorrect.");
         }
-      }.bind(this);
-      xhr.send(params);
+      }.bind(this);
+      xhr.send(params);
     }
   }
 
   componentWillMount() {
     //console.log("LoginComponent will mount");
     if(sessionStorage.getItem('tokenInfo')){
-      var userRole = sessionStorage.getItem('userRole');
+      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];
       this.props.history.replace('/' + userRole);
+    }else {
+      this.props.history.replace('/login');
     }
   }
 

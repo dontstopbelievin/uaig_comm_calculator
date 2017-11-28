@@ -78,8 +78,10 @@ export default class Register extends React.Component {
   componentWillMount() {
     //console.log("RegisterComponent will mount");
     if(sessionStorage.getItem('tokenInfo')){
-      var userRole = sessionStorage.getItem('userRole');
-      this.props.history.push('/' + userRole);
+      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];
+      this.props.history.replace('/' + userRole);
+    }else {
+      this.props.history.replace('/register');
     }
   }
 

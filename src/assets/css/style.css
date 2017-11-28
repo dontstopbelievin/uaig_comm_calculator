@@ -368,67 +368,84 @@ ul.header li a {
 }
 
 /* Dropdown styles*/
-.parent {
+
+/* Set the parent <li>’s CSS position property to ‘relative’. */
+ul.main-dd-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  background: lightgreen;
+  padding: 5px;
+}
+
+ul.main-dd-menu li {
   display: block;
   position: relative;
   float: left;
-  line-height: 30px;
-  background-color: #fff;
-  border: #000 1px solid;
 }
 
-  .parent button {
-    margin: 10px;
-    color: #000;
-    text-decoration: none;
-  }
+/* The CSS to hide the sub menus. */
+li ul.submenu { display: none; }
 
-  .parent:hover > ul {
-    display: block;
-    position: absolute;
-    z-index: 1;
-  }
-
-.child {
-  display: none;
+ul.submenu { 
+  padding: 5px;
+  z-index: 1;
+  background: lightcyan;
 }
 
-  .child li {
-    background-color: #E4EFF7;
-    line-height: 30px;
-    border-bottom: #CCC 1px solid;
-    border-right: #CCC 1px solid;
-    width: 100%;
-  }
-
-    .child li button {
-      color: #000000;
-    }
-
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0px;
-  min-width: 10em;
+/* Displays the dropdown menu on hover. */
+li:hover > ul {
+  display: block;
+  position: absolute;
 }
 
-  ul ul ul {
-    left: 100%;
-    top: 0;
-    margin-left: 1px;
-  }
-
-/*li:hover {
-  background-color: #95B4CA;
-}*/
-
-.parent li:hover {
-  background-color: #F0F0F0;
+/* Displays submenu dropdown menu to the right of the dropdown menu.*/
+ul ul {
+  left: 100%;
+  top: 0;
 }
 
-.expand {
-  font-size: 12px;
-  float: right;
-  margin-right: 5px;
+li:hover li { float: none; }
+
+ul.main-dd-menu li ul li { border-top: 0; }
+
+/* Displays second level dropdown menus to the right of the first level dropdown menu. */
+ul ul ul {
+  left: 100%;
+  top: 0;
 }
-/* Dropdown styles END*/
+
+ul:before,
+ul:after {
+  content: " "; /* 1 */
+  display: table; /* 2 */
+}
+
+ul:after { clear: both; }
+/* END Dropdown styles*/
+
+/* Button colors. */
+.btn-provider{
+  background-color: #B579D2;
+  border: #B579D2;
+  color: white;
+}
+
+.btn-urban{
+  background-color: #00E25B;
+  border: #00E25B;
+  color: white;
+}
+
+.btn-citizen{
+  background-color: #879CA7;
+  border: #879CA7;
+  color: white;
+}
+
+.btn-region{
+  background-color: #FBC846;
+  border: #FBC846;
+  color: white;
+}

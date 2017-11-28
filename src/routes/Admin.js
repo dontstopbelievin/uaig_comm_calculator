@@ -18,16 +18,6 @@ export default class Admin extends React.Component {
     this.state = {
       users: [],
       roles: [],
-      regions: [
-        {RegionId: "1", RegionName: "Наурызбай"},
-        {RegionId: "2", RegionName: "Алатау"},
-        {RegionId: "3", RegionName: "Алмалы"},
-        {RegionId: "4", RegionName: "Ауезов"},
-        {RegionId: "5", RegionName: "Бостандық"},
-        {RegionId: "6", RegionName: "Жетісу"},
-        {RegionId: "7", RegionName: "Медеу"},
-        {RegionId: "8", RegionName: "Турксиб"}
-      ],
       isLoggedIn: true,
       username: "",
       createNewRoleHidden: true,
@@ -58,6 +48,7 @@ export default class Admin extends React.Component {
         var users = data.filter(function( obj ) {
           return obj.UserName !== 'Admin';
         });
+        //console.log(users);
         this.setState({ users: users });
       }
     }.bind(this);
@@ -104,6 +95,7 @@ export default class Admin extends React.Component {
         var roles = data.filter(function( obj ) {
           return obj.RoleName !== 'Admin';
         });
+        //console.log(roles);
         this.setState({ roles: roles });
       }
     }.bind(this);
@@ -185,13 +177,15 @@ export default class Admin extends React.Component {
   }
 
   // добавить роль к пользователю
-  addRoleToUser(userId, roleId) {
+  addRoleToUser(userId, roleId, roleLevel) {
     var token = sessionStorage.getItem('tokenInfo');
     //console.log(userId);
     //console.log(roleId);
     var data = {userid: userId, roleid: roleId};
     var dd = JSON.stringify(data);
+
     var usersArray = this.state.users;
+    // get the position of the user which role is gonna be added
     var userPos = usersArray.map(function(x) {return x.UserId; }).indexOf(userId);
     //console.log(userPos);
 
@@ -204,22 +198,30 @@ export default class Admin extends React.Component {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
         //console.log(data);
-        usersArray[userPos].RoleNames.push(data);
+        if(roleLevel > 1){
+          for(var i = 0; i < roleLevel; i++){
+            usersArray[userPos].RoleNames.push(data[i]);
+          }
+        }
+        else{
+          usersArray[userPos].RoleNames.push(data);
+        }
         //console.log(usersArray);
         this.setState({users: usersArray});
-        console.log('role was added')
+        console.log('role(s) was(were) added')
       }
     }.bind(this);
     xhr.send(dd);
   }
 
   // удалить роль у пользователя
-  removeRoleFromUser(userId, roleId) {
+  removeRoleFromUser(userId, roleId, roleLevel) {
+    var token = sessionStorage.getItem('tokenInfo');
     //console.log(userId);
     //console.log(roleId);
-    var token = sessionStorage.getItem('tokenInfo');
     var data = {userid: userId, roleid: roleId};
     var dd = JSON.stringify(data);
+
     var usersArray = this.state.users;
     var userPos = usersArray.map(function(x) {return x.UserId; }).indexOf(userId);
 
@@ -230,11 +232,16 @@ export default class Admin extends React.Component {
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
       if (xhr.status === 200) {
-        var rolePos = usersArray[userPos].RoleNames.map(function(x) {return x.RoleId;}).indexOf(roleId);
-        //console.log(rolePos);
-        usersArray[userPos].RoleNames.splice(rolePos,1);
+        if(roleLevel > 1){
+          usersArray[userPos].RoleNames.length = 0;
+        }
+        else{
+          var rolePos = usersArray[userPos].RoleNames.map(function(x) {return x.RoleId;}).indexOf(roleId);
+          //console.log(rolePos);
+          usersArray[userPos].RoleNames.splice(rolePos,1);
+        }
         this.setState({users: usersArray});
-        console.log('role was removed')
+        console.log('role(s) was(were) removed')
       }
     }.bind(this);
     xhr.send(dd);
@@ -247,10 +254,8 @@ export default class Admin extends React.Component {
   componentWillMount() {
     //console.log("AdminComponent will mount");
     if(sessionStorage.getItem('tokenInfo')){
-      var userRole = sessionStorage.getItem('userRole');
+      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];
       this.props.history.replace('/' + userRole);
-      var userName = sessionStorage.getItem('userName');
-      this.setState({username: userName});
     }else {
       this.props.history.replace('/');
     }
@@ -269,7 +274,6 @@ export default class Admin extends React.Component {
   render() {
     //console.log("rendering the AdminComponent");
     var roles = this.state.roles;
-    var regions = this.state.regions;
     return (
       <div className="container">
         <h3 style={{fontSize: '40px', color: 'dodgerblue'}}>Пользователи</h3>
@@ -282,25 +286,25 @@ export default class Admin extends React.Component {
                   <div className="col-xs-2 col-sm-2 col-md-2" style={columnStyle}>Логин</div>
                   <div className="col-xs-2 col-sm-2 col-md-2"style={columnStyle}>Почта</div>
                   <div className="col-xs-5 col-sm-5 col-md-5" style={columnStyle}>
-                    <div className="button-group" style={{display: 'inline', marginRight: '3px'}}>
-                      <button type="button" className="btn btn-primary btn-sm" onClick={this.toggleCreateNewRole}>
+                    <div className="button-group" style={{display: 'inline'}}>
+                      <button style={{margin: '0'}} type="button" className="btn btn-primary btn-sm" onClick={this.toggleCreateNewRole}>
                         Добавить
                       </button>
                       {!this.state.createNewRoleHidden && <ul style={createRoleDropdownStyle} >
                         <form onSubmit={this.submitNewRole}>
                           <input type="text" className="form-control" placeholder=""
                                             value={this.state.newRoleName} onChange={this.onRoleNameChange} />
-                                <button type="submit" className="btn btn-primary btn-sm">Добавить</button>
-                              </form>
+                          <button type="submit" className="btn btn-primary btn-sm">Добавить</button>
+                        </form>
                       </ul>}
                     </div> / 
-                    <div className="button-group" style={{display: 'inline', marginLeft: '3px',marginRight: '3px'}}>
-                      <button type="button" className="btn btn-danger btn-sm dropdown-toggle" data-toggle="dropdown">
+                    <div className="btn-group" style={{display: 'inline'}}>
+                      <button type="button" className="btn btn-danger btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Удалить <span className="caret"></span>
                       </button>
-                      <ul className="dropdown-menu" style={{position: 'absolute', minWidth: 'auto'}} >
+                      <div className="dropdown-menu" style={{minWidth: 'fit-content'}}>
                       {
-                        roles.map(function(role, i){
+                        roles.filter(function( obj ) { return obj.RoleLevel === '1';}).map(function(role, i){
                         return(
                           <li key={i}>
                             <input type="button" className="btn btn-outline-secondary" style={{margin: '5px'}}
@@ -310,7 +314,7 @@ export default class Admin extends React.Component {
                         )
                         }.bind(this))
                       }
-                      </ul>
+                      </div>
                     </div> роль
                   </div>
                   <div className="col-xs-2 col-sm-2 col-md-2" style={columnStyle}>Управление</div>
@@ -320,7 +324,7 @@ export default class Admin extends React.Component {
                 this.state.users.map(function(user, index){
                   return(
                     <div key={index} className="panel-body container-fluid">
-                      <div className="row">
+                      <div className="row" style={{padding: '5px 0'}}>
                         <div className="col-xs-1 col-sm-1 col-md-1" style={columnStyle}>
                           {index + 1}
                         </div>
@@ -331,89 +335,193 @@ export default class Admin extends React.Component {
                           {user.UserEmail}
                         </div>
                         <div className="col-xs-5 col-sm-5 col-md-5" style={columnStyle}>
-                          <div className="dropdown" style={{display: 'inline', marginRight: '3px'}}>
-                            <button type="button" className="btn btn-warning btn-sm dropdown-toggle" data-toggle="dropdown">
-                              <span className="glyphicon glyphicon-plus"></span> 
-                              <span className="caret"></span>
+                          <div className="btn-group" style={{margin: '0 5px 5px 0'}}>
+                            <button type="button" className="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Изменить 
                             </button>
-                            <ul className="dropdown-menu" style={{minWidth: 'auto'}} >
+                            <div className="dropdown-menu" style={{minWidth: 'fit-content', margin: '0', padding: '0'}}>
+                              <ul className="main-dd-menu">
                               {
-                                roles.map(function(role, i){
+                                roles.filter(function(obj) { return obj.RoleLevel === '1'; }).map(function(role, i){
                                   if(role.RoleName === 'Urban') {
                                     return(
-                                      <ul key={i} id="menu" style={{display: 'inline', marginRight: '3px'}}>
-                                        <li className="parent" style={{margin: '5px'}}><button href="#">{role.RoleName} <span className="expand">»</span></button>
-                                          <ul className="child">
-                                            <li><button href="#">Head</button></li>
-                                            <li className="parent"><button href="#">Region <span className="expand">»</span></button>
-                                              <ul className="child">
-                                                {
-                                                  regions.map(function(region, i){
-                                                    return(
-                                                      <li key={i}><button href="#">{region.RegionName}</button></li>
-                                                    )
-                                                  })
-                                                }
-                                              </ul>
-                                            </li>
-                                          </ul>
-                                        </li>
-                                      </ul>
+                                      <li key={i}><button className="btn btn-raised btn-info">{role.RoleName} <span className="expand">»</span></button>
+                                        <ul className="submenu">
+                                          {
+                                            roles.filter(function(obj) { return (obj.RoleLevel === '2' && obj.ParentRoleId === role.RoleId); }).map(function(secondLevRole, i){
+                                              if(secondLevRole.RoleName === 'Region') {
+                                                return(
+                                                  <li key={i}><button className="btn btn-raised btn-urban">{secondLevRole.RoleName} <span className="expand">»</span></button>
+                                                    <ul className="submenu">
+                                                    {
+                                                      roles.filter(function(obj) { return (obj.RoleLevel === '3' && obj.ParentRoleId === secondLevRole.RoleId); }).map(function(thirdLevRole, i){
+                                                        return(
+                                                          <li key={i}><button className="btn btn-raised btn-region" onClick={this.addRoleToUser.bind(this, user.UserId, thirdLevRole.RoleId, 3)}>{thirdLevRole.RoleName}</button></li>  
+                                                        )
+                                                      }.bind(this))
+                                                    }
+                                                    </ul>
+                                                  </li>
+                                                )  
+                                              }
+                                              else{
+                                                return(
+                                                  <li key={i}><button className="btn btn-raised btn-urban" onClick={this.addRoleToUser.bind(this, user.UserId, secondLevRole.RoleId, 2)}>{secondLevRole.RoleName}</button></li>
+                                                )
+                                              }
+                                            }.bind(this))
+                                          }
+                                        </ul>
+                                      </li>
                                     )
                                   }
                                   else if(role.RoleName === 'Citizen') {
                                     return(
-                                      <ul key={i} id="menu" style={{display: 'inline', marginRight: '3px'}}>
-                                        <li className="parent" style={{margin: '5px'}}><button href="#">{role.RoleName} <span className="expand">»</span></button>
-                                          <ul className="child">
-                                            <li><button href="#">Физ. лицо</button></li>
-                                            <li><button href="#">Юр. лицо</button></li>
+                                        <li key={i}><button className="btn btn-raised btn-primary">{role.RoleName} <span className="expand">»</span></button>
+                                          <ul className="submenu">
+                                          {
+                                            roles.filter(function(obj) { return (obj.RoleLevel === '2' && obj.ParentRoleId === role.RoleId); }).map(function(secondLevRole, i){
+                                              return(
+                                                <li key={i}><button className="btn btn-raised btn-citizen" onClick={this.addRoleToUser.bind(this, user.UserId, secondLevRole.RoleId, 2)}>{secondLevRole.RoleName}</button></li>
+                                              )
+                                            }.bind(this))
+                                          }
                                           </ul>
                                         </li>
-                                      </ul>
                                     )
                                   }
                                   else if(role.RoleName === 'Provider') {
                                     return(
-                                      <ul key={i} id="menu" style={{display: 'inline', marginRight: '3px'}}>
-                                        <li className="parent" style={{margin: '5px'}}><button href="#">{role.RoleName} <span className="expand">»</span></button>
-                                          <ul className="child">
-                                            <li><button href="#">Water</button></li>
-                                            <li><button href="#">Gas</button></li>
-                                            <li><button href="#">Electricity</button></li>
-                                            <li><button href="#">Heat</button></li>
+                                        <li key={i}><button className="btn btn-raised btn-danger">{role.RoleName} <span className="expand">»</span></button>
+                                          <ul className="submenu">
+                                          {
+                                            roles.filter(function(obj) { return (obj.RoleLevel === '2' && obj.ParentRoleId === role.RoleId); }).map(function(secondLevRole, i){
+                                              return(
+                                                <li key={i}><button className="btn btn-raised btn-provider" onClick={this.addRoleToUser.bind(this, user.UserId, secondLevRole.RoleId, 2)}>{secondLevRole.RoleName}</button></li>
+                                              )
+                                            }.bind(this))
+                                          }
                                           </ul>
                                         </li>
-                                      </ul>
                                     )
                                   }
                                   else {
                                     return(
-                                      <ul key={i} id="menu" style={{display: 'inline', marginRight: '3px'}}>
-                                        <li className="parent" style={{margin: '5px'}}>
-                                          <a style={{color: '#000'}} onClick={this.addRoleToUser.bind(this, user.UserId, role.RoleId)}>
+                                        <li key={i}>
+                                          <button className="btn btn-raised btn-secondary" onClick={this.addRoleToUser.bind(this, user.UserId, role.RoleId, 1)}>
                                             {role.RoleName}
-                                          </a>
+                                          </button>
                                         </li>
-                                      </ul>
                                     )
                                   }
                                 }.bind(this))
                               }
-                            </ul> 
+                              </ul>
+                            </div>
                           </div>
                           {
-                            user.RoleNames.map(function(r, i){
-                              return(
-                                <div key={i} className="btn-group" style={{margin: '0'}}>
-                                  <button type="button" className="btn btn-sm btn-default" style={{cursor: 'auto'}}>
-                                    {r.RoleName}
-                                  </button>
-                                  <button type="button" className="btn btn-sm btn-default" onClick={this.removeRoleFromUser.bind(this, user.UserId, r.RoleId)}>
-                                    <span className="glyphicon glyphicon-remove text-danger"></span>
-                                  </button>
-                                </div>
-                              )
+                            user.RoleNames.sort(function(a,b){return a.RoleLevel-b.RoleLevel}).map(function(r, i){
+                              if(r.RoleName === 'Urban') {
+                                return(
+                                  <div key={i} className="btn-group" style={{margin: '0 5px 0 0'}}>
+                                    <button type="button" className="btn btn-sm btn-raised btn-info" style={{cursor: 'auto'}}>
+                                      {r.RoleName}
+                                    </button>
+                                  </div>
+                                )
+                              }
+                              else if(r.RoleName === 'Citizen') {
+                                return(
+                                  <div key={i} className="btn-group" style={{margin: '0 5px 0 0'}}>
+                                    <button type="button" className="btn btn-sm btn-raised btn-primary" style={{cursor: 'auto'}}>
+                                      {r.RoleName}
+                                    </button>
+                                  </div>
+                                )
+                              }
+                              else if(r.RoleName === 'Provider') {
+                                return(
+                                  <div key={i} className="btn-group" style={{margin: '0 5px 0 0'}}>
+                                    <button type="button" className="btn btn-sm btn-raised btn-danger" style={{cursor: 'auto'}}>
+                                      {r.RoleName}
+                                    </button>
+                                  </div>
+                                )
+                              }
+                              else if(r.RoleName === 'Temporary') {
+                                return(
+                                  <div key={i} className="btn-group" style={{margin: '0 5px 0 0'}}>
+                                    <button type="button" className="btn btn-sm btn-raised btn-secondary" style={{cursor: 'auto'}}>
+                                      {r.RoleName}
+                                    </button>
+                                    <button type="button" className="btn btn-raised btn-secondary" style={{padding: '0 5px'}}
+                                            onClick={this.removeRoleFromUser.bind(this, user.UserId, r.RoleId, r.RoleLevel)}>
+                                      <span className="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                  </div>
+                                )
+                              }
+                              else if(r.RoleName === 'Head') {
+                                return(
+                                  <div key={i} className="btn-group" style={{margin: '0 5px 0 0'}}>
+                                    <button type="button" className="btn btn-sm btn-raised btn-urban" style={{cursor: 'auto'}}>
+                                      {r.RoleName}
+                                    </button>
+                                    <button type="button" className="btn btn-raised btn-urban" style={{padding: '0 5px'}}
+                                            onClick={this.removeRoleFromUser.bind(this, user.UserId, r.RoleId, r.RoleLevel)}>
+                                      <span className="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                  </div>
+                                )
+                              }
+                              else if(r.RoleName === 'Region') {
+                                return(
+                                  <div key={i} className="btn-group" style={{margin: '0 5px 0 0'}}>
+                                    <button type="button" className="btn btn-sm btn-raised btn-urban" style={{cursor: 'auto'}}>
+                                      {r.RoleName}
+                                    </button>
+                                  </div>
+                                )
+                              }
+                              else if(r.RoleName === 'Individual' || r.RoleName === 'Business') {
+                                return(
+                                  <div key={i} className="btn-group" style={{margin: '0 5px 0 0'}}>
+                                    <button type="button" className="btn btn-sm btn-raised btn-citizen" style={{cursor: 'auto'}}>
+                                      {r.RoleName}
+                                    </button>
+                                    <button type="button" className="btn btn-raised btn-citizen" style={{padding: '0 5px'}}
+                                            onClick={this.removeRoleFromUser.bind(this, user.UserId, r.RoleId, r.RoleLevel)}>
+                                      <span className="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                  </div>
+                                )
+                              }
+                              else if(r.RoleName === 'Gas' || r.RoleName === 'Electricity' || r.RoleName === 'Water' || r.RoleName === 'Heat') {
+                                return(
+                                  <div key={i} className="btn-group" style={{margin: '0 5px 0 0'}}>
+                                    <button type="button" className="btn btn-sm btn-raised btn-provider" style={{cursor: 'auto'}}>
+                                      {r.RoleName}
+                                    </button>
+                                    <button type="button" className="btn btn-raised btn-provider" style={{padding: '0 5px'}}
+                                            onClick={this.removeRoleFromUser.bind(this, user.UserId, r.RoleId, r.RoleLevel)}>
+                                      <span className="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                  </div>
+                                )
+                              }
+                              else {
+                                return(
+                                  <div key={i} className="btn-group" style={{margin: '0 5px 0 0'}}>
+                                    <button type="button" className="btn btn-sm btn-raised btn-region" style={{cursor: 'auto'}}>
+                                      {r.RoleName}
+                                    </button>
+                                    <button type="button" className="btn btn-raised btn-region" style={{padding: '0 5px'}}
+                                            onClick={this.removeRoleFromUser.bind(this, user.UserId, r.RoleId, r.RoleLevel)}>
+                                      <span className="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                  </div>
+                                )
+                              }
                             }.bind(this))
                           }
                         </div>
@@ -424,12 +532,12 @@ export default class Admin extends React.Component {
                         </div>
                       </div>
                     </div>
-                  );
+                  )
                 }.bind(this))
               }
             </div>
           </div>
-            </div>
+        </div>
       </div>
     )
   }

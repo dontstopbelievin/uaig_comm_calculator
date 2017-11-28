@@ -33,7 +33,7 @@ class LogoutBtn extends Component {
 
   gotoCabinet() {
     if(sessionStorage.getItem('tokenInfo')){
-      var userRole = sessionStorage.getItem('userRole');
+      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];;
       this.props.history.replace('/' + userRole);
     }
   }
