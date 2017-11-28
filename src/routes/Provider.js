@@ -5,8 +5,10 @@ export default class Provider extends React.Component {
   componentWillMount() {
     //console.log("ProviderComponent will mount");
     if(sessionStorage.getItem('tokenInfo')){
-      var userRole = sessionStorage.getItem('userRole');
+      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];
       this.props.history.replace('/' + userRole);
+    }else {
+      this.props.history.replace('/');
     }
   }
 

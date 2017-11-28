@@ -208,7 +208,7 @@ export default class Admin extends React.Component {
         }
         //console.log(usersArray);
         this.setState({users: usersArray});
-        console.log('role(s) was added')
+        console.log('role(s) was(were) added')
       }
     }.bind(this);
     xhr.send(dd);
@@ -241,7 +241,7 @@ export default class Admin extends React.Component {
           usersArray[userPos].RoleNames.splice(rolePos,1);
         }
         this.setState({users: usersArray});
-        console.log('role(s) was removed')
+        console.log('role(s) was(were) removed')
       }
     }.bind(this);
     xhr.send(dd);
@@ -254,10 +254,8 @@ export default class Admin extends React.Component {
   componentWillMount() {
     //console.log("AdminComponent will mount");
     if(sessionStorage.getItem('tokenInfo')){
-      var userRole = sessionStorage.getItem('userRole');
+      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];
       this.props.history.replace('/' + userRole);
-      var userName = sessionStorage.getItem('userName');
-      this.setState({username: userName});
     }else {
       this.props.history.replace('/');
     }

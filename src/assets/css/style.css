@@ -348,7 +348,7 @@ ul.main-dd-menu {
   padding: 0;
   margin: 0;
   text-align: center;
-  background: #EEEEEE;
+  background: lightgreen;
   padding: 5px;
 }
 
@@ -364,7 +364,7 @@ li ul.submenu { display: none; }
 ul.submenu { 
   padding: 5px;
   z-index: 1;
-  background: #EEEEEE;
+  background: lightcyan;
 }
 
 /* Displays the dropdown menu on hover. */

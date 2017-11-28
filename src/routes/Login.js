@@ -41,7 +41,7 @@ export default class Login extends Component {
     console.log("login function started");
     var tokenKey = "tokenInfo";
     var userNameKey = "userName";
-    var userRoleKey = "userRole";
+    var userRoleKey = "userRoles";
     var logStatusKey = "logStatus";
     var username = this.state.username.trim();
     var pwd = this.state.pwd.trim();
@@ -71,45 +71,23 @@ export default class Login extends Component {
     //Send the proper header information along with the request
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
     xhr.onload = function(e) {
-      var loading = document.getElementById('loginModal');
-      loading.style.cssText = 'position: relative; z-index: -1; -webkit-filter: blur(5px); -moz-filter: blur(5px); -o-filter: blur(5px); -ms-filter: blur(5px); filter: blur(5px);';
 
       if (xhr.status === 200) {
-        console.log("success"); //console.log(e.target.response);
+        console.log("success");
+        //console.log(e.target.response);
+        var roles = [JSON.parse(e.target.response).role1];
+        if(JSON.parse(e.target.response).role2)
+          roles.push(JSON.parse(e.target.response).role2);
+        if(JSON.parse(e.target.response).role3)
+          roles.push(JSON.parse(e.target.response).role3);
         // сохраняем в хранилище sessionStorage токен доступа
         sessionStorage.setItem(tokenKey, JSON.parse(e.target.response).access_token);
         sessionStorage.setItem(userNameKey, JSON.parse(e.target.response).userName);
-        sessionStorage.setItem(userRoleKey, JSON.parse(e.target.response).role);
+        sessionStorage.setItem(userRoleKey, JSON.stringify(roles));
         sessionStorage.setItem(logStatusKey, true);
-        if(JSON.parse(e.target.response).role === "Urban") {
-          this.onUpdateLogStatus(true);
-          this.onUpdateUsername(JSON.parse(e.target.response).userName);
-          console.log(JSON.parse(e.target.response).userName);
-          this.props.history.push('/urban');
-        } else if(JSON.parse(e.target.response).role === "Temporary"){
-          this.onUpdateLogStatus(true);
-          this.onUpdateUsername(JSON.parse(e.target.response).userName);
-          console.log(JSON.parse(e.target.response).userName);
-          this.props.history.push('/temporary');
-        } else if(JSON.parse(e.target.response).role === "Citizen"){
-          this.onUpdateLogStatus(true);
-          this.onUpdateUsername(JSON.parse(e.target.response).userName);
-          console.log(JSON.parse(e.target.response).userName);
-          this.props.history.push('/citizen');
-        } else if(JSON.parse(e.target.response).role === "Provider"){
-          this.onUpdateLogStatus(true);
-          this.onUpdateUsername(JSON.parse(e.target.response).userName);
-          console.log(JSON.parse(e.target.response).userName);
-          this.props.history.push('/provider');
-        } else if(JSON.parse(e.target.response).role === "Admin"){
-          this.onUpdateLogStatus(true);
-          this.onUpdateUsername(JSON.parse(e.target.response).userName);
-          console.log(JSON.parse(e.target.response).userName);
-          this.props.history.push('/admin');
-        }
+        this.props.history.push('/');
       } else if(xhr.status === 400) {
         alert("The user name or password is incorrect.");
-        loading.style.cssText = '';
       }
         }.bind(this);
         xhr.send(params);
@@ -118,8 +96,10 @@ export default class Login extends Component {
   componentWillMount() {
     //console.log("LoginComponent will mount");
     if(sessionStorage.getItem('tokenInfo')){
-      var userRole = sessionStorage.getItem('userRole');
+      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];
       this.props.history.replace('/' + userRole);
+    }else {
+      this.props.history.replace('/login');
     }
   }
 
