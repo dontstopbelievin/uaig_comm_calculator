@@ -85,7 +85,7 @@ thead {
     
 }
 
-li.nav-item > a.active[aria-current=true] {
+.bg-blue li.nav-item > a.active[aria-current=true] {
   background: rgba(255,255,255,0.2);
 }
 

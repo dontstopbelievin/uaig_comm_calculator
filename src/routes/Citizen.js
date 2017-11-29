@@ -1,10 +1,19 @@
 import React from 'react';
 import $ from 'jquery';
+import 'jquery-validation';
 
 class ApzForm extends React.Component {
+  constructor() {
+    super();
+    
+    this.tabSubmission = this.tabSubmission.bind(this);
+  }
 
-  tabSubmission(id) { 
-    if ($('#tab'+id+'-form').valid()) {
+  tabSubmission(e) { 
+    e.preventDefault();
+    var id = document.querySelector('#'+e.target.id).dataset.tab;
+    if ($('#tab'+id+'-form').valid())
+    {
       $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-ok');
       $('#tab'+id+'-link').next().trigger('click');
     } else {
@@ -86,24 +95,24 @@ class ApzForm extends React.Component {
           <div className="col-8">
             <div className="tab-content" id="v-pills-tabContent">
             <div className="tab-pane fade show active" id="tab0" role="tabpanel" aria-labelledby="tab0-link">
-              <form id="tab0-form" onSubmit={(e) => {this.tabSubmission('0'); e.preventDefault();}}>
+              <form id="tab0-form" data-tab="0" onSubmit={this.tabSubmission.bind(this)}>
               <div className="row">
                 <div className="col-md-6">
                 <div className="form-group">
-                  <label for="Applicant">Наименование заявителя:</label>
+                  <label htmlFor="Applicant">Наименование заявителя:</label>
                   <input type="text" className="form-control" required name="Applicant" placeholder="Наименование" />
                   <span className="help-block">Ф.И.О. (при его наличии) физического лица <br />или наименование юридического лица</span>
                 </div>
                 <div className="form-group">
-                  <label for="Address">Адрес:</label>
+                  <label htmlFor="Address">Адрес:</label>
                   <input type="text" className="form-control" required id="ApzAddressForm" name="Address" placeholder="Адрес" />
                 </div>
                 <div className="form-group">
-                  <label for="Phone">Телефон</label>
+                  <label htmlFor="Phone">Телефон</label>
                   <input type="tel" className="form-control" name="Phone" placeholder="Телефон" />
                 </div>
                 <div className="form-group">
-                  <label for="Region">Район</label>
+                  <label htmlFor="Region">Район</label>
                   <select className="form-control" name="Region">
                   <option>Наурызбай</option>
                   <option>Алатау</option>
@@ -118,23 +127,23 @@ class ApzForm extends React.Component {
                 </div>
                 <div className="col-md-6">
                 <div className="form-group">
-                  <label for="Customer">Заказчик</label>
+                  <label htmlFor="Customer">Заказчик</label>
                   <input type="text" className="form-control" name="Customer" placeholder="Заказчик" />
                 </div>
                 <div className="form-group">
-                  <label for="Designer">Проектировщик №ГСЛ, категория</label>
+                  <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
                   <input type="text" className="form-control" name="Designer" />
                 </div>
                 <div className="form-group">
-                  <label for="ProjectName">Наименование проектируемого объекта</label>
+                  <label htmlFor="ProjectName">Наименование проектируемого объекта</label>
                   <input type="text" className="form-control" id="ProjectName" name="ProjectName" />
                 </div>
                 <div className="form-group">
-                  <label for="ProjectAddress">Адрес проектируемого объекта</label>
+                  <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
                   <input type="text" className="form-control" name="ProjectAddress" />
                 </div>
                 <div className="form-group">
-                  <label for="ApzDate">Дата</label>
+                  <label htmlFor="ApzDate">Дата</label>
                   <input type="date" required className="form-control" name="ApzDate" />
                 </div>
                 </div>
@@ -146,19 +155,19 @@ class ApzForm extends React.Component {
               <button onClick={this.requestSubmission} className="btn btn-outline-success">Отправить заявку</button>
             </div>
             <div className="tab-pane fade" id="tab1" role="tabpanel" aria-labelledby="tab1-link">
-              <form id="tab1-form" onSubmit={(e) => {this.tabSubmission('1'); e.preventDefault();}}>
+              <form id="tab1-form" data-tab="1" onSubmit={this.tabSubmission.bind(this)}>
               <div className="row">
                 <div className="col-md-6">
                 <div className="form-group">
-                  <label for="ObjectClient">Заказчик</label>
+                  <label htmlFor="ObjectClient">Заказчик</label>
                   <input type="text" required className="form-control" name="ObjectClient" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label for="ObjectName">Наименование объекта:</label>
+                  <label htmlFor="ObjectName">Наименование объекта:</label>
                   <input type="text" required className="form-control" name="ObjectName" placeholder="наименование" />
                 </div>
                 <div className="form-group">
-                  <label for="ObjectTerm">Срок строительства по нормам</label>
+                  <label htmlFor="ObjectTerm">Срок строительства по нормам</label>
                   <input type="text" className="form-control" id="ObjectTerm" placeholder="" />
                 </div>
                 {/* <div className="form-group">
@@ -171,15 +180,15 @@ class ApzForm extends React.Component {
                 </div>
                 <div className="col-md-6">
                 <div className="form-group">
-                  <label for="ObjectLevel">Этажность</label>
+                  <label htmlFor="ObjectLevel">Этажность</label>
                   <input type="number" className="form-control" name="ObjectLevel" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label for="ObjectArea">Площадь здания</label>
+                  <label htmlFor="ObjectArea">Площадь здания</label>
                   <input type="number" className="form-control" name="ObjectArea" />
                 </div>
                 <div className="form-group">
-                  <label for="ObjectRooms">Количество квартир (номеров, кабинетов)</label>
+                  <label htmlFor="ObjectRooms">Количество квартир (номеров, кабинетов)</label>
                   <input type="number" className="form-control" name="OBjectRooms" />
                 </div>
                 </div>
@@ -191,15 +200,15 @@ class ApzForm extends React.Component {
               <button onClick={this.requestSubmission} className="btn btn-outline-success">Отправить заявку</button>
             </div>
             <div className="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-link">
-              <form id="tab2-form" onSubmit={(e) => {this.tabSubmission('2'); e.preventDefault();}}>
+              <form id="tab2-form" data-tab="2" onSubmit={this.tabSubmission.bind(this)}>
               <div className="row">
                 <div className="col-md-6">
                 <div className="form-group">
-                  <label for="ElectricRequiredPower">Требуемая мощность (кВт)</label>
+                  <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
                   <input type="number" className="form-control" name="ElectricRequiredPower" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label for="">Характер нагрузки (фаза)</label>
+                  <label htmlFor="">Характер нагрузки (фаза)</label>
                   <select className="form-control">
                   <option>Однофазная</option>
                   <option>Трехфазная</option>
@@ -209,17 +218,17 @@ class ApzForm extends React.Component {
                   </select>
                 </div>
                 <div className="form-group">
-                  <label for="ElectricSafetyCategory">Категория по надежности (кВт)</label>
+                  <label htmlFor="ElectricSafetyCategory">Категория по надежности (кВт)</label>
                   <input type="text" className="form-control" required name="ElectricSafetyCategory" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label for="ElectricMaxLoadDevice">из указанной макс. нагрузки относятся к электроприемникам  (кВА):</label>
+                  <label htmlFor="ElectricMaxLoadDevice">из указанной макс. нагрузки относятся к электроприемникам  (кВА):</label>
                   <input type="number" className="form-control" name="ElectricMaxLoadDevice" placeholder="" />
                 </div>
                 </div>
                 <div className="col-md-6">
                 {/*<div className="form-group">
-                  <label for="">Предполагается установить</label>
+                  <label htmlFor="">Предполагается установить</label>
                   <br />
                   <div className="col-md-6">
                   <ul style="list-style-type: none; padding-left: 3px">
@@ -236,11 +245,11 @@ class ApzForm extends React.Component {
                   </div>
                 </div>*/}
                 <div className="form-group">
-                  <label for="ElectricMaxLoad">Существующая максимальная нагрузка (кВА)</label>
+                  <label htmlFor="ElectricMaxLoad">Существующая максимальная нагрузка (кВА)</label>
                   <input type="number" className="form-control" name="ElectricMaxLoad" />
                 </div>
                 <div className="form-group">
-                  <label for="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА)</label>
+                  <label htmlFor="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА)</label>
                   <input type="number" className="form-control" name="ElectricAllowedPower" />
                 </div>
                 </div>
@@ -252,29 +261,29 @@ class ApzForm extends React.Component {
               <button onClick={this.requestSubmission} className="btn btn-outline-success">Отправить заявку</button>
             </div>
             <div className="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-link">
-              <form id="tab3-form" onSubmit={(e) => {this.tabSubmission('3'); e.preventDefault();}}>
+              <form id="tab3-form" data-tab="3" onSubmit={this.tabSubmission.bind(this)}>
               <div className="row">
                 <div className="col-md-6">
                 <div className="form-group">
-                  <label for="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
+                  <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
                   <input type="number" required className="form-control" name="WaterRequirement" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label for="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
+                  <label htmlFor="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
                   <input type="number" className="form-control" name="WaterDrinking" placeholder="" />
                 </div>
                 </div>
                 <div className="col-md-6">
                 <div className="form-group">
-                  <label for="WaterProduction">На производственные нужды (м<sup>3</sup>/сутки)</label>
+                  <label htmlFor="WaterProduction">На производственные нужды (м<sup>3</sup>/сутки)</label>
                   <input type="number" className="form-control" name="WaterProduction" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label for="WaterFireFighting">Потребные расходы пожаротушения (л/сек)</label>
+                  <label htmlFor="WaterFireFighting">Потребные расходы пожаротушения (л/сек)</label>
                   <input type="number" className="form-control" name="WaterFireFighting" />
                 </div>
                 <div className="form-group">
-                  <label for="WaterSewage">Общее количество сточных вод (м<sup>3</sup>/сутки)</label>
+                  <label htmlFor="WaterSewage">Общее количество сточных вод (м<sup>3</sup>/сутки)</label>
                   <input type="number" className="form-control" name="WaterSewage" />
                 </div>
                 </div>
@@ -286,25 +295,25 @@ class ApzForm extends React.Component {
               <button onClick={this.requestSubmission} className="btn btn-outline-success">Отправить заявку</button>
             </div>
             <div className="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-link">
-              <form id="tab4-form" onSubmit={(e) => {this.tabSubmission('4'); e.preventDefault();}}>
+              <form id="tab4-form" data-tab="4" onSubmit={this.tabSubmission.bind(this)}>
               <div className="row">
                 <div className="col-md-6">
                 <div className="form-group">
-                  <label for="SewageAmount">Общее количество сточных вод  (м<sup>3</sup>/сутки)</label>
+                  <label htmlFor="SewageAmount">Общее количество сточных вод  (м<sup>3</sup>/сутки)</label>
                   <input type="number" required className="form-control" name="SewageAmount" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label for="SewageFeksal">фекcальных (м<sup>3</sup>/сутки)</label>
+                  <label htmlFor="SewageFeksal">фекcальных (м<sup>3</sup>/сутки)</label>
                   <input type="number" className="form-control" name="SewageFeksal" placeholder="" />
                 </div>
                 </div>
                 <div className="col-md-6">
                 <div className="form-group">
-                  <label for="SewageProduction">Производственно-загрязненных (м<sup>3</sup>/сутки)</label>
+                  <label htmlFor="SewageProduction">Производственно-загрязненных (м<sup>3</sup>/сутки)</label>
                   <input type="number" className="form-control" name="SewageProduction" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label for="SewageToCity">Условно-чистых сбрасываемых на городскую канализацию (м<sup>3</sup>/сутки)</label>
+                  <label htmlFor="SewageToCity">Условно-чистых сбрасываемых на городскую канализацию (м<sup>3</sup>/сутки)</label>
                   <input type="number" className="form-control" name="SewageToCity" />
                 </div>
                 </div>
@@ -316,37 +325,37 @@ class ApzForm extends React.Component {
               <button onClick={this.requestSubmission} className="btn btn-outline-success">Отправить заявку</button>
             </div>
             <div className="tab-pane fade" id="tab5" role="tabpanel" aria-labelledby="tab5-link">
-              <form id="tab5-form" onSubmit={(e) => {this.tabSubmission('5'); e.preventDefault();}}>
+              <form id="tab5-form" data-tab="5" onSubmit={this.tabSubmission.bind(this)}>
               <div className="row">
                 <div className="col-md-6">
                 <div className="form-group">
-                  <label for="HeatGeneral">Общая тепловая нагрузка (Гкал/ч)</label>
+                  <label htmlFor="HeatGeneral">Общая тепловая нагрузка (Гкал/ч)</label>
                   <input type="number" className="form-control" name="HeatGeneral" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label for="HeatMain">Отопление (Гкал/ч)</label>
+                  <label htmlFor="HeatMain">Отопление (Гкал/ч)</label>
                   <input type="number" className="form-control" name="HeatMain" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label for="HeatVentilation">Вентиляция (Гкал/ч)</label>
+                  <label htmlFor="HeatVentilation">Вентиляция (Гкал/ч)</label>
                   <input type="number" className="form-control" name="HeatVentilation" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label for="HeatWater">Горячее водоснабжение (Гкал/ч)</label>
+                  <label htmlFor="HeatWater">Горячее водоснабжение (Гкал/ч)</label>
                   <input type="number" className="form-control" id="HeatWater" placeholder="" />
                 </div>
                 </div>
                 <div className="col-md-6">
                 <div className="form-group">
-                  <label for="HeatTech">Технологические нужды(пар) (Т/ч)</label>
+                  <label htmlFor="HeatTech">Технологические нужды(пар) (Т/ч)</label>
                   <input type="number" className="form-control" name="HeatTech" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label for="HeadDistribution">Разделить нагрузку по жилью и по встроенным помещениям</label>
+                  <label htmlFor="HeadDistribution">Разделить нагрузку по жилью и по встроенным помещениям</label>
                   <input type="tet" className="form-control" name="HeadDistribution" />
                 </div>
                 <div className="form-group">
-                  <label for="HeatSaving">Энергосберегающее мероприятие</label>
+                  <label htmlFor="HeatSaving">Энергосберегающее мероприятие</label>
                   <input type="text" className="form-control" name="HeatSaving" />
                 </div>
                 </div>
@@ -358,11 +367,11 @@ class ApzForm extends React.Component {
               <button onClick={this.requestSubmission} className="btn btn-outline-success">Отправить заявку</button>
             </div>
             <div className="tab-pane fade" id="tab6" role="tabpanel" aria-labelledby="tab6-link">
-              <form id="tab6-form" onSubmit={(e) => {this.tabSubmission('6'); e.preventDefault();}}>
+              <form id="tab6-form" data-tab="6" onSubmit={this.tabSubmission.bind(this)}>
               <div className="row">
                 <div className="col-md-12">
                 <div className="form-group">
-                  <label for="SewageClientWishes">Пожелание заказчика</label>
+                  <label htmlFor="SewageClientWishes">Пожелание заказчика</label>
                   <input type="text" className="form-control" name="SewageClientWishes" placeholder="" />
                 </div>
                 </div>
@@ -374,25 +383,25 @@ class ApzForm extends React.Component {
               <button onClick={this.requestSubmission} className="btn btn-outline-success">Отправить заявку</button>
             </div>
             <div className="tab-pane fade" id="tab7" role="tabpanel" aria-labelledby="tab7-link">
-              <form id="tab7-form" onSubmit={(e) => {this.tabSubmission('7'); e.preventDefault();}}>
+              <form id="tab7-form" data-tab="7" onSubmit={this.tabSubmission.bind(this)}>
               <div className="row">
                 <div className="col-md-6">
                 <div className="form-group">
-                  <label for="PhoneServiceNum">Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</label>
+                  <label htmlFor="PhoneServiceNum">Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</label>
                   <input type="number" className="form-control" name="PhoneServiceNum" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label for="PhoneCapacity">Телефонная емкость</label>
+                  <label htmlFor="PhoneCapacity">Телефонная емкость</label>
                   <input type="text" className="form-control" name="PhoneCapacity" placeholder="" />
                 </div>
                 </div>
                 <div className="col-md-6">
                 <div className="form-group">
-                  <label for="PhoneSewage">Планируемая телефонная канализация</label>
+                  <label htmlFor="PhoneSewage">Планируемая телефонная канализация</label>
                   <input type="text" className="form-control" name="PhoneSewage" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label for="PhoneClientWishes">Пожелания заказчика (тип оборудования, тип кабеля и др.)</label>
+                  <label htmlFor="PhoneClientWishes">Пожелания заказчика (тип оборудования, тип кабеля и др.)</label>
                   <input type="text" className="form-control" name="PhoneClientWishes" />
                 </div>
                 </div>
@@ -404,33 +413,33 @@ class ApzForm extends React.Component {
               <button onClick={this.requestSubmission} className="btn btn-outline-success">Отправить заявку</button>
             </div>
             <div className="tab-pane fade" id="tab8" role="tabpanel" aria-labelledby="tab8-link">
-              <form id="tab8-form" onSubmit={(e) => {this.tabSubmission('8'); e.preventDefault();}}>
+              <form id="tab8-form" data-tab="8" onSubmit={this.tabSubmission.bind(this)}>
               <div className="row">
                 <div className="col-md-6">
                 <div className="form-group">
-                  <label for="GasGeneral">Общая потребность (м<sup>3</sup>/час)</label>
+                  <label htmlFor="GasGeneral">Общая потребность (м<sup>3</sup>/час)</label>
                   <input type="number" required className="form-control" name="GasGeneral" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label for="GasCooking">На приготовление пищи (м<sup>3</sup>/час)</label>
+                  <label htmlFor="GasCooking">На приготовление пищи (м<sup>3</sup>/час)</label>
                   <input type="number" className="form-control" name="GasCooking" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label for="GasHeat">Отопление (м<sup>3</sup>/час)</label>
+                  <label htmlFor="GasHeat">Отопление (м<sup>3</sup>/час)</label>
                   <input type="number" required className="form-control" name="GasHeat" placeholder="" />
                 </div>
                 </div>
                 <div className="col-md-6">
                 <div className="form-group">
-                  <label for="GasVentilation">Вентиляция (м<sup>3</sup>/час)</label>
+                  <label htmlFor="GasVentilation">Вентиляция (м<sup>3</sup>/час)</label>
                   <input type="number" className="form-control" name="GasVentilation" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label for="GasConditioner">Кондиционирование (м<sup>3</sup>/час)</label>
+                  <label htmlFor="GasConditioner">Кондиционирование (м<sup>3</sup>/час)</label>
                   <input type="number" className="form-control" name="GasConditioner" />
                 </div>
                 <div className="form-group">
-                  <label for="GasWater">Горячее водоснабжение при газификации многоэтажных домов (м<sup>3</sup>/час)</label>
+                  <label htmlFor="GasWater">Горячее водоснабжение при газификации многоэтажных домов (м<sup>3</sup>/час)</label>
                   <input type="number" className="form-control" name="GasWater" />
                 </div>
                 </div>

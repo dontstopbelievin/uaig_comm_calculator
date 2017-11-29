@@ -1,13 +1,25 @@
 import React from 'react';
+import LocalizedStrings from 'react-localization';
+import {ru, kk} from '../languages/guest.json';
+
+let e = new LocalizedStrings({ru,kk});
 
 export default class Guest extends React.Component {
+  constructor() {
+    super();
+
+    e.setLanguage(localStorage.getItem('lang'));
+  }
 
   componentWillMount() {
     //console.log("GuestComponent will mount");
+    // strings.setLanguage('kk');
+    // e.setLanguage(this.props.lang);
   }
 
   componentDidMount() {
     //console.log("GuestComponent did mount");
+    
   }
 
   componentWillUnmount() {
@@ -15,7 +27,6 @@ export default class Guest extends React.Component {
   }
 
   render() {
-    //console.log("rendering the GuestComponent");
     return (
       <div>
         {/*<div className="slide">
@@ -26,7 +37,7 @@ export default class Guest extends React.Component {
         <div className="container">
           <div className="row">
             <div className="col-9 jumbotron block-main">
-              <h2>Государственные услуги</h2>
+              <h2>{e.publicServices}</h2>
               <div className="block-content">
                 <button type="button" class="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Выдача справки по определению адреса объектов недвижимости</button>
                 <button type="button" class="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Выдача архитектурно-планировочного задания</button>
