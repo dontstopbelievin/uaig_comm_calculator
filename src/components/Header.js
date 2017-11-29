@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Redirect } from 'react-router-dom';
+import LocalizedStrings from 'react-localization';
+import {ru, kk} from '../languages/header.json';
+
+let e = new LocalizedStrings({ru,kk});
 
 var navBtnStyle = {
   backgroundColor: '#135EAD',
@@ -12,8 +16,8 @@ class LoginBtn extends Component {
   render() {
     return(
       <div className="row loginForm" role="group" aria-label="...">
-        <NavLink to={"/login"} replace className="btn btn-outline-secondary btn-white" activeClassName="active">Вход</NavLink>&nbsp;
-        <NavLink to={"/register"} replace className="btn btn-outline-secondary btn-white" activeClassName="active">Регистрация</NavLink>
+        <NavLink to={"/login"} replace className="btn btn-outline-secondary btn-white" activeClassName="active">{e.login}</NavLink>&nbsp;
+        <NavLink to={"/register"} replace className="btn btn-outline-secondary btn-white" activeClassName="active">{e.register}</NavLink>
       </div>
     )
   }
@@ -63,6 +67,8 @@ export default class Header extends Component {
   constructor() {
     super();
 
+    e.setLanguage(localStorage.getItem('lang'));
+
     this.checkToken = this.checkToken.bind(this);
     this.goToGuest = this.goToGuest.bind(this);
   }
@@ -70,6 +76,12 @@ export default class Header extends Component {
   goToGuest() {
     sessionStorage.clear();
     this.props.history.replace('/');
+  }
+
+  updateLanguage(name){
+    localStorage.setItem('lang', name);
+    window.location.reload();
+    // this.props.history.replace('/');
   }
 
   checkToken() {
@@ -113,7 +125,6 @@ export default class Header extends Component {
 
   render() {
     //console.log("rendering the Header");
-    // console.log(this.props);
     return (
       <div>
         <div className="container logo">
@@ -121,28 +132,35 @@ export default class Header extends Component {
             <div className="col-md-8">
               <div className="row">
                 <div className="col-md-2">
-                  <img width="70" src="http://almaty.uaig.kz/wp-content/uploads/2017/08/logo4.png" alt="Управление архитектуры и градостроительства города Алматы" />
+                  <NavLink to={'/'} replace><img width="70" src="http://almaty.uaig.kz/wp-content/uploads/2017/08/logo4.png" alt="Управление архитектуры и градостроительства города Алматы" /></NavLink>
                 </div>
                 <div className="col-md-5">
-                  <b>Официальный сайт управления архитектуры и градостроительства города Алматы</b>
+                  <b>{e.title}</b>
                 </div>
                 <div className="col-md-5">
                   <form>
                     <div className="form-group">
-                      <input type="email" className="form-control" aria-describedby="emailHelp" placeholder="Поиск по сайту" />
-                      <small id="emailHelp" className="form-text text-muted"><i>Например: <a href="javascript:void(0)">Выдача АПЗ</a></i></small>
+                      <input type="email" className="form-control" aria-describedby="emailHelp" placeholder={e.search} />
+                      <small id="emailHelp" className="form-text text-muted"><i>{e.example}: <a href="">{e.exampleText}</a></i></small>
                     </div>
                   </form>
                 </div>
               </div>
             </div>
             <div className="col-md-3 text-muted" align="center">
-              Единый контакт-центр<br />
+              {e.contactCenter}<br />
               <b>+7 (727) 279-58-24</b>
             </div>
             <div className="col-md-1 text-muted">
-              <a href="javascript:void(0)">ҚАЗ</a><br />
-              РУС
+              {localStorage.getItem('lang') == 'kk' ?
+                (<span>ҚАЗ</span>) : 
+                (<a href="javascript:;" onClick={this.updateLanguage.bind(this, 'kk')}>ҚАЗ</a>)
+              }
+              <br />
+              {localStorage.getItem('lang') == 'ru' ?
+                (<span>РУС</span>) : 
+                (<a href="javascript:;" onClick={this.updateLanguage.bind(this, 'ru')}>РУС</a>)
+              }
             </div>
           </div>
         </div>
@@ -156,23 +174,23 @@ export default class Header extends Component {
           <div className="container collapse navbar-collapse" id="navbarTogglerDemo03">
             <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
               <li className="nav-item">
-                <NavLink to={'/'} replace className="nav-link" activeclassname="active">Главная</NavLink>
+                <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to={'/Map'} replace className="nav-link" activeclassname="active">Карта</NavLink>
+                <NavLink to={'/Map'} replace className="nav-link">{e.map}</NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to={'/Photos'} replace className="nav-link" activeclassname="active">Галерея</NavLink>
+                <NavLink to={'/Photos'} replace className="nav-link">{e.photos}</NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to={'/photoreports'} replace className="nav-link" activeclassname="active">Фотоотчеты</NavLink>
+                <NavLink to={'/photoreports'} replace className="nav-link">{e.photoreports}</NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to={'/project'} replace className="nav-link" activeclassname="active">Проект</NavLink>
+                <NavLink to={'/project'} replace className="nav-link">{e.project}</NavLink>
               </li>
               <li className="nav-item dropdown">
                 <button className="nav-link dropdown-toggle" style={navBtnStyle} href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" >
-                  Государственные услуги
+                  {e.services}
                 </button>
                 <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                   <button className="dropdown-item" href="#">Выдача справки по определению адреса объектов недвижимости на<br /> территории Республики Казахстан</button>

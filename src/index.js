@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { HashRouter, Route, Switch } from 'react-router-dom';
+import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
+import LocalizedStrings from 'react-localization';
 import Header from './components/Header';
 import Guest from './routes/Guest';
 import MapView from './routes/Map';
@@ -23,12 +24,24 @@ require('bootstrap-material-design');
 require('./assets/css/style.css');
 require('glyphicons-only-bootstrap/css/bootstrap.min.css');
 
-
 export default class Main extends React.Component {
 
+  constructor() {
+    super();
+
+    this.state = {
+      defaultLang: 'ru'
+    }
+
+  }
+
+  setLang() {
+    return localStorage.getItem('lang') ? true : localStorage.setItem('lang', 'ru');
+  }
+
   componentWillMount() {
-    //console.log("MainComponent will mount");
-    window.url = 'http://localhost:53844/';
+    this.setLang();
+    window.url = 'http://localhost:53844/';  
   }
 
   componentDidMount() {
@@ -46,7 +59,7 @@ export default class Main extends React.Component {
     return (
         <HashRouter>
           <div>
-            <Route component={Header} />
+            <Route render={(props) => (<Header {...props} />)} />
             <Switch>
               <Route exact path="/" render={(props) => (<Guest {...props} />)} />
               <Route path="/map" render={(props) => (<MapView {...props} />)} />

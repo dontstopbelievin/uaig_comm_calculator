@@ -85,6 +85,10 @@ thead {
     
 }
 
+.bg-blue li.nav-item > a.active[aria-current=true] {
+  background: rgba(255,255,255,0.2);
+}
+
 .preloader-icon {
   position: absolute;
   z-index: 5;
