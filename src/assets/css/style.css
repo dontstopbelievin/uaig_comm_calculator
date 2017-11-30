@@ -453,3 +453,26 @@ ul:after { clear: both; }
   border: #FBC846;
   color: white;
 }
+/* Dropdown styles END*/
+
+img {
+  max-width: 100%;
+}
+
+.files-page ul.nav-tabs {
+  float: right;
+  margin-bottom: 20px;
+}
+
+.files-page .image-thumbnail div {
+  height: 250px;
+  background-size: cover!important;
+}
+
+.files-page .card-deck .card {
+    margin-bottom: 15px;
+    margin-top: 15px;
+    flex: none;
+    flex-grow: 1;
+    width: calc(100% * (1/3) - 30px);
+}
