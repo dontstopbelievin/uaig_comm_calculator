@@ -39,7 +39,10 @@ export default class Urban extends React.Component {
       var curr_year = jDate.getFullYear();
       var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
       return { ApzDate: formated_date }
-   });
+    });
+    //console.log(event.target.id);
+    // var d = document.getElementById(e.target.id);
+    // d.className += "active";
   }
 
   getApzFormList() {
@@ -138,8 +141,6 @@ export default class Urban extends React.Component {
         view.ui.add(layerList, "bottom-right");
       });
     });
-
-
   }
 
   onReference(element) {
@@ -221,8 +222,8 @@ export default class Urban extends React.Component {
             <div className="col-md-3 apz-list card">
                 {
                   apzListForms.map(function(apzListForm, i){
-                  return(
-                      <li key={i} onClick={this.details.bind(this, apzListForm)}>
+                    return(
+                      <li id={i} key={i} onClick={this.details.bind(this, apzListForm)}>
                         {apzListForm.ProjectName}
                       </li>
                     )
@@ -260,7 +261,7 @@ export default class Urban extends React.Component {
   }
 }
 
-{/* <div className="container" style={rootStyle}>
+/* <div className="container" style={rootStyle}>
         <form id="apzListByRegion" className="navbar-form">
           <label for="region" style={{marginRight:'5px'}}>Выберите район</label>
           <select name="region" className="form-control">
@@ -295,4 +296,4 @@ export default class Urban extends React.Component {
             hello local map
           </div>
         </div>
-      </div> */}
+      </div> */

@@ -1,10 +1,277 @@
 import React from 'react';
 import $ from 'jquery';
 import 'jquery-validation';
+import 'jquery-serializejson';
+
+export default class Citizen extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      acceptedForms: [],
+      declinedForms: [],
+      activeForms: [],
+      showDetails: false,
+      formHidden: true,
+      Applicant: "",
+      Address: "",
+      Phone: "",
+      Customer: "",
+      Designer: "",
+      ProjectName: "",
+      ProjectAddress: "",
+      ApzDate: ""
+    }
+
+    this.getAcceptedForms = this.getAcceptedForms.bind(this);
+    this.getDeclinedForms = this.getDeclinedForms.bind(this);
+    this.getOtherForms = this.getOtherForms.bind(this);
+    this.toggleForm = this.toggleForm.bind(this);
+  }
+
+  // function to get the list of AcceptedForms
+  getAcceptedForms() {
+    //console.log("entered getAcceptedForms function");
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/apz/user/accepted", true);
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        //console.log(data);
+        this.setState({ acceptedForms: data });
+      }
+    }.bind(this);
+    xhr.send();
+  }
+
+  // function to get the list of DeclinedForms
+  getDeclinedForms() {
+    //console.log("entered getDeclinedForms function");
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/apz/user/declined", true);
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        //console.log(data);
+        this.setState({ declinedForms: data });
+      }
+    }.bind(this);
+    xhr.send();
+  }
+
+  // function to get the list of Forms those are in process
+  getOtherForms() {
+    //console.log("entered getOtherForms function");
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/apz/user", true);
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        //console.log(data);
+        var forms = data.filter(function(obj) { return (obj.Status !== 0 && obj.Status !== 1); });
+        //console.log(forms);
+        this.setState({activeForms: forms});
+      }
+    }.bind(this);
+    xhr.send();
+  }
+
+  // function to show the detailed info for every form
+  details(e) {
+    // console.log(e);
+    this.setState({ showDetails: true });
+    this.setState({ Applicant: e.Applicant });
+    this.setState({ Address: e.Address });
+    this.setState({ Phone: e.Phone });
+    this.setState({ Customer: e.Customer });
+    this.setState({ Designer: e.Designer });
+    this.setState({ ProjectName: e.ProjectName });
+    this.setState({ ProjectAddress: e.ProjectAddress });
+    this.setState(function(){
+      var jDate = new Date(e.ApzDate);
+      var curr_date = jDate.getDate();
+      var curr_month = jDate.getMonth() + 1;
+      var curr_year = jDate.getFullYear();
+      var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
+      return { ApzDate: formated_date }
+    });
+  }
+
+  // function to hide/show ApzForm, gets called when button "Создать заявление" is clicked
+  toggleForm(e){
+    this.setState({
+      formHidden: !this.state.formHidden
+    })
+  }
+
+  // function to update the list of OtherForms
+  updateOtherFormsList(form) {
+    //console.log("updateOtherForms started")
+    var tempList = this.state.activeForms;
+    tempList.push(form);
+    //console.log(tempList);
+    this.setState({activeForms: tempList});
+  }
+
+  componentWillMount() {
+    //console.log("CitizenComponent will mount");
+    if(sessionStorage.getItem('tokenInfo')){
+      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];
+      this.props.history.replace('/' + userRole);
+    }else {
+      this.props.history.replace('/');
+    }   
+  }
+
+  componentDidMount() {
+    //console.log("CitizenComponent did mount");
+    this.getAcceptedForms();
+    this.getDeclinedForms();
+    this.getOtherForms();
+  }
+
+  componentWillUnmount() {
+    //console.log("CitizenComponent will unmount");
+  }
+
+  render() {
+    //console.log("rendering the CitizenComponent");
+    var acceptedForms = this.state.acceptedForms;
+    var declinedForms = this.state.declinedForms;
+    var activeForms = this.state.activeForms;
+    var updateList = this.updateOtherFormsList.bind(this);
+    return (
+      <div className="content container">
+        <div className="row">
+          <div className="col-md-3">
+            <h4 style={{textAlign: 'center'}}>Список заявлений</h4>
+          </div>
+          <div className="col-md-6">
+            <h4 style={{textAlign: 'center'}}>Карта</h4>
+          </div>
+          <div className="col-md-3">
+            <h4 style={{textAlign: 'center'}}>Информация</h4>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-3 apz-list card">
+            <h4>Принятые
+            {
+              acceptedForms.map(function(accForm, i){
+                return(
+                  <li key={i} onClick={this.details.bind(this, accForm)}>
+                    {accForm.ProjectName}
+                  </li>
+                  )
+              }.bind(this))
+            }
+            </h4>
+            <h4>Отказ
+            {
+              declinedForms.map(function(decForm, i){
+                return(
+                  <li key={i} onClick={this.details.bind(this, decForm)}>
+                    {decForm.ProjectName}
+                  </li>
+                )
+              }.bind(this))
+            }
+            </h4>
+            <h4>В Процессе
+            {
+              activeForms.map(function(actForm, i){
+                return(
+                  <li key={i} onClick={this.details.bind(this, actForm)}>
+                    {actForm.ProjectName}
+                  </li>
+                )
+              }.bind(this))
+            }
+            </h4>
+          </div>
+          <div className="col-md-6 apz-additional card">
+            <div id="citizenMapPause" className="col-md-12 well" style={{paddingTop:'10px', height:'500px', width:'100%'}}>
+                Карта со слоями
+            </div>
+            {/*<button class="btn-block btn-info col-md-3" id="printApz">
+              Распечатать АПЗ
+            </button>*/}
+          </div>
+          <div id="apz-detailed" className="col-md-3 apz-detailed card" style={{paddingTop: '10px'}}>
+            <div className={this.state.showDetails ? 'row' : 'invisible'}>
+              <div className="col-6"><b>Заявитель</b>:</div> <div className="col-6">{this.state.Applicant}</div>
+              <div className="col-6"><b>Адрес</b>:</div> <div className="col-6">{this.state.Address}</div>
+              <div className="col-6"><b>Телефон</b>:</div> <div className="col-6">{this.state.Phone}</div>
+              <div className="col-6"><b>Заказчик</b>:</div> <div className="col-6">{this.state.Customer}</div>
+              <div className="col-6"><b>Разработчик</b>:</div> <div className="col-6">{this.state.Designer}</div>
+              <div className="col-6"><b>Название проекта</b>:</div> <div className="col-6">{this.state.ProjectName}</div>
+              <div className="col-6"><b>Адрес проекта</b>:</div> <div className="col-6">{this.state.ProjectAddress}</div>
+              <div className="col-6"><b>Дата заявления</b>:</div> <div className="col-6">{this.state.ApzDate}</div>
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <button className="btn btn-raised btn-info" onClick={this.toggleForm} style={{margin: 'auto', marginTop: '10px'}}>
+            Создать заявление
+          </button>
+          {!this.state.formHidden && <ApzForm updateList={updateList} />}
+        </div>
+        <div className="row">
+          {/*<div id="infoDiv">Нажмите на участок или объект, чтобы получить информацию</div>*/}
+          <div id="viewDiv"></div>
+          <div className="progressBar">
+            <div className="circle done">
+            <span className="label">1</span>
+            <span className="title">Районный архитектор</span>
+            </div>
+            
+            <span className="bar half"></span>
+            <div className="circle done">
+            <span className="label">3</span>
+            <span className="title">Провайдер водоснабжения</span>
+            </div>
+            <span className="bar"></span>
+            <div className="circle done">
+            <span className="label">4</span>
+            <span className="title">Провайдер газоснабжения</span>
+            </div>
+            <span className="bar"></span>
+            <div className="circle active">
+            <span className="label">5</span>
+            <span className="title">Провайдер теплоснабжения</span>
+            </div>
+            <span className="bar"></span>
+            <div className="circle">
+            <span className="label">6</span>
+            <span className="title">Провайдер электроснабжения</span>
+            </div>
+            <span className="bar"></span>
+            <div className="circle">
+            <span className="label">7</span>
+            <span className="title">Главный архитектор</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
 
 class ApzForm extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     
     this.tabSubmission = this.tabSubmission.bind(this);
   }
@@ -21,7 +288,8 @@ class ApzForm extends React.Component {
     }
   }
 
-  requestSubmission() {
+  // function to submit ApzForm
+  requestSubmission(e) {
     if ($('#tab0-link').children().hasClass('glyphicon-ok')
                 && $('#tab1-link').children().hasClass('glyphicon-ok')
                 && $('#tab2-link').children().hasClass('glyphicon-ok')
@@ -43,6 +311,9 @@ class ApzForm extends React.Component {
           },
           data: JSON.stringify(apzData),
           success: function (data) {
+            //console.log(data);
+            // after form is submitted: calls the function from CitizenComponent to update the list 
+            this.props.updateList(data);
             alert("Заявка успешно подана");
             $('#tab0-form')[0].reset();
             $('#tab1-form')[0].reset();
@@ -55,7 +326,7 @@ class ApzForm extends React.Component {
             $('#tab8-form')[0].reset();
             $('#tabIcon').removeClass();
             $('#apzFormDiv').hide(1000);
-          },
+          }.bind(this),
           fail: function (jqXHR) {
             alert("Ошибка " + jqXHR.status + ': ' + jqXHR.statusText);
           },
@@ -75,7 +346,6 @@ class ApzForm extends React.Component {
   render() {
     return (
       <div className="container" id="apzFormDiv">
-        <div>
         <div className="tab-pane">
           <h4>Заявление на АПЗ</h4>
           <div className="row">
@@ -128,19 +398,19 @@ class ApzForm extends React.Component {
                 <div className="col-md-6">
                 <div className="form-group">
                   <label htmlFor="Customer">Заказчик</label>
-                  <input type="text" className="form-control" name="Customer" placeholder="Заказчик" />
+                  <input type="text" required className="form-control" name="Customer" placeholder="Заказчик" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
-                  <input type="text" className="form-control" name="Designer" />
+                  <input type="text" required className="form-control" name="Designer" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="ProjectName">Наименование проектируемого объекта</label>
-                  <input type="text" className="form-control" id="ProjectName" name="ProjectName" />
+                  <input type="text" required className="form-control" id="ProjectName" name="ProjectName" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
-                  <input type="text" className="form-control" name="ProjectAddress" />
+                  <input type="text" required className="form-control" name="ProjectAddress" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="ApzDate">Дата</label>
@@ -171,7 +441,7 @@ class ApzForm extends React.Component {
                   <input type="text" className="form-control" id="ObjectTerm" placeholder="" />
                 </div>
                 {/* <div className="form-group">
-                  <label for="">Правоустанавливающие документы на объект (реконструкция)</label>
+                  <label htmlFor="">Правоустанавливающие документы на объект (реконструкция)</label>
                   <div className="fileinput fileinput-new" data-provides="fileinput">
                   <span className="btn btn-default btn-file"><span></span><input type="file" multiple /></span>
                   <span className="fileinput-filename"></span><span className="fileinput-new"></span>
@@ -232,15 +502,15 @@ class ApzForm extends React.Component {
                   <br />
                   <div className="col-md-6">
                   <ul style="list-style-type: none; padding-left: 3px">
-                    <li><input type="checkbox" id="CB1"><span style="padding-left: 3px" for="CB1">электрокотлы</span><input type="text" className="form-control" placeholder=""></li>
-                    <li><input type="checkbox" id="CB2"><span style="padding-left: 3px" for="CB2">электрокалориферы</span><input type="text" className="form-control" placeholder=""></li>
-                    <li><input type="checkbox" id="CB3"><span style="padding-left: 3px" for="CB3">электроплитки</span><input type="text" className="form-control" placeholder=""></li>
+                    <li><input type="checkbox" id="CB1"><span style="padding-left: 3px" htmlFor="CB1">электрокотлы</span><input type="text" className="form-control" placeholder=""></li>
+                    <li><input type="checkbox" id="CB2"><span style="padding-left: 3px" htmlFor="CB2">электрокалориферы</span><input type="text" className="form-control" placeholder=""></li>
+                    <li><input type="checkbox" id="CB3"><span style="padding-left: 3px" htmlFor="CB3">электроплитки</span><input type="text" className="form-control" placeholder=""></li>
                   </ul>
                   </div>
                   <div className="col-md-6">
                   <ul style="list-style-type: none; padding-left: 3px">
-                    <li><input type="checkbox" id="CB4"><span style="padding-left: 3px" for="CB4">электропечи</span><input type="text" className="form-control" placeholder=""></li>
-                    <li><input type="checkbox" id="CB5"><span style="padding-left: 3px" for="CB5">электроводонагреватели</span><input type="text" className="form-control" placeholder=""></li>
+                    <li><input type="checkbox" id="CB4"><span style="padding-left: 3px" htmlFor="CB4">электропечи</span><input type="text" className="form-control" placeholder=""></li>
+                    <li><input type="checkbox" id="CB5"><span style="padding-left: 3px" htmlFor="CB5">электроводонагреватели</span><input type="text" className="form-control" placeholder=""></li>
                   </ul>
                   </div>
                 </div>*/}
@@ -448,264 +718,10 @@ class ApzForm extends React.Component {
                 <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
               </div>
               </form>
-              <button onClick={this.requestSubmission} className="btn btn-outline-success">Отправить заявку</button>
+              <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
             </div>
             </div>
           </div>
-          </div>
-        </div>
-        </div>
-      </div>
-    )
-  }
-}
-
-class ShowHide extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      childVisible: false
-    }
-  }
-
-  onClick() {
-    this.setState({childVisible: !this.state.childVisible});
-  }
-
-  render() {
-    return (
-      <div className="row">
-        <div className="col-3">
-          <button className="btn btn-outline-secondary" onClick={() => this.onClick()}>
-            Создать заявление
-          </button>
-        </div>
-        {
-          this.state.childVisible
-            ? <ApzForm />
-            : <div className="col-9"></div>
-        }
-      </div>
-    )
-  }
-}
-
-export default class Citizen extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      acceptedForms: [],
-      declinedForms: []
-    }
-
-    this.getAcceptedForms = this.getAcceptedForms.bind(this);
-    this.getDeclinedForms = this.getDeclinedForms.bind(this);
-  }
-
-  getAcceptedForms() {
-    //console.log("entered getUsers function");
-    var token = sessionStorage.getItem('tokenInfo');
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/user/accepted", true);
-    //Send the proper header information along with the request
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
-        console.log(data);
-        this.setState({ acceptedForms: data });
-      }
-    }.bind(this);
-    xhr.send();
-  }
-
-  getDeclinedForms() {
-    //console.log("entered getUsers function");
-    var token = sessionStorage.getItem('tokenInfo');
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/user/declined", true);
-    //Send the proper header information along with the request
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
-        console.log(data);
-        this.setState({ declinedForms: data });
-      }
-    }.bind(this);
-    xhr.send();
-  }
-
-  renderDetailedApz(data) {
-    console.log("123"+data);
-    var role = sessionStorage.getItem("role");
-    if (role === "Citizen") {
-        var target = $(".citizen .apz-detailed");
-        var panel = $("<div class='panel panel-default'>");
-        var table = $("<table class='table'>");
-        
-        $(panel).append(table);
-        $(target).empty().append(panel);
-        $.each(data, (key, value) => {
-            var el;
-            switch (key) {
-                case "Applicant":
-                    el = $("<tr><td width='50%'>Заявитель</td><td width='50%' class='" + key + "'>" + value + "</td></tr>");
-                    break;
-                case "Address":
-                    el = $("<tr><td width='50%'>Адрес</td><td width='50%' class='" + key + "'>" + value + "</td></tr>");
-                    break;
-                case "Phone":
-                    el = $("<tr><td width='50%'>Номер телефона</td><td width='50%' class='" + key + "'>" + value + "</td></tr>");
-                    break;
-                case "Customer":
-                    el = $("<tr><td width='50%'>Заказчик</td><td width='50%' class='" + key + "'>" + value + "</td></tr>");
-                    break;
-                case "Designer":
-                    el = $("<tr><td width='50%'>Проектировщик</td><td width='50%' class='" + key + "'>" + value + "</td></tr>");
-                    break;
-                case "ProjectName":
-                    el = $("<tr><td width='50%'>Наименование Проекта</td><td width='50%' class='" + key + "'>" + value + "</td></tr>");
-                    break;
-                case "ProjectAddress":
-                    el = $("<tr><td width='50%'>Адрес Проекта</td><td width='50%' class='" + key + "'>" + value + "</td></tr>");
-                    break;
-                default:
-                    break;
-            }
-            //var el = $("<tr><td width='50%'>" + key + "</td><td width='50%' class='" + key + "'>" + value + "</td></tr>");
-            $(table).append(el);
-        });
-    }
-  }
-
-
-
-  componentWillMount() {
-    //console.log("CitizenComponent will mount");
-    if(sessionStorage.getItem('tokenInfo')){
-      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];
-      this.props.history.replace('/' + userRole);
-    }else {
-      this.props.history.replace('/');
-    }   
-  }
-
-  componentDidMount() {
-    //console.log("CitizenComponent did mount");
-    this.getAcceptedForms();
-    this.getDeclinedForms();
-  }
-
-  componentWillUnmount() {
-    //console.log("CitizenComponent will unmount");
-  }
-
-  render() {
-    //console.log("rendering the CitizenComponent");
-    var acceptedForms = this.state.acceptedForms;
-    var declinedForms = this.state.declinedForms;
-    return (
-      <div className="content container">
-        <div className="row">
-          <style dangerouslySetInnerHTML={{__html: `
-            .apz-list {
-              padding: 15px 20px;
-            }
-            .apz-list h4 {
-              display: block !important;
-            }
-            .apz-list h4 li {
-                list-style-type: none;
-                margin: 10px 0 0 15px;
-                font-size: 16px;
-                font-weight: bold;
-            }
-          `}} />
-            <div className="col-md-3">
-                <h4 style={{textAlign: 'center'}}>Список заявлений</h4>
-            </div>
-            <div className="col-md-6">
-                <h4 style={{textAlign: 'center'}}>Карта</h4>
-            </div>
-            <div className="col-md-3">
-                <h4 style={{textAlign: 'center'}}>Информация</h4>
-            </div>
-        </div>
-        <div className="row">
-          <div className="col-md-3 apz-list card">
-            <h4>Принятые</h4>
-            {
-              acceptedForms.map(function(accForm, i){
-                return(
-                  <li key={i}>
-                    {accForm.ProjectName}
-                  </li>
-                  )
-              })
-            }
-            <h4>Отказ
-            {
-              declinedForms.map(function(decForm, i){
-                return(
-                  <li key={i}>
-                    {decForm.ProjectName}
-                  </li>
-                )
-              })
-            }
-            </h4>
-            <h4>Активные</h4>
-          </div>
-          <div className="col-md-6 apz-additional card">
-            <div id="citizenMapPause" className="col-md-12 well" style={{paddingTop:'10px', height:'500px', width:'100%'}}>
-                Карта со слоями
-            </div>
-            {/*<button class="btn-block btn-info col-md-3" id="printApz">
-              Распечатать АПЗ
-            </button>*/}
-          </div>
-          <div className="col-md-3 apz-detailed card">
-          </div>
-        </div>
-        <ShowHide />
-        <div className="row" style={{height:'200px',paddingTop:'20px'}} id="mapApzForm">
-          {/*<div id="infoDiv">Нажмите на участок или объект, чтобы получить информацию</div>*/}
-          <div id="viewDiv"></div>
-          <div className="progressBar">
-            <div className="circle done">
-            <span className="label">1</span>
-            <span className="title">Районный архитектор</span>
-            </div>
-            
-            <span className="bar half"></span>
-            <div className="circle done">
-            <span className="label">3</span>
-            <span className="title">Провайдер водоснабжения</span>
-            </div>
-            <span className="bar"></span>
-            <div className="circle done">
-            <span className="label">4</span>
-            <span className="title">Провайдер газоснабжения</span>
-            </div>
-            <span className="bar"></span>
-            <div className="circle active">
-            <span className="label">5</span>
-            <span className="title">Провайдер теплоснабжения</span>
-            </div>
-            <span className="bar"></span>
-            <div className="circle">
-            <span className="label">6</span>
-            <span className="title">Провайдер электроснабжения</span>
-            </div>
-            <span className="bar"></span>
-            <div className="circle">
-            <span className="label">7</span>
-            <span className="title">Главный архитектор</span>
-            </div>
           </div>
         </div>
       </div>

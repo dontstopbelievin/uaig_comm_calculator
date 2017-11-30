@@ -24,6 +24,17 @@
   padding: 15px 20px;
 }
 
+.apz-list h4 { 
+  display: block !important; 
+  text-align: center;
+}
+
+.apz-list h4 li {
+  list-style-type: none;
+  margin: 10px 0 0 15px;
+  font-size: 16px;
+  font-weight: bold;
+}
 
 .apz-list li {
   line-height: 1.5;
@@ -174,7 +185,7 @@ thead {
 }
 
 footer {
-  margin-top: 75px;
+  margin-top: 15px;
   background-color: #222;
   padding: 50px 0;
   color: #fff;

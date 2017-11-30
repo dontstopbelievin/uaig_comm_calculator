@@ -39,12 +39,12 @@ export default class Guest extends React.Component {
             <div className="col-9 jumbotron block-main">
               <h2>{e.publicServices}</h2>
               <div className="block-content">
-                <button type="button" class="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Выдача справки по определению адреса объектов недвижимости</button>
-                <button type="button" class="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Выдача архитектурно-планировочного задания</button>
-                <button type="button" class="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Выдача решения на реконструкцию (перепланировку, переоборудование)</button>
-                <button type="button" class="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Выдача решения о строительстве культовых зданий, определении их месторасположения</button>
-                <button type="button" class="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Выдача решения о перепрофилировании зданий в культовые здания</button>
-                <button type="button" class="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Предоставление земельного участка для строительства объекта в черте населенного пункта</button>
+                <button type="button" className="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Выдача справки по определению адреса объектов недвижимости</button>
+                <button type="button" className="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Выдача архитектурно-планировочного задания</button>
+                <button type="button" className="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Выдача решения на реконструкцию (перепланировку, переоборудование)</button>
+                <button type="button" className="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Выдача решения о строительстве культовых зданий, определении их месторасположения</button>
+                <button type="button" className="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Выдача решения о перепрофилировании зданий в культовые здания</button>
+                <button type="button" className="btn btn-outline-secondary btn-block" style={{textAlign: 'left'}}>Предоставление земельного участка для строительства объекта в черте населенного пункта</button>
               </div>
               <div className="row promo-block">
                 <div className="col-6 promo1">

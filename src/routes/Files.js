@@ -5,13 +5,6 @@ var columnStyle = {
   textAlign: 'center'
 }
 
-var createRoleDropdownStyle = {
-  position: 'absolute',
-  background: 'lavender',
-  zIndex: '10',
-  padding: '10px'
-}
-
 export default class Files extends React.Component {
   render() {
     //console.log("rendering the AdminComponent");
