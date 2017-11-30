@@ -4,13 +4,6 @@ var columnStyle = {
   textAlign: 'center'
 }
 
-var createRoleDropdownStyle = {
-  position: 'absolute',
-  background: 'lavender',
-  zIndex: '10',
-  padding: '10px'
-}
-
 export default class Files extends React.Component {
   constructor(props) {
     super(props);

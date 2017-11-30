@@ -130,7 +130,7 @@ export default class Header extends Component {
                   <form>
                     <div className="form-group">
                       <input type="email" className="form-control" aria-describedby="emailHelp" placeholder="Поиск по сайту" />
-                      <small id="emailHelp" className="form-text text-muted"><i>Например: <a href="javascript:void(0)">Выдача АПЗ</a></i></small>
+                      <small id="emailHelp" className="form-text text-muted"><i>Например: <a>Выдача АПЗ</a></i></small>
                     </div>
                   </form>
                 </div>
@@ -141,8 +141,8 @@ export default class Header extends Component {
               <b>+7 (727) 279-58-24</b>
             </div>
             <div className="col-md-1 text-muted">
-              <a href="javascript:void(0)">ҚАЗ</a><br />
-              РУС
+              <button className="btn btn-outline-secondary btn-sm">ҚАЗ</button><br />
+              <button className="btn btn-outline-secondary btn-sm">РУС</button>
             </div>
           </div>
         </div>
