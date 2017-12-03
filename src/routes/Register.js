@@ -65,6 +65,7 @@ export default class Register extends React.Component {
     xhr.onload = function() {
       if (xhr.status === 200) {
         alert("Вы успешно зарегистрировались!\n Можете войти через созданный аккаунт!");
+        this.setState({loadingVisible: false});
       }else {
         console.log(xhr.response);
         this.setState({loadingVisible: false}); 

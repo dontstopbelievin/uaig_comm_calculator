@@ -1,10 +1,6 @@
 import React from 'react';
 import { Route, NavLink, Switch, Redirect} from 'react-router-dom';
 
-var columnStyle = {
-  textAlign: 'center'
-}
-
 export default class Files extends React.Component {
   render() {
     //console.log("rendering the AdminComponent");
@@ -65,19 +61,19 @@ class Images extends React.Component {
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + "api/File/images", true);
-      //Send the proper header information along with the request
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          this.setState({ images: JSON.parse(xhr.responseText) });
-        } else {
-          console.log(xhr.response);
-          // alert("Ошибка " + xhr.status + ': ' + xhr.statusText);
-        }
-      }.bind(this)
-      // console.log(data);
-      xhr.send();
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        this.setState({ images: JSON.parse(xhr.responseText) });
+      } else {
+        console.log(xhr.response);
+        // alert("Ошибка " + xhr.status + ': ' + xhr.statusText);
+      }
+    }.bind(this)
+    // console.log(data);
+    xhr.send();
   }
 
   // Скачивание файла
@@ -139,8 +135,8 @@ class Images extends React.Component {
                         <h4 className="card-title">{image.Name}</h4>
                         <p className="card-text">{image.Description}</p>
                       </div>
-                      <div class="card-footer">
-                        <button type="button" class="btn btn-outline-primary" data-name={image.Name} data-ext={image.Extension} data-file={image.File} onClick={this.downloadFile.bind(this)}>
+                      <div className="card-footer">
+                        <button type="button" className="btn btn-outline-primary" data-name={image.Name} data-ext={image.Extension} data-file={image.File} onClick={this.downloadFile.bind(this)}>
                           Скачать
                         </button>
                       </div>
@@ -386,7 +382,7 @@ console.log(this.state.file);
         <button className="btn btn-outline-primary mt-3" data-toggle="modal" data-target="#uploadFileModal">
           Добавить файл
         </button>
-        <div className="modal fade" id="uploadFileModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div className="modal fade" id="uploadFileModal" tabIndex="-1" role="dialog" aria-hidden="true">
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <form onSubmit={this.uploadFile}>
@@ -398,27 +394,30 @@ console.log(this.state.file);
                 </div>
                 <div className="modal-body">
                   <div className="form-group">
-                    <label for="upload_name">Название</label>
+                    <label htmlFor="upload_name">Название</label>
                     <input type="text" className="form-control" id="upload_name" placeholder="Название" value={this.state.name} onChange={this.onNameChange} />
                   </div>
                   <div className="form-group">
-                    <label for="upload_category">Категория</label>
+                    <label htmlFor="upload_category">Категория</label>
                     <select className="form-control" id="upload_category" onChange={this.onCategoryChange}>
-                      <option value="" selected disabled>Выберите категорию</option>
-                      {this.state.categories.map(function(category, index){
-                        return(
-                            <option value={category.Id}  key={index}>{category.Name}</option>
-                          );
-                        }.bind(this))
+                      <option value="" defaultValue disabled>Выберите категорию</option>
+                      {
+                        this.state.categories.map(function(category, index)
+                          {
+                            return(
+                              <option value={category.Id}  key={index}>{category.Name}</option>
+                            )
+                          }
+                        )
                       }
                     </select>
                   </div>
                   <div className="form-group">
-                    <label for="upload_description">Описание</label>
+                    <label htmlFor="upload_description">Описание</label>
                     <textarea className="form-control" id="upload_description" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
                   </div>
                   <div className="form-group">
-                    <label for="upload_file">Файл</label>
+                    <label htmlFor="upload_file">Файл</label>
                     <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
                   </div>
                 </div>

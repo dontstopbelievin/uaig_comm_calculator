@@ -1,15 +1,14 @@
 import React from 'react';
-//import * as esriLoader from 'esri-loader';
 import { NavLink } from 'react-router-dom';
 
-export default class Urban extends React.Component {
+export default class Head extends React.Component {
+
   constructor() {
     super();
 
     this.state = {
       acceptedForms: [],
       declinedForms: [],
-      activeForms: [],
       onHoldForms: [],
       showDetails: false,
       showButtons: true,
@@ -28,9 +27,9 @@ export default class Urban extends React.Component {
   }
 
   details(e) {
-    //console.log(e);
+    console.log(e);
     this.setState({ showButtons: false });
-    if(e.Status === 2) { this.setState({ showButtons: true }); }
+    if(e.Status === 4) { this.setState({ showButtons: true }); }
     this.setState({ showDetails: true });
     this.setState({ Id: e.Id });
     this.setState({ Applicant: e.Applicant });
@@ -71,11 +70,8 @@ export default class Urban extends React.Component {
         var dec_forms_list = data.filter(function(obj) { return obj.Status === 0; });
         this.setState({declinedForms: dec_forms_list});
         // filter the list to get the unanswered apzForms
-        var onhold_forms_list = data.filter(function(obj) { return obj.Status === 2; });
+        var onhold_forms_list = data.filter(function(obj) { return obj.Status === 4; });
         this.setState({onHoldForms: onhold_forms_list});
-        // filter the list to get in-process apzForms
-        var act_forms_list = data.filter(function(obj) { return (obj.Status === 3 || obj.Status === 4); });
-        this.setState({activeForms: act_forms_list});
       }
     }.bind(this);
     xhr.send();
@@ -90,7 +86,7 @@ export default class Urban extends React.Component {
     var data = {Response: status, Message: comment};
     var dd = JSON.stringify(data);
 
-    var tempActForms = this.state.activeForms;
+    var tempAccForms = this.state.acceptedForms;
     var tempDecForms = this.state.declinedForms;
     var tempOnHoldList = this.state.onHoldForms;
     // need to get the position of form in the list
@@ -110,8 +106,8 @@ export default class Urban extends React.Component {
           alert("apzForm is accepted");
           tempOnHoldList.splice(formPos,1);
           this.setState({onHoldForms: tempOnHoldList});
-          tempActForms.push(data);
-          this.setState({activeForms: tempActForms});
+          tempAccForms.push(data);
+          this.setState({acceptedForms: tempAccForms});
           console.log("apzForm was accepted");
         }
         else{
@@ -127,111 +123,10 @@ export default class Urban extends React.Component {
     xhr.send(dd); 
   }
 
-  // createMap(element){
-  //   console.log(this.refs)
-  //   esriLoader.dojoRequire([
-  //     "esri/views/SceneView",
-  //     "esri/widgets/LayerList",
-  //     "esri/WebScene",
-  //     "esri/layers/FeatureLayer",
-  //     "esri/layers/TileLayer",
-  //     "esri/widgets/Search",
-  //     "esri/Map",
-  //     "dojo/domReady!"
-  //   ], function(
-  //     SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
-  //   ) {
-
-  //     //функциональное зонирование
-  //     var flFunkZon = new FeatureLayer({
-  //       portalItem: {  // autocasts as esri/portal/PortalItem
-  //         id: "7dd6833628d34453939ed2c6fa514bb5"
-  //       },
-  //       outFields: ["*"],
-  //       visible: true,
-  //       title: "Функциональное зонирование"
-  //     });
-      
-      
-  //     //красные линии
-  //     var flRedlines = new TileLayer({
-  //       portalItem: {  // autocasts as esri/portal/PortalItem
-  //         id: "f93a74c28c904666932f084d91719fdc"
-  //       },
-  //       outFields: ["*"],
-  //       visible: true,
-  //       title: "Красные линии"
-  //     });
-  //     var map = new Map({
-  //       basemap: "dark-gray"
-  //     });
-  //     map.add(flFunkZon);
-  //     map.add(flRedlines);
-  //     var view = new SceneView({
-  //       container: element,
-  //       map: map,
-  //       center: [76.886, 43.250], // lon, lat
-  //       scale: 10000
-  //     });
-      
-  //     var searchWidget = new Search({
-  //       view: view,
-  //       sources: [{
-  //         featureLayer: new FeatureLayer({
-  //           portalItem: {
-  //             id: "dcd7bef523324a149843a070fd857b11"
-  //           },
-  //           popupTemplate: { // autocasts as new PopupTemplate()
-  //             title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
-  //           }
-  //         }),
-  //         searchFields: ["CADASTRAL_NUMBER"],
-  //         displayField: "CADASTRAL_NUMBER",
-  //         exactMatch: false,
-  //         outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
-  //         name: "Зарегистрированные государственные акты",
-  //         placeholder: "Кадастровый поиск"
-  //       }]
-  //     });
-  //     // Add the search widget to the top left corner of the view
-  //     view.ui.add(searchWidget, {
-  //       position: "top-right"
-  //     });
-  //     view.then(function() {
-  //       var layerList = new LayerList({
-  //         view: view
-  //       });
-
-  //       // Add widget to the top right corner of the view
-  //       view.ui.add(layerList, "bottom-right");
-  //     });
-  //   });
-  // }
-
-  // onReference(element) {
-  //   console.log('mounted');
-  //   if(!esriLoader.isLoaded()) {
-  //     esriLoader.bootstrap(
-  //       err => {
-  //         if(err) {
-  //           console.log(err);
-  //         } else {
-  //           this.createMap(element);
-  //         }
-  //       },
-  //       {
-  //         url: "https://js.arcgis.com/4.5/"
-  //       }
-  //     );
-  //   } else {
-  //     this.createMap(element);
-  //   }
-  // }
-
   componentWillMount() {
-    //console.log("UrbanComponent will mount");
+    //console.log("HeadComponent will mount");
     if(sessionStorage.getItem('tokenInfo')){
-      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];
+      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[1];
       this.props.history.replace('/' + userRole);
     }else {
       this.props.history.replace('/');
@@ -239,19 +134,18 @@ export default class Urban extends React.Component {
   }
 
   componentDidMount() {
-    //console.log("UrbanComponent did mount");
+    //console.log("HeadComponent did mount");
     this.getApzFormList();
   }
 
   componentWillUnmount() {
-    //console.log("UrbanComponent will unmount");
+    //console.log("HeadComponent will unmount");
   }
 
   render() {
-    //console.log("rendering the UrbanComponent");
+    //console.log("rendering the HeadComponent");
     var acceptedForms = this.state.acceptedForms;
     var declinedForms = this.state.declinedForms;
-    var activeForms = this.state.activeForms;
     var onHoldForms = this.state.onHoldForms;
     return (
       <div>
@@ -316,17 +210,6 @@ export default class Urban extends React.Component {
                   return(
                     <li key={i} onClick={this.details.bind(this, decForm)}>
                       {decForm.ProjectName}
-                    </li>
-                  )
-                }.bind(this))
-              }
-              </h4>
-              <h4><span id="in-process">В Процессе</span>
-              {
-                activeForms.map(function(actForm, i){
-                  return(
-                    <li key={i} onClick={this.details.bind(this, actForm)}>
-                      {actForm.ProjectName}
                     </li>
                   )
                 }.bind(this))
