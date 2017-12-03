@@ -45,7 +45,7 @@ export default class Urban extends React.Component {
   getApzFormList() {
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/region", true);
+    xhr.open("get", window.url + "api/apz/all", true);
     //Send the proper header information along with the request
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");

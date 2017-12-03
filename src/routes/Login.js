@@ -77,7 +77,7 @@ export default class Login extends Component {
         if (xhr.status === 200) {
           this.setState({loadingVisible: false});
           console.log("success");
-          //console.log(e.target.response);
+          console.log(e.target.response);
           var roles = [JSON.parse(e.target.response).role1];
           if(JSON.parse(e.target.response).role2)
             roles.push(JSON.parse(e.target.response).role2);

@@ -1,6 +1,7 @@
 import React from 'react';
 import $ from 'jquery';
 import 'jquery-validation';
+import 'jquery-serializejson';
 
 class ApzForm extends React.Component {
   constructor() {
