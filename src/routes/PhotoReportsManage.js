@@ -9,6 +9,8 @@ export default class PhotoReportsManage extends React.Component {
       loadingVisible: false,
       showDetails: false,
       activeList: [],
+      file: [],
+      RequestId: "",
       ApplicationDate: "",
       CompanyName: "",
       CompanyLegalAddress: "",
@@ -23,8 +25,9 @@ export default class PhotoReportsManage extends React.Component {
       Status: ""
     }
     
-    this.sendForm = this.sendForm.bind(this);
     this.getList = this.getList.bind(this);
+    this.uploadFile = this.uploadFile.bind(this);
+    this.responseCreate = this.responseCreate.bind(this);
   }
 
   getList() {
@@ -47,6 +50,7 @@ export default class PhotoReportsManage extends React.Component {
   getDetails(e) {
     // console.log(e);
     this.setState({ showDetails: true });
+    this.setState({ RequestId: e.Id });
     this.setState({ CompanyName: e.CompanyName });
     this.setState({ CompanyLegalAddress: e.CompanyLegalAddress });
     this.setState({ CompanyFactualAddress: e.CompanyFactualAddress });
@@ -67,39 +71,70 @@ export default class PhotoReportsManage extends React.Component {
     });
   }
 
-  sendForm(e) {
-    e.preventDefault();
-    var formData = {
-      
+  responseCreate(){
+    // var formData = new FormData();
+    var data = {
+      RequestId: this.state.RequestId,
+      PhotosExist: true
     };
-
-    var data = JSON.stringify(formData);
-
-    if (this.state.CompanyName)
+    var formData = JSON.stringify(data);
+    
+    // formData.append('RequestId', this.state.RequestId);
+    // formData.append('PhotosExist', true);
+    if (!this.state.file) {
+      return;
+    } 
+    else 
     {
-      // console.log('true');
-      this.setState({loadingVisible: true});
-      var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
-      xhr.open("post", window.url + "api/photoreport/request/create", true);
+      xhr.open("post", window.url + "api/photoreport/response/create", true);
       //Send the proper header information along with the request
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
         if (xhr.status === 200) {
-          alert("Ваш запрос успешно отправлен!");
-        }else {
-          console.log("a"+xhr.response);
-          this.setState({loadingVisible: false}); 
-          //alert("Ошибка " + xhr.status + ': ' + xhr.statusText);
+          // document.getElementById('uploadFileModalClose').click();
+          console.log(xhr.response);
+          // alert("Файл успешно загружен");
+        } else {
+          console.log(xhr.response);
+          // alert("Ошибка " + xhr.status + ': ' + xhr.statusText);
         }
-      }.bind(this);
-      //console.log(data);
-      xhr.send(data);
+      }
+      console.log(formData);
+      xhr.send(formData);
     }
-    else { 
-      // console.log('false');
-      return; 
+  }
+
+  uploadFile(e) {
+    // console.log(this.state.file);
+    e.preventDefault();
+    
+    var formData = new FormData();
+    formData.append('file', this.state.file);
+    // formData.append('ResponseId', this.state.RequestId);
+
+    if (!this.state.file) {
+      return;
+    } 
+    else 
+    {
+      var xhr = new XMLHttpRequest();
+      xhr.open("post", window.url + "api/photoreport/response/photo", true);
+      //Send the proper header information along with the request
+      xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
+      // xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          document.getElementById('uploadFileModalClose').click();
+          alert("Файл успешно загружен");
+        } else {
+          console.log(xhr.response);
+          // alert("Ошибка " + xhr.status + ': ' + xhr.statusText);
+        }
+      }
+      console.log(formData);
+      xhr.send(formData);
     }
   }
 
@@ -130,9 +165,9 @@ export default class PhotoReportsManage extends React.Component {
               {
                 this.state.activeList.map(function(e, i){
                 return(
-                    <p>
+                    <div key={i}>
                       <a href="javascript:;" onClick={this.getDetails.bind(this, e)} className="btn btn-primary">{e.PhotoAddress}</a>
-                    </p>
+                    </div>
                   )
                 }.bind(this))
               }
@@ -164,7 +199,8 @@ export default class PhotoReportsManage extends React.Component {
           <div className="col-md-5 card">
             <h4 className="card-header">Фотографии</h4>
             <div className="card-body">
-              {(() => {
+              <div className={this.state.showDetails ? 'row' : 'invisible'}>
+                {(() => {
                   switch (this.state.Status) {
                     case '0': return 'Вы отклонили заявку';
                     case '1': return 'Вы одобрили заявку';
@@ -172,6 +208,40 @@ export default class PhotoReportsManage extends React.Component {
                     default: return '';
                   }
                 })()}
+                <div className="col-md-12">
+                  <button onClick={this.responseCreate} className="btn btn-outline-primary mt-3" data-toggle="modal" data-target="#uploadFileModal">
+                    Добавить фото
+                  </button>&nbsp;
+                  <button className="btn btn-outline-success mt-3" data-toggle="modal" data-target="#uploadFileModal">
+                    Отклонить заявку
+                  </button>
+                  <div className="modal fade" id="uploadFileModal" tabIndex="-1" role="dialog" aria-hidden="true">
+                    <div className="modal-dialog" role="document">
+                      <div className="modal-content">
+                        <form onSubmit={this.uploadFile.bind(this)}>
+                          <div className="modal-header">
+                            <h5 className="modal-title">Загрузить файл</h5>
+                            <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div className="modal-body">
+                            <div className="form-group">
+                              <label>Файл
+                                <input type="file" id="upload_file" className="form-control" onChange={(e) => this.setState({file: e.target.files[0]})} />
+                              </label>
+                            </div>
+                          </div>
+                          <div className="modal-footer">
+                            <input type="submit" className="btn btn-primary" value="Загрузить" />
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

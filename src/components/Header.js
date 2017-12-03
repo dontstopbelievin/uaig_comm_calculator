@@ -14,7 +14,7 @@ var navBtnStyle = {
 export default class Header extends Component {
   constructor() {
     super();
-    {(localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru')}
+    (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
 
     this.checkToken = this.checkToken.bind(this);
     this.goToGuest = this.goToGuest.bind(this);
