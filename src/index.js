@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
-import LocalizedStrings from 'react-localization';
+import { HashRouter, Route, Switch } from 'react-router-dom';
 import Header from './components/Header';
 import Guest from './routes/Guest';
 import MapView from './routes/Map';
@@ -14,6 +13,7 @@ import Urban from './routes/Urban';
 import Provider from './routes/Provider';
 import Project from './routes/Project';
 import PhotoReports from './routes/PhotoReports';
+import PhotoReportsManage from './routes/PhotoReportsManage';
 import Admin from './routes/Admin';
 import Files from './routes/Files';
 import Footer from './components/Footer';
@@ -28,10 +28,6 @@ export default class Main extends React.Component {
 
   constructor() {
     super();
-
-    this.state = {
-      defaultLang: 'ru'
-    }
 
   }
 
@@ -72,6 +68,7 @@ export default class Main extends React.Component {
               <Route path="/provider" render={(props) => (<Provider {...props} />)} />
               <Route path="/project" render={(props) => (<Project {...props} />)} />
               <Route path="/photoreports" render={(props) => (<PhotoReports {...props} />)} />
+              <Route path="/photoreportsManage" render={(props) => (<PhotoReportsManage {...props} />)} />
               <Route path="/admin" render={(props) => (<Admin {...props} />)} />
               <Route path="/files" render={(props) => (<Files {...props} />)} />
             </Switch>
