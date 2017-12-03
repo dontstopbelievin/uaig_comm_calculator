@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { NavLink, Redirect } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../languages/header.json';
 
@@ -37,8 +37,12 @@ class LogoutBtn extends Component {
 
   gotoCabinet() {
     if(sessionStorage.getItem('tokenInfo')){
-      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];;
-      this.props.history.replace('/' + userRole);
+      if(JSON.parse(sessionStorage.getItem('userRoles')).length > 1 && JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Head'){
+        this.props.history.replace('/' + JSON.parse(sessionStorage.getItem('userRoles'))[1]);
+      }
+      else {
+        this.props.history.replace('/' + JSON.parse(sessionStorage.getItem('userRoles'))[0]);
+      }
     }
   }
 
@@ -152,14 +156,14 @@ export default class Header extends Component {
               <b>+7 (727) 279-58-24</b>
             </div>
             <div className="col-md-1 text-muted">
-              {localStorage.getItem('lang') == 'kk' ?
+              {localStorage.getItem('lang') === 'kk' ?
                 (<span>ҚАЗ</span>) : 
-                (<a href="javascript:;" onClick={this.updateLanguage.bind(this, 'kk')}>ҚАЗ</a>)
+                (<a style={{cursor: 'pointer', color: 'lightblue'}} onClick={this.updateLanguage.bind(this, 'kk')}>ҚАЗ</a>)
               }
               <br />
-              {localStorage.getItem('lang') == 'ru' ?
+              {localStorage.getItem('lang') === 'ru' ?
                 (<span>РУС</span>) : 
-                (<a href="javascript:;" onClick={this.updateLanguage.bind(this, 'ru')}>РУС</a>)
+                (<a style={{cursor: 'pointer', color: 'lightblue'}} onClick={this.updateLanguage.bind(this, 'ru')}>РУС</a>)
               }
             </div>
           </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
-import LocalizedStrings from 'react-localization';
+import { HashRouter, Route, Switch } from 'react-router-dom';
+//import LocalizedStrings from 'react-localization';
 import Header from './components/Header';
 import Guest from './routes/Guest';
 import MapView from './routes/Map';
@@ -11,6 +11,7 @@ import Register from './routes/Register';
 import Temporary from './routes/Temporary';
 import Citizen from './routes/Citizen';
 import Urban from './routes/Urban';
+import Head from './routes/Head';
 import Provider from './routes/Provider';
 import Project from './routes/Project';
 import PhotoReports from './routes/PhotoReports';
@@ -68,6 +69,7 @@ export default class Main extends React.Component {
               <Route path="/register" render={(props) => (<Register {...props} />)} />
               <Route path="/temporary" render={(props) => (<Temporary {...props} />)} />
               <Route path="/urban" render={(props) => (<Urban {...props} />)} />
+              <Route path="/head" render={(props) => (<Head {...props} />)} />
               <Route path="/citizen" render={(props) => (<Citizen {...props} />)} />
               <Route path="/provider" render={(props) => (<Provider {...props} />)} />
               <Route path="/project" render={(props) => (<Project {...props} />)} />
@@ -85,25 +87,3 @@ export default class Main extends React.Component {
 ReactDOM.render(
   <Main />, document.getElementById('root')
 );
-
-
-
-// window.logStatus = this.state.isLoggedIn;
-    // window.updateLogStatus = this.updateLogStatus;
-    // window.updateUsername = this.updateUsername;
-
-    // window.checkToken = this.checkToken;
-    // window.logStatus = this.state.isLoggedIn;
-    // window.updateLogStatus = this.updateLogStatus;
-    // window.updateUsername = this.updateUsername;
-
-    // console.log(checkToken);
-
-    // var children = React.Children.map(this.props.children, function (child) {
-    //   return React.cloneElement(child, {
-    //     checkToken: window.checkToken,
-    //     logStatus: window.logStatus,
-    //     updateLogStatus: window.updateLogStatus,
-    //     updateUsername: window.updateUsername
-    //   })
-    // });

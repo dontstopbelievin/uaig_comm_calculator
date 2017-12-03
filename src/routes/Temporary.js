@@ -4,15 +4,12 @@ export default class Temporary extends React.Component {
 
   componentWillMount() {
     //console.log("CitizenComponent will mount");
-    if(sessionStorage.getItem('tokenInfo')) {
-      var userRole = sessionStorage.getItem('userRole');
+    if(sessionStorage.getItem('tokenInfo')){
+      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];
       this.props.history.replace('/' + userRole);
-      var userName = sessionStorage.getItem('userName');
-      this.setState({username: userName});
-    } else {
+    }else {
       this.props.history.replace('/');
     }
-    
   }
 
   componentDidMount() {

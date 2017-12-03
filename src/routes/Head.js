@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-export default class Provider extends React.Component {
+export default class Head extends React.Component {
 
   constructor() {
     super();
@@ -9,7 +9,6 @@ export default class Provider extends React.Component {
     this.state = {
       acceptedForms: [],
       declinedForms: [],
-      activeForms: [],
       onHoldForms: [],
       showDetails: false,
       showButtons: true,
@@ -30,7 +29,7 @@ export default class Provider extends React.Component {
   details(e) {
     console.log(e);
     this.setState({ showButtons: false });
-    if(e.Status === 3) { this.setState({ showButtons: true }); }
+    if(e.Status === 4) { this.setState({ showButtons: true }); }
     this.setState({ showDetails: true });
     this.setState({ Id: e.Id });
     this.setState({ Applicant: e.Applicant });
@@ -71,11 +70,8 @@ export default class Provider extends React.Component {
         var dec_forms_list = data.filter(function(obj) { return obj.Status === 0; });
         this.setState({declinedForms: dec_forms_list});
         // filter the list to get the unanswered apzForms
-        var onhold_forms_list = data.filter(function(obj) { return obj.Status === 3; });
+        var onhold_forms_list = data.filter(function(obj) { return obj.Status === 4; });
         this.setState({onHoldForms: onhold_forms_list});
-        // filter the list to get in-process apzForms
-        var act_forms_list = data.filter(function(obj) { return obj.Status === 4; });
-        this.setState({activeForms: act_forms_list});
       }
     }.bind(this);
     xhr.send();
@@ -90,7 +86,7 @@ export default class Provider extends React.Component {
     var data = {Response: status, Message: comment};
     var dd = JSON.stringify(data);
 
-    var tempActForms = this.state.activeForms;
+    var tempAccForms = this.state.acceptedForms;
     var tempDecForms = this.state.declinedForms;
     var tempOnHoldList = this.state.onHoldForms;
     // need to get the position of form in the list
@@ -110,9 +106,8 @@ export default class Provider extends React.Component {
           alert("apzForm is accepted");
           tempOnHoldList.splice(formPos,1);
           this.setState({onHoldForms: tempOnHoldList});
-          tempActForms.push(data);
-          console.log(tempActForms);
-          this.setState({activeForms: tempActForms});
+          tempAccForms.push(data);
+          this.setState({acceptedForms: tempAccForms});
           console.log("apzForm was accepted");
         }
         else{
@@ -129,9 +124,9 @@ export default class Provider extends React.Component {
   }
 
   componentWillMount() {
-    //console.log("ProviderComponent will mount");
+    //console.log("HeadComponent will mount");
     if(sessionStorage.getItem('tokenInfo')){
-      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];
+      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[1];
       this.props.history.replace('/' + userRole);
     }else {
       this.props.history.replace('/');
@@ -139,19 +134,18 @@ export default class Provider extends React.Component {
   }
 
   componentDidMount() {
-    console.log("ProviderComponent did mount");
+    //console.log("HeadComponent did mount");
     this.getApzFormList();
   }
 
   componentWillUnmount() {
-    //console.log("ProviderComponent will unmount");
+    //console.log("HeadComponent will unmount");
   }
 
   render() {
-    //console.log("rendering the ProviderComponent");
+    //console.log("rendering the HeadComponent");
     var acceptedForms = this.state.acceptedForms;
     var declinedForms = this.state.declinedForms;
-    var activeForms = this.state.activeForms;
     var onHoldForms = this.state.onHoldForms;
     return (
       <div>
@@ -216,17 +210,6 @@ export default class Provider extends React.Component {
                   return(
                     <li key={i} onClick={this.details.bind(this, decForm)}>
                       {decForm.ProjectName}
-                    </li>
-                  )
-                }.bind(this))
-              }
-              </h4>
-              <h4><span id="in-process">В Процессе</span>
-              {
-                activeForms.map(function(actForm, i){
-                  return(
-                    <li key={i} onClick={this.details.bind(this, actForm)}>
-                      {actForm.ProjectName}
                     </li>
                   )
                 }.bind(this))

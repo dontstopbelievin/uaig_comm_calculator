@@ -1,5 +1,5 @@
 import React from 'react';
-import * as esriLoader from 'esri-loader';
+//import * as esriLoader from 'esri-loader';
 import { NavLink } from 'react-router-dom';
 
 export default class Urban extends React.Component {
@@ -7,8 +7,13 @@ export default class Urban extends React.Component {
     super();
 
     this.state = {
-      apzListForms: [],
+      acceptedForms: [],
+      declinedForms: [],
+      activeForms: [],
+      onHoldForms: [],
       showDetails: false,
+      showButtons: true,
+      Id: "",
       Applicant: "",
       Address: "",
       Phone: "",
@@ -23,8 +28,11 @@ export default class Urban extends React.Component {
   }
 
   details(e) {
-    // console.log(e);
+    //console.log(e);
+    this.setState({ showButtons: false });
+    if(e.Status === 2) { this.setState({ showButtons: true }); }
     this.setState({ showDetails: true });
+    this.setState({ Id: e.Id });
     this.setState({ Applicant: e.Applicant });
     this.setState({ Address: e.Address });
     this.setState({ Phone: e.Phone });
@@ -55,113 +63,170 @@ export default class Urban extends React.Component {
     xhr.onload = function () {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-        console.log(data);
-        this.setState({ apzListForms: data });
+        //console.log(data);
+        // filter the whole list to get only accepted apzForms
+        var acc_forms_list = data.filter(function(obj) { return obj.Status === 1; });
+        this.setState({acceptedForms: acc_forms_list});
+        // filter the list to get the declined apzForms
+        var dec_forms_list = data.filter(function(obj) { return obj.Status === 0; });
+        this.setState({declinedForms: dec_forms_list});
+        // filter the list to get the unanswered apzForms
+        var onhold_forms_list = data.filter(function(obj) { return obj.Status === 2; });
+        this.setState({onHoldForms: onhold_forms_list});
+        // filter the list to get in-process apzForms
+        var act_forms_list = data.filter(function(obj) { return (obj.Status === 3 || obj.Status === 4); });
+        this.setState({activeForms: act_forms_list});
       }
     }.bind(this);
     xhr.send();
   }
 
-  createMap(element){
-    console.log(this.refs)
-    esriLoader.dojoRequire([
-      "esri/views/SceneView",
-      "esri/widgets/LayerList",
-      "esri/WebScene",
-      "esri/layers/FeatureLayer",
-      "esri/layers/TileLayer",
-      "esri/widgets/Search",
-      "esri/Map",
-      "dojo/domReady!"
-    ], function(
-      SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
-    ) {
+  // accept or decline the form
+  acceptDeclineApzForm(apzId, status, comment) {
+    //console.log(apzId);
+    //console.log(statusName);
+    var token = sessionStorage.getItem('tokenInfo');
 
-      //функциональное зонирование
-      var flFunkZon = new FeatureLayer({
-        portalItem: {  // autocasts as esri/portal/PortalItem
-          id: "7dd6833628d34453939ed2c6fa514bb5"
-        },
-        outFields: ["*"],
-        visible: true,
-        title: "Функциональное зонирование"
-      });
-      
-      
-      //красные линии
-      var flRedlines = new TileLayer({
-        portalItem: {  // autocasts as esri/portal/PortalItem
-          id: "f93a74c28c904666932f084d91719fdc"
-        },
-        outFields: ["*"],
-        visible: true,
-        title: "Красные линии"
-      });
-      var map = new Map({
-        basemap: "dark-gray"
-      });
-      map.add(flFunkZon);
-      map.add(flRedlines);
-      var view = new SceneView({
-        container: element,
-        map: map,
-        center: [76.886, 43.250], // lon, lat
-        scale: 10000
-      });
-      
-      var searchWidget = new Search({
-        view: view,
-        sources: [{
-          featureLayer: new FeatureLayer({
-            portalItem: {
-              id: "dcd7bef523324a149843a070fd857b11"
-            },
-            popupTemplate: { // autocasts as new PopupTemplate()
-              title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
-            }
-          }),
-          searchFields: ["CADASTRAL_NUMBER"],
-          displayField: "CADASTRAL_NUMBER",
-          exactMatch: false,
-          outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
-          name: "Зарегистрированные государственные акты",
-          placeholder: "Кадастровый поиск"
-        }]
-      });
-      // Add the search widget to the top left corner of the view
-      view.ui.add(searchWidget, {
-        position: "top-right"
-      });
-      view.then(function() {
-        var layerList = new LayerList({
-          view: view
-        });
+    var data = {Response: status, Message: comment};
+    var dd = JSON.stringify(data);
 
-        // Add widget to the top right corner of the view
-        view.ui.add(layerList, "bottom-right");
-      });
-    });
-  }
+    var tempActForms = this.state.activeForms;
+    var tempDecForms = this.state.declinedForms;
+    var tempOnHoldList = this.state.onHoldForms;
+    // need to get the position of form in the list
+    var formPos = tempOnHoldList.map(function(x) {return x.Id; }).indexOf(apzId);
+    //console.log(formPos);
 
-  onReference(element) {
-    console.log('mounted');
-    if(!esriLoader.isLoaded()) {
-      esriLoader.bootstrap(
-        err => {
-          if(err) {
-            console.log(err);
-          } else {
-            this.createMap(element);
-          }
-        },
-        {
-          url: "https://js.arcgis.com/4.5/"
+    var xhr = new XMLHttpRequest();
+    xhr.open("put", window.url + "api/apz/status/" + apzId, true);
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function () {
+      //var data = JSON.parse(xhr.responseText);
+      console.log(data);
+      if (xhr.status === 200) {
+        if(status === true){
+          alert("apzForm is accepted");
+          tempOnHoldList.splice(formPos,1);
+          this.setState({onHoldForms: tempOnHoldList});
+          tempActForms.push(data);
+          this.setState({activeForms: tempActForms});
+          console.log("apzForm was accepted");
         }
-      );
-    } else {
-      this.createMap(element);
-    }
+        else{
+          alert("apzForm is rejected");
+          tempOnHoldList.splice(formPos,1);
+          this.setState({onHoldForms: tempOnHoldList});
+          tempDecForms.push(data);
+          this.setState({declinedForms: tempDecForms});
+          console.log("apzForm was declined");
+        }
+      }
+    }.bind(this);
+    xhr.send(dd); 
   }
+
+  // createMap(element){
+  //   console.log(this.refs)
+  //   esriLoader.dojoRequire([
+  //     "esri/views/SceneView",
+  //     "esri/widgets/LayerList",
+  //     "esri/WebScene",
+  //     "esri/layers/FeatureLayer",
+  //     "esri/layers/TileLayer",
+  //     "esri/widgets/Search",
+  //     "esri/Map",
+  //     "dojo/domReady!"
+  //   ], function(
+  //     SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
+  //   ) {
+
+  //     //функциональное зонирование
+  //     var flFunkZon = new FeatureLayer({
+  //       portalItem: {  // autocasts as esri/portal/PortalItem
+  //         id: "7dd6833628d34453939ed2c6fa514bb5"
+  //       },
+  //       outFields: ["*"],
+  //       visible: true,
+  //       title: "Функциональное зонирование"
+  //     });
+      
+      
+  //     //красные линии
+  //     var flRedlines = new TileLayer({
+  //       portalItem: {  // autocasts as esri/portal/PortalItem
+  //         id: "f93a74c28c904666932f084d91719fdc"
+  //       },
+  //       outFields: ["*"],
+  //       visible: true,
+  //       title: "Красные линии"
+  //     });
+  //     var map = new Map({
+  //       basemap: "dark-gray"
+  //     });
+  //     map.add(flFunkZon);
+  //     map.add(flRedlines);
+  //     var view = new SceneView({
+  //       container: element,
+  //       map: map,
+  //       center: [76.886, 43.250], // lon, lat
+  //       scale: 10000
+  //     });
+      
+  //     var searchWidget = new Search({
+  //       view: view,
+  //       sources: [{
+  //         featureLayer: new FeatureLayer({
+  //           portalItem: {
+  //             id: "dcd7bef523324a149843a070fd857b11"
+  //           },
+  //           popupTemplate: { // autocasts as new PopupTemplate()
+  //             title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
+  //           }
+  //         }),
+  //         searchFields: ["CADASTRAL_NUMBER"],
+  //         displayField: "CADASTRAL_NUMBER",
+  //         exactMatch: false,
+  //         outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
+  //         name: "Зарегистрированные государственные акты",
+  //         placeholder: "Кадастровый поиск"
+  //       }]
+  //     });
+  //     // Add the search widget to the top left corner of the view
+  //     view.ui.add(searchWidget, {
+  //       position: "top-right"
+  //     });
+  //     view.then(function() {
+  //       var layerList = new LayerList({
+  //         view: view
+  //       });
+
+  //       // Add widget to the top right corner of the view
+  //       view.ui.add(layerList, "bottom-right");
+  //     });
+  //   });
+  // }
+
+  // onReference(element) {
+  //   console.log('mounted');
+  //   if(!esriLoader.isLoaded()) {
+  //     esriLoader.bootstrap(
+  //       err => {
+  //         if(err) {
+  //           console.log(err);
+  //         } else {
+  //           this.createMap(element);
+  //         }
+  //       },
+  //       {
+  //         url: "https://js.arcgis.com/4.5/"
+  //       }
+  //     );
+  //   } else {
+  //     this.createMap(element);
+  //   }
+  // }
 
   componentWillMount() {
     //console.log("UrbanComponent will mount");
@@ -184,7 +249,10 @@ export default class Urban extends React.Component {
 
   render() {
     //console.log("rendering the UrbanComponent");
-    var apzListForms = this.state.apzListForms;
+    var acceptedForms = this.state.acceptedForms;
+    var declinedForms = this.state.declinedForms;
+    var activeForms = this.state.activeForms;
+    var onHoldForms = this.state.onHoldForms;
     return (
       <div>
         <nav className="navbar-expand-lg navbar-light bg-secondary">
@@ -194,13 +262,13 @@ export default class Urban extends React.Component {
           <div className="container collapse navbar-collapse" id="navbarTogglerDemo03">
            <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
              <li className="nav-item">
-               <NavLink to={"/Urban"} replace className="nav-link" activeClassName="active">Активные</NavLink>
+               <NavLink to={"/Urban"} replace className="nav-link" activeClassName="active">Гос. услуги 1</NavLink>
              </li>
              <li className="nav-item">
-               <NavLink to={"/Urban"} replace className="nav-link" activeClassName="active">Принятые</NavLink>
+               <NavLink to={"/Urban"} replace className="nav-link" activeClassName="active">Гос. услуги 2</NavLink>
              </li>
              <li className="nav-item">
-               <NavLink to={"/Urban"} replace className="nav-link" activeClassName="active">Отклоненные</NavLink>
+               <NavLink to={"/Urban"} replace className="nav-link" activeClassName="active">Гос. услуги 3</NavLink>
              </li>
             </ul>
           </div>
@@ -209,35 +277,70 @@ export default class Urban extends React.Component {
           <div className="row">
             <style dangerouslySetInnerHTML={{__html: ``}} />
               <div className="col-md-3">
-                  <h4 style={{textAlign: 'center'}}>Список заявлений</h4>
+                <h4 style={{textAlign: 'center'}}>Список заявлений</h4>
               </div>
               <div className="col-md-6">
-                  <h4 style={{textAlign: 'center'}}>Карта</h4>
+                <h4 style={{textAlign: 'center'}}>Карта</h4>
               </div>
               <div className="col-md-3">
-                  <h4 style={{textAlign: 'center'}}>Информация</h4>
+                <h4 style={{textAlign: 'center'}}>Информация</h4>
               </div>
           </div>
           <div className="row">
             <div className="col-md-3 apz-list card">
-                {
-                  apzListForms.map(function(apzListForm, i){
-                    return(
-                      <li id={i} key={i} onClick={this.details.bind(this, apzListForm)}>
-                        {apzListForm.ProjectName}
-                      </li>
+              <h4><span id="on-hold">Ждущие</span>
+              {
+                onHoldForms.map(function(onholdForm, i){
+                  return(
+                    <li key={i} onClick={this.details.bind(this, onholdForm)}>
+                      {onholdForm.ProjectName}
+                    </li>
                     )
-                  }.bind(this))
-                }
+                }.bind(this))
+              }
+              </h4>
+              <h4><span id="accepted">Принятые</span>
+              {
+                acceptedForms.map(function(accForm, i){
+                  return(
+                    <li key={i} onClick={this.details.bind(this, accForm)}>
+                      {accForm.ProjectName}
+                    </li>
+                    )
+                }.bind(this))
+              }
+              </h4>
+              <h4><span id="declined">Отказ</span>
+              {
+                declinedForms.map(function(decForm, i){
+                  return(
+                    <li key={i} onClick={this.details.bind(this, decForm)}>
+                      {decForm.ProjectName}
+                    </li>
+                  )
+                }.bind(this))
+              }
+              </h4>
+              <h4><span id="in-process">В Процессе</span>
+              {
+                activeForms.map(function(actForm, i){
+                  return(
+                    <li key={i} onClick={this.details.bind(this, actForm)}>
+                      {actForm.ProjectName}
+                    </li>
+                  )
+                }.bind(this))
+              }
+              </h4>
             </div>
             <div className="col-md-6 apz-additional card" style={{paddingLeft:'0px', paddingRight:'0px'}}>
-              <div className="col-md-12 well" style={{paddingLeft:'0px', paddingRight:'0px', height:'500px', width:'100%'}}>
+              {/*<div className="col-md-12 well" style={{paddingLeft:'0px', paddingRight:'0px', height:'500px', width:'100%'}}>
                   <div className="viewDivUrban" ref={this.onReference.bind(this)}>
                     <div className="container">
                       <p>Загрузка...</p>
                     </div>
                   </div>
-              </div>
+              </div>*/}
               {/*<button class="btn-block btn-info col-md-3" id="printApz">
                 Распечатать АПЗ
               </button>*/}
@@ -252,6 +355,16 @@ export default class Urban extends React.Component {
                 <div className="col-6"><b>Название проекта</b>:</div> <div className="col-6">{this.state.ProjectName}</div>
                 <div className="col-6"><b>Адрес проекта</b>:</div> <div className="col-6">{this.state.ProjectAddress}</div>
                 <div className="col-6"><b>Дата заявления</b>:</div> <div className="col-6">{this.state.ApzDate}</div>
+                <div className={this.state.showButtons ? 'btn-group' : 'invisible'} role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px'}}>
+                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
+                          onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, true, "your form was accepted")}>
+                    Одобрить
+                  </button>
+                  <button className="btn btn-raised btn-danger"
+                          onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, false, "your form was rejected")}>
+                    Отклонить
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -260,40 +373,3 @@ export default class Urban extends React.Component {
     )
   }
 }
-
-/* <div className="container" style={rootStyle}>
-        <form id="apzListByRegion" className="navbar-form">
-          <label for="region" style={{marginRight:'5px'}}>Выберите район</label>
-          <select name="region" className="form-control">
-            <option>Наурызбай</option>
-            <option>Алатау</option>
-            <option>Алмалы</option>
-            <option>Ауезов</option>
-            <option>Бостандық</option>
-            <option>Жетісу</option>
-            <option>Медеу</option>
-            <option>Турксиб</option>
-          </select>
-          <input type="submit" className="btn btn-info" value="Показать"/>
-        </form>
-        <div className="row">
-          <div className="col-md-4 list">
-            <h4 style={{textAlign:'center'}}>Список заявлений</h4>
-          </div>
-          <div className="col-md-4 detailed">
-            <h4 style={{textAlign:'center'}}>Детальная форма</h4>
-          </div>
-          <div className="col-md-4 additional">
-            <h4 id="actionsSubstitude" style={{textAlign:'center'}}>Действия</h4>
-            <div id="actions" style={{display:'none'}} className="btn-group btn-group-justified">
-              <a className="btn btn-success">Одобрить</a>
-              <a className="btn btn-danger">Отклонить</a>
-              <a className="btn btn-info">Отложить</a>
-            </div>
-                
-          </div>
-          <div id="localMap" className="col-md-12" style={{height:'200px',width:'100%'}}>
-            hello local map
-          </div>
-        </div>
-      </div> */

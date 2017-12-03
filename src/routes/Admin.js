@@ -271,6 +271,14 @@ export default class Admin extends React.Component {
     //console.log("AdminComponent will unmount");
   }
 
+  /*  every time state or 
+      props of the Component gets updated 
+      componentDidUpdate is called
+  */
+  componentDidUpdate() {
+    //console.log("AdminComponent did update");
+  }
+
   render() {
     //console.log("rendering the AdminComponent");
     var roles = this.state.roles;
