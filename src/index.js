@@ -28,11 +28,6 @@ require('glyphicons-only-bootstrap/css/bootstrap.min.css');
 
 export default class Main extends React.Component {
 
-  constructor() {
-    super();
-
-  }
-
   setLang() {
     return localStorage.getItem('lang') ? true : localStorage.setItem('lang', 'ru');
   }
