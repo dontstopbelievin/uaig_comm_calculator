@@ -23,53 +23,12 @@ export default class Citizen extends React.Component {
       ApzDate: ""
     }
 
-    this.getAcceptedForms = this.getAcceptedForms.bind(this);
-    this.getDeclinedForms = this.getDeclinedForms.bind(this);
-    this.getOtherForms = this.getOtherForms.bind(this);
+    this.getApzFormList = this.getApzFormList.bind(this);
     this.toggleForm = this.toggleForm.bind(this);
   }
 
-  // function to get the list of AcceptedForms
-  getAcceptedForms() {
-    //console.log("entered getAcceptedForms function");
-    var token = sessionStorage.getItem('tokenInfo');
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/user/accepted", true);
-    //Send the proper header information along with the request
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
-        //console.log(data);
-        this.setState({ acceptedForms: data });
-      }
-    }.bind(this);
-    xhr.send();
-  }
-
-  // function to get the list of DeclinedForms
-  getDeclinedForms() {
-    //console.log("entered getDeclinedForms function");
-    var token = sessionStorage.getItem('tokenInfo');
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/user/declined", true);
-    //Send the proper header information along with the request
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
-        //console.log(data);
-        this.setState({ declinedForms: data });
-      }
-    }.bind(this);
-    xhr.send();
-  }
-
-  // function to get the list of Forms those are in process
-  getOtherForms() {
-    //console.log("entered getOtherForms function");
+  // function to get the list of ApzForms
+  getApzFormList() {
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + "api/apz/user", true);
@@ -80,9 +39,15 @@ export default class Citizen extends React.Component {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
         //console.log(data);
-        var forms = data.filter(function(obj) { return (obj.Status !== 0 && obj.Status !== 1); });
-        //console.log(forms);
-        this.setState({activeForms: forms});
+        // filter the whole list to get only accepted apzForms
+        var acc_forms_list = data.filter(function(obj) { return obj.Status === 1; });
+        this.setState({acceptedForms: acc_forms_list});
+        // filter the list to get the declined apzForms
+        var dec_forms_list = data.filter(function(obj) { return obj.Status === 0; });
+        this.setState({declinedForms: dec_forms_list});
+        // filter the list to get in-process apzForms
+        var act_forms_list = data.filter(function(obj) { return (obj.Status !== 0 && obj.Status !== 1); });
+        this.setState({activeForms: act_forms_list});
       }
     }.bind(this);
     xhr.send();
@@ -137,9 +102,7 @@ export default class Citizen extends React.Component {
 
   componentDidMount() {
     //console.log("CitizenComponent did mount");
-    this.getAcceptedForms();
-    this.getDeclinedForms();
-    this.getOtherForms();
+    this.getApzFormList();
   }
 
   componentWillUnmount() {
@@ -167,7 +130,18 @@ export default class Citizen extends React.Component {
         </div>
         <div className="row">
           <div className="col-md-3 apz-list card">
-            <h4>Принятые
+            <h4><span id="in-process">В Процессе</span>
+            {
+              activeForms.map(function(actForm, i){
+                return(
+                  <li key={i} onClick={this.details.bind(this, actForm)}>
+                    {actForm.ProjectName}
+                  </li>
+                )
+              }.bind(this))
+            }
+            </h4>
+            <h4><span id="accepted">Принятые</span>
             {
               acceptedForms.map(function(accForm, i){
                 return(
@@ -178,23 +152,12 @@ export default class Citizen extends React.Component {
               }.bind(this))
             }
             </h4>
-            <h4>Отказ
+            <h4><span id="declined">Отказ</span>
             {
               declinedForms.map(function(decForm, i){
                 return(
                   <li key={i} onClick={this.details.bind(this, decForm)}>
                     {decForm.ProjectName}
-                  </li>
-                )
-              }.bind(this))
-            }
-            </h4>
-            <h4>В Процессе
-            {
-              activeForms.map(function(actForm, i){
-                return(
-                  <li key={i} onClick={this.details.bind(this, actForm)}>
-                    {actForm.ProjectName}
                   </li>
                 )
               }.bind(this))
@@ -621,8 +584,8 @@ class ApzForm extends React.Component {
                   <input type="number" className="form-control" name="HeatTech" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="HeadDistribution">Разделить нагрузку по жилью и по встроенным помещениям</label>
-                  <input type="tet" className="form-control" name="HeadDistribution" />
+                  <label htmlFor="HeatDistribution">Разделить нагрузку по жилью и по встроенным помещениям</label>
+                  <input type="text" className="form-control" name="HeatDistribution" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="HeatSaving">Энергосберегающее мероприятие</label>

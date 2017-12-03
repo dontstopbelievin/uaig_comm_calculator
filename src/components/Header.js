@@ -11,66 +11,54 @@ var navBtnStyle = {
   cursor: 'pointer'
 }
 
-class LoginBtn extends Component {
-
-  render() {
-    return(
-      <div className="row loginForm" role="group" aria-label="...">
-        <NavLink to={"/login"} replace className="btn btn-outline-secondary btn-white" activeClassName="active">{e.login}</NavLink>&nbsp;
-        <NavLink to={"/register"} replace className="btn btn-outline-secondary btn-white" activeClassName="active">{e.register}</NavLink>
-      </div>
-    )
-  }
-}
-
-class LogoutBtn extends Component {
-  constructor() {
-    super();
+// class LogoutBtn extends Component {
+//   constructor() {
+//     super();
     
-    this.onLogout = this.onLogout.bind(this);
-    this.gotoCabinet = this.gotoCabinet.bind(this);
-  }
+//     this.onLogout = this.onLogout.bind(this);
+//     this.gotoCabinet = this.gotoCabinet.bind(this);
+//   }
 
-  onLogout() {
-    this.props.logout();
-  }
+//   onLogout() {
+//     this.props.logout();
+//   }
 
-  gotoCabinet() {
-    if(sessionStorage.getItem('tokenInfo')){
-      if(JSON.parse(sessionStorage.getItem('userRoles')).length > 1 && JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Head'){
-        this.props.history.replace('/' + JSON.parse(sessionStorage.getItem('userRoles'))[1]);
-      }
-      else {
-        this.props.history.replace('/' + JSON.parse(sessionStorage.getItem('userRoles'))[0]);
-      }
-    }
-  }
+//   gotoCabinet() {
+//     if(sessionStorage.getItem('tokenInfo')){
+//       if(JSON.parse(sessionStorage.getItem('userRoles')).length > 1 && JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Head'){
+//         this.props.history.replace('/' + JSON.parse(sessionStorage.getItem('userRoles'))[1]);
+//       }
+//       else {
+//         this.props.history.replace('/' + JSON.parse(sessionStorage.getItem('userRoles'))[0]);
+//       }
+//     }
+//   }
 
-  render() {
-    return(
-      <div className="row userInfo">
-        <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
-          <li className="nav-item dropdown">
-            <button className="btn btn-outline-secondary btn-white" href="#" id="cabinetDropdownMenuLink" data-toggle="dropdown">
-              <span>{sessionStorage.getItem('userName')} <i className="glyphicon glyphicon-user"></i></span>
-            </button>
-            <div className="dropdown-menu" aria-labelledby="cabinetDropdownMenuLink">
-              <button onClick={this.gotoCabinet} className="dropdown-item">Список заявлений</button>
-              <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Мои файлы</NavLink>
-              <button  className="dropdown-item">Изменить пароль</button>
-              <button onClick={this.onLogout} className="dropdown-item" href="#">Выход</button>
-            </div>
-          </li>
-        </ul>
-      </div>
-    )
-  }
-}
+//   render() {
+//     return(
+//       <div className="row userInfo">
+//         <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
+//           <li className="nav-item dropdown">
+//             <button className="btn btn-outline-secondary btn-white" href="#" id="cabinetDropdownMenuLink" data-toggle="dropdown">
+//               <span>{sessionStorage.getItem('userName')} <i className="glyphicon glyphicon-user"></i></span>
+//             </button>
+//             <div className="dropdown-menu" aria-labelledby="cabinetDropdownMenuLink">
+//               <button onClick={this.gotoCabinet} className="dropdown-item">Список заявлений</button>
+//               <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Мои файлы</NavLink>
+//               <button  className="dropdown-item">Изменить пароль</button>
+//               <button onClick={this.onLogout} className="dropdown-item" href="#">Выход</button>
+//             </div>
+//           </li>
+//         </ul>
+//       </div>
+//     )
+//   }
+// }
 
 export default class Header extends Component {
   constructor() {
     super();
-    {(localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru')}
+    (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
 
     this.checkToken = this.checkToken.bind(this);
     this.goToGuest = this.goToGuest.bind(this);
@@ -262,10 +250,18 @@ class LogoutBtn extends Component {
               {(() => {
                 switch(JSON.parse(sessionStorage.getItem('userRoles'))[0]) {
                   case 'Admin': return <AdminMenu />;
-                  case 'Urban': return <UrbanMenu />;
+                  case 'Urban': 
+                    if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Head') {
+                      return <HeadMenu />
+                    }
+                    else{
+                      return <UrbanMenu />;
+                    }
+                  case 'Provider': return <ProviderMenu />;
                   case 'Citizen': return <CitizenMenu />;
                   case 'PhotoReport': return <PhotoReportMenu />;
                   case 'Temporary': return <TemporaryMenu />;
+                  default: return null;
                 }
               })()}
               <button className="dropdown-item">Изменить пароль</button>
@@ -295,6 +291,30 @@ class UrbanMenu extends Component {
     return (
       <div>
         <NavLink to={"/urban"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
+        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
+        <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
+      </div>
+    )
+  }
+}
+
+class ProviderMenu extends Component {
+  render() {
+    return (
+      <div>
+        <NavLink to={"/provider"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
+        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
+        <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
+      </div>
+    )
+  }
+}
+
+class HeadMenu extends Component {
+  render() {
+    return (
+      <div>
+        <NavLink to={"/head"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
         <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
       </div>

@@ -29,10 +29,6 @@
   text-align: center;
 }
 
-#on-hold {
-  color: gold;
-}
-
 #declined {
   color: red;
 }
@@ -42,7 +38,7 @@
 }
 
 #in-process {
-  color: purple;
+  color: gold;
 }
 
 .apz-list h4 li {

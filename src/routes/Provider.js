@@ -10,7 +10,6 @@ export default class Provider extends React.Component {
       acceptedForms: [],
       declinedForms: [],
       activeForms: [],
-      onHoldForms: [],
       showDetails: false,
       showButtons: true,
       Id: "",
@@ -55,27 +54,64 @@ export default class Provider extends React.Component {
 
   getApzFormList() {
     var token = sessionStorage.getItem('tokenInfo');
+    var providerName = JSON.parse(sessionStorage.getItem('userRoles'))[1];
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/all", true);
+    xhr.open("get", window.url + "api/apz/provider/" + providerName, true);
     //Send the proper header information along with the request
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-        //console.log(data);
-        // filter the whole list to get only accepted apzForms
-        var acc_forms_list = data.filter(function(obj) { return obj.Status === 1; });
-        this.setState({acceptedForms: acc_forms_list});
-        // filter the list to get the declined apzForms
-        var dec_forms_list = data.filter(function(obj) { return obj.Status === 0; });
-        this.setState({declinedForms: dec_forms_list});
-        // filter the list to get the unanswered apzForms
-        var onhold_forms_list = data.filter(function(obj) { return obj.Status === 3; });
-        this.setState({onHoldForms: onhold_forms_list});
-        // filter the list to get in-process apzForms
-        var act_forms_list = data.filter(function(obj) { return obj.Status === 4; });
-        this.setState({activeForms: act_forms_list});
+        console.log(data);
+        // for WaterProvider
+        if(providerName === 'Water'){
+          // filter the whole list to get only accepted apzForms
+          var acc_forms_list = data.filter(function(obj) { return obj.ApzWater.Status === 1; });
+          this.setState({acceptedForms: acc_forms_list});
+          // filter the list to get the declined apzForms
+          var dec_forms_list = data.filter(function(obj) { return obj.ApzWater.Status === 0; });
+          this.setState({declinedForms: dec_forms_list});
+          // filter the list to get in-process apzForms
+          var act_forms_list = data.filter(function(obj) { return obj.ApzWater.Status === 2; });
+          this.setState({activeForms: act_forms_list});
+        }
+        // for HeatProvider
+        else if(providerName === 'Heat'){
+          // filter the whole list to get only accepted apzForms
+          acc_forms_list = data.filter(function(obj) { return obj.ApzHeat.Status === 1; });
+          this.setState({acceptedForms: acc_forms_list});
+          // filter the list to get the declined apzForms
+          dec_forms_list = data.filter(function(obj) { return obj.ApzHeat.Status === 0; });
+          this.setState({declinedForms: dec_forms_list});
+          // filter the list to get in-process apzForms
+          act_forms_list = data.filter(function(obj) { return obj.ApzHeat.Status === 2; });
+          this.setState({activeForms: act_forms_list});
+        }
+        // for GasProvider
+        else if(providerName === 'Gas'){
+          // filter the whole list to get only accepted apzForms
+          acc_forms_list = data.filter(function(obj) { return obj.ApzGas.Status === 1; });
+          this.setState({acceptedForms: acc_forms_list});
+          // filter the list to get the declined apzForms
+          dec_forms_list = data.filter(function(obj) { return obj.ApzGas.Status === 0; });
+          this.setState({declinedForms: dec_forms_list});
+          // filter the list to get in-process apzForms
+          act_forms_list = data.filter(function(obj) { return obj.ApzGas.Status === 2; });
+          this.setState({activeForms: act_forms_list});
+        }
+        // for ElectricityProvider
+        else{
+          // filter the whole list to get only accepted apzForms
+          acc_forms_list = data.filter(function(obj) { return obj.ApzElectricity.Status === 1; });
+          this.setState({acceptedForms: acc_forms_list});
+          // filter the list to get the declined apzForms
+          dec_forms_list = data.filter(function(obj) { return obj.ApzElectricity.Status === 0; });
+          this.setState({declinedForms: dec_forms_list});
+          // filter the list to get in-process apzForms
+          act_forms_list = data.filter(function(obj) { return obj.ApzElectricity.Status === 2; });
+          this.setState({activeForms: act_forms_list});
+        }
       }
     }.bind(this);
     xhr.send();
@@ -87,14 +123,14 @@ export default class Provider extends React.Component {
     //console.log(statusName);
     var token = sessionStorage.getItem('tokenInfo');
 
-    var data = {Response: status, Message: comment};
-    var dd = JSON.stringify(data);
+    var statusData = {Response: status, Message: comment};
+    var dd = JSON.stringify(statusData);
 
-    var tempActForms = this.state.activeForms;
+    var tempAccForms = this.state.acceptedForms;
     var tempDecForms = this.state.declinedForms;
-    var tempOnHoldList = this.state.onHoldForms;
+    var tempActForms = this.state.activeForms;
     // need to get the position of form in the list
-    var formPos = tempOnHoldList.map(function(x) {return x.Id; }).indexOf(apzId);
+    var formPos = tempActForms.map(function(x) {return x.Id; }).indexOf(apzId);
     //console.log(formPos);
 
     var xhr = new XMLHttpRequest();
@@ -103,22 +139,23 @@ export default class Provider extends React.Component {
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
-      //var data = JSON.parse(xhr.responseText);
+      var data = JSON.parse(xhr.responseText);
       console.log(data);
       if (xhr.status === 200) {
         if(status === true){
           alert("apzForm is accepted");
-          tempOnHoldList.splice(formPos,1);
-          this.setState({onHoldForms: tempOnHoldList});
-          tempActForms.push(data);
-          console.log(tempActForms);
+          // to hide the buttons
+          //this.setState({ showButtons: false });
+          tempActForms.splice(formPos,1);
           this.setState({activeForms: tempActForms});
+          tempAccForms.push(data);
+          this.setState({acceptedForms: tempAccForms});
           console.log("apzForm was accepted");
         }
         else{
           alert("apzForm is rejected");
-          tempOnHoldList.splice(formPos,1);
-          this.setState({onHoldForms: tempOnHoldList});
+          tempActForms.splice(formPos,1);
+          this.setState({activeForms: tempActForms});
           tempDecForms.push(data);
           this.setState({declinedForms: tempDecForms});
           console.log("apzForm was declined");
@@ -152,7 +189,6 @@ export default class Provider extends React.Component {
     var acceptedForms = this.state.acceptedForms;
     var declinedForms = this.state.declinedForms;
     var activeForms = this.state.activeForms;
-    var onHoldForms = this.state.onHoldForms;
     return (
       <div>
         <nav className="navbar-expand-lg navbar-light bg-secondary">
@@ -188,14 +224,14 @@ export default class Provider extends React.Component {
           </div>
           <div className="row">
             <div className="col-md-3 apz-list card">
-              <h4><span id="on-hold">Ждущие</span>
+              <h4><span id="in-process">В Процессе</span>
               {
-                onHoldForms.map(function(onholdForm, i){
+                activeForms.map(function(actForm, i){
                   return(
-                    <li key={i} onClick={this.details.bind(this, onholdForm)}>
-                      {onholdForm.ProjectName}
+                    <li key={i} onClick={this.details.bind(this, actForm)}>
+                      {actForm.ProjectName}
                     </li>
-                    )
+                  )
                 }.bind(this))
               }
               </h4>
@@ -216,17 +252,6 @@ export default class Provider extends React.Component {
                   return(
                     <li key={i} onClick={this.details.bind(this, decForm)}>
                       {decForm.ProjectName}
-                    </li>
-                  )
-                }.bind(this))
-              }
-              </h4>
-              <h4><span id="in-process">В Процессе</span>
-              {
-                activeForms.map(function(actForm, i){
-                  return(
-                    <li key={i} onClick={this.details.bind(this, actForm)}>
-                      {actForm.ProjectName}
                     </li>
                   )
                 }.bind(this))

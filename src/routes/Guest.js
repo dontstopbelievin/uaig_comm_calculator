@@ -7,7 +7,7 @@ let e = new LocalizedStrings({ru,kk});
 export default class Guest extends React.Component {
   constructor() {
     super();
-    {(localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru')}
+    (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
 
   }
 

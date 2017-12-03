@@ -83,8 +83,8 @@ export default class Head extends React.Component {
     //console.log(statusName);
     var token = sessionStorage.getItem('tokenInfo');
 
-    var data = {Response: status, Message: comment};
-    var dd = JSON.stringify(data);
+    var statusData = {Response: status, Message: comment};
+    var dd = JSON.stringify(statusData);
 
     var tempAccForms = this.state.acceptedForms;
     var tempDecForms = this.state.declinedForms;
@@ -99,11 +99,13 @@ export default class Head extends React.Component {
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
-      //var data = JSON.parse(xhr.responseText);
+      var data = JSON.parse(xhr.responseText);
       console.log(data);
       if (xhr.status === 200) {
         if(status === true){
           alert("apzForm is accepted");
+          // to hide the buttons
+          this.setState({ showButtons: false });
           tempOnHoldList.splice(formPos,1);
           this.setState({onHoldForms: tempOnHoldList});
           tempAccForms.push(data);
@@ -182,7 +184,7 @@ export default class Head extends React.Component {
           </div>
           <div className="row">
             <div className="col-md-3 apz-list card">
-              <h4><span id="on-hold">Ждущие</span>
+              <h4><span id="in-process">В процессе</span>
               {
                 onHoldForms.map(function(onholdForm, i){
                   return(
