@@ -11,50 +11,6 @@ var navBtnStyle = {
   cursor: 'pointer'
 }
 
-// class LogoutBtn extends Component {
-//   constructor() {
-//     super();
-    
-//     this.onLogout = this.onLogout.bind(this);
-//     this.gotoCabinet = this.gotoCabinet.bind(this);
-//   }
-
-//   onLogout() {
-//     this.props.logout();
-//   }
-
-//   gotoCabinet() {
-//     if(sessionStorage.getItem('tokenInfo')){
-//       if(JSON.parse(sessionStorage.getItem('userRoles')).length > 1 && JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Head'){
-//         this.props.history.replace('/' + JSON.parse(sessionStorage.getItem('userRoles'))[1]);
-//       }
-//       else {
-//         this.props.history.replace('/' + JSON.parse(sessionStorage.getItem('userRoles'))[0]);
-//       }
-//     }
-//   }
-
-//   render() {
-//     return(
-//       <div className="row userInfo">
-//         <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
-//           <li className="nav-item dropdown">
-//             <button className="btn btn-outline-secondary btn-white" href="#" id="cabinetDropdownMenuLink" data-toggle="dropdown">
-//               <span>{sessionStorage.getItem('userName')} <i className="glyphicon glyphicon-user"></i></span>
-//             </button>
-//             <div className="dropdown-menu" aria-labelledby="cabinetDropdownMenuLink">
-//               <button onClick={this.gotoCabinet} className="dropdown-item">Список заявлений</button>
-//               <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Мои файлы</NavLink>
-//               <button  className="dropdown-item">Изменить пароль</button>
-//               <button onClick={this.onLogout} className="dropdown-item" href="#">Выход</button>
-//             </div>
-//           </li>
-//         </ul>
-//       </div>
-//     )
-//   }
-// }
-
 export default class Header extends Component {
   constructor() {
     super();
