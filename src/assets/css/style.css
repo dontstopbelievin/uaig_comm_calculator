@@ -470,9 +470,37 @@ img {
 }
 
 .files-page .card-deck .card {
-    margin-bottom: 15px;
-    margin-top: 15px;
-    flex: none;
-    flex-grow: 1;
-    width: calc(100% * (1/3) - 30px);
+  margin-bottom: 15px;
+  margin-top: 15px;
+  flex: none;
+  flex-grow: 1;
+  width: calc(100% * (1/3) - 30px);
+}
+
+.sketch-page .list-group-item {
+  display: block;
+}
+
+.sketch-page .list-group-item :first-child {
+  margin-right: 0.5rem;
+}
+
+.sketch-page .list-group-item.active {
+  color: inherit;
+  background-color: #f8f9fa;
+}
+
+.sketch-page .file_block div {
+  border: 1px solid #e0e0e0;
+  padding: 10px;
+  margin: 15px 0 0 !important;
+}
+
+.sketch-page .file_block div a {
+  float: right;
+  margin-left: 20px;
+}
+
+.sketch-page .file_block div a:hover {
+    text-decoration: none;
 }
