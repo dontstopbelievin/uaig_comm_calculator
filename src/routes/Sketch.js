@@ -128,7 +128,18 @@ export default class Sketch extends React.Component {
         </div>
         <div className="row">
           <div className="col-md-3 apz-list card">
-            <h4>Принятые</h4>
+            <h4><span id="in-process">В Процессе</span>
+            {
+              activeForms.map(function(acvForm, i){
+                return(
+                  <li key={i} onClick={this.details.bind(this, acvForm)}>
+                    {acvForm.ProjectName}
+                  </li>
+                )
+              }.bind(this))
+            }
+            </h4>
+            <h4><span id="accepted">Принятые</span>
             {
               acceptedForms.map(function(accForm, i){
                 return(
@@ -138,7 +149,8 @@ export default class Sketch extends React.Component {
                   )
               }.bind(this))
             }
-            <h4>Отказ
+            </h4>
+            <h4><span id="declined">Отказ</span>
             {
               declinedForms.map(function(decForm, i){
                 return(
@@ -149,16 +161,6 @@ export default class Sketch extends React.Component {
               }.bind(this))
             }
             </h4>
-            <h4>Активные</h4>
-            {
-              activeForms.map(function(acvForm, i){
-                return(
-                  <li key={i} onClick={this.details.bind(this, acvForm)}>
-                    {acvForm.ProjectName}
-                  </li>
-                )
-              }.bind(this))
-            }
           </div>
           <div className="col-md-6 apz-additional card">
             <div id="citizenMapPause" className="col-md-12 well" style={{paddingTop:'10px', height:'500px', width:'100%'}}>
