@@ -147,6 +147,9 @@ export default class Header extends Component {
                   <button className="dropdown-item" href="#">Другое</button>
                  </div>
               </li>
+              <li className="nav-item">
+                <NavLink to={'/reviews'} replace className="nav-link">{e.reviews}</NavLink>
+              </li>
             </ul>
             
             <div className="justify-content-end">

@@ -19,6 +19,7 @@ import PhotoReportsManage from './routes/PhotoReportsManage';
 import Admin from './routes/Admin';
 import Files from './routes/Files';
 import Sketch from './routes/Sketch';
+import Review from './routes/Review';
 import Footer from './components/Footer';
 
 window.jQuery = require('jquery');
@@ -71,6 +72,7 @@ export default class Main extends React.Component {
               <Route path="/admin" render={(props) => (<Admin {...props} />)} />
               <Route path="/files" render={(props) => (<Files {...props} />)} />
               <Route path="/sketch" render={(props) => (<Sketch {...props} />)} />
+              <Route path="/reviews" render={(props) => (<Review {...props} />)} />
             </Switch>
             <Footer />
           </div>

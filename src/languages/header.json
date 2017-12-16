@@ -11,6 +11,7 @@
     "photoreports": "Фотоотчеты",
     "project": "Проект",
     "services": "Государственные услуги",
+    "reviews": "Отзывы",
     "login": "Вход",
     "register": "Регистрация"
   },
@@ -26,6 +27,7 @@
     "photoreports": "Фотоесептер",
     "project": "Жоба",
     "services": "Мемлекеттік қызметтер",
+    "reviews": "Пікірлер",
     "login": "Кiру",
     "register": "Тiркелу"
     }

@@ -540,5 +540,30 @@ img {
 }
 
 .sketch-page .file_block div a:hover {
-    text-decoration: none;
+  text-decoration: none;
+}
+
+.review_tag {
+  color: #135ead;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.review-page .list-group.bmd-list-group-sm .list-group-item {
+  padding: 1.5rem 1rem;
+  border-bottom: 1px solid #fafafa;
+  margin-bottom: 10px;
+}
+
+.review-page .list-group-item .list-group-item-text {
+    margin: 0;
+}
+
+.review-page .list-group-item :first-child {
+    margin-right: 0;
+}
+
+.review-page form {
+    margin-bottom: 1.125rem;
+    padding: 1.5rem 1rem 0;
 }
