@@ -85,7 +85,7 @@ class AllReviews extends React.Component {
 
     return (
       <div>
-      <ul class="list-group bmd-list-group-sm">
+      <ul className="list-group bmd-list-group-sm">
         {this.state.reviews.map(function(review, index) {
           return(
             <a className="list-group-item" key={index}>
@@ -129,8 +129,15 @@ class ReviewsByTag extends React.Component {
     this.getReviews();
   }
 
-  getReviews() {
-    var tag = this.props.match.params.tag;
+  componentWillReceiveProps(newProps) {
+    this.getReviews(newProps.match.params.tag);
+  }
+
+  getReviews(tag = null) {
+
+    if (tag == null) {
+      tag = this.props.match.params.tag;
+    }
 
     $.ajax({
       type: 'GET',
@@ -154,7 +161,7 @@ class ReviewsByTag extends React.Component {
   render() {
     return (
       <div>
-        <ul class="list-group bmd-list-group-sm">
+        <ul className="list-group bmd-list-group-sm">
         {this.state.reviews.map(function(review, index) {
           return(
             <a className="list-group-item" key={index}>
