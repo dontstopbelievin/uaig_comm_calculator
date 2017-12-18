@@ -24,9 +24,11 @@ import Footer from './components/Footer';
 
 window.jQuery = require('jquery');
 window.Popper = require('popper.js').default;
+
 require('bootstrap-material-design');
 require('./assets/css/style.css');
 require('glyphicons-only-bootstrap/css/bootstrap.min.css');
+
 
 export default class Main extends React.Component {
 
