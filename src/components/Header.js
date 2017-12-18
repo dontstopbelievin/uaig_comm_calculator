@@ -6,7 +6,7 @@ import {ru, kk} from '../languages/header.json';
 let e = new LocalizedStrings({ru,kk});
 
 var navBtnStyle = {
-  backgroundColor: '#135EAD',
+  backgroundColor: 'rgb(0, 50, 125)',
   border: 'none',
   cursor: 'pointer'
 }

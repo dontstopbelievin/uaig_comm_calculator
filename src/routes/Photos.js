@@ -17,8 +17,11 @@ export default class Photos extends React.Component {
   render() {
     //console.log("rendering the GuestComponent");
     return (
-      <div className="container">
-        Галерея
+      <div className="content container photos-page">
+        <div className="card">
+          <div className="card-header"><h4 className="mb-0">Галерея</h4></div>
+          <div className="card-body"></div>
+        </div>
       </div>
     )
   }

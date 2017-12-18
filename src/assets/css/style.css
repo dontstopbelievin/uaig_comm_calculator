@@ -1,5 +1,6 @@
 @import 'material-design/bootstrap-material-design.css';
 @import 'https://js.arcgis.com/4.5/esri/css/main.css';
+@import 'https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700&subset=cyrillic';
 
 .content {
   padding: 50px 0;
@@ -86,6 +87,43 @@
   font-size: 10pt;
 }
 
+.home-page .card-color-1 {background: #5cc4ca;}
+.home-page .card-color-2 {background: #7abf82;}
+.home-page .card-color-3 {background: #db8c8c;}
+.home-page .card-color-4 {background: #494572;}
+.home-page .card-color-5 {background: #cac25c;}
+.home-page .card-color-6 {background: #3b9484;}
+
+.home-page .card-deck p {
+  font-weight: 300;
+}
+
+.home-page .card-image {
+  padding: 15px;
+}
+
+.home-page .card-image .image-border {
+  border: 1px solid #fff;
+}
+
+.home-page .card-image img {
+  width: 80px;
+  margin: 20px auto;
+  display: block;
+}
+
+.home-page .card-deck .card-footer {
+  padding: 0;
+}
+
+.home-page .card-deck .card-footer .btn {
+  width: 100%;
+  margin: 0;
+  padding: 10px 0;
+}
+
+
+
 /*.navbar {
     margin-bottom: 30px;
 }*/
@@ -105,7 +143,7 @@
 }
 
 .bg-blue {
-    background-color: rgba(19, 94, 173, 1)!important;
+    background-color: rgb(0, 50, 125)!important;
 }
 thead {
     background-color: #d3e8ef;
@@ -166,9 +204,11 @@ thead {
   margin-top: 50px;
 }
 
-.block-main h2 {
-  text-align: center;
+.block-main h5 {
+  font-size: 30px;
   text-transform: uppercase;
+  font-weight: 300;
+  margin: 0 0 30px;
 }
 
 .promo-block {
