@@ -72,7 +72,7 @@ webSocket.onmessage = function (event) {
         break;
     }
   }
-  console.log(event);
+  //console.log(event);
   setMissedHeartbeatsLimitToMin();
 };
 
@@ -139,13 +139,12 @@ function getTokenXml(alias) {
 }
 
 function signXml(storageName, storagePath, alias, password, xmlToSign, callBack) {
-  console.log(1);
   // xmlToSign
   var signXml = {
       "method": "signXml",
       "args": [storageName, storagePath, alias, password, xmlToSign]
   };
-  console.log(signXml);
+  //console.log(signXml);
   callback = callBack;
   setMissedHeartbeatsLimitToMax();
   webSocket.send(JSON.stringify(signXml));
@@ -155,7 +154,6 @@ function signXmlBack(result) {
   
   if (result['errorCode'] === "NONE") {
     let signedXml = result.result;
-    console.log(typeof signedXml);
     var data = { XmlDoc: signedXml }
     $.ajax({
         url: window.url + 'api/Account/LoginCert',
@@ -163,8 +161,15 @@ function signXmlBack(result) {
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(data),
         success: function (response) {
+           // var commonName = response.commonName;
+           // var commonNameValues = commonName.split("?");
            // you will get response from your php page (what you echo or print)  
-           alert('RESULT: ' + response);
+            window.result = response;
+            $('#userName').val(response.IIN);
+            $('#firstName').val(response.firstName);
+            $('#lastName').val(response.lastName);
+            $('#middleName').val(response.middleName);
+            alert(response.firstName + ", ЭЦП успешно загружен! Заполните остальные поля.");
         },
         error: function(jqXHR, textStatus, errorThrown) {
            console.log(textStatus, errorThrown);
@@ -274,6 +279,7 @@ export default class Register extends React.Component {
     if (path !== null && path !== "" && storageAlias !== null && storageAlias !== "") {
       if (password !== null && password !== "") {
         getKeys(storageAlias, path, password, keyType, "loadKeysBack");
+        console.log(this.state.resultIIN);
       } else {
         alert("Введите пароль к хранилищу");
       }
@@ -285,41 +291,48 @@ export default class Register extends React.Component {
   //use register function
   register() {
     console.log("register function started");
-    var username = this.state.username.trim();
+    // var username = this.state.username.trim();
     var email = this.state.email.trim();
     var pwd = this.state.pwd.trim();
     var confirmPwd = this.state.confirmPwd.trim();
 
     var registerData = {
-      UserName: username,
+      UserName: window.result.IIN,
+      FirstName: window.result.firstName,
+      LastName: window.result.lastName,
+      MiddleName: window.result.middleName,
       Email: email,
       Password: pwd,
       ConfirmPassword: confirmPwd
     };
 
+    console.log(registerData);
+
     var data = JSON.stringify(registerData);
 
-    if (!username || !email || !pwd || !confirmPwd) {
-      return;
-    }
-
-    this.setState({loadingVisible: true});
-    var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + "api/Account/Register", true);
-    //Send the proper header information along with the request
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        alert("Вы успешно зарегистрировались!\n Можете войти через созданный аккаунт!");
-        this.setState({loadingVisible: false});
-      }else {
-        console.log(xhr.response);
-        this.setState({loadingVisible: false}); 
-        //alert("Ошибка " + xhr.status + ': ' + xhr.statusText);
-      }
-    }.bind(this);
-    //console.log(data);
-    xhr.send(data);
+    if (!!email && !pwd && !confirmPwd) {
+      return;
+    } 
+    else {
+      this.setState({loadingVisible: true});
+      var xhr = new XMLHttpRequest();
+      xhr.open("post", window.url + "api/Account/Register", true);
+      //Send the proper header information along with the request
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          alert("Вы успешно зарегистрировались!\n Можете войти через созданный аккаунт!");
+          this.setState({loadingVisible: false});
+        } else {
+          console.log(xhr.response);
+          this.setState({loadingVisible: false}); 
+          //alert("Ошибка " + xhr.status + ': ' + xhr.statusText);
+        }
+      }.bind(this);
+      //console.log(data);
+      xhr.send(data);
+    }
+    
   }
 
   componentWillMount() {
@@ -381,7 +394,19 @@ export default class Register extends React.Component {
                 <form id="registerForm" onSubmit={this.register}>
                   <div className="form-group">
                     <label htmlFor="UserName" className="control-label">ИИН/БИН:</label>
-                    <input type="text" className="form-control" required value={this.state.username} onChange={this.onUsernameChange} />
+                    <input type="text" className="form-control" id="userName" required disabled />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="surname" className="control-label">Фамилия:</label>
+                    <input type="text" className="form-control" id="lastName" required disabled />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="name" className="control-label">Имя:</label>
+                    <input type="text" className="form-control" id="firstName" required disabled />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="patronymic" className="control-label">Отчество:</label>
+                    <input type="text" className="form-control" id="middleName" disabled />
                   </div>
                   <div className="form-group">
                     <label htmlFor="Email" className="control-label">E-mail:</label>
