@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Route, NavLink, Switch, Redirect} from 'react-router-dom';
 import PreloaderIcon, {ICON_TYPE} from 'react-preloader-icon';
 
@@ -194,6 +194,39 @@ export default class PhotoReportsManage extends React.Component {
                 
               </div>
               <div className="col-sm-3">
+      {/*<div className="content container">
+        <div className="row">
+          
+          <div className="col-md-3 card">
+            <h4 className="card-header">Активные</h4>
+            <div className="card-body">
+              {
+                this.state.activeList.map(function(e, i){
+                return(
+                    <div key={i}>
+                      <a onClick={this.getDetails.bind(this, e)} className="btn btn-primary">{e.PhotoAddress}</a>
+                    </div>
+                  )
+                }.bind(this))
+              }
+            </div>
+            
+          </div>
+          <div className="col-md-4 card">
+            <h4 className="card-header">Паспорт</h4>
+            <div className="card-body">
+              <div className={this.state.showDetails ? 'row' : 'invisible'}>
+                <div className="col-6"><b>Дата заявления</b>:</div> <div className="col-6">{this.state.ApplicationDate}</div>
+                <div className="col-6"><b>Название компании</b>:</div> <div className="col-6">{this.state.CompanyName}</div>
+                <div className="col-6"><b>Юридический адрес</b>:</div> <div className="col-6">{this.state.CompanyLegalAddress}</div>
+                <div className="col-6"><b>Фактический адрес</b>:</div> <div className="col-6">{this.state.CompanyFactualAddress}</div>
+                <div className="col-6"><b>Адрес рекламы</b>:</div> <div className="col-6">{this.state.PhotoAddress}</div>
+                <div className="col-6"><b>Регион компании</b>:</div> <div className="col-6">{this.state.CompanyRegion}</div>
+                <div className="col-6"><b>ИИН/БИН</b>:</div> <div className="col-6">{this.state.IIN}</div>
+                <div className="col-6"><b>Телефон</b>:</div> <div className="col-6">{this.state.CompanyPhone}</div>
+                <div className="col-6"><b>Период с</b>:</div> <div className="col-6">{this.state.StartDate}</div>
+                <div className="col-6"><b>Период до</b>:</div> <div className="col-6">{this.state.EndDate}</div>
+                <div className="col-6"><b>Комментарии</b>:</div> <div className="col-6">{this.state.Comments}</div>*/}
               </div>
             </div>
             <table className="table">

@@ -17,12 +17,27 @@ export default class Header extends Component {
     (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
 
     this.checkToken = this.checkToken.bind(this);
-    this.goToGuest = this.goToGuest.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
-  goToGuest() {
-    sessionStorage.clear();
-    this.props.history.replace('/');
+  logout() {
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("post", window.url + "api/Account/Logout", true);
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        sessionStorage.clear();
+        this.props.history.replace('/');
+      }
+      else if(xhr.status === 401){
+        sessionStorage.clear();
+        this.props.history.replace("/");
+      }
+    }.bind(this);
+    xhr.send();
   }
 
   updateLanguage(name){
@@ -49,7 +64,7 @@ export default class Header extends Component {
         }else {
           console.log("invalid token");
           sessionStorage.clear();
-          this.props.history.push('/');
+          this.props.history.replace('/');
           //alert("Your token is invalid please refresh the page.");
         }
       }.bind(this);
@@ -154,7 +169,7 @@ export default class Header extends Component {
             
             <div className="justify-content-end">
               {sessionStorage.getItem('logStatus') ? (
-                <LogoutBtn logout={this.goToGuest} history={this.props.history} />
+                <LogoutBtn logout={this.logout} history={this.props.history} />
               ) : (
                 <LoginBtn />
               )}
