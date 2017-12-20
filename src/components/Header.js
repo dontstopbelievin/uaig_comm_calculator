@@ -11,62 +11,33 @@ var navBtnStyle = {
   cursor: 'pointer'
 }
 
-// class LogoutBtn extends Component {
-//   constructor() {
-//     super();
-    
-//     this.onLogout = this.onLogout.bind(this);
-//     this.gotoCabinet = this.gotoCabinet.bind(this);
-//   }
-
-//   onLogout() {
-//     this.props.logout();
-//   }
-
-//   gotoCabinet() {
-//     if(sessionStorage.getItem('tokenInfo')){
-//       if(JSON.parse(sessionStorage.getItem('userRoles')).length > 1 && JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Head'){
-//         this.props.history.replace('/' + JSON.parse(sessionStorage.getItem('userRoles'))[1]);
-//       }
-//       else {
-//         this.props.history.replace('/' + JSON.parse(sessionStorage.getItem('userRoles'))[0]);
-//       }
-//     }
-//   }
-
-//   render() {
-//     return(
-//       <div className="row userInfo">
-//         <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
-//           <li className="nav-item dropdown">
-//             <button className="btn btn-outline-secondary btn-white" href="#" id="cabinetDropdownMenuLink" data-toggle="dropdown">
-//               <span>{sessionStorage.getItem('userName')} <i className="glyphicon glyphicon-user"></i></span>
-//             </button>
-//             <div className="dropdown-menu" aria-labelledby="cabinetDropdownMenuLink">
-//               <button onClick={this.gotoCabinet} className="dropdown-item">Список заявлений</button>
-//               <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Мои файлы</NavLink>
-//               <button  className="dropdown-item">Изменить пароль</button>
-//               <button onClick={this.onLogout} className="dropdown-item" href="#">Выход</button>
-//             </div>
-//           </li>
-//         </ul>
-//       </div>
-//     )
-//   }
-// }
-
 export default class Header extends Component {
   constructor() {
     super();
     (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
 
     this.checkToken = this.checkToken.bind(this);
-    this.goToGuest = this.goToGuest.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
-  goToGuest() {
-    sessionStorage.clear();
-    this.props.history.replace('/');
+  logout() {
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("post", window.url + "api/Account/Logout", true);
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        sessionStorage.clear();
+        this.props.history.replace('/');
+      }
+      else if(xhr.status === 401){
+        sessionStorage.clear();
+        this.props.history.replace("/");
+      }
+    }.bind(this);
+    xhr.send();
   }
 
   updateLanguage(name){
@@ -93,7 +64,7 @@ export default class Header extends Component {
         }else {
           console.log("invalid token");
           sessionStorage.clear();
-          this.props.history.push('/');
+          this.props.history.replace('/');
           //alert("Your token is invalid please refresh the page.");
         }
       }.bind(this);
@@ -195,7 +166,7 @@ export default class Header extends Component {
             
             <div className="justify-content-end">
               {sessionStorage.getItem('logStatus') ? (
-                <LogoutBtn logout={this.goToGuest} history={this.props.history} />
+                <LogoutBtn logout={this.logout} history={this.props.history} />
               ) : (
                 <LoginBtn />
               )}

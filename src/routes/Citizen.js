@@ -20,11 +20,33 @@ export default class Citizen extends React.Component {
       Designer: "",
       ProjectName: "",
       ProjectAddress: "",
-      ApzDate: ""
+      ApzDate: "",
+      regionDate: null,
+      headDate: null,
+      Status: 0,
+      regionResponse: null,
+      headResponse: null,
+      wStatus: 7,
+      hStatus: 7,
+      eStatus: 7,
+      gStatus: 7,
+      eActionDate: null,
+      hActionDate: null,
+      gActionDate: null,
+      wActionDate: null,
+      eResponse: null,
+      hResponse: null,
+      gResponse: null,
+      wResponse: null
     }
 
     this.getApzFormList = this.getApzFormList.bind(this);
     this.toggleForm = this.toggleForm.bind(this);
+    this.getStatusForArch = this.getStatusForArch.bind(this);
+    this.getStatusForHeadArch = this.getStatusForHeadArch.bind(this);
+    this.getStatusForProvider = this.getStatusForProvider.bind(this);
+    this.toggleStatusBar = this.toggleStatusBar.bind(this);
+    this.toggleResponseText = this.toggleResponseText.bind(this);
   }
 
   // function to get the list of ApzForms
@@ -49,13 +71,18 @@ export default class Citizen extends React.Component {
         var act_forms_list = data.filter(function(obj) { return (obj.Status !== 0 && obj.Status !== 1); });
         this.setState({activeForms: act_forms_list});
       }
+      else if(xhr.status === 401){
+        sessionStorage.clear();
+        alert("Token is expired, please login again!");
+        this.props.history.replace("/login");
+      }
     }.bind(this);
     xhr.send();
   }
 
   // function to show the detailed info for every form
   details(e) {
-    // console.log(e);
+    console.log(e);
     this.setState({ showDetails: true });
     this.setState({ Applicant: e.Applicant });
     this.setState({ Address: e.Address });
@@ -72,6 +99,95 @@ export default class Citizen extends React.Component {
       var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
       return { ApzDate: formated_date }
     });
+    this.setState({ Status: e.Status });
+    this.setState({ wStatus: e.ApzWaterStatus });
+    this.setState({ hStatus: e.ApzHeatStatus });
+    this.setState({ eStatus: e.ApzElectricityStatus });
+    this.setState({ gStatus: e.ApzGasStatus });
+    this.setState(function(){
+      if(e.RegionDate !== null){
+        var jDate = new Date(e.RegionDate);
+        var curr_date = jDate.getDate();
+        var curr_month = jDate.getMonth() + 1;
+        var curr_year = jDate.getFullYear();
+        var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
+        return { regionDate: formated_date }
+      }
+      else{
+        return { regionDate: e.RegionDate }
+      } 
+    });
+    this.setState({ regionResponse: e.RegionResponse});
+    this.setState(function(){
+      if(e.HeadDate !== null){
+        var jDate = new Date(e.HeadDate);
+        var curr_date = jDate.getDate();
+        var curr_month = jDate.getMonth() + 1;
+        var curr_year = jDate.getFullYear();
+        var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
+        return { headDate: formated_date }
+      }
+      else{
+        return { headDate: e.HeadDate }
+      }
+    });
+    this.setState({ headResponse: e.HeadResponse});
+    this.setState(function(){
+      if(e.ProviderElectricityDate !== null){
+        var jDate = new Date(e.ProviderElectricityDate);
+        var curr_date = jDate.getDate();
+        var curr_month = jDate.getMonth() + 1;
+        var curr_year = jDate.getFullYear();
+        var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
+        return { eActionDate: formated_date }
+      }
+      else{
+        return { eActionDate: e.ProviderElectricityDate }
+      }
+    });
+    this.setState({ eResponse: e.ProviderElectricityResponse});
+    this.setState(function(){
+      if(e.ProviderGasDate !== null){
+        var jDate = new Date(e.ProviderGasDate);
+        var curr_date = jDate.getDate();
+        var curr_month = jDate.getMonth() + 1;
+        var curr_year = jDate.getFullYear();
+        var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
+        return { gActionDate: formated_date }
+      }
+      else{
+        return { gActionDate: e.ProviderGasDate }
+      }
+    });
+    this.setState({ gResponse: e.ProviderGasResponse});
+    this.setState(function(){
+      if(e.ProviderHeatDate !== null){
+        var jDate = new Date(e.ProviderHeatDate);
+        var curr_date = jDate.getDate();
+        var curr_month = jDate.getMonth() + 1;
+        var curr_year = jDate.getFullYear();
+        var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
+        return { hActionDate: formated_date }
+      }
+      else{
+        return { hActionDate: e.ProviderHeatDate }
+      }
+    });
+    this.setState({ hResponse: e.ProviderHeatResponse});
+    this.setState(function(){
+      if(e.ProviderWaterDate !== null){
+        var jDate = new Date(e.ProviderWaterDate);
+        var curr_date = jDate.getDate();
+        var curr_month = jDate.getMonth() + 1;
+        var curr_year = jDate.getFullYear();
+        var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
+        return { wActionDate: formated_date }
+      }
+      else{
+        return { wActionDate: e.ProviderWaterDate }
+      }
+    });
+    this.setState({ wResponse: e.ProviderWaterResponse});
   }
 
   // function to hide/show ApzForm, gets called when button "Создать заявление" is clicked
@@ -88,6 +204,61 @@ export default class Citizen extends React.Component {
     tempList.push(form);
     //console.log(tempList);
     this.setState({activeForms: tempList});
+  }
+
+  // function to show StatusBar or ResponseMessages
+  toggleStatusBar(status){
+    if(status === 0)
+      return false;
+    else
+      return true;
+  }
+
+  // function to show responseText if its not null
+  toggleResponseText(response){
+    if(response === null)
+      return false;
+    else
+      return true;
+  }
+
+  // change status for Architect in ProgressBar
+  getStatusForArch(status, rd, rr) {
+    //console.log(status);
+    //console.log(rd);
+    //console.log(rr);
+    if((status === 0 || status === 1 || status === 3 || status === 4) && (rd !== null && rr === null))
+      return 'circle done';
+    else if(status === 0 && (rd !== null && rr !== null))
+      return 'circle fail';
+    else if(status === 2)
+      return 'circle active';
+    else
+      return 'circle';
+  }
+
+  // change status for Providers(water, heat, gas, electricity) in ProgressBar
+  getStatusForProvider(pStatus, status) {
+    if(status === 1)
+      return 'circle done';
+    else if(status === 0)
+      return 'circle fail';
+    else if(pStatus === 3 && status === 2)
+      return 'circle active';
+    else
+      return 'circle';
+  }
+
+  // change status for HeadArchitect in ProgressBar
+  getStatusForHeadArch(status, hd, hr) {
+    if(status === 2 || ((status === 0 || status === 1 || status === 2 || status === 3) && (hd === null && hr === null)))
+      return 'circle';
+    else if(status === 4)
+      return 'circle active';
+    else if(status === 0)
+      return 'circle fail';
+    else
+      return 'circle done';
   }
 
   componentWillMount() {
@@ -116,7 +287,7 @@ export default class Citizen extends React.Component {
     var activeForms = this.state.activeForms;
     var updateList = this.updateOtherFormsList.bind(this);
     return (
-      <div className="content container">
+      <div className="content container" style={{paddingBottom: '0'}}>
         <div className="row">
           <div className="col-md-3">
             <h4 style={{textAlign: 'center'}}>Список заявлений</h4>
@@ -164,8 +335,8 @@ export default class Citizen extends React.Component {
             }
             </h4>
           </div>
-          <div className="col-md-6 apz-additional card">
-            <div id="citizenMapPause" className="col-md-12 well" style={{paddingTop:'10px', height:'500px', width:'100%'}}>
+          <div className="col-md-6 apz-additional card" style={{padding: '0'}}>
+            <div id="citizenMapPause" className="col-md-12 well" style={{padding: '0', height:'300px', width:'100%'}}>
                 Карта со слоями
             </div>
             {/*<button class="btn-block btn-info col-md-3" id="printApz">
@@ -193,37 +364,73 @@ export default class Citizen extends React.Component {
         </div>
         <div className="row">
           {/*<div id="infoDiv">Нажмите на участок или объект, чтобы получить информацию</div>*/}
-          <div id="viewDiv"></div>
-          <div className="progressBar">
-            <div className="circle done">
-            <span className="label">1</span>
-            <span className="title">Районный архитектор</span>
-            </div>
-            
-            <span className="bar half"></span>
-            <div className="circle done">
-            <span className="label">3</span>
-            <span className="title">Провайдер водоснабжения</span>
+          {/*<div id="viewDiv"></div>*/}
+          <div className={this.toggleStatusBar(this.state.Status) ? 'progressBar' : 'invisible'}>
+            <div className={this.getStatusForArch(this.state.Status, this.state.regionDate, this.state.regionResponse)}>
+              <span className="label">1</span>
+              <span className="title">Районный архитектор</span>
             </div>
             <span className="bar"></span>
-            <div className="circle done">
-            <span className="label">4</span>
-            <span className="title">Провайдер газоснабжения</span>
+            <div className="box">
+              <div className={this.getStatusForProvider(this.state.Status, this.state.wStatus)}>
+                <span className="label">2</span>
+                <span className="title">Поставщик (вода) </span>
+                {/*<span className="title">{this.state.wActionDate} </span>*/}
+              </div>
+              <span className="bar"></span>
+              <div className={this.getStatusForProvider(this.state.Status, this.state.gStatus)}>
+                <span className="label">2</span>
+                <span className="title">Поставщик (газ)</span>
+              </div>
+              <span className="bar"></span>
+              <div className={this.getStatusForProvider(this.state.Status, this.state.hStatus)}>
+                <span className="label">2</span>
+                <span className="title">Поставщик (тепло)</span>
+              </div>
+              <span className="bar"></span>
+              <div className={this.getStatusForProvider(this.state.Status, this.state.eStatus)}>
+                <span className="label">2</span>
+                <span className="title">Поставщик (электр)</span>
+              </div>
             </div>
             <span className="bar"></span>
-            <div className="circle active">
-            <span className="label">5</span>
-            <span className="title">Провайдер теплоснабжения</span>
+            <div className={this.getStatusForHeadArch(this.state.Status, this.state.headDate, this.state.headResponse)}>
+              <span className="label">3</span>
+              <span className="title">Главный архитектор</span>
             </div>
-            <span className="bar"></span>
-            <div className="circle">
-            <span className="label">6</span>
-            <span className="title">Провайдер электроснабжения</span>
+          </div>
+          <div className={this.toggleStatusBar(this.state.Status) ? 'row actionDate' : 'invisible'}>
+            <div className="col-3"></div>
+            <div className="col-7" style={{padding: '0', fontSize: '0.8em'}}>
+              <div className="row">
+                <div className="col-2">{this.state.regionDate}</div>
+                <div className="col-2">{this.state.wActionDate}</div>
+                <div className="col-2">{this.state.gActionDate}</div>
+                <div className="col-2">{this.state.hActionDate}</div>
+                <div className="col-2">{this.state.eActionDate}</div>
+                <div className="col-2">{this.state.headDate}</div>
+              </div>
             </div>
-            <span className="bar"></span>
-            <div className="circle">
-            <span className="label">7</span>
-            <span className="title">Главный архитектор</span>
+            <div className="col-2"></div>
+          </div>
+          <div className={!this.toggleStatusBar(this.state.Status) ? 'allResponseText' : 'invisible'}>
+            <div className={this.toggleResponseText(this.state.regionResponse) ? 'responseText' : 'invisible'}>
+              {this.state.regionResponse}
+            </div>
+            <div className={this.toggleResponseText(this.state.eResponse) ? 'responseText' : 'invisible'}>
+              {this.state.eResponse}
+            </div>
+            <div className={this.toggleResponseText(this.state.gResponse) ? 'responseText' : 'invisible'}> 
+              {this.state.gResponse} 
+            </div>
+            <div className={this.toggleResponseText(this.state.hResponse) ? 'responseText' : 'invisible'}>
+              {this.state.hResponse} 
+            </div>
+            <div className={this.toggleResponseText(this.state.wResponse) ? 'responseText' : 'invisible'}>
+              {this.state.wResponse}
+            </div>
+            <div className={this.toggleResponseText(this.state.headResponse) ? 'responseText' : 'invisible'}>
+              {this.state.headResponse}
             </div>
           </div>
         </div>
@@ -359,26 +566,26 @@ class ApzForm extends React.Component {
                 </div>
                 </div>
                 <div className="col-md-6">
-                <div className="form-group">
-                  <label htmlFor="Customer">Заказчик</label>
-                  <input type="text" required className="form-control" name="Customer" placeholder="Заказчик" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
-                  <input type="text" required className="form-control" name="Designer" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="ProjectName">Наименование проектируемого объекта</label>
-                  <input type="text" required className="form-control" id="ProjectName" name="ProjectName" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
-                  <input type="text" required className="form-control" name="ProjectAddress" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="ApzDate">Дата</label>
-                  <input type="date" required className="form-control" name="ApzDate" />
-                </div>
+                  <div className="form-group">
+                    <label htmlFor="Customer">Заказчик</label>
+                    <input type="text" required className="form-control" name="Customer" placeholder="Заказчик" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
+                    <input type="text" required className="form-control" name="Designer" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="ProjectName">Наименование проектируемого объекта</label>
+                    <input type="text" required className="form-control" id="ProjectName" name="ProjectName" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
+                    <input type="text" required className="form-control" name="ProjectAddress" />
+                  </div>
+                  {/*<div className="form-group">
+                    <label htmlFor="ApzDate">Дата</label>
+                    <input type="date" required className="form-control" name="ApzDate" />
+                  </div>*/}
                 </div>
               </div>
               <div>
@@ -441,8 +648,8 @@ class ApzForm extends React.Component {
                   <input type="number" className="form-control" name="ElectricRequiredPower" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="">Характер нагрузки (фаза)</label>
-                  <select className="form-control">
+                  <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
+                  <select className="form-control" name="ElectricityPhase">
                   <option>Однофазная</option>
                   <option>Трехфазная</option>
                   <option>Постоянная</option>

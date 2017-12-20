@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { Route, NavLink, Switch, Redirect} from 'react-router-dom';
-import PreloaderIcon, {ICON_TYPE} from 'react-preloader-icon';
+import React from 'react';
+//import { Route, NavLink, Switch, Redirect} from 'react-router-dom';
+//import PreloaderIcon, {ICON_TYPE} from 'react-preloader-icon';
 
 export default class PhotoReportsManage extends React.Component {
   constructor() {
@@ -166,7 +166,7 @@ export default class PhotoReportsManage extends React.Component {
                 this.state.activeList.map(function(e, i){
                 return(
                     <div key={i}>
-                      <a href="javascript:;" onClick={this.getDetails.bind(this, e)} className="btn btn-primary">{e.PhotoAddress}</a>
+                      <a onClick={this.getDetails.bind(this, e)} className="btn btn-primary">{e.PhotoAddress}</a>
                     </div>
                   )
                 }.bind(this))
@@ -251,10 +251,10 @@ export default class PhotoReportsManage extends React.Component {
   }
 }
 
-class Loading extends Component {
-  render() {
-    return (
-      <PreloaderIcon type={ICON_TYPE.OVAL} size={32} strokeWidth={8} strokeColor="#135ead" duration={800} />
-      )
-  }
-}
+// class Loading extends Component {
+//   render() {
+//     return (
+//       <PreloaderIcon type={ICON_TYPE.OVAL} size={32} strokeWidth={8} strokeColor="#135ead" duration={800} />
+//       )
+//   }
+// }

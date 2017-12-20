@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+//import { NavLink } from 'react-router-dom';
 
 export default class Provider extends React.Component {
 
@@ -20,16 +20,78 @@ export default class Provider extends React.Component {
       Designer: "",
       ProjectName: "",
       ProjectAddress: "",
-      ApzDate: ""
+      ApzDate: "",
+      showElecDetail: false,
+      showWaterDetail: false,
+      showHeatDetail: false,
+      showGasDetail: false,
+      wReq: 0, wDrink: 0, wProd: 0, wFireF: 0, wS: 0,
+      hGen: 0, hMain: 0, hVen: 0, hWater: 0, hTech: 0, hDist: "", hSav: "",
+      gGen: 0, gCook: 0, gHeat: 0, gVen: 0, gCon: 0, gWater: 0,
+      eReqPow: 0, ePhase: "", eSafeCat: "", eMaxLDev: 0, eMaxLoad: 0, eAllowedP: 0,
+      description: ""
     }
 
     this.getApzFormList = this.getApzFormList.bind(this);
+    this.onDescriptionChange = this.onDescriptionChange.bind(this);
+  }
+
+  onDescriptionChange(e) {
+    this.setState({ description: e.target.value });
   }
 
   details(e) {
     console.log(e);
     this.setState({ showButtons: false });
-    if(e.Status === 3) { this.setState({ showButtons: true }); }
+    var roleName = JSON.parse(sessionStorage.getItem('userRoles'))[1];
+    if(roleName === 'Electricity'){
+      if(e.Status === 3 && e.ApzElectricityStatus === 2){
+        this.setState({ showButtons: true });
+      }
+      this.setState({ showElecDetail: true });
+      this.setState({ eReqPow: e.ElectricRequiredPower }); 
+      this.setState({ ePhase: e.ElectricityPhase }); 
+      this.setState({ eSafeCat: e.ElectricSafetyCategory }); 
+      this.setState({ eMaxLDev: e.ElectricMaxLoadDevice }); 
+      this.setState({ eMaxLoad: e.ElectricMaxLoad }); 
+      this.setState({ eAllowedP: e.ElectricAllowedPower }); 
+    }
+    else if(roleName === 'Water'){
+      if(e.Status === 3 && e.ApzWaterStatus === 2){
+        this.setState({ showButtons: true });
+      }
+      this.setState({ showWaterDetail: true });
+      this.setState({ wReq: e.WaterRequirement }); 
+      this.setState({ wDrink: e.WaterDrinking }); 
+      this.setState({ wProd: e.WaterProduction }); 
+      this.setState({ wFireF: e.WaterFireFighting }); 
+      this.setState({ wS: e.WaterSewage });
+    }
+    else if(roleName === 'Heat'){
+      if(e.Status === 3 && e.ApzHeatStatus === 2){
+        this.setState({ showButtons: true });
+      }
+      this.setState({ showHeatDetail: true });
+      this.setState({ hGen: e.HeatGeneral }); 
+      this.setState({ hMain: e.HeatMain }); 
+      this.setState({ hVen: e.HeatVentilation }); 
+      this.setState({ hWater: e.HeatWater }); 
+      this.setState({ hTech: e.HeatTech });
+      this.setState({ hDist: e.HeatDistribution });
+      this.setState({ hSav: e.HeatSaving }); 
+    }
+    else if(roleName === 'Gas'){
+      if(e.Status === 3 && e.ApzGasStatus === 2){
+        this.setState({ showButtons: true }); 
+      }
+      this.setState({ showGasDetail: true });
+      this.setState({ gGen: e.GasGeneral }); 
+      this.setState({ gCook: e.GasCooking }); 
+      this.setState({ gVen: e.GasVentilation }); 
+      this.setState({ gCon: e.GasConditioner }); 
+      this.setState({ gWater: e.GasWater });
+      this.setState({ gHeat: e.GasHeat });
+    }
     this.setState({ showDetails: true });
     this.setState({ Id: e.Id });
     this.setState({ Applicant: e.Applicant });
@@ -67,49 +129,49 @@ export default class Provider extends React.Component {
         // for WaterProvider
         if(providerName === 'Water'){
           // filter the whole list to get only accepted apzForms
-          var acc_forms_list = data.filter(function(obj) { return obj.ApzWater.Status === 1; });
+          var acc_forms_list = data.filter(function(obj) { return obj.ApzWaterStatus === 1; });
           this.setState({acceptedForms: acc_forms_list});
           // filter the list to get the declined apzForms
-          var dec_forms_list = data.filter(function(obj) { return obj.ApzWater.Status === 0; });
+          var dec_forms_list = data.filter(function(obj) { return obj.ApzWaterStatus === 0; });
           this.setState({declinedForms: dec_forms_list});
           // filter the list to get in-process apzForms
-          var act_forms_list = data.filter(function(obj) { return obj.ApzWater.Status === 2; });
+          var act_forms_list = data.filter(function(obj) { return (obj.ApzWaterStatus === 2 && obj.Status !== 0); });
           this.setState({activeForms: act_forms_list});
         }
         // for HeatProvider
         else if(providerName === 'Heat'){
           // filter the whole list to get only accepted apzForms
-          acc_forms_list = data.filter(function(obj) { return obj.ApzHeat.Status === 1; });
+          acc_forms_list = data.filter(function(obj) { return obj.ApzHeatStatus === 1; });
           this.setState({acceptedForms: acc_forms_list});
           // filter the list to get the declined apzForms
-          dec_forms_list = data.filter(function(obj) { return obj.ApzHeat.Status === 0; });
+          dec_forms_list = data.filter(function(obj) { return obj.ApzHeatStatus === 0; });
           this.setState({declinedForms: dec_forms_list});
           // filter the list to get in-process apzForms
-          act_forms_list = data.filter(function(obj) { return obj.ApzHeat.Status === 2; });
+          act_forms_list = data.filter(function(obj) { return (obj.ApzHeatStatus === 2 && obj.Status !== 0); });
           this.setState({activeForms: act_forms_list});
         }
         // for GasProvider
         else if(providerName === 'Gas'){
           // filter the whole list to get only accepted apzForms
-          acc_forms_list = data.filter(function(obj) { return obj.ApzGas.Status === 1; });
+          acc_forms_list = data.filter(function(obj) { return obj.ApzGasStatus === 1; });
           this.setState({acceptedForms: acc_forms_list});
           // filter the list to get the declined apzForms
-          dec_forms_list = data.filter(function(obj) { return obj.ApzGas.Status === 0; });
+          dec_forms_list = data.filter(function(obj) { return obj.ApzGasStatus === 0; });
           this.setState({declinedForms: dec_forms_list});
           // filter the list to get in-process apzForms
-          act_forms_list = data.filter(function(obj) { return obj.ApzGas.Status === 2; });
+          act_forms_list = data.filter(function(obj) { return (obj.ApzGasStatus === 2 && obj.Status !== 0); });
           this.setState({activeForms: act_forms_list});
         }
         // for ElectricityProvider
         else{
           // filter the whole list to get only accepted apzForms
-          acc_forms_list = data.filter(function(obj) { return obj.ApzElectricity.Status === 1; });
+          acc_forms_list = data.filter(function(obj) { return obj.ApzElectricityStatus === 1; });
           this.setState({acceptedForms: acc_forms_list});
           // filter the list to get the declined apzForms
-          dec_forms_list = data.filter(function(obj) { return obj.ApzElectricity.Status === 0; });
+          dec_forms_list = data.filter(function(obj) { return obj.ApzElectricityStatus === 0; });
           this.setState({declinedForms: dec_forms_list});
           // filter the list to get in-process apzForms
-          act_forms_list = data.filter(function(obj) { return obj.ApzElectricity.Status === 2; });
+          act_forms_list = data.filter(function(obj) { return (obj.ApzElectricityStatus === 2 && obj.Status !== 0); });
           this.setState({activeForms: act_forms_list});
         }
       }
@@ -120,7 +182,7 @@ export default class Provider extends React.Component {
   // accept or decline the form
   acceptDeclineApzForm(apzId, status, comment) {
     //console.log(apzId);
-    //console.log(statusName);
+    //console.log(status);
     var token = sessionStorage.getItem('tokenInfo');
 
     var statusData = {Response: status, Message: comment};
@@ -145,7 +207,7 @@ export default class Provider extends React.Component {
         if(status === true){
           alert("apzForm is accepted");
           // to hide the buttons
-          //this.setState({ showButtons: false });
+          this.setState({ showButtons: false });
           tempActForms.splice(formPos,1);
           this.setState({activeForms: tempActForms});
           tempAccForms.push(data);
@@ -153,7 +215,8 @@ export default class Provider extends React.Component {
           console.log("apzForm was accepted");
         }
         else{
-          alert("apzForm is rejected");
+          // to hide the buttons
+          this.setState({ showButtons: false });
           tempActForms.splice(formPos,1);
           this.setState({activeForms: tempActForms});
           tempDecForms.push(data);
@@ -161,6 +224,11 @@ export default class Provider extends React.Component {
           console.log("apzForm was declined");
         }
       }
+      else if(xhr.status === 401){
+        sessionStorage.clear();
+        alert("Token is expired, please login again!");
+        this.props.history.replace("/login");
+      }
     }.bind(this);
     xhr.send(dd); 
   }
@@ -176,7 +244,7 @@ export default class Provider extends React.Component {
   }
 
   componentDidMount() {
-    console.log("ProviderComponent did mount");
+    //console.log("ProviderComponent did mount");
     this.getApzFormList();
   }
 
@@ -191,7 +259,7 @@ export default class Provider extends React.Component {
     var activeForms = this.state.activeForms;
     return (
       <div>
-        <nav className="navbar-expand-lg navbar-light bg-secondary">
+        {/*<nav className="navbar-expand-lg navbar-light bg-secondary">
           <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
@@ -208,7 +276,7 @@ export default class Provider extends React.Component {
              </li>
             </ul>
           </div>
-        </nav>
+        </nav>*/}
         <div className="content container">
           <div className="row">
             <style dangerouslySetInnerHTML={{__html: ``}} />
@@ -280,15 +348,80 @@ export default class Provider extends React.Component {
                 <div className="col-6"><b>Название проекта</b>:</div> <div className="col-6">{this.state.ProjectName}</div>
                 <div className="col-6"><b>Адрес проекта</b>:</div> <div className="col-6">{this.state.ProjectAddress}</div>
                 <div className="col-6"><b>Дата заявления</b>:</div> <div className="col-6">{this.state.ApzDate}</div>
-                <div className={this.state.showButtons ? 'btn-group' : 'invisible'} role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px'}}>
+                <br /><br />
+
+                <div className={this.state.showElecDetail ? 'row detail' : 'invisible'}>
+                  <div style={{margin: 'auto', color: '#D77B38'}}><b>Детали электроснабжения</b></div>
+                  <div className="col-10"><b>Требуемая мощность (кВт)</b>:</div> <div className="col-2">{this.state.eReqPow}</div><hr />
+                  <div className="col-10"><b>Характер нагрузки (фаза)</b>:</div> <div className="col-2">{this.state.ePhase}</div><hr />
+                  <div className="col-10"><b>Категория (кВт)</b>:</div> <div className="col-2">{this.state.eSafeCat}</div><hr />
+                  <div className="col-10"><b>относ. к электроприемникам (кВА)</b>:</div> <div className="col-2">{this.state.eMaxLDev}</div><hr />
+                  <div className="col-10"><b>Сущ. макс. нагрузка (кВА)</b>:</div> <div className="col-2">{this.state.eMaxLoad}</div><hr />
+                  <div className="col-10"><b>мощность трансформаторов (кВА)</b>:</div> <div className="col-2">{this.state.eAllowedP}</div>
+                </div>
+
+                <div className={this.state.showWaterDetail ? 'row detail' : 'invisible'}>
+                  <div style={{margin: 'auto', color: '#D77B38'}}><b>Детали водоснабжения</b></div>
+                  <div className="col-10"><b>Общая потребность (м<sup>3</sup>/сутки)</b>:</div> <div className="col-2">{this.state.wReq}</div><hr />
+                  <div className="col-10"><b>Хозпитьевые нужды (м<sup>3</sup>/сутки)</b>:</div> <div className="col-2">{this.state.wDrink}</div><hr />
+                  <div className="col-10"><b>Производ. нужды (м<sup>3</sup>/сутки)</b>:</div> <div className="col-2">{this.state.wProd}</div><hr />
+                  <div className="col-10"><b>Расходы пожаротушения (л/сек)</b>:</div> <div className="col-2">{this.state.wFireF}</div><hr />
+                  <div className="col-10"><b>Общ. кол. сточных вод (м<sup>3</sup>/сутки)</b>:</div> <div className="col-2">{this.state.wS}</div>
+                </div>
+
+                <div className={this.state.showHeatDetail ? 'row detail' : 'invisible'}>
+                  <div style={{margin: 'auto', color: '#D77B38'}}><b>Детали теплоснабжения</b></div>
+                  <div className="col-10"><b>Общая нагрузка (Гкал/ч)</b>:</div> <div className="col-2">{this.state.hGen}</div><hr />
+                  <div className="col-10"><b>Отопление (Гкал/ч)</b>:</div> <div className="col-2">{this.state.hMain}</div><hr />
+                  <div className="col-10"><b>Вентиляция (Гкал/ч)</b>:</div> <div className="col-2">{this.state.hVen}</div><hr />
+                  <div className="col-10"><b>Энергосб. мероприятие</b>:</div> <div className="col-2">{this.state.hSav}</div><hr />
+                  <div className="col-10"><b>Горячее водоснаб.(Гкал/ч)</b>:</div> <div className="col-2">{this.state.hWater}</div><hr />
+                  <div className="col-10"><b>Технолог. нужды(пар) (Т/ч)</b>:</div> <div className="col-2">{this.state.hTech}</div><hr />
+                  <div className="col-10"><b>Разделить нагрузку</b>:</div> <div className="col-2">{this.state.hDist}</div>
+                </div>
+
+                <div className={this.state.showGasDetail ? 'row detail' : 'invisible'}>
+                  <div style={{margin: 'auto', color: '#D77B38'}}><b>Детали газоснабжения</b></div>
+                  <div className="col-10"><b>Общ. потребность (м<sup>3</sup>/час)</b>:</div> <div className="col-2">{this.state.gGen}</div><hr />
+                  <div className="col-10"><b>На приготов. пищи (м<sup>3</sup>/час)</b>:</div> <div className="col-2">{this.state.gCook}</div><hr />
+                  <div className="col-10"><b>Отопление (м<sup>3</sup>/час)</b>:</div> <div className="col-2">{this.state.gHeat}</div><hr />
+                  <div className="col-10"><b>Вентиляция (м<sup>3</sup>/час)</b>:</div> <div className="col-2">{this.state.gVen}</div><hr />
+                  <div className="col-10"><b>Кондиционирование (м<sup>3</sup>/час)</b>:</div> <div className="col-2">{this.state.gCon}</div><hr />
+                  <div className="col-10"><b>Горячее водоснаб. (м<sup>3</sup>/час)</b>:</div> <div className="col-2">{this.state.gWater}</div>
+                </div>
+
+                <div className={this.state.showButtons ? 'btn-group' : 'invisible'} role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
                           onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, true, "your form was accepted")}>
                     Одобрить
                   </button>
-                  <button className="btn btn-raised btn-danger"
-                          onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, false, "your form was rejected")}>
+                  <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
+                          {/*onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, false)}>*/}
                     Отклонить
                   </button>
+                  <div className="modal fade" id="accDecApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                    <div className="modal-dialog" role="document">
+                      <div className="modal-content">
+                        <form onSubmit={this.acceptDeclineApzForm.bind(this, this.state.Id, false, this.state.description)}>
+                          <div className="modal-header">
+                            <h5 className="modal-title">Причина отклонения</h5>
+                            <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div className="modal-body">
+                            <div className="form-group">
+                              <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
+                            </div>
+                          </div>
+                          <div className="modal-footer">
+                            <input type="submit" className="btn btn-primary" value="Отправить" />
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

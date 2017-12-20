@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, NavLink, Switch, Redirect} from 'react-router-dom';
+//import { Route, NavLink, Switch, Redirect} from 'react-router-dom';
 import PreloaderIcon, {ICON_TYPE} from 'react-preloader-icon';
 
 export default class PhotoReports extends React.Component {
@@ -154,7 +154,7 @@ export default class PhotoReports extends React.Component {
                 this.state.activeList.map(function(e, i){
                 return(
                     <p>
-                      <a href="javascript:;" onClick={this.getDetails.bind(this, e)} className="btn btn-primary">{e.PhotoAddress}</a>
+                      <a onClick={this.getDetails.bind(this, e)} className="btn btn-primary">{e.PhotoAddress}</a>
                     </p>
                   )
                 }.bind(this))
@@ -304,142 +304,142 @@ class Loading extends Component {
   }
 }
 
-class Consideration extends React.Component {
-  constructor() {
-    super();
+// class Consideration extends React.Component {
+//   constructor() {
+//     super();
     
-    this.sendConsideration = this.sendConsideration.bind(this);
-  }
+//     this.sendConsideration = this.sendConsideration.bind(this);
+//   }
 
-  sendConsideration() {
-    console.log(this.props);
-    this.props.router.push('/photoReports/answer');
-  }
+//   sendConsideration() {
+//     console.log(this.props);
+//     this.props.router.push('/photoReports/answer');
+//   }
 
-  render() {
-    return (
-      <div>
-        <form>
-          <div className="row">
-            <div className="col-2" />
-            <div className="col-8">
-              <div className="form-group">
-                <label htmlFor="Consideration"></label>
-                <input type="text" className="form-control" required id="PhotoRepConsideration" name="Consideration" placeholder="Текст на рассмотрение" />
-              </div>
-              <div className="form-group">
-                <label htmlFor="PhotoFile">Прикрепить файл</label>
-                <input type="file" className="form-control" required id="PhotoRepAttachedFile" name="PhotoFile" />
-              </div>
-            </div>
-            <div className="col-2" />
-          </div>
-          <div className="row">
-            <div className="col-4" />
-            <div className="col-4">
-              <button type="button" className="btn btn-outline-danger" style={{marginRight: '2px'}}>Отмена</button>
-              <button type="button" className="btn btn-outline-success" onClick={this.sendConsideration}>Отправить</button>
-            </div>
-            <div className="col-4" />
-          </div>
-        </form>
-      </div>
-    )
-  }
-}
+//   render() {
+//     return (
+//       <div>
+//         <form>
+//           <div className="row">
+//             <div className="col-2" />
+//             <div className="col-8">
+//               <div className="form-group">
+//                 <label htmlFor="Consideration"></label>
+//                 <input type="text" className="form-control" required id="PhotoRepConsideration" name="Consideration" placeholder="Текст на рассмотрение" />
+//               </div>
+//               <div className="form-group">
+//                 <label htmlFor="PhotoFile">Прикрепить файл</label>
+//                 <input type="file" className="form-control" required id="PhotoRepAttachedFile" name="PhotoFile" />
+//               </div>
+//             </div>
+//             <div className="col-2" />
+//           </div>
+//           <div className="row">
+//             <div className="col-4" />
+//             <div className="col-4">
+//               <button type="button" className="btn btn-outline-danger" style={{marginRight: '2px'}}>Отмена</button>
+//               <button type="button" className="btn btn-outline-success" onClick={this.sendConsideration}>Отправить</button>
+//             </div>
+//             <div className="col-4" />
+//           </div>
+//         </form>
+//       </div>
+//     )
+//   }
+// }
 
-class Answer extends React.Component {
-  render() {
-    return (
-      <div className="container">
-        <div style={{textAlign: 'center', marginTop: '15px'}}>
-          <h5>{window.companyName}</h5>
-          <span className="help-block">г. Алматы, {window.address}</span>
-        </div><br />
-        <p style={{fontSize: '18px'}}>Управление архитектуры и градостроительства города Алматы,
-          рассмотрев Ваше обращение от <strong>{window.durFrom}</strong> № ЖТ-Ц- 856 направляет
-          Вам фотографии объектов наружной (визуальной) рекламы.
-          Вместе с тем, сообщаем, что сведения в органы государственных доходов
-          Управлением подаются без указания наименования и ИИН (БИН)
-          налогоплательщика.
-          В соответствии с п. 6 ст. 14 Закона Республики Казахстан «О порядке
-          рассмотрения обращений физических и юридических лиц» Вы имеете право
-          обжаловать действие (бездействие) должностных лиц либо решение, принятое
-          по обращению.
-        </p>
-      </div>
-    )
-  }
-}
+// class Answer extends React.Component {
+//   render() {
+//     return (
+//       <div className="container">
+//         <div style={{textAlign: 'center', marginTop: '15px'}}>
+//           <h5>{window.companyName}</h5>
+//           <span className="help-block">г. Алматы, {window.address}</span>
+//         </div><br />
+//         <p style={{fontSize: '18px'}}>Управление архитектуры и градостроительства города Алматы,
+//           рассмотрев Ваше обращение от <strong>{window.durFrom}</strong> № ЖТ-Ц- 856 направляет
+//           Вам фотографии объектов наружной (визуальной) рекламы.
+//           Вместе с тем, сообщаем, что сведения в органы государственных доходов
+//           Управлением подаются без указания наименования и ИИН (БИН)
+//           налогоплательщика.
+//           В соответствии с п. 6 ст. 14 Закона Республики Казахстан «О порядке
+//           рассмотрения обращений физических и юридических лиц» Вы имеете право
+//           обжаловать действие (бездействие) должностных лиц либо решение, принятое
+//           по обращению.
+//         </p>
+//       </div>
+//     )
+//   }
+// }
 
-class PhotoReport extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      companyName: "",
-      add: "",
-      durFrom: "",
-      durTo: ""
-    }
+// class PhotoReport extends React.Component {
+//   constructor() {
+//     super();
+//     this.state = {
+//       companyName: "",
+//       add: "",
+//       durFrom: "",
+//       durTo: ""
+//     }
     
-    this.updateCompanyName = this.updateCompanyName.bind(this);
-    this.updateAddress = this.updateAddress.bind(this);
-    this.updateDurFrom = this.updateDurFrom.bind(this);
-    this.updateDurTo = this.updateDurTo.bind(this);
-  }
+//     this.updateCompanyName = this.updateCompanyName.bind(this);
+//     this.updateAddress = this.updateAddress.bind(this);
+//     this.updateDurFrom = this.updateDurFrom.bind(this);
+//     this.updateDurTo = this.updateDurTo.bind(this);
+//   }
 
-  updateCompanyName(compName) {
-    this.setState({companyName: compName})
-  }
+//   updateCompanyName(compName) {
+//     this.setState({companyName: compName})
+//   }
 
-  updateAddress(address) {
-    this.setState({add: address})
-  }
+//   updateAddress(address) {
+//     this.setState({add: address})
+//   }
 
-  updateDurFrom(dFrom) {
-    this.setState({durFrom: dFrom})
-  }
+//   updateDurFrom(dFrom) {
+//     this.setState({durFrom: dFrom})
+//   }
 
-  updateDurTo(dTo) {
-    this.setState({durTo: dTo})
-  }
+//   updateDurTo(dTo) {
+//     this.setState({durTo: dTo})
+//   }
 
-  componentWillMount() {
-    //console.log("PhotoReport will mount");
-  }
+//   componentWillMount() {
+//     //console.log("PhotoReport will mount");
+//   }
 
-  componentDidMount() {
-    //console.log("PhotoReport did mount");
-  }
+//   componentDidMount() {
+//     //console.log("PhotoReport did mount");
+//   }
 
-  componentWillUnmount() {
-    //console.log("PhotoReport will unmount");
-  }
+//   componentWillUnmount() {
+//     //console.log("PhotoReport will unmount");
+//   }
 
-  render() {
-    //console.log("rendering the PhotoReport");
-    window.companyName = this.state.companyName;
-    window.address = this.state.add;
-    window.durFrom = this.state.durFrom;
-    window.durTo = this.state.durTo;
-    window.changeComName = this.updateCompanyName;
-    window.changeAddress = this.updateAddress;
-    window.changeDurFrom = this.updateDurFrom;
-    window.changeDurTo = this.updateDurTo;
-    return (
-      <div className="container">
-        <ul className="header">
-          <li><NavLink exact activeClassName="active" activeStyle={{color:"black"}} to="/photoReports/form" replace>Заявление</NavLink></li>
-          <li><NavLink activeClassName="active" activeStyle={{color:"black"}} to="/photoReports/consideration" replace>Рассмотрение</NavLink></li>
-          <li><NavLink activeClassName="active" activeStyle={{color:"black"}} to="/photoReports/answer" replace>Ответ</NavLink></li>
-        </ul>
-        {/*<Switch>
-          <Route path="/photoreports/form" component={PhotoReportForm} />
-          <Route path="/photoreports/consideration" component={Consideration} />
-          <Route path="/photoreports/answer" component={Answer} />
-          <Redirect from="/photoReports" to="/photoReports/form" />
-        </Switch>*/}
-      </div>
-    )
-  }
-}
+//   render() {
+//     //console.log("rendering the PhotoReport");
+//     window.companyName = this.state.companyName;
+//     window.address = this.state.add;
+//     window.durFrom = this.state.durFrom;
+//     window.durTo = this.state.durTo;
+//     window.changeComName = this.updateCompanyName;
+//     window.changeAddress = this.updateAddress;
+//     window.changeDurFrom = this.updateDurFrom;
+//     window.changeDurTo = this.updateDurTo;
+//     return (
+//       <div className="container">
+//         <ul className="header">
+//           <li><NavLink exact activeClassName="active" activeStyle={{color:"black"}} to="/photoReports/form" replace>Заявление</NavLink></li>
+//           <li><NavLink activeClassName="active" activeStyle={{color:"black"}} to="/photoReports/consideration" replace>Рассмотрение</NavLink></li>
+//           <li><NavLink activeClassName="active" activeStyle={{color:"black"}} to="/photoReports/answer" replace>Ответ</NavLink></li>
+//         </ul>
+//         {/*<Switch>
+//           <Route path="/photoreports/form" component={PhotoReportForm} />
+//           <Route path="/photoreports/consideration" component={Consideration} />
+//           <Route path="/photoreports/answer" component={Answer} />
+//           <Redirect from="/photoReports" to="/photoReports/form" />
+//         </Switch>*/}
+//       </div>
+//     )
+//   }
+// }
