@@ -221,9 +221,9 @@ function chooseStoragePathBack(rw) {
 }
 
 function openDialog() {
-  if (window.confirm("Ошибка при подключений к прослойке. Убедитесь что программа запущена и нажмите ОК") === true) {
-    window.location.reload();
-  }
+  //if (window.confirm("Ошибка при подключений к прослойке. Убедитесь что программа запущена и нажмите ОК") === true) {
+  //  window.location.reload();
+  //}
 }
 
 export default class Register extends React.Component {
