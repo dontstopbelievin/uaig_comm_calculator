@@ -186,35 +186,35 @@ export default class Sketch extends React.Component {
   }
 }
 
-class ShowHide extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      childVisible: false
-    }
-  }
+// class ShowHide extends React.Component {
+//   constructor() {
+//     super();
+//     this.state = {
+//       childVisible: false
+//     }
+//   }
 
-  onClick() {
-    this.setState({childVisible: !this.state.childVisible});
-  }
+//   onClick() {
+//     this.setState({childVisible: !this.state.childVisible});
+//   }
 
-  render() {
-    return (
-      <div className="row">
-        <div className="col-3">
-          <button className="btn btn-outline-secondary" onClick={() => this.onClick()}>
-            Создать заявление
-          </button>
-        </div>
-        {
-          this.state.childVisible
-            ? <SketchForm />
-            : <div className="col-9"></div>
-        }
-      </div>
-    )
-  }
-}
+//   render() {
+//     return (
+//       <div className="row">
+//         <div className="col-3">
+//           <button className="btn btn-outline-secondary" onClick={() => this.onClick()}>
+//             Создать заявление
+//           </button>
+//         </div>
+//         {
+//           this.state.childVisible
+//             ? <SketchForm />
+//             : <div className="col-9"></div>
+//         }
+//       </div>
+//     )
+//   }
+// }
 
 class SketchForm extends React.Component {
   constructor() {
@@ -453,7 +453,7 @@ class FilesForm extends React.Component {
         var html = '<div id="file_' + type + '">' + data.Name + '<input type="hidden" name="Files[]" value="' + data.Id + '"><a href="#" onClick="document.getElementById(\'file_' + type + '\').remove(); return false;">&times;</a></div>';
         fileBlock.html(html);
         alert("Файл успешно загружен");
-      }.bind(this)
+      }
     });
   }
 

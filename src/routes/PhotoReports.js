@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, NavLink, Switch, Redirect} from 'react-router-dom';
+//import { Route, NavLink, Switch, Redirect} from 'react-router-dom';
 import PreloaderIcon, {ICON_TYPE} from 'react-preloader-icon';
 
 export default class PhotoReports extends React.Component {
@@ -235,7 +235,7 @@ export default class PhotoReports extends React.Component {
                       this.state.activeList.map(function(e, i){
                       return(
                           <li key={i}>
-                            <a href="javascript:;" onClick={this.getDetails.bind(this, e)} className={(this.state.linkToggle == e.Id) ? 'bold btn btn-primary' : 'btn btn-primary'}>{e.PhotoAddress}</a>
+                            <a onClick={this.getDetails.bind(this, e)} className={(this.state.linkToggle === e.Id) ? 'bold btn btn-primary' : 'btn btn-primary'}>{e.PhotoAddress}</a>
                           </li>
                         )
                       }.bind(this))
@@ -279,7 +279,7 @@ export default class PhotoReports extends React.Component {
                       })()}
                       </div>
                       {
-                        (this.state.Status == 1)
+                        (this.state.Status === 1)
                           ? <div><button onClick={this.getPhotos} className="btn btn-outline-primary">Показать фото</button></div>
                           : <div></div>
                       }
@@ -423,7 +423,7 @@ class ShowPhotos extends Component {
     return (
       this.props.photosList.map(function(item, i){
         return (
-          <img src={'data:' + item.ContentType + ';base64,' + item.File} key={i} width="447" />
+          <img alt="true" src={'data:' + item.ContentType + ';base64,' + item.File} key={i} width="447" />
           )
       })
     )

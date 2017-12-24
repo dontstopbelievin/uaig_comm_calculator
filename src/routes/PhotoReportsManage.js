@@ -1,6 +1,6 @@
 import React from 'react';
-import { Route, NavLink, Switch, Redirect} from 'react-router-dom';
-import PreloaderIcon, {ICON_TYPE} from 'react-preloader-icon';
+//import { Route, NavLink, Switch, Redirect} from 'react-router-dom';
+//import PreloaderIcon, {ICON_TYPE} from 'react-preloader-icon';
 
 export default class PhotoReportsManage extends React.Component {
   constructor() {
@@ -76,13 +76,13 @@ export default class PhotoReportsManage extends React.Component {
   }
 
   responseCreate(){
-    if(document.querySelector('input[name="responseCreate"]:checked').value == 1) {
+    var PhotosExist = false;
+    if(document.querySelector('input[name="responseCreate"]:checked').value === 1) {
       this.setState({ showUploadBtn: true, showDeclineBtn: false });
-      var PhotosExist = true;
+      PhotosExist = true;
     }
     else {
       this.setState({ showUploadBtn: false, showDeclineBtn: true });
-      var PhotosExist = false;
     }
       
 
@@ -245,7 +245,7 @@ export default class PhotoReportsManage extends React.Component {
                       this.state.activeList.map(function(e, i){
                       return(
                           <li id={e.Id} key={i}>
-                            <a href="javascript:;" onClick={this.getDetails.bind(this, e)} className={(this.state.linkToggle == e.Id) ? 'bold btn btn-primary' : 'btn btn-primary'}>{e.PhotoAddress}</a>
+                            <a onClick={this.getDetails.bind(this, e)} className={(this.state.linkToggle === e.Id) ? 'bold btn btn-primary' : 'btn btn-primary'}>{e.PhotoAddress}</a>
                           </li>
                         )
                       }.bind(this))
@@ -338,10 +338,10 @@ export default class PhotoReportsManage extends React.Component {
   }
 }
 
-class Loading extends Component {
-  render() {
-    return (
-      <PreloaderIcon type={ICON_TYPE.OVAL} size={32} strokeWidth={8} strokeColor="#135ead" duration={800} />
-    )
-  }
-}
+// class Loading extends React.Component {
+//   render() {
+//     return (
+//       <PreloaderIcon type={ICON_TYPE.OVAL} size={32} strokeWidth={8} strokeColor="#135ead" duration={800} />
+//     )
+//   }
+// }

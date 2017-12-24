@@ -1,7 +1,7 @@
 import React from 'react';
 import $ from 'jquery';
 import 'jquery-serializejson';
-import { Route, NavLink, Switch, Redirect} from 'react-router-dom';
+import { Route, Switch, Redirect} from 'react-router-dom';
 
 export default class Review extends React.Component {
   render() {
