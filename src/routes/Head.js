@@ -265,23 +265,21 @@ export default class Head extends React.Component {
                   <div className="modal fade" id="accDecApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
                     <div className="modal-dialog" role="document">
                       <div className="modal-content">
-                        <form onSubmit={this.acceptDeclineApzForm.bind(this, this.state.Id, false, this.state.description)}>
-                          <div className="modal-header">
-                            <h5 className="modal-title">Причина отклонения</h5>
-                            <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
+                        <div className="modal-header">
+                          <h5 className="modal-title">Причина отклонения</h5>
+                          <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div className="modal-body">
+                          <div className="form-group">
+                            <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
                           </div>
-                          <div className="modal-body">
-                            <div className="form-group">
-                              <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
-                            </div>
-                          </div>
-                          <div className="modal-footer">
-                            <input type="submit" className="btn btn-primary" value="Отправить" />
-                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                          </div>
-                        </form>
+                        </div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, false, this.state.description)}>Отправить</button>
+                          <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        </div>
                       </div>
                     </div>
                   </div>
