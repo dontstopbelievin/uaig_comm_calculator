@@ -106,24 +106,24 @@ export default class Urban extends React.Component {
       console.log(data);
       if (xhr.status === 200) {
         if(status === true){
-          alert("apzForm is accepted");
+          alert("Заявление принято!");
           // to hide the buttons
           this.setState({ showButtons: false });
           tempActForms.splice(formPos,1);
           this.setState({activeForms: tempActForms});
           tempAccForms.push(data);
           this.setState({acceptedForms: tempAccForms});
-          console.log("apzForm was accepted");
+          console.log("Заявление принято!");
         }
         else{
-          alert("apzForm is rejected");
+          alert("Заявление отклонено!");
           // to hide the buttons
           this.setState({ showButtons: false });
           tempActForms.splice(formPos,1);
           this.setState({activeForms: tempActForms});
           tempDecForms.push(data);
           this.setState({declinedForms: tempDecForms});
-          console.log("apzForm was declined");
+          console.log("Заявление отклонено!");
         }
       }
       else if(xhr.status === 401){

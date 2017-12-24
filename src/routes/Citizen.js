@@ -12,6 +12,7 @@ export default class Citizen extends React.Component {
       declinedForms: [],
       activeForms: [],
       showDetails: false,
+      showStatusBar: false,
       formHidden: true,
       Applicant: "",
       Address: "",
@@ -45,8 +46,9 @@ export default class Citizen extends React.Component {
     this.getStatusForArch = this.getStatusForArch.bind(this);
     this.getStatusForHeadArch = this.getStatusForHeadArch.bind(this);
     this.getStatusForProvider = this.getStatusForProvider.bind(this);
-    this.toggleStatusBar = this.toggleStatusBar.bind(this);
+    this.showStepBarOrText = this.showStepBarOrText.bind(this);
     this.toggleResponseText = this.toggleResponseText.bind(this);
+    this.hideStatusBar = this.hideStatusBar.bind(this);
   }
 
   // function to get the list of ApzForms
@@ -80,10 +82,18 @@ export default class Citizen extends React.Component {
     xhr.send();
   }
 
-  // function to show the detailed info for every form
+  // function to show the detailed info and statusBar for every form
   details(e) {
     console.log(e);
+    // to show minute with two numbers, E.g.: 12:00 instead of 12:0
+    function addZero(i) {
+        if (i < 10) {
+            i = "0" + i;
+        }
+        return i;
+    }
     this.setState({ showDetails: true });
+    this.setState({ showStatusBar: true });
     this.setState({ Applicant: e.Applicant });
     this.setState({ Address: e.Address });
     this.setState({ Phone: e.Phone });
@@ -110,7 +120,9 @@ export default class Citizen extends React.Component {
         var curr_date = jDate.getDate();
         var curr_month = jDate.getMonth() + 1;
         var curr_year = jDate.getFullYear();
-        var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
+        var curr_hour = jDate.getHours();
+        var curr_minute = addZero(jDate.getMinutes());
+        var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
         return { regionDate: formated_date }
       }
       else{
@@ -124,7 +136,9 @@ export default class Citizen extends React.Component {
         var curr_date = jDate.getDate();
         var curr_month = jDate.getMonth() + 1;
         var curr_year = jDate.getFullYear();
-        var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
+        var curr_hour = jDate.getHours();
+        var curr_minute = addZero(jDate.getMinutes());
+        var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
         return { headDate: formated_date }
       }
       else{
@@ -138,7 +152,9 @@ export default class Citizen extends React.Component {
         var curr_date = jDate.getDate();
         var curr_month = jDate.getMonth() + 1;
         var curr_year = jDate.getFullYear();
-        var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
+        var curr_hour = jDate.getHours();
+        var curr_minute = addZero(jDate.getMinutes());
+        var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
         return { eActionDate: formated_date }
       }
       else{
@@ -152,7 +168,9 @@ export default class Citizen extends React.Component {
         var curr_date = jDate.getDate();
         var curr_month = jDate.getMonth() + 1;
         var curr_year = jDate.getFullYear();
-        var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
+        var curr_hour = jDate.getHours();
+        var curr_minute = addZero(jDate.getMinutes());
+        var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
         return { gActionDate: formated_date }
       }
       else{
@@ -166,7 +184,9 @@ export default class Citizen extends React.Component {
         var curr_date = jDate.getDate();
         var curr_month = jDate.getMonth() + 1;
         var curr_year = jDate.getFullYear();
-        var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
+        var curr_hour = jDate.getHours();
+        var curr_minute = addZero(jDate.getMinutes());
+        var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
         return { hActionDate: formated_date }
       }
       else{
@@ -180,7 +200,9 @@ export default class Citizen extends React.Component {
         var curr_date = jDate.getDate();
         var curr_month = jDate.getMonth() + 1;
         var curr_year = jDate.getFullYear();
-        var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
+        var curr_hour = jDate.getHours();
+        var curr_minute = addZero(jDate.getMinutes());
+        var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
         return { wActionDate: formated_date }
       }
       else{
@@ -192,13 +214,14 @@ export default class Citizen extends React.Component {
 
   // function to hide/show ApzForm, gets called when button "Создать заявление" is clicked
   toggleForm(e){
+    this.hideStatusBar();
     this.setState({
       formHidden: !this.state.formHidden
     })
   }
 
-  // function to update the list of OtherForms
-  updateOtherFormsList(form) {
+  // function to update the list of ActiveForms
+  updateActiveFormsList(form) {
     //console.log("updateOtherForms started")
     var tempList = this.state.activeForms;
     tempList.push(form);
@@ -206,12 +229,17 @@ export default class Citizen extends React.Component {
     this.setState({activeForms: tempList});
   }
 
-  // function to show StatusBar or ResponseMessages
-  toggleStatusBar(status){
+  // function to show StepBar or ResponseMessages
+  showStepBarOrText(status){
     if(status === 0)
       return false;
     else
       return true;
+  }
+
+  //
+  hideStatusBar() {
+    this.setState({ showStatusBar: false });
   }
 
   // function to show responseText if its not null
@@ -285,7 +313,7 @@ export default class Citizen extends React.Component {
     var acceptedForms = this.state.acceptedForms;
     var declinedForms = this.state.declinedForms;
     var activeForms = this.state.activeForms;
-    var updateList = this.updateOtherFormsList.bind(this);
+    var updateList = this.updateActiveFormsList.bind(this);
     return (
       <div className="content container" style={{paddingBottom: '0'}}>
         <div className="row">
@@ -362,58 +390,60 @@ export default class Citizen extends React.Component {
           </button>
           {!this.state.formHidden && <ApzForm updateList={updateList} />}
         </div>
-        <div className="row">
-          {/*<div id="infoDiv">Нажмите на участок или объект, чтобы получить информацию</div>*/}
-          {/*<div id="viewDiv"></div>*/}
-          <div className={this.toggleStatusBar(this.state.Status) ? 'progressBar' : 'invisible'}>
-            <div className={this.getStatusForArch(this.state.Status, this.state.regionDate, this.state.regionResponse)}>
-              <span className="label">1</span>
-              <span className="title">Районный архитектор</span>
+        <div className={this.state.showStatusBar ? 'row' : 'invisible'}>
+          <div className={this.showStepBarOrText(this.state.Status) ? 'row statusBar' : 'invisible'}>
+            {/*<div id="infoDiv">Нажмите на участок или объект, чтобы получить информацию</div>*/}
+            {/*<div id="viewDiv"></div>*/}
+            <div className="progressBar">
+              <div className={this.getStatusForArch(this.state.Status, this.state.regionDate, this.state.regionResponse)}>
+                <span className="label">1</span>
+                <span className="title">Районный архитектор</span>
+              </div>
+              <span className="bar"></span>
+              <div className="box">
+                <div className={this.getStatusForProvider(this.state.Status, this.state.wStatus)}>
+                  <span className="label">2</span>
+                  <span className="title">Поставщик (вода) </span>
+                  {/*<span className="title">{this.state.wActionDate} </span>*/}
+                </div>
+                <span className="bar"></span>
+                <div className={this.getStatusForProvider(this.state.Status, this.state.gStatus)}>
+                  <span className="label">2</span>
+                  <span className="title">Поставщик (газ)</span>
+                </div>
+                <span className="bar"></span>
+                <div className={this.getStatusForProvider(this.state.Status, this.state.hStatus)}>
+                  <span className="label">2</span>
+                  <span className="title">Поставщик (тепло)</span>
+                </div>
+                <span className="bar"></span>
+                <div className={this.getStatusForProvider(this.state.Status, this.state.eStatus)}>
+                  <span className="label">2</span>
+                  <span className="title">Поставщик (электр)</span>
+                </div>
+              </div>
+              <span className="bar"></span>
+              <div className={this.getStatusForHeadArch(this.state.Status, this.state.headDate, this.state.headResponse)}>
+                <span className="label">3</span>
+                <span className="title">Главный архитектор</span>
+              </div>
             </div>
-            <span className="bar"></span>
-            <div className="box">
-              <div className={this.getStatusForProvider(this.state.Status, this.state.wStatus)}>
-                <span className="label">2</span>
-                <span className="title">Поставщик (вода) </span>
-                {/*<span className="title">{this.state.wActionDate} </span>*/}
+            <div className="row actionDate">
+              <div className="col-3"></div>
+              <div className="col-7" style={{padding: '0', fontSize: '0.8em'}}>
+                <div className="row">
+                  <div className="col-2">{this.state.regionDate}</div>
+                  <div className="col-2">{this.state.wActionDate}</div>
+                  <div className="col-2">{this.state.gActionDate}</div>
+                  <div className="col-2">{this.state.hActionDate}</div>
+                  <div className="col-2">{this.state.eActionDate}</div>
+                  <div className="col-2">{this.state.headDate}</div>
+                </div>
               </div>
-              <span className="bar"></span>
-              <div className={this.getStatusForProvider(this.state.Status, this.state.gStatus)}>
-                <span className="label">2</span>
-                <span className="title">Поставщик (газ)</span>
-              </div>
-              <span className="bar"></span>
-              <div className={this.getStatusForProvider(this.state.Status, this.state.hStatus)}>
-                <span className="label">2</span>
-                <span className="title">Поставщик (тепло)</span>
-              </div>
-              <span className="bar"></span>
-              <div className={this.getStatusForProvider(this.state.Status, this.state.eStatus)}>
-                <span className="label">2</span>
-                <span className="title">Поставщик (электр)</span>
-              </div>
-            </div>
-            <span className="bar"></span>
-            <div className={this.getStatusForHeadArch(this.state.Status, this.state.headDate, this.state.headResponse)}>
-              <span className="label">3</span>
-              <span className="title">Главный архитектор</span>
+              <div className="col-2"></div>
             </div>
           </div>
-          <div className={this.toggleStatusBar(this.state.Status) ? 'row actionDate' : 'invisible'}>
-            <div className="col-3"></div>
-            <div className="col-7" style={{padding: '0', fontSize: '0.8em'}}>
-              <div className="row">
-                <div className="col-2">{this.state.regionDate}</div>
-                <div className="col-2">{this.state.wActionDate}</div>
-                <div className="col-2">{this.state.gActionDate}</div>
-                <div className="col-2">{this.state.hActionDate}</div>
-                <div className="col-2">{this.state.eActionDate}</div>
-                <div className="col-2">{this.state.headDate}</div>
-              </div>
-            </div>
-            <div className="col-2"></div>
-          </div>
-          <div className={!this.toggleStatusBar(this.state.Status) ? 'allResponseText' : 'invisible'}>
+          <div className={!this.showStepBarOrText(this.state.Status) ? 'allResponseText' : 'invisible'}>
             <div className={this.toggleResponseText(this.state.regionResponse) ? 'responseText' : 'invisible'}>
               {this.state.regionResponse}
             </div>
@@ -607,6 +637,10 @@ class ApzForm extends React.Component {
                   <input type="text" required className="form-control" name="ObjectName" placeholder="наименование" />
                 </div>
                 <div className="form-group">
+                  <label htmlFor="CadastralNumber">Кадастровый номер:</label>
+                  <input type="text" className="form-control" name="ObjectName" placeholder="" />
+                </div>
+                <div className="form-group">
                   <label htmlFor="ObjectTerm">Срок строительства по нормам</label>
                   <input type="text" className="form-control" id="ObjectTerm" placeholder="" />
                 </div>
@@ -662,7 +696,7 @@ class ApzForm extends React.Component {
                   <input type="text" className="form-control" required name="ElectricSafetyCategory" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="ElectricMaxLoadDevice">из указанной макс. нагрузки относятся к электроприемникам  (кВА):</label>
+                  <label htmlFor="ElectricMaxLoadDevice">из указанной макс. нагрузки относятся к электроприемникам (кВА):</label>
                   <input type="number" className="form-control" name="ElectricMaxLoadDevice" placeholder="" />
                 </div>
                 </div>

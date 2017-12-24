@@ -109,24 +109,24 @@ export default class Head extends React.Component {
       console.log(data);
       if (xhr.status === 200) {
         if(status === true){
-          alert("apzForm is accepted");
+          alert("Заявление принято!");
           // to hide the buttons
           this.setState({ showButtons: false });
           tempOnHoldList.splice(formPos,1);
           this.setState({onHoldForms: tempOnHoldList});
           tempAccForms.push(data);
           this.setState({acceptedForms: tempAccForms});
-          console.log("apzForm was accepted");
+          console.log("Заявление принято!");
         }
         else{
-          alert("apzForm is rejected");
+          alert("Заявление отклонено!");
           // to hide the buttons
           this.setState({ showButtons: false });
           tempOnHoldList.splice(formPos,1);
           this.setState({onHoldForms: tempOnHoldList});
           tempDecForms.push(data);
           this.setState({declinedForms: tempDecForms});
-          console.log("apzForm was declined");
+          console.log("Заявление отклонено!");
         }
       }
       else if(xhr.status === 401){
@@ -232,13 +232,13 @@ export default class Head extends React.Component {
               </h4>
             </div>
             <div className="col-md-6 apz-additional card" style={{paddingLeft:'0px', paddingRight:'0px'}}>
-              {/*<div className="col-md-12 well" style={{paddingLeft:'0px', paddingRight:'0px', height:'500px', width:'100%'}}>
-                  <div className="viewDivUrban" ref={this.onReference.bind(this)}>
+              <div className="col-md-12 well" style={{paddingLeft:'0px', paddingRight:'0px', height:'300px', width:'100%'}}>
+                  {/*<div className="viewDivUrban" ref={this.onReference.bind(this)}>
                     <div className="container">
                       <p>Загрузка...</p>
                     </div>
-                  </div>
-              </div>*/}
+                  </div>*/}
+              </div>
               {/*<button class="btn-block btn-info col-md-3" id="printApz">
                 Распечатать АПЗ
               </button>*/}

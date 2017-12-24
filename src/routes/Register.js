@@ -70,6 +70,8 @@ webSocket.onmessage = function (event) {
       case 'signXmlBack':
         signXmlBack(rw);
         break;
+      default:
+        break;
     }
   }
   //console.log(event);
@@ -85,7 +87,7 @@ function setMissedHeartbeatsLimitToMin() {
 }
 
 function pingLayer() {
-  console.log("pinging...");
+  //console.log("pinging...");
   try {
     missed_heartbeats++;
     if (missed_heartbeats >= missed_heartbeats_limit)
@@ -279,7 +281,7 @@ export default class Register extends React.Component {
     if (path !== null && path !== "" && storageAlias !== null && storageAlias !== "") {
       if (password !== null && password !== "") {
         getKeys(storageAlias, path, password, keyType, "loadKeysBack");
-        console.log(this.state.resultIIN);
+        //console.log(this.state.resultIIN);
       } else {
         alert("Введите пароль к хранилищу");
       }
@@ -380,7 +382,7 @@ export default class Register extends React.Component {
               <div className="modal-body">
                 <div className="form-group">
                   <label className="control-label">Путь к ЭЦП
-                    <input className="form-control" type="text" id="storagePath" readonly />
+                    <input className="form-control" type="text" id="storagePath" readOnly />
                   </label>
                   <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button> 
                 </div>
