@@ -28,7 +28,7 @@
   overflow: hidden;
 }
 
-.viewDivUrban {
+.viewDivUrban, .viewDivProvider, .viewDivHead {
   padding: 0;
   margin: 0;
   height: 100%;
