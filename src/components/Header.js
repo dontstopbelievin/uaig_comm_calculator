@@ -231,7 +231,19 @@ class LogoutBtn extends Component {
                     else{
                       return <UrbanMenu />;
                     }
-                  case 'Provider': return <ProviderMenu />;
+                  case 'Provider':
+                    if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Electricity') {
+                      return <ElectroProviderMenu />;
+                    }
+                    else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Gas'){
+                      return <GasProviderMenu />;
+                    }
+                    else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Heat'){
+                      return <HeatProviderMenu />;
+                    } 
+                    else{
+                      return <WaterProviderMenu />;
+                    }
                   case 'Citizen': return <CitizenMenu />;
                   case 'PhotoReport': return <PhotoReportMenu />;
                   case 'Temporary': return <TemporaryMenu />;
@@ -272,11 +284,47 @@ class UrbanMenu extends Component {
   }
 }
 
-class ProviderMenu extends Component {
+class ElectroProviderMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/provider"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
+        <NavLink to={"/providerelectro"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
+        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
+        <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
+      </div>
+    )
+  }
+}
+
+class GasProviderMenu extends Component {
+  render() {
+    return (
+      <div>
+        <NavLink to={"/providergas"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
+        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
+        <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
+      </div>
+    )
+  }
+}
+
+class HeatProviderMenu extends Component {
+  render() {
+    return (
+      <div>
+        <NavLink to={"/providerheat"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
+        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
+        <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
+      </div>
+    )
+  }
+}
+
+class WaterProviderMenu extends Component {
+  render() {
+    return (
+      <div>
+        <NavLink to={"/providerwater"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
         <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
       </div>

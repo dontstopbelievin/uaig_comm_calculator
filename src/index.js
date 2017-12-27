@@ -12,7 +12,10 @@ import Temporary from './routes/Temporary';
 import Citizen from './routes/Citizen';
 import Urban from './routes/Urban';
 import Head from './routes/Head';
-import Provider from './routes/Provider';
+import ProviderElectro from './routes/ProviderElectro';
+import ProviderGas from './routes/ProviderGas';
+import ProviderHeat from './routes/ProviderHeat';
+import ProviderWater from './routes/ProviderWater';
 import Project from './routes/Project';
 import PhotoReports from './routes/PhotoReports';
 import PhotoReportsManage from './routes/PhotoReportsManage';
@@ -67,7 +70,10 @@ export default class Main extends React.Component {
               <Route path="/urban" render={(props) => (<Urban {...props} />)} />
               <Route path="/head" render={(props) => (<Head {...props} />)} />
               <Route path="/citizen" render={(props) => (<Citizen {...props} />)} />
-              <Route path="/provider" render={(props) => (<Provider {...props} />)} />
+              <Route path="/providerelectro" render={(props) => (<ProviderElectro {...props} />)} />
+              <Route path="/providergas" render={(props) => (<ProviderGas {...props} />)} />
+              <Route path="/providerheat" render={(props) => (<ProviderHeat {...props} />)} />
+              <Route path="/providerwater" render={(props) => (<ProviderWater {...props} />)} />
               <Route path="/project" render={(props) => (<Project {...props} />)} />
               <Route path="/photoreports" render={(props) => (<PhotoReports {...props} />)} />
               <Route path="/photoreportsManage" render={(props) => (<PhotoReportsManage {...props} />)} />

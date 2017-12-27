@@ -1,4 +1,5 @@
 import React from 'react';
+//import * as esriLoader from 'esri-loader';
 import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
@@ -83,134 +84,151 @@ export default class Citizen extends React.Component {
   }
 
   // function to show the detailed info and statusBar for every form
-  details(e) {
-    console.log(e);
-    // to show minute with two numbers, E.g.: 12:00 instead of 12:0
-    function addZero(i) {
-        if (i < 10) {
-            i = "0" + i;
+  getApzDetails(apzId) {
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/apz/detail/" + apzId, true);
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.send();
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        console.log(data);
+        // to show minute with two numbers, E.g.: 12:00 instead of 12:0
+        function addZero(i) {
+            if (i < 10) {
+                i = "0" + i;
+            }
+            return i;
         }
-        return i;
-    }
-    this.setState({ showDetails: true });
-    this.setState({ showStatusBar: true });
-    this.setState({ Applicant: e.Applicant });
-    this.setState({ Address: e.Address });
-    this.setState({ Phone: e.Phone });
-    this.setState({ Customer: e.Customer });
-    this.setState({ Designer: e.Designer });
-    this.setState({ ProjectName: e.ProjectName });
-    this.setState({ ProjectAddress: e.ProjectAddress });
-    this.setState(function(){
-      var jDate = new Date(e.ApzDate);
-      var curr_date = jDate.getDate();
-      var curr_month = jDate.getMonth() + 1;
-      var curr_year = jDate.getFullYear();
-      var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
-      return { ApzDate: formated_date }
-    });
-    this.setState({ Status: e.Status });
-    this.setState({ wStatus: e.ApzWaterStatus });
-    this.setState({ hStatus: e.ApzHeatStatus });
-    this.setState({ eStatus: e.ApzElectricityStatus });
-    this.setState({ gStatus: e.ApzGasStatus });
-    this.setState(function(){
-      if(e.RegionDate !== null){
-        var jDate = new Date(e.RegionDate);
-        var curr_date = jDate.getDate();
-        var curr_month = jDate.getMonth() + 1;
-        var curr_year = jDate.getFullYear();
-        var curr_hour = jDate.getHours();
-        var curr_minute = addZero(jDate.getMinutes());
-        var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-        return { regionDate: formated_date }
+        this.setState({ showDetails: true });
+        this.setState({ showStatusBar: true });
+        this.setState({ Applicant: data.Applicant });
+        this.setState({ Address: data.Address });
+        this.setState({ Phone: data.Phone });
+        this.setState({ Customer: data.Customer });
+        this.setState({ Designer: data.Designer });
+        this.setState({ ProjectName: data.ProjectName });
+        this.setState({ ProjectAddress: data.ProjectAddress });
+        this.setState(function(){
+          var jDate = new Date(data.ApzDate);
+          var curr_date = jDate.getDate();
+          var curr_month = jDate.getMonth() + 1;
+          var curr_year = jDate.getFullYear();
+          var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
+          return { ApzDate: formated_date }
+        });
+        this.setState({ Status: data.Status });
+        this.setState({ wStatus: data.ApzWaterStatus });
+        this.setState({ hStatus: data.ApzHeatStatus });
+        this.setState({ eStatus: data.ApzElectricityStatus });
+        this.setState({ gStatus: data.ApzGasStatus });
+        this.setState(function(){
+          if(data.RegionDate !== null){
+            var jDate = new Date(data.RegionDate);
+            var curr_date = jDate.getDate();
+            var curr_month = jDate.getMonth() + 1;
+            var curr_year = jDate.getFullYear();
+            var curr_hour = jDate.getHours();
+            var curr_minute = addZero(jDate.getMinutes());
+            var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
+            return { regionDate: formated_date }
+          }
+          else{
+            return { regionDate: data.RegionDate }
+          } 
+        });
+        this.setState({ regionResponse: data.RegionResponse});
+        this.setState(function(){
+          if(data.HeadDate !== null){
+            var jDate = new Date(data.HeadDate);
+            var curr_date = jDate.getDate();
+            var curr_month = jDate.getMonth() + 1;
+            var curr_year = jDate.getFullYear();
+            var curr_hour = jDate.getHours();
+            var curr_minute = addZero(jDate.getMinutes());
+            var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
+            return { headDate: formated_date }
+          }
+          else{
+            return { headDate: data.HeadDate }
+          }
+        });
+        this.setState({ headResponse: data.HeadResponse});
+        this.setState(function(){
+          if(data.ProviderElectricityDate !== null){
+            var jDate = new Date(data.ProviderElectricityDate);
+            var curr_date = jDate.getDate();
+            var curr_month = jDate.getMonth() + 1;
+            var curr_year = jDate.getFullYear();
+            var curr_hour = jDate.getHours();
+            var curr_minute = addZero(jDate.getMinutes());
+            var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
+            return { eActionDate: formated_date }
+          }
+          else{
+            return { eActionDate: data.ProviderElectricityDate }
+          }
+        });
+        this.setState({ eResponse: data.ProviderElectricityResponse});
+        this.setState(function(){
+          if(data.ProviderGasDate !== null){
+            var jDate = new Date(data.ProviderGasDate);
+            var curr_date = jDate.getDate();
+            var curr_month = jDate.getMonth() + 1;
+            var curr_year = jDate.getFullYear();
+            var curr_hour = jDate.getHours();
+            var curr_minute = addZero(jDate.getMinutes());
+            var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
+            return { gActionDate: formated_date }
+          }
+          else{
+            return { gActionDate: data.ProviderGasDate }
+          }
+        });
+        this.setState({ gResponse: data.ProviderGasResponse});
+        this.setState(function(){
+          if(data.ProviderHeatDate !== null){
+            var jDate = new Date(data.ProviderHeatDate);
+            var curr_date = jDate.getDate();
+            var curr_month = jDate.getMonth() + 1;
+            var curr_year = jDate.getFullYear();
+            var curr_hour = jDate.getHours();
+            var curr_minute = addZero(jDate.getMinutes());
+            var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
+            return { hActionDate: formated_date }
+          }
+          else{
+            return { hActionDate: data.ProviderHeatDate }
+          }
+        });
+        this.setState({ hResponse: data.ProviderHeatResponse});
+        this.setState(function(){
+          if(data.ProviderWaterDate !== null){
+            var jDate = new Date(data.ProviderWaterDate);
+            var curr_date = jDate.getDate();
+            var curr_month = jDate.getMonth() + 1;
+            var curr_year = jDate.getFullYear();
+            var curr_hour = jDate.getHours();
+            var curr_minute = addZero(jDate.getMinutes());
+            var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
+            return { wActionDate: formated_date }
+          }
+          else{
+            return { wActionDate: data.ProviderWaterDate }
+          }
+        });
+        this.setState({ wResponse: data.ProviderWaterResponse});
+      }
+      else if(xhr.status === 401){
+        sessionStorage.clear();
+        alert("Token is expired, please login again!");
+        this.props.history.replace("/login");
       }
-      else{
-        return { regionDate: e.RegionDate }
-      } 
-    });
-    this.setState({ regionResponse: e.RegionResponse});
-    this.setState(function(){
-      if(e.HeadDate !== null){
-        var jDate = new Date(e.HeadDate);
-        var curr_date = jDate.getDate();
-        var curr_month = jDate.getMonth() + 1;
-        var curr_year = jDate.getFullYear();
-        var curr_hour = jDate.getHours();
-        var curr_minute = addZero(jDate.getMinutes());
-        var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-        return { headDate: formated_date }
-      }
-      else{
-        return { headDate: e.HeadDate }
-      }
-    });
-    this.setState({ headResponse: e.HeadResponse});
-    this.setState(function(){
-      if(e.ProviderElectricityDate !== null){
-        var jDate = new Date(e.ProviderElectricityDate);
-        var curr_date = jDate.getDate();
-        var curr_month = jDate.getMonth() + 1;
-        var curr_year = jDate.getFullYear();
-        var curr_hour = jDate.getHours();
-        var curr_minute = addZero(jDate.getMinutes());
-        var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-        return { eActionDate: formated_date }
-      }
-      else{
-        return { eActionDate: e.ProviderElectricityDate }
-      }
-    });
-    this.setState({ eResponse: e.ProviderElectricityResponse});
-    this.setState(function(){
-      if(e.ProviderGasDate !== null){
-        var jDate = new Date(e.ProviderGasDate);
-        var curr_date = jDate.getDate();
-        var curr_month = jDate.getMonth() + 1;
-        var curr_year = jDate.getFullYear();
-        var curr_hour = jDate.getHours();
-        var curr_minute = addZero(jDate.getMinutes());
-        var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-        return { gActionDate: formated_date }
-      }
-      else{
-        return { gActionDate: e.ProviderGasDate }
-      }
-    });
-    this.setState({ gResponse: e.ProviderGasResponse});
-    this.setState(function(){
-      if(e.ProviderHeatDate !== null){
-        var jDate = new Date(e.ProviderHeatDate);
-        var curr_date = jDate.getDate();
-        var curr_month = jDate.getMonth() + 1;
-        var curr_year = jDate.getFullYear();
-        var curr_hour = jDate.getHours();
-        var curr_minute = addZero(jDate.getMinutes());
-        var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-        return { hActionDate: formated_date }
-      }
-      else{
-        return { hActionDate: e.ProviderHeatDate }
-      }
-    });
-    this.setState({ hResponse: e.ProviderHeatResponse});
-    this.setState(function(){
-      if(e.ProviderWaterDate !== null){
-        var jDate = new Date(e.ProviderWaterDate);
-        var curr_date = jDate.getDate();
-        var curr_month = jDate.getMonth() + 1;
-        var curr_year = jDate.getFullYear();
-        var curr_hour = jDate.getHours();
-        var curr_minute = addZero(jDate.getMinutes());
-        var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-        return { wActionDate: formated_date }
-      }
-      else{
-        return { wActionDate: e.ProviderWaterDate }
-      }
-    });
-    this.setState({ wResponse: e.ProviderWaterResponse});
-  }
+    }.bind(this);   
+  };
 
   // function to hide/show ApzForm, gets called when button "Создать заявление" is clicked
   toggleForm(e){
@@ -289,6 +307,93 @@ export default class Citizen extends React.Component {
       return 'circle done';
   }
 
+  // createMap(element){
+  //   console.log(this.refs)
+  //   esriLoader.dojoRequire([
+  //     "esri/views/SceneView",
+  //     "esri/widgets/LayerList",
+  //     "esri/WebScene",
+  //     "esri/layers/FeatureLayer",
+  //     "esri/layers/TileLayer",
+  //     "esri/widgets/Search",
+  //     "esri/Map",
+  //     "dojo/domReady!"
+  //   ], function(
+  //     SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
+  //   ) {
+  //     var map = new Map({
+  //       basemap: "topo"
+  //     });
+      
+  //     var flGosAkts = new FeatureLayer({
+  //       url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+  //       outFields: ["*"],
+  //       title: "Гос акты"
+  //     });
+  //     map.add(flGosAkts);
+
+  //     var view = new SceneView({
+  //       container: element,
+  //       map: map,
+  //       center: [76.886, 43.250], // lon, lat
+  //       scale: 10000
+  //     });
+      
+  //     var searchWidget = new Search({
+  //       view: view,
+  //       sources: [{
+  //         featureLayer: new FeatureLayer({
+  //           url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+  //           popupTemplate: { // autocasts as new PopupTemplate()
+  //             title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
+  //           }
+  //         }),
+  //         searchFields: ["CADASTRAL_NUMBER"],
+  //         displayField: "CADASTRAL_NUMBER",
+  //         exactMatch: false,
+  //         outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
+  //         name: "Зарегистрированные государственные акты",
+  //         placeholder: "Кадастровый поиск"
+  //       }]
+  //     });
+  //     // Add the search widget to the top right corner of the view
+  //     view.ui.add(searchWidget, {
+  //       position: "top-right"
+  //     });
+      
+      
+  //     view.then(function() {
+  //       var layerList = new LayerList({
+  //         view: view
+  //       });
+
+  //       // Add widget to the bottom right corner of the view
+  //       view.ui.add(layerList, "bottom-right");
+  //     });
+      
+  //   });
+  // }
+
+  // onReference(element) {
+  //   console.log('mounted');
+  //   if(!esriLoader.isLoaded()) {
+  //     esriLoader.bootstrap(
+  //       err => {
+  //         if(err) {
+  //           console.log(err);
+  //         } else {
+  //           this.createMap(element);
+  //         }
+  //       },
+  //       {
+  //         url: "https://js.arcgis.com/4.5/"
+  //       }
+  //     );
+  //   } else {
+  //     this.createMap(element);
+  //   }
+  // }
+
   componentWillMount() {
     //console.log("CitizenComponent will mount");
     if(sessionStorage.getItem('tokenInfo')){
@@ -333,7 +438,7 @@ export default class Citizen extends React.Component {
             {
               activeForms.map(function(actForm, i){
                 return(
-                  <li key={i} onClick={this.details.bind(this, actForm)}>
+                  <li key={i} onClick={this.getApzDetails.bind(this, actForm.Id)}>
                     {actForm.ProjectName}
                   </li>
                 )
@@ -344,7 +449,7 @@ export default class Citizen extends React.Component {
             {
               acceptedForms.map(function(accForm, i){
                 return(
-                  <li key={i} onClick={this.details.bind(this, accForm)}>
+                  <li key={i} onClick={this.getApzDetails.bind(this, accForm.Id)}>
                     {accForm.ProjectName}
                   </li>
                   )
@@ -355,7 +460,7 @@ export default class Citizen extends React.Component {
             {
               declinedForms.map(function(decForm, i){
                 return(
-                  <li key={i} onClick={this.details.bind(this, decForm)}>
+                  <li key={i} onClick={this.getApzDetails.bind(this, decForm.Id)}>
                     {decForm.ProjectName}
                   </li>
                 )
@@ -364,9 +469,13 @@ export default class Citizen extends React.Component {
             </h4>
           </div>
           <div className="col-md-6 apz-additional card" style={{padding: '0'}}>
-            <div id="citizenMapPause" className="col-md-12 well" style={{padding: '0', height:'300px', width:'100%'}}>
-                Карта со слоями
-            </div>
+            {/*<div className="col-md-12 well" style={{padding: '0', height:'600px', width:'100%'}}>
+                <div className="viewDivCitizen" ref={this.onReference.bind(this)}>
+                  <div className="container">
+                    <p>Загрузка...</p>
+                  </div>
+                </div>
+            </div>*/}
             {/*<button class="btn-block btn-info col-md-3" id="printApz">
               Распечатать АПЗ
             </button>*/}
