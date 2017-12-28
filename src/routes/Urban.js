@@ -32,29 +32,7 @@ export default class Urban extends React.Component {
     this.setState({ description: e.target.value });
   }
 
-  details(e) {
-    console.log(e);
-    this.setState({ showButtons: false });
-    if(e.Status === 2) { this.setState({ showButtons: true }); }
-    this.setState({ showDetails: true });
-    this.setState({ Id: e.Id });
-    this.setState({ Applicant: e.Applicant });
-    this.setState({ Address: e.Address });
-    this.setState({ Phone: e.Phone });
-    this.setState({ Customer: e.Customer });
-    this.setState({ Designer: e.Designer });
-    this.setState({ ProjectName: e.ProjectName });
-    this.setState({ ProjectAddress: e.ProjectAddress });
-    this.setState(function(){
-      var jDate = new Date(e.ApzDate);
-      var curr_date = jDate.getDate();
-      var curr_month = jDate.getMonth() + 1;
-      var curr_year = jDate.getFullYear();
-      var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
-      return { ApzDate: formated_date }
-    });
-  }
-
+  // get the list of apz forms
   getApzFormList() {
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
@@ -78,6 +56,44 @@ export default class Urban extends React.Component {
       }
     }.bind(this);
     xhr.send();
+  }
+
+  // get detailed info for clicked apz
+  getApzDetails(apzId) {
+    var token = sessionStorage.getItem('tokenInfo');
+    var providerName = JSON.parse(sessionStorage.getItem('userRoles'))[1];
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/apz/region/detail/" + apzId, true);
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.send();
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        console.log(data);
+        this.setState({ showButtons: false });
+        if(data.Status === 2) { this.setState({ showButtons: true }); }
+        this.setState({ showDetails: true });
+        this.setState({ Id: data.Id });
+        this.setState({ Applicant: data.Applicant });
+        this.setState({ Address: data.Address });
+        this.setState({ Phone: data.Phone });
+        this.setState({ Customer: data.Customer });
+        this.setState({ Designer: data.Designer });
+        this.setState({ ProjectName: data.ProjectName });
+        this.setState({ ProjectAddress: data.ProjectAddress });
+        this.setState(function(){
+          var jDate = new Date(data.ApzDate);
+          var curr_date = jDate.getDate();
+          var curr_month = jDate.getMonth() + 1;
+          var curr_year = jDate.getFullYear();
+          var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
+          return { ApzDate: formated_date }
+        });
+      }
+    }.bind(this);
   }
 
   // accept or decline the form
@@ -299,7 +315,7 @@ export default class Urban extends React.Component {
               {
                 activeForms.map(function(actForm, i){
                   return(
-                    <li key={i} onClick={this.details.bind(this, actForm)}>
+                    <li key={i} onClick={this.getApzDetails.bind(this, actForm.Id)}>
                       {actForm.ProjectName}
                     </li>
                   )
@@ -310,7 +326,7 @@ export default class Urban extends React.Component {
               {
                 acceptedForms.map(function(accForm, i){
                   return(
-                    <li key={i} onClick={this.details.bind(this, accForm)}>
+                    <li key={i} onClick={this.getApzDetails.bind(this, accForm.Id)}>
                       {accForm.ProjectName}
                     </li>
                     )
@@ -321,7 +337,7 @@ export default class Urban extends React.Component {
               {
                 declinedForms.map(function(decForm, i){
                   return(
-                    <li key={i} onClick={this.details.bind(this, decForm)}>
+                    <li key={i} onClick={this.getApzDetails.bind(this, decForm.Id)}>
                       {decForm.ProjectName}
                     </li>
                   )
@@ -330,7 +346,7 @@ export default class Urban extends React.Component {
               </h4>
             </div>
             <div className="col-md-6 apz-additional card" style={{padding: '0'}}>
-              <div className="col-md-12 well" style={{padding: '0', height:'300px', width:'100%'}}>
+              <div className="col-md-12 well" style={{padding: '0', height:'600px', width:'100%'}}>
                   {/*<div className="viewDivUrban" ref={this.onReference.bind(this)}>
                     <div className="container">
                       <p>Загрузка...</p>

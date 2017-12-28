@@ -65,6 +65,7 @@ export default class ProviderElectro extends React.Component {
     }
   }
 
+  // get detailed info for clicked apz
   getApzDetails(apzId) {
     var token = sessionStorage.getItem('tokenInfo');
     var providerName = JSON.parse(sessionStorage.getItem('userRoles'))[1];
