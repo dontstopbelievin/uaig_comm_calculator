@@ -41,13 +41,13 @@ export default class ProviderHeat extends React.Component {
       var providerName = JSON.parse(sessionStorage.getItem('userRoles'))[1];
 
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/provider/" + providerName, true);
+      xhr.open("get", window.url + "api/apz/provider/" + providerName, true);
       //Send the proper header information along with the request
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-      xhr.onload = function () {
+      xhr.onload = function () {
         if (xhr.status === 200) {
-          var data = JSON.parse(xhr.responseText);
+          var data = JSON.parse(xhr.responseText);
           //console.log(data);
           
           // filter the whole list to get only accepted apzForms
@@ -58,10 +58,10 @@ export default class ProviderHeat extends React.Component {
           this.setState({declinedForms: dec_forms_list});
           // filter the list to get in-process apzForms
           var act_forms_list = data.filter(function(obj) { return (obj.ApzHeatStatus === 2 && obj.Status === 3); });
-          this.setState({activeForms: act_forms_list});
+          this.setState({activeForms: act_forms_list});
         }
-      }.bind(this);
-      xhr.send();
+      }.bind(this);
+      xhr.send();
     }
   }
 
@@ -70,14 +70,14 @@ export default class ProviderHeat extends React.Component {
     var token = sessionStorage.getItem('tokenInfo');
     var providerName = JSON.parse(sessionStorage.getItem('userRoles'))[1];
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/provider/" + providerName + "/" + apzId, true);
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/apz/provider/" + providerName + "/" + apzId, true);
     //Send the proper header information along with the request
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.send();
     xhr.onload = function () {
-      if (xhr.status === 200) {
+      if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
         console.log(data);
         this.setState({ showButtons: false });
@@ -129,14 +129,14 @@ export default class ProviderHeat extends React.Component {
     //console.log(formPos);
 
     var xhr = new XMLHttpRequest();
-    xhr.open("put", window.url + "api/apz/status/" + apzId, true);
+    xhr.open("put", window.url + "api/apz/status/" + apzId, true);
     //Send the proper header information along with the request
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function () {
+    xhr.onload = function () {
       var data = JSON.parse(xhr.responseText);
       console.log(data);
-      if (xhr.status === 200) {
+      if (xhr.status === 200) {
         if(status === true){
           alert("Заявление принято!");
           // to hide the buttons
@@ -157,14 +157,14 @@ export default class ProviderHeat extends React.Component {
           this.setState({declinedForms: tempDecForms});
           console.log("Заявление отклонено!");
         }
-      }
+      }
       else if(xhr.status === 401){
         sessionStorage.clear();
         alert("Token is expired, please login again!");
         this.props.history.replace("/login");
       }
-    }.bind(this);
-    xhr.send(dd); 
+    }.bind(this);
+    xhr.send(dd); 
   }
 
   createMap(element){

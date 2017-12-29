@@ -94,7 +94,7 @@ export default class Header extends Component {
             <div className="col-md-8">
               <div className="row">
                 <div className="col-md-2">
-                  <NavLink to={'/'} replace><img width="70" src="http://almaty.uaig.kz/wp-content/uploads/2017/08/logo4.png" alt="Управление архитектуры и градостроительства города Алматы" /></NavLink>
+                  <NavLink to={'/'} replace><img width="70" src="/images/logo.png" alt="Управление архитектуры и градостроительства города Алматы" /></NavLink>
                 </div>
                 <div className="col-md-5">
                   <b>{e.title}</b>

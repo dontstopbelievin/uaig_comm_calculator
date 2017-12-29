@@ -165,31 +165,31 @@ export default class Urban extends React.Component {
       SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
     ) {
 
-      //функциональное зонирование
-      var flFunkZon = new FeatureLayer({
-        portalItem: {  // autocasts as esri/portal/PortalItem
-          id: "7dd6833628d34453939ed2c6fa514bb5"
-        },
-        outFields: ["*"],
-        visible: true,
-        title: "Функциональное зонирование"
+      var map = new Map({
+        basemap: "topo"
       });
       
-      
-      //красные линии
-      var flRedlines = new TileLayer({
-        portalItem: {  // autocasts as esri/portal/PortalItem
-          id: "f93a74c28c904666932f084d91719fdc"
-        },
+      var flRedLines = new FeatureLayer({
+        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D1%8B%D0%B5_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B8/FeatureServer",
         outFields: ["*"],
-        visible: true,
         title: "Красные линии"
       });
-      var map = new Map({
-        basemap: "dark-gray"
+      map.add(flRedLines);
+
+      var flFunZones = new FeatureLayer({
+        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%A4%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B7%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5/FeatureServer",
+        outFields: ["*"],
+        title: "Функциональное зонирование"
       });
-      map.add(flFunkZon);
-      map.add(flRedlines);
+      map.add(flFunZones);
+
+      var flGosAkts = new FeatureLayer({
+        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+        outFields: ["*"],
+        title: "Гос акты"
+      });
+      map.add(flGosAkts);
+      
       var view = new SceneView({
         container: element,
         map: map,
@@ -201,9 +201,7 @@ export default class Urban extends React.Component {
         view: view,
         sources: [{
           featureLayer: new FeatureLayer({
-            portalItem: {
-              id: "dcd7bef523324a149843a070fd857b11"
-            },
+            url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
             popupTemplate: { // autocasts as new PopupTemplate()
               title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
             }
@@ -220,6 +218,7 @@ export default class Urban extends React.Component {
       view.ui.add(searchWidget, {
         position: "top-right"
       });
+      
       view.then(function() {
         var layerList = new LayerList({
           view: view

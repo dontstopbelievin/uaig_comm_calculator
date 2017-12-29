@@ -1,8 +1,9 @@
 import React from 'react';
-//import * as esriLoader from 'esri-loader';
+import * as esriLoader from 'esri-loader';
 import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
+
 
 export default class Citizen extends React.Component {
   constructor(props) {
@@ -225,13 +226,14 @@ export default class Citizen extends React.Component {
         }
         else if(xhr.status === 401){
           sessionStorage.clear();
-          alert("Token is expired, please login again!");
+          alert("Время сессий истекло, войдите снова!");
           this.props.history.replace("/login");
         }
       }.bind(this);
     } else {
       console.log('session expired');
     }   
+
   };
 
   // function to print apzForm in .pdf format
@@ -340,6 +342,107 @@ export default class Citizen extends React.Component {
       return 'circle fail';
     else
       return 'circle done';
+  }
+  createMap(element){
+    console.log(this.refs)
+    esriLoader.dojoRequire([
+      "esri/views/SceneView",
+      "esri/widgets/LayerList",
+      "esri/WebScene",
+      "esri/layers/FeatureLayer",
+      "esri/layers/TileLayer",
+      "esri/widgets/Search",
+      "esri/Map",
+      "dojo/domReady!"
+    ], function(
+      SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
+    ) {
+      var map = new Map({
+        basemap: "topo"
+      });
+      
+      var flRedLines = new FeatureLayer({
+        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D1%8B%D0%B5_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B8/FeatureServer",
+        outFields: ["*"],
+        title: "Красные линии"
+      });
+      map.add(flRedLines);
+
+      var flFunZones = new FeatureLayer({
+        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%A4%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B7%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5/FeatureServer",
+        outFields: ["*"],
+        title: "Функциональное зонирование"
+      });
+      map.add(flFunZones);
+      /*
+      var flGosAkts = new FeatureLayer({
+        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+        outFields: ["*"],
+        title: "Гос акты"
+      });
+      map.add(flGosAkts);
+      */
+      
+      var view = new SceneView({
+        container: element,
+        map: map,
+        center: [76.886, 43.250], // lon, lat
+        scale: 10000
+      });
+      
+      var searchWidget = new Search({
+        view: view,
+        sources: [{
+          featureLayer: new FeatureLayer({
+            url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+            popupTemplate: { // autocasts as new PopupTemplate()
+              title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
+            }
+          }),
+          searchFields: ["CADASTRAL_NUMBER"],
+          displayField: "CADASTRAL_NUMBER",
+          exactMatch: false,
+          outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
+          name: "Зарегистрированные государственные акты",
+          placeholder: "Кадастровый поиск"
+        }]
+      });
+      // Add the search widget to the top left corner of the view
+      view.ui.add(searchWidget, {
+        position: "top-right"
+      });
+      
+      
+      view.then(function() {
+        var layerList = new LayerList({
+          view: view
+        });
+
+        // Add widget to the top right corner of the view
+        view.ui.add(layerList, "bottom-right");
+      });
+      
+    });
+  }
+
+  onReference(element) {
+    console.log('mounted');
+    if(!esriLoader.isLoaded()) {
+      esriLoader.bootstrap(
+        err => {
+          if(err) {
+            console.log(err);
+          } else {
+            this.createMap(element);
+          }
+        },
+        {
+          url: "https://js.arcgis.com/4.5/"
+        }
+      );
+    } else {
+      this.createMap(element);
+    }
   }
 
   createMap(element){

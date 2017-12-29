@@ -400,7 +400,7 @@ console.log(this.state.file);
                   <div className="form-group">
                     <label htmlFor="upload_category">Категория</label>
                     <select className="form-control" id="upload_category" onChange={this.onCategoryChange}>
-                      <option value="" defaultValue disabled>Выберите категорию</option>
+                      <option value="" selected disabled>Выберите категорию</option>
                       {
                         this.state.categories.map(function(category, index)
                           {

@@ -41,7 +41,8 @@ export default class Main extends React.Component {
 
   componentWillMount() {
     this.setLang();
-    window.url = 'http://localhost:53844/';  
+    window.url = 'https://work.uaig.kz:4443/';
+    //window.url = 'http://localhost:53844/';
   }
 
   componentDidMount() {
