@@ -1,5 +1,5 @@
 import React from 'react';
-//import * as esriLoader from 'esri-loader';
+import * as esriLoader from 'esri-loader';
 //import { NavLink } from 'react-router-dom';
 
 export default class ProviderElectro extends React.Component {
@@ -166,124 +166,124 @@ export default class ProviderElectro extends React.Component {
     xhr.send(dd); 
   }
 
-  // createMap(element){
-  //   if(sessionStorage.getItem('tokenInfo')){ 
-  //     console.log(this.refs);
+  createMap(element){
+    if(sessionStorage.getItem('tokenInfo')){ 
+      console.log(this.refs);
 
-  //     esriLoader.dojoRequire([
-  //     "esri/views/SceneView",
-  //     "esri/widgets/LayerList",
-  //     "esri/WebScene",
-  //     "esri/layers/FeatureLayer",
-  //     "esri/layers/TileLayer",
-  //     "esri/widgets/Search",
-  //     "esri/Map",
-  //     "dojo/domReady!"
-  //   ], function(
-  //       SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
-  //     ) {
-  //       var map = new Map({
-  //         basemap: "topo"
-  //       });
+      esriLoader.dojoRequire([
+      "esri/views/SceneView",
+      "esri/widgets/LayerList",
+      "esri/WebScene",
+      "esri/layers/FeatureLayer",
+      "esri/layers/TileLayer",
+      "esri/widgets/Search",
+      "esri/Map",
+      "dojo/domReady!"
+    ], function(
+        SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
+      ) {
+        var map = new Map({
+          basemap: "topo"
+        });
         
-  //       var electroLines = new FeatureLayer({
-  //         url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%9B%D0%B8%D0%BD%D0%B8%D0%B8_%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F/FeatureServer",
-  //         outFields: ["*"],
-  //         title: "Линии электроснабжения"
-  //       });
-  //       map.add(electroLines);
+        var electroLines = new FeatureLayer({
+          url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%9B%D0%B8%D0%BD%D0%B8%D0%B8_%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F/FeatureServer",
+          outFields: ["*"],
+          title: "Линии электроснабжения"
+        });
+        map.add(electroLines);
 
-  //       var electroLinesUnderground = new FeatureLayer({
-  //         url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%AD%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BA%D0%B0%D0%B1%D0%B5%D0%BB%D0%B8_%D0%BF%D0%BE%D0%B4%D0%B7%D0%B5%D0%BC%D0%BD%D1%8B%D0%B5/FeatureServer",
-  //         outFields: ["*"],
-  //         title: "Электрокабели подземные"
-  //       });
-  //       map.add(electroLinesUnderground);
+        var electroLinesUnderground = new FeatureLayer({
+          url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%AD%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BA%D0%B0%D0%B1%D0%B5%D0%BB%D0%B8_%D0%BF%D0%BE%D0%B4%D0%B7%D0%B5%D0%BC%D0%BD%D1%8B%D0%B5/FeatureServer",
+          outFields: ["*"],
+          title: "Электрокабели подземные"
+        });
+        map.add(electroLinesUnderground);
 
-  //       var sysElectroLines = new FeatureLayer({
-  //         url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%A1%D0%BE%D0%BE%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D1%8B_%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F/FeatureServer",
-  //         outFields: ["*"],
-  //         title: "Cооружения системы электроснабжения"
-  //       });
-  //       map.add(sysElectroLines);
+        var sysElectroLines = new FeatureLayer({
+          url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%A1%D0%BE%D0%BE%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D1%8B_%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F/FeatureServer",
+          outFields: ["*"],
+          title: "Cооружения системы электроснабжения"
+        });
+        map.add(sysElectroLines);
 
-  //       var stolby = new FeatureLayer({
-  //         url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%A1%D1%82%D0%BE%D0%BB%D0%B1%D1%8B_%D0%B2%D0%BE%D0%B7%D0%B4%D1%83%D1%88%D0%BD%D1%8B%D1%85_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B9_%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BF%D0%B5%D1%80%D0%B5%D0%B4%D0%B0%D1%87/FeatureServer",
-  //         outFields: ["*"],
-  //         title: "Cтолбы возд. линий электропередач"
-  //       });
-  //       map.add(stolby);
+        var stolby = new FeatureLayer({
+          url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%A1%D1%82%D0%BE%D0%BB%D0%B1%D1%8B_%D0%B2%D0%BE%D0%B7%D0%B4%D1%83%D1%88%D0%BD%D1%8B%D1%85_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B9_%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BF%D0%B5%D1%80%D0%B5%D0%B4%D0%B0%D1%87/FeatureServer",
+          outFields: ["*"],
+          title: "Cтолбы возд. линий электропередач"
+        });
+        map.add(stolby);
         
-  //       var flGosAkts = new FeatureLayer({
-  //         url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-  //         outFields: ["*"],
-  //         title: "Гос акты"
-  //       });
-  //       map.add(flGosAkts);
+        var flGosAkts = new FeatureLayer({
+          url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+          outFields: ["*"],
+          title: "Гос акты"
+        });
+        map.add(flGosAkts);
 
-  //       var view = new SceneView({
-  //         container: element,
-  //         map: map,
-  //         center: [76.886, 43.250], // lon, lat
-  //         scale: 10000
-  //       });
+        var view = new SceneView({
+          container: element,
+          map: map,
+          center: [76.886, 43.250], // lon, lat
+          scale: 10000
+        });
         
-  //       var searchWidget = new Search({
-  //         view: view,
-  //         sources: [{
-  //           featureLayer: new FeatureLayer({
-  //             url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-  //             popupTemplate: { // autocasts as new PopupTemplate()
-  //               title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
-  //             }
-  //           }),
-  //           searchFields: ["CADASTRAL_NUMBER"],
-  //           displayField: "CADASTRAL_NUMBER",
-  //           exactMatch: false,
-  //           outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
-  //           name: "Зарегистрированные государственные акты",
-  //           placeholder: "Кадастровый поиск"
-  //         }]
-  //       });
-  //       // Add the search widget to the top right corner of the view
-  //       view.ui.add(searchWidget, {
-  //         position: "top-right"
-  //       });
+        var searchWidget = new Search({
+          view: view,
+          sources: [{
+            featureLayer: new FeatureLayer({
+              url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+              popupTemplate: { // autocasts as new PopupTemplate()
+                title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
+              }
+            }),
+            searchFields: ["CADASTRAL_NUMBER"],
+            displayField: "CADASTRAL_NUMBER",
+            exactMatch: false,
+            outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
+            name: "Зарегистрированные государственные акты",
+            placeholder: "Кадастровый поиск"
+          }]
+        });
+        // Add the search widget to the top right corner of the view
+        view.ui.add(searchWidget, {
+          position: "top-right"
+        });
         
         
-  //       view.then(function() {
-  //         var layerList = new LayerList({
-  //           view: view
-  //         });
+        view.then(function() {
+          var layerList = new LayerList({
+            view: view
+          });
 
-  //         // Add widget to the bottom right corner of the view
-  //         view.ui.add(layerList, "bottom-right");
-  //       });     
-  //     });
-  //   }
-  // }
+          // Add widget to the bottom right corner of the view
+          view.ui.add(layerList, "bottom-right");
+        });     
+      });
+    }
+  }
 
-  // onReference(element) {
-  //   if(sessionStorage.getItem('tokenInfo')){
-  //     console.log('mounted');
-  //     if(!esriLoader.isLoaded()) {
-  //       esriLoader.bootstrap(
-  //         err => {
-  //           if(err) {
-  //             console.log(err);
-  //           } else {
-  //             this.createMap(element);
-  //           }
-  //         },
-  //         {
-  //           url: "https://js.arcgis.com/4.5/"
-  //         }
-  //       );
-  //     } else {
-  //       this.createMap(element);
-  //     }
-  //   }
-  // }
+  onReference(element) {
+    if(sessionStorage.getItem('tokenInfo')){
+      console.log('mounted');
+      if(!esriLoader.isLoaded()) {
+        esriLoader.bootstrap(
+          err => {
+            if(err) {
+              console.log(err);
+            } else {
+              this.createMap(element);
+            }
+          },
+          {
+            url: "https://js.arcgis.com/4.5/"
+          }
+        );
+      } else {
+        this.createMap(element);
+      }
+    }
+  }
 
   componentWillMount() {
     //console.log("ProviderComponent will mount");
@@ -373,11 +373,11 @@ export default class ProviderElectro extends React.Component {
             </div>
             <div className="col-md-6 apz-additional card" style={{padding:'0'}}>
               <div className="col-md-12 well" style={{padding:'0', height:'600px', width:'100%'}}>
-                  {/*<div className="viewDivProvider" ref={this.onReference.bind(this)}>
+                  <div className="viewDivProvider" ref={this.onReference.bind(this)}>
                     <div className="container">
                       <p>Загрузка...</p>
                     </div>
-                  </div>*/}
+                  </div>
               </div>
               {/*<button class="btn-block btn-info col-md-3" id="printApz">
                 Распечатать АПЗ

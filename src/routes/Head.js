@@ -1,9 +1,8 @@
 import React from 'react';
-//import * as esriLoader from 'esri-loader';
+import * as esriLoader from 'esri-loader';
 //import { NavLink } from 'react-router-dom';
 
 export default class Head extends React.Component {
-
   constructor() {
     super();
 
@@ -62,7 +61,6 @@ export default class Head extends React.Component {
   // get detailed info for clicked apz
   getApzDetails(apzId) {
     var token = sessionStorage.getItem('tokenInfo');
-    var providerName = JSON.parse(sessionStorage.getItem('userRoles'))[1];
 
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + "api/apz/head/detail/" + apzId, true);
@@ -152,96 +150,96 @@ export default class Head extends React.Component {
     xhr.send(dd); 
   }
 
-  // createMap(element){
-  //   if(sessionStorage.getItem('tokenInfo')){ 
-  //     console.log(this.refs);
+  createMap(element){
+    if(sessionStorage.getItem('tokenInfo')){ 
+      console.log(this.refs);
 
-  //     esriLoader.dojoRequire([
-  //     "esri/views/SceneView",
-  //     "esri/widgets/LayerList",
-  //     "esri/WebScene",
-  //     "esri/layers/FeatureLayer",
-  //     "esri/layers/TileLayer",
-  //     "esri/widgets/Search",
-  //     "esri/Map",
-  //     "dojo/domReady!"
-  //   ], function(
-  //       SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
-  //     ) {
-  //       var map = new Map({
-  //         basemap: "topo"
-  //       });
+      esriLoader.dojoRequire([
+      "esri/views/SceneView",
+      "esri/widgets/LayerList",
+      "esri/WebScene",
+      "esri/layers/FeatureLayer",
+      "esri/layers/TileLayer",
+      "esri/widgets/Search",
+      "esri/Map",
+      "dojo/domReady!"
+    ], function(
+        SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
+      ) {
+        var map = new Map({
+          basemap: "topo"
+        });
         
-  //       var flGosAkts = new FeatureLayer({
-  //         url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-  //         outFields: ["*"],
-  //         title: "Гос акты"
-  //       });
-  //       map.add(flGosAkts);
+        var flGosAkts = new FeatureLayer({
+          url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+          outFields: ["*"],
+          title: "Гос акты"
+        });
+        map.add(flGosAkts);
 
-  //       var view = new SceneView({
-  //         container: element,
-  //         map: map,
-  //         center: [76.886, 43.250], // lon, lat
-  //         scale: 10000
-  //       });
+        var view = new SceneView({
+          container: element,
+          map: map,
+          center: [76.886, 43.250], // lon, lat
+          scale: 10000
+        });
         
-  //       var searchWidget = new Search({
-  //         view: view,
-  //         sources: [{
-  //           featureLayer: new FeatureLayer({
-  //             url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-  //             popupTemplate: { // autocasts as new PopupTemplate()
-  //               title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
-  //             }
-  //           }),
-  //           searchFields: ["CADASTRAL_NUMBER"],
-  //           displayField: "CADASTRAL_NUMBER",
-  //           exactMatch: false,
-  //           outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
-  //           name: "Зарегистрированные государственные акты",
-  //           placeholder: "Кадастровый поиск"
-  //         }]
-  //       });
-  //       // Add the search widget to the top right corner of the view
-  //       view.ui.add(searchWidget, {
-  //         position: "top-right"
-  //       });
+        var searchWidget = new Search({
+          view: view,
+          sources: [{
+            featureLayer: new FeatureLayer({
+              url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+              popupTemplate: { // autocasts as new PopupTemplate()
+                title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
+              }
+            }),
+            searchFields: ["CADASTRAL_NUMBER"],
+            displayField: "CADASTRAL_NUMBER",
+            exactMatch: false,
+            outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
+            name: "Зарегистрированные государственные акты",
+            placeholder: "Кадастровый поиск"
+          }]
+        });
+        // Add the search widget to the top right corner of the view
+        view.ui.add(searchWidget, {
+          position: "top-right"
+        });
         
         
-  //       view.then(function() {
-  //         var layerList = new LayerList({
-  //           view: view
-  //         });
+        view.then(function() {
+          var layerList = new LayerList({
+            view: view
+          });
 
-  //         // Add widget to the bottom right corner of the view
-  //         view.ui.add(layerList, "bottom-right");
-  //       });     
-  //     });
-  //   }
-  // }
+          // Add widget to the bottom right corner of the view
+          view.ui.add(layerList, "bottom-right");
+        });     
+      });
+    }
+  }
 
-  // onReference(element) {
-  //   if(sessionStorage.getItem('tokenInfo')){
-  //     console.log('mounted');
-  //     if(!esriLoader.isLoaded()) {
-  //       esriLoader.bootstrap(
-  //         err => {
-  //           if(err) {
-  //             console.log(err);
-  //           } else {
-  //             this.createMap(element);
-  //           }
-  //         },
-  //         {
-  //           url: "https://js.arcgis.com/4.5/"
-  //         }
-  //       );
-  //     } else {
-  //       this.createMap(element);
-  //     }
-  //   }
-  // }
+  onReference(element) {
+    if(sessionStorage.getItem('tokenInfo')){
+      console.log('mounted');
+      if(!esriLoader.isLoaded()) {
+        esriLoader.bootstrap(
+          err => {
+            if(err) {
+              console.log(err);
+            } else {
+              this.createMap(element);
+            }
+          },
+          {
+            url: "https://js.arcgis.com/4.5/"
+          }
+        );
+      } else {
+        this.createMap(element);
+      }
+    }
+  }
 
   componentWillMount() {
     //console.log("HeadComponent will mount");
@@ -338,11 +336,11 @@ export default class Head extends React.Component {
             </div>
             <div className="col-md-6 apz-additional card" style={{padding:'0'}}>
               <div className="col-md-12 well" style={{padding:'0', height:'600px', width:'100%'}}>
-                  {/*<div className="viewDivHead" ref={this.onReference.bind(this)}>
+                  <div className="viewDivHead" ref={this.onReference.bind(this)}>
                     <div className="container">
                       <p>Загрузка...</p>
                     </div>
-                  </div>*/}
+                  </div>
               </div>
               {/*<button class="btn-block btn-info col-md-3" id="printApz">
                 Распечатать АПЗ

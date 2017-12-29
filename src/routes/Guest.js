@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../languages/guest.json';
 
@@ -9,6 +10,15 @@ export default class Guest extends React.Component {
     super();
     (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
 
+    this.state = {
+      tokenExists: false,
+      rolename: ""
+    }
+    this.showAlert = this.showAlert.bind(this);
+  }
+
+  showAlert() {
+    alert('Вам надо зайти в систему или зарегистрироваться!');
   }
 
   componentWillMount() {
@@ -17,7 +27,17 @@ export default class Guest extends React.Component {
 
   componentDidMount() {
     //console.log("GuestComponent did mount");
-    
+    if(sessionStorage.getItem('tokenInfo')){
+      this.setState({ tokenExists: true });
+      var roleName = JSON.parse(sessionStorage.getItem('userRoles'))[0];
+      if(roleName === 'Urban' || roleName === 'Provider'){
+        roleName = JSON.parse(sessionStorage.getItem('userRoles'))[1];
+        this.setState({ rolename: roleName });
+      }
+      else{
+        this.setState({ rolename: roleName });
+      }
+    }
   }
 
   componentWillUnmount() {
@@ -48,7 +68,8 @@ export default class Guest extends React.Component {
                     <p className="card-text">Выдача справки по определению адреса объектов недвижимости</p>
                   </div>
                   <div className="card-footer">
-                    <a className="btn btn-primary">Подать заявку</a>
+                    {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {!this.state.tokenExists && <a onClick={this.showAlert} className="btn btn-primary">Подать заявку</a>}
                   </div>
                 </div>
                 <div className="card mb-4">
@@ -61,7 +82,14 @@ export default class Guest extends React.Component {
                     <p className="card-text">Выдача архитектурно-планировочного задания</p>
                   </div>
                   <div className="card-footer">
-                    <a className="btn btn-primary">Подать заявку</a>
+                    {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/citizen"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/urban"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Head' &&  <NavLink to={"/head"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Electricity' &&  <NavLink to={"/providerelectro"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Gas' &&  <NavLink to={"/providergas"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Heat' &&  <NavLink to={"/providerheat"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Water' &&  <NavLink to={"/providerwater"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {!this.state.tokenExists && <a onClick={this.showAlert} className="btn btn-primary">Подать заявку</a>}
                   </div>
                 </div>
                 <div className="card mb-4">
@@ -74,7 +102,8 @@ export default class Guest extends React.Component {
                     <p className="card-text">Выдача решения на реконструкцию (перепланировку, переоборудование)</p>
                   </div>
                   <div className="card-footer">
-                    <a className="btn btn-primary">Подать заявку</a>
+                    {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {!this.state.tokenExists && <a onClick={this.showAlert} className="btn btn-primary">Подать заявку</a>}
                   </div>
                 </div>
               </div>
@@ -90,7 +119,8 @@ export default class Guest extends React.Component {
                     <p className="card-text">Выдача решения о строительстве культовых зданий (сооружений), определении их месторасположения</p>
                   </div>
                   <div className="card-footer">
-                    <a className="btn btn-primary">Подать заявку</a>
+                    {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {!this.state.tokenExists && <a onClick={this.showAlert} className="btn btn-primary">Подать заявку</a>}
                   </div>
                 </div>
                 <div className="card mb-4">
@@ -103,7 +133,8 @@ export default class Guest extends React.Component {
                     <p className="card-text">Выдача решения о перепрофилировании (изменении функционального назначения) зданий (сооружений) в культовые здания (сооружения)</p>
                   </div>
                   <div className="card-footer">
-                    <a className="btn btn-primary">Подать заявку</a>
+                    {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {!this.state.tokenExists && <a onClick={this.showAlert} className="btn btn-primary">Подать заявку</a>}
                   </div>
                 </div>
                 <div className="card mb-4">
@@ -116,7 +147,8 @@ export default class Guest extends React.Component {
                     <p className="card-text">Предоставление земельного участка для строительства объекта в черте населенного пункта</p>
                   </div>
                   <div className="card-footer">
-                    <a className="btn btn-primary">Подать заявку</a>
+                    {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {!this.state.tokenExists && <a onClick={this.showAlert} className="btn btn-primary">Подать заявку</a>}
                   </div>
                 </div>
               </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-//import * as esriLoader from 'esri-loader';
+import * as esriLoader from 'esri-loader';
 //import { NavLink } from 'react-router-dom';
 
 export default class Urban extends React.Component {
@@ -61,7 +61,6 @@ export default class Urban extends React.Component {
   // get detailed info for clicked apz
   getApzDetails(apzId) {
     var token = sessionStorage.getItem('tokenInfo');
-    var providerName = JSON.parse(sessionStorage.getItem('userRoles'))[1];
 
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + "api/apz/region/detail/" + apzId, true);
@@ -151,106 +150,106 @@ export default class Urban extends React.Component {
     xhr.send(dd); 
   }
 
-  // createMap(element){
-  //   console.log(this.refs)
-  //   esriLoader.dojoRequire([
-  //     "esri/views/SceneView",
-  //     "esri/widgets/LayerList",
-  //     "esri/WebScene",
-  //     "esri/layers/FeatureLayer",
-  //     "esri/layers/TileLayer",
-  //     "esri/widgets/Search",
-  //     "esri/Map",
-  //     "dojo/domReady!"
-  //   ], function(
-  //     SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
-  //   ) {
+  createMap(element){
+    console.log(this.refs)
+    esriLoader.dojoRequire([
+      "esri/views/SceneView",
+      "esri/widgets/LayerList",
+      "esri/WebScene",
+      "esri/layers/FeatureLayer",
+      "esri/layers/TileLayer",
+      "esri/widgets/Search",
+      "esri/Map",
+      "dojo/domReady!"
+    ], function(
+      SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
+    ) {
 
-  //     //функциональное зонирование
-  //     var flFunkZon = new FeatureLayer({
-  //       portalItem: {  // autocasts as esri/portal/PortalItem
-  //         id: "7dd6833628d34453939ed2c6fa514bb5"
-  //       },
-  //       outFields: ["*"],
-  //       visible: true,
-  //       title: "Функциональное зонирование"
-  //     });
+      //функциональное зонирование
+      var flFunkZon = new FeatureLayer({
+        portalItem: {  // autocasts as esri/portal/PortalItem
+          id: "7dd6833628d34453939ed2c6fa514bb5"
+        },
+        outFields: ["*"],
+        visible: true,
+        title: "Функциональное зонирование"
+      });
       
       
-  //     //красные линии
-  //     var flRedlines = new TileLayer({
-  //       portalItem: {  // autocasts as esri/portal/PortalItem
-  //         id: "f93a74c28c904666932f084d91719fdc"
-  //       },
-  //       outFields: ["*"],
-  //       visible: true,
-  //       title: "Красные линии"
-  //     });
-  //     var map = new Map({
-  //       basemap: "dark-gray"
-  //     });
-  //     map.add(flFunkZon);
-  //     map.add(flRedlines);
-  //     var view = new SceneView({
-  //       container: element,
-  //       map: map,
-  //       center: [76.886, 43.250], // lon, lat
-  //       scale: 10000
-  //     });
+      //красные линии
+      var flRedlines = new TileLayer({
+        portalItem: {  // autocasts as esri/portal/PortalItem
+          id: "f93a74c28c904666932f084d91719fdc"
+        },
+        outFields: ["*"],
+        visible: true,
+        title: "Красные линии"
+      });
+      var map = new Map({
+        basemap: "dark-gray"
+      });
+      map.add(flFunkZon);
+      map.add(flRedlines);
+      var view = new SceneView({
+        container: element,
+        map: map,
+        center: [76.886, 43.250], // lon, lat
+        scale: 10000
+      });
       
-  //     var searchWidget = new Search({
-  //       view: view,
-  //       sources: [{
-  //         featureLayer: new FeatureLayer({
-  //           portalItem: {
-  //             id: "dcd7bef523324a149843a070fd857b11"
-  //           },
-  //           popupTemplate: { // autocasts as new PopupTemplate()
-  //             title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
-  //           }
-  //         }),
-  //         searchFields: ["CADASTRAL_NUMBER"],
-  //         displayField: "CADASTRAL_NUMBER",
-  //         exactMatch: false,
-  //         outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
-  //         name: "Зарегистрированные государственные акты",
-  //         placeholder: "Кадастровый поиск"
-  //       }]
-  //     });
-  //     // Add the search widget to the top left corner of the view
-  //     view.ui.add(searchWidget, {
-  //       position: "top-right"
-  //     });
-  //     view.then(function() {
-  //       var layerList = new LayerList({
-  //         view: view
-  //       });
+      var searchWidget = new Search({
+        view: view,
+        sources: [{
+          featureLayer: new FeatureLayer({
+            portalItem: {
+              id: "dcd7bef523324a149843a070fd857b11"
+            },
+            popupTemplate: { // autocasts as new PopupTemplate()
+              title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
+            }
+          }),
+          searchFields: ["CADASTRAL_NUMBER"],
+          displayField: "CADASTRAL_NUMBER",
+          exactMatch: false,
+          outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
+          name: "Зарегистрированные государственные акты",
+          placeholder: "Кадастровый поиск"
+        }]
+      });
+      // Add the search widget to the top left corner of the view
+      view.ui.add(searchWidget, {
+        position: "top-right"
+      });
+      view.then(function() {
+        var layerList = new LayerList({
+          view: view
+        });
 
-  //       // Add widget to the top right corner of the view
-  //       view.ui.add(layerList, "bottom-right");
-  //     });
-  //   });
-  // }
+        // Add widget to the top right corner of the view
+        view.ui.add(layerList, "bottom-right");
+      });
+    });
+  }
 
-  // onReference(element) {
-  //   console.log('mounted');
-  //   if(!esriLoader.isLoaded()) {
-  //     esriLoader.bootstrap(
-  //       err => {
-  //         if(err) {
-  //           console.log(err);
-  //         } else {
-  //           this.createMap(element);
-  //         }
-  //       },
-  //       {
-  //         url: "https://js.arcgis.com/4.5/"
-  //       }
-  //     );
-  //   } else {
-  //     this.createMap(element);
-  //   }
-  // }
+  onReference(element) {
+    console.log('mounted');
+    if(!esriLoader.isLoaded()) {
+      esriLoader.bootstrap(
+        err => {
+          if(err) {
+            console.log(err);
+          } else {
+            this.createMap(element);
+          }
+        },
+        {
+          url: "https://js.arcgis.com/4.5/"
+        }
+      );
+    } else {
+      this.createMap(element);
+    }
+  }
 
   componentWillMount() {
     //console.log("UrbanComponent will mount");
@@ -347,11 +346,11 @@ export default class Urban extends React.Component {
             </div>
             <div className="col-md-6 apz-additional card" style={{padding: '0'}}>
               <div className="col-md-12 well" style={{padding: '0', height:'600px', width:'100%'}}>
-                  {/*<div className="viewDivUrban" ref={this.onReference.bind(this)}>
+                  <div className="viewDivUrban" ref={this.onReference.bind(this)}>
                     <div className="container">
                       <p>Загрузка...</p>
                     </div>
-                  </div>*/}
+                  </div>
               </div>
               {/*<button class="btn-block btn-info col-md-3" id="printApz">
                 Распечатать АПЗ
