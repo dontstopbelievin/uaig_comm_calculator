@@ -111,6 +111,47 @@ export default class ProviderElectro extends React.Component {
     }.bind(this);
   }
 
+  // function to print apzForm in .pdf format
+  printApz(apzId, project) {
+    //console.log(apzId);
+    var token = sessionStorage.getItem('tokenInfo');
+    if (token) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/apz/print/" + apzId, true);
+      xhr.responseType = "blob";
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.onload = function () {
+        console.log(xhr);
+        console.log(xhr.status);
+        if (xhr.status === 200) {
+          //test of IE
+          if (typeof window.navigator.msSaveBlob === "function") {
+            window.navigator.msSaveBlob(xhr.response, "apz-" + new Date().getTime() + ".pdf");
+          } 
+          else {
+            var blob = xhr.response;
+            var link = document.createElement('a');
+            var today = new Date();
+            var curr_date = today.getDate();
+            var curr_month = today.getMonth() + 1;
+            var curr_year = today.getFullYear();
+            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+            //console.log(curr_day);
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "апз-" + project + formated_date + ".pdf";
+
+            //append the link to the document body
+            document.body.appendChild(link);
+            link.click();
+          }
+        }
+      }
+      xhr.send();
+    } else {
+      console.log('session expired');
+    }
+  }
+
   // accept or decline the form
   acceptDeclineApzForm(apzId, status, comment) {
     //console.log(apzId);
@@ -402,8 +443,13 @@ export default class ProviderElectro extends React.Component {
                   <div className="col-7"><b>Категория (кВт)</b>:</div><div className="col-2">{this.state.eSafeCat}</div>
                   <div className="col-7"><b>Из указ. макс. нагрузки относ. к э-приемникам (кВА)</b>:</div><div className="col-5">{this.state.eMaxLDev}</div>
                   <div className="col-7"><b>Сущ. макс. нагрузка (кВА)</b>:</div><div className="col-5">{this.state.eMaxLoad}</div>
-                  <div className="col-7"><b>мощность трансформаторов (кВА)</b>:</div><div className="col-5">{this.state.eAllowedP}</div>
+                  <div className="col-7"><b>Мощность трансформаторов (кВА)</b>:</div><div className="col-5">{this.state.eAllowedP}</div>
                 </div>
+                <button className="btn btn-raised btn-info" 
+                      style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}
+                      onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>
+                  Распечатать АПЗ
+                </button>
                 <div className={this.state.showButtons ? 'btn-group' : 'invisible'} role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
                           onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, true, "your form was accepted")}>

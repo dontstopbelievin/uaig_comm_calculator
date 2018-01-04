@@ -16,6 +16,7 @@ export default class Citizen extends React.Component {
       showDetails: false,
       showStatusBar: false,
       formHidden: true,
+      Id: "",
       Applicant: "",
       Address: "",
       Phone: "",
@@ -107,6 +108,7 @@ export default class Citizen extends React.Component {
           }
           this.setState({ showDetails: true });
           this.setState({ showStatusBar: true });
+          this.setState({ Id: data.Id });
           this.setState({ Applicant: data.Applicant });
           this.setState({ Address: data.Address });
           this.setState({ Phone: data.Phone });
@@ -237,35 +239,45 @@ export default class Citizen extends React.Component {
   };
 
   // function to print apzForm in .pdf format
-  // printApz(apzId) {
-  //   var token = sessionStorage.getItem('tokenInfo');
-  //   if (token) {
-  //     var xhr = new XMLHttpRequest();
-  //     xhr.open("GET", "/api/apz/print/" + apzId, true);
-  //     xhr.responseType = "blob";
-  //     xhr.setRequestHeader("Authorization", "Bearer " + token);
-  //     xhr.onload = function () {
-  //       if (xhr.status === 200) {
-  //         //test of IE
-  //         if (typeof window.navigator.msSaveBlob === "function") {
-  //           window.navigator.msSaveBlob(xhr.response, "apz-" + new Date().getTime() + ".pdf");
-  //         } else {
-  //           var blob = xhr.response;
-  //           var link = document.createElement('a');
-  //           link.href = window.URL.createObjectURL(blob);
-  //           link.download = "apz-" + new Date().getTime() + ".pdf";
+  printApz(apzId, project) {
+    //console.log(apzId);
+    var token = sessionStorage.getItem('tokenInfo');
+    if (token) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/apz/print/" + apzId, true);
+      xhr.responseType = "blob";
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.onload = function () {
+        console.log(xhr);
+        console.log(xhr.status);
+        if (xhr.status === 200) {
+          //test of IE
+          if (typeof window.navigator.msSaveBlob === "function") {
+            window.navigator.msSaveBlob(xhr.response, "apz-" + new Date().getTime() + ".pdf");
+          } 
+          else {
+            var blob = xhr.response;
+            var link = document.createElement('a');
+            var today = new Date();
+            var curr_date = today.getDate();
+            var curr_month = today.getMonth() + 1;
+            var curr_year = today.getFullYear();
+            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+            //console.log(curr_day);
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "апз-" + project + formated_date + ".pdf";
 
-  //           //append the link to the document body
-  //           document.body.appendChild(link);
-  //           link.click();
-  //         }
-  //       }
-  //     }.bind(this);
-  //     xhr.send();
-  //   } else {
-  //     console.log('session expired');
-  //   }
-  // }
+            //append the link to the document body
+            document.body.appendChild(link);
+            link.click();
+          }
+        }
+      }
+      xhr.send();
+    } else {
+      console.log('session expired');
+    }
+  }
 
   // function to hide/show ApzForm, gets called when button "Создать заявление" is clicked
   toggleForm(e){
@@ -343,6 +355,7 @@ export default class Citizen extends React.Component {
     else
       return 'circle done';
   }
+
   createMap(element){
     console.log(this.refs)
     esriLoader.dojoRequire([
@@ -419,100 +432,6 @@ export default class Citizen extends React.Component {
         });
 
         // Add widget to the top right corner of the view
-        view.ui.add(layerList, "bottom-right");
-      });
-      
-    });
-  }
-
-  onReference(element) {
-    console.log('mounted');
-    if(!esriLoader.isLoaded()) {
-      esriLoader.bootstrap(
-        err => {
-          if(err) {
-            console.log(err);
-          } else {
-            this.createMap(element);
-          }
-        },
-        {
-          url: "https://js.arcgis.com/4.5/"
-        }
-      );
-    } else {
-      this.createMap(element);
-    }
-  }
-
-  createMap(element){
-    console.log(this.refs)
-    esriLoader.dojoRequire([
-      "esri/views/SceneView",
-      "esri/widgets/LayerList",
-      "esri/WebScene",
-      "esri/layers/FeatureLayer",
-      "esri/layers/TileLayer",
-      "esri/widgets/Search",
-      "esri/Map",
-      "dojo/domReady!"
-    ], function(
-      SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
-    ) {
-      var map = new Map({
-        basemap: "topo"
-      });
-      
-      var redLines = new FeatureLayer({
-        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D1%8B%D0%B5_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B8/FeatureServer",
-        outFields: ["*"],
-        title: "Красные линии"
-      });
-      map.add(redLines);
-
-      var flGosAkts = new FeatureLayer({
-        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-        outFields: ["*"],
-        title: "Гос акты"
-      });
-      map.add(flGosAkts);
-
-      var view = new SceneView({
-        container: element,
-        map: map,
-        center: [76.886, 43.250], // lon, lat
-        scale: 10000
-      });
-      
-      var searchWidget = new Search({
-        view: view,
-        sources: [{
-          featureLayer: new FeatureLayer({
-            url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-            popupTemplate: { // autocasts as new PopupTemplate()
-              title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
-            }
-          }),
-          searchFields: ["CADASTRAL_NUMBER"],
-          displayField: "CADASTRAL_NUMBER",
-          exactMatch: false,
-          outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
-          name: "Зарегистрированные государственные акты",
-          placeholder: "Кадастровый поиск"
-        }]
-      });
-      // Add the search widget to the top right corner of the view
-      view.ui.add(searchWidget, {
-        position: "top-right"
-      });
-      
-      
-      view.then(function() {
-        var layerList = new LayerList({
-          view: view
-        });
-
-        // Add widget to the bottom right corner of the view
         view.ui.add(layerList, "bottom-right");
       });
       
@@ -627,9 +546,6 @@ export default class Citizen extends React.Component {
                   </div>
                 </div>
             </div>
-            {/*<button class="btn-block btn-info col-md-3" id="printApz">
-              Распечатать АПЗ
-            </button>*/}
           </div>
           <div id="apz-detailed" className="col-md-3 apz-detailed card" style={{paddingTop: '10px'}}>
             <div className={this.state.showDetails ? 'row' : 'invisible'}>
@@ -641,6 +557,11 @@ export default class Citizen extends React.Component {
               <div className="col-6"><b>Название проекта</b>:</div> <div className="col-6">{this.state.ProjectName}</div>
               <div className="col-6"><b>Адрес проекта</b>:</div> <div className="col-6">{this.state.ProjectAddress}</div>
               <div className="col-6"><b>Дата заявления</b>:</div> <div className="col-6">{this.state.ApzDate}</div>
+              <button className="btn btn-raised btn-info" 
+                      style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}
+                      onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>
+                Распечатать АПЗ
+              </button>
             </div>
           </div>
         </div>
@@ -658,7 +579,6 @@ export default class Citizen extends React.Component {
                 <div className={this.getStatusForProvider(this.state.Status, this.state.wStatus)}>
                   <span className="label">2</span>
                   <span className="title">Поставщик (вода) </span>
-                  {/*<span className="title">{this.state.wActionDate} </span>*/}
                 </div>
                 <span className="bar"></span>
                 <div className={this.getStatusForProvider(this.state.Status, this.state.gStatus)}>
