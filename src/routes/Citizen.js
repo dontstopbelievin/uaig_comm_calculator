@@ -1,5 +1,5 @@
 import React from 'react';
-//import * as esriLoader from 'esri-loader';
+import * as esriLoader from 'esri-loader';
 import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
