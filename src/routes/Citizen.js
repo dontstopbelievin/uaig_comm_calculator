@@ -40,7 +40,9 @@ export default class Citizen extends React.Component {
       eResponse: null,
       hResponse: null,
       gResponse: null,
-      wResponse: null
+      wResponse: null,
+      headResponseFile: null,
+      headResponseFileExt: null
     }
 
     this.getApzFormList = this.getApzFormList.bind(this);
@@ -114,7 +116,10 @@ export default class Citizen extends React.Component {
           this.setState({ Designer: data.Designer });
           this.setState({ ProjectName: data.ProjectName });
           this.setState({ ProjectAddress: data.ProjectAddress });
+          this.setState({ headResponseFile: data.HeadResponseFile });
+          this.setState({ headResponseFileExt: data.HeadResponseFileExt });
           this.setState(function(){
+            var jDate = new Date(data.ApzDate);
             var jDate = new Date(data.ApzDate);
             var curr_date = jDate.getDate();
             var curr_month = jDate.getMonth() + 1;
@@ -235,6 +240,47 @@ export default class Citizen extends React.Component {
     }   
 
   };
+
+  downloadFile(event) {
+    var buffer =  event.target.getAttribute("data-file")
+    var name =  event.target.getAttribute("data-name");
+    var ext =  event.target.getAttribute("data-ext");
+
+    var base64ToArrayBuffer = (function () {
+      
+      return function (base64) {
+        var binaryString =  window.atob(base64);
+        var binaryLen = binaryString.length;
+        var bytes = new Uint8Array(binaryLen);
+        
+        for (var i = 0; i < binaryLen; i++)        {
+            var ascii = binaryString.charCodeAt(i);
+            bytes[i] = ascii;
+        }
+        
+        return bytes; 
+      }
+      
+    }());
+
+    var saveByteArray = (function () {
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+      
+      return function (data, name) {
+          var blob = new Blob(data, {type: "octet/stream"}),
+              url = window.URL.createObjectURL(blob);
+          a.href = url;
+          a.download = name;
+          a.click();
+          window.URL.revokeObjectURL(url);
+      };
+
+    }());
+
+    saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
+  }
 
   // function to print apzForm in .pdf format
   // printApz(apzId) {
@@ -446,7 +492,6 @@ export default class Citizen extends React.Component {
   }
 
   createMap(element){
-    console.log(this.refs)
     esriLoader.dojoRequire([
       "esri/views/SceneView",
       "esri/widgets/LayerList",
@@ -641,6 +686,8 @@ export default class Citizen extends React.Component {
               <div className="col-6"><b>Название проекта</b>:</div> <div className="col-6">{this.state.ProjectName}</div>
               <div className="col-6"><b>Адрес проекта</b>:</div> <div className="col-6">{this.state.ProjectAddress}</div>
               <div className="col-6"><b>Дата заявления</b>:</div> <div className="col-6">{this.state.ApzDate}</div>
+
+              { this.state.headResponseFile ? <div className="col-sm-12"><div class="row"><div className="col-6"><b>Решение</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.headResponseFile} data-name="Решение" data-ext={this.state.headResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
             </div>
           </div>
         </div>
