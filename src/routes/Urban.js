@@ -142,8 +142,9 @@ export default class Urban extends React.Component {
     //console.log(statusName);
     var token = sessionStorage.getItem('tokenInfo');
 
-    var statusData = {Response: status, Message: comment};
-    var dd = JSON.stringify(statusData);
+    var formData = new FormData();
+    formData.append('Response', status);
+    formData.append('Message', comment);
 
     var tempAccForms = this.state.acceptedForms;
     var tempDecForms = this.state.declinedForms;
@@ -153,10 +154,9 @@ export default class Urban extends React.Component {
     //console.log(formPos);
 
     var xhr = new XMLHttpRequest();
-    xhr.open("put", window.url + "api/apz/status/" + apzId, true);
+    xhr.open("post", window.url + "api/apz/status/" + apzId, true);
     //Send the proper header information along with the request
     xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
       var data = JSON.parse(xhr.responseText);
       console.log(data);
@@ -188,11 +188,10 @@ export default class Urban extends React.Component {
         this.props.history.replace("/login");
       }
     }.bind(this);
-    xhr.send(dd); 
+    xhr.send(formData); 
   }
 
   createMap(element){
-    console.log(this.refs)
     esriLoader.dojoRequire([
       "esri/views/SceneView",
       "esri/widgets/LayerList",

@@ -21,15 +21,29 @@ export default class Head extends React.Component {
       ProjectName: "",
       ProjectAddress: "",
       ApzDate: "",
-      description: ""
+      description: "",
+      file: [],
+      waterDoc: null,
+      waterDocExt: null,
+      electroDoc: null,
+      electroDocExt: null,
+      heatDoc: null,
+      heatDocExt: null,
+      gasDoc: null,
+      gasDocExt: null,
     }
 
     this.getApzFormList = this.getApzFormList.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
+    this.onFileChange = this.onFileChange.bind(this);
   }
 
   onDescriptionChange(e) {
     this.setState({ description: e.target.value });
+  }
+
+  onFileChange(e) {
+    this.setState({ file: e.target.files[0] });
   }
 
   // get the list of apz forms
@@ -83,6 +97,14 @@ export default class Head extends React.Component {
         this.setState({ Designer: data.Designer });
         this.setState({ ProjectName: data.ProjectName });
         this.setState({ ProjectAddress: data.ProjectAddress });
+        this.setState({ waterDoc: data.WaterDoc });
+        this.setState({ waterDocExt: data.WaterDocExt });
+        this.setState({ electroDoc: data.ElectroDoc });
+        this.setState({ electroDocExt: data.ElectroDocExt });
+        this.setState({ heatDoc: data.HeatDoc });
+        this.setState({ heatDocExt: data.HeatDocExt });
+        this.setState({ gasDoc: data.GasDoc });
+        this.setState({ gasDocExt: data.GasDocExt });
         this.setState(function(){
           var jDate = new Date(data.ApzDate);
           var curr_date = jDate.getDate();
@@ -141,9 +163,12 @@ export default class Head extends React.Component {
     //console.log(apzId);
     //console.log(statusName);
     var token = sessionStorage.getItem('tokenInfo');
+    var file = this.state.file;
 
-    var statusData = {Response: status, Message: comment};
-    var dd = JSON.stringify(statusData);
+    var formData = new FormData();
+    formData.append('file', file);
+    formData.append('Response', status);
+    formData.append('Message', comment);
 
     var tempAccForms = this.state.acceptedForms;
     var tempDecForms = this.state.declinedForms;
@@ -153,10 +178,9 @@ export default class Head extends React.Component {
     //console.log(formPos);
 
     var xhr = new XMLHttpRequest();
-    xhr.open("put", window.url + "api/apz/status/" + apzId, true);
+    xhr.open("post", window.url + "api/apz/status/" + apzId, true);
     //Send the proper header information along with the request
     xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
       var data = JSON.parse(xhr.responseText);
       console.log(data);
@@ -188,7 +212,7 @@ export default class Head extends React.Component {
         this.props.history.replace("/login");
       }
     }.bind(this);
-    xhr.send(dd); 
+    xhr.send(formData); 
   }
 
   createMap(element){
@@ -258,6 +282,47 @@ export default class Head extends React.Component {
         });     
       });
     }
+  }
+
+  downloadFile(event) {
+    var buffer =  event.target.getAttribute("data-file")
+    var name =  event.target.getAttribute("data-name");
+    var ext =  event.target.getAttribute("data-ext");
+
+    var base64ToArrayBuffer = (function () {
+      
+      return function (base64) {
+        var binaryString =  window.atob(base64);
+        var binaryLen = binaryString.length;
+        var bytes = new Uint8Array(binaryLen);
+        
+        for (var i = 0; i < binaryLen; i++)        {
+            var ascii = binaryString.charCodeAt(i);
+            bytes[i] = ascii;
+        }
+        
+        return bytes; 
+      }
+      
+    }());
+
+    var saveByteArray = (function () {
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+      
+      return function (data, name) {
+          var blob = new Blob(data, {type: "octet/stream"}),
+              url = window.URL.createObjectURL(blob);
+          a.href = url;
+          a.download = name;
+          a.click();
+          window.URL.revokeObjectURL(url);
+      };
+
+    }());
+
+    saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
   }
 
   onReference(element) {
@@ -397,11 +462,23 @@ export default class Head extends React.Component {
                 <div className="col-6"><b>Название проекта</b>:</div> <div className="col-6">{this.state.ProjectName}</div>
                 <div className="col-6"><b>Адрес проекта</b>:</div> <div className="col-6">{this.state.ProjectAddress}</div>
                 <div className="col-6"><b>Дата заявления</b>:</div> <div className="col-6">{this.state.ApzDate}</div>
+
                 <button className="btn btn-raised btn-info" 
                       style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}
                       onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>
                   Распечатать АПЗ
                 </button>
+
+                { this.state.waterDoc ? <div className="col-sm-12"><div class="row"><div className="col-6"><b>ТУ Вода</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.waterDoc} data-name="ТУ Вода" data-ext={this.state.waterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+                { this.state.heatDoc ? <div className="col-sm-12"><div class="row"><div className="col-6"><b>ТУ Тепло</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.heatDoc} data-name="ТУ Вода" data-ext={this.state.heatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> : ''}
+                { this.state.electroDoc ? <div className="col-sm-12"><div class="row"><div className="col-6"><b>ТУ Электро</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.electroDoc} data-name="ТУ Вода" data-ext={this.state.electroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> : ''}
+                { this.state.gasDoc ? <div className="col-sm-12"><div class="row"><div className="col-6"><b>ТУ Газ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.gasDoc} data-name="ТУ Вода" data-ext={this.state.gasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> : ''}
+                
+                <div className={this.state.showButtons ? 'col-sm-12 mt-2' : 'invisible'}>
+                  <label htmlFor="upload_file">Файл</label>
+                  <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                </div>
+
                 <div className={this.state.showButtons ? 'btn-group' : 'invisible'} role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
                           onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, true, "your form was accepted")}>

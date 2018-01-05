@@ -20,6 +20,10 @@
   font-weight: bold;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 .viewDiv {
   padding: 0;
   margin: 0;

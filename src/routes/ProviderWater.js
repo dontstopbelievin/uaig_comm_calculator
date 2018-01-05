@@ -23,15 +23,21 @@ export default class ProviderWater extends React.Component {
       ProjectAddress: "",
       ApzDate: "",
       wReq: 0, wDrink: 0, wProd: 0, wFireF: 0, wS: 0,
-      description: ""
+      description: "",
+      file: []
     }
 
     this.getApzFormList = this.getApzFormList.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
+    this.onFileChange = this.onFileChange.bind(this);
   }
 
   onDescriptionChange(e) {
     this.setState({ description: e.target.value });
+  }
+
+  onFileChange(e) {
+    this.setState({ file: e.target.files[0] });
   }
 
   // get the list of apz forms
@@ -156,9 +162,12 @@ export default class ProviderWater extends React.Component {
     //console.log(apzId);
     //console.log(status);
     var token = sessionStorage.getItem('tokenInfo');
+    var file = this.state.file;
 
-    var statusData = {Response: status, Message: comment};
-    var dd = JSON.stringify(statusData);
+    var formData = new FormData();
+    formData.append('file', file);
+    formData.append('Response', status);
+    formData.append('Message', comment);
 
     var tempAccForms = this.state.acceptedForms;
     var tempDecForms = this.state.declinedForms;
@@ -168,10 +177,9 @@ export default class ProviderWater extends React.Component {
     //console.log(formPos);
 
     var xhr = new XMLHttpRequest();
-    xhr.open("put", window.url + "api/apz/status/" + apzId, true);
+    xhr.open("post", window.url + "api/apz/status/" + apzId, true);
     //Send the proper header information along with the request
     xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
       var data = JSON.parse(xhr.responseText);
       console.log(data);
@@ -203,7 +211,7 @@ export default class ProviderWater extends React.Component {
         this.props.history.replace("/login");
       }
     }.bind(this);
-    xhr.send(dd); 
+    xhr.send(formData); 
   }
 
   createMap(element){
@@ -436,11 +444,18 @@ export default class ProviderWater extends React.Component {
                   <div className="col-7"><b>Расходы пожаротушения (л/сек)</b>:</div><div className="col-5">{this.state.wFireF}</div>
                   <div className="col-7"><b>Общ. кол. сточных вод (м<sup>3</sup>/сутки)</b>:</div><div className="col-5">{this.state.wS}</div>
                 </div>
+
                 <button className="btn btn-raised btn-info" 
                       style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}
                       onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>
                   Распечатать АПЗ
                 </button>
+
+                <div className={this.state.showButtons ? 'col-sm-12 mt-2' : 'invisible'}>
+                  <label htmlFor="upload_file">Файл</label>
+                  <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                </div>
+
                 <div className={this.state.showButtons ? 'btn-group' : 'invisible'} role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
                           onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, true, "your form was accepted")}>
