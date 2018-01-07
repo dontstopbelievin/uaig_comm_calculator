@@ -394,35 +394,54 @@ export default class Login extends Component {
                 <h4 className="modal-title" id="myModalLabel">Вход в систему</h4>
               </div>
               <div className="modal-body">
-                <div className="form-group">
-                    <label className="control-label">Путь к ЭЦП
-                      <input className="form-control" type="text" id="storagePath" readOnly />
-                    </label>
-                    <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button> 
+                <ul className="nav nav-tabs">
+                  <li className="nav-item"><a className="nav-link active" data-toggle="tab" href="#menu1">Вход без ЭЦП</a></li>
+                  <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu2">Вход с ЭЦП</a></li>
+                </ul>
+
+                <div className="tab-content">
+                  <div id="menu1" className="tab-pane fade active show">
+                    <p>&nbsp;</p>
+                    <form id="loginForm" onSubmit={this.login}>
+                      <div className="form-group">
+                        <label className="control-label">ИИН/БИН:</label>
+                        <input type="text" className="form-control" id="userName" value={this.state.username} onChange={this.onUsernameChange} required />
+                      </div>
+                      <div className="form-group">
+                        <label className="control-label">Пароль:</label>
+                        <input type="password" className="form-control" value={this.state.pwd} onChange={this.onPwdChange} required />
+                      </div>
+                      <div className="modal-footer">
+                        <input type="submit" className="btn btn-primary" value="Войти" />
+                        <Link to="/" style={{marginRight:'5px'}}>
+                          <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
+                        </Link>
+                      </div>
+                    </form>
                   </div>
-                  <div className="form-group">
-                    <label className="control-label">Пароль от ЭЦП
-                      <input className="form-control" id="inpPassword" type="password" />
-                    </label>
-                    <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
+                  <div id="menu2" className="tab-pane fade">
+                    <p>&nbsp;</p>
+                    <div className="form-group">
+                      <label className="control-label">Путь к ЭЦП
+                        <input className="form-control" type="text" id="storagePath" readOnly />
+                      </label>
+                      <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button> 
+                    </div>
+                    <div className="form-group">
+                      <label className="control-label">Пароль от ЭЦП
+                        <input className="form-control" id="inpPassword" type="password" />
+                      </label>
+                      <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
+                    </div>
+                    <div className="modal-footer">
+                      <button type="submit" className="btn btn-primary">Войти</button>
+                      <Link to="/" style={{marginRight:'5px'}}>
+                        <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
+                      </Link>
+                      </div>
                   </div>
-                  <hr />
-                <form id="loginForm" onSubmit={this.login}>
-                  <div className="form-group">
-                    <label className="control-label">ИИН/БИН:</label>
-                    <input type="text" className="form-control" id="userName" value={this.state.username} onChange={this.onUsernameChange} required />
-                  </div>
-                  <div className="form-group">
-                    <label className="control-label">Пароль:</label>
-                    <input type="password" className="form-control" value={this.state.pwd} onChange={this.onPwdChange} required />
-                  </div>
-                  <div className="modal-footer">
-                    <input type="submit" className="btn btn-primary" value="Войти" />
-                    <Link to="/" style={{marginRight:'5px'}}>
-                      <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
-                    </Link>
-                  </div>
-                </form>
+                </div>
+                
               </div>
               
               
