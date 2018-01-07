@@ -1,5 +1,5 @@
 import React from 'react';
-import * as esriLoader from 'esri-loader';
+//import * as esriLoader from 'esri-loader';
 //import { NavLink } from 'react-router-dom';
 
 export default class Head extends React.Component {
@@ -31,6 +31,12 @@ export default class Head extends React.Component {
       heatDocExt: null,
       gasDoc: null,
       gasDocExt: null,
+      personalIdDoc: null,
+      personalIdDocExt: null,
+      confirmedTaskDoc: null,
+      confirmedTaskDocExt: null,
+      titleDocumentDoc: null,
+      titleDocumentDocExt: null
     }
 
     this.getApzFormList = this.getApzFormList.bind(this);
@@ -105,6 +111,12 @@ export default class Head extends React.Component {
         this.setState({ heatDocExt: data.HeatDocExt });
         this.setState({ gasDoc: data.GasDoc });
         this.setState({ gasDocExt: data.GasDocExt });
+        this.setState({ personalIdDoc: data.PersonalIdFile });
+        this.setState({ personalIdDocExt: data.PersonalIdFileExt });
+        this.setState({ confirmedTaskDoc: data.ConfirmedTaskFile });
+        this.setState({ confirmedTaskDocExtir: data.ConfirmedTaskFileExt });
+        this.setState({ titleDocumentDoc: data.TitleDocumentFile });
+        this.setState({ titleDocumentDocExt: data.TitleDocumentFileExt });
         this.setState(function(){
           var jDate = new Date(data.ApzDate);
           var curr_date = jDate.getDate();
@@ -215,75 +227,7 @@ export default class Head extends React.Component {
     xhr.send(formData); 
   }
 
-  createMap(element){
-    if(sessionStorage.getItem('tokenInfo')){ 
-      console.log(this.refs);
-
-      esriLoader.dojoRequire([
-      "esri/views/SceneView",
-      "esri/widgets/LayerList",
-      "esri/WebScene",
-      "esri/layers/FeatureLayer",
-      "esri/layers/TileLayer",
-      "esri/widgets/Search",
-      "esri/Map",
-      "dojo/domReady!"
-    ], function(
-        SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
-      ) {
-        var map = new Map({
-          basemap: "topo"
-        });
-        
-        var flGosAkts = new FeatureLayer({
-          url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-          outFields: ["*"],
-          title: "Гос акты"
-        });
-        map.add(flGosAkts);
-
-        var view = new SceneView({
-          container: element,
-          map: map,
-          center: [76.886, 43.250], // lon, lat
-          scale: 10000
-        });
-        
-        var searchWidget = new Search({
-          view: view,
-          sources: [{
-            featureLayer: new FeatureLayer({
-              url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-              popupTemplate: { // autocasts as new PopupTemplate()
-                title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
-              }
-            }),
-            searchFields: ["CADASTRAL_NUMBER"],
-            displayField: "CADASTRAL_NUMBER",
-            exactMatch: false,
-            outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
-            name: "Зарегистрированные государственные акты",
-            placeholder: "Кадастровый поиск"
-          }]
-        });
-        // Add the search widget to the top right corner of the view
-        view.ui.add(searchWidget, {
-          position: "top-right"
-        });
-        
-        
-        view.then(function() {
-          var layerList = new LayerList({
-            view: view
-          });
-
-          // Add widget to the bottom right corner of the view
-          view.ui.add(layerList, "bottom-right");
-        });     
-      });
-    }
-  }
-
+  // function to download files
   downloadFile(event) {
     var buffer =  event.target.getAttribute("data-file")
     var name =  event.target.getAttribute("data-name");
@@ -325,27 +269,96 @@ export default class Head extends React.Component {
     saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
   }
 
-  onReference(element) {
-    if(sessionStorage.getItem('tokenInfo')){
-      console.log('mounted');
-      if(!esriLoader.isLoaded()) {
-        esriLoader.bootstrap(
-          err => {
-            if(err) {
-              console.log(err);
-            } else {
-              this.createMap(element);
-            }
-          },
-          {
-            url: "https://js.arcgis.com/4.5/"
-          }
-        );
-      } else {
-        this.createMap(element);
-      }
-    }
-  }
+  // createMap(element){
+  //   if(sessionStorage.getItem('tokenInfo')){ 
+  //     console.log(this.refs);
+
+  //     esriLoader.dojoRequire([
+  //     "esri/views/SceneView",
+  //     "esri/widgets/LayerList",
+  //     "esri/WebScene",
+  //     "esri/layers/FeatureLayer",
+  //     "esri/layers/TileLayer",
+  //     "esri/widgets/Search",
+  //     "esri/Map",
+  //     "dojo/domReady!"
+  //   ], function(
+  //       SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
+  //     ) {
+  //       var map = new Map({
+  //         basemap: "topo"
+  //       });
+        
+  //       var flGosAkts = new FeatureLayer({
+  //         url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+  //         outFields: ["*"],
+  //         title: "Гос акты"
+  //       });
+  //       map.add(flGosAkts);
+
+  //       var view = new SceneView({
+  //         container: element,
+  //         map: map,
+  //         center: [76.886, 43.250], // lon, lat
+  //         scale: 10000
+  //       });
+        
+  //       var searchWidget = new Search({
+  //         view: view,
+  //         sources: [{
+  //           featureLayer: new FeatureLayer({
+  //             url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+  //             popupTemplate: { // autocasts as new PopupTemplate()
+  //               title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
+  //             }
+  //           }),
+  //           searchFields: ["CADASTRAL_NUMBER"],
+  //           displayField: "CADASTRAL_NUMBER",
+  //           exactMatch: false,
+  //           outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
+  //           name: "Зарегистрированные государственные акты",
+  //           placeholder: "Кадастровый поиск"
+  //         }]
+  //       });
+  //       // Add the search widget to the top right corner of the view
+  //       view.ui.add(searchWidget, {
+  //         position: "top-right"
+  //       });
+        
+        
+  //       view.then(function() {
+  //         var layerList = new LayerList({
+  //           view: view
+  //         });
+
+  //         // Add widget to the bottom right corner of the view
+  //         view.ui.add(layerList, "bottom-right");
+  //       });     
+  //     });
+  //   }
+  // }
+
+  // onReference(element) {
+  //   if(sessionStorage.getItem('tokenInfo')){
+  //     console.log('mounted');
+  //     if(!esriLoader.isLoaded()) {
+  //       esriLoader.bootstrap(
+  //         err => {
+  //           if(err) {
+  //             console.log(err);
+  //           } else {
+  //             this.createMap(element);
+  //           }
+  //         },
+  //         {
+  //           url: "https://js.arcgis.com/4.5/"
+  //         }
+  //       );
+  //     } else {
+  //       this.createMap(element);
+  //     }
+  //   }
+  // }
 
   componentWillMount() {
     //console.log("HeadComponent will mount");
@@ -442,11 +455,11 @@ export default class Head extends React.Component {
             </div>
             <div className="col-md-6 apz-additional card" style={{padding:'0'}}>
               <div className="col-md-12 well" style={{padding:'0', height:'600px', width:'100%'}}>
-                  <div className="viewDivHead" ref={this.onReference.bind(this)}>
+                  {/*<div className="viewDivHead" ref={this.onReference.bind(this)}>
                     <div className="container">
                       <p>Загрузка...</p>
                     </div>
-                  </div>
+                  </div>*/}
               </div>
               {/*<button class="btn-block btn-info col-md-3" id="printApz">
                 Распечатать АПЗ
@@ -462,17 +475,20 @@ export default class Head extends React.Component {
                 <div className="col-6"><b>Название проекта</b>:</div> <div className="col-6">{this.state.ProjectName}</div>
                 <div className="col-6"><b>Адрес проекта</b>:</div> <div className="col-6">{this.state.ProjectAddress}</div>
                 <div className="col-6"><b>Дата заявления</b>:</div> <div className="col-6">{this.state.ApzDate}</div>
-
+                { this.state.personalIdDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Уд. лич./ Реквизиты</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.personalIdDoc} data-name="Уд. лич./Реквизиты" data-ext={this.state.personalIdDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+                { this.state.confirmedTaskDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Утвержденное задание</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.confirmedTaskDoc} data-name="Утвержденное задание" data-ext={this.state.confirmedTaskDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+                { this.state.titleDocumentDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Правоустанавл. документ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.titleDocumentDoc} data-name="Правоустанавл. документ" data-ext={this.state.titleDocumentDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+              
                 <button className="btn btn-raised btn-info" 
                       style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}
                       onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>
                   Распечатать АПЗ
                 </button>
 
-                { this.state.waterDoc ? <div className="col-sm-12"><div class="row"><div className="col-6"><b>ТУ Вода</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.waterDoc} data-name="ТУ Вода" data-ext={this.state.waterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
-                { this.state.heatDoc ? <div className="col-sm-12"><div class="row"><div className="col-6"><b>ТУ Тепло</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.heatDoc} data-name="ТУ Вода" data-ext={this.state.heatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> : ''}
-                { this.state.electroDoc ? <div className="col-sm-12"><div class="row"><div className="col-6"><b>ТУ Электро</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.electroDoc} data-name="ТУ Вода" data-ext={this.state.electroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> : ''}
-                { this.state.gasDoc ? <div className="col-sm-12"><div class="row"><div className="col-6"><b>ТУ Газ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.gasDoc} data-name="ТУ Вода" data-ext={this.state.gasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> : ''}
+                { this.state.waterDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>ТУ Вода</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.waterDoc} data-name="ТУ Вода" data-ext={this.state.waterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+                { this.state.heatDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>ТУ Тепло</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.heatDoc} data-name="ТУ Вода" data-ext={this.state.heatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> : ''}
+                { this.state.electroDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>ТУ Электро</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.electroDoc} data-name="ТУ Вода" data-ext={this.state.electroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> : ''}
+                { this.state.gasDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>ТУ Газ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.gasDoc} data-name="ТУ Вода" data-ext={this.state.gasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> : ''}
                 
                 <div className={this.state.showButtons ? 'col-sm-12 mt-2' : 'invisible'}>
                   <label htmlFor="upload_file">Файл</label>

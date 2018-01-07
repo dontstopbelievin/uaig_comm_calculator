@@ -1,5 +1,5 @@
 import React from 'react';
-import * as esriLoader from 'esri-loader';
+//import * as esriLoader from 'esri-loader';
 import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
@@ -43,7 +43,13 @@ export default class Citizen extends React.Component {
       gResponse: null,
       wResponse: null,
       headResponseFile: null,
-      headResponseFileExt: null
+      headResponseFileExt: null,
+      personalIdDoc: null,
+      personalIdDocExt: null,
+      confirmedTaskDoc: null,
+      confirmedTaskDocExt: null,
+      titleDocumentDoc: null,
+      titleDocumentDocExt: null
     }
 
     this.getApzFormList = this.getApzFormList.bind(this);
@@ -120,8 +126,13 @@ export default class Citizen extends React.Component {
           this.setState({ ProjectAddress: data.ProjectAddress });
           this.setState({ headResponseFile: data.HeadResponseFile });
           this.setState({ headResponseFileExt: data.HeadResponseFileExt });
+          this.setState({ personalIdDoc: data.PersonalIdFile });
+          this.setState({ personalIdDocExt: data.PersonalIdFileExt });
+          this.setState({ confirmedTaskDoc: data.ConfirmedTaskFile });
+          this.setState({ confirmedTaskDocExtir: data.ConfirmedTaskFileExt });
+          this.setState({ titleDocumentDoc: data.TitleDocumentFile });
+          this.setState({ titleDocumentDocExt: data.TitleDocumentFileExt });
           this.setState(function(){
-            var jDate = new Date(data.ApzDate);
             var jDate = new Date(data.ApzDate);
             var curr_date = jDate.getDate();
             var curr_month = jDate.getMonth() + 1;
@@ -243,6 +254,7 @@ export default class Citizen extends React.Component {
 
   };
 
+  // function to download files
   downloadFile(event) {
     var buffer =  event.target.getAttribute("data-file")
     var name =  event.target.getAttribute("data-name");
@@ -402,108 +414,107 @@ export default class Citizen extends React.Component {
       return 'circle done';
   }
 
-  createMap(element){
-    return false;
-    console.log(this.refs)
-    esriLoader.dojoRequire([
-      "esri/views/SceneView",
-      "esri/widgets/LayerList",
-      "esri/WebScene",
-      "esri/layers/FeatureLayer",
-      "esri/layers/TileLayer",
-      "esri/widgets/Search",
-      "esri/Map",
-      "dojo/domReady!"
-    ], function(
-      SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
-    ) {
-      var map = new Map({
-        basemap: "topo"
-      });
+  // createMap(element){
+  //   console.log(this.refs)
+  //   esriLoader.dojoRequire([
+  //     "esri/views/SceneView",
+  //     "esri/widgets/LayerList",
+  //     "esri/WebScene",
+  //     "esri/layers/FeatureLayer",
+  //     "esri/layers/TileLayer",
+  //     "esri/widgets/Search",
+  //     "esri/Map",
+  //     "dojo/domReady!"
+  //   ], function(
+  //     SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
+  //   ) {
+  //     var map = new Map({
+  //       basemap: "topo"
+  //     });
       
-      var flRedLines = new FeatureLayer({
-        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D1%8B%D0%B5_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B8/FeatureServer",
-        outFields: ["*"],
-        title: "Красные линии"
-      });
-      map.add(flRedLines);
+  //     var flRedLines = new FeatureLayer({
+  //       url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D1%8B%D0%B5_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B8/FeatureServer",
+  //       outFields: ["*"],
+  //       title: "Красные линии"
+  //     });
+  //     map.add(flRedLines);
 
-      var flFunZones = new FeatureLayer({
-        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%A4%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B7%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5/FeatureServer",
-        outFields: ["*"],
-        title: "Функциональное зонирование"
-      });
-      map.add(flFunZones);
-      /*
-      var flGosAkts = new FeatureLayer({
-        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-        outFields: ["*"],
-        title: "Гос акты"
-      });
-      map.add(flGosAkts);
-      */
+  //     var flFunZones = new FeatureLayer({
+  //       url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%A4%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B7%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5/FeatureServer",
+  //       outFields: ["*"],
+  //       title: "Функциональное зонирование"
+  //     });
+  //     map.add(flFunZones);
+  //     /*
+  //     var flGosAkts = new FeatureLayer({
+  //       url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+  //       outFields: ["*"],
+  //       title: "Гос акты"
+  //     });
+  //     map.add(flGosAkts);
+  //     */
       
-      var view = new SceneView({
-        container: element,
-        map: map,
-        center: [76.886, 43.250], // lon, lat
-        scale: 10000
-      });
+  //     var view = new SceneView({
+  //       container: element,
+  //       map: map,
+  //       center: [76.886, 43.250], // lon, lat
+  //       scale: 10000
+  //     });
       
-      var searchWidget = new Search({
-        view: view,
-        sources: [{
-          featureLayer: new FeatureLayer({
-            url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-            popupTemplate: { // autocasts as new PopupTemplate()
-              title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
-            }
-          }),
-          searchFields: ["CADASTRAL_NUMBER"],
-          displayField: "CADASTRAL_NUMBER",
-          exactMatch: false,
-          outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
-          name: "Зарегистрированные государственные акты",
-          placeholder: "Кадастровый поиск"
-        }]
-      });
-      // Add the search widget to the top left corner of the view
-      view.ui.add(searchWidget, {
-        position: "top-right"
-      });
+  //     var searchWidget = new Search({
+  //       view: view,
+  //       sources: [{
+  //         featureLayer: new FeatureLayer({
+  //           url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+  //           popupTemplate: { // autocasts as new PopupTemplate()
+  //             title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
+  //           }
+  //         }),
+  //         searchFields: ["CADASTRAL_NUMBER"],
+  //         displayField: "CADASTRAL_NUMBER",
+  //         exactMatch: false,
+  //         outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
+  //         name: "Зарегистрированные государственные акты",
+  //         placeholder: "Кадастровый поиск"
+  //       }]
+  //     });
+  //     // Add the search widget to the top left corner of the view
+  //     view.ui.add(searchWidget, {
+  //       position: "top-right"
+  //     });
       
       
-      view.then(function() {
-        var layerList = new LayerList({
-          view: view
-        });
+  //     view.then(function() {
+  //       var layerList = new LayerList({
+  //         view: view
+  //       });
 
-        // Add widget to the top right corner of the view
-        view.ui.add(layerList, "bottom-right");
-      });
+  //       // Add widget to the top right corner of the view
+  //       view.ui.add(layerList, "bottom-right");
+  //     });
       
-    });
-  }
+  //   });
+  // }
 
-  onReference(element) {
-    console.log('mounted');
-    if(!esriLoader.isLoaded()) {
-      esriLoader.bootstrap(
-        err => {
-          if(err) {
-            console.log(err);
-          } else {
-            this.createMap(element);
-          }
-        },
-        {
-          url: "https://js.arcgis.com/4.5/"
-        }
-      );
-    } else {
-      this.createMap(element);
-    }
-  }
+  // onReference(element) {
+  //   console.log('mounted');
+  //   if(!esriLoader.isLoaded()) {
+  //     esriLoader.bootstrap(
+  //       err => {
+  //         if(err) {
+  //           console.log(err);
+  //         } else {
+  //           this.createMap(element);
+  //         }
+  //       },
+  //       {
+  //         url: "https://js.arcgis.com/4.5/"
+  //       }
+  //     );
+  //   } else {
+  //     this.createMap(element);
+  //   }
+  // }
 
   componentWillMount() {
     //console.log("CitizenComponent will mount");
@@ -587,11 +598,11 @@ export default class Citizen extends React.Component {
           </div>
           <div className="col-md-6 apz-additional card" style={{padding: '0'}}>
             <div className="col-md-12 well" style={{padding: '0', height:'600px', width:'100%'}}>
-                <div className="viewDivCitizen" ref={this.onReference.bind(this)}>
+                {/*<div className="viewDivCitizen" ref={this.onReference.bind(this)}>
                   <div className="container">
                     <p>Загрузка...</p>
                   </div>
-                </div>
+                </div>*/}
             </div>
           </div>
           <div id="apz-detailed" className="col-md-3 apz-detailed card" style={{paddingTop: '10px'}}>
@@ -604,7 +615,10 @@ export default class Citizen extends React.Component {
               <div className="col-6"><b>Название проекта</b>:</div> <div className="col-6">{this.state.ProjectName}</div>
               <div className="col-6"><b>Адрес проекта</b>:</div> <div className="col-6">{this.state.ProjectAddress}</div>
               <div className="col-6"><b>Дата заявления</b>:</div> <div className="col-6">{this.state.ApzDate}</div>
-              { this.state.headResponseFile ? <div className="col-sm-12"><div class="row"><div className="col-6"><b>Решение</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.headResponseFile} data-name="Решение" data-ext={this.state.headResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+              { this.state.personalIdDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Уд. лич./ Реквизиты</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.personalIdDoc} data-name="Уд. лич./Реквизиты" data-ext={this.state.personalIdDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+              { this.state.confirmedTaskDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Утвержденное задание</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.confirmedTaskDoc} data-name="Утвержденное задание" data-ext={this.state.confirmedTaskDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+              { this.state.titleDocumentDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Правоустанавл. документ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.titleDocumentDoc} data-name="Правоустанавл. документ" data-ext={this.state.titleDocumentDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+              { this.state.headResponseFile ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Решение</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.headResponseFile} data-name="Решение" data-ext={this.state.headResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
               
               <button className="btn btn-raised btn-info" 
                       style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}
@@ -695,8 +709,29 @@ export default class Citizen extends React.Component {
 class ApzForm extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      personalIdFile: null,
+      confirmedTaskFile: null,
+      titleDocumentFile: null
+    }
     
     this.tabSubmission = this.tabSubmission.bind(this);
+    this.onPersonalIdFileChange = this.onPersonalIdFileChange.bind(this);
+    this.onConfirmedTaskFileChange = this.onConfirmedTaskFileChange.bind(this);
+    this.onTitleDocumentFileChange = this.onTitleDocumentFileChange.bind(this);
+  }
+
+  onPersonalIdFileChange(e) {
+    this.setState({ personalIdFile: e.target.files[0] });
+  }
+
+  onConfirmedTaskFileChange(e) {
+    this.setState({ confirmedTaskFile: e.target.files[0] });
+  }
+
+  onTitleDocumentFileChange(e) {
+    this.setState({ titleDocumentFile: e.target.files[0] });
   }
 
   tabSubmission(e) { 
@@ -727,17 +762,44 @@ class ApzForm extends React.Component {
       if (sessionStorage.getItem('tokenInfo')) {
         $.ajax({
           type: 'POST',
-          url: window.url + 'api/Apz/Create',
+          url: window.url + 'api/apz/Create',
           contentType: 'application/json; charset=utf-8',
           beforeSend: function (xhr) {
             xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
           },
           data: JSON.stringify(apzData),
           success: function (data) {
-            //console.log(data);
-            // after form is submitted: calls the function from CitizenComponent to update the list 
-            this.props.updateList(data);
-            alert("Заявка успешно подана");
+            console.log(data);
+            //console.log(this.state.personalIdFile);
+            var formData = new FormData();
+            formData.append('PersonalIdFile', this.state.personalIdFile);
+            formData.append('ConfirmedTaskFile', this.state.confirmedTaskFile);
+            formData.append('TitleDocumentFile', this.state.titleDocumentFile);
+            $.ajax({
+              type: 'POST',
+              url: window.url + 'api/apz/create/upload/' + data.Id ,
+              contentType: false,
+              beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
+              },
+              data: formData,
+              processData: false,
+              success: function (data) {
+                // after form is submitted: calls the function from CitizenComponent to update the list 
+                this.props.updateList(data);
+                alert("Заявка успешно подана");
+              }.bind(this),
+              fail: function (jqXHR) {
+                alert("Ошибка " + jqXHR.status + ': ' + jqXHR.statusText);
+              },
+              statusCode: {
+                400: function () {
+                  alert("При сохранении заявки произошла ошибка!");
+                }
+              },
+              complete: function (jqXHR) {
+              }
+            });
             $('#tab0-form')[0].reset();
             $('#tab1-form')[0].reset();
             $('#tab2-form')[0].reset();
@@ -764,7 +826,6 @@ class ApzForm extends React.Component {
       } else { console.log('session expired'); }
     } else { alert('Сохранены не все вкладки'); }
   }
-
 
   render() {
     return (
@@ -795,6 +856,11 @@ class ApzForm extends React.Component {
                   <label htmlFor="Applicant">Наименование заявителя:</label>
                   <input type="text" className="form-control" required name="Applicant" placeholder="Наименование" />
                   <span className="help-block">Ф.И.О. (при его наличии) физического лица <br />или наименование юридического лица</span>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="PersonalIdFile">Прикрепить личные данные</label>
+                  <input type="file" required name="PersonalIdFile" className="form-control" onChange={this.onPersonalIdFileChange}/>
+                  <span className="help-block">Удостверение личности (физ. лица) <br />или Реквизиты (юр. лица)</span>
                 </div>
                 <div className="form-group">
                   <label htmlFor="Address">Адрес:</label>
@@ -834,6 +900,16 @@ class ApzForm extends React.Component {
                   <div className="form-group">
                     <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
                     <input type="text" required className="form-control" name="ProjectAddress" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="ConfirmedTaskFile">Прикрепить файл</label>
+                    <input type="file" required name="ConfirmedTaskFile" className="form-control" onChange={this.onConfirmedTaskFileChange} />
+                    <span className="help-block">Утвержденное задание на проектирование</span>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="TitleDocumentFile">Прикрепить файл</label>
+                    <input type="file" required name="TitleDocumentFile" className="form-control" onChange={this.onTitleDocumentFileChange} />
+                    <span className="help-block">Правоустанавливающий документ на земельный участок</span>
                   </div>
                   {/*<div className="form-group">
                     <label htmlFor="ApzDate">Дата</label>

@@ -1,5 +1,5 @@
 import React from 'react';
-import * as esriLoader from 'esri-loader';
+//import * as esriLoader from 'esri-loader';
 //import { NavLink } from 'react-router-dom';
 
 export default class ProviderGas extends React.Component {
@@ -24,7 +24,13 @@ export default class ProviderGas extends React.Component {
       ApzDate: "",
       gGen: 0, gCook: 0, gHeat: 0, gVen: 0, gCon: 0, gWater: 0,
       description: "",
-      file: []
+      file: [],
+      personalIdDoc: null,
+      personalIdDocExt: null,
+      confirmedTaskDoc: null,
+      confirmedTaskDocExt: null,
+      titleDocumentDoc: null,
+      titleDocumentDocExt: null
     }
 
     this.getApzFormList = this.getApzFormList.bind(this);
@@ -151,6 +157,12 @@ export default class ProviderGas extends React.Component {
         this.setState({ Designer: data.Designer });
         this.setState({ ProjectName: data.ProjectName });
         this.setState({ ProjectAddress: data.ProjectAddress });
+        this.setState({ personalIdDoc: data.PersonalIdFile });
+        this.setState({ personalIdDocExt: data.PersonalIdFileExt });
+        this.setState({ confirmedTaskDoc: data.ConfirmedTaskFile });
+        this.setState({ confirmedTaskDocExtir: data.ConfirmedTaskFileExt });
+        this.setState({ titleDocumentDoc: data.TitleDocumentFile });
+        this.setState({ titleDocumentDocExt: data.TitleDocumentFileExt });
         this.setState(function(){
           var jDate = new Date(data.ApzDate);
           var curr_date = jDate.getDate();
@@ -225,110 +237,152 @@ export default class ProviderGas extends React.Component {
     xhr.send(formData); 
   }
 
-  createMap(element){
-    if(sessionStorage.getItem('tokenInfo')){ 
-      console.log(this.refs);
+  // function to download files
+  downloadFile(event) {
+    var buffer =  event.target.getAttribute("data-file")
+    var name =  event.target.getAttribute("data-name");
+    var ext =  event.target.getAttribute("data-ext");
 
-      esriLoader.dojoRequire([
-      "esri/views/SceneView",
-      "esri/widgets/LayerList",
-      "esri/WebScene",
-      "esri/layers/FeatureLayer",
-      "esri/layers/TileLayer",
-      "esri/widgets/Search",
-      "esri/Map",
-      "dojo/domReady!"
-    ], function(
-        SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
-      ) {
-        var map = new Map({
-          basemap: "topo"
-        });
+    var base64ToArrayBuffer = (function () {
+      
+      return function (base64) {
+        var binaryString =  window.atob(base64);
+        var binaryLen = binaryString.length;
+        var bytes = new Uint8Array(binaryLen);
         
-        var gasLines = new FeatureLayer({
-          url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%A2%D1%80%D1%83%D0%B1%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D1%8B_%D0%B3%D0%B0%D0%B7%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F/FeatureServer",
-          outFields: ["*"],
-          title: "Трубопроводы газоснабжения"
-        });
-        map.add(gasLines);
-
-        var gasLineSafetyZone = new FeatureLayer({
-          url: 'https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%9E%D1%85%D1%80%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F_%D0%B7%D0%BE%D0%BD%D0%B0_%D0%B3%D0%B0%D0%B7%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D0%B0/FeatureServer',
-          outFields: ["*"],
-          title: "Охранная зона газопровода"
-        });
-        map.add(gasLineSafetyZone);
+        for (var i = 0; i < binaryLen; i++)        {
+            var ascii = binaryString.charCodeAt(i);
+            bytes[i] = ascii;
+        }
         
-        var flGosAkts = new FeatureLayer({
-          url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-          outFields: ["*"],
-          title: "Гос акты"
-        });
-        map.add(flGosAkts);
-
-        var view = new SceneView({
-          container: element,
-          map: map,
-          center: [76.886, 43.250], // lon, lat
-          scale: 10000
-        });
-        
-        var searchWidget = new Search({
-          view: view,
-          sources: [{
-            featureLayer: new FeatureLayer({
-              url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-              popupTemplate: { // autocasts as new PopupTemplate()
-                title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
-              }
-            }),
-            searchFields: ["CADASTRAL_NUMBER"],
-            displayField: "CADASTRAL_NUMBER",
-            exactMatch: false,
-            outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
-            name: "Зарегистрированные государственные акты",
-            placeholder: "Кадастровый поиск"
-          }]
-        });
-        // Add the search widget to the top right corner of the view
-        view.ui.add(searchWidget, {
-          position: "top-right"
-        });
-        
-        
-        view.then(function() {
-          var layerList = new LayerList({
-            view: view
-          });
-
-          // Add widget to the bottom right corner of the view
-          view.ui.add(layerList, "bottom-right");
-        });     
-      });
-    }
-  }
-
-  onReference(element) {
-    if(sessionStorage.getItem('tokenInfo')){
-      console.log('mounted');
-      if(!esriLoader.isLoaded()) {
-        esriLoader.bootstrap(
-          err => {
-            if(err) {
-              console.log(err);
-            } else {
-              this.createMap(element);
-            }
-          },
-          {
-            url: "https://js.arcgis.com/4.5/"
-          }
-        );
-      } else {
-        this.createMap(element);
+        return bytes; 
       }
-    }
+      
+    }());
+
+    var saveByteArray = (function () {
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+      
+      return function (data, name) {
+          var blob = new Blob(data, {type: "octet/stream"}),
+              url = window.URL.createObjectURL(blob);
+          a.href = url;
+          a.download = name;
+          a.click();
+          window.URL.revokeObjectURL(url);
+      };
+
+    }());
+
+    saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
   }
+
+  // createMap(element){
+  //   if(sessionStorage.getItem('tokenInfo')){ 
+  //     console.log(this.refs);
+
+  //     esriLoader.dojoRequire([
+  //     "esri/views/SceneView",
+  //     "esri/widgets/LayerList",
+  //     "esri/WebScene",
+  //     "esri/layers/FeatureLayer",
+  //     "esri/layers/TileLayer",
+  //     "esri/widgets/Search",
+  //     "esri/Map",
+  //     "dojo/domReady!"
+  //   ], function(
+  //       SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
+  //     ) {
+  //       var map = new Map({
+  //         basemap: "topo"
+  //       });
+        
+  //       var gasLines = new FeatureLayer({
+  //         url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%A2%D1%80%D1%83%D0%B1%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D1%8B_%D0%B3%D0%B0%D0%B7%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F/FeatureServer",
+  //         outFields: ["*"],
+  //         title: "Трубопроводы газоснабжения"
+  //       });
+  //       map.add(gasLines);
+
+  //       var gasLineSafetyZone = new FeatureLayer({
+  //         url: 'https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%9E%D1%85%D1%80%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F_%D0%B7%D0%BE%D0%BD%D0%B0_%D0%B3%D0%B0%D0%B7%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D0%B0/FeatureServer',
+  //         outFields: ["*"],
+  //         title: "Охранная зона газопровода"
+  //       });
+  //       map.add(gasLineSafetyZone);
+        
+  //       var flGosAkts = new FeatureLayer({
+  //         url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+  //         outFields: ["*"],
+  //         title: "Гос акты"
+  //       });
+  //       map.add(flGosAkts);
+
+  //       var view = new SceneView({
+  //         container: element,
+  //         map: map,
+  //         center: [76.886, 43.250], // lon, lat
+  //         scale: 10000
+  //       });
+        
+  //       var searchWidget = new Search({
+  //         view: view,
+  //         sources: [{
+  //           featureLayer: new FeatureLayer({
+  //             url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+  //             popupTemplate: { // autocasts as new PopupTemplate()
+  //               title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
+  //             }
+  //           }),
+  //           searchFields: ["CADASTRAL_NUMBER"],
+  //           displayField: "CADASTRAL_NUMBER",
+  //           exactMatch: false,
+  //           outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
+  //           name: "Зарегистрированные государственные акты",
+  //           placeholder: "Кадастровый поиск"
+  //         }]
+  //       });
+  //       // Add the search widget to the top right corner of the view
+  //       view.ui.add(searchWidget, {
+  //         position: "top-right"
+  //       });
+        
+        
+  //       view.then(function() {
+  //         var layerList = new LayerList({
+  //           view: view
+  //         });
+
+  //         // Add widget to the bottom right corner of the view
+  //         view.ui.add(layerList, "bottom-right");
+  //       });     
+  //     });
+  //   }
+  // }
+
+  // onReference(element) {
+  //   if(sessionStorage.getItem('tokenInfo')){
+  //     console.log('mounted');
+  //     if(!esriLoader.isLoaded()) {
+  //       esriLoader.bootstrap(
+  //         err => {
+  //           if(err) {
+  //             console.log(err);
+  //           } else {
+  //             this.createMap(element);
+  //           }
+  //         },
+  //         {
+  //           url: "https://js.arcgis.com/4.5/"
+  //         }
+  //       );
+  //     } else {
+  //       this.createMap(element);
+  //     }
+  //   }
+  // }
 
   componentWillMount() {
     //console.log("ProviderComponent will mount");
@@ -418,15 +472,12 @@ export default class ProviderGas extends React.Component {
             </div>
             <div className="col-md-6 apz-additional card" style={{padding:'0'}}>
               <div className="col-md-12 well" style={{padding:'0', height:'600px', width:'100%'}}>
-                  <div className="viewDivProvider" ref={this.onReference.bind(this)}>
+                  {/*<div className="viewDivProvider" ref={this.onReference.bind(this)}>
                     <div className="container">
                       <p>Загрузка...</p>
                     </div>
-                  </div>
+                  </div>*/}
               </div>
-              {/*<button class="btn-block btn-info col-md-3" id="printApz">
-                Распечатать АПЗ
-              </button>*/}
             </div>
             <div id="apz-detailed" className="col-md-3 apz-detailed card" style={{paddingTop: '10px'}}>
               <div className={this.state.showDetails ? 'row' : 'invisible'}>
@@ -438,7 +489,10 @@ export default class ProviderGas extends React.Component {
                 <div className="col-6"><b>Название проекта</b>:</div><div className="col-6">{this.state.ProjectName}</div>
                 <div className="col-6"><b>Адрес проекта</b>:</div><div className="col-6">{this.state.ProjectAddress}</div>
                 <div className="col-6"><b>Дата заявления</b>:</div><div className="col-6">{this.state.ApzDate}</div>
-                
+                { this.state.personalIdDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Уд. лич./ Реквизиты</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.personalIdDoc} data-name="Уд. лич./Реквизиты" data-ext={this.state.personalIdDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+                { this.state.confirmedTaskDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Утвержденное задание</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.confirmedTaskDoc} data-name="Утвержденное задание" data-ext={this.state.confirmedTaskDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+                { this.state.titleDocumentDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Правоустанавл. документ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.titleDocumentDoc} data-name="Правоустанавл. документ" data-ext={this.state.titleDocumentDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+              
                 <div className="row detail">
                   <br /><br />
                   <div style={{margin: 'auto', color: '#D77B38'}}><b>Детали газоснабжения</b></div>
