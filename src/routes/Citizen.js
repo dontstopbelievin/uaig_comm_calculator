@@ -403,7 +403,6 @@ export default class Citizen extends React.Component {
   }
 
   createMap(element){
-    return false;
     console.log(this.refs)
     esriLoader.dojoRequire([
       "esri/views/SceneView",
@@ -604,7 +603,20 @@ export default class Citizen extends React.Component {
               <div className="col-6"><b>Название проекта</b>:</div> <div className="col-6">{this.state.ProjectName}</div>
               <div className="col-6"><b>Адрес проекта</b>:</div> <div className="col-6">{this.state.ProjectAddress}</div>
               <div className="col-6"><b>Дата заявления</b>:</div> <div className="col-6">{this.state.ApzDate}</div>
-              { this.state.headResponseFile ? <div className="col-sm-12"><div class="row"><div className="col-6"><b>Решение</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.headResponseFile} data-name="Решение" data-ext={this.state.headResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+              { this.state.headResponseFile ? 
+                <div className="col-sm-12">
+                  { this.state.Status != 0 ? 
+                    <div class="row">
+                      <div className="col-6"><b>Готовое АПЗ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.headResponseFile} data-name="Готовое АПЗ" data-ext={this.state.headResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      <div className="col-6"><b>АПЗ на базе Опросного листа</b>:</div> <div className="col-6"><a className="text-info pointer" onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>Скачать</a></div>
+                    </div>
+                    :
+                    <div class="row">
+                      <div className="col-6"><b>Мотивированный отказ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.headResponseFile} data-name="Мотивированный отказ" data-ext={this.state.headResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                    </div>
+                  }
+                </div> : ''
+              }
               
               <button className="btn btn-raised btn-info" 
                       style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}

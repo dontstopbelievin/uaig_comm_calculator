@@ -25,12 +25,17 @@ export default class Head extends React.Component {
       file: [],
       waterDoc: null,
       waterDocExt: null,
+      waterResponse: null,
       electroDoc: null,
       electroDocExt: null,
+      electroResponse: null,
       heatDoc: null,
       heatDocExt: null,
+      heatResponse: null,
       gasDoc: null,
       gasDocExt: null,
+      gasResponse: null,
+      response: null,
     }
 
     this.getApzFormList = this.getApzFormList.bind(this);
@@ -99,12 +104,16 @@ export default class Head extends React.Component {
         this.setState({ ProjectAddress: data.ProjectAddress });
         this.setState({ waterDoc: data.WaterDoc });
         this.setState({ waterDocExt: data.WaterDocExt });
+        this.setState({ waterResponse: data.WaterResponse });
         this.setState({ electroDoc: data.ElectroDoc });
         this.setState({ electroDocExt: data.ElectroDocExt });
+        this.setState({ electroResponse: data.ElectroResponse });
         this.setState({ heatDoc: data.HeatDoc });
         this.setState({ heatDocExt: data.HeatDocExt });
+        this.setState({ heatResponse: data.HeatResponse });
         this.setState({ gasDoc: data.GasDoc });
         this.setState({ gasDocExt: data.GasDocExt });
+        this.setState({ gasResponse: data.GasResponse });
         this.setState(function(){
           var jDate = new Date(data.ApzDate);
           var curr_date = jDate.getDate();
@@ -113,6 +122,10 @@ export default class Head extends React.Component {
           var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
           return { ApzDate: formated_date }
         });
+
+        if ([data.WaterResponse, data.ElectroResponse, data.HeatResponse, data.GasResponse].indexOf(false) == -1) {
+          this.setState({ response: true });
+        }
       }
     }.bind(this);
   }
@@ -469,10 +482,63 @@ export default class Head extends React.Component {
                   Распечатать АПЗ
                 </button>
 
-                { this.state.waterDoc ? <div className="col-sm-12"><div class="row"><div className="col-6"><b>ТУ Вода</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.waterDoc} data-name="ТУ Вода" data-ext={this.state.waterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
-                { this.state.heatDoc ? <div className="col-sm-12"><div class="row"><div className="col-6"><b>ТУ Тепло</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.heatDoc} data-name="ТУ Вода" data-ext={this.state.heatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> : ''}
-                { this.state.electroDoc ? <div className="col-sm-12"><div class="row"><div className="col-6"><b>ТУ Электро</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.electroDoc} data-name="ТУ Вода" data-ext={this.state.electroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> : ''}
-                { this.state.gasDoc ? <div className="col-sm-12"><div class="row"><div className="col-6"><b>ТУ Газ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.gasDoc} data-name="ТУ Вода" data-ext={this.state.gasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> : ''}
+                { this.state.waterDoc ? 
+                  <div className="col-sm-12">
+                    { this.state.waterResponse ?
+                      <div class="row">
+                        <div className="col-6"><b>ТУ Вода</b>:</div> 
+                        <div className="col-6"><a className="text-info pointer" data-file={this.state.waterDoc} data-name="ТУ Вода" data-ext={this.state.waterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      </div>
+                      :
+                      <div class="row">
+                        <div className="col-6"><b>МО Вода</b>:</div> 
+                        <div className="col-6"><a className="text-info pointer" data-file={this.state.waterDoc} data-name="МО Вода" data-ext={this.state.waterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      </div>
+                    }
+                    
+                  </div> :''}
+                { this.state.heatDoc ? 
+                  <div className="col-sm-12">
+                    { this.state.heatResponse ?
+                      <div class="row">
+                        <div className="col-6"><b>ТУ Тепло</b>:</div> 
+                        <div className="col-6"><a className="text-info pointer" data-file={this.state.heatDoc} data-name="ТУ Вода" data-ext={this.state.heatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      </div>
+                      :
+                      <div class="row">
+                        <div className="col-6"><b>МО Тепло</b>:</div> 
+                        <div className="col-6"><a className="text-info pointer" data-file={this.state.heatDoc} data-name="МО Вода" data-ext={this.state.heatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      </div>
+                    }
+                  </div> : ''}
+                { this.state.electroDoc ? 
+                  <div className="col-sm-12">
+                    { this.state.electroResponse ?
+                      <div class="row">
+                        <div className="col-6"><b>ТУ Электро</b>:</div> 
+                        <div className="col-6"><a className="text-info pointer" data-file={this.state.electroDoc} data-name="ТУ Вода" data-ext={this.state.electroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      </div>
+                      :
+                      <div class="row">
+                        <div className="col-6"><b>МО Электро</b>:</div> 
+                        <div className="col-6"><a className="text-info pointer" data-file={this.state.electroDoc} data-name="МО Вода" data-ext={this.state.electroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      </div>
+                    }
+                  </div> : ''}
+                { this.state.gasDoc ? 
+                  <div className="col-sm-12">
+                    { this.state.gasResponse ?
+                      <div class="row">
+                        <div className="col-6"><b>ТУ Газ</b>:</div> 
+                        <div className="col-6"><a className="text-info pointer" data-file={this.state.gasDoc} data-name="ТУ Вода" data-ext={this.state.gasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      </div>
+                      :
+                      <div class="row">
+                        <div className="col-6"><b>МО Газ</b>:</div> 
+                        <div className="col-6"><a className="text-info pointer" data-file={this.state.gasDoc} data-name="МО Вода" data-ext={this.state.gasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      </div>
+                    }
+                </div> : ''}
                 
                 <div className={this.state.showButtons ? 'col-sm-12 mt-2' : 'invisible'}>
                   <label htmlFor="upload_file">Файл</label>
@@ -480,10 +546,17 @@ export default class Head extends React.Component {
                 </div>
 
                 <div className={this.state.showButtons ? 'btn-group' : 'invisible'} role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
-                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
-                          onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, true, "your form was accepted")}>
-                    Одобрить
-                  </button>
+                  { this.state.response ? 
+                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
+                            onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, true, "your form was accepted")}>
+                      Одобрить
+                    </button>
+                    :
+                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
+                            onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, true, "your form was accepted")} disabled="disabled">
+                      Одобрить
+                    </button>
+                  }
                   <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
                     Отклонить
                   </button>
