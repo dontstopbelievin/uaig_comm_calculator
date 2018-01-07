@@ -233,35 +233,16 @@ export default class Register extends React.Component {
     super();
     this.state = {
       username: "", 
+      firstName: "",
+      lastName: "",
+      middleName: "",
       email: "", 
       pwd: "", 
       confirmPwd: "",
       loadingVisible: false,
       storageAlias: "PKCS12"
     }
-
-    this.onUsernameChange = this.onUsernameChange.bind(this);
-    this.onEmailChange = this.onEmailChange.bind(this);
-    this.onPwdChange = this.onPwdChange.bind(this);
-    this.onConfirmPwdChange = this.onConfirmPwdChange.bind(this);
-    this.register = this.register.bind(this);
   }
-
-  onUsernameChange(e) {
-    this.setState({username: e.target.value});
-  }
-  
-  onEmailChange(e) {
-    this.setState({email: e.target.value});
-  }
-
-  onPwdChange(e) {
-    this.setState({pwd: e.target.value});
-  }
-
-  onConfirmPwdChange(e) {
-    this.setState({confirmPwd: e.target.value});
-  }
 
   btnChooseFile() {
     var browseKeyStore = {
@@ -337,6 +318,47 @@ export default class Register extends React.Component {
     
   }
 
+  registerWithoutECP() {
+    console.log("registerWithoutECP function started");
+
+    var registerData = {
+      UserName: this.state.username,
+      FirstName: this.state.firstName,
+      LastName: this.state.lastName,
+      MiddleName: this.state.middleName,
+      Email: this.state.email,
+      Password: this.state.pwd.trim(),
+      ConfirmPassword: this.state.confirmPwd.trim()
+    };
+
+    console.log(registerData);
+
+    var data = JSON.stringify(registerData);
+
+    if (!!this.state.email && !this.state.pwd && !this.state.confirmPwd) {
+      return;
+    } 
+    else {
+      this.setState({loadingVisible: true});
+      var xhr = new XMLHttpRequest();
+      xhr.open("post", window.url + "api/Account/Register", true);
+      //Send the proper header information along with the request
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          alert("Вы успешно зарегистрировались!\n Можете войти через созданный аккаунт!");
+          this.setState({loadingVisible: false});
+        } else {
+          console.log(xhr.response);
+          this.setState({loadingVisible: false}); 
+          //alert("Ошибка " + xhr.status + ': ' + xhr.statusText);
+        }
+      }.bind(this);
+      //console.log(data);
+      xhr.send(data);
+    }
+  }
+
   componentWillMount() {
     //console.log("RegisterComponent will mount");
     if(sessionStorage.getItem('tokenInfo')){
@@ -380,55 +402,105 @@ export default class Register extends React.Component {
                 <h4 className="modal-title" id="myModalLabel">Регистрация</h4>
               </div>
               <div className="modal-body">
-                <div className="form-group">
-                  <label className="control-label">Путь к ЭЦП
-                    <input className="form-control" type="text" id="storagePath" readOnly />
-                  </label>
-                  <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button> 
+                <ul className="nav nav-tabs">
+                  <li className="nav-item"><a className="nav-link active" data-toggle="tab" href="#menu1">Регистрация без ЭЦП</a></li>
+                  <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu2">Регистрация с ЭЦП</a></li>
+                </ul>
+
+                <div className="tab-content">
+                  <div id="menu1" className="tab-pane fade active show">
+                    <p>&nbsp;</p>
+                    <form onSubmit={this.registerWithoutECP.bind(this)}>
+                      <div className="form-group">
+                        <label>ИИН/БИН:</label>
+                        <input type="text" className="form-control" required onChange={(e) => this.setState({username: e.target.value})} />
+                      </div>
+                      <div className="form-group">
+                        <label>Фамилия:</label>
+                        <input type="text" className="form-control" required onChange={(e) => this.setState({lastName: e.target.value})} />
+                      </div>
+                      <div className="form-group">
+                        <label>Имя:</label>
+                        <input type="text" className="form-control" required onChange={(e) => this.setState({firstName: e.target.value})} />
+                      </div>
+                      <div className="form-group">
+                        <label>Отчество:</label>
+                        <input type="text" className="form-control" onChange={(e) => this.setState({middleName: e.target.value})} />
+                      </div>
+                      <div className="form-group">
+                        <label>E-mail:</label>
+                        <input type="email" className="form-control" required value={this.state.email} onChange={(e) => this.setState({email: e.target.value})} />
+                      </div>
+                      <div className="form-group">
+                        <label>Пароль:</label>
+                        <input type="password" className="form-control" required value={this.state.pwd} onChange={(e) => this.setState({pwd: e.target.value})} />
+                      </div>
+                      <div className="form-group">
+                        <label>Подтвердите Пароль:</label>
+                        <input type="password" className="form-control" required value={this.state.confirmPwd} onChange={(e) => this.setState({confirmPwd: e.target.value})} />
+                      </div>
+                      <div className="modal-footer">
+                        <button type="submit" className="btn btn-primary">Регистрация</button>
+                        <Link to="/" style={{marginRight:'5px'}}>
+                          <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
+                        </Link>
+                      </div>
+                    </form>
+                  </div>
+                  <div id="menu2" className="tab-pane fade">
+                    <p>&nbsp;</p>
+                    <div className="form-group">
+                      <label className="control-label">Путь к ЭЦП
+                        <input className="form-control" type="text" id="storagePath" readOnly />
+                      </label>
+                      <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button> 
+                    </div>
+                    <div className="form-group">
+                      <label className="control-label">Пароль ЭЦП
+                        <input className="form-control" id="inpPassword" type="password" />
+                      </label>
+                      <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
+                    </div>
+                    <hr />
+                    <form id="registerForm" onSubmit={this.register.bind(this)}>
+                      <div className="form-group">
+                        <label htmlFor="UserName" className="control-label">ИИН/БИН:</label>
+                        <input type="text" className="form-control" id="userName" required disabled />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="surname" className="control-label">Фамилия:</label>
+                        <input type="text" className="form-control" id="lastName" required disabled />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="name" className="control-label">Имя:</label>
+                        <input type="text" className="form-control" id="firstName" required disabled />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="patronymic" className="control-label">Отчество:</label>
+                        <input type="text" className="form-control" id="middleName" disabled />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="Email" className="control-label">E-mail:</label>
+                        <input type="email" className="form-control" required value={this.state.email} onChange={(e) => this.setState({email: e.target.value})} />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="Pwd" className="control-label">Пароль:</label>
+                        <input type="password" className="form-control" required value={this.state.pwd} onChange={(e) => this.setState({pwd: e.target.value})} />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="ConfirmPwd" className="control-label">Подтвердите Пароль:</label>
+                        <input type="password" className="form-control" required value={this.state.confirmPwd} onChange={(e) => this.setState({confirmPwd: e.target.value})} />
+                      </div>
+                      <div className="modal-footer">
+                        <button type="submit" className="btn btn-primary">Регистрация</button>
+                        <Link to="/" style={{marginRight:'5px'}}>
+                          <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
+                        </Link>
+                      </div>
+                    </form>
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label className="control-label">Пароль ЭЦП
-                    <input className="form-control" id="inpPassword" type="password" />
-                  </label>
-                  <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Авторизация</button>
-                </div>
-                <hr />
-                <form id="registerForm" onSubmit={this.register}>
-                  <div className="form-group">
-                    <label htmlFor="UserName" className="control-label">ИИН/БИН:</label>
-                    <input type="text" className="form-control" id="userName" required disabled />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="surname" className="control-label">Фамилия:</label>
-                    <input type="text" className="form-control" id="lastName" required disabled />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="name" className="control-label">Имя:</label>
-                    <input type="text" className="form-control" id="firstName" required disabled />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="patronymic" className="control-label">Отчество:</label>
-                    <input type="text" className="form-control" id="middleName" disabled />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="Email" className="control-label">E-mail:</label>
-                    <input type="email" className="form-control" required value={this.state.email} onChange={this.onEmailChange} />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="Pwd" className="control-label">Пароль:</label>
-                    <input type="password" className="form-control" required value={this.state.pwd} onChange={this.onPwdChange} />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="ConfirmPwd" className="control-label">Подтвердите Пароль:</label>
-                    <input type="password" className="form-control" required value={this.state.confirmPwd} onChange={this.onConfirmPwdChange} />
-                  </div>
-                  <div className="modal-footer">
-                    <button type="submit" className="btn btn-primary">Регистрация</button>
-                    <Link to="/" style={{marginRight:'5px'}}>
-                      <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
-                    </Link>
-                  </div>
-                </form>
+                
               </div>
             </div>
           </div>
