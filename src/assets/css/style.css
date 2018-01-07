@@ -679,3 +679,9 @@ img {
   margin: 0;
   width: 100%;
 }
+
+.head_result {
+  margin-top: 20px;
+  padding: 5px 15px;
+  background: #fafafa;
+}
