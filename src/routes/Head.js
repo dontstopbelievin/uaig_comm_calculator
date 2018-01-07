@@ -36,6 +36,12 @@ export default class Head extends React.Component {
       gasDocExt: null,
       gasResponse: null,
       response: null,
+      personalIdDoc: null,
+      personalIdDocExt: null,
+      confirmedTaskDoc: null,
+      confirmedTaskDocExt: null,
+      titleDocumentDoc: null,
+      titleDocumentDocExt: null
     }
 
     this.getApzFormList = this.getApzFormList.bind(this);
@@ -114,6 +120,12 @@ export default class Head extends React.Component {
         this.setState({ gasDoc: data.GasDoc });
         this.setState({ gasDocExt: data.GasDocExt });
         this.setState({ gasResponse: data.GasResponse });
+        this.setState({ personalIdDoc: data.PersonalIdFile });
+        this.setState({ personalIdDocExt: data.PersonalIdFileExt });
+        this.setState({ confirmedTaskDoc: data.ConfirmedTaskFile });
+        this.setState({ confirmedTaskDocExtir: data.ConfirmedTaskFileExt });
+        this.setState({ titleDocumentDoc: data.TitleDocumentFile });
+        this.setState({ titleDocumentDocExt: data.TitleDocumentFileExt });
         this.setState(function(){
           var jDate = new Date(data.ApzDate);
           var curr_date = jDate.getDate();
@@ -228,6 +240,48 @@ export default class Head extends React.Component {
     xhr.send(formData); 
   }
 
+  // function to download files
+  downloadFile(event) {
+    var buffer =  event.target.getAttribute("data-file")
+    var name =  event.target.getAttribute("data-name");
+    var ext =  event.target.getAttribute("data-ext");
+
+    var base64ToArrayBuffer = (function () {
+      
+      return function (base64) {
+        var binaryString =  window.atob(base64);
+        var binaryLen = binaryString.length;
+        var bytes = new Uint8Array(binaryLen);
+        
+        for (var i = 0; i < binaryLen; i++)        {
+            var ascii = binaryString.charCodeAt(i);
+            bytes[i] = ascii;
+        }
+        
+        return bytes; 
+      }
+      
+    }());
+
+    var saveByteArray = (function () {
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+      
+      return function (data, name) {
+          var blob = new Blob(data, {type: "octet/stream"}),
+              url = window.URL.createObjectURL(blob);
+          a.href = url;
+          a.download = name;
+          a.click();
+          window.URL.revokeObjectURL(url);
+      };
+
+    }());
+
+    saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
+  }
+
   createMap(element){
     if(sessionStorage.getItem('tokenInfo')){ 
       console.log(this.refs);
@@ -295,47 +349,6 @@ export default class Head extends React.Component {
         });     
       });
     }
-  }
-
-  downloadFile(event) {
-    var buffer =  event.target.getAttribute("data-file")
-    var name =  event.target.getAttribute("data-name");
-    var ext =  event.target.getAttribute("data-ext");
-
-    var base64ToArrayBuffer = (function () {
-      
-      return function (base64) {
-        var binaryString =  window.atob(base64);
-        var binaryLen = binaryString.length;
-        var bytes = new Uint8Array(binaryLen);
-        
-        for (var i = 0; i < binaryLen; i++)        {
-            var ascii = binaryString.charCodeAt(i);
-            bytes[i] = ascii;
-        }
-        
-        return bytes; 
-      }
-      
-    }());
-
-    var saveByteArray = (function () {
-      var a = document.createElement("a");
-      document.body.appendChild(a);
-      a.style = "display: none";
-      
-      return function (data, name) {
-          var blob = new Blob(data, {type: "octet/stream"}),
-              url = window.URL.createObjectURL(blob);
-          a.href = url;
-          a.download = name;
-          a.click();
-          window.URL.revokeObjectURL(url);
-      };
-
-    }());
-
-    saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
   }
 
   onReference(element) {
@@ -475,7 +488,10 @@ export default class Head extends React.Component {
                 <div className="col-6"><b>Название проекта</b>:</div> <div className="col-6">{this.state.ProjectName}</div>
                 <div className="col-6"><b>Адрес проекта</b>:</div> <div className="col-6">{this.state.ProjectAddress}</div>
                 <div className="col-6"><b>Дата заявления</b>:</div> <div className="col-6">{this.state.ApzDate}</div>
-
+                { this.state.personalIdDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Уд. лич./ Реквизиты</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.personalIdDoc} data-name="Уд. лич./Реквизиты" data-ext={this.state.personalIdDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+                { this.state.confirmedTaskDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Утвержденное задание</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.confirmedTaskDoc} data-name="Утвержденное задание" data-ext={this.state.confirmedTaskDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+                { this.state.titleDocumentDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Правоустанавл. документ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.titleDocumentDoc} data-name="Правоустанавл. документ" data-ext={this.state.titleDocumentDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+              
                 <button className="btn btn-raised btn-info" 
                       style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}
                       onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>

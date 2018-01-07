@@ -21,7 +21,13 @@ export default class Urban extends React.Component {
       ProjectName: "",
       ProjectAddress: "",
       ApzDate: "",
-      description: ""
+      description: "",
+      personalIdDoc: null,
+      personalIdDocExt: null,
+      confirmedTaskDoc: null,
+      confirmedTaskDocExt: null,
+      titleDocumentDoc: null,
+      titleDocumentDocExt: null
     }
 
     this.getApzFormList = this.getApzFormList.bind(this);
@@ -83,6 +89,12 @@ export default class Urban extends React.Component {
         this.setState({ Designer: data.Designer });
         this.setState({ ProjectName: data.ProjectName });
         this.setState({ ProjectAddress: data.ProjectAddress });
+        this.setState({ personalIdDoc: data.PersonalIdFile });
+        this.setState({ personalIdDocExt: data.PersonalIdFileExt });
+        this.setState({ confirmedTaskDoc: data.ConfirmedTaskFile });
+        this.setState({ confirmedTaskDocExtir: data.ConfirmedTaskFileExt });
+        this.setState({ titleDocumentDoc: data.TitleDocumentFile });
+        this.setState({ titleDocumentDocExt: data.TitleDocumentFileExt });
         this.setState(function(){
           var jDate = new Date(data.ApzDate);
           var curr_date = jDate.getDate();
@@ -93,47 +105,6 @@ export default class Urban extends React.Component {
         });
       }
     }.bind(this);
-  }
-
-  // function to print apzForm in .pdf format
-  printApz(apzId, project) {
-    //console.log(apzId);
-    var token = sessionStorage.getItem('tokenInfo');
-    if (token) {
-      var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/print/" + apzId, true);
-      xhr.responseType = "blob";
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.onload = function () {
-        console.log(xhr);
-        console.log(xhr.status);
-        if (xhr.status === 200) {
-          //test of IE
-          if (typeof window.navigator.msSaveBlob === "function") {
-            window.navigator.msSaveBlob(xhr.response, "apz-" + new Date().getTime() + ".pdf");
-          } 
-          else {
-            var blob = xhr.response;
-            var link = document.createElement('a');
-            var today = new Date();
-            var curr_date = today.getDate();
-            var curr_month = today.getMonth() + 1;
-            var curr_year = today.getFullYear();
-            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
-            //console.log(curr_day);
-            link.href = window.URL.createObjectURL(blob);
-            link.download = "апз-" + project + formated_date + ".pdf";
-
-            //append the link to the document body
-            document.body.appendChild(link);
-            link.click();
-          }
-        }
-      }
-      xhr.send();
-    } else {
-      console.log('session expired');
-    }
   }
 
   // accept or decline the form
@@ -189,6 +160,48 @@ export default class Urban extends React.Component {
       }
     }.bind(this);
     xhr.send(formData); 
+  }
+
+  // function to download files
+  downloadFile(event) {
+    var buffer =  event.target.getAttribute("data-file")
+    var name =  event.target.getAttribute("data-name");
+    var ext =  event.target.getAttribute("data-ext");
+
+    var base64ToArrayBuffer = (function () {
+      
+      return function (base64) {
+        var binaryString =  window.atob(base64);
+        var binaryLen = binaryString.length;
+        var bytes = new Uint8Array(binaryLen);
+        
+        for (var i = 0; i < binaryLen; i++)        {
+            var ascii = binaryString.charCodeAt(i);
+            bytes[i] = ascii;
+        }
+        
+        return bytes; 
+      }
+      
+    }());
+
+    var saveByteArray = (function () {
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+      
+      return function (data, name) {
+          var blob = new Blob(data, {type: "octet/stream"}),
+              url = window.URL.createObjectURL(blob);
+          a.href = url;
+          a.download = name;
+          a.click();
+          window.URL.revokeObjectURL(url);
+      };
+
+    }());
+
+    saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
   }
 
   createMap(element){
@@ -405,11 +418,10 @@ export default class Urban extends React.Component {
                 <div className="col-6"><b>Название проекта</b>:</div> <div className="col-6">{this.state.ProjectName}</div>
                 <div className="col-6"><b>Адрес проекта</b>:</div> <div className="col-6">{this.state.ProjectAddress}</div>
                 <div className="col-6"><b>Дата заявления</b>:</div> <div className="col-6">{this.state.ApzDate}</div>
-                <button className="btn btn-raised btn-info" 
-                      style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}
-                      onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>
-                  Распечатать АПЗ
-                </button>
+                { this.state.personalIdDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Уд. лич./ Реквизиты</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.personalIdDoc} data-name="Уд. лич./Реквизиты" data-ext={this.state.personalIdDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+                { this.state.confirmedTaskDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Утвержденное задание</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.confirmedTaskDoc} data-name="Утвержденное задание" data-ext={this.state.confirmedTaskDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+                { this.state.titleDocumentDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Правоустанавл. документ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.titleDocumentDoc} data-name="Правоустанавл. документ" data-ext={this.state.titleDocumentDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+              
                 <div className={this.state.showButtons ? 'btn-group' : 'invisible'} role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px'}}>
                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
                           onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, true, "your form was accepted")}>

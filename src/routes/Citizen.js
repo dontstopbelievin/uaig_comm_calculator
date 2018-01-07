@@ -43,7 +43,13 @@ export default class Citizen extends React.Component {
       gResponse: null,
       wResponse: null,
       headResponseFile: null,
-      headResponseFileExt: null
+      headResponseFileExt: null,
+      personalIdDoc: null,
+      personalIdDocExt: null,
+      confirmedTaskDoc: null,
+      confirmedTaskDocExt: null,
+      titleDocumentDoc: null,
+      titleDocumentDocExt: null
     }
 
     this.getApzFormList = this.getApzFormList.bind(this);
@@ -120,8 +126,13 @@ export default class Citizen extends React.Component {
           this.setState({ ProjectAddress: data.ProjectAddress });
           this.setState({ headResponseFile: data.HeadResponseFile });
           this.setState({ headResponseFileExt: data.HeadResponseFileExt });
+          this.setState({ personalIdDoc: data.PersonalIdFile });
+          this.setState({ personalIdDocExt: data.PersonalIdFileExt });
+          this.setState({ confirmedTaskDoc: data.ConfirmedTaskFile });
+          this.setState({ confirmedTaskDocExtir: data.ConfirmedTaskFileExt });
+          this.setState({ titleDocumentDoc: data.TitleDocumentFile });
+          this.setState({ titleDocumentDocExt: data.TitleDocumentFileExt });
           this.setState(function(){
-            var jDate = new Date(data.ApzDate);
             var jDate = new Date(data.ApzDate);
             var curr_date = jDate.getDate();
             var curr_month = jDate.getMonth() + 1;
@@ -243,6 +254,7 @@ export default class Citizen extends React.Component {
 
   };
 
+  // function to download files
   downloadFile(event) {
     var buffer =  event.target.getAttribute("data-file")
     var name =  event.target.getAttribute("data-name");
@@ -419,6 +431,7 @@ export default class Citizen extends React.Component {
       var map = new Map({
         basemap: "topo"
       });
+
       
       var flRedLines = new FeatureLayer({
         url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D1%8B%D0%B5_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B8/FeatureServer",
@@ -603,6 +616,10 @@ export default class Citizen extends React.Component {
               <div className="col-6"><b>Название проекта</b>:</div> <div className="col-6">{this.state.ProjectName}</div>
               <div className="col-6"><b>Адрес проекта</b>:</div> <div className="col-6">{this.state.ProjectAddress}</div>
               <div className="col-6"><b>Дата заявления</b>:</div> <div className="col-6">{this.state.ApzDate}</div>
+              { this.state.personalIdDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Уд. лич./ Реквизиты</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.personalIdDoc} data-name="Уд. лич./Реквизиты" data-ext={this.state.personalIdDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+              { this.state.confirmedTaskDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Утвержденное задание</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.confirmedTaskDoc} data-name="Утвержденное задание" data-ext={this.state.confirmedTaskDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+              { this.state.titleDocumentDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Правоустанавл. документ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.titleDocumentDoc} data-name="Правоустанавл. документ" data-ext={this.state.titleDocumentDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
+              
               { this.state.Status == 1 ? 
                 <div className="col-sm-12"><div class="row"><div className="col-6"><b>АПЗ на базе Опросного листа</b>:</div> <div className="col-6"><a className="text-info pointer" onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>Скачать</a></div></div></div>
                 : ''
@@ -711,8 +728,29 @@ export default class Citizen extends React.Component {
 class ApzForm extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      personalIdFile: null,
+      confirmedTaskFile: null,
+      titleDocumentFile: null
+    }
     
     this.tabSubmission = this.tabSubmission.bind(this);
+    this.onPersonalIdFileChange = this.onPersonalIdFileChange.bind(this);
+    this.onConfirmedTaskFileChange = this.onConfirmedTaskFileChange.bind(this);
+    this.onTitleDocumentFileChange = this.onTitleDocumentFileChange.bind(this);
+  }
+
+  onPersonalIdFileChange(e) {
+    this.setState({ personalIdFile: e.target.files[0] });
+  }
+
+  onConfirmedTaskFileChange(e) {
+    this.setState({ confirmedTaskFile: e.target.files[0] });
+  }
+
+  onTitleDocumentFileChange(e) {
+    this.setState({ titleDocumentFile: e.target.files[0] });
   }
 
   tabSubmission(e) { 
@@ -743,17 +781,44 @@ class ApzForm extends React.Component {
       if (sessionStorage.getItem('tokenInfo')) {
         $.ajax({
           type: 'POST',
-          url: window.url + 'api/Apz/Create',
+          url: window.url + 'api/apz/Create',
           contentType: 'application/json; charset=utf-8',
           beforeSend: function (xhr) {
             xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
           },
           data: JSON.stringify(apzData),
           success: function (data) {
-            //console.log(data);
-            // after form is submitted: calls the function from CitizenComponent to update the list 
-            this.props.updateList(data);
-            alert("Заявка успешно подана");
+            console.log(data);
+            //console.log(this.state.personalIdFile);
+            var formData = new FormData();
+            formData.append('PersonalIdFile', this.state.personalIdFile);
+            formData.append('ConfirmedTaskFile', this.state.confirmedTaskFile);
+            formData.append('TitleDocumentFile', this.state.titleDocumentFile);
+            $.ajax({
+              type: 'POST',
+              url: window.url + 'api/apz/create/upload/' + data.Id ,
+              contentType: false,
+              beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
+              },
+              data: formData,
+              processData: false,
+              success: function (data) {
+                // after form is submitted: calls the function from CitizenComponent to update the list 
+                this.props.updateList(data);
+                alert("Заявка успешно подана");
+              }.bind(this),
+              fail: function (jqXHR) {
+                alert("Ошибка " + jqXHR.status + ': ' + jqXHR.statusText);
+              },
+              statusCode: {
+                400: function () {
+                  alert("При сохранении заявки произошла ошибка!");
+                }
+              },
+              complete: function (jqXHR) {
+              }
+            });
             $('#tab0-form')[0].reset();
             $('#tab1-form')[0].reset();
             $('#tab2-form')[0].reset();
@@ -780,7 +845,6 @@ class ApzForm extends React.Component {
       } else { console.log('session expired'); }
     } else { alert('Сохранены не все вкладки'); }
   }
-
 
   render() {
     return (
@@ -811,6 +875,11 @@ class ApzForm extends React.Component {
                   <label htmlFor="Applicant">Наименование заявителя:</label>
                   <input type="text" className="form-control" required name="Applicant" placeholder="Наименование" />
                   <span className="help-block">Ф.И.О. (при его наличии) физического лица <br />или наименование юридического лица</span>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="PersonalIdFile">Прикрепить личные данные</label>
+                  <input type="file" required name="PersonalIdFile" className="form-control" onChange={this.onPersonalIdFileChange}/>
+                  <span className="help-block">Удостверение личности (физ. лица) <br />или Реквизиты (юр. лица)</span>
                 </div>
                 <div className="form-group">
                   <label htmlFor="Address">Адрес:</label>
@@ -850,6 +919,16 @@ class ApzForm extends React.Component {
                   <div className="form-group">
                     <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
                     <input type="text" required className="form-control" name="ProjectAddress" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="ConfirmedTaskFile">Прикрепить файл</label>
+                    <input type="file" required name="ConfirmedTaskFile" className="form-control" onChange={this.onConfirmedTaskFileChange} />
+                    <span className="help-block">Утвержденное задание на проектирование</span>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="TitleDocumentFile">Прикрепить файл</label>
+                    <input type="file" required name="TitleDocumentFile" className="form-control" onChange={this.onTitleDocumentFileChange} />
+                    <span className="help-block">Правоустанавливающий документ на земельный участок</span>
                   </div>
                   {/*<div className="form-group">
                     <label htmlFor="ApzDate">Дата</label>
