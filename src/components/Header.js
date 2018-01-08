@@ -141,12 +141,12 @@ export default class Header extends Component {
               <li className="nav-item">
                 <NavLink to={'/Map'} replace className="nav-link">{e.map}</NavLink>
               </li>
-              <li className="nav-item">
+              {/*<li className="nav-item">
                 <NavLink to={'/Photos'} replace className="nav-link">{e.photos}</NavLink>
               </li>
               <li className="nav-item">
                 <NavLink to={'/project'} replace className="nav-link">{e.project}</NavLink>
-              </li>
+              </li>*/}
               <li className="nav-item dropdown">
                 <button className="nav-link dropdown-toggle" style={navBtnStyle} href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" >
                   {e.services}

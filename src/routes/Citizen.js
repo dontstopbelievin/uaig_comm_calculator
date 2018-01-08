@@ -57,7 +57,7 @@ export default class Citizen extends React.Component {
     this.getStatusForArch = this.getStatusForArch.bind(this);
     this.getStatusForHeadArch = this.getStatusForHeadArch.bind(this);
     this.getStatusForProvider = this.getStatusForProvider.bind(this);
-    this.showStepBarOrText = this.showStepBarOrText.bind(this);
+    //this.showStepBarOrText = this.showStepBarOrText.bind(this);
     this.toggleResponseText = this.toggleResponseText.bind(this);
     this.hideStatusBar = this.hideStatusBar.bind(this);
   }
@@ -355,12 +355,12 @@ export default class Citizen extends React.Component {
   }
 
   // function to show StepBar or ResponseMessages
-  showStepBarOrText(status){
-    if(status === 0)
-      return false;
-    else
-      return true;
-  }
+  // showStepBarOrText(status){
+  //   if(status === 0)
+  //     return false;
+  //   else
+  //     return true;
+  // }
 
   //
   hideStatusBar() {
@@ -417,7 +417,7 @@ export default class Citizen extends React.Component {
   createMap(element){
     console.log(this.refs)
     esriLoader.dojoRequire([
-      "esri/views/SceneView",
+      "esri/views/MapView",
       "esri/widgets/LayerList",
       "esri/WebScene",
       "esri/layers/FeatureLayer",
@@ -426,7 +426,7 @@ export default class Citizen extends React.Component {
       "esri/Map",
       "dojo/domReady!"
     ], function(
-      SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
+      MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
     ) {
       var map = new Map({
         basemap: "topo"
@@ -455,7 +455,7 @@ export default class Citizen extends React.Component {
       map.add(flGosAkts);
       */
       
-      var view = new SceneView({
+      var view = new MapView({
         container: element,
         map: map,
         center: [76.886, 43.250], // lon, lat
@@ -620,35 +620,30 @@ export default class Citizen extends React.Component {
               { this.state.confirmedTaskDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Утвержденное задание</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.confirmedTaskDoc} data-name="Утвержденное задание" data-ext={this.state.confirmedTaskDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
               { this.state.titleDocumentDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Правоустанавл. документ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.titleDocumentDoc} data-name="Правоустанавл. документ" data-ext={this.state.titleDocumentDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
               
-              { this.state.Status == 1 ? 
-                <div className="col-sm-12"><div class="row"><div className="col-6"><b>АПЗ на базе Опросного листа</b>:</div> <div className="col-6"><a className="text-info pointer" onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>Скачать</a></div></div></div>
+              { this.state.Status === 1 ? ''
                 : ''
               }
               
               { this.state.headResponseFile ? 
                 <div className="col-sm-12 head_result">
-                  { this.state.Status != 0 ? 
-                    <div class="row">
-                      <div className="col-6"><b>Готовое АПЗ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.headResponseFile} data-name="Готовое АПЗ" data-ext={this.state.headResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
-                    </div>
+                  { this.state.Status !== 0 ? 
+                    <div className="row">
+                      <div className="col-6"><b>АПЗ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.headResponseFile} data-name="АПЗ" data-ext={this.state.headResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      <br />
+                      <div className="col-6"><b>АПЗ на базе Опросного листа</b>:</div> <div className="col-6"><a className="text-info pointer" style={{position: 'absolute', bottom: '0'}} onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>Скачать</a></div>
+                      </div>
                     :
-                    <div class="row">
+                    <div className="row">
                       <div className="col-6"><b>Мотивированный отказ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.headResponseFile} data-name="Мотивированный отказ" data-ext={this.state.headResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
                     </div>
                   }
                 </div> : ''
               }
-              
-              <button className="btn btn-raised btn-info" 
-                      style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}
-                      onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>
-                Распечатать АПЗ
-              </button>
             </div>
           </div>
         </div>
         <div className={this.state.showStatusBar ? 'row' : 'invisible'}>
-          <div className={this.showStepBarOrText(this.state.Status) ? 'row statusBar' : 'invisible'}>
+          <div className="row statusBar">
             {/*<div id="infoDiv">Нажмите на участок или объект, чтобы получить информацию</div>*/}
             {/*<div id="viewDiv"></div>*/}
             <div className="progressBar">
@@ -699,7 +694,7 @@ export default class Citizen extends React.Component {
               <div className="col-2"></div>
             </div>
           </div>
-          <div className={!this.showStepBarOrText(this.state.Status) ? 'allResponseText' : 'invisible'}>
+          {/*<div className={!this.showStepBarOrText(this.state.Status) ? 'allResponseText' : 'invisible'}>
             <div className={this.toggleResponseText(this.state.regionResponse) ? 'responseText' : 'invisible'}>
               {this.state.regionResponse}
             </div>
@@ -718,7 +713,7 @@ export default class Citizen extends React.Component {
             <div className={this.toggleResponseText(this.state.headResponse) ? 'responseText' : 'invisible'}>
               {this.state.headResponse}
             </div>
-          </div>
+          </div>*/}
         </div>
       </div>
     )

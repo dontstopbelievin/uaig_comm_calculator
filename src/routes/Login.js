@@ -318,7 +318,7 @@ export default class Login extends Component {
         } 
         else if(xhr.status === 400) {
           this.setState({loadingVisible: false});
-          alert("The user name or password is incorrect.");
+          alert("Вы ввели неверный логин и/или пароль.");
         }
       }.bind(this);
       xhr.send(params);

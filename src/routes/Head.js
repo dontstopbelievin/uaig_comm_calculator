@@ -135,7 +135,7 @@ export default class Head extends React.Component {
           return { ApzDate: formated_date }
         });
 
-        if ([data.WaterResponse, data.ElectroResponse, data.HeatResponse, data.GasResponse].indexOf(false) == -1) {
+        if ([data.WaterResponse, data.ElectroResponse, data.HeatResponse, data.GasResponse].indexOf(false) === -1) {
           this.setState({ response: true });
         }
       }
@@ -501,12 +501,12 @@ export default class Head extends React.Component {
                 { this.state.waterDoc ? 
                   <div className="col-sm-12">
                     { this.state.waterResponse ?
-                      <div class="row">
+                      <div className="row">
                         <div className="col-6"><b>ТУ Вода</b>:</div> 
                         <div className="col-6"><a className="text-info pointer" data-file={this.state.waterDoc} data-name="ТУ Вода" data-ext={this.state.waterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
                       </div>
                       :
-                      <div class="row">
+                      <div className="row">
                         <div className="col-6"><b>МО Вода</b>:</div> 
                         <div className="col-6"><a className="text-info pointer" data-file={this.state.waterDoc} data-name="МО Вода" data-ext={this.state.waterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
                       </div>
@@ -516,12 +516,12 @@ export default class Head extends React.Component {
                 { this.state.heatDoc ? 
                   <div className="col-sm-12">
                     { this.state.heatResponse ?
-                      <div class="row">
+                      <div className="row">
                         <div className="col-6"><b>ТУ Тепло</b>:</div> 
                         <div className="col-6"><a className="text-info pointer" data-file={this.state.heatDoc} data-name="ТУ Вода" data-ext={this.state.heatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
                       </div>
                       :
-                      <div class="row">
+                      <div className="row">
                         <div className="col-6"><b>МО Тепло</b>:</div> 
                         <div className="col-6"><a className="text-info pointer" data-file={this.state.heatDoc} data-name="МО Вода" data-ext={this.state.heatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
                       </div>
@@ -530,12 +530,12 @@ export default class Head extends React.Component {
                 { this.state.electroDoc ? 
                   <div className="col-sm-12">
                     { this.state.electroResponse ?
-                      <div class="row">
+                      <div className="row">
                         <div className="col-6"><b>ТУ Электро</b>:</div> 
                         <div className="col-6"><a className="text-info pointer" data-file={this.state.electroDoc} data-name="ТУ Вода" data-ext={this.state.electroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
                       </div>
                       :
-                      <div class="row">
+                      <div className="row">
                         <div className="col-6"><b>МО Электро</b>:</div> 
                         <div className="col-6"><a className="text-info pointer" data-file={this.state.electroDoc} data-name="МО Вода" data-ext={this.state.electroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
                       </div>
@@ -544,12 +544,12 @@ export default class Head extends React.Component {
                 { this.state.gasDoc ? 
                   <div className="col-sm-12">
                     { this.state.gasResponse ?
-                      <div class="row">
+                      <div className="row">
                         <div className="col-6"><b>ТУ Газ</b>:</div> 
                         <div className="col-6"><a className="text-info pointer" data-file={this.state.gasDoc} data-name="ТУ Вода" data-ext={this.state.gasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
                       </div>
                       :
-                      <div class="row">
+                      <div className="row">
                         <div className="col-6"><b>МО Газ</b>:</div> 
                         <div className="col-6"><a className="text-info pointer" data-file={this.state.gasDoc} data-name="МО Вода" data-ext={this.state.gasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
                       </div>
