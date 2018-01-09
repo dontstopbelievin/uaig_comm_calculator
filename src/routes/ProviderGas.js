@@ -1,5 +1,5 @@
 import React from 'react';
-import * as esriLoader from 'esri-loader';
+//import * as esriLoader from 'esri-loader';
 //import { NavLink } from 'react-router-dom';
 
 export default class ProviderGas extends React.Component {
@@ -23,6 +23,11 @@ export default class ProviderGas extends React.Component {
       ProjectAddress: "",
       ApzDate: "",
       gGen: 0, gCook: 0, gHeat: 0, gVen: 0, gCon: 0, gWater: 0,
+      connectionPoint: "",
+      gasPipeDiameter: 0,
+      assumedCapacity: 0,
+      reconsideration: "",
+      docNumber: "",
       description: "",
       file: [],
       personalIdDoc: null,
@@ -34,8 +39,33 @@ export default class ProviderGas extends React.Component {
     }
 
     this.getApzFormList = this.getApzFormList.bind(this);
+    this.onConnectionPointChange = this.onConnectionPointChange.bind(this);
+    this.onGasPipeDiameterChange = this.onGasPipeDiameterChange.bind(this);
+    this.onAssumedCapacityChange = this.onAssumedCapacityChange.bind(this);
+    this.onReconsiderationChange = this.onReconsiderationChange.bind(this);
+    this.onDocNumberChange = this.onDocNumberChange.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
+  }
+
+  onConnectionPointChange(e) {
+    this.setState({ connectionPoint: e.target.value });
+  }
+
+  onGasPipeDiameterChange(e) {
+    this.setState({ gasPipeDiameter: e.target.value });
+  }
+
+  onAssumedCapacityChange(e) {
+    this.setState({ assumedCapacity: e.target.value });
+  }
+
+  onReconsiderationChange(e) {
+    this.setState({ reconsideration: e.target.value });
+  }
+
+  onDocNumberChange(e) {
+    this.setState({ docNumber: e.target.value });
   }
 
   onDescriptionChange(e) {
@@ -191,6 +221,11 @@ export default class ProviderGas extends React.Component {
     formData.append('file', file);
     formData.append('Response', status);
     formData.append('Message', comment);
+    formData.append('ConnectionPoint', this.state.connectionPoint);
+    formData.append('GasPipeDiameter', this.state.gasPipeDiameter);
+    formData.append('AssumedCapacity', this.state.assumedCapacity);
+    formData.append('Reconsideration', this.state.reconsideration);
+    formData.append('DocNumber', this.state.docNumber);
 
     var tempAccForms = this.state.acceptedForms;
     var tempDecForms = this.state.declinedForms;
@@ -279,110 +314,110 @@ export default class ProviderGas extends React.Component {
     saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
   }
 
-  createMap(element){
-    if(sessionStorage.getItem('tokenInfo')){ 
-      console.log(this.refs);
+  // createMap(element){
+  //   if(sessionStorage.getItem('tokenInfo')){ 
+  //     console.log(this.refs);
 
-      esriLoader.dojoRequire([
-      "esri/views/SceneView",
-      "esri/widgets/LayerList",
-      "esri/WebScene",
-      "esri/layers/FeatureLayer",
-      "esri/layers/TileLayer",
-      "esri/widgets/Search",
-      "esri/Map",
-      "dojo/domReady!"
-    ], function(
-        SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
-      ) {
-        var map = new Map({
-          basemap: "topo"
-        });
+  //     esriLoader.dojoRequire([
+  //     "esri/views/SceneView",
+  //     "esri/widgets/LayerList",
+  //     "esri/WebScene",
+  //     "esri/layers/FeatureLayer",
+  //     "esri/layers/TileLayer",
+  //     "esri/widgets/Search",
+  //     "esri/Map",
+  //     "dojo/domReady!"
+  //   ], function(
+  //       SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
+  //     ) {
+  //       var map = new Map({
+  //         basemap: "topo"
+  //       });
         
-        var gasLines = new FeatureLayer({
-          url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%A2%D1%80%D1%83%D0%B1%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D1%8B_%D0%B3%D0%B0%D0%B7%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F/FeatureServer",
-          outFields: ["*"],
-          title: "Трубопроводы газоснабжения"
-        });
-        map.add(gasLines);
+  //       var gasLines = new FeatureLayer({
+  //         url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%A2%D1%80%D1%83%D0%B1%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D1%8B_%D0%B3%D0%B0%D0%B7%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F/FeatureServer",
+  //         outFields: ["*"],
+  //         title: "Трубопроводы газоснабжения"
+  //       });
+  //       map.add(gasLines);
 
-        var gasLineSafetyZone = new FeatureLayer({
-          url: 'https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%9E%D1%85%D1%80%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F_%D0%B7%D0%BE%D0%BD%D0%B0_%D0%B3%D0%B0%D0%B7%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D0%B0/FeatureServer',
-          outFields: ["*"],
-          title: "Охранная зона газопровода"
-        });
-        map.add(gasLineSafetyZone);
+  //       var gasLineSafetyZone = new FeatureLayer({
+  //         url: 'https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%9E%D1%85%D1%80%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F_%D0%B7%D0%BE%D0%BD%D0%B0_%D0%B3%D0%B0%D0%B7%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D0%B0/FeatureServer',
+  //         outFields: ["*"],
+  //         title: "Охранная зона газопровода"
+  //       });
+  //       map.add(gasLineSafetyZone);
         
-        var flGosAkts = new FeatureLayer({
-          url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-          outFields: ["*"],
-          title: "Гос акты"
-        });
-        map.add(flGosAkts);
+  //       var flGosAkts = new FeatureLayer({
+  //         url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+  //         outFields: ["*"],
+  //         title: "Гос акты"
+  //       });
+  //       map.add(flGosAkts);
 
-        var view = new SceneView({
-          container: element,
-          map: map,
-          center: [76.886, 43.250], // lon, lat
-          scale: 10000
-        });
+  //       var view = new SceneView({
+  //         container: element,
+  //         map: map,
+  //         center: [76.886, 43.250], // lon, lat
+  //         scale: 10000
+  //       });
         
-        var searchWidget = new Search({
-          view: view,
-          sources: [{
-            featureLayer: new FeatureLayer({
-              url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-              popupTemplate: { // autocasts as new PopupTemplate()
-                title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
-              }
-            }),
-            searchFields: ["CADASTRAL_NUMBER"],
-            displayField: "CADASTRAL_NUMBER",
-            exactMatch: false,
-            outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
-            name: "Зарегистрированные государственные акты",
-            placeholder: "Кадастровый поиск"
-          }]
-        });
-        // Add the search widget to the top right corner of the view
-        view.ui.add(searchWidget, {
-          position: "top-right"
-        });
+  //       var searchWidget = new Search({
+  //         view: view,
+  //         sources: [{
+  //           featureLayer: new FeatureLayer({
+  //             url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+  //             popupTemplate: { // autocasts as new PopupTemplate()
+  //               title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
+  //             }
+  //           }),
+  //           searchFields: ["CADASTRAL_NUMBER"],
+  //           displayField: "CADASTRAL_NUMBER",
+  //           exactMatch: false,
+  //           outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
+  //           name: "Зарегистрированные государственные акты",
+  //           placeholder: "Кадастровый поиск"
+  //         }]
+  //       });
+  //       // Add the search widget to the top right corner of the view
+  //       view.ui.add(searchWidget, {
+  //         position: "top-right"
+  //       });
         
         
-        view.then(function() {
-          var layerList = new LayerList({
-            view: view
-          });
+  //       view.then(function() {
+  //         var layerList = new LayerList({
+  //           view: view
+  //         });
 
-          // Add widget to the bottom right corner of the view
-          view.ui.add(layerList, "bottom-right");
-        });     
-      });
-    }
-  }
+  //         // Add widget to the bottom right corner of the view
+  //         view.ui.add(layerList, "bottom-right");
+  //       });     
+  //     });
+  //   }
+  // }
 
-  onReference(element) {
-    if(sessionStorage.getItem('tokenInfo')){
-      console.log('mounted');
-      if(!esriLoader.isLoaded()) {
-        esriLoader.bootstrap(
-          err => {
-            if(err) {
-              console.log(err);
-            } else {
-              this.createMap(element);
-            }
-          },
-          {
-            url: "https://js.arcgis.com/4.5/"
-          }
-        );
-      } else {
-        this.createMap(element);
-      }
-    }
-  }
+  // onReference(element) {
+  //   if(sessionStorage.getItem('tokenInfo')){
+  //     console.log('mounted');
+  //     if(!esriLoader.isLoaded()) {
+  //       esriLoader.bootstrap(
+  //         err => {
+  //           if(err) {
+  //             console.log(err);
+  //           } else {
+  //             this.createMap(element);
+  //           }
+  //         },
+  //         {
+  //           url: "https://js.arcgis.com/4.5/"
+  //         }
+  //       );
+  //     } else {
+  //       this.createMap(element);
+  //     }
+  //   }
+  // }
 
   componentWillMount() {
     //console.log("ProviderComponent will mount");
@@ -472,11 +507,11 @@ export default class ProviderGas extends React.Component {
             </div>
             <div className="col-md-6 apz-additional card" style={{padding:'0'}}>
               <div className="col-md-12 well" style={{padding:'0', height:'600px', width:'100%'}}>
-                  <div className="viewDivProvider" ref={this.onReference.bind(this)}>
+                  {/*<div className="viewDivProvider" ref={this.onReference.bind(this)}>
                     <div className="container">
                       <p>Загрузка...</p>
                     </div>
-                  </div>
+                  </div>*/}
               </div>
             </div>
             <div id="apz-detailed" className="col-md-3 apz-detailed card" style={{paddingTop: '10px'}}>
@@ -504,26 +539,65 @@ export default class ProviderGas extends React.Component {
                   <div className="col-7"><b>Горячее водоснаб. (м<sup>3</sup>/час)</b>:</div><div className="col-5">{this.state.gWater}</div>
                 </div>
 
-                <button className="btn btn-raised btn-info" 
-                      style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}
-                      onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>
-                  Распечатать АПЗ
-                </button>
-
-                <div className={this.state.showButtons ? 'col-sm-12 mt-2' : 'invisible'}>
-                  <label htmlFor="upload_file">Файл</label>
-                  <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
-                </div>
-
                 <div className={this.state.showButtons ? 'btn-group' : 'invisible'} role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
-                          onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, true, "your form was accepted")}>
+                          data-toggle="modal" data-target="#AcceptApzForm">
                     Одобрить
                   </button>
-                  <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
+                  <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#DeclineApzForm">
                     Отклонить
                   </button>
-                  <div className="modal fade" id="accDecApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                  <div className="modal fade" id="AcceptApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                    <div className="modal-dialog" role="document">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title">Одобрение Заявки</h5>
+                          <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div className="modal-body">
+                          <div className="form-group">
+                            <label htmlFor="pname">Наименование объекта</label>
+                            <input type="text" className="form-control" id="pname" placeholder="Название" value={this.state.ProjectName} />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="adress">Адрес объекта</label>
+                            <input type="text" className="form-control" id="adress" placeholder="Адрес" value={this.state.ProjectAddress} />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="connectionPoint">Точка подключения</label>
+                            <input type="text" className="form-control" id="connectionPoint" placeholder="" value={this.state.connectionPoint} onChange={this.onConnectionPointChange} />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="gasPipeDiameter">Диаметр газопровода (мм)</label>
+                            <input type="number" className="form-control" id="gasPipeDiameter" placeholder="" value={this.state.gasPipeDiameter} onChange={this.onGasPipeDiameterChange} />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="assumedCapacity">Предполагаемый объем (м<sup>3</sup>/час)</label>
+                            <input type="number" className="form-control" id="assumedCapacity" placeholder="" value={this.state.assumedCapacity} onChange={this.onAssumedCapacityChange} />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="reconsideration">Предусмотреть</label>
+                            <textarea rows="5" id="reconsideration" className="form-control" value={this.state.reconsideration} onChange={this.onReconsiderationChange} placeholder="Описание"></textarea>
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="docNumber">Номер документа</label>
+                            <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="upload_file">Прикрепить файл</label>
+                            <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                          </div>
+                        </div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, true, "your form was accepted")}>Отправить</button>
+                          <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="modal fade" id="DeclineApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
                     <div className="modal-dialog" role="document">
                       <div className="modal-content">
                         <div className="modal-header">
@@ -535,6 +609,10 @@ export default class ProviderGas extends React.Component {
                         <div className="modal-body">
                           <div className="form-group">
                             <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="upload_file">Прикрепить файл</label>
+                            <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
                           </div>
                         </div>
                         <div className="modal-footer">

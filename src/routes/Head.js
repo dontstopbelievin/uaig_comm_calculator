@@ -1,5 +1,5 @@
 import React from 'react';
-import * as esriLoader from 'esri-loader';
+//import * as esriLoader from 'esri-loader';
 //import { NavLink } from 'react-router-dom';
 
 export default class Head extends React.Component {
@@ -21,6 +21,11 @@ export default class Head extends React.Component {
       ProjectName: "",
       ProjectAddress: "",
       ApzDate: "",
+      connectionPoint: "",
+      gasPipeDiameter: 0,
+      assumedCapacity: 0,
+      reconsideration: "",
+      docNumber: "",
       description: "",
       file: [],
       waterDoc: null,
@@ -41,12 +46,20 @@ export default class Head extends React.Component {
       confirmedTaskDoc: null,
       confirmedTaskDocExt: null,
       titleDocumentDoc: null,
-      titleDocumentDocExt: null
+      titleDocumentDocExt: null,
+      showGasDetail: false,
+      showWaterDetail: false,
+      showElectroDetail: false,
+      showHeatDetail: false
     }
 
     this.getApzFormList = this.getApzFormList.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
+    this.toggleGasDetail = this.toggleGasDetail.bind(this);
+    this.toggleWaterDetail = this.toggleWaterDetail.bind(this);
+    this.toggleElectroDetail = this.toggleElectroDetail.bind(this);
+    this.toggleHeatDetail = this.toggleHeatDetail.bind(this);
   }
 
   onDescriptionChange(e) {
@@ -55,6 +68,30 @@ export default class Head extends React.Component {
 
   onFileChange(e) {
     this.setState({ file: e.target.files[0] });
+  }
+
+  toggleGasDetail() {
+    this.setState({
+      showGasDetail: !this.state.showGasDetail
+    })
+  }
+
+  toggleWaterDetail() {
+    this.setState({
+      showWaterDetail: !this.state.showWaterDetail
+    })
+  }
+
+  toggleElectroDetail() {
+    this.setState({
+      showElectroDetail: !this.state.showElectroDetail
+    })
+  }
+
+  toggleHeatDetail() {
+    this.setState({
+      showHeatDetail: !this.state.showHeatDetail
+    })
   }
 
   // get the list of apz forms
@@ -126,6 +163,11 @@ export default class Head extends React.Component {
         this.setState({ confirmedTaskDocExtir: data.ConfirmedTaskFileExt });
         this.setState({ titleDocumentDoc: data.TitleDocumentFile });
         this.setState({ titleDocumentDocExt: data.TitleDocumentFileExt });
+        this.setState({ connectionPoint: data.ConnectionPoint });
+        this.setState({ gasPipeDiameter: data.GasPipeDiameter });
+        this.setState({ assumedCapacity: data.AssumedCapacity });
+        this.setState({ reconsideration: data.Reconsideration });
+        this.setState({ docNumber: data.DocNumber });
         this.setState(function(){
           var jDate = new Date(data.ApzDate);
           var curr_date = jDate.getDate();
@@ -282,96 +324,96 @@ export default class Head extends React.Component {
     saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
   }
 
-  createMap(element){
-    if(sessionStorage.getItem('tokenInfo')){ 
-      console.log(this.refs);
+  // createMap(element){
+  //   if(sessionStorage.getItem('tokenInfo')){ 
+  //     console.log(this.refs);
 
-      esriLoader.dojoRequire([
-      "esri/views/SceneView",
-      "esri/widgets/LayerList",
-      "esri/WebScene",
-      "esri/layers/FeatureLayer",
-      "esri/layers/TileLayer",
-      "esri/widgets/Search",
-      "esri/Map",
-      "dojo/domReady!"
-    ], function(
-        SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
-      ) {
-        var map = new Map({
-          basemap: "topo"
-        });
+  //     esriLoader.dojoRequire([
+  //     "esri/views/SceneView",
+  //     "esri/widgets/LayerList",
+  //     "esri/WebScene",
+  //     "esri/layers/FeatureLayer",
+  //     "esri/layers/TileLayer",
+  //     "esri/widgets/Search",
+  //     "esri/Map",
+  //     "dojo/domReady!"
+  //   ], function(
+  //       SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
+  //     ) {
+  //       var map = new Map({
+  //         basemap: "topo"
+  //       });
         
-        var flGosAkts = new FeatureLayer({
-          url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-          outFields: ["*"],
-          title: "Гос акты"
-        });
-        map.add(flGosAkts);
+  //       var flGosAkts = new FeatureLayer({
+  //         url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+  //         outFields: ["*"],
+  //         title: "Гос акты"
+  //       });
+  //       map.add(flGosAkts);
 
-        var view = new SceneView({
-          container: element,
-          map: map,
-          center: [76.886, 43.250], // lon, lat
-          scale: 10000
-        });
+  //       var view = new SceneView({
+  //         container: element,
+  //         map: map,
+  //         center: [76.886, 43.250], // lon, lat
+  //         scale: 10000
+  //       });
         
-        var searchWidget = new Search({
-          view: view,
-          sources: [{
-            featureLayer: new FeatureLayer({
-              url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-              popupTemplate: { // autocasts as new PopupTemplate()
-                title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
-              }
-            }),
-            searchFields: ["CADASTRAL_NUMBER"],
-            displayField: "CADASTRAL_NUMBER",
-            exactMatch: false,
-            outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
-            name: "Зарегистрированные государственные акты",
-            placeholder: "Кадастровый поиск"
-          }]
-        });
-        // Add the search widget to the top right corner of the view
-        view.ui.add(searchWidget, {
-          position: "top-right"
-        });
+  //       var searchWidget = new Search({
+  //         view: view,
+  //         sources: [{
+  //           featureLayer: new FeatureLayer({
+  //             url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+  //             popupTemplate: { // autocasts as new PopupTemplate()
+  //               title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
+  //             }
+  //           }),
+  //           searchFields: ["CADASTRAL_NUMBER"],
+  //           displayField: "CADASTRAL_NUMBER",
+  //           exactMatch: false,
+  //           outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
+  //           name: "Зарегистрированные государственные акты",
+  //           placeholder: "Кадастровый поиск"
+  //         }]
+  //       });
+  //       // Add the search widget to the top right corner of the view
+  //       view.ui.add(searchWidget, {
+  //         position: "top-right"
+  //       });
         
         
-        view.then(function() {
-          var layerList = new LayerList({
-            view: view
-          });
+  //       view.then(function() {
+  //         var layerList = new LayerList({
+  //           view: view
+  //         });
 
-          // Add widget to the bottom right corner of the view
-          view.ui.add(layerList, "bottom-right");
-        });     
-      });
-    }
-  }
+  //         // Add widget to the bottom right corner of the view
+  //         view.ui.add(layerList, "bottom-right");
+  //       });     
+  //     });
+  //   }
+  // }
 
-  onReference(element) {
-    if(sessionStorage.getItem('tokenInfo')){
-      console.log('mounted');
-      if(!esriLoader.isLoaded()) {
-        esriLoader.bootstrap(
-          err => {
-            if(err) {
-              console.log(err);
-            } else {
-              this.createMap(element);
-            }
-          },
-          {
-            url: "https://js.arcgis.com/4.5/"
-          }
-        );
-      } else {
-        this.createMap(element);
-      }
-    }
-  }
+  // onReference(element) {
+  //   if(sessionStorage.getItem('tokenInfo')){
+  //     console.log('mounted');
+  //     if(!esriLoader.isLoaded()) {
+  //       esriLoader.bootstrap(
+  //         err => {
+  //           if(err) {
+  //             console.log(err);
+  //           } else {
+  //             this.createMap(element);
+  //           }
+  //         },
+  //         {
+  //           url: "https://js.arcgis.com/4.5/"
+  //         }
+  //       );
+  //     } else {
+  //       this.createMap(element);
+  //     }
+  //   }
+  // }
 
   componentWillMount() {
     //console.log("HeadComponent will mount");
@@ -468,15 +510,12 @@ export default class Head extends React.Component {
             </div>
             <div className="col-md-6 apz-additional card" style={{padding:'0'}}>
               <div className="col-md-12 well" style={{padding:'0', height:'600px', width:'100%'}}>
-                  <div className="viewDivHead" ref={this.onReference.bind(this)}>
+                  {/*<div className="viewDivHead" ref={this.onReference.bind(this)}>
                     <div className="container">
                       <p>Загрузка...</p>
                     </div>
-                  </div>
+                  </div>*/}
               </div>
-              {/*<button class="btn-block btn-info col-md-3" id="printApz">
-                Распечатать АПЗ
-              </button>*/}
             </div>
             <div id="apz-detailed" className="col-md-3 apz-detailed card" style={{paddingTop: '10px'}}>
               <div className={this.state.showDetails ? 'row' : 'invisible'}>
@@ -492,23 +531,37 @@ export default class Head extends React.Component {
                 { this.state.confirmedTaskDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Утвержденное задание</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.confirmedTaskDoc} data-name="Утвержденное задание" data-ext={this.state.confirmedTaskDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
                 { this.state.titleDocumentDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Правоустанавл. документ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.titleDocumentDoc} data-name="Правоустанавл. документ" data-ext={this.state.titleDocumentDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
               
-                <button className="btn btn-raised btn-info" 
+                {/*<button className="btn btn-raised btn-info" 
                       style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}
                       onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>
                   Распечатать АПЗ
-                </button>
+                </button>*/}
 
                 { this.state.waterDoc ? 
                   <div className="col-sm-12">
                     { this.state.waterResponse ?
                       <div className="row">
-                        <div className="col-6"><b>ТУ Вода</b>:</div> 
-                        <div className="col-6"><a className="text-info pointer" data-file={this.state.waterDoc} data-name="ТУ Вода" data-ext={this.state.waterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                        <button className="btn btn-raised btn-info" 
+                                style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
+                                onClick={this.toggleWaterDetail}>
+                          Посмотреть ТУ Вода
+                        </button>
+                        {this.state.showWaterDetail && <div className="row detail">
+                          <div className="col-6"><b>Файл</b>:</div> 
+                          <div className="col-6"><a className="text-info pointer" data-file={this.state.waterDoc} data-name="ТУ Вода" data-ext={this.state.waterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                        </div>}
                       </div>
                       :
                       <div className="row">
-                        <div className="col-6"><b>МО Вода</b>:</div> 
-                        <div className="col-6"><a className="text-info pointer" data-file={this.state.waterDoc} data-name="МО Вода" data-ext={this.state.waterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      <button className="btn btn-raised btn-info" 
+                                style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
+                                onClick={this.toggleWaterDetail}>
+                          Посмотреть ТУ Вода
+                        </button>
+                        {this.state.showWaterDetail && <div className="row detail">
+                          <div className="col-6"><b>МО Вода</b>:</div> 
+                          <div className="col-6"><a className="text-info pointer" data-file={this.state.waterDoc} data-name="МО Вода" data-ext={this.state.waterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                        </div>}
                       </div>
                     }
                     
@@ -517,13 +570,27 @@ export default class Head extends React.Component {
                   <div className="col-sm-12">
                     { this.state.heatResponse ?
                       <div className="row">
-                        <div className="col-6"><b>ТУ Тепло</b>:</div> 
-                        <div className="col-6"><a className="text-info pointer" data-file={this.state.heatDoc} data-name="ТУ Вода" data-ext={this.state.heatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                        <button className="btn btn-raised btn-info" 
+                                style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
+                                onClick={this.toggleHeatDetail}>
+                          Посмотреть ТУ Тепло
+                        </button>
+                        {this.state.showHeatDetail && <div className="row detail">
+                          <div className="col-6"><b>Файл</b>:</div> 
+                          <div className="col-6"><a className="text-info pointer" data-file={this.state.heatDoc} data-name="ТУ Вода" data-ext={this.state.heatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                        </div>}
                       </div>
                       :
                       <div className="row">
-                        <div className="col-6"><b>МО Тепло</b>:</div> 
-                        <div className="col-6"><a className="text-info pointer" data-file={this.state.heatDoc} data-name="МО Вода" data-ext={this.state.heatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      <button className="btn btn-raised btn-info" 
+                                style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
+                                onClick={this.toggleHeatDetail}>
+                          Посмотреть ТУ Тепло
+                        </button>
+                        {this.state.showHeatDetail && <div className="row detail">
+                          <div className="col-6"><b>МО Тепло</b>:</div> 
+                          <div className="col-6"><a className="text-info pointer" data-file={this.state.heatDoc} data-name="МО Вода" data-ext={this.state.heatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                        </div>}
                       </div>
                     }
                   </div> : ''}
@@ -531,13 +598,27 @@ export default class Head extends React.Component {
                   <div className="col-sm-12">
                     { this.state.electroResponse ?
                       <div className="row">
-                        <div className="col-6"><b>ТУ Электро</b>:</div> 
-                        <div className="col-6"><a className="text-info pointer" data-file={this.state.electroDoc} data-name="ТУ Вода" data-ext={this.state.electroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                        <button className="btn btn-raised btn-info" 
+                                style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
+                                onClick={this.toggleElectroDetail}>
+                          Посмотреть ТУ Электро
+                        </button>
+                        {this.state.showElectroDetail && <div className="row detail">
+                          <div className="col-6"><b>Файл</b>:</div> 
+                          <div className="col-6"><a className="text-info pointer" data-file={this.state.electroDoc} data-name="ТУ Вода" data-ext={this.state.electroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                        </div>}
                       </div>
                       :
                       <div className="row">
-                        <div className="col-6"><b>МО Электро</b>:</div> 
-                        <div className="col-6"><a className="text-info pointer" data-file={this.state.electroDoc} data-name="МО Вода" data-ext={this.state.electroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                        <button className="btn btn-raised btn-info" 
+                                style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
+                                onClick={this.toggleElectroDetail}>
+                          Посмотреть ТУ Электро
+                        </button>
+                        {this.state.showElectroDetail && <div className="row detail">
+                          <div className="col-6"><b>МО Электро</b>:</div> 
+                          <div className="col-6"><a className="text-info pointer" data-file={this.state.electroDoc} data-name="МО Вода" data-ext={this.state.electroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                        </div>}
                       </div>
                     }
                   </div> : ''}
@@ -545,16 +626,36 @@ export default class Head extends React.Component {
                   <div className="col-sm-12">
                     { this.state.gasResponse ?
                       <div className="row">
-                        <div className="col-6"><b>ТУ Газ</b>:</div> 
-                        <div className="col-6"><a className="text-info pointer" data-file={this.state.gasDoc} data-name="ТУ Вода" data-ext={this.state.gasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                        <button className="btn btn-raised btn-info" 
+                                style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
+                                onClick={this.toggleGasDetail}>
+                          Посмотреть ТУ Газ
+                        </button>
+                        {this.state.showGasDetail && <div className="row detail">
+                          <div className="col-6"><b>Точка подключения</b>:</div><div className="col-6">{this.state.connectionPoint}</div>
+                          <div className="col-6"><b>Диаметр газопровода (мм)</b>:</div><div className="col-6">{this.state.gasPipeDiameter}</div>
+                          <div className="col-6"><b>Предполагаемый объем (м<sup>3</sup>/час)</b>:</div><div className="col-6">{this.state.assumedCapacity}</div>
+                          <div className="col-6"><b>Предусмотрение</b>:</div><div className="col-6">{this.state.reconsideration}</div>
+                          <div className="col-6"><b>Номер документа</b>:</div><div className="col-6">{this.state.docNumber}</div>
+                          <div className="col-6"><b>Файл</b>:</div> 
+                          <div className="col-6"><a className="text-info pointer" data-file={this.state.gasDoc} data-name="ТУ Вода" data-ext={this.state.gasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                        </div>}
                       </div>
                       :
                       <div className="row">
-                        <div className="col-6"><b>МО Газ</b>:</div> 
-                        <div className="col-6"><a className="text-info pointer" data-file={this.state.gasDoc} data-name="МО Вода" data-ext={this.state.gasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                        <button className="btn btn-raised btn-info" 
+                                style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
+                                onClick={this.toggleGasDetail}>
+                          Посмотреть ТУ Газ
+                        </button>
+                        {this.state.showGasDetail && <div className="row detail">
+                          <div className="col-6"><b>МО Газ</b>:</div> 
+                          <div className="col-6"><a className="text-info pointer" data-file={this.state.gasDoc} data-name="МО Вода" data-ext={this.state.gasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                        </div>}
                       </div>
                     }
-                </div> : ''}
+                  </div> : ''
+                }
                 
                 <div className={this.state.showButtons ? 'col-sm-12 mt-2' : 'invisible'}>
                   <label htmlFor="upload_file">Файл</label>
