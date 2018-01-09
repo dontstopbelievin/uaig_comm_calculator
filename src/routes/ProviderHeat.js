@@ -496,11 +496,11 @@ export default class ProviderHeat extends React.Component {
                   <div className="col-7"><b>Разделить нагрузку</b>:</div><div className="col-5">{this.state.hDist}</div>
                 </div>
 
-                <button className="btn btn-raised btn-info" 
+                {/*<button className="btn btn-raised btn-info" 
                       style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}
                       onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>
                   Распечатать АПЗ
-                </button>
+                </button>*/}
 
                 <div className={this.state.showButtons ? 'col-sm-12 mt-2' : 'invisible'}>
                   <label htmlFor="upload_file">Файл</label>

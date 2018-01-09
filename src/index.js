@@ -5,6 +5,7 @@ import { HashRouter, Route, Switch } from 'react-router-dom';
 import Header from './components/Header';
 import Guest from './routes/Guest';
 import MapView from './routes/Map';
+import Map2dView from './routes/Map2d';
 import Photos from './routes/Photos';
 import Login from './routes/Login';
 import Register from './routes/Register';
@@ -64,6 +65,7 @@ export default class Main extends React.Component {
             <Switch>
               <Route exact path="/" render={(props) => (<Guest {...props} />)} />
               <Route path="/map" render={(props) => (<MapView {...props} />)} />
+              <Route path="/map2d" render={(props) => (<Map2dView {...props} />)} />
               <Route path="/photos" render={(props) => (<Photos {...props} />)} />
               <Route path="/login" render={(props) => (<Login {...props} />)} />
               <Route path="/register" render={(props) => (<Register {...props} />)} />

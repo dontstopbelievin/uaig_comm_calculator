@@ -15,6 +15,9 @@
 .card-body ul li {
 
 }
+.dropdown-menu {
+  right: auto !important;
+}
 
 .bold {
   font-weight: bold;

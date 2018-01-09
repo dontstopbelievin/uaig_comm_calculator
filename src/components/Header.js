@@ -138,8 +138,15 @@ export default class Header extends Component {
               <li className="nav-item">
                 <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
               </li>
+              <li className="nav-item" style={{color: '#e9ecef', padding: '7px 0 0 10px'}}>
+                Карта:
+              </li>
+              <li className="nav-item" style={{color: '#e9ecef', padding: '7px 10px 0 10px'}}>
+                <NavLink to={'/Map'} replace style={{color: '#e9ecef'}}>{e.map}</NavLink>&nbsp;|&nbsp;
+                <NavLink to={'/Map2d'} replace style={{color: '#e9ecef'}} >{e.map2d}</NavLink>
+              </li>
               <li className="nav-item">
-                <NavLink to={'/Map'} replace className="nav-link">{e.map}</NavLink>
+                
               </li>
               {/*<li className="nav-item">
                 <NavLink to={'/Photos'} replace className="nav-link">{e.photos}</NavLink>

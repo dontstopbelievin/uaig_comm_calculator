@@ -492,11 +492,11 @@ export default class Head extends React.Component {
                 { this.state.confirmedTaskDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Утвержденное задание</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.confirmedTaskDoc} data-name="Утвержденное задание" data-ext={this.state.confirmedTaskDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
                 { this.state.titleDocumentDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Правоустанавл. документ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.titleDocumentDoc} data-name="Правоустанавл. документ" data-ext={this.state.titleDocumentDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
               
-                <button className="btn btn-raised btn-info" 
+                {/*<button className="btn btn-raised btn-info" 
                       style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}
                       onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>
                   Распечатать АПЗ
-                </button>
+                </button>*/}
 
                 { this.state.waterDoc ? 
                   <div className="col-sm-12">

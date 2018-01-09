@@ -303,7 +303,7 @@ export default class ProviderWater extends React.Component {
         map.add(waterLineSafetyZone);
 
         var waterResourse = new FeatureLayer({
-          url: 'https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%BE%D0%BD%D0%B0_%D0%BE%D0%B1%D0%B5%D1%81%D0%BF%D0%B5%D1%87%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8_%D0%B2%D0%BE%D0%B4%D0%BD%D1%8B%D0%BC%D0%B8_%D1%80%D0%B5%D1%81%D1%83%D1%80%D1%81%D0%B0%D0%BC%D0%B8/FeatureServer',
+          url: 'http://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%BE%D0%BD%D0%B0_%D0%BE%D0%B1%D0%B5%D1%81%D0%BF%D0%B5%D1%87%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8_%D0%B2%D0%BE%D0%B4%D0%BD%D1%8B%D0%BC%D0%B8_%D1%80%D0%B5%D1%81%D1%83%D1%80%D1%81%D0%B0%D0%BC%D0%B8/FeatureServer',
           outFields: ["*"],
           title: "Зоны обеспеч. водными ресурсами"
         });
@@ -499,11 +499,11 @@ export default class ProviderWater extends React.Component {
                   <div className="col-7"><b>Общ. кол. сточных вод (м<sup>3</sup>/сутки)</b>:</div><div className="col-5">{this.state.wS}</div>
                 </div>
 
-                <button className="btn btn-raised btn-info" 
+                {/*<button className="btn btn-raised btn-info" 
                       style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}
                       onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>
                   Распечатать АПЗ
-                </button>
+                </button>*/}
 
                 <div className={this.state.showButtons ? 'col-sm-12 mt-2' : 'invisible'}>
                   <label htmlFor="upload_file">Файл</label>

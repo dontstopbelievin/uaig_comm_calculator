@@ -297,7 +297,7 @@ export default class ProviderElectro extends React.Component {
         map.add(electroLines);
 
         var electroLinesUnderground = new FeatureLayer({
-          url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%AD%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BA%D0%B0%D0%B1%D0%B5%D0%BB%D0%B8_%D0%BF%D0%BE%D0%B4%D0%B7%D0%B5%D0%BC%D0%BD%D1%8B%D0%B5/FeatureServer",
+          url: "http://gis.uaig.kz/server/rest/services/Hosted/%D0%AD%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BA%D0%B0%D0%B1%D0%B5%D0%BB%D0%B8_%D0%BF%D0%BE%D0%B4%D0%B7%D0%B5%D0%BC%D0%BD%D1%8B%D0%B5/FeatureServer",
           outFields: ["*"],
           title: "Электрокабели подземные"
         });
@@ -508,11 +508,11 @@ export default class ProviderElectro extends React.Component {
                   <div className="col-7"><b>Мощность трансформаторов (кВА)</b>:</div><div className="col-5">{this.state.eAllowedP}</div>
                 </div>
 
-                <button className="btn btn-raised btn-info" 
+                {/*<button className="btn btn-raised btn-info" 
                       style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}
                       onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>
                   Распечатать АПЗ
-                </button>
+                </button>*/}
 
                 <div className={this.state.showButtons ? 'col-sm-12 mt-2' : 'invisible'}>
                   <label htmlFor="upload_file">Файл</label>
