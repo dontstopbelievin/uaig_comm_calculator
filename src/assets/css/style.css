@@ -369,6 +369,7 @@ footer {
 
 .progressBar .circle.done .title {
   color: #444;
+  word-wrap: normal;
 }
 
 .progressBar .circle.active .label {
@@ -379,6 +380,7 @@ footer {
 
 .progressBar .circle.active .title {
   color: #444;
+  word-wrap: normal;
 }
 
 .progressBar .circle.fail {
@@ -387,6 +389,7 @@ footer {
 
 .progressBar .circle.fail .title {
   color: #444;
+  word-wrap: normal;
 }
 
 .progressBar .circle.fail .label {

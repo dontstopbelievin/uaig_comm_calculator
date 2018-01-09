@@ -3,522 +3,10 @@ import * as esriLoader from 'esri-loader';
 import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
-
+import { Route, Link, Switch, Redirect } from 'react-router-dom';
 
 export default class Citizen extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      acceptedForms: [],
-      declinedForms: [],
-      activeForms: [],
-      showDetails: false,
-      showStatusBar: false,
-      formHidden: true,
-      Id: "",
-      Applicant: "",
-      Address: "",
-      Phone: "",
-      Customer: "",
-      Designer: "",
-      ProjectName: "",
-      ProjectAddress: "",
-      ApzDate: "",
-      regionDate: null,
-      headDate: null,
-      Status: 0,
-      regionResponse: null,
-      headResponse: null,
-      wStatus: 7,
-      hStatus: 7,
-      eStatus: 7,
-      gStatus: 7,
-      eActionDate: null,
-      hActionDate: null,
-      gActionDate: null,
-      wActionDate: null,
-      eResponse: null,
-      hResponse: null,
-      gResponse: null,
-      wResponse: null,
-      headResponseFile: null,
-      headResponseFileExt: null,
-      personalIdDoc: null,
-      personalIdDocExt: null,
-      confirmedTaskDoc: null,
-      confirmedTaskDocExt: null,
-      titleDocumentDoc: null,
-      titleDocumentDocExt: null
-    }
-
-    this.getApzFormList = this.getApzFormList.bind(this);
-    this.toggleForm = this.toggleForm.bind(this);
-    this.getStatusForArch = this.getStatusForArch.bind(this);
-    this.getStatusForHeadArch = this.getStatusForHeadArch.bind(this);
-    this.getStatusForProvider = this.getStatusForProvider.bind(this);
-    //this.showStepBarOrText = this.showStepBarOrText.bind(this);
-    this.toggleResponseText = this.toggleResponseText.bind(this);
-    this.hideStatusBar = this.hideStatusBar.bind(this);
-  }
-
-  // function to get the list of ApzForms
-  getApzFormList() {
-    var token = sessionStorage.getItem('tokenInfo');
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/user", true);
-    //Send the proper header information along with the request
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
-        //console.log(data);
-        // filter the whole list to get only accepted apzForms
-        var acc_forms_list = data.filter(function(obj) { return obj.Status === 1; });
-        this.setState({acceptedForms: acc_forms_list});
-        // filter the list to get the declined apzForms
-        var dec_forms_list = data.filter(function(obj) { return obj.Status === 0; });
-        this.setState({declinedForms: dec_forms_list});
-        // filter the list to get in-process apzForms
-        var act_forms_list = data.filter(function(obj) { return (obj.Status !== 0 && obj.Status !== 1); });
-        this.setState({activeForms: act_forms_list});
-      }
-      else if(xhr.status === 401){
-        sessionStorage.clear();
-        alert("Token is expired, please login again!");
-        this.props.history.replace("/login");
-      }
-    }.bind(this);
-    xhr.send();
-  }
-
-  // function to show the detailed info and statusBar for every form
-  getApzDetails(apzId) {
-    var token = sessionStorage.getItem('tokenInfo');
-    if (token) {
-      var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/detail/" + apzId, true);
-      //Send the proper header information along with the request
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-      xhr.send();
-      xhr.onload = function () {
-        if (xhr.status === 200) {
-          var data = JSON.parse(xhr.responseText);
-          console.log(data);
-          // to show minute with two numbers, E.g.: 12:00 instead of 12:0
-          function addZero(i) {
-              if (i < 10) {
-                  i = "0" + i;
-              }
-              return i;
-          }
-          this.setState({ showDetails: true });
-          this.setState({ showStatusBar: true });
-          this.setState({ Id: data.Id });
-          this.setState({ Applicant: data.Applicant });
-          this.setState({ Address: data.Address });
-          this.setState({ Phone: data.Phone });
-          this.setState({ Customer: data.Customer });
-          this.setState({ Designer: data.Designer });
-          this.setState({ ProjectName: data.ProjectName });
-          this.setState({ ProjectAddress: data.ProjectAddress });
-          this.setState({ headResponseFile: data.HeadResponseFile });
-          this.setState({ headResponseFileExt: data.HeadResponseFileExt });
-          this.setState({ personalIdDoc: data.PersonalIdFile });
-          this.setState({ personalIdDocExt: data.PersonalIdFileExt });
-          this.setState({ confirmedTaskDoc: data.ConfirmedTaskFile });
-          this.setState({ confirmedTaskDocExtir: data.ConfirmedTaskFileExt });
-          this.setState({ titleDocumentDoc: data.TitleDocumentFile });
-          this.setState({ titleDocumentDocExt: data.TitleDocumentFileExt });
-          this.setState(function(){
-            var jDate = new Date(data.ApzDate);
-            var curr_date = jDate.getDate();
-            var curr_month = jDate.getMonth() + 1;
-            var curr_year = jDate.getFullYear();
-            var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
-            return { ApzDate: formated_date }
-          });
-          this.setState({ Status: data.Status });
-          this.setState({ wStatus: data.ApzWaterStatus });
-          this.setState({ hStatus: data.ApzHeatStatus });
-          this.setState({ eStatus: data.ApzElectricityStatus });
-          this.setState({ gStatus: data.ApzGasStatus });
-          this.setState(function(){
-            if(data.RegionDate !== null){
-              var jDate = new Date(data.RegionDate);
-              var curr_date = jDate.getDate();
-              var curr_month = jDate.getMonth() + 1;
-              var curr_year = jDate.getFullYear();
-              var curr_hour = jDate.getHours();
-              var curr_minute = addZero(jDate.getMinutes());
-              var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-              return { regionDate: formated_date }
-            }
-            else{
-              return { regionDate: data.RegionDate }
-            } 
-          });
-          this.setState({ regionResponse: data.RegionResponse});
-          this.setState(function(){
-            if(data.HeadDate !== null){
-              var jDate = new Date(data.HeadDate);
-              var curr_date = jDate.getDate();
-              var curr_month = jDate.getMonth() + 1;
-              var curr_year = jDate.getFullYear();
-              var curr_hour = jDate.getHours();
-              var curr_minute = addZero(jDate.getMinutes());
-              var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-              return { headDate: formated_date }
-            }
-            else{
-              return { headDate: data.HeadDate }
-            }
-          });
-          this.setState({ headResponse: data.HeadResponse});
-          this.setState(function(){
-            if(data.ProviderElectricityDate !== null){
-              var jDate = new Date(data.ProviderElectricityDate);
-              var curr_date = jDate.getDate();
-              var curr_month = jDate.getMonth() + 1;
-              var curr_year = jDate.getFullYear();
-              var curr_hour = jDate.getHours();
-              var curr_minute = addZero(jDate.getMinutes());
-              var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-              return { eActionDate: formated_date }
-            }
-            else{
-              return { eActionDate: data.ProviderElectricityDate }
-            }
-          });
-          this.setState({ eResponse: data.ProviderElectricityResponse});
-          this.setState(function(){
-            if(data.ProviderGasDate !== null){
-              var jDate = new Date(data.ProviderGasDate);
-              var curr_date = jDate.getDate();
-              var curr_month = jDate.getMonth() + 1;
-              var curr_year = jDate.getFullYear();
-              var curr_hour = jDate.getHours();
-              var curr_minute = addZero(jDate.getMinutes());
-              var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-              return { gActionDate: formated_date }
-            }
-            else{
-              return { gActionDate: data.ProviderGasDate }
-            }
-          });
-          this.setState({ gResponse: data.ProviderGasResponse});
-          this.setState(function(){
-            if(data.ProviderHeatDate !== null){
-              var jDate = new Date(data.ProviderHeatDate);
-              var curr_date = jDate.getDate();
-              var curr_month = jDate.getMonth() + 1;
-              var curr_year = jDate.getFullYear();
-              var curr_hour = jDate.getHours();
-              var curr_minute = addZero(jDate.getMinutes());
-              var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-              return { hActionDate: formated_date }
-            }
-            else{
-              return { hActionDate: data.ProviderHeatDate }
-            }
-          });
-          this.setState({ hResponse: data.ProviderHeatResponse});
-          this.setState(function(){
-            if(data.ProviderWaterDate !== null){
-              var jDate = new Date(data.ProviderWaterDate);
-              var curr_date = jDate.getDate();
-              var curr_month = jDate.getMonth() + 1;
-              var curr_year = jDate.getFullYear();
-              var curr_hour = jDate.getHours();
-              var curr_minute = addZero(jDate.getMinutes());
-              var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-              return { wActionDate: formated_date }
-            }
-            else{
-              return { wActionDate: data.ProviderWaterDate }
-            }
-          });
-          this.setState({ wResponse: data.ProviderWaterResponse});
-        }
-        else if(xhr.status === 401){
-          sessionStorage.clear();
-          alert("Время сессий истекло, войдите снова!");
-          this.props.history.replace("/login");
-        }
-      }.bind(this);
-    } else {
-      console.log('session expired');
-    }   
-
-  };
-
-  // function to download files
-  downloadFile(event) {
-    var buffer =  event.target.getAttribute("data-file")
-    var name =  event.target.getAttribute("data-name");
-    var ext =  event.target.getAttribute("data-ext");
-
-    var base64ToArrayBuffer = (function () {
-      
-      return function (base64) {
-        var binaryString =  window.atob(base64);
-        var binaryLen = binaryString.length;
-        var bytes = new Uint8Array(binaryLen);
-        
-        for (var i = 0; i < binaryLen; i++)        {
-            var ascii = binaryString.charCodeAt(i);
-            bytes[i] = ascii;
-        }
-        
-        return bytes; 
-      }
-      
-    }());
-
-    var saveByteArray = (function () {
-      var a = document.createElement("a");
-      document.body.appendChild(a);
-      a.style = "display: none";
-      
-      return function (data, name) {
-          var blob = new Blob(data, {type: "octet/stream"}),
-              url = window.URL.createObjectURL(blob);
-          a.href = url;
-          a.download = name;
-          a.click();
-          window.URL.revokeObjectURL(url);
-      };
-
-    }());
-
-    saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
-  }
-
-  // function to print apzForm in .pdf format
-  printApz(apzId, project) {
-    //console.log(apzId);
-    var token = sessionStorage.getItem('tokenInfo');
-    if (token) {
-      var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/print/" + apzId, true);
-      xhr.responseType = "blob";
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.onload = function () {
-        console.log(xhr);
-        console.log(xhr.status);
-        if (xhr.status === 200) {
-          //test of IE
-          if (typeof window.navigator.msSaveBlob === "function") {
-            window.navigator.msSaveBlob(xhr.response, "apz-" + new Date().getTime() + ".pdf");
-          } 
-          else {
-            var blob = xhr.response;
-            var link = document.createElement('a');
-            var today = new Date();
-            var curr_date = today.getDate();
-            var curr_month = today.getMonth() + 1;
-            var curr_year = today.getFullYear();
-            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
-            //console.log(curr_day);
-            link.href = window.URL.createObjectURL(blob);
-            link.download = "апз-" + project + formated_date + ".pdf";
-
-            //append the link to the document body
-            document.body.appendChild(link);
-            link.click();
-          }
-        }
-      }
-      xhr.send();
-    } else {
-      console.log('session expired');
-    }
-  }
-
-  // function to hide/show ApzForm, gets called when button "Создать заявление" is clicked
-  toggleForm(e){
-    this.hideStatusBar();
-    this.setState({
-      formHidden: !this.state.formHidden
-    })
-  }
-
-  // function to update the list of ActiveForms
-  updateActiveFormsList(form) {
-    //console.log("updateOtherForms started")
-    var tempList = this.state.activeForms;
-    tempList.push(form);
-    //console.log(tempList);
-    this.setState({activeForms: tempList});
-  }
-
-  // function to show StepBar or ResponseMessages
-  // showStepBarOrText(status){
-  //   if(status === 0)
-  //     return false;
-  //   else
-  //     return true;
-  // }
-
-  //
-  hideStatusBar() {
-    this.setState({ showStatusBar: false });
-  }
-
-  // function to show responseText if its not null
-  toggleResponseText(response){
-    if(response === null)
-      return false;
-    else
-      return true;
-  }
-
-  // change status for Architect in ProgressBar
-  getStatusForArch(status, rd, rr) {
-    //console.log(status);
-    //console.log(rd);
-    //console.log(rr);
-    if((status === 0 || status === 1 || status === 3 || status === 4) && (rd !== null && rr === null))
-      return 'circle done';
-    else if(status === 0 && (rd !== null && rr !== null))
-      return 'circle fail';
-    else if(status === 2)
-      return 'circle active';
-    else
-      return 'circle';
-  }
-
-  // change status for Providers(water, heat, gas, electricity) in ProgressBar
-  getStatusForProvider(pStatus, status) {
-    if(status === 1)
-      return 'circle done';
-    else if(status === 0)
-      return 'circle fail';
-    else if(pStatus === 3 && status === 2)
-      return 'circle active';
-    else
-      return 'circle';
-  }
-
-  // change status for HeadArchitect in ProgressBar
-  getStatusForHeadArch(status, hd, hr) {
-    if(status === 2 || ((status === 0 || status === 1 || status === 2 || status === 3) && (hd === null && hr === null)))
-      return 'circle';
-    else if(status === 4)
-      return 'circle active';
-    else if(status === 0)
-      return 'circle fail';
-    else
-      return 'circle done';
-  }
-
-  createMap(element){
-    console.log(this.refs)
-    esriLoader.dojoRequire([
-      "esri/views/MapView",
-      "esri/widgets/LayerList",
-      "esri/WebScene",
-      "esri/layers/FeatureLayer",
-      "esri/layers/TileLayer",
-      "esri/widgets/Search",
-      "esri/Map",
-      "dojo/domReady!"
-    ], function(
-      MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
-    ) {
-      var map = new Map({
-        basemap: "topo"
-      });
-
-      
-      var flRedLines = new FeatureLayer({
-        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D1%8B%D0%B5_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B8/FeatureServer",
-        outFields: ["*"],
-        title: "Красные линии"
-      });
-      map.add(flRedLines);
-
-      var flFunZones = new FeatureLayer({
-        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%A4%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B7%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5/FeatureServer",
-        outFields: ["*"],
-        title: "Функциональное зонирование"
-      });
-      map.add(flFunZones);
-      /*
-      var flGosAkts = new FeatureLayer({
-        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-        outFields: ["*"],
-        title: "Гос акты"
-      });
-      map.add(flGosAkts);
-      */
-      
-      var view = new MapView({
-        container: element,
-        map: map,
-        center: [76.886, 43.250], // lon, lat
-        scale: 10000
-      });
-      
-      var searchWidget = new Search({
-        view: view,
-        sources: [{
-          featureLayer: new FeatureLayer({
-            url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-            popupTemplate: { // autocasts as new PopupTemplate()
-              title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
-            }
-          }),
-          searchFields: ["CADASTRAL_NUMBER"],
-          displayField: "CADASTRAL_NUMBER",
-          exactMatch: false,
-          outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
-          name: "Зарегистрированные государственные акты",
-          placeholder: "Кадастровый поиск"
-        }]
-      });
-      // Add the search widget to the top left corner of the view
-      view.ui.add(searchWidget, {
-        position: "top-right"
-      });
-      
-      
-      view.then(function() {
-        var layerList = new LayerList({
-          view: view
-        });
-
-        // Add widget to the top right corner of the view
-        view.ui.add(layerList, "bottom-right");
-      });
-      
-    });
-  }
-
-  onReference(element) {
-    console.log('mounted');
-    if(!esriLoader.isLoaded()) {
-      esriLoader.bootstrap(
-        err => {
-          if(err) {
-            console.log(err);
-          } else {
-            this.createMap(element);
-          }
-        },
-        {
-          url: "https://js.arcgis.com/4.5/"
-        }
-      );
-    } else {
-      this.createMap(element);
-    }
-  }
-
   componentWillMount() {
-    //console.log("CitizenComponent will mount");
     if(sessionStorage.getItem('tokenInfo')){
       var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];
       this.props.history.replace('/' + userRole);
@@ -527,200 +15,98 @@ export default class Citizen extends React.Component {
     }   
   }
 
-  componentDidMount() {
-    //console.log("CitizenComponent did mount");
-    this.getApzFormList();
-  }
-
-  componentWillUnmount() {
-    //console.log("CitizenComponent will unmount");
-  }
-
   render() {
-    //console.log("rendering the CitizenComponent");
-    var acceptedForms = this.state.acceptedForms;
-    var declinedForms = this.state.declinedForms;
-    var activeForms = this.state.activeForms;
-    var updateList = this.updateActiveFormsList.bind(this);
     return (
-      <div className="content container" style={{paddingBottom: '0'}}>
-        <div className="row">
-          <button className="btn btn-raised btn-info" onClick={this.toggleForm} style={{margin: 'auto', marginBottom: '10px'}}>
-            Создать заявление
-          </button>
-          {!this.state.formHidden && <ApzForm updateList={updateList} />}
-        </div>
-        <div className="row">
-          <div className="col-md-3">
-            <h4 style={{textAlign: 'center'}}>Список заявлений</h4>
+      <div className="content container citizen-apz-list-page">
+        <div className="card">
+          <div className="card-header"><h4 className="mb-0">Мои заявки</h4></div>
+          <div className="card-body">
+            <Switch>
+              <Route path="/citizen/all" component={AllApzs} />
+              <Route path="/citizen/add" component={AddApz} />
+              <Route path="/citizen/:id" component={ShowApz} />
+              <Redirect from="/citizen" to="/citizen/all" />
+            </Switch>
           </div>
-          <div className="col-md-6">
-            <h4 style={{textAlign: 'center'}}>Карта</h4>
-          </div>
-          <div className="col-md-3">
-            <h4 style={{textAlign: 'center'}}>Информация</h4>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-3 apz-list card">
-            <h4><span id="in-process">В Процессе</span>
-            {
-              activeForms.map(function(actForm, i){
-                return(
-                  <li key={i} onClick={this.getApzDetails.bind(this, actForm.Id)}>
-                    {actForm.ProjectName}
-                  </li>
-                )
-              }.bind(this))
-            }
-            </h4>
-            <h4><span id="accepted">Принятые</span>
-            {
-              acceptedForms.map(function(accForm, i){
-                return(
-                  <li key={i} onClick={this.getApzDetails.bind(this, accForm.Id)}>
-                    {accForm.ProjectName}
-                  </li>
-                  )
-              }.bind(this))
-            }
-            </h4>
-            <h4><span id="declined">Отказ</span>
-            {
-              declinedForms.map(function(decForm, i){
-                return(
-                  <li key={i} onClick={this.getApzDetails.bind(this, decForm.Id)}>
-                    {decForm.ProjectName}
-                  </li>
-                )
-              }.bind(this))
-            }
-            </h4>
-          </div>
-          <div className="col-md-6 apz-additional card" style={{padding: '0'}}>
-            <div className="col-md-12 well" style={{padding: '0', height:'600px', width:'100%'}}>
-                <div className="viewDivCitizen" ref={this.onReference.bind(this)}>
-                  <div className="container">
-                    <p>Загрузка...</p>
-                  </div>
-                </div>
-            </div>
-          </div>
-          <div id="apz-detailed" className="col-md-3 apz-detailed card" style={{paddingTop: '10px'}}>
-            <div className={this.state.showDetails ? 'row' : 'invisible'}>
-              <div className="col-6"><b>Заявитель</b>:</div> <div className="col-6">{this.state.Applicant}</div>
-              <div className="col-6"><b>Адрес</b>:</div> <div className="col-6">{this.state.Address}</div>
-              <div className="col-6"><b>Телефон</b>:</div> <div className="col-6">{this.state.Phone}</div>
-              <div className="col-6"><b>Заказчик</b>:</div> <div className="col-6">{this.state.Customer}</div>
-              <div className="col-6"><b>Разработчик</b>:</div> <div className="col-6">{this.state.Designer}</div>
-              <div className="col-6"><b>Название проекта</b>:</div> <div className="col-6">{this.state.ProjectName}</div>
-              <div className="col-6"><b>Адрес проекта</b>:</div> <div className="col-6">{this.state.ProjectAddress}</div>
-              <div className="col-6"><b>Дата заявления</b>:</div> <div className="col-6">{this.state.ApzDate}</div>
-              { this.state.personalIdDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Уд. лич./ Реквизиты</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.personalIdDoc} data-name="Уд. лич./Реквизиты" data-ext={this.state.personalIdDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
-              { this.state.confirmedTaskDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Утвержденное задание</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.confirmedTaskDoc} data-name="Утвержденное задание" data-ext={this.state.confirmedTaskDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
-              { this.state.titleDocumentDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Правоустанавл. документ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.titleDocumentDoc} data-name="Правоустанавл. документ" data-ext={this.state.titleDocumentDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
-              
-              { this.state.Status === 1 ? ''
-                : ''
-              }
-              
-              { this.state.headResponseFile ? 
-                <div className="col-sm-12 head_result">
-                  { this.state.Status !== 0 ? 
-                    <div className="row">
-                      <div className="col-6"><b>АПЗ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.headResponseFile} data-name="АПЗ" data-ext={this.state.headResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
-                      <br />
-                      <div className="col-6"><b>АПЗ на базе Опросного листа</b>:</div> <div className="col-6"><a className="text-info pointer" style={{position: 'absolute', bottom: '0'}} onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>Скачать</a></div>
-                      </div>
-                    :
-                    <div className="row">
-                      <div className="col-6"><b>Мотивированный отказ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.headResponseFile} data-name="Мотивированный отказ" data-ext={this.state.headResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
-                    </div>
-                  }
-                </div> : ''
-              }
-            </div>
-          </div>
-        </div>
-        <div className={this.state.showStatusBar ? 'row' : 'invisible'}>
-          <div className="row statusBar">
-            {/*<div id="infoDiv">Нажмите на участок или объект, чтобы получить информацию</div>*/}
-            {/*<div id="viewDiv"></div>*/}
-            <div className="progressBar">
-              <div className={this.getStatusForArch(this.state.Status, this.state.regionDate, this.state.regionResponse)}>
-                <span className="label">1</span>
-                <span className="title">Районный архитектор</span>
-              </div>
-              <span className="bar"></span>
-              <div className="box">
-                <div className={this.getStatusForProvider(this.state.Status, this.state.wStatus)}>
-                  <span className="label">2</span>
-                  <span className="title">Поставщик (вода) </span>
-                </div>
-                <span className="bar"></span>
-                <div className={this.getStatusForProvider(this.state.Status, this.state.gStatus)}>
-                  <span className="label">2</span>
-                  <span className="title">Поставщик (газ)</span>
-                </div>
-                <span className="bar"></span>
-                <div className={this.getStatusForProvider(this.state.Status, this.state.hStatus)}>
-                  <span className="label">2</span>
-                  <span className="title">Поставщик (тепло)</span>
-                </div>
-                <span className="bar"></span>
-                <div className={this.getStatusForProvider(this.state.Status, this.state.eStatus)}>
-                  <span className="label">2</span>
-                  <span className="title">Поставщик (электр)</span>
-                </div>
-              </div>
-              <span className="bar"></span>
-              <div className={this.getStatusForHeadArch(this.state.Status, this.state.headDate, this.state.headResponse)}>
-                <span className="label">3</span>
-                <span className="title">Главный архитектор</span>
-              </div>
-            </div>
-            <div className="row actionDate">
-              <div className="col-3"></div>
-              <div className="col-7" style={{padding: '0', fontSize: '0.8em'}}>
-                <div className="row">
-                  <div className="col-2">{this.state.regionDate}</div>
-                  <div className="col-2">{this.state.wActionDate}</div>
-                  <div className="col-2">{this.state.gActionDate}</div>
-                  <div className="col-2">{this.state.hActionDate}</div>
-                  <div className="col-2">{this.state.eActionDate}</div>
-                  <div className="col-2">{this.state.headDate}</div>
-                </div>
-              </div>
-              <div className="col-2"></div>
-            </div>
-          </div>
-          {/*<div className={!this.showStepBarOrText(this.state.Status) ? 'allResponseText' : 'invisible'}>
-            <div className={this.toggleResponseText(this.state.regionResponse) ? 'responseText' : 'invisible'}>
-              {this.state.regionResponse}
-            </div>
-            <div className={this.toggleResponseText(this.state.eResponse) ? 'responseText' : 'invisible'}>
-              {this.state.eResponse}
-            </div>
-            <div className={this.toggleResponseText(this.state.gResponse) ? 'responseText' : 'invisible'}> 
-              {this.state.gResponse} 
-            </div>
-            <div className={this.toggleResponseText(this.state.hResponse) ? 'responseText' : 'invisible'}>
-              {this.state.hResponse} 
-            </div>
-            <div className={this.toggleResponseText(this.state.wResponse) ? 'responseText' : 'invisible'}>
-              {this.state.wResponse}
-            </div>
-            <div className={this.toggleResponseText(this.state.headResponse) ? 'responseText' : 'invisible'}>
-              {this.state.headResponse}
-            </div>
-          </div>*/}
         </div>
       </div>
     )
   }
 }
 
-class ApzForm extends React.Component {
+class AllApzs extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      apzs: []
+    };
+
+  }
+
+  componentDidMount() {
+    this.getApzs();
+  }
+
+  getApzs() {
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/apz/user", true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        this.setState({apzs: JSON.parse(xhr.responseText)});
+      }
+    }.bind(this)
+    xhr.send();
+  }
+
+  render() {
+    return (
+      <div>  
+        <Link className="btn btn-outline-primary mb-3" to="/citizen/add">Создать заявление</Link>
+        <table className="table">
+          <thead>
+            <tr>
+              <th style={{width: '85%'}}>Название</th>
+              <th style={{width: '15%'}}>Статус</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.state.apzs.map(function(apz, index) {
+              return(
+                <tr key={index}>
+                  <td>{apz.ProjectName}</td>
+                  <td>
+                    {apz.Status == 0 &&
+                      <span className="text-danger">Отказано</span>
+                    }
+
+                    {apz.Status == 1 &&
+                      <span className="text-success">Принято</span>
+                    }
+
+                    {apz.Status != 0 && apz.Status != 1 &&
+                      <span className="text-info">В процессе</span>
+                    }
+                  </td>
+                  <td>
+                    <Link className="btn btn-outline-info" to={'/citizen/' + apz.Id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                  </td>
+                </tr>
+                );
+              }.bind(this))
+            }
+          </tbody>
+        </table>
+      </div>  
+    )
+  }
+}
+
+class AddApz extends React.Component {
   constructor(props) {
     super(props);
 
@@ -751,8 +137,8 @@ class ApzForm extends React.Component {
   tabSubmission(e) { 
     e.preventDefault();
     var id = document.querySelector('#'+e.target.id).dataset.tab;
-    if ($('#tab'+id+'-form').valid())
-    {
+    
+    if ($('#tab'+id+'-form').valid()) {
       $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-ok');
       $('#tab'+id+'-link').next().trigger('click');
     } else {
@@ -760,7 +146,6 @@ class ApzForm extends React.Component {
     }
   }
 
-  // function to submit ApzForm
   requestSubmission(e) {
     if ($('#tab0-link').children().hasClass('glyphicon-ok')
                 && $('#tab1-link').children().hasClass('glyphicon-ok')
@@ -783,8 +168,6 @@ class ApzForm extends React.Component {
           },
           data: JSON.stringify(apzData),
           success: function (data) {
-            console.log(data);
-            //console.log(this.state.personalIdFile);
             var formData = new FormData();
             formData.append('PersonalIdFile', this.state.personalIdFile);
             formData.append('ConfirmedTaskFile', this.state.confirmedTaskFile);
@@ -800,7 +183,7 @@ class ApzForm extends React.Component {
               processData: false,
               success: function (data) {
                 // after form is submitted: calls the function from CitizenComponent to update the list 
-                this.props.updateList(data);
+                this.props.history.replace('/citizen/all');
                 alert("Заявка успешно подана");
               }.bind(this),
               fail: function (jqXHR) {
@@ -824,7 +207,6 @@ class ApzForm extends React.Component {
             $('#tab7-form')[0].reset();
             $('#tab8-form')[0].reset();
             $('#tabIcon').removeClass();
-            $('#apzFormDiv').hide(1000);
           }.bind(this),
           fail: function (jqXHR) {
             alert("Ошибка " + jqXHR.status + ': ' + jqXHR.statusText);
@@ -1239,6 +621,499 @@ class ApzForm extends React.Component {
             </div>
             </div>
           </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+
+class ShowApz extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      apz: [],
+      showMap: false
+    };
+
+    this.toggleMap = this.toggleMap.bind(this);
+  }
+
+  componentWillMount() {
+    this.getApzInfo();
+  }
+
+  getApzInfo() {
+    var id = this.props.match.params.id;
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/apz/detail/" + id, true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        this.setState({apz: JSON.parse(xhr.responseText)});
+      }
+    }.bind(this)
+    xhr.send();
+  }
+
+  downloadFile(event) {
+    var buffer =  event.target.getAttribute("data-file")
+    var name =  event.target.getAttribute("data-name");
+    var ext =  event.target.getAttribute("data-ext");
+
+    var base64ToArrayBuffer = (function () {
+      
+      return function (base64) {
+        var binaryString =  window.atob(base64);
+        var binaryLen = binaryString.length;
+        var bytes = new Uint8Array(binaryLen);
+        
+        for (var i = 0; i < binaryLen; i++)        {
+            var ascii = binaryString.charCodeAt(i);
+            bytes[i] = ascii;
+        }
+        
+        return bytes; 
+      }
+      
+    }());
+
+    var saveByteArray = (function () {
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+      
+      return function (data, name) {
+          var blob = new Blob(data, {type: "octet/stream"}),
+              url = window.URL.createObjectURL(blob);
+          a.href = url;
+          a.download = name;
+          a.click();
+          window.URL.revokeObjectURL(url);
+      };
+
+    }());
+
+    saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
+  }
+
+  printApz(apzId, project) {
+    var token = sessionStorage.getItem('tokenInfo');
+    if (token) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/apz/print/" + apzId, true);
+      xhr.responseType = "blob";
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.onload = function () {
+        console.log(xhr);
+        console.log(xhr.status);
+        if (xhr.status === 200) {
+          //test of IE
+          if (typeof window.navigator.msSaveBlob === "function") {
+            window.navigator.msSaveBlob(xhr.response, "apz-" + new Date().getTime() + ".pdf");
+          } 
+          else {
+            var blob = xhr.response;
+            var link = document.createElement('a');
+            var today = new Date();
+            var curr_date = today.getDate();
+            var curr_month = today.getMonth() + 1;
+            var curr_year = today.getFullYear();
+            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+            //console.log(curr_day);
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "апз-" + project + formated_date + ".pdf";
+
+            //append the link to the document body
+            document.body.appendChild(link);
+            link.click();
+          }
+        }
+      }
+      xhr.send();
+    } else {
+      console.log('session expired');
+    }
+  }
+
+  toggleMap(e) {
+    this.setState({
+      showMap: !this.state.showMap
+    })
+  }
+
+  toDate(date) {
+    if(date === null) {
+      return date;
+    }
+    
+    var jDate = new Date(date);
+    var curr_date = jDate.getDate();
+    var curr_month = jDate.getMonth() + 1;
+    var curr_year = jDate.getFullYear();
+    var curr_hour = jDate.getHours();
+    var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
+    var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
+    
+    return formated_date;
+  }
+  
+  render() {
+    var apz = this.state.apz;
+
+    return (
+      <div>
+        <h5>Общая информация</h5>
+        
+        <table className="table table-bordered">
+          <tbody>
+            <tr>
+              <td>Заявитель</td>
+              <td>{apz.Applicant}</td>
+            </tr>
+            <tr>
+              <td>Адрес</td>
+              <td>{apz.Address}</td>
+            </tr>
+            <tr>
+              <td>Телефон</td>
+              <td>{apz.Phone}</td>
+            </tr>
+            <tr>
+              <td>Заказчик</td>
+              <td>{apz.Customer}</td>
+            </tr>
+            <tr>
+              <td>Разработчик</td>
+              <td>{apz.Designer}</td>
+            </tr>
+            <tr>
+              <td>Название проекта</td>
+              <td>{apz.ProjectName}</td>
+            </tr>
+            <tr>
+              <td>Адрес проекта</td>
+              <td>{apz.ProjectAddress}</td>
+            </tr>
+            <tr>
+              <td>Дата заявления</td>
+              <td>{this.toDate(apz.ApzDate)}</td>
+            </tr>
+            
+            {apz.PersonalIdFile != null &&
+              <tr>
+                <td>Уд. лич./ Реквизиты</td>
+                <td><a className="text-info pointer" data-file={apz.PersonalIdFile} data-name="Уд. лич./Реквизиты" data-ext={apz.PersonalIdFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+              </tr>
+            }
+
+            {apz.ConfirmedTaskFile != null &&
+              <tr>
+                <td>Утвержденное задание</td>
+                <td><a className="text-info pointer" data-file={apz.ConfirmedTaskFile} data-name="Утвержденное задание" data-ext={apz.ConfirmedTaskFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+              </tr>
+            }
+
+            {apz.TitleDocumentFile != null &&
+              <tr>
+                <td>Правоустанавл. документ</td>
+                <td><a className="text-info pointer" data-file={apz.TitleDocumentFile} data-name="Правоустанавл. документ" data-ext={apz.TitleDocumentFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        { apz.HeadResponseFile != null &&
+          <div>
+            { apz.Status !== 0 ? 
+              <table className="table table-bordered head_result">
+                <tbody>
+                  <tr>
+                    <td>АПЗ</td> 
+                    <td><a className="text-info pointer" data-file={apz.HeadResponseFile} data-name="АПЗ" data-ext={apz.HeadResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  </tr>
+                  <tr>
+                    <td>АПЗ на базе Опросного листа</td>
+                    <td><a className="text-info pointer" onClick={this.printApz.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
+                  </tr>
+                </tbody>
+              </table>
+              :
+              <table className="table table-bordered">
+                <tbody>
+                  <tr className="head_result">
+                    <td>Мотивированный отказ</td>
+                    <td><a className="text-info pointer" data-file={apz.HeadResponseFile} data-name="Мотивированный отказ" data-ext={apz.HeadResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            }
+          </div>
+        }
+
+        <button className="btn btn-raised btn-info" onClick={this.toggleMap} style={{margin: 'auto', marginBottom: '10px'}}>
+          Показать карту
+        </button>
+
+        {this.state.showMap && <ShowMap />}
+        <ShowStatusBar apz={this.state.apz} />
+      </div>
+    )
+  }
+}
+
+class ShowMap extends React.Component {
+  onReference(element) {
+    if(!esriLoader.isLoaded()) {
+      esriLoader.bootstrap(
+        err => {
+          if(err) {
+            console.log(err);
+          } else {
+            this.createMap(element);
+          }
+        },
+        {
+          url: "https://js.arcgis.com/4.5/"
+        }
+      );
+    } else {
+      this.createMap(element);
+    }
+  }
+
+  createMap(element){
+    esriLoader.dojoRequire([
+      "esri/views/SceneView",
+      "esri/widgets/LayerList",
+      "esri/WebScene",
+      "esri/layers/FeatureLayer",
+      "esri/layers/TileLayer",
+      "esri/widgets/Search",
+      "esri/Map",
+      "dojo/domReady!"
+    ], function(
+      SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
+    ) {
+      var map = new Map({
+        basemap: "topo"
+      });
+      
+      var flRedLines = new FeatureLayer({
+        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D1%8B%D0%B5_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B8/FeatureServer",
+        outFields: ["*"],
+        title: "Красные линии"
+      });
+      map.add(flRedLines);
+
+      var flFunZones = new FeatureLayer({
+        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%A4%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B7%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5/FeatureServer",
+        outFields: ["*"],
+        title: "Функциональное зонирование"
+      });
+      map.add(flFunZones);
+      
+      /*
+      var flGosAkts = new FeatureLayer({
+        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+        outFields: ["*"],
+        title: "Гос акты"
+      });
+      map.add(flGosAkts);
+      */
+      
+      var view = new SceneView({
+        container: element,
+        map: map,
+        center: [76.886, 43.250], // lon, lat
+        scale: 10000
+      });
+      
+      var searchWidget = new Search({
+        view: view,
+        sources: [{
+          featureLayer: new FeatureLayer({
+            url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+            popupTemplate: { // autocasts as new PopupTemplate()
+              title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
+            }
+          }),
+          searchFields: ["CADASTRAL_NUMBER"],
+          displayField: "CADASTRAL_NUMBER",
+          exactMatch: false,
+          outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
+          name: "Зарегистрированные государственные акты",
+          placeholder: "Кадастровый поиск"
+        }]
+      });
+      
+      // Add the search widget to the top left corner of the view
+      view.ui.add(searchWidget, {
+        position: "top-right"
+      });
+      
+      view.then(function() {
+        var layerList = new LayerList({
+          view: view
+        });
+
+        // Add widget to the top right corner of the view
+        view.ui.add(layerList, "bottom-right");
+      });
+    });
+  }
+
+  render() {
+    return (
+      <div className="col-md-12 well" style={{padding: '0', height:'600px', width:'100%'}}>
+          <div className="viewDivCitizen" ref={this.onReference.bind(this)}>
+            <div className="container">
+              <p>Загрузка...</p>
+            </div>
+          </div>
+      </div>
+    )
+  }
+}
+
+class ShowStatusBar extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.getStatusForArch = this.getStatusForArch.bind(this);
+    this.getStatusForHeadArch = this.getStatusForHeadArch.bind(this);
+    this.getStatusForProvider = this.getStatusForProvider.bind(this);
+  }
+
+  // change status for Architect in ProgressBar
+  getStatusForArch(status, rd, rr) {
+    if((status === 0 || status === 1 || status === 3 || status === 4) && (rd !== null && rr === null))
+      return 'circle done';
+    else if(status === 0 && (rd !== null && rr !== null))
+      return 'circle fail';
+    else if(status === 2)
+      return 'circle active';
+    else
+      return 'circle';
+  }
+
+  // change status for Providers(water, heat, gas, electricity) in ProgressBar
+  getStatusForProvider(pStatus, status) {
+    if(status === 1)
+      return 'circle done';
+    else if(status === 0)
+      return 'circle fail';
+    else if(pStatus === 3 && status === 2)
+      return 'circle active';
+    else
+      return 'circle';
+  }
+
+  // change status for HeadArchitect in ProgressBar
+  getStatusForHeadArch(status, hd, hr) {
+    if(status === 2 || ((status === 0 || status === 1 || status === 2 || status === 3) && (hd === null && hr === null)))
+      return 'circle';
+    else if(status === 4)
+      return 'circle active';
+    else if(status === 0)
+      return 'circle fail';
+    else
+      return 'circle done';
+  }
+
+  toDate(date) {
+    if(date === null) {
+      return date;
+    }
+    
+    var jDate = new Date(date);
+    var curr_date = jDate.getDate();
+    var curr_month = jDate.getMonth() + 1;
+    var curr_year = jDate.getFullYear();
+    var curr_hour = jDate.getHours();
+    var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
+    var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
+    
+    return formated_date;
+  }
+
+  render() {
+    return (
+      <div>
+        <div className="row">
+          <div className={this.props.apz.Status != 0 ? 'row statusBar' : 'invisible'}>
+            {/*<div id="infoDiv">Нажмите на участок или объект, чтобы получить информацию</div>*/}
+            {/*<div id="viewDiv"></div>*/}
+            <div className="progressBar">
+              <div className={this.getStatusForArch(this.props.apz.Status, this.props.apz.RegionDate, this.props.apz.RegionResponse)}>
+                <span className="label">1</span>
+                <span className="title">Районный архитектор</span>
+              </div>
+              <span className="bar"></span>
+              <div className="box">
+                <div className={this.getStatusForProvider(this.props.apz.Status, this.props.apz.ApzWaterStatus)}>
+                  <span className="label">2</span>
+                  <span className="title">Поставщик (вода) </span>
+                </div>
+                <span className="bar"></span>
+                <div className={this.getStatusForProvider(this.props.apz.Status, this.props.apz.ApzGasStatus)}>
+                  <span className="label">2</span>
+                  <span className="title">Поставщик (газ)</span>
+                </div>
+                <span className="bar"></span>
+                <div className={this.getStatusForProvider(this.props.apz.Status, this.props.apz.ApzHeatStatus)}>
+                  <span className="label">2</span>
+                  <span className="title">Поставщик (тепло)</span>
+                </div>
+                <span className="bar"></span>
+                <div className={this.getStatusForProvider(this.props.apz.Status, this.props.apz.ApzElectricityStatus)}>
+                  <span className="label">2</span>
+                  <span className="title">Поставщик (электр)</span>
+                </div>
+              </div>
+              <span className="bar"></span>
+              <div className={this.getStatusForHeadArch(this.props.apz.Status, this.props.apz.HeadDate, this.props.apz.HeadResponse)}>
+                <span className="label">3</span>
+                <span className="title">Главный архитектор</span>
+              </div>
+            </div>
+            <div className="row actionDate">
+              <div className="col-3"></div>
+              <div className="col-7" style={{padding: '0', fontSize: '0.8em'}}>
+                <div className="row">
+                  <div className="col-2">{this.toDate(this.props.apz.RegionDate)}</div>
+                  <div className="col-2">{this.toDate(this.props.apz.ProviderWaterDate)}</div>
+                  <div className="col-2">{this.toDate(this.props.apz.ProviderGasDate)}</div>
+                  <div className="col-2">{this.toDate(this.props.apz.ProviderHeatDate)}</div>
+                  <div className="col-2">{this.toDate(this.props.apz.ProviderElectricityDate)}</div>
+                  <div className="col-2">{this.toDate(this.props.apz.HeadDate)}</div>
+                </div>
+              </div>
+              <div className="col-2"></div>
+            </div>
+          </div>
+          <div className={!this.props.apz.Status != 0 ? 'allResponseText' : 'invisible'}>
+            <div className={this.props.apz.RegionResponse != null ? 'responseText' : 'invisible'}>
+              {this.props.apz.RegionResponse}
+            </div>
+            <div className={this.props.apz.RegionResponse != null ? 'responseText' : 'invisible'}>
+              {this.props.apz.ProviderElectricityResponse}
+            </div>
+            <div className={this.props.apz.RegionResponse != null ? 'responseText' : 'invisible'}> 
+              {this.props.apz.ProviderGasResponse} 
+            </div>
+            <div className={this.props.apz.RegionResponse != null ? 'responseText' : 'invisible'}>
+              {this.props.apz.ProviderHeatResponse} 
+            </div>
+            <div className={this.props.apz.RegionResponse != null ? 'responseText' : 'invisible'}>
+              {this.props.apz.ProviderWaterResponse}
+            </div>
+            <div className={this.props.apz.RegionResponse != null ? 'responseText' : 'invisible'}>
+              {this.props.apz.HeadResponse}
+            </div>
           </div>
         </div>
       </div>
