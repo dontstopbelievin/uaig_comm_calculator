@@ -138,10 +138,36 @@ class AddApz extends React.Component {
     e.preventDefault();
     var id = document.querySelector('#'+e.target.id).dataset.tab;
     
-    if ($('#tab'+id+'-form').valid()) {
-      $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-ok');
-      $('#tab'+id+'-link').next().trigger('click');
-    } else {
+    if ($('#tab'+id+'-form').valid()) 
+    {
+      if(document.getElementsByName('GasGeneral')[0] !== 'undefined')
+      {
+        var a = parseFloat( "0" + document.getElementsByName('GasCooking')[0].value);
+        var b = parseFloat( "0" + document.getElementsByName('GasHeat')[0].value);
+        var c = parseFloat( "0" + document.getElementsByName('GasVentilation')[0].value); 
+        var d = parseFloat( "0" + document.getElementsByName('GasConditioner')[0].value);
+        var e = parseFloat( "0" + document.getElementsByName('GasWater')[0].value);
+        var GasSum = a + b + c + d + e;
+
+        if(document.getElementsByName('GasGeneral')[0].value == GasSum) 
+        {
+          $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-ok');
+          $('#tab'+id+'-link').next().trigger('click');
+        } 
+        else 
+        {
+          console.log(GasSum);
+          alert('Сумма всех полей должна быть равна полю Общая потребность');
+        }
+      }
+      else 
+      {
+        $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-ok');
+        $('#tab'+id+'-link').next().trigger('click');
+      }
+    } 
+    else 
+    {
       $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-remove');
     }
   }
@@ -221,6 +247,41 @@ class AddApz extends React.Component {
         });
       } else { console.log('session expired'); }
     } else { alert('Сохранены не все вкладки'); }
+  }
+
+  ObjectType(e) {
+    document.getElementsByName('ObjectArea')[0].disabled = false;
+  }
+
+  ObjectArea(e) {
+    if(document.getElementById('ObjectType').value == 'obj_ijs') 
+    {
+      if(document.getElementsByName('ObjectArea')[0].value <= 100) 
+      {
+        document.getElementsByName('GasGeneral')[0].max = 6;
+      }
+      else if((document.getElementsByName('ObjectArea')[0].value >= 101) 
+        && (document.getElementsByName('ObjectArea')[0].value <= 500)) 
+      {
+        document.getElementsByName('GasGeneral')[0].max = 15;
+      } 
+      else 
+      {
+        document.getElementsByName('GasGeneral')[0].removeAttribute("max");
+      }
+    }
+    if(document.getElementById('ObjectType').value == 'obj_mjk') 
+    {
+
+    }
+    if(document.getElementById('ObjectType').value == 'obj_kp') 
+    {
+
+    }
+    if(document.getElementById('ObjectType').value == 'obj_pp') 
+    {
+
+    }
   }
 
   render() {
@@ -323,29 +384,39 @@ class AddApz extends React.Component {
               <form id="tab1-form" data-tab="1" onSubmit={this.tabSubmission.bind(this)}>
               <div className="row">
                 <div className="col-md-6">
-                <div className="form-group">
-                  <label htmlFor="ObjectClient">Заказчик</label>
-                  <input type="text" required className="form-control" name="ObjectClient" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="ObjectName">Наименование объекта:</label>
-                  <input type="text" required className="form-control" name="ObjectName" placeholder="наименование" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="CadastralNumber">Кадастровый номер:</label>
-                  <input type="text" className="form-control" name="ObjectName" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="ObjectTerm">Срок строительства по нормам</label>
-                  <input type="text" className="form-control" id="ObjectTerm" placeholder="" />
-                </div>
-                {/* <div className="form-group">
-                  <label htmlFor="">Правоустанавливающие документы на объект (реконструкция)</label>
-                  <div className="fileinput fileinput-new" data-provides="fileinput">
-                  <span className="btn btn-default btn-file"><span></span><input type="file" multiple /></span>
-                  <span className="fileinput-filename"></span><span className="fileinput-new"></span>
+                  <div className="form-group">
+                    <label htmlFor="ObjectType">Тип объекта</label>
+                    <select className="form-control" id="ObjectType" onChange={this.ObjectType.bind(this)} defaultValue="null">
+                      <option value="null" disabled>Выберите тип объекта</option>
+                      <option value="obj_ijs">ИЖС</option>
+                      <option value="obj_mjk">МЖК</option>
+                      <option value="obj_kb">КомБыт</option>
+                      <option value="obj_pp">ПромПред</option>
+                    </select>
                   </div>
-                </div> */}
+                  <div className="form-group">
+                    <label htmlFor="ObjectClient">Заказчик</label>
+                    <input type="text" required className="form-control" name="ObjectClient" placeholder="" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="ObjectName">Наименование объекта:</label>
+                    <input type="text" required className="form-control" name="ObjectName" placeholder="наименование" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="CadastralNumber">Кадастровый номер:</label>
+                    <input type="text" className="form-control" name="ObjectName" placeholder="" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="ObjectTerm">Срок строительства по нормам</label>
+                    <input type="text" className="form-control" id="ObjectTerm" placeholder="" />
+                  </div>
+                  {/* <div className="form-group">
+                    <label htmlFor="">Правоустанавливающие документы на объект (реконструкция)</label>
+                    <div className="fileinput fileinput-new" data-provides="fileinput">
+                    <span className="btn btn-default btn-file"><span></span><input type="file" multiple /></span>
+                    <span className="fileinput-filename"></span><span className="fileinput-new"></span>
+                    </div>
+                  </div> */}
                 </div>
                 <div className="col-md-6">
                 <div className="form-group">
@@ -353,8 +424,8 @@ class AddApz extends React.Component {
                   <input type="number" className="form-control" name="ObjectLevel" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="ObjectArea">Площадь здания</label>
-                  <input type="number" className="form-control" name="ObjectArea" />
+                  <label htmlFor="ObjectArea">Площадь здания (кв.м)</label>
+                  <input type="number" className="form-control" name="ObjectArea" onChange={this.ObjectArea.bind(this)} disabled />
                 </div>
                 <div className="form-group">
                   <label htmlFor="ObjectRooms">Количество квартир (номеров, кабинетов)</label>
@@ -586,7 +657,7 @@ class AddApz extends React.Component {
               <div className="row">
                 <div className="col-md-6">
                 <div className="form-group">
-                  <label htmlFor="GasGeneral">Общая потребность (м<sup>3</sup>/час)</label>
+                  <label htmlFor="GasGeneral"><b>Общая потребность (м<sup>3</sup>/час)</b></label>
                   <input type="number" required className="form-control" name="GasGeneral" placeholder="" />
                 </div>
                 <div className="form-group">
