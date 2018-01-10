@@ -287,7 +287,7 @@ export default class Head extends React.Component {
       console.log(this.refs);
 
       esriLoader.dojoRequire([
-      "esri/views/SceneView",
+      "esri/views/MapView",
       "esri/widgets/LayerList",
       "esri/WebScene",
       "esri/layers/FeatureLayer",
@@ -296,7 +296,7 @@ export default class Head extends React.Component {
       "esri/Map",
       "dojo/domReady!"
     ], function(
-        SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
+        MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
       ) {
         var map = new Map({
           basemap: "topo"
@@ -323,7 +323,7 @@ export default class Head extends React.Component {
         });
         map.add(flGosAkts);
 
-        var view = new SceneView({
+        var view = new MapView({
           container: element,
           map: map,
           center: [76.886, 43.250], // lon, lat
