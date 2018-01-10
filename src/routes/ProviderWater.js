@@ -1,5 +1,5 @@
 import React from 'react';
-//import * as esriLoader from 'esri-loader';
+import * as esriLoader from 'esri-loader';
 //import { NavLink } from 'react-router-dom';
 
 export default class ProviderWater extends React.Component {
@@ -268,117 +268,116 @@ export default class ProviderWater extends React.Component {
     saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
   }
 
-  // createMap(element){
-  //   if(sessionStorage.getItem('tokenInfo')){ 
-  //     console.log(this.refs);
+  createMap(element){
+    if(sessionStorage.getItem('tokenInfo')){ 
+      console.log(this.refs);
 
-  //     esriLoader.dojoRequire([
-  //     "esri/views/SceneView",
-  //     "esri/widgets/LayerList",
-  //     "esri/WebScene",
-  //     "esri/layers/FeatureLayer",
-  //     "esri/layers/TileLayer",
-  //     "esri/widgets/Search",
-  //     "esri/Map",
-  //     "dojo/domReady!"
-  //   ], function(
-  //       SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
-  //     ) {
-  //       var map = new Map({
-  //         basemap: "topo"
-  //       });
+      esriLoader.dojoRequire([
+      "esri/views/MapView",
+      "esri/widgets/LayerList",
+      "esri/WebScene",
+      "esri/layers/FeatureLayer",
+      "esri/layers/TileLayer",
+      "esri/widgets/Search",
+      "esri/Map",
+      "dojo/domReady!"
+    ], function(
+        MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
+      ) {
+        var map = new Map({
+          basemap: "topo"
+        });
         
-  //       var waterLines = new FeatureLayer({
-  //         url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%A2%D1%80%D1%83%D0%B1%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D1%8B_%D0%B2%D0%BE%D0%B4%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F/FeatureServer",
-  //         outFields: ["*"],
-  //         title: "Трубопроводы водоснабжения"
-  //       });
-  //       map.add(waterLines);
+        var waterLines = new FeatureLayer({
+          url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%A2%D1%80%D1%83%D0%B1%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D1%8B_%D0%B2%D0%BE%D0%B4%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F2/FeatureServer",
+          outFields: ["*"],
+          title: "Трубопроводы водоснабжения"
+        });
+        map.add(waterLines);
 
-  //       var waterLineSafetyZone = new FeatureLayer({
-  //         url: 'https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%9E%D1%85%D1%80%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F_%D0%B7%D0%BE%D0%BD%D0%B0_%D0%B2%D0%BE%D0%B4%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D0%B0/FeatureServer',
-  //         outFields: ["*"],
-  //         title: "Охранная зона водопровода"
-  //       });
-  //       map.add(waterLineSafetyZone);
+        var waterLineSafetyZone = new FeatureLayer({
+          url: 'https://gis.uaig.kz/server/rest/services/Hosted/%D0%9E%D1%85%D1%80%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F_%D0%B7%D0%BE%D0%BD%D0%B0_%D0%B2%D0%BE%D0%B4%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D0%B0/FeatureServer',
+          outFields: ["*"],
+          title: "Охранная зона водопровода"
+        });
+        map.add(waterLineSafetyZone);
 
-  //       var waterResourse = new FeatureLayer({
-  //         url: 'https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%BE%D0%BD%D0%B0_%D0%BE%D0%B1%D0%B5%D1%81%D0%BF%D0%B5%D1%87%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8_%D0%B2%D0%BE%D0%B4%D0%BD%D1%8B%D0%BC%D0%B8_%D1%80%D0%B5%D1%81%D1%83%D1%80%D1%81%D0%B0%D0%BC%D0%B8/FeatureServer',
-  //         outFields: ["*"],
-  //         title: "Зоны обеспеч. водными ресурсами"
-  //       });
-  //       map.add(waterResourse);
+        var waterResourse = new FeatureLayer({
+          url: 'https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%BE%D0%BD%D0%B0_%D0%BE%D0%B1%D0%B5%D1%81%D0%BF%D0%B5%D1%87%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8_%D0%B2%D0%BE%D0%B4%D0%BD%D1%8B%D0%BC%D0%B8_%D1%80%D0%B5%D1%81%D1%83%D1%80%D1%81%D0%B0%D0%BC%D0%B8/FeatureServer',
+          outFields: ["*"],
+          title: "Зоны обеспеч. водными ресурсами"
+        });
+        map.add(waterResourse);
+
+        var flGosAkts = new FeatureLayer({
+          url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+          outFields: ["*"],
+          title: "Гос акты"
+        });
+        map.add(flGosAkts);
+
+        var view = new MapView({
+          container: element,
+          map: map,
+          center: [76.886, 43.250], // lon, lat
+          scale: 10000
+        });
         
-  //       var flGosAkts = new FeatureLayer({
-  //         url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-  //         outFields: ["*"],
-  //         title: "Гос акты"
-  //       });
-  //       map.add(flGosAkts);
-
-  //       var view = new SceneView({
-  //         container: element,
-  //         map: map,
-  //         center: [76.886, 43.250], // lon, lat
-  //         scale: 10000
-  //       });
+        var searchWidget = new Search({
+          view: view,
+          sources: [{
+            featureLayer: new FeatureLayer({
+              url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+              popupTemplate: { // autocasts as new PopupTemplate()
+                title: "Кадастровый номер: {cadastral_number} </br> Назначение: {function} <br/> Вид собственности: {ownership}"
+              }
+            }),
+            searchFields: ["cadastral_number"],
+            displayField: "cadastral_number",
+            exactMatch: false,
+            outFields: ["cadastral_number", "function", "ownership"],
+            name: "Зарегистрированные государственные акты",
+            placeholder: "Кадастровый поиск"
+          }]
+        });
+        // Add the search widget to the top left corner of the view
+        view.ui.add(searchWidget, {
+          position: "top-right"
+        });
         
-  //       var searchWidget = new Search({
-  //         view: view,
-  //         sources: [{
-  //           featureLayer: new FeatureLayer({
-  //             url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-  //             popupTemplate: { // autocasts as new PopupTemplate()
-  //               title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
-  //             }
-  //           }),
-  //           searchFields: ["CADASTRAL_NUMBER"],
-  //           displayField: "CADASTRAL_NUMBER",
-  //           exactMatch: false,
-  //           outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
-  //           name: "Зарегистрированные государственные акты",
-  //           placeholder: "Кадастровый поиск"
-  //         }]
-  //       });
-  //       // Add the search widget to the top right corner of the view
-  //       view.ui.add(searchWidget, {
-  //         position: "top-right"
-  //       });
-        
-        
-  //       view.then(function() {
-  //         var layerList = new LayerList({
-  //           view: view
-  //         });
+        view.then(function() {
+          var layerList = new LayerList({
+            view: view
+          });
 
-  //         // Add widget to the bottom right corner of the view
-  //         view.ui.add(layerList, "bottom-right");
-  //       });     
-  //     });
-  //   }
-  // }
+          // Add widget to the bottom right corner of the view
+          view.ui.add(layerList, "bottom-right");
+        });     
+      });
+    }
+  }
 
-  // onReference(element) {
-  //   if(sessionStorage.getItem('tokenInfo')){
-  //     console.log('mounted');
-  //     if(!esriLoader.isLoaded()) {
-  //       esriLoader.bootstrap(
-  //         err => {
-  //           if(err) {
-  //             console.log(err);
-  //           } else {
-  //             this.createMap(element);
-  //           }
-  //         },
-  //         {
-  //           url: "https://js.arcgis.com/4.5/"
-  //         }
-  //       );
-  //     } else {
-  //       this.createMap(element);
-  //     }
-  //   }
-  // }
+  onReference(element) {
+    if(sessionStorage.getItem('tokenInfo')){
+      console.log('mounted');
+      if(!esriLoader.isLoaded()) {
+        esriLoader.bootstrap(
+          err => {
+            if(err) {
+              console.log(err);
+            } else {
+              this.createMap(element);
+            }
+          },
+          {
+            url: "https://js.arcgis.com/4.5/"
+          }
+        );
+      } else {
+        this.createMap(element);
+      }
+    }
+  }
 
   componentWillMount() {
     //console.log("ProviderComponent will mount");
@@ -468,11 +467,11 @@ export default class ProviderWater extends React.Component {
             </div>
             <div className="col-md-6 apz-additional card" style={{padding:'0'}}>
               <div className="col-md-12 well" style={{padding:'0', height:'600px', width:'100%'}}>
-                  {/*<div className="viewDivProvider" ref={this.onReference.bind(this)}>
+                  <div className="viewDivProvider" ref={this.onReference.bind(this)}>
                     <div className="container">
                       <p>Загрузка...</p>
                     </div>
-                  </div>*/}
+                  </div>
               </div>
             </div>
             <div id="apz-detailed" className="col-md-3 apz-detailed card" style={{paddingTop: '10px'}}>

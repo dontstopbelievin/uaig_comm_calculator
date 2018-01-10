@@ -6,26 +6,18 @@ import 'jquery-serializejson';
 import { Route, Link, Switch, Redirect } from 'react-router-dom';
 
 export default class Citizen extends React.Component {
-  componentWillMount() {
-    if(sessionStorage.getItem('tokenInfo')){
-      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];
-      this.props.history.replace('/' + userRole);
-    }else {
-      this.props.history.replace('/');
-    }   
-  }
-
   render() {
     return (
       <div className="content container citizen-apz-list-page">
         <div className="card">
-          <div className="card-header"><h4 className="mb-0">Мои заявки</h4></div>
+          <div className="card-header">
+          <h4 className="mb-0">Архитектурно-планировочное задание</h4></div>
           <div className="card-body">
             <Switch>
-              <Route path="/citizen/all" component={AllApzs} />
-              <Route path="/citizen/add" component={AddApz} />
-              <Route path="/citizen/:id" component={ShowApz} />
-              <Redirect from="/citizen" to="/citizen/all" />
+              <Route path="/Citizen/all" component={AllApzs} />
+              <Route path="/Citizen/add" component={AddApz} />
+              <Route path="/Citizen/:id" component={ShowApz} />
+              <Redirect from="/Citizen" to="/Citizen/all" />
             </Switch>
           </div>
         </div>
@@ -288,7 +280,6 @@ class AddApz extends React.Component {
     return (
       <div className="container" id="apzFormDiv">
         <div className="tab-pane">
-          <h4>Заявление на АПЗ</h4>
           <div className="row">
           <div className="col-4">
             <div className="nav flex-column nav-pills container-fluid" id="v-pills-tab" role="tablist" aria-orientation="vertical">
@@ -705,7 +696,8 @@ class ShowApz extends React.Component {
 
     this.state = {
       apz: [],
-      showMap: false
+      showMap: false,
+      showMapText: 'Показать карту',
     };
 
     this.toggleMap = this.toggleMap.bind(this);
@@ -814,6 +806,16 @@ class ShowApz extends React.Component {
     this.setState({
       showMap: !this.state.showMap
     })
+
+    if (this.state.showMap) {
+      this.setState({
+        showMapText: 'Показать карту'
+      })
+    } else {
+      this.setState({
+        showMapText: 'Скрыть карту'
+      })
+    }
   }
 
   toDate(date) {
@@ -837,77 +839,79 @@ class ShowApz extends React.Component {
 
     return (
       <div>
-        <h5>Общая информация</h5>
+        <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
         
-        <table className="table table-bordered">
+        <table className="table table-bordered table-striped">
           <tbody>
             <tr>
-              <td>Заявитель</td>
+              <td style={{width: '22%'}}><b>Заявитель</b></td>
               <td>{apz.Applicant}</td>
             </tr>
             <tr>
-              <td>Адрес</td>
+              <td><b>Адрес</b></td>
               <td>{apz.Address}</td>
             </tr>
             <tr>
-              <td>Телефон</td>
+              <td><b>Телефон</b></td>
               <td>{apz.Phone}</td>
             </tr>
             <tr>
-              <td>Заказчик</td>
+              <td><b>Заказчик</b></td>
               <td>{apz.Customer}</td>
             </tr>
             <tr>
-              <td>Разработчик</td>
+              <td><b>Разработчик</b></td>
               <td>{apz.Designer}</td>
             </tr>
             <tr>
-              <td>Название проекта</td>
+              <td><b>Название проекта</b></td>
               <td>{apz.ProjectName}</td>
             </tr>
             <tr>
-              <td>Адрес проекта</td>
+              <td><b>Адрес проекта</b></td>
               <td>{apz.ProjectAddress}</td>
             </tr>
             <tr>
-              <td>Дата заявления</td>
+              <td><b>Дата заявления</b></td>
               <td>{this.toDate(apz.ApzDate)}</td>
             </tr>
             
             {apz.PersonalIdFile != null &&
               <tr>
-                <td>Уд. лич./ Реквизиты</td>
+                <td><b>Уд. лич./ Реквизиты</b></td>
                 <td><a className="text-info pointer" data-file={apz.PersonalIdFile} data-name="Уд. лич./Реквизиты" data-ext={apz.PersonalIdFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
               </tr>
             }
 
             {apz.ConfirmedTaskFile != null &&
               <tr>
-                <td>Утвержденное задание</td>
+                <td><b>Утвержденное задание</b></td>
                 <td><a className="text-info pointer" data-file={apz.ConfirmedTaskFile} data-name="Утвержденное задание" data-ext={apz.ConfirmedTaskFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
               </tr>
             }
 
             {apz.TitleDocumentFile != null &&
               <tr>
-                <td>Правоустанавл. документ</td>
+                <td><b>Правоустанавл. документ</b></td>
                 <td><a className="text-info pointer" data-file={apz.TitleDocumentFile} data-name="Правоустанавл. документ" data-ext={apz.TitleDocumentFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
               </tr>
             }
           </tbody>
         </table>
 
+        <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
+
         { apz.HeadResponseFile != null &&
           <div>
             { apz.Status !== 0 ? 
-              <table className="table table-bordered head_result">
+              <table className="table table-bordered table-striped">
                 <tbody>
                   <tr>
-                    <td>АПЗ</td> 
+                    <td style={{width: '22%'}}><b>АПЗ</b></td> 
                     <td><a className="text-info pointer" data-file={apz.HeadResponseFile} data-name="АПЗ" data-ext={apz.HeadResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                   </tr>
                   <tr>
-                    <td>АПЗ на базе Опросного листа</td>
+                    <td><b>АПЗ на базе Опросного листа</b></td>
                     <td><a className="text-info pointer" onClick={this.printApz.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
                   </tr>
                 </tbody>
@@ -916,7 +920,7 @@ class ShowApz extends React.Component {
               <table className="table table-bordered">
                 <tbody>
                   <tr className="head_result">
-                    <td>Мотивированный отказ</td>
+                    <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
                     <td><a className="text-info pointer" data-file={apz.HeadResponseFile} data-name="Мотивированный отказ" data-ext={apz.HeadResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                   </tr>
                 </tbody>
@@ -925,11 +929,13 @@ class ShowApz extends React.Component {
           </div>
         }
 
-        <button className="btn btn-raised btn-info" onClick={this.toggleMap} style={{margin: 'auto', marginBottom: '10px'}}>
-          Показать карту
+        {this.state.showMap && <ShowMap />} 
+
+        <button className="btn btn-raised btn-info" onClick={this.toggleMap} style={{margin: '20px auto 10px'}}>
+          {this.state.showMapText}
         </button>
 
-        {this.state.showMap && <ShowMap />}
+        <h5 className="block-title-2 mt-5 mb-3">Статус</h5>
         <ShowStatusBar apz={this.state.apz} />
       </div>
     )
@@ -958,7 +964,7 @@ class ShowMap extends React.Component {
 
   createMap(element){
     esriLoader.dojoRequire([
-      "esri/views/SceneView",
+      "esri/views/MapView",
       "esri/widgets/LayerList",
       "esri/WebScene",
       "esri/layers/FeatureLayer",
@@ -967,36 +973,34 @@ class ShowMap extends React.Component {
       "esri/Map",
       "dojo/domReady!"
     ], function(
-      SceneView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
+      MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
     ) {
       var map = new Map({
         basemap: "topo"
       });
       
       var flRedLines = new FeatureLayer({
-        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D1%8B%D0%B5_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B8/FeatureServer",
+        url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D1%8B%D0%B5_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B8/FeatureServer",
         outFields: ["*"],
         title: "Красные линии"
       });
       map.add(flRedLines);
 
       var flFunZones = new FeatureLayer({
-        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%A4%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B7%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5/FeatureServer",
+        url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%A4%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B7%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B52/FeatureServer",
         outFields: ["*"],
         title: "Функциональное зонирование"
       });
       map.add(flFunZones);
-      
-      /*
+    
       var flGosAkts = new FeatureLayer({
-        url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+        url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
         outFields: ["*"],
         title: "Гос акты"
       });
       map.add(flGosAkts);
-      */
       
-      var view = new SceneView({
+      var view = new MapView({
         container: element,
         map: map,
         center: [76.886, 43.250], // lon, lat
@@ -1007,20 +1011,19 @@ class ShowMap extends React.Component {
         view: view,
         sources: [{
           featureLayer: new FeatureLayer({
-            url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+            url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
             popupTemplate: { // autocasts as new PopupTemplate()
-              title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
+              title: "Кадастровый номер: {cadastral_number} </br> Назначение: {function} <br/> Вид собственности: {ownership}"
             }
           }),
-          searchFields: ["CADASTRAL_NUMBER"],
-          displayField: "CADASTRAL_NUMBER",
+          searchFields: ["cadastral_number"],
+          displayField: "cadastral_number",
           exactMatch: false,
-          outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
+          outFields: ["cadastral_number", "function", "ownership"],
           name: "Зарегистрированные государственные акты",
           placeholder: "Кадастровый поиск"
         }]
       });
-      
       // Add the search widget to the top left corner of the view
       view.ui.add(searchWidget, {
         position: "top-right"
@@ -1039,12 +1042,15 @@ class ShowMap extends React.Component {
 
   render() {
     return (
-      <div className="col-md-12 well" style={{padding: '0', height:'600px', width:'100%'}}>
+      <div>
+        <h5 className="block-title-2 mt-5 mb-3">Карта</h5>
+        <div className="col-md-12 well" style={{padding: '0', height:'600px', width:'100%'}}>
           <div className="viewDivCitizen" ref={this.onReference.bind(this)}>
             <div className="container">
               <p>Загрузка...</p>
             </div>
           </div>
+        </div>
       </div>
     )
   }
