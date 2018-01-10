@@ -290,22 +290,15 @@ export default class ProviderHeat extends React.Component {
           basemap: "topo"
         });
         
-        var heatLines = new FeatureLayer({
-          url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%A2%D1%80%D1%83%D0%B1%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D1%8B_%D1%82%D0%B5%D0%BF%D0%BB%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F/FeatureServer",
-          outFields: ["*"],
-          title: "Трубопроводы теплоснабжения"
-        });
-        map.add(heatLines);
-
         var heatLineSafetyZone = new FeatureLayer({
-          url: 'https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%9E%D1%85%D1%80%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F_%D0%B7%D0%BE%D0%BD%D0%B0_%D1%82%D0%B5%D0%BF%D0%BB%D0%BE%D1%82%D1%80%D0%B0%D1%81%D1%81%D1%8B/FeatureServer',
+          url: 'https://gis.uaig.kz/server/rest/services/Hosted/%D0%9E%D1%85%D1%80%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F_%D0%B7%D0%BE%D0%BD%D0%B0_%D1%82%D0%B5%D0%BF%D0%BB%D0%BE%D1%82%D1%80%D0%B0%D1%81%D1%81%D1%8B/FeatureServer',
           outFields: ["*"],
           title: "Охранная зона теплотрассы"
         });
         map.add(heatLineSafetyZone);
-        
+
         var flGosAkts = new FeatureLayer({
-          url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+          url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
           outFields: ["*"],
           title: "Гос акты"
         });
@@ -322,24 +315,23 @@ export default class ProviderHeat extends React.Component {
           view: view,
           sources: [{
             featureLayer: new FeatureLayer({
-              url: "https://services8.arcgis.com/Y15arG10A8lU6n2f/arcgis/rest/services/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+              url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
               popupTemplate: { // autocasts as new PopupTemplate()
-                title: "Кадастровый номер: {CADASTRAL_NUMBER} </br> Назначение: {FUNCTION_} <br/> Вид собственности: {OWNERSHIP}"
+                title: "Кадастровый номер: {cadastral_number} </br> Назначение: {function} <br/> Вид собственности: {ownership}"
               }
             }),
-            searchFields: ["CADASTRAL_NUMBER"],
-            displayField: "CADASTRAL_NUMBER",
+            searchFields: ["cadastral_number"],
+            displayField: "cadastral_number",
             exactMatch: false,
-            outFields: ["CADASTRAL_NUMBER", "FUNCTION_", "OWNERSHIP"],
+            outFields: ["cadastral_number", "function", "ownership"],
             name: "Зарегистрированные государственные акты",
             placeholder: "Кадастровый поиск"
           }]
         });
-        // Add the search widget to the top right corner of the view
+        // Add the search widget to the top left corner of the view
         view.ui.add(searchWidget, {
           position: "top-right"
         });
-        
         
         view.then(function() {
           var layerList = new LayerList({

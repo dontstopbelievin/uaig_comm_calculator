@@ -6,6 +6,7 @@
     "bootstrap": "^3.3.7",
     "bootstrap-material-design": "^4.0.0-beta.4",
     "esri-loader": "^1.5.0",
+    "esri-loader-react": "^2.0.3",
     "glyphicons": "^0.2.0",
     "glyphicons-only-bootstrap": "^1.0.1",
     "jquery": "^3.2.1",
