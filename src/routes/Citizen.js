@@ -80,15 +80,15 @@ class AllApzs extends React.Component {
                 <tr key={index}>
                   <td>{apz.ProjectName}</td>
                   <td>
-                    {apz.Status == 0 &&
+                    {apz.Status === 0 &&
                       <span className="text-danger">Отказано</span>
                     }
 
-                    {apz.Status == 1 &&
+                    {apz.Status === 1 &&
                       <span className="text-success">Принято</span>
                     }
 
-                    {apz.Status != 0 && apz.Status != 1 &&
+                    {apz.Status !== 0 && apz.Status !== 1 &&
                       <span className="text-info">В процессе</span>
                     }
                   </td>
@@ -97,7 +97,7 @@ class AllApzs extends React.Component {
                   </td>
                 </tr>
                 );
-              }.bind(this))
+              })
             }
           </tbody>
         </table>
@@ -134,9 +134,9 @@ class AddApz extends React.Component {
     this.setState({ titleDocumentFile: e.target.files[0] });
   }
 
-  tabSubmission(e) { 
-    e.preventDefault();
-    var id = document.querySelector('#'+e.target.id).dataset.tab;
+  tabSubmission(elem) { 
+    elem.preventDefault();
+    var id = document.querySelector('#'+elem.target.id).dataset.tab;
     
     if ($('#tab'+id+'-form').valid()) 
     {
@@ -149,7 +149,7 @@ class AddApz extends React.Component {
         var e = parseFloat( "0" + document.getElementsByName('GasWater')[0].value);
         var GasSum = a + b + c + d + e;
 
-        if(document.getElementsByName('GasGeneral')[0].value == GasSum) 
+        if(document.getElementsByName('GasGeneral')[0].value === GasSum) 
         {
           $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-ok');
           $('#tab'+id+'-link').next().trigger('click');
@@ -254,7 +254,7 @@ class AddApz extends React.Component {
   }
 
   ObjectArea(e) {
-    if(document.getElementById('ObjectType').value == 'obj_ijs') 
+    if(document.getElementById('ObjectType').value === 'obj_ijs') 
     {
       if(document.getElementsByName('ObjectArea')[0].value <= 100) 
       {
@@ -270,15 +270,15 @@ class AddApz extends React.Component {
         document.getElementsByName('GasGeneral')[0].removeAttribute("max");
       }
     }
-    if(document.getElementById('ObjectType').value == 'obj_mjk') 
+    if(document.getElementById('ObjectType').value === 'obj_mjk') 
     {
 
     }
-    if(document.getElementById('ObjectType').value == 'obj_kp') 
+    if(document.getElementById('ObjectType').value === 'obj_kp') 
     {
 
     }
-    if(document.getElementById('ObjectType').value == 'obj_pp') 
+    if(document.getElementById('ObjectType').value === 'obj_pp') 
     {
 
     }
@@ -903,11 +903,11 @@ class ShowApz extends React.Component {
               <table className="table table-bordered head_result">
                 <tbody>
                   <tr>
-                    <td>АПЗ</td> 
+                    <td>Загруженный АПЗ</td> 
                     <td><a className="text-info pointer" data-file={apz.HeadResponseFile} data-name="АПЗ" data-ext={apz.HeadResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                   </tr>
                   <tr>
-                    <td>АПЗ на базе Опросного листа</td>
+                    <td>Сформированный АПЗ</td>
                     <td><a className="text-info pointer" onClick={this.printApz.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
                   </tr>
                 </tbody>
