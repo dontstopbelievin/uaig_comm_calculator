@@ -657,7 +657,7 @@ class AddApz extends React.Component {
               <div className="row">
                 <div className="col-md-6">
                 <div className="form-group">
-                  <label htmlFor="GasGeneral"><b>Общая потребность (м<sup>3</sup>/час)</b></label>
+                  <label htmlFor="GasGeneral">Общая потребность (м<sup>3</sup>/час)</label>
                   <input type="number" required className="form-control" name="GasGeneral" placeholder="" />
                 </div>
                 <div className="form-group">
@@ -1115,7 +1115,7 @@ class ShowStatusBar extends React.Component {
     return (
       <div>
         <div className="row">
-          <div className={this.props.apz.Status != 0 ? 'row statusBar' : 'invisible'}>
+          <div className="row statusBar">
             {/*<div id="infoDiv">Нажмите на участок или объект, чтобы получить информацию</div>*/}
             {/*<div id="viewDiv"></div>*/}
             <div className="progressBar">
@@ -1164,26 +1164,6 @@ class ShowStatusBar extends React.Component {
                 </div>
               </div>
               <div className="col-2"></div>
-            </div>
-          </div>
-          <div className={!this.props.apz.Status != 0 ? 'allResponseText' : 'invisible'}>
-            <div className={this.props.apz.RegionResponse != null ? 'responseText' : 'invisible'}>
-              {this.props.apz.RegionResponse}
-            </div>
-            <div className={this.props.apz.RegionResponse != null ? 'responseText' : 'invisible'}>
-              {this.props.apz.ProviderElectricityResponse}
-            </div>
-            <div className={this.props.apz.RegionResponse != null ? 'responseText' : 'invisible'}> 
-              {this.props.apz.ProviderGasResponse} 
-            </div>
-            <div className={this.props.apz.RegionResponse != null ? 'responseText' : 'invisible'}>
-              {this.props.apz.ProviderHeatResponse} 
-            </div>
-            <div className={this.props.apz.RegionResponse != null ? 'responseText' : 'invisible'}>
-              {this.props.apz.ProviderWaterResponse}
-            </div>
-            <div className={this.props.apz.RegionResponse != null ? 'responseText' : 'invisible'}>
-              {this.props.apz.HeadResponse}
             </div>
           </div>
         </div>
