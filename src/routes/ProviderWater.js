@@ -23,6 +23,14 @@ export default class ProviderWater extends React.Component {
       ProjectAddress: "",
       ApzDate: "",
       wReq: 0, wDrink: 0, wProd: 0, wFireF: 0, wS: 0,
+      genWaterReq: "",
+      drinkingWater: "",
+      prodWater: "",
+      fireFightingWaterIn: "",
+      fireFightingWaterOut: "",
+      connectionPoint: "",
+      recomendation: "",
+      docNumber: "",
       description: "",
       file: [],
       personalIdDoc: null,
@@ -34,8 +42,48 @@ export default class ProviderWater extends React.Component {
     }
 
     this.getApzFormList = this.getApzFormList.bind(this);
+    this.onGenWaterReqChange = this.onGenWaterReqChange.bind(this);
+    this.onDrinkingWaterChange = this.onDrinkingWaterChange.bind(this);
+    this.onProdWaterChange = this.onProdWaterChange.bind(this);
+    this.onFireFightingWaterInChange = this.onFireFightingWaterInChange.bind(this);
+    this.onFireFightingWaterOutChange = this.onFireFightingWaterOutChange.bind(this);
+    this.onConnectionPointChange = this.onConnectionPointChange.bind(this);
+    this.onRecomendationChange = this.onRecomendationChange.bind(this);
+    this.onDocNumberChange = this.onDocNumberChange.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
+  }
+
+  onGenWaterReqChange(e) {
+    this.setState({ genWaterReq: e.target.value });
+  }
+
+  onDrinkingWaterChange(e) {
+    this.setState({ drinkingWater: e.target.value });
+  }
+
+  onProdWaterChange(e) {
+    this.setState({ prodWater: e.target.value });
+  }
+
+  onFireFightingWaterInChange(e) {
+    this.setState({ fireFightingWaterIn: e.target.value });
+  }
+
+  onFireFightingWaterOutChange(e) {
+    this.setState({ fireFightingWaterOut: e.target.value });
+  }
+
+  onConnectionPointChange(e) {
+    this.setState({ connectionPoint: e.target.value });
+  }
+
+  onRecomendationChange(e) {
+    this.setState({ recomendation: e.target.value });
+  }
+
+  onDocNumberChange(e) {
+    this.setState({ docNumber: e.target.value });
   }
 
   onDescriptionChange(e) {
@@ -180,6 +228,14 @@ export default class ProviderWater extends React.Component {
     formData.append('file', file);
     formData.append('Response', status);
     formData.append('Message', comment);
+    formData.append('GenWaterReq', this.state.genWaterReq);
+    formData.append('DrinkingWater', this.state.drinkingWater);
+    formData.append('ProdWater', this.state.prodWater);
+    formData.append('FireFightingWaterIn', this.state.fireFightingWaterIn);
+    formData.append('FireFightingWaterOut', this.state.fireFightingWaterOut);
+    formData.append('ConnectionPoint', this.state.connectionPoint);
+    formData.append('Recomendation', this.state.recomendation);
+    formData.append('DocNumber', this.state.docNumber);
 
     var tempAccForms = this.state.acceptedForms;
     var tempDecForms = this.state.declinedForms;
@@ -507,7 +563,7 @@ export default class ProviderWater extends React.Component {
                     Отклонить
                   </button>
                   <div className="modal fade" id="AcceptApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                    <div className="modal-dialog" role="document">
+                    <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
                       <div className="modal-content">
                         <div className="modal-header">
                           <h5 className="modal-title">Одобрение Заявки</h5>
@@ -516,17 +572,55 @@ export default class ProviderWater extends React.Component {
                           </button>
                         </div>
                         <div className="modal-body">
-                          <div className="form-group">
-                            <label htmlFor="pname">Наименование объекта</label>
-                            <input type="text" className="form-control" id="pname" placeholder="Название" value={this.state.ProjectName} />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="adress">Адрес объекта</label>
-                            <input type="text" className="form-control" id="adress" placeholder="Адрес" value={this.state.ProjectAddress} />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="upload_file">Прикрепить файл</label>
-                            <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                          <div className="row">
+                            <div className="col-md-6">
+                              <div className="form-group">
+                                <label htmlFor="pname">Наименование объекта</label>
+                                <input type="text" className="form-control" id="pname" placeholder="Название" value={this.state.ProjectName} />
+                              </div>
+                              <div className="form-group">
+                                <label>Общая потребность (м<sup>3</sup>/сутки)</label>
+                                <input type="number" className="form-control" placeholder="" value={this.state.genWaterReq} onChange={this.onGenWaterReqChange} />
+                              </div>
+                              <div className="form-group">
+                                <label>Хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
+                                <input type="number" className="form-control" placeholder="" value={this.state.drinkingWater} onChange={this.onDrinkingWaterChange} />
+                              </div>
+                              <div className="form-group">
+                                <label>Производственные нужды (м<sup>3</sup>/сутки)</label>
+                                <input type="number" className="form-control" placeholder="" value={this.state.prodWater} onChange={this.onProdWaterChange} />
+                              </div>
+                              <div className="form-group">
+                                <label>Расходы пожаротушения внутренные (л/сек)</label>
+                                <input type="number" className="form-control" value={this.state.fireFightingWaterIn} onChange={this.onFireFightingWaterInChange} />
+                              </div>
+                              <div className="form-group">
+                                <label>Расходы пожаротушения внешные (л/сек)</label>
+                                <input type="number" className="form-control" value={this.state.fireFightingWaterOut} onChange={this.onFireFightingWaterOutChange} />
+                              </div>
+                            </div>
+                            <div className="col-md-6">
+                              <div className="form-group">
+                                <label htmlFor="adress">Адрес объекта</label>
+                                <input type="text" className="form-control" id="adress" placeholder="Адрес" value={this.state.ProjectAddress} />
+                              </div>
+                              <div className="form-group">
+                                <label>Точка подключения</label>
+                                <input type="text" className="form-control" placeholder="" value={this.state.connectionPoint} onChange={this.onConnectionPointChange} />
+                              </div>
+                              <div className="form-group">
+                                <label>Рекомендация</label>
+                                <textarea rows="5" className="form-control" value={this.state.recomendation} onChange={this.onRecomendationChange} placeholder="Описание"></textarea>
+                              </div>
+                              <div className="form-group">
+                                <label>Номер документа</label>
+                                <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+                              </div>
+                              <div className="form-group">
+                                <label htmlFor="upload_file">Прикрепить файл</label>
+                                <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                              </div>
+                            </div>
                           </div>
                         </div>
                         <div className="modal-footer">

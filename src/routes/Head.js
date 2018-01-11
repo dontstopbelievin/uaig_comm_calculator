@@ -21,11 +21,39 @@ export default class Head extends React.Component {
       ProjectName: "",
       ProjectAddress: "",
       ApzDate: "",
-      connectionPoint: "",
+
+      gasConnectionPoint: "",
       gasPipeDiameter: 0,
       assumedCapacity: 0,
-      reconsideration: "",
-      docNumber: "",
+      gasReconsideration: "",
+      gasDocNumber: "",
+
+      genWaterReq: "",
+      drinkingWater: "",
+      prodWater: "",
+      fireFightingWaterIn: "",
+      fireFightingWaterOut: "",
+      waterConnectionPoint: "",
+      waterRecomendation: "",
+      waterDocNumber: "",
+
+      heatResource: "",
+      heatTransPressure: "",
+      heatLoadContractNum: "",
+      heatMainInContract: "",
+      heatVenInContract: "",
+      heatWaterInContract: "",
+      heatConnectionPoint: "",
+      heatAddition: "",
+      heatDocNumber: "",
+
+      elecReqPower: "",
+      elecPhase: "",
+      elecSafeCategory: "",
+      elecConnectionPoint: "",
+      elecRecomendation: "",
+      elecDocNumber: "",
+
       description: "",
       file: [],
       waterDoc: null,
@@ -145,29 +173,62 @@ export default class Head extends React.Component {
         this.setState({ Designer: data.Designer });
         this.setState({ ProjectName: data.ProjectName });
         this.setState({ ProjectAddress: data.ProjectAddress });
+
         this.setState({ waterDoc: data.WaterDoc });
         this.setState({ waterDocExt: data.WaterDocExt });
         this.setState({ waterResponse: data.WaterResponse });
+
         this.setState({ electroDoc: data.ElectroDoc });
         this.setState({ electroDocExt: data.ElectroDocExt });
         this.setState({ electroResponse: data.ElectroResponse });
+
         this.setState({ heatDoc: data.HeatDoc });
         this.setState({ heatDocExt: data.HeatDocExt });
         this.setState({ heatResponse: data.HeatResponse });
+
         this.setState({ gasDoc: data.GasDoc });
         this.setState({ gasDocExt: data.GasDocExt });
         this.setState({ gasResponse: data.GasResponse });
+
         this.setState({ personalIdDoc: data.PersonalIdFile });
         this.setState({ personalIdDocExt: data.PersonalIdFileExt });
         this.setState({ confirmedTaskDoc: data.ConfirmedTaskFile });
         this.setState({ confirmedTaskDocExtir: data.ConfirmedTaskFileExt });
         this.setState({ titleDocumentDoc: data.TitleDocumentFile });
         this.setState({ titleDocumentDocExt: data.TitleDocumentFileExt });
-        this.setState({ connectionPoint: data.ConnectionPoint });
+
+        this.setState({ gasConnectionPoint: data.GasConnectionPoint });
         this.setState({ gasPipeDiameter: data.GasPipeDiameter });
         this.setState({ assumedCapacity: data.AssumedCapacity });
-        this.setState({ reconsideration: data.Reconsideration });
-        this.setState({ docNumber: data.DocNumber });
+        this.setState({ gasReconsideration: data.GasReconsideration });
+        this.setState({ gasDocNumber: data.GasDocNumber });
+
+        this.setState({ genWaterReq: data.GenWaterReq });
+        this.setState({ drinkingWater: data.DrinkingWater });
+        this.setState({ prodWater: data.ProdWater });
+        this.setState({ fireFightingWaterIn: data.FireFightingWaterIn });
+        this.setState({ fireFightingWaterOut: data.FireFightingWaterOut });
+        this.setState({ waterConnectionPoint: data.WaterConnectionPoint });
+        this.setState({ waterRecomendation: data.WaterRecomendation });
+        this.setState({ waterDocNumber: data.WaterDocNumber });
+
+        this.setState({ heatResource: data.HeatResource });
+        this.setState({ heatTransPressure: data.HeatTransPressure });
+        this.setState({ heatLoadContractNum: data.HeatLoadContractNum });
+        this.setState({ heatMainInContract: data.HeatMainInContract });
+        this.setState({ heatVenInContract: data.HeatVenInContract });
+        this.setState({ heatWaterInContract: data.HeatWaterInContract });
+        this.setState({ heatConnectionPoint: data.HeatConnectionPoint });
+        this.setState({ heatAddition: data.HeatAddition });
+        this.setState({ heatDocNumber: data.HeatDocNumber });
+
+        this.setState({ elecReqPower: data.ElecReqPower });
+        this.setState({ elecPhase: data.ElecPhase });
+        this.setState({ elecSafeCategory: data.ElecSafeCategory });
+        this.setState({ elecConnectionPoint: data.ElecConnectionPoint });
+        this.setState({ elecRecomendation: data.ElecRecomendation });
+        this.setState({ elecDocNumber: data.ElecDocNumber });
+
         this.setState(function(){
           var jDate = new Date(data.ApzDate);
           var curr_date = jDate.getDate();
@@ -543,132 +604,146 @@ export default class Head extends React.Component {
                 { this.state.personalIdDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Уд. лич./ Реквизиты</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.personalIdDoc} data-name="Уд. лич./Реквизиты" data-ext={this.state.personalIdDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
                 { this.state.confirmedTaskDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Утвержденное задание</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.confirmedTaskDoc} data-name="Утвержденное задание" data-ext={this.state.confirmedTaskDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
                 { this.state.titleDocumentDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Правоустанавл. документ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.titleDocumentDoc} data-name="Правоустанавл. документ" data-ext={this.state.titleDocumentDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
-              
-                {/*<button className="btn btn-raised btn-info" 
-                      style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}
-                      onClick={this.printApz.bind(this, this.state.Id, this.state.ProjectName)}>
-                  Распечатать АПЗ
-                </button>*/}
-
-                { this.state.waterDoc ? 
-                  <div className="col-sm-12">
-                    { this.state.waterResponse ?
-                      <div className="row">
-                        <button className="btn btn-raised btn-info" 
-                                style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
-                                onClick={this.toggleWaterDetail}>
-                          Посмотреть ТУ Вода
-                        </button>
-                        {this.state.showWaterDetail && <div className="row detail">
-                          <div className="col-6"><b>Файл</b>:</div> 
-                          <div className="col-6"><a className="text-info pointer" data-file={this.state.waterDoc} data-name="ТУ Вода" data-ext={this.state.waterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
-                        </div>}
-                      </div>
-                      :
-                      <div className="row">
+                
+                <div className="col-sm-12">
+                  { this.state.waterResponse ?
+                    <div className="row">
                       <button className="btn btn-raised btn-info" 
-                                style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
-                                onClick={this.toggleWaterDetail}>
-                          Посмотреть ТУ Вода
-                        </button>
-                        {this.state.showWaterDetail && <div className="row detail">
-                          <div className="col-6"><b>МО Вода</b>:</div> 
-                          <div className="col-6"><a className="text-info pointer" data-file={this.state.waterDoc} data-name="МО Вода" data-ext={this.state.waterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
-                        </div>}
-                      </div>
-                    }
-                    
-                  </div> :''}
-                { this.state.heatDoc ? 
-                  <div className="col-sm-12">
-                    { this.state.heatResponse ?
-                      <div className="row">
-                        <button className="btn btn-raised btn-info" 
-                                style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
-                                onClick={this.toggleHeatDetail}>
-                          Посмотреть ТУ Тепло
-                        </button>
-                        {this.state.showHeatDetail && <div className="row detail">
-                          <div className="col-6"><b>Файл</b>:</div> 
-                          <div className="col-6"><a className="text-info pointer" data-file={this.state.heatDoc} data-name="ТУ Вода" data-ext={this.state.heatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
-                        </div>}
-                      </div>
-                      :
-                      <div className="row">
+                              style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
+                              onClick={this.toggleWaterDetail}>
+                        Посмотреть ТУ Вода
+                      </button>
+                      {this.state.showWaterDetail && <div className="row detail">
+                        <div className="col-6"><b>Общая потребность (м<sup>3</sup>/сутки)</b>:</div><div className="col-6">{this.state.genWaterReq}</div>
+                        <div className="col-6"><b>Хозпитьевые нужды (м<sup>3</sup>/сутки)</b>:</div><div className="col-6">{this.state.drinkingWater}</div>
+                        <div className="col-6"><b>Производственные нужды (м<sup>3</sup>/сутки)</b>:</div><div className="col-6">{this.state.prodWater}</div>
+                        <div className="col-6"><b>Расходы пожаротушения внутренные (л/сек)</b>:</div><div className="col-6">{this.state.fireFightingWaterIn}</div>
+                        <div className="col-6"><b>Расходы пожаротушения внешные (л/сек)</b>:</div><div className="col-6">{this.state.fireFightingWaterOut}</div>
+                        <div className="col-6"><b>Точка подключения</b>:</div><div className="col-6">{this.state.waterConnectionPoint}</div>
+                        <div className="col-6"><b>Рекомендация</b>:</div><div className="col-6">{this.state.waterRecomendation}</div>
+                        <div className="col-6"><b>Номер документа</b>:</div><div className="col-6">{this.state.waterDocNumber}</div>
+                        <div className="col-6"><b>Файл</b>:</div> 
+                        <div className="col-6"><a className="text-info pointer" data-file={this.state.waterDoc} data-name="ТУ Вода" data-ext={this.state.waterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      </div>}
+                    </div>
+                    :
+                    <div className="row">
+                    <button className="btn btn-raised btn-info" 
+                              style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
+                              onClick={this.toggleWaterDetail}>
+                        Посмотреть ТУ Вода
+                      </button>
+                      {this.state.showWaterDetail && <div className="row detail">
+                        <div className="col-6"><b>МО Вода</b>:</div> 
+                        <div className="col-6"><a className="text-info pointer" data-file={this.state.waterDoc} data-name="МО Вода" data-ext={this.state.waterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      </div>}
+                    </div>
+                  } 
+                </div>
+                
+                <div className="col-sm-12">
+                  { this.state.heatResponse ?
+                    <div className="row">
                       <button className="btn btn-raised btn-info" 
-                                style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
-                                onClick={this.toggleHeatDetail}>
-                          Посмотреть ТУ Тепло
-                        </button>
-                        {this.state.showHeatDetail && <div className="row detail">
-                          <div className="col-6"><b>МО Тепло</b>:</div> 
-                          <div className="col-6"><a className="text-info pointer" data-file={this.state.heatDoc} data-name="МО Вода" data-ext={this.state.heatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
-                        </div>}
-                      </div>
-                    }
-                  </div> : ''}
-                { this.state.electroDoc ? 
-                  <div className="col-sm-12">
-                    { this.state.electroResponse ?
-                      <div className="row">
-                        <button className="btn btn-raised btn-info" 
-                                style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
-                                onClick={this.toggleElectroDetail}>
-                          Посмотреть ТУ Электро
-                        </button>
-                        {this.state.showElectroDetail && <div className="row detail">
-                          <div className="col-6"><b>Файл</b>:</div> 
-                          <div className="col-6"><a className="text-info pointer" data-file={this.state.electroDoc} data-name="ТУ Вода" data-ext={this.state.electroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
-                        </div>}
-                      </div>
-                      :
-                      <div className="row">
-                        <button className="btn btn-raised btn-info" 
-                                style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
-                                onClick={this.toggleElectroDetail}>
-                          Посмотреть ТУ Электро
-                        </button>
-                        {this.state.showElectroDetail && <div className="row detail">
-                          <div className="col-6"><b>МО Электро</b>:</div> 
-                          <div className="col-6"><a className="text-info pointer" data-file={this.state.electroDoc} data-name="МО Вода" data-ext={this.state.electroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
-                        </div>}
-                      </div>
-                    }
-                  </div> : ''}
-                { this.state.gasDoc ? 
-                  <div className="col-sm-12">
-                    { this.state.gasResponse ?
-                      <div className="row">
-                        <button className="btn btn-raised btn-info" 
-                                style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
-                                onClick={this.toggleGasDetail}>
-                          Посмотреть ТУ Газ
-                        </button>
-                        {this.state.showGasDetail && <div className="row detail">
-                          <div className="col-6"><b>Точка подключения</b>:</div><div className="col-6">{this.state.connectionPoint}</div>
-                          <div className="col-6"><b>Диаметр газопровода (мм)</b>:</div><div className="col-6">{this.state.gasPipeDiameter}</div>
-                          <div className="col-6"><b>Предполагаемый объем (м<sup>3</sup>/час)</b>:</div><div className="col-6">{this.state.assumedCapacity}</div>
-                          <div className="col-6"><b>Предусмотрение</b>:</div><div className="col-6">{this.state.reconsideration}</div>
-                          <div className="col-6"><b>Номер документа</b>:</div><div className="col-6">{this.state.docNumber}</div>
-                          <div className="col-6"><b>Файл</b>:</div> 
-                          <div className="col-6"><a className="text-info pointer" data-file={this.state.gasDoc} data-name="ТУ Вода" data-ext={this.state.gasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
-                        </div>}
-                      </div>
-                      :
-                      <div className="row">
-                        <button className="btn btn-raised btn-info" 
-                                style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
-                                onClick={this.toggleGasDetail}>
-                          Посмотреть ТУ Газ
-                        </button>
-                        {this.state.showGasDetail && <div className="row detail">
-                          <div className="col-6"><b>МО Газ</b>:</div> 
-                          <div className="col-6"><a className="text-info pointer" data-file={this.state.gasDoc} data-name="МО Вода" data-ext={this.state.gasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
-                        </div>}
-                      </div>
-                    }
-                  </div> : ''
-                }
+                              style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
+                              onClick={this.toggleHeatDetail}>
+                        Посмотреть ТУ Тепло
+                      </button>
+                      {this.state.showHeatDetail && <div className="row detail">
+                        <div className="col-6"><b>Источник теплоснабжения</b>:</div><div className="col-6">{this.state.heatResource}</div>
+                        <div className="col-6"><b>Точка подключения</b>:</div><div className="col-6">{this.state.heatConnectionPoint}</div>
+                        <div className="col-6"><b>Давление теплоносителя</b>:</div><div className="col-6">{this.state.heatTransPressure}</div>
+                        <div className="col-6"><b>Тепловые нагрузки по договору</b>:</div><div className="col-6">{this.state.heatLoadContractNum}</div>
+                        <div className="col-6"><b>Отопление (Гкал/ч)</b>:</div><div className="col-6">{this.state.heatMainInContract}</div>
+                        <div className="col-6"><b>Вентиляция (Гкал/ч)</b>:</div><div className="col-6">{this.state.heatVenInContract}</div>
+                        <div className="col-6"><b>Горячее водоснабжение (Гкал/ч)</b>:</div><div className="col-6">{this.state.heatWaterInContract}</div>
+                        <div className="col-6"><b>Дополнительное</b>:</div><div className="col-6">{this.state.heatAddition}</div>
+                        <div className="col-6"><b>Номер документа</b>:</div><div className="col-6">{this.state.heatDocNumber}</div> 
+                        <div className="col-6"><b>Файл</b>:</div> 
+                        <div className="col-6"><a className="text-info pointer" data-file={this.state.heatDoc} data-name="ТУ Тепло" data-ext={this.state.heatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      </div>}
+                    </div>
+                    :
+                    <div className="row">
+                    <button className="btn btn-raised btn-info" 
+                              style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
+                              onClick={this.toggleHeatDetail}>
+                        Посмотреть ТУ Тепло
+                      </button>
+                      {this.state.showHeatDetail && <div className="row detail">
+                        <div className="col-6"><b>МО Тепло</b>:</div> 
+                        <div className="col-6"><a className="text-info pointer" data-file={this.state.heatDoc} data-name="МО Тепло" data-ext={this.state.heatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      </div>}
+                    </div>
+                  }
+                </div>
+                
+                <div className="col-sm-12">
+                  { this.state.electroResponse ?
+                    <div className="row">
+                      <button className="btn btn-raised btn-info" 
+                              style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
+                              onClick={this.toggleElectroDetail}>
+                        Посмотреть ТУ Электро
+                      </button>
+                      {this.state.showElectroDetail && <div className="row detail">
+                        <div className="col-6"><b>Требуемая мощность (кВт)</b>:</div><div className="col-6">{this.state.elecReqPower}</div>
+                        <div className="col-6"><b>Характер нагрузки (фаза)</b>:</div><div className="col-6">{this.state.elecPhase}</div>
+                        <div className="col-6"><b>Категория по надежности (кВт)</b>:</div><div className="col-6">{this.state.elecSafeCategory}</div>
+                        <div className="col-6"><b>Точка подключения</b>:</div><div className="col-6">{this.state.elecConnectionPoint}</div>
+                        <div className="col-6"><b>Рекомендация</b>:</div><div className="col-6">{this.state.elecRecomendation}</div>
+                        <div className="col-6"><b>Номер документа</b>:</div><div className="col-6">{this.state.elecDocNumber}</div> 
+                        <div className="col-6"><b>Файл</b>:</div> 
+                        <div className="col-6"><a className="text-info pointer" data-file={this.state.electroDoc} data-name="ТУ Электро" data-ext={this.state.electroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      </div>}
+                    </div>
+                    :
+                    <div className="row">
+                      <button className="btn btn-raised btn-info" 
+                              style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
+                              onClick={this.toggleElectroDetail}>
+                        Посмотреть ТУ Электро
+                      </button>
+                      {this.state.showElectroDetail && <div className="row detail">
+                        <div className="col-6"><b>МО Электро</b>:</div> 
+                        <div className="col-6"><a className="text-info pointer" data-file={this.state.electroDoc} data-name="МО Электро" data-ext={this.state.electroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      </div>}
+                    </div>
+                  }
+                </div>
+                
+                <div className="col-sm-12">
+                  { this.state.gasResponse ?
+                    <div className="row">
+                      <button className="btn btn-raised btn-info" 
+                              style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
+                              onClick={this.toggleGasDetail}>
+                        Посмотреть ТУ Газ
+                      </button>
+                      {this.state.showGasDetail && <div className="row detail">
+                        <div className="col-6"><b>Точка подключения</b>:</div><div className="col-6">{this.state.gasConnectionPoint}</div>
+                        <div className="col-6"><b>Диаметр газопровода (мм)</b>:</div><div className="col-6">{this.state.gasPipeDiameter}</div>
+                        <div className="col-6"><b>Предполагаемый объем (м<sup>3</sup>/час)</b>:</div><div className="col-6">{this.state.assumedCapacity}</div>
+                        <div className="col-6"><b>Предусмотрение</b>:</div><div className="col-6">{this.state.gasReconsideration}</div>
+                        <div className="col-6"><b>Номер документа</b>:</div><div className="col-6">{this.state.gasDocNumber}</div>
+                        <div className="col-6"><b>Файл</b>:</div> 
+                        <div className="col-6"><a className="text-info pointer" data-file={this.state.gasDoc} data-name="ТУ Газ" data-ext={this.state.gasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      </div>}
+                    </div>
+                    :
+                    <div className="row">
+                      <button className="btn btn-raised btn-info" 
+                              style={{margin: 'auto', marginTop: '10px', marginBottom: '10px'}}
+                              onClick={this.toggleGasDetail}>
+                        Посмотреть ТУ Газ
+                      </button>
+                      {this.state.showGasDetail && <div className="row detail">
+                        <div className="col-6"><b>МО Газ</b>:</div> 
+                        <div className="col-6"><a className="text-info pointer" data-file={this.state.gasDoc} data-name="МО Газ" data-ext={this.state.gasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div>
+                      </div>}
+                    </div>
+                  }
+                </div>
                 
                 <div className={this.state.showButtons ? 'col-sm-12 mt-2' : 'invisible'}>
                   <label htmlFor="upload_file">Файл</label>

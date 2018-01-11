@@ -23,6 +23,15 @@ export default class ProviderHeat extends React.Component {
       ProjectAddress: "",
       ApzDate: "",
       hGen: 0, hMain: 0, hVen: 0, hWater: 0, hTech: 0, hDist: "", hSav: "",
+      heatResource: "",
+      heatTransPressure: "",
+      heatLoadContractNum: "",
+      heatMainInContract: "",
+      heatVenInContract: "",
+      heatWaterInContract: "",
+      connectionPoint: "",
+      addition: "",
+      docNumber: "",
       description: "",
       file: [],
       personalIdDoc: null,
@@ -34,8 +43,53 @@ export default class ProviderHeat extends React.Component {
     }
 
     this.getApzFormList = this.getApzFormList.bind(this);
+    this.onHeatResourceChange = this.onHeatResourceChange.bind(this);
+    this.onHeatTransPressureChange = this.onHeatTransPressureChange.bind(this);
+    this.onHeatLoadContractNumChange = this.onHeatLoadContractNumChange.bind(this);
+    this.onHeatMainInContractChange = this.onHeatMainInContractChange.bind(this);
+    this.onHeatVenInContractChange = this.onHeatVenInContractChange.bind(this);
+    this.onHeatWaterInContractChange = this.onHeatWaterInContractChange.bind(this);
+    this.onConnectionPointChange = this.onConnectionPointChange.bind(this);
+    this.onAdditionChange = this.onAdditionChange.bind(this);
+    this.onDocNumberChange = this.onDocNumberChange.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
+  }
+
+  onHeatResourceChange(e) {
+    this.setState({ heatResource: e.target.value });
+  }
+
+  onHeatTransPressureChange(e) {
+    this.setState({ heatTransPressure: e.target.value });
+  }
+
+  onHeatLoadContractNumChange(e) {
+    this.setState({ heatLoadContractNum: e.target.value });
+  }
+
+  onHeatMainInContractChange(e) {
+    this.setState({ heatMainInContract: e.target.value });
+  }
+
+  onHeatVenInContractChange(e) {
+    this.setState({ heatVenInContract: e.target.value });
+  }
+
+  onHeatWaterInContractChange(e) {
+    this.setState({ heatWaterInContract: e.target.value });
+  }
+
+  onConnectionPointChange(e) {
+    this.setState({ connectionPoint: e.target.value });
+  }
+
+  onAdditionChange(e) {
+    this.setState({ addition: e.target.value });
+  }
+
+  onDocNumberChange(e) {
+    this.setState({ docNumber: e.target.value });
   }
 
   onDescriptionChange(e) {
@@ -182,6 +236,15 @@ export default class ProviderHeat extends React.Component {
     formData.append('file', file);
     formData.append('Response', status);
     formData.append('Message', comment);
+    formData.append('HeatResource', this.state.heatResource);
+    formData.append('HeatTransPressure', this.state.heatTransPressure);
+    formData.append('HeatLoadContractNum', this.state.heatLoadContractNum);
+    formData.append('HeatMainInContract', this.state.heatMainInContract);
+    formData.append('HeatVenInContract', this.state.heatVenInContract);
+    formData.append('HeatWaterInContract', this.state.heatWaterInContract);
+    formData.append('ConnectionPoint', this.state.connectionPoint);
+    formData.append('Addition', this.state.addition);
+    formData.append('DocNumber', this.state.docNumber);
 
     var tempAccForms = this.state.acceptedForms;
     var tempDecForms = this.state.declinedForms;
@@ -497,7 +560,7 @@ export default class ProviderHeat extends React.Component {
                     Отклонить
                   </button>
                   <div className="modal fade" id="AcceptApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                    <div className="modal-dialog" role="document">
+                    <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
                       <div className="modal-content">
                         <div className="modal-header">
                           <h5 className="modal-title">Одобрение Заявки</h5>
@@ -506,17 +569,54 @@ export default class ProviderHeat extends React.Component {
                           </button>
                         </div>
                         <div className="modal-body">
-                          <div className="form-group">
-                            <label htmlFor="pname">Наименование объекта</label>
-                            <input type="text" className="form-control" id="pname" placeholder="Название" value={this.state.ProjectName} />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="adress">Адрес объекта</label>
-                            <input type="text" className="form-control" id="adress" placeholder="Адрес" value={this.state.ProjectAddress} />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="upload_file">Прикрепить файл</label>
-                            <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                          <div className="row">
+                            <div className="col-md-6">
+                              <div className="form-group">
+                                <label>Теплоснабжение осуществляется от источников</label>
+                                <input type="text" className="form-control" placeholder="" value={this.state.heatResource} onChange={this.onHeatResourceChange} />
+                              </div>
+                              <div className="form-group">
+                                <label>Точка подключения</label>
+                                <input type="text" className="form-control" placeholder="" value={this.state.connectionPoint} onChange={this.onConnectionPointChange} />
+                              </div>
+                              <div className="form-group">
+                                <label>Давление теплоносителя в тепловой камере {this.state.connectionPoint}</label>
+                                <input type="text" className="form-control" placeholder="" value={this.state.heatTransPressure} onChange={this.onHeatTransPressureChange} />
+                              </div>
+                              <div className="form-group">
+                                <label>Тепловые нагрузки по договору (Гкал/ч), 
+                                  <input type="text" className="form-control" placeholder="Введите номер договора" value={this.state.heatLoadContractNum} onChange={this.onHeatLoadContractNumChange} />
+                                </label>
+                                <label>Отопление</label>
+                                <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatMainInContract} onChange={this.onHeatMainInContractChange} />
+                                <label>Вентиляция</label>
+                                <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatVenInContract} onChange={this.onHeatVenInContractChange} />
+                                <label>Горячее водоснабжение</label>
+                                <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatWaterInContract} onChange={this.onHeatWaterInContractChange} />
+                              </div>
+                            </div>
+                            <div className="col-md-6">
+                              <div className="form-group">
+                                <label htmlFor="pname">Наименование объекта</label>
+                                <input type="text" className="form-control" id="pname" placeholder="Название" value={this.state.ProjectName} />
+                              </div>
+                              <div className="form-group">
+                                <label htmlFor="adress">Адрес объекта</label>
+                                <input type="text" className="form-control" id="adress" placeholder="Адрес" value={this.state.ProjectAddress} />
+                              </div>
+                              <div className="form-group">
+                                <label>Дополнительное</label>
+                                <textarea rows="5" className="form-control" value={this.state.addition} onChange={this.onAdditionChange} placeholder="Описание"></textarea>
+                              </div>
+                              <div className="form-group">
+                                <label>Номер документа</label>
+                                <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+                              </div>
+                              <div className="form-group">
+                                <label htmlFor="upload_file">Прикрепить файл</label>
+                                <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                              </div>
+                            </div>
                           </div>
                         </div>
                         <div className="modal-footer">

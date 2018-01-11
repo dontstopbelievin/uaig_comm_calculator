@@ -441,11 +441,11 @@ class AddApz extends React.Component {
                 <div className="form-group">
                   <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
                   <select className="form-control" name="ElectricityPhase">
-                  <option>Однофазная</option>
-                  <option>Трехфазная</option>
-                  <option>Постоянная</option>
-                  <option>Временная</option>
-                  <option>Сезонная</option>
+                    <option>Однофазная</option>
+                    <option>Трехфазная</option>
+                    <option>Постоянная</option>
+                    <option>Временная</option>
+                    <option>Сезонная</option>
                   </select>
                 </div>
                 <div className="form-group">

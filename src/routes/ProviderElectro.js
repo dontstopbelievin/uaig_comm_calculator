@@ -23,6 +23,12 @@ export default class ProviderElectro extends React.Component {
       ProjectAddress: "",
       ApzDate: "",
       eReqPow: 0, ePhase: "", eSafeCat: "", eMaxLDev: 0, eMaxLoad: 0, eAllowedP: 0,
+      elecReqPower: "",
+      elecPhase: "Однофазная",
+      elecSafeCategory: "",
+      connectionPoint: "",
+      recomendation: "",
+      docNumber: "",
       description: "",
       file: [],
       personalIdDoc: null,
@@ -34,8 +40,38 @@ export default class ProviderElectro extends React.Component {
     }
 
     this.getApzFormList = this.getApzFormList.bind(this);
+    this.onElecReqPowerChange = this.onElecReqPowerChange.bind(this);
+    this.onElecPhaseChange = this.onElecPhaseChange.bind(this);
+    this.onElecSafeCategoryChange = this.onElecSafeCategoryChange.bind(this);
+    this.onConnectionPointChange = this.onConnectionPointChange.bind(this);
+    this.onRecomendationChange = this.onRecomendationChange.bind(this);
+    this.onDocNumberChange = this.onDocNumberChange.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
+  }
+
+  onElecReqPowerChange(e) {
+    this.setState({ elecReqPower: e.target.value });
+  }
+
+  onElecPhaseChange(e) {
+    this.setState({ elecPhase: e.target.value });
+  }
+
+  onElecSafeCategoryChange(e) {
+    this.setState({ elecSafeCategory: e.target.value });
+  }
+
+  onConnectionPointChange(e) {
+    this.setState({ connectionPoint: e.target.value });
+  }
+
+  onRecomendationChange(e) {
+    this.setState({ recomendation: e.target.value });
+  }
+
+  onDocNumberChange(e) {
+    this.setState({ docNumber: e.target.value });
   }
 
   onDescriptionChange(e) {
@@ -181,6 +217,12 @@ export default class ProviderElectro extends React.Component {
     formData.append('file', file);
     formData.append('Response', status);
     formData.append('Message', comment);
+    formData.append('ElecReqPower', this.state.elecReqPower);
+    formData.append('ElecPhase', this.state.elecPhase);
+    formData.append('ElecSafeCategory', this.state.elecSafeCategory);
+    formData.append('ConnectionPoint', this.state.connectionPoint);
+    formData.append('Recomendation', this.state.recomendation);
+    formData.append('DocNumber', this.state.docNumber);
 
     var tempAccForms = this.state.acceptedForms;
     var tempDecForms = this.state.declinedForms;
@@ -516,7 +558,7 @@ export default class ProviderElectro extends React.Component {
                     Отклонить
                   </button>
                   <div className="modal fade" id="AcceptApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                    <div className="modal-dialog" role="document">
+                    <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
                       <div className="modal-content">
                         <div className="modal-header">
                           <h5 className="modal-title">Одобрение Заявки</h5>
@@ -525,17 +567,53 @@ export default class ProviderElectro extends React.Component {
                           </button>
                         </div>
                         <div className="modal-body">
-                          <div className="form-group">
-                            <label htmlFor="pname">Наименование объекта</label>
-                            <input type="text" className="form-control" id="pname" placeholder="Название" value={this.state.ProjectName} />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="adress">Адрес объекта</label>
-                            <input type="text" className="form-control" id="adress" placeholder="Адрес" value={this.state.ProjectAddress} />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="upload_file">Прикрепить файл</label>
-                            <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                          <div className="row">
+                            <div className="col-md-6">
+                              <div className="form-group">
+                                <label htmlFor="pname">Наименование объекта</label>
+                                <input type="text" className="form-control" id="pname" placeholder="Название" value={this.state.ProjectName} />
+                              </div>
+                              <div className="form-group">
+                                <label htmlFor="adress">Адрес объекта</label>
+                                <input type="text" className="form-control" id="adress" placeholder="Адрес" value={this.state.ProjectAddress} />
+                              </div>
+                              <div className="form-group">
+                                <label>Требуемая мощность (кВт)</label>
+                                <input type="number" className="form-control" placeholder="" value={this.state.elecReqPower} onChange={this.onElecReqPowerChange} />
+                              </div>
+                              <div className="form-group">
+                                <label>Характер нагрузки (фаза)</label>
+                                <select value={this.state.value} onChange={this.onElecPhaseChange}>
+                                  <option>Однофазная</option>
+                                  <option>Трехфазная</option>
+                                  <option>Постоянная</option>
+                                  <option>Временная</option>
+                                  <option>Сезонная</option>
+                                </select>
+                              </div>
+                              <div className="form-group">
+                                <label>Категория по надежности (кВт)</label>
+                                <input type="number" className="form-control" required placeholder="" value={this.state.elecSafeCategory} onChange={this.onElecSafeCategoryChange} />
+                              </div>
+                            </div>
+                            <div className="col-md-6">
+                              <div className="form-group">
+                                <label>Точка подключения</label>
+                                <input type="text" className="form-control" placeholder="" value={this.state.connectionPoint} onChange={this.onConnectionPointChange} />
+                              </div>
+                              <div className="form-group">
+                                <label>Рекомендация</label>
+                                <textarea rows="5" className="form-control" value={this.state.recomendation} onChange={this.onRecomendationChange} placeholder="Описание"></textarea>
+                              </div>
+                              <div className="form-group">
+                                <label>Номер документа</label>
+                                <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+                              </div>
+                              <div className="form-group">
+                                <label htmlFor="upload_file">Прикрепить файл</label>
+                                <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                              </div>
+                            </div>
                           </div>
                         </div>
                         <div className="modal-footer">
