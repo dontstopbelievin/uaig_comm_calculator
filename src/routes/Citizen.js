@@ -142,15 +142,23 @@ class AddApz extends React.Component {
         var e = parseFloat( "0" + document.getElementsByName('GasWater')[0].value);
         var GasSum = a + b + c + d + e;
 
-        if(document.getElementsByName('GasGeneral')[0].value === GasSum) 
+        if($('a#tab8-link').attr('aria-expanded') === 'true') 
+        {
+          if(parseFloat(document.getElementsByName('GasGeneral')[0].value !== GasSum)) 
+          {
+            console.log(document.getElementsByName('GasGeneral')[0].value+" - "+GasSum);
+            alert('Сумма всех полей должна быть равна полю Общая потребность');
+          } 
+          else 
+          {
+            $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-ok');
+            $('#tab'+id+'-link').next().trigger('click');
+          }
+        }
+        else 
         {
           $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-ok');
           $('#tab'+id+'-link').next().trigger('click');
-        } 
-        else 
-        {
-          console.log(GasSum);
-          alert('Сумма всех полей должна быть равна полю Общая потребность');
         }
       }
       else 
@@ -385,7 +393,7 @@ class AddApz extends React.Component {
                 <div className="col-md-6">
                   <div className="form-group">
                     <label htmlFor="ObjectType">Тип объекта</label>
-                    <select className="form-control" id="ObjectType" onChange={this.ObjectType.bind(this)} defaultValue="null">
+                    <select required className="form-control" id="ObjectType" onChange={this.ObjectType.bind(this)} defaultValue="null">
                       <option value="null" disabled>Выберите тип объекта</option>
                       <option value="obj_ijs">ИЖС</option>
                       <option value="obj_mjk">МЖК</option>
@@ -424,7 +432,7 @@ class AddApz extends React.Component {
                 </div>
                 <div className="form-group">
                   <label htmlFor="ObjectArea">Площадь здания (кв.м)</label>
-                  <input type="number" className="form-control" name="ObjectArea" onChange={this.ObjectArea.bind(this)} disabled />
+                  <input type="number" required className="form-control" name="ObjectArea" onChange={this.ObjectArea.bind(this)} disabled />
                 </div>
                 <div className="form-group">
                   <label htmlFor="ObjectRooms">Количество квартир (номеров, кабинетов)</label>
