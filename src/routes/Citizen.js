@@ -3,7 +3,7 @@ import * as esriLoader from 'esri-loader';
 import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
-import { Route, Link, Switch, Redirect } from 'react-router-dom';
+import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
 
 export default class Citizen extends React.Component {
   render() {
@@ -14,10 +14,10 @@ export default class Citizen extends React.Component {
           <h4 className="mb-0">Архитектурно-планировочное задание</h4></div>
           <div className="card-body">
             <Switch>
-              <Route path="/Citizen/all" component={AllApzs} />
-              <Route path="/Citizen/add" component={AddApz} />
-              <Route path="/Citizen/:id" component={ShowApz} />
-              <Redirect from="/Citizen" to="/Citizen/all" />
+              <Route path="/citizen/status/:status" component={AllApzs} />
+              <Route path="/citizen/add" component={AddApz} />
+              <Route path="/citizen/:id" component={ShowApz} />
+              <Redirect from="/citizen" to="/citizen/status/active" />
             </Switch>
           </div>
         </div>
@@ -40,7 +40,17 @@ class AllApzs extends React.Component {
     this.getApzs();
   }
 
-  getApzs() {
+  componentWillReceiveProps(nextProps) {
+    if(this.props.match.params.status !== nextProps.match.params.status) {
+       this.getApzs(nextProps.match.params.status);
+   }
+  }
+
+  getApzs(status = null) {
+    if (!status) {
+      status = this.props.match.params.status;
+    }
+    
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + "api/apz/user", true);
@@ -48,16 +58,50 @@ class AllApzs extends React.Component {
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function() {
       if (xhr.status === 200) {
-        this.setState({apzs: JSON.parse(xhr.responseText)});
+        var data = JSON.parse(xhr.responseText);
+        
+        switch (status) {
+          case 'active':
+            var apzs = data.filter(function(obj) { return obj.Status !== 0 && obj.Status !== 1; });
+            break;
+
+          case 'accepted':
+            var apzs = data.filter(function(obj) { return obj.Status === 1; });
+            break;
+
+          case 'declined':
+            var apzs = data.filter(function(obj) { return obj.Status === 0; });
+            break;
+
+          default:
+            var apzs = data;
+            break;
+        }
+        
+        this.setState({apzs: apzs});
       }
     }.bind(this)
     xhr.send();
+
+
   }
 
   render() {
     return (
       <div>  
-        <Link className="btn btn-outline-primary mb-3" to="/citizen/add">Создать заявление</Link>
+        <div className="row">
+          <div className="col-sm-8">
+            <Link className="btn btn-outline-primary mb-3" to="/citizen/add">Создать заявление</Link>
+          </div>
+          <div className="col-sm-4">
+            <ul className="nav nav-tabs mb-2 pull-right">
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/active" replace>Активные</NavLink></li>
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/accepted" replace>Принятые</NavLink></li>
+              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/declined" replace>Отказанные</NavLink></li>
+            </ul>
+          </div>
+        </div>
+
         <table className="table">
           <thead>
             <tr>
@@ -72,15 +116,15 @@ class AllApzs extends React.Component {
                 <tr key={index}>
                   <td>{apz.ProjectName}</td>
                   <td>
-                    {apz.Status == 0 &&
+                    {apz.Status === 0 &&
                       <span className="text-danger">Отказано</span>
                     }
 
-                    {apz.Status == 1 &&
+                    {apz.Status === 1 &&
                       <span className="text-success">Принято</span>
                     }
 
-                    {apz.Status != 0 && apz.Status != 1 &&
+                    {apz.Status !== 0 && apz.Status !== 1 &&
                       <span className="text-info">В процессе</span>
                     }
                   </td>
@@ -89,7 +133,13 @@ class AllApzs extends React.Component {
                   </td>
                 </tr>
                 );
-              }.bind(this))
+              })
+            }
+
+            {this.state.apzs.length == 0 &&
+              <tr>
+                <td colspan="3">Пусто</td>
+              </tr>
             }
           </tbody>
         </table>
@@ -126,14 +176,40 @@ class AddApz extends React.Component {
     this.setState({ titleDocumentFile: e.target.files[0] });
   }
 
-  tabSubmission(e) { 
-    e.preventDefault();
-    var id = document.querySelector('#'+e.target.id).dataset.tab;
+  tabSubmission(elem) { 
+    elem.preventDefault();
+    var id = document.querySelector('#'+elem.target.id).dataset.tab;
     
-    if ($('#tab'+id+'-form').valid()) {
-      $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-ok');
-      $('#tab'+id+'-link').next().trigger('click');
-    } else {
+    if ($('#tab'+id+'-form').valid()) 
+    {
+      if(document.getElementsByName('GasGeneral')[0] !== 'undefined')
+      {
+        var a = parseFloat( "0" + document.getElementsByName('GasCooking')[0].value);
+        var b = parseFloat( "0" + document.getElementsByName('GasHeat')[0].value);
+        var c = parseFloat( "0" + document.getElementsByName('GasVentilation')[0].value); 
+        var d = parseFloat( "0" + document.getElementsByName('GasConditioner')[0].value);
+        var e = parseFloat( "0" + document.getElementsByName('GasWater')[0].value);
+        var GasSum = a + b + c + d + e;
+
+        //if(document.getElementsByName('GasGeneral')[0].value === GasSum) 
+        //{
+          $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-ok');
+          $('#tab'+id+'-link').next().trigger('click');
+        //} 
+        //else 
+        //{
+        //  console.log(GasSum);
+        //  alert('Сумма всех полей должна быть равна полю Общая потребность');
+        //}
+      }
+      else 
+      {
+        $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-ok');
+        $('#tab'+id+'-link').next().trigger('click');
+      }
+    } 
+    else 
+    {
       $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-remove');
     }
   }
@@ -175,7 +251,7 @@ class AddApz extends React.Component {
               processData: false,
               success: function (data) {
                 // after form is submitted: calls the function from CitizenComponent to update the list 
-                this.props.history.replace('/citizen/all');
+                this.props.history.replace('/citizen/status/active');
                 alert("Заявка успешно подана");
               }.bind(this),
               fail: function (jqXHR) {
@@ -213,6 +289,41 @@ class AddApz extends React.Component {
         });
       } else { console.log('session expired'); }
     } else { alert('Сохранены не все вкладки'); }
+  }
+
+  ObjectType(e) {
+    document.getElementsByName('ObjectArea')[0].disabled = false;
+  }
+
+  ObjectArea(e) {
+    if(document.getElementById('ObjectType').value === 'obj_ijs') 
+    {
+      if(document.getElementsByName('ObjectArea')[0].value <= 100) 
+      {
+        document.getElementsByName('GasGeneral')[0].max = 6;
+      }
+      else if((document.getElementsByName('ObjectArea')[0].value >= 101) 
+        && (document.getElementsByName('ObjectArea')[0].value <= 500)) 
+      {
+        document.getElementsByName('GasGeneral')[0].max = 15;
+      } 
+      else 
+      {
+        document.getElementsByName('GasGeneral')[0].removeAttribute("max");
+      }
+    }
+    if(document.getElementById('ObjectType').value === 'obj_mjk') 
+    {
+
+    }
+    if(document.getElementById('ObjectType').value === 'obj_kp') 
+    {
+
+    }
+    if(document.getElementById('ObjectType').value === 'obj_pp') 
+    {
+
+    }
   }
 
   render() {
@@ -314,29 +425,39 @@ class AddApz extends React.Component {
               <form id="tab1-form" data-tab="1" onSubmit={this.tabSubmission.bind(this)}>
               <div className="row">
                 <div className="col-md-6">
-                <div className="form-group">
-                  <label htmlFor="ObjectClient">Заказчик</label>
-                  <input type="text" required className="form-control" name="ObjectClient" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="ObjectName">Наименование объекта:</label>
-                  <input type="text" required className="form-control" name="ObjectName" placeholder="наименование" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="CadastralNumber">Кадастровый номер:</label>
-                  <input type="text" className="form-control" name="ObjectName" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="ObjectTerm">Срок строительства по нормам</label>
-                  <input type="text" className="form-control" id="ObjectTerm" placeholder="" />
-                </div>
-                {/* <div className="form-group">
-                  <label htmlFor="">Правоустанавливающие документы на объект (реконструкция)</label>
-                  <div className="fileinput fileinput-new" data-provides="fileinput">
-                  <span className="btn btn-default btn-file"><span></span><input type="file" multiple /></span>
-                  <span className="fileinput-filename"></span><span className="fileinput-new"></span>
+                  <div className="form-group">
+                    <label htmlFor="ObjectType">Тип объекта</label>
+                    <select className="form-control" id="ObjectType" onChange={this.ObjectType.bind(this)} defaultValue="null">
+                      <option value="null" disabled>Выберите тип объекта</option>
+                      <option value="obj_ijs">ИЖС</option>
+                      <option value="obj_mjk">МЖК</option>
+                      <option value="obj_kb">КомБыт</option>
+                      <option value="obj_pp">ПромПред</option>
+                    </select>
                   </div>
-                </div> */}
+                  <div className="form-group">
+                    <label htmlFor="ObjectClient">Заказчик</label>
+                    <input type="text" required className="form-control" name="ObjectClient" placeholder="" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="ObjectName">Наименование объекта:</label>
+                    <input type="text" required className="form-control" name="ObjectName" placeholder="наименование" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="CadastralNumber">Кадастровый номер:</label>
+                    <input type="text" className="form-control" name="ObjectName" placeholder="" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="ObjectTerm">Срок строительства по нормам</label>
+                    <input type="text" className="form-control" id="ObjectTerm" placeholder="" />
+                  </div>
+                  {/* <div className="form-group">
+                    <label htmlFor="">Правоустанавливающие документы на объект (реконструкция)</label>
+                    <div className="fileinput fileinput-new" data-provides="fileinput">
+                    <span className="btn btn-default btn-file"><span></span><input type="file" multiple /></span>
+                    <span className="fileinput-filename"></span><span className="fileinput-new"></span>
+                    </div>
+                  </div> */}
                 </div>
                 <div className="col-md-6">
                 <div className="form-group">
@@ -344,8 +465,8 @@ class AddApz extends React.Component {
                   <input type="number" className="form-control" name="ObjectLevel" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="ObjectArea">Площадь здания</label>
-                  <input type="number" className="form-control" name="ObjectArea" />
+                  <label htmlFor="ObjectArea">Площадь здания (кв.м)</label>
+                  <input type="number" className="form-control" name="ObjectArea" onChange={this.ObjectArea.bind(this)} disabled />
                 </div>
                 <div className="form-group">
                   <label htmlFor="ObjectRooms">Количество квартир (номеров, кабинетов)</label>
@@ -828,19 +949,19 @@ class ShowApz extends React.Component {
           </tbody>
         </table>
 
-        <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
-
         { apz.HeadResponseFile != null &&
           <div>
+            <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
+
             { apz.Status !== 0 ? 
               <table className="table table-bordered table-striped">
                 <tbody>
                   <tr>
-                    <td style={{width: '22%'}}><b>АПЗ</b></td> 
+                    <td>Загруженный АПЗ</td> 
                     <td><a className="text-info pointer" data-file={apz.HeadResponseFile} data-name="АПЗ" data-ext={apz.HeadResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                   </tr>
                   <tr>
-                    <td><b>АПЗ на базе Опросного листа</b></td>
+                    <td>Сформированный АПЗ</td>
                     <td><a className="text-info pointer" onClick={this.printApz.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
                   </tr>
                 </tbody>
@@ -848,7 +969,7 @@ class ShowApz extends React.Component {
               :
               <table className="table table-bordered">
                 <tbody>
-                  <tr className="head_result">
+                  <tr>
                     <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
                     <td><a className="text-info pointer" data-file={apz.HeadResponseFile} data-name="Мотивированный отказ" data-ext={apz.HeadResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                   </tr>
@@ -1050,7 +1171,7 @@ class ShowStatusBar extends React.Component {
     return (
       <div>
         <div className="row">
-          <div className={this.props.apz.Status != 0 ? 'row statusBar' : 'invisible'}>
+          <div className="row statusBar">
             {/*<div id="infoDiv">Нажмите на участок или объект, чтобы получить информацию</div>*/}
             {/*<div id="viewDiv"></div>*/}
             <div className="progressBar">
@@ -1099,26 +1220,6 @@ class ShowStatusBar extends React.Component {
                 </div>
               </div>
               <div className="col-2"></div>
-            </div>
-          </div>
-          <div className={!this.props.apz.Status != 0 ? 'allResponseText' : 'invisible'}>
-            <div className={this.props.apz.RegionResponse != null ? 'responseText' : 'invisible'}>
-              {this.props.apz.RegionResponse}
-            </div>
-            <div className={this.props.apz.RegionResponse != null ? 'responseText' : 'invisible'}>
-              {this.props.apz.ProviderElectricityResponse}
-            </div>
-            <div className={this.props.apz.RegionResponse != null ? 'responseText' : 'invisible'}> 
-              {this.props.apz.ProviderGasResponse} 
-            </div>
-            <div className={this.props.apz.RegionResponse != null ? 'responseText' : 'invisible'}>
-              {this.props.apz.ProviderHeatResponse} 
-            </div>
-            <div className={this.props.apz.RegionResponse != null ? 'responseText' : 'invisible'}>
-              {this.props.apz.ProviderWaterResponse}
-            </div>
-            <div className={this.props.apz.RegionResponse != null ? 'responseText' : 'invisible'}>
-              {this.props.apz.HeadResponse}
             </div>
           </div>
         </div>
