@@ -785,6 +785,11 @@ class ShowApz extends React.Component {
             </div>
           </div>
         </div>
+
+        <div>
+          <hr />
+          <Link className="btn btn-outline-secondary pull-right" to={'/head/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+        </div>
       </div>
     )
   }

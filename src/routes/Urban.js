@@ -343,16 +343,8 @@ class ShowApz extends React.Component {
           </tbody>
         </table>
 
-        {this.state.showMap && <ShowMap />} 
-
-        <button className="btn btn-raised btn-info" onClick={this.toggleMap} style={{margin: '20px auto 10px'}}>
-          {this.state.showMapText}
-        </button>
-
         <div className={this.state.showButtons ? '' : 'invisible'}>
-          <hr className="mt-3 mb-0" />
-
-          <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px'}}>
+          <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
             <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
                     onClick={this.acceptDeclineApzForm.bind(this, apz.Id, true, "your form was accepted")}>
               Одобрить
@@ -384,6 +376,17 @@ class ShowApz extends React.Component {
               </div>
             </div>
           </div>
+        </div>
+
+        {this.state.showMap && <ShowMap />} 
+
+        <button className="btn btn-raised btn-info" onClick={this.toggleMap} style={{margin: '20px auto 10px'}}>
+          {this.state.showMapText}
+        </button>
+
+        <div className="col-sm-12">
+          <hr />
+          <Link className="btn btn-outline-secondary pull-right" to={'/urban/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
         </div>
       </div>
     )

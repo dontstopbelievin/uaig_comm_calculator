@@ -11,7 +11,9 @@ export default class Citizen extends React.Component {
       <div className="content container citizen-apz-list-page">
         <div className="card">
           <div className="card-header">
-          <h4 className="mb-0">Архитектурно-планировочное задание</h4></div>
+              <h4 className="mb-0 mt-2">Архитектурно-планировочное задание</h4>
+          </div>
+          
           <div className="card-body">
             <Switch>
               <Route path="/citizen/status/:status" component={AllApzs} />
@@ -42,8 +44,8 @@ class AllApzs extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if(this.props.match.params.status !== nextProps.match.params.status) {
-       this.getApzs(nextProps.match.params.status);
-   }
+      this.getApzs(nextProps.match.params.status);
+    }
   }
 
   getApzs(status = null) {
@@ -138,7 +140,7 @@ class AllApzs extends React.Component {
 
             {this.state.apzs.length == 0 &&
               <tr>
-                <td colspan="3">Пусто</td>
+                <td colSpan="3">Пусто</td>
               </tr>
             }
           </tbody>
@@ -755,6 +757,11 @@ class AddApz extends React.Component {
           </div>
           </div>
         </div>
+
+        <div>
+          <hr />
+          <Link className="btn btn-outline-secondary pull-right" to={'/citizen/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+        </div>
       </div>
     )
   }
@@ -1007,6 +1014,11 @@ class ShowApz extends React.Component {
 
         <h5 className="block-title-2 mt-5 mb-3">Статус</h5>
         <ShowStatusBar apz={this.state.apz} />
+
+        <div className="col-sm-12">
+          <hr />
+          <Link className="btn btn-outline-secondary pull-right" to={'/citizen/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+        </div>
       </div>
     )
   }

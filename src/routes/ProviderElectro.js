@@ -565,6 +565,11 @@ class ShowApz extends React.Component {
             {this.state.showMapText}
           </button>
         </div>
+
+        <div className="col-sm-12">
+          <hr />
+          <Link className="btn btn-outline-secondary pull-right" to={'/providerelectro/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+        </div>
       </div>
     )
   }

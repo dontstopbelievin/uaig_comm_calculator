@@ -2,6 +2,10 @@
 @import 'https://js.arcgis.com/4.5/esri/css/main.css';
 @import 'https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700&subset=cyrillic';
 
+.btn:focus {
+  box-shadow: none;
+}
+
 .content {
   padding: 10px 0;
 }
