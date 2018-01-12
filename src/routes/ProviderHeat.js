@@ -463,11 +463,11 @@ export default class ProviderHeat extends React.Component {
             </div>
             <div className="col-md-6 apz-additional card" style={{padding:'0'}}>
               <div className="col-md-12 well" style={{padding:'0', height:'600px', width:'100%'}}>
-                  <div className="viewDivProvider" ref={this.onReference.bind(this)}>
+                  {/*<div className="viewDivProvider" ref={this.onReference.bind(this)}>
                     <div className="container">
                       <p>Загрузка...</p>
                     </div>
-                  </div>
+                  </div>*/}
               </div>
             </div>
             <div id="apz-detailed" className="col-md-3 apz-detailed card" style={{paddingTop: '10px'}}>

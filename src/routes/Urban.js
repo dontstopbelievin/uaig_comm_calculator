@@ -398,11 +398,11 @@ export default class Urban extends React.Component {
             </div>
             <div className="col-md-6 apz-additional card" style={{padding: '0'}}>
               <div className="col-md-12 well" style={{padding: '0', height:'600px', width:'100%'}}>
-                  <div className="viewDivUrban" ref={this.onReference.bind(this)}>
+                  {/*<div className="viewDivProvider" ref={this.onReference.bind(this)}>
                     <div className="container">
                       <p>Загрузка...</p>
                     </div>
-                  </div>
+                  </div>*/}
               </div>
               {/*<button class="btn-block btn-info col-md-3" id="printApz">
                 Распечатать АПЗ
