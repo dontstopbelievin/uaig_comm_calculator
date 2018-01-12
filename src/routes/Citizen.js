@@ -132,6 +132,7 @@ class AddApz extends React.Component {
     
     if ($('#tab'+id+'-form').valid()) 
     {
+      //проверка полей на валидность в Газоснабжении
       if(document.getElementsByName('GasGeneral')[0] !== 'undefined')
       {
         var a = parseFloat( "0" + document.getElementsByName('GasCooking')[0].value);
@@ -241,6 +242,7 @@ class AddApz extends React.Component {
     } else { alert('Сохранены не все вкладки'); }
   }
 
+  //правила вкладки Объект/Газоснабжение
   ObjectType(e) {
     document.getElementsByName('ObjectArea')[0].disabled = false;
   }
@@ -264,17 +266,23 @@ class AddApz extends React.Component {
     }
     if(document.getElementById('ObjectType').value === 'obj_mjk') 
     {
-
+      //rules
     }
     if(document.getElementById('ObjectType').value === 'obj_kp') 
     {
-
+      //rules
     }
     if(document.getElementById('ObjectType').value === 'obj_pp') 
     {
-
+      //rules
     }
   }
+
+  //правила вкладки Водоснабжение
+  PeopleCount(e) {
+    document.getElementsByName('WaterRequirement')[0].value = parseFloat( "0.19" * document.getElementsByName('PeopleCount')[0].value);
+  }
+
 
   render() {
     return (
@@ -496,8 +504,12 @@ class AddApz extends React.Component {
               <div className="row">
                 <div className="col-md-6">
                 <div className="form-group">
+                  <label>Количество людей</label>
+                  <input type="number" required className="form-control" name="PeopleCount" onChange={this.PeopleCount.bind(this)} placeholder="" />
+                </div>
+                <div className="form-group">
                   <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
-                  <input type="number" required className="form-control" name="WaterRequirement" placeholder="" />
+                  <input type="number" disabled className="form-control" name="WaterRequirement" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
@@ -511,7 +523,7 @@ class AddApz extends React.Component {
                 </div>
                 <div className="form-group">
                   <label htmlFor="WaterFireFighting">Потребные расходы пожаротушения (л/сек)</label>
-                  <input type="number" className="form-control" name="WaterFireFighting" />
+                  <input type="number" min="10" className="form-control" name="WaterFireFighting" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="WaterSewage">Общее количество сточных вод (м<sup>3</sup>/сутки)</label>
