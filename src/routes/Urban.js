@@ -1,5 +1,5 @@
 import React from 'react';
-//import * as esriLoader from 'esri-loader';
+import * as esriLoader from 'esri-loader';
 //import { NavLink } from 'react-router-dom';
 import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
 
@@ -391,20 +391,6 @@ class ShowApz extends React.Component {
 }
 
 class ShowMap extends React.Component {
-  createMap(element){
-    esriLoader.dojoRequire([
-      "esri/views/MapView",
-      "esri/widgets/LayerList",
-      "esri/WebScene",
-      "esri/layers/FeatureLayer",
-      "esri/layers/TileLayer",
-      "esri/widgets/Search",
-      "esri/Map",
-      "dojo/domReady!"
-    ], function(
-      MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
-    ) {
-
   createMap(element){
     esriLoader.dojoRequire([
       "esri/views/MapView",

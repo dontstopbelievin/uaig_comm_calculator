@@ -1,5 +1,5 @@
 import React from 'react';
-//import * as esriLoader from 'esri-loader';
+import * as esriLoader from 'esri-loader';
 //import { NavLink } from 'react-router-dom';
 import { Route, NavLink, Link, Switch, Redirect } from 'react-router-dom';
 
