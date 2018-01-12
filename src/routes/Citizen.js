@@ -3,7 +3,7 @@ import * as esriLoader from 'esri-loader';
 import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
-import { Route, Link, Switch, Redirect } from 'react-router-dom';
+import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
 
 export default class Citizen extends React.Component {
   render() {
@@ -14,10 +14,10 @@ export default class Citizen extends React.Component {
           <h4 className="mb-0">Архитектурно-планировочное задание</h4></div>
           <div className="card-body">
             <Switch>
-              <Route path="/Citizen/all" component={AllApzs} />
-              <Route path="/Citizen/add" component={AddApz} />
-              <Route path="/Citizen/:id" component={ShowApz} />
-              <Redirect from="/Citizen" to="/Citizen/all" />
+              <Route path="/citizen/status/:status" component={AllApzs} />
+              <Route path="/citizen/add" component={AddApz} />
+              <Route path="/citizen/:id" component={ShowApz} />
+              <Redirect from="/citizen" to="/citizen/status/active" />
             </Switch>
           </div>
         </div>
@@ -40,7 +40,17 @@ class AllApzs extends React.Component {
     this.getApzs();
   }
 
-  getApzs() {
+  componentWillReceiveProps(nextProps) {
+    if(this.props.match.params.status !== nextProps.match.params.status) {
+       this.getApzs(nextProps.match.params.status);
+   }
+  }
+
+  getApzs(status = null) {
+    if (!status) {
+      status = this.props.match.params.status;
+    }
+    
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + "api/apz/user", true);
@@ -48,16 +58,50 @@ class AllApzs extends React.Component {
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function() {
       if (xhr.status === 200) {
-        this.setState({apzs: JSON.parse(xhr.responseText)});
+        var data = JSON.parse(xhr.responseText);
+        
+        switch (status) {
+          case 'active':
+            var apzs = data.filter(function(obj) { return obj.Status !== 0 && obj.Status !== 1; });
+            break;
+
+          case 'accepted':
+            var apzs = data.filter(function(obj) { return obj.Status === 1; });
+            break;
+
+          case 'declined':
+            var apzs = data.filter(function(obj) { return obj.Status === 0; });
+            break;
+
+          default:
+            var apzs = data;
+            break;
+        }
+        
+        this.setState({apzs: apzs});
       }
     }.bind(this)
     xhr.send();
+
+
   }
 
   render() {
     return (
       <div>  
-        <Link className="btn btn-outline-primary mb-3" to="/citizen/add">Создать заявление</Link>
+        <div className="row">
+          <div className="col-sm-8">
+            <Link className="btn btn-outline-primary mb-3" to="/citizen/add">Создать заявление</Link>
+          </div>
+          <div className="col-sm-4">
+            <ul className="nav nav-tabs mb-2 pull-right">
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/active" replace>Активные</NavLink></li>
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/accepted" replace>Принятые</NavLink></li>
+              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/declined" replace>Отказанные</NavLink></li>
+            </ul>
+          </div>
+        </div>
+
         <table className="table">
           <thead>
             <tr>
@@ -90,6 +134,12 @@ class AllApzs extends React.Component {
                 </tr>
                 );
               })
+            }
+
+            {this.state.apzs.length == 0 &&
+              <tr>
+                <td colspan="3">Пусто</td>
+              </tr>
             }
           </tbody>
         </table>
@@ -132,6 +182,7 @@ class AddApz extends React.Component {
     
     if ($('#tab'+id+'-form').valid()) 
     {
+
       //проверка полей на валидность в Газоснабжении
       if(document.getElementsByName('GasGeneral')[0] !== 'undefined')
       {
@@ -210,7 +261,7 @@ class AddApz extends React.Component {
               processData: false,
               success: function (data) {
                 // after form is submitted: calls the function from CitizenComponent to update the list 
-                this.props.history.replace('/citizen/all');
+                this.props.history.replace('/citizen/status/active');
                 alert("Заявка успешно подана");
               }.bind(this),
               fail: function (jqXHR) {
@@ -290,7 +341,6 @@ class AddApz extends React.Component {
   PeopleCount(e) {
     document.getElementsByName('WaterRequirement')[0].value = parseFloat( "0.19" * document.getElementsByName('PeopleCount')[0].value);
   }
-
 
   render() {
     return (
@@ -919,10 +969,10 @@ class ShowApz extends React.Component {
           </tbody>
         </table>
 
-        <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
-
         { apz.HeadResponseFile != null &&
           <div>
+            <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
+
             { apz.Status !== 0 ? 
               <table className="table table-bordered table-striped">
                 <tbody>
@@ -939,7 +989,7 @@ class ShowApz extends React.Component {
               :
               <table className="table table-bordered">
                 <tbody>
-                  <tr className="head_result">
+                  <tr>
                     <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
                     <td><a className="text-info pointer" data-file={apz.HeadResponseFile} data-name="Мотивированный отказ" data-ext={apz.HeadResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                   </tr>

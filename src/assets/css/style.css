@@ -137,8 +137,8 @@
 }*/
 
 #mapid { 
-	height: 520px; 
-	width: 100%; 
+  height: 520px; 
+  width: 100%; 
 }
 
 #tabIcon {
@@ -146,8 +146,8 @@
 }
 
 .middle-height {
-	height: 100%;
-	z-index: 0;
+  height: 100%;
+  z-index: 0;
 }
 
 .bg-blue {
@@ -425,14 +425,14 @@ footer {
 /* END ProgressBar*/
 
 .panel-heading {
-	background: #cbc7c7;
-	padding: 0;
-	font-weight: bold;
+  background: #cbc7c7;
+  padding: 0;
+  font-weight: bold;
 }
 
 .panel-body {
-	padding: 0;
-	border-bottom: ridge;
+  padding: 0;
+  border-bottom: ridge;
 }
 
 ul.header li {
@@ -583,6 +583,10 @@ ul:after {
 
 ul:after { clear: both; }
 /* END Dropdown styles*/
+
+.pull-right {
+  float: right;
+}
 
 /* Button colors. */
 .btn-provider{

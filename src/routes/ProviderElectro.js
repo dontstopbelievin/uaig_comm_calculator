@@ -1,45 +1,165 @@
 import React from 'react';
 //import * as esriLoader from 'esri-loader';
 //import { NavLink } from 'react-router-dom';
+import { Route, NavLink, Link, Switch, Redirect } from 'react-router-dom';
 
 export default class ProviderElectro extends React.Component {
+  render() {
+    return (
+      <div className="content container urban-apz-page">
+        <div className="card">
+          <div className="card-header">
+          <h4 className="mb-0">Архитектурно-планировочное задание</h4></div>
+          <div className="card-body">
+            <Switch>
+              <Route path="/providerelectro/status/:status" component={AllApzs} />
+              <Route path="/providerelectro/:id" component={ShowApz} />
+              <Redirect from="/providerelectro" to="/providerelectro/status/active" />
+            </Switch>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
 
-  constructor() {
-    super();
+class AllApzs extends React.Component {
+  constructor(props) {
+    super(props);
 
     this.state = {
-      acceptedForms: [],
-      declinedForms: [],
-      activeForms: [],
-      showDetails: false,
-      showButtons: true,
-      Id: "",
-      Applicant: "",
-      Address: "",
-      Phone: "",
-      Customer: "",
-      Designer: "",
-      ProjectName: "",
-      ProjectAddress: "",
-      ApzDate: "",
-      eReqPow: 0, ePhase: "", eSafeCat: "", eMaxLDev: 0, eMaxLoad: 0, eAllowedP: 0,
+      apzs: []
+    };
+
+  }
+
+  componentDidMount() {
+    this.getApzs();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(this.props.match.params.status !== nextProps.match.params.status) {
+       this.getApzs(nextProps.match.params.status);
+   }
+  }
+
+  getApzs(status = null) {
+    if (!status) {
+      status = this.props.match.params.status;
+    }
+
+    var token = sessionStorage.getItem('tokenInfo');
+    var roles = JSON.parse(sessionStorage.getItem('userRoles'));
+
+    if (roles == null) {
+        sessionStorage.clear();
+        alert("Token is expired, please login again!");
+        this.props.history.replace("/login");
+        return false;
+    }
+
+    var providerName = roles[1];
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/apz/provider/" + providerName, true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        
+        switch (status) {
+          case 'active':
+            var apzs = data.filter(function(obj) { return obj.ApzElectricityStatus === 2 && obj.Status === 3; });
+            break;
+
+          case 'accepted':
+            var apzs = data.filter(function(obj) { return obj.ApzElectricityStatus === 1; });
+            break;
+
+          case 'declined':
+            var apzs = data.filter(function(obj) { return obj.ApzElectricityStatus === 0; });
+            break;
+
+          default:
+            var apzs = data;
+            break;
+        }
+        
+        this.setState({apzs: apzs});
+      }
+    }.bind(this);
+    xhr.send();
+  }
+
+  render() {
+    return (
+      <div>
+        <ul className="nav nav-tabs mb-2 pull-right">
+          <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerelectro/status/active" replace>Активные</NavLink></li>
+          <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerelectro/status/accepted" replace>Принятые</NavLink></li>
+          <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerelectro/status/declined" replace>Отказанные</NavLink></li>
+        </ul>
+
+        <table className="table">
+          <thead>
+            <tr>
+              <th style={{width: '85%'}}>Название</th>
+              <th style={{width: '15%'}}>Статус</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.state.apzs.map(function(apz, index) {
+              return(
+                <tr key={index}>
+                  <td>{apz.ProjectName}</td>
+                  <td>
+                    {apz.ApzElectricityStatus == 0 &&
+                      <span className="text-danger">Отказано</span>
+                    }
+
+                    {apz.ApzElectricityStatus == 1 &&
+                      <span className="text-success">Принято</span>
+                    }
+
+                    {apz.ApzElectricityStatus === 2 && apz.Status === 3 &&
+                      <span className="text-info">В процессе</span>
+                    }
+                  </td>
+                  <td>
+                    <Link className="btn btn-outline-info" to={'/providerelectro/' + apz.Id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                  </td>
+                </tr>
+                );
+              }.bind(this))
+            }
+          </tbody>
+        </table>
+      </div>  
+    )
+  }
+}
+
+class ShowApz extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      apz: [],
+      showMap: false,
+      showButtons: false,
+      file: null,
       elecReqPower: "",
       elecPhase: "Однофазная",
       elecSafeCategory: "",
       connectionPoint: "",
       recomendation: "",
       docNumber: "",
-      description: "",
-      file: [],
-      personalIdDoc: null,
-      personalIdDocExt: null,
-      confirmedTaskDoc: null,
-      confirmedTaskDocExt: null,
-      titleDocumentDoc: null,
-      titleDocumentDocExt: null
-    }
+      description: '',
+      showMapText: 'Показать карту',
+    };
 
-    this.getApzFormList = this.getApzFormList.bind(this);
+    this.toggleMap = this.toggleMap.bind(this);
     this.onElecReqPowerChange = this.onElecReqPowerChange.bind(this);
     this.onElecPhaseChange = this.onElecPhaseChange.bind(this);
     this.onElecSafeCategoryChange = this.onElecSafeCategoryChange.bind(this);
@@ -82,134 +202,83 @@ export default class ProviderElectro extends React.Component {
     this.setState({ file: e.target.files[0] });
   }
 
-  // get the list of apz forms
-  getApzFormList() {
-    if(sessionStorage.getItem('tokenInfo')){
-      var token = sessionStorage.getItem('tokenInfo');
-      var providerName = JSON.parse(sessionStorage.getItem('userRoles'))[1];
-
-      var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/provider/" + providerName, true);
-      //Send the proper header information along with the request
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-      xhr.onload = function () {
-        if (xhr.status === 200) {
-          var data = JSON.parse(xhr.responseText);
-          //console.log(data);
-          
-          // filter the whole list to get only accepted apzForms
-          var acc_forms_list = data.filter(function(obj) { return obj.ApzElectricityStatus === 1; });
-          this.setState({acceptedForms: acc_forms_list});
-          // filter the list to get the declined apzForms
-          var dec_forms_list = data.filter(function(obj) { return obj.ApzElectricityStatus === 0; });
-          this.setState({declinedForms: dec_forms_list});
-          // filter the list to get in-process apzForms
-          var act_forms_list = data.filter(function(obj) { return (obj.ApzElectricityStatus === 2 && obj.Status === 3); });
-          this.setState({activeForms: act_forms_list});
-        }
-      }.bind(this);
-      xhr.send();
-    }
+  componentWillMount() {
+    this.getApzInfo();
   }
 
-  // get detailed info for clicked apz
-  getApzDetails(apzId) {
-    var token = sessionStorage.getItem('tokenInfo');
-    var providerName = JSON.parse(sessionStorage.getItem('userRoles'))[1];
+  getApzInfo() {
+    var id = this.props.match.params.id;
+    var roles = JSON.parse(sessionStorage.getItem('userRoles'));
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/provider/" + providerName + "/" + apzId, true);
-    //Send the proper header information along with the request
+    if (roles == null) {
+        sessionStorage.clear();
+        alert("Token is expired, please login again!");
+        this.props.history.replace("/login");
+        return false;
+    }
+
+    var providerName = roles[1];
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/apz/provider/" + providerName + "/" + id, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.send();
-    xhr.onload = function () {
-      if (xhr.status === 200) {
+    xhr.onload = function() {
+      if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-        console.log(data);
-        this.setState({ showButtons: false });
-        if(data.Status === 3 && data.ApzElectricityStatus === 2){
-          this.setState({ showButtons: true });
-        }
-        this.setState({ showDetails: true });
-        this.setState({ eReqPow: data.ElectricRequiredPower }); 
-        this.setState({ ePhase: data.ElectricityPhase }); 
-        this.setState({ eSafeCat: data.ElectricSafetyCategory }); 
-        this.setState({ eMaxLDev: data.ElectricMaxLoadDevice }); 
-        this.setState({ eMaxLoad: data.ElectricMaxLoad }); 
-        this.setState({ eAllowedP: data.ElectricAllowedPower }); 
-        this.setState({ Id: data.Id });
-        this.setState({ Applicant: data.Applicant });
-        this.setState({ Address: data.Address });
-        this.setState({ Phone: data.Phone });
-        this.setState({ Customer: data.Customer });
-        this.setState({ Designer: data.Designer });
-        this.setState({ ProjectName: data.ProjectName });
-        this.setState({ ProjectAddress: data.ProjectAddress });
-        this.setState({ personalIdDoc: data.PersonalIdFile });
-        this.setState({ personalIdDocExt: data.PersonalIdFileExt });
-        this.setState({ confirmedTaskDoc: data.ConfirmedTaskFile });
-        this.setState({ confirmedTaskDocExtir: data.ConfirmedTaskFileExt });
-        this.setState({ titleDocumentDoc: data.TitleDocumentFile });
-        this.setState({ titleDocumentDocExt: data.TitleDocumentFileExt });
-        this.setState(function(){
-          var jDate = new Date(data.ApzDate);
-          var curr_date = jDate.getDate();
-          var curr_month = jDate.getMonth() + 1;
-          var curr_year = jDate.getFullYear();
-          var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
-          return { ApzDate: formated_date }
-        });
-      }
-    }.bind(this);
-  }
+        this.setState({apz: data});
+        this.setState({showButtons: false});
 
-  // function to print apzForm in .pdf format
-  printApz(apzId, project) {
-    //console.log(apzId);
-    var token = sessionStorage.getItem('tokenInfo');
-    if (token) {
-      var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/print/" + apzId, true);
-      xhr.responseType = "blob";
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.onload = function () {
-        console.log(xhr);
-        console.log(xhr.status);
-        if (xhr.status === 200) {
-          //test of IE
-          if (typeof window.navigator.msSaveBlob === "function") {
-            window.navigator.msSaveBlob(xhr.response, "apz-" + new Date().getTime() + ".pdf");
-          } 
-          else {
-            var blob = xhr.response;
-            var link = document.createElement('a');
-            var today = new Date();
-            var curr_date = today.getDate();
-            var curr_month = today.getMonth() + 1;
-            var curr_year = today.getFullYear();
-            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
-            //console.log(curr_day);
-            link.href = window.URL.createObjectURL(blob);
-            link.download = "апз-" + project + formated_date + ".pdf";
-
-            //append the link to the document body
-            document.body.appendChild(link);
-            link.click();
-          }
+        if (data.Status === 3 && data.ApzElectricityStatus === 2) { 
+          this.setState({showButtons: true}); 
         }
       }
-      xhr.send();
-    } else {
-      console.log('session expired');
-    }
+    }.bind(this)
+    xhr.send();
   }
 
-  // accept or decline the form
+  downloadFile(event) {
+    var buffer = event.target.getAttribute("data-file")
+    var name = event.target.getAttribute("data-name");
+    var ext = event.target.getAttribute("data-ext");
+
+    var base64ToArrayBuffer = (function () {
+      
+      return function (base64) {
+        var binaryString =  window.atob(base64);
+        var binaryLen = binaryString.length;
+        var bytes = new Uint8Array(binaryLen);
+        
+        for (var i = 0; i < binaryLen; i++)        {
+          var ascii = binaryString.charCodeAt(i);
+          bytes[i] = ascii;
+        }
+        
+        return bytes; 
+      }
+      
+    }());
+
+    var saveByteArray = (function () {
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+      
+      return function (data, name) {
+        var blob = new Blob(data, {type: "octet/stream"}),
+            url = window.URL.createObjectURL(blob);
+        a.href = url;
+        a.download = name;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      };
+
+    }());
+
+    saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
+  }
+
   acceptDeclineApzForm(apzId, status, comment) {
-    //console.log(apzId);
-    //console.log(status);
     var token = sessionStorage.getItem('tokenInfo');
     var file = this.state.file;
 
@@ -224,40 +293,20 @@ export default class ProviderElectro extends React.Component {
     formData.append('Recomendation', this.state.recomendation);
     formData.append('DocNumber', this.state.docNumber);
 
-    var tempAccForms = this.state.acceptedForms;
-    var tempDecForms = this.state.declinedForms;
-    var tempActForms = this.state.activeForms;
-    // need to get the position of form in the list
-    var formPos = tempActForms.map(function(x) {return x.Id; }).indexOf(apzId);
-    //console.log(formPos);
-
     var xhr = new XMLHttpRequest();
     xhr.open("post", window.url + "api/apz/status/" + apzId, true);
-    //Send the proper header information along with the request
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function () {
       var data = JSON.parse(xhr.responseText);
-      console.log(data);
       if (xhr.status === 200) {
-        if(status === true){
+        var data = JSON.parse(xhr.responseText);
+
+        if(status === true) {
           alert("Заявление принято!");
-          // to hide the buttons
           this.setState({ showButtons: false });
-          tempActForms.splice(formPos,1);
-          this.setState({activeForms: tempActForms});
-          tempAccForms.push(data);
-          this.setState({acceptedForms: tempAccForms});
-          console.log("Заявление принято!");
-        }
-        else{
+        } else {
           alert("Заявление отклонено!");
-          // to hide the buttons
           this.setState({ showButtons: false });
-          tempActForms.splice(formPos,1);
-          this.setState({activeForms: tempActForms});
-          tempDecForms.push(data);
-          this.setState({declinedForms: tempDecForms});
-          console.log("Заявление отклонено!");
         }
       }
       else if(xhr.status === 401){
@@ -269,392 +318,383 @@ export default class ProviderElectro extends React.Component {
     xhr.send(formData); 
   }
 
-  // function to download files
-  downloadFile(event) {
-    var buffer =  event.target.getAttribute("data-file")
-    var name =  event.target.getAttribute("data-name");
-    var ext =  event.target.getAttribute("data-ext");
+  toggleMap(e) {
+    this.setState({
+      showMap: !this.state.showMap
+    })
 
-    var base64ToArrayBuffer = (function () {
-      
-      return function (base64) {
-        var binaryString =  window.atob(base64);
-        var binaryLen = binaryString.length;
-        var bytes = new Uint8Array(binaryLen);
-        
-        for (var i = 0; i < binaryLen; i++)        {
-            var ascii = binaryString.charCodeAt(i);
-            bytes[i] = ascii;
-        }
-        
-        return bytes; 
-      }
-      
-    }());
+    if (this.state.showMap) {
+      this.setState({
+        showMapText: 'Показать карту'
+      })
+    } else {
+      this.setState({
+        showMapText: 'Скрыть карту'
+      })
+    }
+  }
 
-    var saveByteArray = (function () {
-      var a = document.createElement("a");
-      document.body.appendChild(a);
-      a.style = "display: none";
-      
-      return function (data, name) {
-          var blob = new Blob(data, {type: "octet/stream"}),
-              url = window.URL.createObjectURL(blob);
-          a.href = url;
-          a.download = name;
-          a.click();
-          window.URL.revokeObjectURL(url);
-      };
-
-    }());
-
-    saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
+  toDate(date) {
+    if(date === null) {
+      return date;
+    }
+    
+    var jDate = new Date(date);
+    var curr_date = jDate.getDate();
+    var curr_month = jDate.getMonth() + 1;
+    var curr_year = jDate.getFullYear();
+    var curr_hour = jDate.getHours();
+    var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
+    var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
+    
+    return formated_date;
   }
-
-  // createMap(element){
-  //   if(sessionStorage.getItem('tokenInfo')){ 
-  //     console.log(this.refs);
-
-  //     esriLoader.dojoRequire([
-  //     "esri/views/MapView",
-  //     "esri/widgets/LayerList",
-  //     "esri/WebScene",
-  //     "esri/layers/FeatureLayer",
-  //     "esri/layers/TileLayer",
-  //     "esri/widgets/Search",
-  //     "esri/Map",
-  //     "dojo/domReady!"
-  //   ], function(
-  //       MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
-  //     ) {
-  //       var map = new Map({
-  //         basemap: "topo"
-  //       });
-        
-  //       var electroLines = new FeatureLayer({
-  //         url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%9B%D0%B8%D0%BD%D0%B5%D0%B9%D0%BD%D1%8B%D0%B9_%D0%BE%D0%B1%D1%8A%D0%B5%D0%BA%D1%82_%D0%B3%D0%B8%D0%B4%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%B82/FeatureServerkb",
-  //         outFields: ["*"],
-  //         title: "Линии электроснабжения"
-  //       });
-  //       map.add(electroLines);
-
-  //       var electroLinesUnderground = new FeatureLayer({
-  //         url: "http://gis.uaig.kz/server/rest/services/Hosted/%D0%AD%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BA%D0%B0%D0%B1%D0%B5%D0%BB%D0%B8_%D0%BF%D0%BE%D0%B4%D0%B7%D0%B5%D0%BC%D0%BD%D1%8B%D0%B5/FeatureServer",
-  //         outFields: ["*"],
-  //         title: "Электрокабели подземные"
-  //       });
-  //       map.add(electroLinesUnderground);
-
-  //       var sysElectroLines = new FeatureLayer({
-  //         url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%A1%D0%BE%D0%BE%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D1%8B_%D1%8D%D0%BD%D0%B5%D1%80%D0%B3%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F/FeatureServer",
-  //         outFields: ["*"],
-  //         title: "Cооружения системы электроснабжения"
-  //       });
-  //       map.add(sysElectroLines);
-
-  //       var stolby = new FeatureLayer({
-  //         url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%A1%D1%82%D0%BE%D0%BB%D0%B1%D1%8B_%D0%B2%D0%BE%D0%B7%D0%B4%D1%83%D1%88%D0%BD%D1%8B%D1%85_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B9_%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BF%D0%B5%D1%80%D0%B5%D0%B4%D0%B0%D1%872/FeatureServer",
-  //         outFields: ["*"],
-  //         title: "Cтолбы возд. линий электропередач"
-  //       });
-  //       map.add(stolby);
-        
-  //       var flGosAkts = new FeatureLayer({
-  //         url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-  //         outFields: ["*"],
-  //         title: "Гос акты"
-  //       });
-  //       map.add(flGosAkts);
-
-  //       var view = new MapView({
-  //         container: element,
-  //         map: map,
-  //         center: [76.886, 43.250], // lon, lat
-  //         scale: 10000
-  //       });
-        
-  //       var searchWidget = new Search({
-  //         view: view,
-  //         sources: [{
-  //           featureLayer: new FeatureLayer({
-  //             url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-  //             popupTemplate: { // autocasts as new PopupTemplate()
-  //               title: "Кадастровый номер: {cadastral_number} </br> Назначение: {function} <br/> Вид собственности: {ownership}"
-  //             }
-  //           }),
-  //           searchFields: ["cadastral_number"],
-  //           displayField: "cadastral_number",
-  //           exactMatch: false,
-  //           outFields: ["cadastral_number", "function", "ownership"],
-  //           name: "Зарегистрированные государственные акты",
-  //           placeholder: "Кадастровый поиск"
-  //         }]
-  //       });
-  //       // Add the search widget to the top left corner of the view
-  //       view.ui.add(searchWidget, {
-  //         position: "top-right"
-  //       });
-        
-  //       view.then(function() {
-  //         var layerList = new LayerList({
-  //           view: view
-  //         });
-
-  //         // Add widget to the bottom right corner of the view
-  //         view.ui.add(layerList, "bottom-right");
-  //       });     
-  //     });
-  //   }
-  // }
-
-  // onReference(element) {
-  //   if(sessionStorage.getItem('tokenInfo')){
-  //     console.log('mounted');
-  //     if(!esriLoader.isLoaded()) {
-  //       esriLoader.bootstrap(
-  //         err => {
-  //           if(err) {
-  //             console.log(err);
-  //           } else {
-  //             this.createMap(element);
-  //           }
-  //         },
-  //         {
-  //           url: "https://js.arcgis.com/4.5/"
-  //         }
-  //       );
-  //     } else {
-  //       this.createMap(element);
-  //     }
-  //   }
-  // }
-
-  componentWillMount() {
-    //console.log("ProviderComponent will mount");
-  }
-
-  componentDidMount() {
-    //console.log("ProviderComponent did mount");
-    this.getApzFormList();
-  }
-
-  componentWillUnmount() {
-    //console.log("ProviderComponent will unmount");
-  }
-
+  
   render() {
-    //console.log("rendering the ProviderComponent");
-    var acceptedForms = this.state.acceptedForms;
-    var declinedForms = this.state.declinedForms;
-    var activeForms = this.state.activeForms;
-    return (
-      <div>
-        {/*<nav className="navbar-expand-lg navbar-light bg-secondary">
-          <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="container collapse navbar-collapse" id="navbarTogglerDemo03">
-           <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
-             <li className="nav-item">
-               <NavLink to={"/Urban"} replace className="nav-link" activeClassName="active">Гос. услуги 1</NavLink>
-             </li>
-             <li className="nav-item">
-               <NavLink to={"/Urban"} replace className="nav-link" activeClassName="active">Гос. услуги 2</NavLink>
-             </li>
-             <li className="nav-item">
-               <NavLink to={"/Urban"} replace className="nav-link" activeClassName="active">Гос. услуги 3</NavLink>
-             </li>
-            </ul>
-          </div>
-        </nav>*/}
-        <div className="content container">
-          <div className="row">
-            <div className="col-md-3">
-              <h4 style={{textAlign: 'center'}}>Список заявлений</h4>
-            </div>
-            <div className="col-md-6">
-              <h4 style={{textAlign: 'center'}}>Карта</h4>
-            </div>
-            <div className="col-md-3">
-              <h4 style={{textAlign: 'center'}}>Информация</h4>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-3 apz-list card">
-              <h4><span id="in-process">В Процессе</span>
-              {
-                activeForms.map(function(actForm, i){
-                  return(
-                    <li key={i} onClick={this.getApzDetails.bind(this, actForm.Id)}>
-                      {actForm.ProjectName}
-                    </li>
-                  )
-                }.bind(this))
-              }
-              </h4>
-              <h4><span id="accepted">Принятые</span>
-              {
-                acceptedForms.map(function(accForm, i){
-                  return(
-                    <li key={i} onClick={this.getApzDetails.bind(this, accForm.Id)}>
-                      {accForm.ProjectName}
-                    </li>
-                    )
-                }.bind(this))
-              }
-              </h4>
-              <h4><span id="declined">Отказ</span>
-              {
-                declinedForms.map(function(decForm, i){
-                  return(
-                    <li key={i} onClick={this.getApzDetails.bind(this, decForm.Id)}>
-                      {decForm.ProjectName}
-                    </li>
-                  )
-                }.bind(this))
-              }
-              </h4>
-            </div>
-            <div className="col-md-6 apz-additional card" style={{padding:'0'}}>
-              <div className="col-md-12 well" style={{padding:'0', height:'600px', width:'100%'}}>
-                  {/*<div className="viewDivProvider" ref={this.onReference.bind(this)}>
-                    <div className="container">
-                      <p>Загрузка...</p>
-                    </div>
-                  </div>*/}
-              </div>
-            </div>
-            <div id="apz-detailed" className="col-md-3 apz-detailed card" style={{paddingTop: '10px'}}>
-              <div className={this.state.showDetails ? 'row' : 'invisible'}>
-                <div className="col-6"><b>Заявитель</b>:</div><div className="col-6">{this.state.Applicant}</div>
-                <div className="col-6"><b>Адрес</b>:</div><div className="col-6">{this.state.Address}</div>
-                <div className="col-6"><b>Телефон</b>:</div><div className="col-6">{this.state.Phone}</div>
-                <div className="col-6"><b>Заказчик</b>:</div><div className="col-6">{this.state.Customer}</div>
-                <div className="col-6"><b>Разработчик</b>:</div><div className="col-6">{this.state.Designer}</div>
-                <div className="col-6"><b>Название проекта</b>:</div><div className="col-6">{this.state.ProjectName}</div>
-                <div className="col-6"><b>Адрес проекта</b>:</div><div className="col-6">{this.state.ProjectAddress}</div>
-                <div className="col-6"><b>Дата заявления</b>:</div><div className="col-6">{this.state.ApzDate}</div>
-                { this.state.personalIdDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Уд. лич./ Реквизиты</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.personalIdDoc} data-name="Уд. лич./Реквизиты" data-ext={this.state.personalIdDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
-                { this.state.confirmedTaskDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Утвержденное задание</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.confirmedTaskDoc} data-name="Утвержденное задание" data-ext={this.state.confirmedTaskDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
-                { this.state.titleDocumentDoc ? <div className="col-sm-12"><div className="row"><div className="col-6"><b>Правоустанавл. документ</b>:</div> <div className="col-6"><a className="text-info pointer" data-file={this.state.titleDocumentDoc} data-name="Правоустанавл. документ" data-ext={this.state.titleDocumentDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></div></div></div> :''}
-              
-                <div className="row detail">
-                  <br /><br />
-                  <div style={{margin: 'auto', color: '#D77B38'}}><b>Детали электроснабжения</b></div>
-                  <div className="col-7"><b>Требуемая мощность (кВт)</b>:</div><div className="col-5">{this.state.eReqPow}</div>
-                  <div className="col-7"><b>Характер нагрузки (фаза)</b>:</div><div className="col-5">{this.state.ePhase}</div>
-                  <div className="col-7"><b>Категория (кВт)</b>:</div><div className="col-2">{this.state.eSafeCat}</div>
-                  <div className="col-7"><b>Из указ. макс. нагрузки относ. к э-приемникам (кВА)</b>:</div><div className="col-5">{this.state.eMaxLDev}</div>
-                  <div className="col-7"><b>Сущ. макс. нагрузка (кВА)</b>:</div><div className="col-5">{this.state.eMaxLoad}</div>
-                  <div className="col-7"><b>Мощность трансформаторов (кВА)</b>:</div><div className="col-5">{this.state.eAllowedP}</div>
-                </div>
+    var apz = this.state.apz;
 
-                <div className={this.state.showButtons ? 'btn-group' : 'invisible'} role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
-                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
-                          data-toggle="modal" data-target="#AcceptApzForm">
-                    Одобрить
-                  </button>
-                  <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#DeclineApzForm">
-                    Отклонить
-                  </button>
-                  <div className="modal fade" id="AcceptApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                    <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
-                      <div className="modal-content">
-                        <div className="modal-header">
-                          <h5 className="modal-title">Одобрение Заявки</h5>
-                          <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </div>
-                        <div className="modal-body">
-                          <div className="row">
-                            <div className="col-md-6">
-                              <div className="form-group">
-                                <label htmlFor="pname">Наименование объекта</label>
-                                <input type="text" className="form-control" id="pname" placeholder="Название" value={this.state.ProjectName} />
-                              </div>
-                              <div className="form-group">
-                                <label htmlFor="adress">Адрес объекта</label>
-                                <input type="text" className="form-control" id="adress" placeholder="Адрес" value={this.state.ProjectAddress} />
-                              </div>
-                              <div className="form-group">
-                                <label>Требуемая мощность (кВт)</label>
-                                <input type="number" className="form-control" placeholder="" value={this.state.elecReqPower} onChange={this.onElecReqPowerChange} />
-                              </div>
-                              <div className="form-group">
-                                <label>Характер нагрузки (фаза)</label>
-                                <select value={this.state.value} onChange={this.onElecPhaseChange}>
-                                  <option>Однофазная</option>
-                                  <option>Трехфазная</option>
-                                  <option>Постоянная</option>
-                                  <option>Временная</option>
-                                  <option>Сезонная</option>
-                                </select>
-                              </div>
-                              <div className="form-group">
-                                <label>Категория по надежности (кВт)</label>
-                                <input type="number" className="form-control" required placeholder="" value={this.state.elecSafeCategory} onChange={this.onElecSafeCategoryChange} />
-                              </div>
-                            </div>
-                            <div className="col-md-6">
-                              <div className="form-group">
-                                <label>Точка подключения</label>
-                                <input type="text" className="form-control" placeholder="" value={this.state.connectionPoint} onChange={this.onConnectionPointChange} />
-                              </div>
-                              <div className="form-group">
-                                <label>Рекомендация</label>
-                                <textarea rows="5" className="form-control" value={this.state.recomendation} onChange={this.onRecomendationChange} placeholder="Описание"></textarea>
-                              </div>
-                              <div className="form-group">
-                                <label>Номер документа</label>
-                                <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
-                              </div>
-                              <div className="form-group">
-                                <label htmlFor="upload_file">Прикрепить файл</label>
-                                <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="modal-footer">
-                          <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, true, "your form was accepted")}>Отправить</button>
-                          <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                        </div>
-                      </div>
+    return (
+      <div className="row">
+        <div className="col-sm-6">
+          <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
+          
+          <table className="table table-bordered table-striped">
+            <tbody>
+              <tr>
+                <td style={{width: '40%'}}><b>Заявитель</b></td>
+                <td>{apz.Applicant}</td>
+              </tr>
+              <tr>
+                <td><b>Адрес</b></td>
+                <td>{apz.Address}</td>
+              </tr>
+              <tr>
+                <td><b>Телефон</b></td>
+                <td>{apz.Phone}</td>
+              </tr>
+              <tr>
+                <td><b>Заказчик</b></td>
+                <td>{apz.Customer}</td>
+              </tr>
+              <tr>
+                <td><b>Разработчик</b></td>
+                <td>{apz.Designer}</td>
+              </tr>
+              <tr>
+                <td><b>Название проекта</b></td>
+                <td>{apz.ProjectName}</td>
+              </tr>
+              <tr>
+                <td><b>Адрес проекта</b></td>
+                <td>{apz.ProjectAddress}</td>
+              </tr>
+              <tr>
+                <td><b>Дата заявления</b></td>
+                <td>{this.toDate(apz.ApzDate)}</td>
+              </tr>
+              
+              {apz.PersonalIdFile != null &&
+                <tr>
+                  <td><b>Уд. лич./ Реквизиты</b></td>
+                  <td><a className="text-info pointer" data-file={apz.PersonalIdFile} data-name="Уд. лич./Реквизиты" data-ext={apz.PersonalIdFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                </tr>
+              }
+
+              {apz.ConfirmedTaskFile != null &&
+                <tr>
+                  <td><b>Утвержденное задание</b></td>
+                  <td><a className="text-info pointer" data-file={apz.ConfirmedTaskFile} data-name="Утвержденное задание" data-ext={apz.ConfirmedTaskFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                </tr>
+              }
+
+              {apz.TitleDocumentFile != null &&
+                <tr>
+                  <td><b>Правоустанавл. документ</b></td>
+                  <td><a className="text-info pointer" data-file={apz.TitleDocumentFile} data-name="Правоустанавл. документ" data-ext={apz.TitleDocumentFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div className="col-sm-6">
+          <h5 className="block-title-2 mt-3 mb-3">Детали электроснабжения</h5>
+
+          <table className="table table-bordered table-striped">
+            <tbody>
+              <tr>
+                <td style={{width: '40%'}}>Требуемая мощность (кВт)</td> 
+                <td>{apz.ElectricRequiredPower}</td>
+              </tr>
+              <tr>
+                <td>Характер нагрузки (фаза)</td>
+                <td>{apz.ElectricityPhase}</td>
+              </tr>
+              <tr>
+                <td>Категория (кВт)</td>
+                <td>{apz.ElectricSafetyCategory}</td>
+              </tr>
+              <tr>
+                <td>Из указ. макс. нагрузки относ. к э-приемникам (кВА)</td>
+                <td>{apz.ElectricMaxLoadDevice}</td>
+              </tr>
+              <tr>
+                <td>Сущ. макс. нагрузка (кВА)</td>
+                <td>{apz.ElectricMaxLoad}</td>
+              </tr>
+              <tr>
+                <td>Мощность трансформаторов (кВА)</td>
+                <td>{apz.ElectricAllowedPower}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div className={this.state.showButtons ? '' : 'invisible'}>
+            <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
+              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
+                      data-toggle="modal" data-target="#AcceptApzForm">
+                Одобрить
+              </button>
+              <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#DeclineApzForm">
+                Отклонить
+              </button>
+              <div className="modal fade" id="AcceptApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title">Одобрение Заявки</h5>
+                      <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
                     </div>
-                  </div>
-                  <div className="modal fade" id="DeclineApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                    <div className="modal-dialog" role="document">
-                      <div className="modal-content">
-                        <div className="modal-header">
-                          <h5 className="modal-title">Отклонение Заявки</h5>
-                          <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </div>
-                        <div className="modal-body">
+                    <div className="modal-body">
+                      <div className="row">
+                        <div className="col-md-6">
                           <div className="form-group">
-                            <label htmlFor="docNumber">Номер документа</label>
-                            <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+                            <label htmlFor="pname">Наименование объекта</label>
+                            <input type="text" className="form-control" id="pname" placeholder="Название" value={apz.ProjectName} />
                           </div>
                           <div className="form-group">
-                           <label>Причина отклонения</label>
-                            <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
+                            <label htmlFor="adress">Адрес объекта</label>
+                            <input type="text" className="form-control" id="adress" placeholder="Адрес" value={apz.ProjectAddress} />
+                          </div>
+                          <div className="form-group">
+                            <label>Требуемая мощность (кВт)</label>
+                            <input type="number" className="form-control" placeholder="" value={this.state.elecReqPower} onChange={this.onElecReqPowerChange} />
+                          </div>
+                          <div className="form-group">
+                            <label>Характер нагрузки (фаза)</label>
+                            <select className="form-control" value={this.state.value} onChange={this.onElecPhaseChange}>
+                              <option>Однофазная</option>
+                              <option>Трехфазная</option>
+                              <option>Постоянная</option>
+                              <option>Временная</option>
+                              <option>Сезонная</option>
+                            </select>
+                          </div>
+                          <div className="form-group">
+                            <label>Категория по надежности (кВт)</label>
+                            <input type="number" className="form-control" required placeholder="" value={this.state.elecSafeCategory} onChange={this.onElecSafeCategoryChange} />
+                          </div>
+                        </div>
+                        <div className="col-md-6">
+                          <div className="form-group">
+                            <label>Точка подключения</label>
+                            <input type="text" className="form-control" placeholder="" value={this.state.connectionPoint} onChange={this.onConnectionPointChange} />
+                          </div>
+                          <div className="form-group">
+                            <label>Рекомендация</label>
+                            <textarea rows="5" className="form-control" value={this.state.recomendation} onChange={this.onRecomendationChange} placeholder="Описание"></textarea>
+                          </div>
+                          <div className="form-group">
+                            <label>Номер документа</label>
+                            <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
                           </div>
                           <div className="form-group">
                             <label htmlFor="upload_file">Прикрепить файл</label>
                             <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
                           </div>
                         </div>
-                        <div className="modal-footer">
-                          <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, false, this.state.description)}>Отправить</button>
-                          <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                        </div>
                       </div>
+                    </div>
+                    <div className="modal-footer">
+                      <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, apz.Id, true, "your form was accepted")}>Отправить</button>
+                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                     </div>
                   </div>
                 </div>
               </div>
+              <div className="modal fade" id="DeclineApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                <div className="modal-dialog" role="document">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title">Отклонение Заявки</h5>
+                      <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div className="modal-body">
+                      <div className="form-group">
+                        <label htmlFor="docNumber">Номер документа</label>
+                        <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+                      </div>
+                      <div className="form-group">
+                       <label>Причина отклонения</label>
+                        <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="upload_file">Прикрепить файл</label>
+                        <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                      </div>
+                    </div>
+                    <div className="modal-footer">
+                      <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, apz.Id, false, this.state.description)}>Отправить</button>
+                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-sm-12">
+          {this.state.showMap && <ShowMap />} 
+
+          <button className="btn btn-raised btn-info" onClick={this.toggleMap} style={{margin: '20px auto 10px'}}>
+            {this.state.showMapText}
+          </button>
+        </div>
+      </div>
+    )
+  }
+}
+
+class ShowMap extends React.Component {
+  createMap(element){
+    if(sessionStorage.getItem('tokenInfo')){ 
+      esriLoader.dojoRequire([
+      "esri/views/MapView",
+      "esri/widgets/LayerList",
+      "esri/WebScene",
+      "esri/layers/FeatureLayer",
+      "esri/layers/TileLayer",
+      "esri/widgets/Search",
+      "esri/Map",
+      "dojo/domReady!"
+    ], function(
+        MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
+      ) {
+        var map = new Map({
+          basemap: "topo"
+        });
+        
+        var electroLines = new FeatureLayer({
+          url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%9B%D0%B8%D0%BD%D0%B5%D0%B9%D0%BD%D1%8B%D0%B9_%D0%BE%D0%B1%D1%8A%D0%B5%D0%BA%D1%82_%D0%B3%D0%B8%D0%B4%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%B82/FeatureServerkb",
+          outFields: ["*"],
+          title: "Линии электроснабжения"
+        });
+        map.add(electroLines);
+
+        var electroLinesUnderground = new FeatureLayer({
+          url: "http://gis.uaig.kz/server/rest/services/Hosted/%D0%AD%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BA%D0%B0%D0%B1%D0%B5%D0%BB%D0%B8_%D0%BF%D0%BE%D0%B4%D0%B7%D0%B5%D0%BC%D0%BD%D1%8B%D0%B5/FeatureServer",
+          outFields: ["*"],
+          title: "Электрокабели подземные"
+        });
+        map.add(electroLinesUnderground);
+
+        var sysElectroLines = new FeatureLayer({
+          url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%A1%D0%BE%D0%BE%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D1%8B_%D1%8D%D0%BD%D0%B5%D1%80%D0%B3%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F/FeatureServer",
+          outFields: ["*"],
+          title: "Cооружения системы электроснабжения"
+        });
+        map.add(sysElectroLines);
+
+        var stolby = new FeatureLayer({
+          url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%A1%D1%82%D0%BE%D0%BB%D0%B1%D1%8B_%D0%B2%D0%BE%D0%B7%D0%B4%D1%83%D1%88%D0%BD%D1%8B%D1%85_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B9_%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BF%D0%B5%D1%80%D0%B5%D0%B4%D0%B0%D1%872/FeatureServer",
+          outFields: ["*"],
+          title: "Cтолбы возд. линий электропередач"
+        });
+        map.add(stolby);
+        
+        var flGosAkts = new FeatureLayer({
+          url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+          outFields: ["*"],
+          title: "Гос акты"
+        });
+        map.add(flGosAkts);
+
+        var view = new MapView({
+          container: element,
+          map: map,
+          center: [76.886, 43.250], // lon, lat
+          scale: 10000
+        });
+        
+        var searchWidget = new Search({
+          view: view,
+          sources: [{
+            featureLayer: new FeatureLayer({
+              url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+              popupTemplate: { // autocasts as new PopupTemplate()
+                title: "Кадастровый номер: {cadastral_number} </br> Назначение: {function} <br/> Вид собственности: {ownership}"
+              }
+            }),
+            searchFields: ["cadastral_number"],
+            displayField: "cadastral_number",
+            exactMatch: false,
+            outFields: ["cadastral_number", "function", "ownership"],
+            name: "Зарегистрированные государственные акты",
+            placeholder: "Кадастровый поиск"
+          }]
+        });
+        // Add the search widget to the top left corner of the view
+        view.ui.add(searchWidget, {
+          position: "top-right"
+        });
+        
+        view.then(function() {
+          var layerList = new LayerList({
+            view: view
+          });
+
+          // Add widget to the bottom right corner of the view
+          view.ui.add(layerList, "bottom-right");
+        });     
+      });
+    }
+  }
+
+  onReference(element) {
+    if(sessionStorage.getItem('tokenInfo')){
+      console.log('mounted');
+      if(!esriLoader.isLoaded()) {
+        esriLoader.bootstrap(
+          err => {
+            if(err) {
+              console.log(err);
+            } else {
+              this.createMap(element);
+            }
+          },
+          {
+            url: "https://js.arcgis.com/4.5/"
+          }
+        );
+      } else {
+        this.createMap(element);
+      }
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <h5 className="block-title-2 mt-3 mb-3">Карта</h5>
+        <div className="col-md-12 well" style={{padding: '0', height:'600px', width:'100%'}}>
+          <div className="viewDivCitizen" ref={this.onReference.bind(this)}>
+            <div className="container">
+              <p>Загрузка...</p>
             </div>
           </div>
         </div>
