@@ -23,11 +23,11 @@ export default class ProviderWater extends React.Component {
       ProjectAddress: "",
       ApzDate: "",
       wReq: 0, wDrink: 0, wProd: 0, wFireF: 0, wS: 0,
-      genWaterReq: "",
-      drinkingWater: "",
-      prodWater: "",
-      fireFightingWaterIn: "",
-      fireFightingWaterOut: "",
+      genWaterReq: 0,
+      drinkingWater: 0,
+      prodWater: 0,
+      fireFightingWaterIn: 0,
+      fireFightingWaterOut: 0,
       connectionPoint: "",
       recomendation: "",
       docNumber: "",
@@ -634,13 +634,18 @@ export default class ProviderWater extends React.Component {
                     <div className="modal-dialog" role="document">
                       <div className="modal-content">
                         <div className="modal-header">
-                          <h5 className="modal-title">Причина отклонения</h5>
+                          <h5 className="modal-title">Отклонение Заявки</h5>
                           <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                           </button>
                         </div>
                         <div className="modal-body">
                           <div className="form-group">
+                            <label htmlFor="docNumber">Номер документа</label>
+                            <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+                          </div>
+                          <div className="form-group">
+                           <label>Причина отклонения</label>
                             <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
                           </div>
                           <div className="form-group">

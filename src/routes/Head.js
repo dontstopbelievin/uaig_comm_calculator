@@ -54,6 +54,7 @@ export default class Head extends React.Component {
       elecRecomendation: "",
       elecDocNumber: "",
 
+      docNumber: "",
       description: "",
       file: [],
       waterDoc: null,
@@ -82,12 +83,17 @@ export default class Head extends React.Component {
     }
 
     this.getApzFormList = this.getApzFormList.bind(this);
+    this.onDocNumberChange = this.onDocNumberChange.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
     this.toggleGasDetail = this.toggleGasDetail.bind(this);
     this.toggleWaterDetail = this.toggleWaterDetail.bind(this);
     this.toggleElectroDetail = this.toggleElectroDetail.bind(this);
     this.toggleHeatDetail = this.toggleHeatDetail.bind(this);
+  }
+
+  onDocNumberChange(e) {
+    this.setState({ docNumber: e.target.value });
   }
 
   onDescriptionChange(e) {
@@ -133,7 +139,7 @@ export default class Head extends React.Component {
     xhr.onload = function () {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-        //console.log(data);
+        console.log(data);
         // filter the whole list to get only accepted apzForms
         var acc_forms_list = data.filter(function(obj) { return (obj.Status === 1 && (obj.HeadDate !== null && obj.HeadResponse === null)); });
         this.setState({acceptedForms: acc_forms_list});
@@ -245,47 +251,6 @@ export default class Head extends React.Component {
     }.bind(this);
   }
 
-  // function to print apzForm in .pdf format
-  printApz(apzId, project) {
-    //console.log(apzId);
-    var token = sessionStorage.getItem('tokenInfo');
-    if (token) {
-      var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/print/" + apzId, true);
-      xhr.responseType = "blob";
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.onload = function () {
-        console.log(xhr);
-        console.log(xhr.status);
-        if (xhr.status === 200) {
-          //test of IE
-          if (typeof window.navigator.msSaveBlob === "function") {
-            window.navigator.msSaveBlob(xhr.response, "apz-" + new Date().getTime() + ".pdf");
-          } 
-          else {
-            var blob = xhr.response;
-            var link = document.createElement('a');
-            var today = new Date();
-            var curr_date = today.getDate();
-            var curr_month = today.getMonth() + 1;
-            var curr_year = today.getFullYear();
-            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
-            //console.log(curr_day);
-            link.href = window.URL.createObjectURL(blob);
-            link.download = "апз-" + project + formated_date + ".pdf";
-
-            //append the link to the document body
-            document.body.appendChild(link);
-            link.click();
-          }
-        }
-      }
-      xhr.send();
-    } else {
-      console.log('session expired');
-    }
-  }
-
   // accept or decline the form
   acceptDeclineApzForm(apzId, status, comment) {
     //console.log(apzId);
@@ -297,6 +262,7 @@ export default class Head extends React.Component {
     formData.append('file', file);
     formData.append('Response', status);
     formData.append('Message', comment);
+    formData.append('DocNumber', this.state.docNumber);
 
     var tempAccForms = this.state.acceptedForms;
     var tempDecForms = this.state.declinedForms;
@@ -744,39 +710,76 @@ export default class Head extends React.Component {
                     </div>
                   }
                 </div>
-                
-                <div className={this.state.showButtons ? 'col-sm-12 mt-2' : 'invisible'}>
-                  <label htmlFor="upload_file">Файл</label>
-                  <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
-                </div>
 
                 <div className={this.state.showButtons ? 'btn-group' : 'invisible'} role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
                   { this.state.response ? 
-                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
-                            onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, true, "your form was accepted")}>
+                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} 
+                            data-toggle="modal" data-target="#AcceptApzForm">
                       Одобрить
                     </button>
                     :
-                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
-                            onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, true, "your form was accepted")} disabled="disabled">
+                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled="disabled">
                       Одобрить
                     </button>
                   }
-                  <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
+                  <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#DeclineApzForm">
                     Отклонить
                   </button>
-                  <div className="modal fade" id="accDecApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                  <div className="modal fade" id="AcceptApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
                     <div className="modal-dialog" role="document">
                       <div className="modal-content">
                         <div className="modal-header">
-                          <h5 className="modal-title">Причина отклонения</h5>
+                          <h5 className="modal-title">Одобрение Заявки</h5>
                           <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                           </button>
                         </div>
                         <div className="modal-body">
                           <div className="form-group">
+                            <label htmlFor="pname">Наименование объекта</label>
+                            <input type="text" className="form-control" id="pname" placeholder="Название" value={this.state.ProjectName} />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="adress">Адрес объекта</label>
+                            <input type="text" className="form-control" id="adress" placeholder="Адрес" value={this.state.ProjectAddress} />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="docNumber">Номер документа</label>
+                            <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="upload_file">Прикрепить файл</label>
+                            <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                          </div>
+                        </div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, this.state.Id, true, "your form was accepted")}>Отправить</button>
+                          <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="modal fade" id="DeclineApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                    <div className="modal-dialog" role="document">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title">Отклонение Заявки</h5>
+                          <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div className="modal-body">
+                          <div className="form-group">
+                            <label htmlFor="docNumber">Номер документа</label>
+                            <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+                          </div>
+                          <div className="form-group">
+                           <label>Причина отклонения</label>
                             <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="upload_file">Прикрепить файл</label>
+                            <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
                           </div>
                         </div>
                         <div className="modal-footer">

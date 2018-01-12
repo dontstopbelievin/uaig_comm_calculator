@@ -600,13 +600,18 @@ export default class ProviderGas extends React.Component {
                     <div className="modal-dialog" role="document">
                       <div className="modal-content">
                         <div className="modal-header">
-                          <h5 className="modal-title">Причина отклонения</h5>
+                          <h5 className="modal-title">Отклонение Заявки</h5>
                           <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                           </button>
                         </div>
                         <div className="modal-body">
                           <div className="form-group">
+                            <label htmlFor="docNumber">Номер документа</label>
+                            <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+                          </div>
+                          <div className="form-group">
+                           <label>Причина отклонения</label>
                             <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
                           </div>
                           <div className="form-group">
