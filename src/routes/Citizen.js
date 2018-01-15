@@ -1,5 +1,6 @@
 import React from 'react';
-import * as esriLoader from 'esri-loader';
+//import * as esriLoader from 'esri-loader';
+import EsriLoaderReact from 'esri-loader-react';
 import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
@@ -68,15 +69,15 @@ class AllApzs extends React.Component {
             break;
 
           case 'accepted':
-            var apzs = data.filter(function(obj) { return obj.Status === 1; });
+            apzs = data.filter(function(obj) { return obj.Status === 1; });
             break;
 
           case 'declined':
-            var apzs = data.filter(function(obj) { return obj.Status === 0; });
+            apzs = data.filter(function(obj) { return obj.Status === 0; });
             break;
 
           default:
-            var apzs = data;
+            apzs = data;
             break;
         }
         
@@ -138,7 +139,7 @@ class AllApzs extends React.Component {
               })
             }
 
-            {this.state.apzs.length == 0 &&
+            {this.state.apzs.length === 0 &&
               <tr>
                 <td colSpan="3">Пусто</td>
               </tr>
@@ -1025,113 +1026,97 @@ class ShowApz extends React.Component {
 }
 
 class ShowMap extends React.Component {
-  onReference(element) {
-    if(!esriLoader.isLoaded()) {
-      esriLoader.bootstrap(
-        err => {
-          if(err) {
-            console.log(err);
-          } else {
-            this.createMap(element);
-          }
-        },
-        {
-          url: "https://js.arcgis.com/4.5/"
-        }
-      );
-    } else {
-      this.createMap(element);
-    }
-  }
-
-  createMap(element){
-    esriLoader.dojoRequire([
-      "esri/views/MapView",
-      "esri/widgets/LayerList",
-      "esri/WebScene",
-      "esri/layers/FeatureLayer",
-      "esri/layers/TileLayer",
-      "esri/widgets/Search",
-      "esri/Map",
-      "dojo/domReady!"
-    ], function(
-      MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
-    ) {
-      var map = new Map({
-        basemap: "topo"
-      });
-      
-      var flRedLines = new FeatureLayer({
-        url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D1%8B%D0%B5_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B8/FeatureServer",
-        outFields: ["*"],
-        title: "Красные линии"
-      });
-      map.add(flRedLines);
-
-      var flFunZones = new FeatureLayer({
-        url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%A4%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B7%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B52/FeatureServer",
-        outFields: ["*"],
-        title: "Функциональное зонирование"
-      });
-      map.add(flFunZones);
-    
-      var flGosAkts = new FeatureLayer({
-        url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-        outFields: ["*"],
-        title: "Гос акты"
-      });
-      map.add(flGosAkts);
-      
-      var view = new MapView({
-        container: element,
-        map: map,
-        center: [76.886, 43.250], // lon, lat
-        scale: 10000
-      });
-      
-      var searchWidget = new Search({
-        view: view,
-        sources: [{
-          featureLayer: new FeatureLayer({
-            url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-            popupTemplate: { // autocasts as new PopupTemplate()
-              title: "Кадастровый номер: {cadastral_number} </br> Назначение: {function} <br/> Вид собственности: {ownership}"
-            }
-          }),
-          searchFields: ["cadastral_number"],
-          displayField: "cadastral_number",
-          exactMatch: false,
-          outFields: ["cadastral_number", "function", "ownership"],
-          name: "Зарегистрированные государственные акты",
-          placeholder: "Кадастровый поиск"
-        }]
-      });
-      // Add the search widget to the top left corner of the view
-      view.ui.add(searchWidget, {
-        position: "top-right"
-      });
-      
-      view.then(function() {
-        var layerList = new LayerList({
-          view: view
-        });
-
-        // Add widget to the top right corner of the view
-        view.ui.add(layerList, "bottom-right");
-      });
-    });
-  }
-
   render() {
+    const options = {
+      url: 'https://js.arcgis.com/4.6/'
+    };
+
     return (
       <div>
         <h5 className="block-title-2 mt-5 mb-3">Карта</h5>
-        <div className="col-md-12 well" style={{padding: '0', height:'600px', width:'100%'}}>
-          <div className="viewDivCitizen" ref={this.onReference.bind(this)}>
-            <div className="container">
-              <p>Загрузка...</p>
-            </div>
-          </div>
+        <div className="col-md-12 viewDivCitizen"> 
+          <EsriLoaderReact options={options} 
+            modulesToLoad={[
+              'esri/views/MapView',
+              
+              'esri/widgets/LayerList',
+
+              'esri/layers/FeatureLayer',
+              'esri/layers/TileLayer',
+              'esri/widgets/Search',
+              'esri/Map',
+              'dojo/domReady!'
+            ]}    
+            
+            onReady={({loadedModules: [MapView, LayerList, FeatureLayer, TileLayer, Search, Map], containerNode}) => {
+              var map = new Map({
+                basemap: "topo"
+              });
+              
+              var flRedLines = new FeatureLayer({
+                url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D1%8B%D0%B5_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B8/FeatureServer",
+                outFields: ["*"],
+                title: "Красные линии"
+              });
+              map.add(flRedLines);
+
+              var flFunZones = new FeatureLayer({
+                url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%A4%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B7%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B52/FeatureServer",
+                outFields: ["*"],
+                title: "Функциональное зонирование"
+              });
+              map.add(flFunZones);
+            
+              var flGosAkts = new FeatureLayer({
+                url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+                outFields: ["*"],
+                title: "Гос акты"
+              });
+              map.add(flGosAkts);
+              
+              var view = new MapView({
+                container: containerNode,
+                map: map,
+                center: [76.886, 43.250], // lon, lat
+                scale: 10000
+              });
+              
+              var searchWidget = new Search({
+                view: view,
+                sources: [{
+                  featureLayer: new FeatureLayer({
+                    url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+                    popupTemplate: { // autocasts as new PopupTemplate()
+                      title: "Кадастровый номер: {cadastral_number} </br> Назначение: {function} <br/> Вид собственности: {ownership}"
+                    }
+                  }),
+                  searchFields: ["cadastral_number"],
+                  displayField: "cadastral_number",
+                  exactMatch: false,
+                  outFields: ["cadastral_number", "function", "ownership"],
+                  name: "Зарегистрированные государственные акты",
+                  placeholder: "Кадастровый поиск"
+                }]
+              });
+    
+              view.when( function(callback){
+                var layerList = new LayerList({
+                  view: view
+                });
+
+                // Add the search widget to the top right corner of the view
+                view.ui.add(searchWidget, {
+                  position: "top-right"
+                });
+
+                // Add widget to the bottom right corner of the view
+                view.ui.add(layerList, "bottom-right");
+
+              }, function(error) {
+                console.log('MapView promise rejected! Message: ', error);
+              });
+            }}
+          /> 
         </div>
       </div>
     )
