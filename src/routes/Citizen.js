@@ -1034,26 +1034,29 @@ class ShowMap extends React.Component {
     return (
       <div>
         <h5 className="block-title-2 mt-5 mb-3">Карта</h5>
-        <div className="col-md-12 viewDivCitizen"> 
+        <div className="col-md-12 viewDiv"> 
           <EsriLoaderReact options={options} 
             modulesToLoad={[
               'esri/views/MapView',
               
               'esri/widgets/LayerList',
 
+              'esri/WebScene',
               'esri/layers/FeatureLayer',
               'esri/layers/TileLayer',
               'esri/widgets/Search',
-              'esri/Map',
+              'esri/WebMap',
               'dojo/domReady!'
             ]}    
             
-            onReady={({loadedModules: [MapView, LayerList, FeatureLayer, TileLayer, Search, Map], containerNode}) => {
-              var map = new Map({
-                basemap: "topo"
+            onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap], containerNode}) => {
+              var map = new WebMap({
+                portalItem: {
+                  id: "caa580cafc1449dd9aa4fd8eafd3a14d"
+                }
               });
               
-              var flRedLines = new FeatureLayer({
+              /*var flRedLines = new FeatureLayer({
                 url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D1%8B%D0%B5_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B8/FeatureServer",
                 outFields: ["*"],
                 title: "Красные линии"
@@ -1072,7 +1075,7 @@ class ShowMap extends React.Component {
                 outFields: ["*"],
                 title: "Гос акты"
               });
-              map.add(flGosAkts);
+              map.add(flGosAkts);*/
               
               var view = new MapView({
                 container: containerNode,

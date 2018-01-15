@@ -1,5 +1,6 @@
 import React from 'react';
-import * as esriLoader from 'esri-loader';
+//import * as esriLoader from 'esri-loader';
+import EsriLoaderReact from 'esri-loader-react';
 //import { NavLink } from 'react-router-dom';
 import { Route, NavLink, Link, Switch, Redirect } from 'react-router-dom';
 
@@ -73,15 +74,15 @@ class AllApzs extends React.Component {
             break;
 
           case 'accepted':
-            var apzs = data.filter(function(obj) { return obj.ApzWaterStatus === 1; });
+            apzs = data.filter(function(obj) { return obj.ApzWaterStatus === 1; });
             break;
 
           case 'declined':
-            var apzs = data.filter(function(obj) { return obj.ApzWaterStatus === 0; });
+            apzs = data.filter(function(obj) { return obj.ApzWaterStatus === 0; });
             break;
 
           default:
-            var apzs = data;
+            apzs = data;
             break;
         }
         
@@ -114,11 +115,11 @@ class AllApzs extends React.Component {
                 <tr key={index}>
                   <td>{apz.ProjectName}</td>
                   <td>
-                    {apz.ApzWaterStatus == 0 &&
+                    {apz.ApzWaterStatus === 0 &&
                       <span className="text-danger">Отказано</span>
                     }
 
-                    {apz.ApzWaterStatus == 1 &&
+                    {apz.ApzWaterStatus === 1 &&
                       <span className="text-success">Принято</span>
                     }
 
@@ -131,7 +132,7 @@ class AllApzs extends React.Component {
                   </td>
                 </tr>
                 );
-              }.bind(this))
+              })
             }
           </tbody>
         </table>
@@ -311,9 +312,8 @@ class ShowApz extends React.Component {
     xhr.open("post", window.url + "api/apz/status/" + apzId, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function () {
-      var data = JSON.parse(xhr.responseText);
       if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
+        //var data = JSON.parse(xhr.responseText);
 
         if(status === true) {
           alert("Заявление принято!");
@@ -481,7 +481,7 @@ class ShowApz extends React.Component {
                       <div className="col-md-6">
                         <div className="form-group">
                           <label htmlFor="pname">Наименование объекта</label>
-                          <input type="text" className="form-control" id="pname" placeholder="Название" value={apz.ProjectName} />
+                          <input type="text" className="form-control" id="pname" placeholder={apz.ProjectName} />
                         </div>
                         <div className="form-group">
                           <label>Общая потребность (м<sup>3</sup>/сутки)</label>
@@ -507,7 +507,7 @@ class ShowApz extends React.Component {
                       <div className="col-md-6">
                         <div className="form-group">
                           <label htmlFor="adress">Адрес объекта</label>
-                          <input type="text" className="form-control" id="adress" placeholder="Адрес" value={apz.ProjectAddress} />
+                          <input type="text" className="form-control" id="adress" placeholder={apz.ProjectAddress} />
                         </div>
                         <div className="form-group">
                           <label>Точка подключения</label>
@@ -586,127 +586,109 @@ class ShowApz extends React.Component {
 }
 
 class ShowMap extends React.Component {
-  createMap(element){
-    if(sessionStorage.getItem('tokenInfo')){ 
-      esriLoader.dojoRequire([
-      "esri/views/MapView",
-      "esri/widgets/LayerList",
-      "esri/WebScene",
-      "esri/layers/FeatureLayer",
-      "esri/layers/TileLayer",
-      "esri/widgets/Search",
-      "esri/WebMap",
-      "dojo/domReady!"
-    ], function(
-        MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap
-      ) {
-        var map = new WebMap({
-          portalItem: {
-            id: "a0b7247966fa4754ad21634c3844371f"
-          }
-        });
-        /*
-        var waterLines = new FeatureLayer({
-          url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%A2%D1%80%D1%83%D0%B1%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D1%8B_%D0%B2%D0%BE%D0%B4%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F2/FeatureServer",
-          outFields: ["*"],
-          title: "Трубопроводы водоснабжения"
-        });
-        map.add(waterLines);
-
-        var waterLineSafetyZone = new FeatureLayer({
-          url: 'https://gis.uaig.kz/server/rest/services/Hosted/%D0%9E%D1%85%D1%80%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F_%D0%B7%D0%BE%D0%BD%D0%B0_%D0%B2%D0%BE%D0%B4%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D0%B0/FeatureServer',
-          outFields: ["*"],
-          title: "Охранная зона водопровода"
-        });
-        map.add(waterLineSafetyZone);
-
-        var waterResourse = new FeatureLayer({
-          url: 'https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%BE%D0%BD%D0%B0_%D0%BE%D0%B1%D0%B5%D1%81%D0%BF%D0%B5%D1%87%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8_%D0%B2%D0%BE%D0%B4%D0%BD%D1%8B%D0%BC%D0%B8_%D1%80%D0%B5%D1%81%D1%83%D1%80%D1%81%D0%B0%D0%BC%D0%B8/FeatureServer',
-          outFields: ["*"],
-          title: "Зоны обеспеч. водными ресурсами"
-        });
-        map.add(waterResourse);
-
-        var flGosAkts = new FeatureLayer({
-          url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-          outFields: ["*"],
-          title: "Гос акты"
-        });
-        map.add(flGosAkts);
-        */
-        var view = new MapView({
-          container: element,
-          map: map,
-          center: [76.886, 43.250], // lon, lat
-          scale: 10000
-        });
-        
-        var searchWidget = new Search({
-          view: view,
-          sources: [{
-            featureLayer: new FeatureLayer({
-              url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-              popupTemplate: { // autocasts as new PopupTemplate()
-                title: "Кадастровый номер: {cadastral_number} </br> Назначение: {function} <br/> Вид собственности: {ownership}"
-              }
-            }),
-            searchFields: ["cadastral_number"],
-            displayField: "cadastral_number",
-            exactMatch: false,
-            outFields: ["cadastral_number", "function", "ownership"],
-            name: "Зарегистрированные государственные акты",
-            placeholder: "Кадастровый поиск"
-          }]
-        });
-        // Add the search widget to the top left corner of the view
-        view.ui.add(searchWidget, {
-          position: "top-right"
-        });
-        
-        view.then(function() {
-          var layerList = new LayerList({
-            view: view
-          });
-
-          // Add widget to the bottom right corner of the view
-          view.ui.add(layerList, "bottom-right");
-        });     
-      });
-    }
-  }
-
-  onReference(element) {
-    if(sessionStorage.getItem('tokenInfo')){
-      console.log('mounted');
-      if(!esriLoader.isLoaded()) {
-        esriLoader.bootstrap(
-          err => {
-            if(err) {
-              console.log(err);
-            } else {
-              this.createMap(element);
-            }
-          },
-          {
-            url: "https://js.arcgis.com/4.5/"
-          }
-        );
-      } else {
-        this.createMap(element);
-      }
-    }
-  }
-
   render() {
+    const options = {
+      url: 'https://js.arcgis.com/4.6/'
+    };
+
     return (
       <div>
-        <h5 className="block-title-2 mt-3 mb-3">Карта</h5>
-        <div className="col-md-12 well" style={{padding: '0', height:'600px', width:'100%'}}>
-          <div className="viewDivCitizen" ref={this.onReference.bind(this)}>
-            <div className="container">
-              <p>Загрузка...</p>
-            </div>
-          </div>
+        <h5 className="block-title-2 mt-5 mb-3">Карта</h5>
+        <div className="col-md-12 viewDiv"> 
+          <EsriLoaderReact options={options} 
+            modulesToLoad={[
+              'esri/views/MapView',
+              
+              'esri/widgets/LayerList',
+
+              'esri/WebScene',
+              'esri/layers/FeatureLayer',
+              'esri/layers/TileLayer',
+              'esri/widgets/Search',
+              'esri/WebMap',
+              'dojo/domReady!'
+            ]}    
+            
+            onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap], containerNode}) => {
+              var map = new WebMap({
+                portalItem: {
+                  id: "a0b7247966fa4754ad21634c3844371f"
+                }
+              });
+
+              /*
+              var waterLines = new FeatureLayer({
+                url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%A2%D1%80%D1%83%D0%B1%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D1%8B_%D0%B2%D0%BE%D0%B4%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F2/FeatureServer",
+                outFields: ["*"],
+                title: "Трубопроводы водоснабжения"
+              });
+              map.add(waterLines);
+
+              var waterLineSafetyZone = new FeatureLayer({
+                url: 'https://gis.uaig.kz/server/rest/services/Hosted/%D0%9E%D1%85%D1%80%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F_%D0%B7%D0%BE%D0%BD%D0%B0_%D0%B2%D0%BE%D0%B4%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D0%B0/FeatureServer',
+                outFields: ["*"],
+                title: "Охранная зона водопровода"
+              });
+              map.add(waterLineSafetyZone);
+
+              var waterResourse = new FeatureLayer({
+                url: 'https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%BE%D0%BD%D0%B0_%D0%BE%D0%B1%D0%B5%D1%81%D0%BF%D0%B5%D1%87%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8_%D0%B2%D0%BE%D0%B4%D0%BD%D1%8B%D0%BC%D0%B8_%D1%80%D0%B5%D1%81%D1%83%D1%80%D1%81%D0%B0%D0%BC%D0%B8/FeatureServer',
+                outFields: ["*"],
+                title: "Зоны обеспеч. водными ресурсами"
+              });
+              map.add(waterResourse);
+
+              var flGosAkts = new FeatureLayer({
+                url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+                outFields: ["*"],
+                title: "Гос акты"
+              });
+              map.add(flGosAkts);
+              */
+              
+              var view = new MapView({
+                container: containerNode,
+                map: map,
+                center: [76.886, 43.250], // lon, lat
+                scale: 10000
+              });
+              
+              var searchWidget = new Search({
+                view: view,
+                sources: [{
+                  featureLayer: new FeatureLayer({
+                    url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+                    popupTemplate: { // autocasts as new PopupTemplate()
+                      title: "Кадастровый номер: {cadastral_number} </br> Назначение: {function} <br/> Вид собственности: {ownership}"
+                    }
+                  }),
+                  searchFields: ["cadastral_number"],
+                  displayField: "cadastral_number",
+                  exactMatch: false,
+                  outFields: ["cadastral_number", "function", "ownership"],
+                  name: "Зарегистрированные государственные акты",
+                  placeholder: "Кадастровый поиск"
+                }]
+              });
+    
+              view.when( function(callback){
+                var layerList = new LayerList({
+                  view: view
+                });
+
+                // Add the search widget to the top right corner of the view
+                view.ui.add(searchWidget, {
+                  position: "top-right"
+                });
+
+                // Add widget to the bottom right corner of the view
+                view.ui.add(layerList, "bottom-right");
+
+              }, function(error) {
+                console.log('MapView promise rejected! Message: ', error);
+              });
+            }}
+          /> 
         </div>
       </div>
     )
