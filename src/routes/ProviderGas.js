@@ -564,15 +564,17 @@ class ShowMap extends React.Component {
       "esri/layers/FeatureLayer",
       "esri/layers/TileLayer",
       "esri/widgets/Search",
-      "esri/Map",
+      "esri/WebMap",
       "dojo/domReady!"
     ], function(
-        MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
+        MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap
       ) {
-        var map = new Map({
-          basemap: "topo"
+        var map = new WebMap({
+          portalItem: {
+            id: "eee53cd3ef0949ae8c7bc25f92cee3aa"
+          }
         });
-        
+        /*
         var gasLines = new FeatureLayer({
           url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%A2%D1%80%D1%83%D0%B1%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D1%8B_%D0%B3%D0%B0%D0%B7%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F2/FeatureServer",
           outFields: ["*"],
@@ -593,7 +595,7 @@ class ShowMap extends React.Component {
           title: "Гос акты"
         });
         map.add(flGosAkts);
-
+        */
         var view = new MapView({
           container: element,
           map: map,
