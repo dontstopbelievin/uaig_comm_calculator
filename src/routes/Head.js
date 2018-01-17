@@ -381,7 +381,6 @@ class ShowApz extends React.Component {
           <h5 className="block-title-2 mt-3 mb-3">Решение</h5>
           <table className="table table-bordered table-striped">
             <tbody>
-              {apz.WaterDoc &&
                 <tr>
                   <td style={{width: '40%'}}>
                   {apz.WaterResponse ?
@@ -392,9 +391,7 @@ class ShowApz extends React.Component {
                   </td> 
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#water_provier_modal">Просмотр</a></td>
                 </tr>
-              }
-
-              {apz.HeatDoc &&
+             
                 <tr>
                   <td style={{width: '40%'}}>
                     {apz.HeatResponse ?
@@ -405,9 +402,7 @@ class ShowApz extends React.Component {
                   </td> 
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#heat_provier_modal">Просмотр</a></td>
                 </tr>
-              }
               
-              {apz.ElectroDoc &&
                 <tr>
                   <td style={{width: '40%'}}>
                     {apz.ElectroResponse ?
@@ -418,9 +413,7 @@ class ShowApz extends React.Component {
                   </td> 
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#electro_provier_modal">Просмотр</a></td>
                 </tr>
-              }
-
-              {apz.GasDoc &&
+              
                 <tr>
                   <td style={{width: '40%'}}>
                     {apz.GasResponse ?
@@ -431,7 +424,6 @@ class ShowApz extends React.Component {
                   </td> 
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#gas_provier_modal">Просмотр</a></td>
                 </tr>
-              }
             </tbody>
           </table>
 
@@ -536,57 +528,56 @@ class ShowApz extends React.Component {
                 </button>
               </div>
               <div className="modal-body">
-                {apz.WaterResponse ? 
-                  <table className="table table-bordered table-striped">
-                    <tbody>
-                      <tr>
-                        <td style={{width: '50%'}}><b>Общая потребность (м<sup>3</sup>/сутки)</b></td>
-                        <td>{apz.GenWaterReq}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Хозпитьевые нужды (м<sup>3</sup>/сутки)</b></td>
-                        <td>{apz.DrinkingWater}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Производственные нужды (м<sup>3</sup>/сутки)</b></td>
-                        <td>{apz.ProdWater}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Расходы пожаротушения внутренные (л/сек)</b></td>
-                        <td>{apz.FireFightingWaterIn}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Расходы пожаротушения внешные (л/сек)</b></td>
-                        <td>{apz.FireFightingWaterOut}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Точка подключения</b></td>
-                        <td>{apz.WaterConnectionPoint}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Рекомендация</b></td>
-                        <td>{apz.WaterRecomendation}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Номер документа</b></td>
-                        <td>{apz.WaterDocNumber}</td>
-                      </tr>
+                <table className="table table-bordered table-striped">
+                  <tbody>
+                    <tr>
+                      <td style={{width: '50%'}}><b>Общая потребность (м<sup>3</sup>/сутки)</b></td>
+                      <td>{apz.GenWaterReq}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Хозпитьевые нужды (м<sup>3</sup>/сутки)</b></td>
+                      <td>{apz.DrinkingWater}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Производственные нужды (м<sup>3</sup>/сутки)</b></td>
+                      <td>{apz.ProdWater}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Расходы пожаротушения внутренные (л/сек)</b></td>
+                      <td>{apz.FireFightingWaterIn}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Расходы пожаротушения внешные (л/сек)</b></td>
+                      <td>{apz.FireFightingWaterOut}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Точка подключения</b></td>
+                      <td>{apz.WaterConnectionPoint}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Рекомендация</b></td>
+                      <td>{apz.WaterRecomendation}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Номер документа</b></td>
+                      <td>{apz.WaterDocNumber}</td>
+                    </tr>
+                    
+                    {apz.WaterDoc && apz.WaterResponse &&
                       <tr>
                         <td><b>Файл</b></td>  
                         <td><a className="text-info pointer" data-file={apz.WaterDoc} data-name="ТУ Вода" data-ext={apz.WaterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
-                    </tbody>
-                  </table>
-                  :
-                  <table className="table table-bordered table-striped">
-                    <tbody>
+                    }
+
+                    {apz.WaterDoc && !apz.WaterResponse &&
                       <tr>
                         <td style={{width: '50%'}}><b>МО Вода</b></td>  
                         <td><a className="text-info pointer" data-file={apz.WaterDoc} data-name="МО Вода" data-ext={apz.WaterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
-                    </tbody>
-                  </table>
-                }
+                    }
+                  </tbody>
+                </table>
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -605,61 +596,60 @@ class ShowApz extends React.Component {
                 </button>
               </div>
               <div className="modal-body">
-                {apz.HeatResponse ? 
-                  <table className="table table-bordered table-striped">
-                    <tbody>
-                      <tr> 
-                        <td style={{width: '50%'}}><b>Источник теплоснабжения</b></td>
-                        <td>{apz.HeatResource}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Точка подключения</b></td>
-                        <td>{apz.HeatConnectionPoint}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Давление теплоносителя</b></td>
-                        <td>{apz.HeatTransPressure}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Тепловые нагрузки по договору</b></td>
-                        <td>{apz.HeatLoadContractNum}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Отопление (Гкал/ч)</b></td>
-                        <td>{apz.HeatMainInContract}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Вентиляция (Гкал/ч)</b></td>
-                        <td>{apz.HeatVenInContract}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Горячее водоснабжение (Гкал/ч)</b></td>
-                        <td>{apz.HeatWaterInContract}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Дополнительное</b></td>
-                        <td>{apz.HeatAddition}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Номер документа</b></td>
-                        <td>{apz.HeatDocNumber}</td> 
-                      </tr>
+                <table className="table table-bordered table-striped">
+                  <tbody>
+                    <tr> 
+                      <td style={{width: '50%'}}><b>Источник теплоснабжения</b></td>
+                      <td>{apz.HeatResource}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Точка подключения</b></td>
+                      <td>{apz.HeatConnectionPoint}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Давление теплоносителя</b></td>
+                      <td>{apz.HeatTransPressure}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Тепловые нагрузки по договору</b></td>
+                      <td>{apz.HeatLoadContractNum}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Отопление (Гкал/ч)</b></td>
+                      <td>{apz.HeatMainInContract}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Вентиляция (Гкал/ч)</b></td>
+                      <td>{apz.HeatVenInContract}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Горячее водоснабжение (Гкал/ч)</b></td>
+                      <td>{apz.HeatWaterInContract}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Дополнительное</b></td>
+                      <td>{apz.HeatAddition}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Номер документа</b></td>
+                      <td>{apz.HeatDocNumber}</td> 
+                    </tr>
+
+                    {apz.HeatDoc && apz.HeatResponse &&
                       <tr>
                         <td><b>Файл</b>:</td> 
                         <td><a className="text-info pointer" data-file={apz.HeatDoc} data-name="ТУ Тепло" data-ext={apz.HeatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
-                    </tbody>
-                  </table>
-                  :
-                  <table className="table table-bordered table-striped">
-                    <tbody>
+                    }
+
+                    {apz.HeatDoc && !apz.HeatResponse &&
                       <tr>
                         <td style={{width: '50%'}}><b>МО Тепло</b></td>  
                         <td><a className="text-info pointer" data-file={apz.HeatDoc} data-name="МО Тепло" data-ext={apz.HeatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
-                    </tbody>
-                  </table>
-                }
+                    }
+                  </tbody>
+                </table>
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -678,49 +668,48 @@ class ShowApz extends React.Component {
                 </button>
               </div>
               <div className="modal-body">
-                {apz.ElectroResponse ? 
-                  <table className="table table-bordered table-striped">
-                    <tbody>
-                      <tr>
-                        <td style={{width: '50%'}}><b>Требуемая мощность (кВт)</b></td>
-                        <td>{apz.ElecReqPower}</td>
-                      </tr>
-                      <tr> 
-                        <td><b>Характер нагрузки (фаза)</b></td>
-                        <td>{apz.ElecPhase}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Категория по надежности (кВт)</b></td>
-                        <td>{apz.ElecSafeCategory}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Точка подключения</b></td>
-                        <td>{apz.ElecConnectionPoint}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Рекомендация</b></td>
-                        <td>{apz.ElecRecomendation}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Номер документа</b></td>
-                        <td>{apz.ElecDocNumber}</td> 
-                      </tr>
+                <table className="table table-bordered table-striped">
+                  <tbody>
+                    <tr>
+                      <td style={{width: '50%'}}><b>Требуемая мощность (кВт)</b></td>
+                      <td>{apz.ElecReqPower}</td>
+                    </tr>
+                    <tr> 
+                      <td><b>Характер нагрузки (фаза)</b></td>
+                      <td>{apz.ElecPhase}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Категория по надежности (кВт)</b></td>
+                      <td>{apz.ElecSafeCategory}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Точка подключения</b></td>
+                      <td>{apz.ElecConnectionPoint}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Рекомендация</b></td>
+                      <td>{apz.ElecRecomendation}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Номер документа</b></td>
+                      <td>{apz.ElecDocNumber}</td> 
+                    </tr>
+
+                    {apz.ElectroDoc && apz.ElectroResponse &&
                       <tr>
                         <td><b>Файл</b>:</td> 
                         <td><a className="text-info pointer" data-file={apz.ElectroDoc} data-name="ТУ Электро" data-ext={apz.ElectroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
-                    </tbody>
-                  </table>
-                  :
-                  <table className="table table-bordered table-striped">
-                    <tbody>
+                    }
+
+                    {apz.ElectroDoc && !apz.ElectroResponse &&
                       <tr>
                         <td style={{width: '50%'}}><b>МО Электро</b></td>  
                         <td><a className="text-info pointer" data-file={apz.ElectroDoc} data-name="МО Электро" data-ext={apz.ElectroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
-                    </tbody>
-                  </table>
-                }
+                    }
+                  </tbody>
+                </table>
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -739,45 +728,44 @@ class ShowApz extends React.Component {
                 </button>
               </div>
               <div className="modal-body">
-                {apz.gasResponse ? 
-                  <table className="table table-bordered table-striped">
-                    <tbody>
-                      <tr>
-                        <td style={{width: '50%'}}><b>Точка подключения</b></td>
-                        <td>{apz.GasConnectionPoint}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Диаметр газопровода (мм)</b></td>
-                        <td>{apz.GasPipeDiameter}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Предполагаемый объем (м<sup>3</sup>/час)</b></td>
-                        <td>{apz.AssumedCapacity}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Предусмотрение</b></td>
-                        <td>{apz.GasReconsideration}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Номер документа</b></td>
-                        <td>{apz.GasDocNumber}</td>
-                      </tr>
+                <table className="table table-bordered table-striped">
+                  <tbody>
+                    <tr>
+                      <td style={{width: '50%'}}><b>Точка подключения</b></td>
+                      <td>{apz.GasConnectionPoint}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Диаметр газопровода (мм)</b></td>
+                      <td>{apz.GasPipeDiameter}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Предполагаемый объем (м<sup>3</sup>/час)</b></td>
+                      <td>{apz.AssumedCapacity}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Предусмотрение</b></td>
+                      <td>{apz.GasReconsideration}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Номер документа</b></td>
+                      <td>{apz.GasDocNumber}</td>
+                    </tr>
+
+                    {apz.GasDoc && apz.gasResponse &&
                       <tr>
                         <td><b>Файл</b></td> 
                         <td><a className="text-info pointer" data-file={apz.GasDoc} data-name="ТУ Газ" data-ext={apz.GasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
-                    </tbody>
-                  </table>
-                  :
-                  <table className="table table-bordered table-striped">
-                    <tbody>
+                    }
+
+                    {apz.GasDoc && !apz.gasResponse &&
                       <tr>
                         <td style={{width: '50%'}}><b>МО Газ</b></td>  
                         <td><a className="text-info pointer" data-file={apz.GasDoc} data-name="МО Газ" data-ext={apz.GasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
-                    </tbody>
-                  </table>
-                }
+                    }
+                  </tbody>
+                </table>
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
