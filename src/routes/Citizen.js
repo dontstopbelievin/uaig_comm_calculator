@@ -570,7 +570,7 @@ class AddApz extends React.Component {
                 </div>
                 <div className="form-group">
                   <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
-                  <input type="number" disabled className="form-control" name="WaterRequirement" placeholder="" />
+                  <input type="text" readonly="readonly" className="form-control" name="WaterRequirement" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
