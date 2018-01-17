@@ -951,7 +951,7 @@ class ShowApz extends React.Component {
             </tr>
             <tr>
               <td><b>Дата заявления</b></td>
-              <td>{this.toDate(apz.ApzDate)}</td>
+              <td>{apz.ApzDate && this.toDate(apz.ApzDate)}</td>
             </tr>
             
             {apz.PersonalIdFile != null &&
@@ -985,11 +985,11 @@ class ShowApz extends React.Component {
               <table className="table table-bordered table-striped">
                 <tbody>
                   <tr>
-                    <td>Загруженный АПЗ</td> 
+                    <td style={{width: '22%'}}><b>Загруженный АПЗ</b></td> 
                     <td><a className="text-info pointer" data-file={apz.HeadResponseFile} data-name="АПЗ" data-ext={apz.HeadResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                   </tr>
                   <tr>
-                    <td>Сформированный АПЗ</td>
+                    <td><b>Сформированный АПЗ</b></td>
                     <td><a className="text-info pointer" onClick={this.printApz.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
                   </tr>
                 </tbody>
@@ -1231,12 +1231,12 @@ class ShowStatusBar extends React.Component {
               <div className="col-3"></div>
               <div className="col-7" style={{padding: '0', fontSize: '0.8em'}}>
                 <div className="row">
-                  <div className="col-2">{this.toDate(this.props.apz.RegionDate)}</div>
-                  <div className="col-2">{this.toDate(this.props.apz.ProviderWaterDate)}</div>
-                  <div className="col-2">{this.toDate(this.props.apz.ProviderGasDate)}</div>
-                  <div className="col-2">{this.toDate(this.props.apz.ProviderHeatDate)}</div>
-                  <div className="col-2">{this.toDate(this.props.apz.ProviderElectricityDate)}</div>
-                  <div className="col-2">{this.toDate(this.props.apz.HeadDate)}</div>
+                  <div className="col-2">{this.props.apz.RegionDate && this.toDate(this.props.apz.RegionDate)}</div>
+                  <div className="col-2">{this.props.apz.ProviderWaterDate && this.toDate(this.props.apz.ProviderWaterDate)}</div>
+                  <div className="col-2">{this.props.apz.ProviderGasDate && this.toDate(this.props.apz.ProviderGasDate)}</div>
+                  <div className="col-2">{this.props.apz.ProviderHeatDate && this.toDate(this.props.apz.ProviderHeatDate)}</div>
+                  <div className="col-2">{this.props.apz.ProviderElectricityDate && this.toDate(this.props.apz.ProviderElectricityDate)}</div>
+                  <div className="col-2">{this.props.apz.HeadDate && this.toDate(this.props.apz.HeadDate)}</div>
                 </div>
               </div>
               <div className="col-2"></div>

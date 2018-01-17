@@ -350,7 +350,7 @@ class ShowApz extends React.Component {
               </tr>
               <tr>
                 <td><b>Дата заявления</b></td>
-                <td>{this.toDate(apz.ApzDate)}</td>
+                <td>{apz.ApzDate && this.toDate(apz.ApzDate)}</td>
               </tr>
               
               {apz.PersonalIdFile != null &&
@@ -786,7 +786,7 @@ class ShowApz extends React.Component {
           </div>
         </div>
 
-        <div>
+        <div className="col-sm-12">
           <hr />
           <Link className="btn btn-outline-secondary pull-right" to={'/head/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
         </div>
