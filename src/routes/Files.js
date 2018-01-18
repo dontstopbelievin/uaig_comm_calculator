@@ -158,7 +158,8 @@ class AllFiles extends React.Component {
     super(props);
 
     this.state = {
-      files: []
+      files: [],
+      roles: sessionStorage.getItem('userRoles')
     };
 
   }
@@ -239,6 +240,27 @@ class AllFiles extends React.Component {
     saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
   }
 
+  deleteFile(event) {
+    var id =  event.target.getAttribute("data-id");
+    var name =  event.target.getAttribute("data-name");
+    var token = sessionStorage.getItem('tokenInfo');
+    
+    if (!window.confirm('Вы действительно хотите удалить файл "' + name + '"?')) {
+      return false;
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("post", window.url + "api/File/delete/" + id, true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        this.getFiles();
+      }
+    }.bind(this)
+    xhr.send();
+  } 
+
   render() {
     return (
       <table className="table">
@@ -258,9 +280,15 @@ class AllFiles extends React.Component {
                 <td>{file.Category.Name}</td>
                 <td>{file.Description}</td>
                 <td>
-                  <a title="Скачать" style={{cursor: 'pointer'}} data-name={file.Name} data-ext={file.Extension} data-file={file.File} onClick={this.downloadFile.bind(this)}>
-                    Скачать
+                  <a className="pointer control_buttons" title="Скачать" data-name={file.Name} data-ext={file.Extension} data-file={file.File} onClick={this.downloadFile.bind(this)}>
+                    Скачать 
                   </a>
+
+                  {this.state.roles.indexOf('Admin') != -1 &&
+                    <a className="pointer control_buttons" data-name={file.Name} data-id={file.Id} onClick={this.deleteFile.bind(this)}>
+                      Удалить
+                    </a>
+                  }
                 </td>
               </tr>
               );
@@ -320,7 +348,7 @@ class FilesForm extends React.Component {
     var category = this.state.category;
     var description = this.state.description;
     var token = sessionStorage.getItem('tokenInfo');
-console.log(this.state.file);
+
     var registerData = {
       file: file,
       name: name,
