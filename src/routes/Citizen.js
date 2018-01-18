@@ -1,9 +1,10 @@
 import React from 'react';
-import * as esriLoader from 'esri-loader';
+//import * as esriLoader from 'esri-loader';
+import EsriLoaderReact from 'esri-loader-react';
 import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
-import { Route, Link, Switch, Redirect } from 'react-router-dom';
+import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
 
 export default class Citizen extends React.Component {
   render() {
@@ -11,13 +12,15 @@ export default class Citizen extends React.Component {
       <div className="content container citizen-apz-list-page">
         <div className="card">
           <div className="card-header">
-          <h4 className="mb-0">Архитектурно-планировочное задание</h4></div>
+              <h4 className="mb-0 mt-2">Архитектурно-планировочное задание</h4>
+          </div>
+          
           <div className="card-body">
             <Switch>
-              <Route path="/Citizen/all" component={AllApzs} />
-              <Route path="/Citizen/add" component={AddApz} />
-              <Route path="/Citizen/:id" component={ShowApz} />
-              <Redirect from="/Citizen" to="/Citizen/all" />
+              <Route path="/citizen/status/:status" component={AllApzs} />
+              <Route path="/citizen/add" component={AddApz} />
+              <Route path="/citizen/:id" component={ShowApz} />
+              <Redirect from="/citizen" to="/citizen/status/active" />
             </Switch>
           </div>
         </div>
@@ -40,7 +43,17 @@ class AllApzs extends React.Component {
     this.getApzs();
   }
 
-  getApzs() {
+  componentWillReceiveProps(nextProps) {
+    if(this.props.match.params.status !== nextProps.match.params.status) {
+      this.getApzs(nextProps.match.params.status);
+    }
+  }
+
+  getApzs(status = null) {
+    if (!status) {
+      status = this.props.match.params.status;
+    }
+    
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + "api/apz/user", true);
@@ -48,16 +61,50 @@ class AllApzs extends React.Component {
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function() {
       if (xhr.status === 200) {
-        this.setState({apzs: JSON.parse(xhr.responseText)});
+        var data = JSON.parse(xhr.responseText);
+        
+        switch (status) {
+          case 'active':
+            var apzs = data.filter(function(obj) { return obj.Status !== 0 && obj.Status !== 1; });
+            break;
+
+          case 'accepted':
+            apzs = data.filter(function(obj) { return obj.Status === 1; });
+            break;
+
+          case 'declined':
+            apzs = data.filter(function(obj) { return obj.Status === 0; });
+            break;
+
+          default:
+            apzs = data;
+            break;
+        }
+        
+        this.setState({apzs: apzs});
       }
     }.bind(this)
     xhr.send();
+
+
   }
 
   render() {
     return (
       <div>  
-        <Link className="btn btn-outline-primary mb-3" to="/citizen/add">Создать заявление</Link>
+        <div className="row">
+          <div className="col-sm-8">
+            <Link className="btn btn-outline-primary mb-3" to="/citizen/add">Создать заявление</Link>
+          </div>
+          <div className="col-sm-4">
+            <ul className="nav nav-tabs mb-2 pull-right">
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/active" replace>Активные</NavLink></li>
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/accepted" replace>Принятые</NavLink></li>
+              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/declined" replace>Отказанные</NavLink></li>
+            </ul>
+          </div>
+        </div>
+
         <table className="table">
           <thead>
             <tr>
@@ -90,6 +137,12 @@ class AllApzs extends React.Component {
                 </tr>
                 );
               })
+            }
+
+            {this.state.apzs.length === 0 &&
+              <tr>
+                <td colSpan="3">Пусто</td>
+              </tr>
             }
           </tbody>
         </table>
@@ -132,6 +185,7 @@ class AddApz extends React.Component {
     
     if ($('#tab'+id+'-form').valid()) 
     {
+
       //проверка полей на валидность в Газоснабжении
       if(document.getElementsByName('GasGeneral')[0] !== 'undefined')
       {
@@ -210,7 +264,7 @@ class AddApz extends React.Component {
               processData: false,
               success: function (data) {
                 // after form is submitted: calls the function from CitizenComponent to update the list 
-                this.props.history.replace('/citizen/all');
+                this.props.history.replace('/citizen/status/active');
                 alert("Заявка успешно подана");
               }.bind(this),
               fail: function (jqXHR) {
@@ -324,7 +378,6 @@ class AddApz extends React.Component {
     document.getElementsByName('WaterRequirement')[0].value = parseFloat( "0.19" * document.getElementsByName('PeopleCount')[0].value);
     document.getElementsByName('WaterSewage')[0].value = document.getElementsByName('WaterRequirement')[0].value;
   }
-
 
   render() {
     return (
@@ -742,6 +795,11 @@ class AddApz extends React.Component {
           </div>
           </div>
         </div>
+
+        <div>
+          <hr />
+          <Link className="btn btn-outline-secondary pull-right" to={'/citizen/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+        </div>
       </div>
     )
   }
@@ -930,7 +988,7 @@ class ShowApz extends React.Component {
             </tr>
             <tr>
               <td><b>Дата заявления</b></td>
-              <td>{this.toDate(apz.ApzDate)}</td>
+              <td>{apz.ApzDate && this.toDate(apz.ApzDate)}</td>
             </tr>
             
             {apz.PersonalIdFile != null &&
@@ -956,19 +1014,19 @@ class ShowApz extends React.Component {
           </tbody>
         </table>
 
-        <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
-
         { apz.HeadResponseFile != null &&
           <div>
+            <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
+
             { apz.Status !== 0 ? 
               <table className="table table-bordered table-striped">
                 <tbody>
                   <tr>
-                    <td>Загруженный АПЗ</td> 
+                    <td style={{width: '22%'}}><b>Загруженный АПЗ</b></td> 
                     <td><a className="text-info pointer" data-file={apz.HeadResponseFile} data-name="АПЗ" data-ext={apz.HeadResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                   </tr>
                   <tr>
-                    <td>Сформированный АПЗ</td>
+                    <td><b>Сформированный АПЗ</b></td>
                     <td><a className="text-info pointer" onClick={this.printApz.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
                   </tr>
                 </tbody>
@@ -976,7 +1034,7 @@ class ShowApz extends React.Component {
               :
               <table className="table table-bordered">
                 <tbody>
-                  <tr className="head_result">
+                  <tr>
                     <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
                     <td><a className="text-info pointer" data-file={apz.HeadResponseFile} data-name="Мотивированный отказ" data-ext={apz.HeadResponseFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                   </tr>
@@ -994,119 +1052,111 @@ class ShowApz extends React.Component {
 
         <h5 className="block-title-2 mt-5 mb-3">Статус</h5>
         <ShowStatusBar apz={this.state.apz} />
+
+        <div className="col-sm-12">
+          <hr />
+          <Link className="btn btn-outline-secondary pull-right" to={'/citizen/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+        </div>
       </div>
     )
   }
 }
 
 class ShowMap extends React.Component {
-  onReference(element) {
-    if(!esriLoader.isLoaded()) {
-      esriLoader.bootstrap(
-        err => {
-          if(err) {
-            console.log(err);
-          } else {
-            this.createMap(element);
-          }
-        },
-        {
-          url: "https://js.arcgis.com/4.5/"
-        }
-      );
-    } else {
-      this.createMap(element);
-    }
-  }
-
-  createMap(element){
-    esriLoader.dojoRequire([
-      "esri/views/MapView",
-      "esri/widgets/LayerList",
-      "esri/WebScene",
-      "esri/layers/FeatureLayer",
-      "esri/layers/TileLayer",
-      "esri/widgets/Search",
-      "esri/Map",
-      "dojo/domReady!"
-    ], function(
-      MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, Map
-    ) {
-      var map = new Map({
-        basemap: "topo"
-      });
-      
-      var flRedLines = new FeatureLayer({
-        url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D1%8B%D0%B5_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B8/FeatureServer",
-        outFields: ["*"],
-        title: "Красные линии"
-      });
-      map.add(flRedLines);
-
-      var flFunZones = new FeatureLayer({
-        url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%A4%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B7%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B52/FeatureServer",
-        outFields: ["*"],
-        title: "Функциональное зонирование"
-      });
-      map.add(flFunZones);
-    
-      var flGosAkts = new FeatureLayer({
-        url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-        outFields: ["*"],
-        title: "Гос акты"
-      });
-      map.add(flGosAkts);
-      
-      var view = new MapView({
-        container: element,
-        map: map,
-        center: [76.886, 43.250], // lon, lat
-        scale: 10000
-      });
-      
-      var searchWidget = new Search({
-        view: view,
-        sources: [{
-          featureLayer: new FeatureLayer({
-            url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-            popupTemplate: { // autocasts as new PopupTemplate()
-              title: "Кадастровый номер: {cadastral_number} </br> Назначение: {function} <br/> Вид собственности: {ownership}"
-            }
-          }),
-          searchFields: ["cadastral_number"],
-          displayField: "cadastral_number",
-          exactMatch: false,
-          outFields: ["cadastral_number", "function", "ownership"],
-          name: "Зарегистрированные государственные акты",
-          placeholder: "Кадастровый поиск"
-        }]
-      });
-      // Add the search widget to the top left corner of the view
-      view.ui.add(searchWidget, {
-        position: "top-right"
-      });
-      
-      view.then(function() {
-        var layerList = new LayerList({
-          view: view
-        });
-
-        // Add widget to the top right corner of the view
-        view.ui.add(layerList, "bottom-right");
-      });
-    });
-  }
-
   render() {
+    const options = {
+      url: 'https://js.arcgis.com/4.6/'
+    };
+
     return (
       <div>
         <h5 className="block-title-2 mt-5 mb-3">Карта</h5>
-        <div className="col-md-12 well" style={{padding: '0', height:'600px', width:'100%'}}>
-          <div className="viewDivCitizen" ref={this.onReference.bind(this)}>
-            <div className="container">
-              <p>Загрузка...</p>
-            </div>
-          </div>
+        <div className="col-md-12 viewDiv"> 
+          <EsriLoaderReact options={options} 
+            modulesToLoad={[
+              'esri/views/MapView',
+              
+              'esri/widgets/LayerList',
+
+              'esri/WebScene',
+              'esri/layers/FeatureLayer',
+              'esri/layers/TileLayer',
+              'esri/widgets/Search',
+              'esri/WebMap',
+              'dojo/domReady!'
+            ]}    
+            
+            onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap], containerNode}) => {
+              var map = new WebMap({
+                portalItem: {
+                  id: "caa580cafc1449dd9aa4fd8eafd3a14d"
+                }
+              });
+              
+              /*var flRedLines = new FeatureLayer({
+                url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D1%8B%D0%B5_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B8/FeatureServer",
+                outFields: ["*"],
+                title: "Красные линии"
+              });
+              map.add(flRedLines);
+
+              var flFunZones = new FeatureLayer({
+                url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%A4%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B7%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B52/FeatureServer",
+                outFields: ["*"],
+                title: "Функциональное зонирование"
+              });
+              map.add(flFunZones);
+            
+              var flGosAkts = new FeatureLayer({
+                url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+                outFields: ["*"],
+                title: "Гос акты"
+              });
+              map.add(flGosAkts);*/
+              
+              var view = new MapView({
+                container: containerNode,
+                map: map,
+                center: [76.886, 43.250], // lon, lat
+                scale: 10000
+              });
+              
+              var searchWidget = new Search({
+                view: view,
+                sources: [{
+                  featureLayer: new FeatureLayer({
+                    url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+                    popupTemplate: { // autocasts as new PopupTemplate()
+                      title: "Кадастровый номер: {cadastral_number} </br> Назначение: {function} <br/> Вид собственности: {ownership}"
+                    }
+                  }),
+                  searchFields: ["cadastral_number"],
+                  displayField: "cadastral_number",
+                  exactMatch: false,
+                  outFields: ["cadastral_number", "function", "ownership"],
+                  name: "Зарегистрированные государственные акты",
+                  placeholder: "Кадастровый поиск"
+                }]
+              });
+    
+              view.when( function(callback){
+                var layerList = new LayerList({
+                  view: view
+                });
+
+                // Add the search widget to the top right corner of the view
+                view.ui.add(searchWidget, {
+                  position: "top-right"
+                });
+
+                // Add widget to the bottom right corner of the view
+                view.ui.add(layerList, "bottom-right");
+
+              }, function(error) {
+                console.log('MapView promise rejected! Message: ', error);
+              });
+            }}
+          /> 
         </div>
       </div>
     )
@@ -1218,12 +1268,12 @@ class ShowStatusBar extends React.Component {
               <div className="col-3"></div>
               <div className="col-7" style={{padding: '0', fontSize: '0.8em'}}>
                 <div className="row">
-                  <div className="col-2">{this.toDate(this.props.apz.RegionDate)}</div>
-                  <div className="col-2">{this.toDate(this.props.apz.ProviderWaterDate)}</div>
-                  <div className="col-2">{this.toDate(this.props.apz.ProviderGasDate)}</div>
-                  <div className="col-2">{this.toDate(this.props.apz.ProviderHeatDate)}</div>
-                  <div className="col-2">{this.toDate(this.props.apz.ProviderElectricityDate)}</div>
-                  <div className="col-2">{this.toDate(this.props.apz.HeadDate)}</div>
+                  <div className="col-2">{this.props.apz.RegionDate && this.toDate(this.props.apz.RegionDate)}</div>
+                  <div className="col-2">{this.props.apz.ProviderWaterDate && this.toDate(this.props.apz.ProviderWaterDate)}</div>
+                  <div className="col-2">{this.props.apz.ProviderGasDate && this.toDate(this.props.apz.ProviderGasDate)}</div>
+                  <div className="col-2">{this.props.apz.ProviderHeatDate && this.toDate(this.props.apz.ProviderHeatDate)}</div>
+                  <div className="col-2">{this.props.apz.ProviderElectricityDate && this.toDate(this.props.apz.ProviderElectricityDate)}</div>
+                  <div className="col-2">{this.props.apz.HeadDate && this.toDate(this.props.apz.HeadDate)}</div>
                 </div>
               </div>
               <div className="col-2"></div>

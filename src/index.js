@@ -24,6 +24,7 @@ import Admin from './routes/Admin';
 import Files from './routes/Files';
 import Sketch from './routes/Sketch';
 import Review from './routes/Review';
+import BudgetPlan from './routes/BudgetPlan';
 import Footer from './components/Footer';
 
 window.jQuery = require('jquery');
@@ -84,6 +85,7 @@ export default class Main extends React.Component {
               <Route path="/files" render={(props) => (<Files {...props} />)} />
               <Route path="/sketch" render={(props) => (<Sketch {...props} />)} />
               <Route path="/reviews" render={(props) => (<Review {...props} />)} />
+              <Route path="/budget_plan" render={(props) => (<BudgetPlan {...props} />)} />
             </Switch>
             <Footer />
           </div>
