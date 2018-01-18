@@ -149,6 +149,7 @@ class ShowApz extends React.Component {
       apz: [],
       showMap: false,
       showButtons: false,
+      showTechCon: false,
       file: false,
       heatResource: "",
       heatTransPressure: "",
@@ -247,9 +248,13 @@ class ShowApz extends React.Component {
         var data = JSON.parse(xhr.responseText);
         this.setState({apz: data});
         this.setState({showButtons: false});
+        this.setState({showTechCon: false});
 
         if (data.Status === 3 && data.ApzHeatStatus === 2) { 
           this.setState({showButtons: true}); 
+        }
+        if(data.ApzHeatStatus === 1){
+          this.setState({showTechCon: true});
         }
       }
     }.bind(this)
@@ -337,6 +342,12 @@ class ShowApz extends React.Component {
       }
     }.bind(this);
     xhr.send(formData); 
+  }
+
+  // print technical condition
+  printTechCon(apzId, project) {
+    //var token = sessionStorage.getItem('tokenInfo');
+    //code goes here
   }
 
   toggleMap(e) {
@@ -473,6 +484,19 @@ class ShowApz extends React.Component {
               </tr>
             </tbody>
           </table>
+
+          <div className={this.state.showTechCon ? '' : 'invisible'}>
+            <h5 className="block-title-2 mt-3 mb-3">Ответ</h5>
+
+            <table className="table table-bordered table-striped">
+              <tbody>
+                <tr>
+                  <td><b>Сформированный ТУ</b></td>  
+                  <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
           <div className={this.state.showButtons ? '' : 'invisible'}>
             <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>

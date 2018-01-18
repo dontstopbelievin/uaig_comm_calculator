@@ -149,6 +149,7 @@ class ShowApz extends React.Component {
       apz: [],
       showMap: false,
       showButtons: false,
+      showTechCon: false,
       file: null,
       elecReqPower: "",
       elecPhase: "Однофазная",
@@ -229,9 +230,13 @@ class ShowApz extends React.Component {
         var data = JSON.parse(xhr.responseText);
         this.setState({apz: data});
         this.setState({showButtons: false});
+        this.setState({showTechCon: false});
 
         if (data.Status === 3 && data.ApzElectricityStatus === 2) { 
           this.setState({showButtons: true}); 
+        }
+        if(data.ApzElectricityStatus === 1){
+          this.setState({showTechCon: true});
         }
       }
     }.bind(this)
@@ -316,6 +321,12 @@ class ShowApz extends React.Component {
       }
     }.bind(this);
     xhr.send(formData); 
+  }
+
+  // print technical condition
+  printTechCon(apzId, project) {
+    //var token = sessionStorage.getItem('tokenInfo');
+    //code goes here
   }
 
   toggleMap(e) {
@@ -449,6 +460,19 @@ class ShowApz extends React.Component {
             </tbody>
           </table>
 
+          <div className={this.state.showTechCon ? '' : 'invisible'}>
+            <h5 className="block-title-2 mt-3 mb-3">Ответ</h5>
+
+            <table className="table table-bordered table-striped">
+              <tbody>
+                <tr>
+                  <td><b>Сформированный ТУ</b></td>  
+                  <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
           <div className={this.state.showButtons ? '' : 'invisible'}>
             <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
               <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
@@ -472,11 +496,11 @@ class ShowApz extends React.Component {
                         <div className="col-md-6">
                           <div className="form-group">
                             <label htmlFor="pname">Наименование объекта</label>
-                            <input type="text" className="form-control" id="pname" placeholder="Название" value={apz.ProjectName} />
+                            <input type="text" readOnly="readonly" className="form-control" id="pname" placeholder={apz.ProjectName} />
                           </div>
                           <div className="form-group">
                             <label htmlFor="adress">Адрес объекта</label>
-                            <input type="text" className="form-control" id="adress" placeholder="Адрес" value={apz.ProjectAddress} />
+                            <input type="text" readOnly="readonly" className="form-control" id="adress" placeholder={apz.ProjectAddress} />
                           </div>
                           <div className="form-group">
                             <label>Требуемая мощность (кВт)</label>
