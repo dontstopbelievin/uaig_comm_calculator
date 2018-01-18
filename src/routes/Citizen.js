@@ -256,23 +256,56 @@ class AddApz extends React.Component {
   }
 
   ObjectArea(e) {
-    if(document.getElementById('ObjectType').value === 'obj_ijs') 
+    //ИЖС if selected
+    if(document.getElementById('ObjectType').value === 'obj_ijs')
     {
-      if(document.getElementsByName('ObjectArea')[0].value <= 100) 
+      if(document.getElementsByName('ObjectArea')[0].value !== '')
       {
-        document.getElementsByName('GasGeneral')[0].max = 6;
+        var ObjectArea = parseInt(document.getElementsByName('ObjectArea')[0].value);
+        switch (true) 
+        {
+          case (ObjectArea <= 100):
+            document.getElementsByName('GasGeneral')[0].max = 6;
+            break;
+          case (ObjectArea >= 101) && (ObjectArea <= 500):
+            document.getElementsByName('GasGeneral')[0].max = 15;
+            break;
+          default:
+            document.getElementsByName('GasGeneral')[0].removeAttribute("max");
+        }
       }
-      else if((document.getElementsByName('ObjectArea')[0].value >= 101) 
-        && (document.getElementsByName('ObjectArea')[0].value <= 500)) 
+
+      if(document.getElementsByName('ElectricAllowedPower')[0].value !== '')
       {
-        document.getElementsByName('GasGeneral')[0].max = 15;
-      } 
-      else 
-      {
-        document.getElementsByName('GasGeneral')[0].removeAttribute("max");
+        console.log(1);
+        document.getElementsByName("ElectricRequiredPower")[0].required = false;
+        document.getElementsByName("ElectricityPhase")[0].required = false;
+        document.getElementsByName("ElectricSafetyCategory")[0].required = false;
       }
+
+      if(document.getElementsByName('ElectricRequiredPower')[0].value !== '')
+      {
+        var ElectricRequiredPower = parseInt(document.getElementsByName('ElectricRequiredPower')[0].value);
+        var select = document.getElementsByName('ElectricityPhase')[0];
+        switch (true) 
+        {
+          case (ElectricRequiredPower <= 5):
+            document.getElementsByName('ElectricityPhase')[0].options.length = 0; //очищаем список
+            select.options[select.options.length] = new Option('Однофазная', 'Однофазная');
+            select.options[select.options.length] = new Option('Двухфазная', 'Двухфазная');
+            break;
+          case (ElectricRequiredPower >= 6):
+            document.getElementsByName('ElectricityPhase')[0].options.length = 0;
+            select.options[select.options.length] = new Option('Трехфазная', 'Трехфазная');
+            select.options[select.options.length] = new Option('Постоянная', 'Постоянная');
+            select.options[select.options.length] = new Option('Временная', 'Временная');
+            select.options[select.options.length] = new Option('Сезонная', 'Сезонная');
+            break;
+        }
+      }
+      
     }
-    if(document.getElementById('ObjectType').value === 'obj_mjk') 
+    if(document.getElementById('ObjectType').value === 'obj_mjk') //МЖК
     {
       //rules
     }
@@ -289,6 +322,7 @@ class AddApz extends React.Component {
   //правила вкладки Водоснабжение
   PeopleCount(e) {
     document.getElementsByName('WaterRequirement')[0].value = parseFloat( "0.19" * document.getElementsByName('PeopleCount')[0].value);
+    document.getElementsByName('WaterSewage')[0].value = document.getElementsByName('WaterRequirement')[0].value;
   }
 
 
@@ -451,26 +485,25 @@ class AddApz extends React.Component {
               <div className="row">
                 <div className="col-md-6">
                 <div className="form-group">
+                  <label htmlFor="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)</label>
+                  <input type="number" name="ElectricAllowedPower" onChange={this.ObjectArea.bind(this)} className="form-control" />
+                </div>
+                <div className="form-group">
                   <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
-                  <input type="number" className="form-control" name="ElectricRequiredPower" placeholder="" />
+                  <input type="number" name="ElectricRequiredPower" required onChange={this.ObjectArea.bind(this)} className="form-control" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
                   <select className="form-control" name="ElectricityPhase">
-                    <option>Однофазная</option>
-                    <option>Трехфазная</option>
-                    <option>Постоянная</option>
-                    <option>Временная</option>
-                    <option>Сезонная</option>
                   </select>
                 </div>
                 <div className="form-group">
                   <label htmlFor="ElectricSafetyCategory">Категория по надежности (кВт)</label>
-                  <input type="text" className="form-control" required name="ElectricSafetyCategory" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="ElectricMaxLoadDevice">из указанной макс. нагрузки относятся к электроприемникам (кВА):</label>
-                  <input type="number" className="form-control" name="ElectricMaxLoadDevice" placeholder="" />
+                  <select required className="form-control" name="ElectricSafetyCategory" defaultValue="3">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                  </select>
                 </div>
                 </div>
                 <div className="col-md-6">
@@ -492,12 +525,12 @@ class AddApz extends React.Component {
                   </div>
                 </div>*/}
                 <div className="form-group">
-                  <label htmlFor="ElectricMaxLoad">Существующая максимальная нагрузка (кВА)</label>
-                  <input type="number" className="form-control" name="ElectricMaxLoad" />
+                  <label htmlFor="ElectricMaxLoadDevice">Из указанной макс. нагрузки относятся к электроприемникам (кВА):</label>
+                  <input type="number" className="form-control" disabled name="ElectricMaxLoadDevice" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА)</label>
-                  <input type="number" className="form-control" name="ElectricAllowedPower" />
+                  <label htmlFor="ElectricMaxLoad">Существующая максимальная нагрузка (кВА)</label>
+                  <input type="number" className="form-control" name="ElectricMaxLoad" />
                 </div>
                 </div>
               </div>
@@ -517,25 +550,29 @@ class AddApz extends React.Component {
                 </div>
                 <div className="form-group">
                   <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
-                  <input type="number" disabled className="form-control" name="WaterRequirement" placeholder="" />
+                  <input type="number" readonly="readonly" className="form-control" name="WaterRequirement" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
-                  <input type="number" className="form-control" name="WaterDrinking" placeholder="" />
+                  <label htmlFor="WaterSewage">Канализация (м<sup>3</sup>/сутки)</label>
+                  <input type="number" readonly="readonly" className="form-control" name="WaterSewage" />
                 </div>
-                </div>
-                <div className="col-md-6">
                 <div className="form-group">
                   <label htmlFor="WaterProduction">На производственные нужды (м<sup>3</sup>/сутки)</label>
                   <input type="number" className="form-control" name="WaterProduction" placeholder="" />
                 </div>
+                </div>
+                <div className="col-md-6">
                 <div className="form-group">
-                  <label htmlFor="WaterFireFighting">Потребные расходы пожаротушения (л/сек)</label>
-                  <input type="number" min="10" className="form-control" name="WaterFireFighting" />
+                  <label htmlFor="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
+                  <input type="number" className="form-control" name="WaterDrinking" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="WaterSewage">Общее количество сточных вод (м<sup>3</sup>/сутки)</label>
-                  <input type="number" className="form-control" name="WaterSewage" />
+                  <label htmlFor="WaterFireFighting">Потребные расходы наружного пожаротушения (л/сек)</label>
+                  <input type="number" min="10" value="10" className="form-control" name="WaterFireFighting" />
+                </div>
+                <div className="form-group">
+                  <label>Потребные расходы внутреннего пожаротушения (л/сек)</label>
+                  <input type="number" className="form-control" />
                 </div>
                 </div>
               </div>
