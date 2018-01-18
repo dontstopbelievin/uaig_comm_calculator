@@ -485,7 +485,7 @@ class AddApz extends React.Component {
                 </div>
                 <div className="form-group">
                   <label htmlFor="ObjectArea">Площадь здания (кв.м)</label>
-                  <input type="number" required className="form-control" name="ObjectArea" onChange={this.ObjectArea.bind(this)} disabled />
+                  <input type="number" step="any" required className="form-control" name="ObjectArea" onChange={this.ObjectArea.bind(this)} disabled />
                 </div>
                 <div className="form-group">
                   <label htmlFor="ObjectRooms">Количество квартир (номеров, кабинетов)</label>
@@ -505,7 +505,7 @@ class AddApz extends React.Component {
                 <div className="col-md-6">
                 <div className="form-group">
                   <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
-                  <input type="number" className="form-control" name="ElectricRequiredPower" placeholder="" />
+                  <input type="number" step="any" className="form-control" name="ElectricRequiredPower" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
@@ -523,7 +523,7 @@ class AddApz extends React.Component {
                 </div>
                 <div className="form-group">
                   <label htmlFor="ElectricMaxLoadDevice">из указанной макс. нагрузки относятся к электроприемникам (кВА):</label>
-                  <input type="number" className="form-control" name="ElectricMaxLoadDevice" placeholder="" />
+                  <input type="number" step="any" className="form-control" name="ElectricMaxLoadDevice" placeholder="" />
                 </div>
                 </div>
                 <div className="col-md-6">
@@ -546,11 +546,11 @@ class AddApz extends React.Component {
                 </div>*/}
                 <div className="form-group">
                   <label htmlFor="ElectricMaxLoad">Существующая максимальная нагрузка (кВА)</label>
-                  <input type="number" className="form-control" name="ElectricMaxLoad" />
+                  <input type="number" step="any" className="form-control" name="ElectricMaxLoad" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА)</label>
-                  <input type="number" className="form-control" name="ElectricAllowedPower" />
+                  <input type="number" step="any" className="form-control" name="ElectricAllowedPower" />
                 </div>
                 </div>
               </div>
@@ -570,25 +570,25 @@ class AddApz extends React.Component {
                 </div>
                 <div className="form-group">
                   <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
-                  <input type="text" readonly="readonly" className="form-control" name="WaterRequirement" placeholder="" />
+                  <input type="text" readOnly="readonly" className="form-control" name="WaterRequirement" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
-                  <input type="number" className="form-control" name="WaterDrinking" placeholder="" />
+                  <input type="number" step="any" className="form-control" name="WaterDrinking" placeholder="" />
                 </div>
                 </div>
                 <div className="col-md-6">
                 <div className="form-group">
                   <label htmlFor="WaterProduction">На производственные нужды (м<sup>3</sup>/сутки)</label>
-                  <input type="number" className="form-control" name="WaterProduction" placeholder="" />
+                  <input type="number" step="any" className="form-control" name="WaterProduction" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="WaterFireFighting">Потребные расходы пожаротушения (л/сек)</label>
-                  <input type="number" min="10" className="form-control" name="WaterFireFighting" />
+                  <input type="number" step="any" min="10" className="form-control" name="WaterFireFighting" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="WaterSewage">Общее количество сточных вод (м<sup>3</sup>/сутки)</label>
-                  <input type="number" className="form-control" name="WaterSewage" />
+                  <input type="number" step="any" className="form-control" name="WaterSewage" />
                 </div>
                 </div>
               </div>
@@ -604,21 +604,21 @@ class AddApz extends React.Component {
                 <div className="col-md-6">
                 <div className="form-group">
                   <label htmlFor="SewageAmount">Общее количество сточных вод  (м<sup>3</sup>/сутки)</label>
-                  <input type="number" required className="form-control" name="SewageAmount" placeholder="" />
+                  <input type="number" step="any" required className="form-control" name="SewageAmount" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="SewageFeksal">фекcальных (м<sup>3</sup>/сутки)</label>
-                  <input type="number" className="form-control" name="SewageFeksal" placeholder="" />
+                  <input type="number" step="any" className="form-control" name="SewageFeksal" placeholder="" />
                 </div>
                 </div>
                 <div className="col-md-6">
                 <div className="form-group">
                   <label htmlFor="SewageProduction">Производственно-загрязненных (м<sup>3</sup>/сутки)</label>
-                  <input type="number" className="form-control" name="SewageProduction" placeholder="" />
+                  <input type="number" step="any" className="form-control" name="SewageProduction" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="SewageToCity">Условно-чистых сбрасываемых на городскую канализацию (м<sup>3</sup>/сутки)</label>
-                  <input type="number" className="form-control" name="SewageToCity" />
+                  <input type="number" step="any" className="form-control" name="SewageToCity" />
                 </div>
                 </div>
               </div>
@@ -634,25 +634,25 @@ class AddApz extends React.Component {
                 <div className="col-md-6">
                 <div className="form-group">
                   <label htmlFor="HeatGeneral">Общая тепловая нагрузка (Гкал/ч)</label>
-                  <input type="number" className="form-control" name="HeatGeneral" placeholder="" />
+                  <input type="number" step="any" className="form-control" name="HeatGeneral" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="HeatMain">Отопление (Гкал/ч)</label>
-                  <input type="number" className="form-control" name="HeatMain" placeholder="" />
+                  <input type="number" step="any" className="form-control" name="HeatMain" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="HeatVentilation">Вентиляция (Гкал/ч)</label>
-                  <input type="number" className="form-control" name="HeatVentilation" placeholder="" />
+                  <input type="number" step="any" className="form-control" name="HeatVentilation" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="HeatWater">Горячее водоснабжение (Гкал/ч)</label>
-                  <input type="number" className="form-control" id="HeatWater" placeholder="" />
+                  <input type="number" step="any" className="form-control" id="HeatWater" placeholder="" />
                 </div>
                 </div>
                 <div className="col-md-6">
                 <div className="form-group">
                   <label htmlFor="HeatTech">Технологические нужды(пар) (Т/ч)</label>
-                  <input type="number" className="form-control" name="HeatTech" placeholder="" />
+                  <input type="number" step="any" className="form-control" name="HeatTech" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="HeatDistribution">Разделить нагрузку по жилью и по встроенным помещениям</label>
@@ -692,7 +692,7 @@ class AddApz extends React.Component {
                 <div className="col-md-6">
                 <div className="form-group">
                   <label htmlFor="PhoneServiceNum">Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</label>
-                  <input type="number" className="form-control" name="PhoneServiceNum" placeholder="" />
+                  <input type="number" step="any" className="form-control" name="PhoneServiceNum" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="PhoneCapacity">Телефонная емкость</label>
@@ -722,29 +722,29 @@ class AddApz extends React.Component {
                 <div className="col-md-6">
                 <div className="form-group">
                   <label htmlFor="GasGeneral">Общая потребность (м<sup>3</sup>/час)</label>
-                  <input type="number" required className="form-control" name="GasGeneral" placeholder="" />
+                  <input type="number" step="any" required className="form-control" name="GasGeneral" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="GasCooking">На приготовление пищи (м<sup>3</sup>/час)</label>
-                  <input type="number" className="form-control" name="GasCooking" placeholder="" />
+                  <input type="number" step="any" className="form-control" name="GasCooking" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="GasHeat">Отопление (м<sup>3</sup>/час)</label>
-                  <input type="number" required className="form-control" name="GasHeat" placeholder="" />
+                  <input type="number" step="any" required className="form-control" name="GasHeat" placeholder="" />
                 </div>
                 </div>
                 <div className="col-md-6">
                 <div className="form-group">
                   <label htmlFor="GasVentilation">Вентиляция (м<sup>3</sup>/час)</label>
-                  <input type="number" className="form-control" name="GasVentilation" placeholder="" />
+                  <input type="number" step="any" className="form-control" name="GasVentilation" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="GasConditioner">Кондиционирование (м<sup>3</sup>/час)</label>
-                  <input type="number" className="form-control" name="GasConditioner" />
+                  <input type="number" step="any" className="form-control" name="GasConditioner" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="GasWater">Горячее водоснабжение при газификации многоэтажных домов (м<sup>3</sup>/час)</label>
-                  <input type="number" className="form-control" name="GasWater" />
+                  <input type="number" step="any" className="form-control" name="GasWater" />
                 </div>
                 </div>
               </div>
@@ -775,7 +775,7 @@ class ShowApz extends React.Component {
     this.state = {
       apz: [],
       showMap: false,
-      showMapText: 'Показать карту',
+      showMapText: 'Показать карту'
     };
 
     this.toggleMap = this.toggleMap.bind(this);

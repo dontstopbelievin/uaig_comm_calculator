@@ -278,6 +278,98 @@ class ShowApz extends React.Component {
     xhr.send(formData); 
   }
 
+  // print technical condition of waterProvider
+  printWaterTechCon(apzId, project) {
+    var token = sessionStorage.getItem('tokenInfo');
+    if (token) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/apz/print/tc/water/" + apzId, true);
+      xhr.responseType = "blob";
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.onload = function () {
+        console.log(xhr);
+        console.log(xhr.status);
+        if (xhr.status === 200) {
+          //test of IE
+          if (typeof window.navigator.msSaveBlob === "function") {
+            window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
+          } 
+          else {
+            var blob = xhr.response;
+            var link = document.createElement('a');
+            var today = new Date();
+            var curr_date = today.getDate();
+            var curr_month = today.getMonth() + 1;
+            var curr_year = today.getFullYear();
+            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+            //console.log(curr_day);
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "ТУ-Вода-" + project + formated_date + ".pdf";
+
+            //append the link to the document body
+            document.body.appendChild(link);
+            link.click();
+          }
+        }
+      }
+      xhr.send();
+    } else {
+      console.log('session expired');
+    }
+  }
+
+  // print technical condition of gasProvider
+  printGasTechCon(apzId, project) {
+    //var token = sessionStorage.getItem('tokenInfo');
+    // if (token) {
+    //   var xhr = new XMLHttpRequest();
+    //   xhr.open("get", window.url + "api/apz/print/tc/gas/" + apzId, true);
+    //   xhr.responseType = "blob";
+    //   xhr.setRequestHeader("Authorization", "Bearer " + token);
+    //   xhr.onload = function () {
+    //     console.log(xhr);
+    //     console.log(xhr.status);
+    //     if (xhr.status === 200) {
+    //       //test of IE
+    //       if (typeof window.navigator.msSaveBlob === "function") {
+    //         window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
+    //       } 
+    //       else {
+    //         var blob = xhr.response;
+    //         var link = document.createElement('a');
+    //         var today = new Date();
+    //         var curr_date = today.getDate();
+    //         var curr_month = today.getMonth() + 1;
+    //         var curr_year = today.getFullYear();
+    //         var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+    //         //console.log(curr_day);
+    //         link.href = window.URL.createObjectURL(blob);
+    //         link.download = "ТУ-Газ-" + project + formated_date + ".pdf";
+
+    //         //append the link to the document body
+    //         document.body.appendChild(link);
+    //         link.click();
+    //       }
+    //     }
+    //   }
+    //   xhr.send();
+    // } else {
+    //   console.log('session expired');
+    // }
+  }
+
+  // print technical condition of electroProvider
+  printElectroTechCon(apzId, project) {
+    //var token = sessionStorage.getItem('tokenInfo');
+    // code goes here
+  }
+
+  // print technical condition of heatProvider
+  printHeatTechCon(apzId, project) {
+    //var token = sessionStorage.getItem('tokenInfo');
+    // code goes here
+  }
+
   toggleMap(e) {
     this.setState({
       showMap: !this.state.showMap
@@ -462,11 +554,11 @@ class ShowApz extends React.Component {
                     <div className="modal-body">
                       <div className="form-group">
                         <label htmlFor="pname">Наименование объекта</label>
-                        <input type="text" className="form-control" id="pname" placeholder="Название" value={apz.ProjectName} />
+                        <input type="text" readOnly="readonly" className="form-control" id="pname" placeholder={apz.ProjectName} />
                       </div>
                       <div className="form-group">
                         <label htmlFor="adress">Адрес объекта</label>
-                        <input type="text" className="form-control" id="adress" placeholder="Адрес" value={apz.ProjectAddress} />
+                        <input type="text" readOnly="readonly" className="form-control" id="adress" placeholder={apz.ProjectAddress} />
                       </div>
                       <div className="form-group">
                         <label htmlFor="docNumber">Номер документа</label>
@@ -572,8 +664,12 @@ class ShowApz extends React.Component {
                         <td>{apz.WaterDocNumber}</td>
                       </tr>
                       <tr>
-                        <td><b>Файл</b></td>  
+                        <td><b>Загруженный ТУ</b></td>  
                         <td><a className="text-info pointer" data-file={apz.WaterDoc} data-name="ТУ Вода" data-ext={apz.WaterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                      </tr>
+                      <tr>
+                        <td><b>Сформированный ТУ</b></td>  
+                        <td><a className="text-info pointer" onClick={this.printWaterTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
                       </tr>
                     </tbody>
                   </table>
@@ -645,8 +741,12 @@ class ShowApz extends React.Component {
                         <td>{apz.HeatDocNumber}</td> 
                       </tr>
                       <tr>
-                        <td><b>Файл</b>:</td> 
+                        <td><b>Загруженный ТУ</b>:</td> 
                         <td><a className="text-info pointer" data-file={apz.HeatDoc} data-name="ТУ Тепло" data-ext={apz.HeatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                      </tr>
+                      <tr>
+                        <td><b>Сформированный ТУ</b></td>  
+                        <td><a className="text-info pointer" onClick={this.printHeatTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
                       </tr>
                     </tbody>
                   </table>
@@ -706,8 +806,12 @@ class ShowApz extends React.Component {
                         <td>{apz.ElecDocNumber}</td> 
                       </tr>
                       <tr>
-                        <td><b>Файл</b>:</td> 
+                        <td><b>Загруженный ТУ</b>:</td> 
                         <td><a className="text-info pointer" data-file={apz.ElectroDoc} data-name="ТУ Электро" data-ext={apz.ElectroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                      </tr>
+                      <tr>
+                        <td><b>Сформированный ТУ</b></td>  
+                        <td><a className="text-info pointer" onClick={this.printElectroTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
                       </tr>
                     </tbody>
                   </table>
@@ -739,7 +843,7 @@ class ShowApz extends React.Component {
                 </button>
               </div>
               <div className="modal-body">
-                {apz.gasResponse ? 
+                {apz.GasResponse ? 
                   <table className="table table-bordered table-striped">
                     <tbody>
                       <tr>
@@ -763,8 +867,12 @@ class ShowApz extends React.Component {
                         <td>{apz.GasDocNumber}</td>
                       </tr>
                       <tr>
-                        <td><b>Файл</b></td> 
+                        <td><b>Загруженный ТУ</b></td> 
                         <td><a className="text-info pointer" data-file={apz.GasDoc} data-name="ТУ Газ" data-ext={apz.GasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                      </tr>
+                      <tr>
+                        <td><b>Сформированный ТУ</b></td>  
+                        <td><a className="text-info pointer" onClick={this.printGasTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
                       </tr>
                     </tbody>
                   </table>

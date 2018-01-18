@@ -149,17 +149,18 @@ class ShowApz extends React.Component {
       apz: [],
       showMap: false,
       showButtons: false,
+      showTechCon: false,
       file: false,
-      genWaterReq: 0,
-      drinkingWater: 0,
-      prodWater: 0,
-      fireFightingWaterIn: 0,
-      fireFightingWaterOut: 0,
+      genWaterReq: "",
+      drinkingWater: "",
+      prodWater: "",
+      fireFightingWaterIn: "",
+      fireFightingWaterOut: "",
       connectionPoint: "",
       recomendation: "",
       docNumber: "",
       description: '',
-      showMapText: 'Показать карту',
+      showMapText: 'Показать карту'
     };
 
     this.toggleMap = this.toggleMap.bind(this);
@@ -241,9 +242,13 @@ class ShowApz extends React.Component {
         var data = JSON.parse(xhr.responseText);
         this.setState({apz: data});
         this.setState({showButtons: false});
+        this.setState({showTechCon: false});
 
         if (data.Status === 3 && data.ApzWaterStatus === 2) { 
           this.setState({showButtons: true}); 
+        }
+        if(data.ApzWaterStatus === 1){
+          this.setState({showTechCon: true});
         }
       }
     }.bind(this)
@@ -313,12 +318,13 @@ class ShowApz extends React.Component {
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function () {
       if (xhr.status === 200) {
-        //var data = JSON.parse(xhr.responseText);
+        var data = JSON.parse(xhr.responseText);
 
-        if(status === true) {
+        if(data.ApzWaterStatus === 1) {
           alert("Заявление принято!");
           this.setState({ showButtons: false });
-        } else {
+        } 
+        else if(data.ApzWaterStatus === 0) {
           alert("Заявление отклонено!");
           this.setState({ showButtons: false });
         }
@@ -330,6 +336,46 @@ class ShowApz extends React.Component {
       }
     }.bind(this);
     xhr.send(formData); 
+  }
+
+  // print technical condition
+  printTechCon(apzId, project) {
+    var token = sessionStorage.getItem('tokenInfo');
+    if (token) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/apz/print/tc/water/" + apzId, true);
+      xhr.responseType = "blob";
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.onload = function () {
+        console.log(xhr);
+        console.log(xhr.status);
+        if (xhr.status === 200) {
+          //test of IE
+          if (typeof window.navigator.msSaveBlob === "function") {
+            window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
+          } 
+          else {
+            var blob = xhr.response;
+            var link = document.createElement('a');
+            var today = new Date();
+            var curr_date = today.getDate();
+            var curr_month = today.getMonth() + 1;
+            var curr_year = today.getFullYear();
+            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+            //console.log(curr_day);
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "ТУ-Вода-" + project + formated_date + ".pdf";
+
+            //append the link to the document body
+            document.body.appendChild(link);
+            link.click();
+          }
+        }
+      }
+      xhr.send();
+    } else {
+      console.log('session expired');
+    }
   }
 
   toggleMap(e) {
@@ -459,6 +505,19 @@ class ShowApz extends React.Component {
             </tbody>
           </table>
 
+          <div className={this.state.showTechCon ? '' : 'invisible'}>
+            <h5 className="block-title-2 mt-3 mb-3">Ответ</h5>
+
+            <table className="table table-bordered table-striped">
+              <tbody>
+                <tr>
+                  <td><b>Сформированный ТУ</b></td>  
+                  <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
           <div className={this.state.showButtons ? 'btn-group' : 'invisible'} role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
             <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
                     data-toggle="modal" data-target="#AcceptApzForm">
@@ -481,33 +540,33 @@ class ShowApz extends React.Component {
                       <div className="col-md-6">
                         <div className="form-group">
                           <label htmlFor="pname">Наименование объекта</label>
-                          <input type="text" className="form-control" id="pname" placeholder={apz.ProjectName} />
+                          <input type="text" readOnly="readonly" className="form-control" id="pname" placeholder={apz.ProjectName} />
                         </div>
                         <div className="form-group">
                           <label>Общая потребность (м<sup>3</sup>/сутки)</label>
-                          <input type="number" className="form-control" placeholder="" value={this.state.genWaterReq} onChange={this.onGenWaterReqChange} />
+                          <input type="number" step="any" className="form-control" placeholder="" value={this.state.genWaterReq} onChange={this.onGenWaterReqChange} />
                         </div>
                         <div className="form-group">
                           <label>Хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
-                          <input type="number" className="form-control" placeholder="" value={this.state.drinkingWater} onChange={this.onDrinkingWaterChange} />
+                          <input type="number" step="any" className="form-control" placeholder="" value={this.state.drinkingWater} onChange={this.onDrinkingWaterChange} />
                         </div>
                         <div className="form-group">
                           <label>Производственные нужды (м<sup>3</sup>/сутки)</label>
-                          <input type="number" className="form-control" placeholder="" value={this.state.prodWater} onChange={this.onProdWaterChange} />
+                          <input type="number" step="any" className="form-control" placeholder="" value={this.state.prodWater} onChange={this.onProdWaterChange} />
                         </div>
                         <div className="form-group">
                           <label>Расходы пожаротушения внутренные (л/сек)</label>
-                          <input type="number" className="form-control" value={this.state.fireFightingWaterIn} onChange={this.onFireFightingWaterInChange} />
+                          <input type="number" step="any" className="form-control" value={this.state.fireFightingWaterIn} onChange={this.onFireFightingWaterInChange} />
                         </div>
                         <div className="form-group">
                           <label>Расходы пожаротушения внешные (л/сек)</label>
-                          <input type="number" className="form-control" value={this.state.fireFightingWaterOut} onChange={this.onFireFightingWaterOutChange} />
+                          <input type="number" step="any" className="form-control" value={this.state.fireFightingWaterOut} onChange={this.onFireFightingWaterOutChange} />
                         </div>
                       </div>
                       <div className="col-md-6">
                         <div className="form-group">
                           <label htmlFor="adress">Адрес объекта</label>
-                          <input type="text" className="form-control" id="adress" placeholder={apz.ProjectAddress} />
+                          <input type="text" readOnly="readonly" className="form-control" id="adress" placeholder={apz.ProjectAddress} />
                         </div>
                         <div className="form-group">
                           <label>Точка подключения</label>
