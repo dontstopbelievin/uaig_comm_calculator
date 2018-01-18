@@ -519,7 +519,7 @@ class AddApz extends React.Component {
                 </div>
                 <div className="form-group">
                   <label htmlFor="ObjectArea">Площадь здания (кв.м)</label>
-                  <input type="number" required className="form-control" name="ObjectArea" onChange={this.ObjectArea.bind(this)} disabled />
+                  <input type="number" required className="form-control" name="ObjectArea" onChange={this.ObjectArea.bind(this)} readonly="readonly" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="ObjectRooms">Количество квартир (номеров, кабинетов)</label>
@@ -579,7 +579,7 @@ class AddApz extends React.Component {
                 </div>*/}
                 <div className="form-group">
                   <label htmlFor="ElectricMaxLoadDevice">Из указанной макс. нагрузки относятся к электроприемникам (кВА):</label>
-                  <input type="number" className="form-control" disabled name="ElectricMaxLoadDevice" placeholder="" />
+                  <input type="number" className="form-control" readonly="readonly" name="ElectricMaxLoadDevice" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="ElectricMaxLoad">Существующая максимальная нагрузка (кВА)</label>
