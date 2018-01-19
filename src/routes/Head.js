@@ -867,6 +867,7 @@ class ShowApz extends React.Component {
                         <td><a className="text-info pointer" data-file={apz.GasDoc} data-name="ТУ Газ" data-ext={apz.GasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
                     }
+
                     {apz.GasDoc && apz.gasResponse &&
                       <tr>
                         <td><b>Сформированный ТУ</b></td>  

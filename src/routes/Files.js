@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, NavLink, Switch, Redirect} from 'react-router-dom';
+import { Route, NavLink, Switch, Redirect } from 'react-router-dom';
 
 export default class Files extends React.Component {
   render() {
@@ -11,7 +11,7 @@ export default class Files extends React.Component {
           <div className="card-body">
             <div className="row">
               <div className="col-sm-9">
-                <FilesForm />
+                <FilesForm history={this.props.history} />
               </div>
               <div className="col-sm-3">
                 <ul className="nav nav-tabs">
@@ -78,44 +78,18 @@ class Images extends React.Component {
 
   // Скачивание файла
   downloadFile(event) {
-    var buffer =  event.target.getAttribute("data-file");
-    var name =  event.target.getAttribute("data-name");
-    var ext =  event.target.getAttribute("data-ext");
-
-    var base64ToArrayBuffer = (function () {
-      
-      return function (base64) {
-        var binaryString =  window.atob(base64);
-        var binaryLen = binaryString.length;
-        var bytes = new Uint8Array(binaryLen);
-        
-        for (var i = 0; i < binaryLen; i++)        {
-            var ascii = binaryString.charCodeAt(i);
-            bytes[i] = ascii;
+    var id =  event.target.getAttribute("data-id");
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/File/download/" + id, true);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          window.location = window.url + "api/File/download/" + id
+        } else {
+          alert('Не удалось скачать файл');
         }
-        
-        return bytes; 
-      }
-      
-    }());
-
-    var saveByteArray = (function () {
-        var a = document.createElement("a");
-        document.body.appendChild(a);
-        a.style = "display: none";
-        
-        return function (data, name) {
-            var blob = new Blob(data, {type: "octet/stream"}),
-                url = window.URL.createObjectURL(blob);
-            a.href = url;
-            a.download = name;
-            a.click();
-            window.URL.revokeObjectURL(url);
-        };
-
-    }());
-
-    saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
+      }.bind(this)
+      xhr.send();
   }
 
   render() {
@@ -136,7 +110,7 @@ class Images extends React.Component {
                         <p className="card-text">{image.Description}</p>
                       </div>
                       <div className="card-footer">
-                        <button type="button" className="btn btn-outline-primary" data-name={image.Name} data-ext={image.Extension} data-file={image.File} onClick={this.downloadFile.bind(this)}>
+                        <button type="button" className="btn btn-outline-primary" data-id={image.Id} onClick={this.downloadFile.bind(this)}>
                           Скачать
                         </button>
                       </div>
@@ -200,44 +174,18 @@ class AllFiles extends React.Component {
 
   // Скачивание файла
   downloadFile(event) {
-    var buffer =  event.target.getAttribute("data-file");
-    var name =  event.target.getAttribute("data-name");
-    var ext =  event.target.getAttribute("data-ext");
-
-    var base64ToArrayBuffer = (function () {
-      
-      return function (base64) {
-        var binaryString =  window.atob(base64);
-        var binaryLen = binaryString.length;
-        var bytes = new Uint8Array(binaryLen);
-        
-        for (var i = 0; i < binaryLen; i++)        {
-            var ascii = binaryString.charCodeAt(i);
-            bytes[i] = ascii;
+    var id =  event.target.getAttribute("data-id");
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/File/download/" + id, true);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          window.location = window.url + "api/File/download/" + id
+        } else {
+          alert('Не удалось скачать файл');
         }
-        
-        return bytes; 
-      }
-      
-    }());
-
-    var saveByteArray = (function () {
-        var a = document.createElement("a");
-        document.body.appendChild(a);
-        a.style = "display: none";
-        
-        return function (data, name) {
-            var blob = new Blob(data, {type: "octet/stream"}),
-                url = window.URL.createObjectURL(blob);
-            a.href = url;
-            a.download = name;
-            a.click();
-            window.URL.revokeObjectURL(url);
-        };
-
-    }());
-
-    saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
+      }.bind(this)
+      xhr.send();
   }
 
   deleteFile(event) {
@@ -280,7 +228,7 @@ class AllFiles extends React.Component {
                 <td>{file.Category.Name}</td>
                 <td>{file.Description}</td>
                 <td>
-                  <a className="pointer control_buttons" title="Скачать" data-name={file.Name} data-ext={file.Extension} data-file={file.File} onClick={this.downloadFile.bind(this)}>
+                  <a className="pointer control_buttons" title="Скачать" data-id={file.Id} onClick={this.downloadFile.bind(this)}>
                     Скачать 
                   </a>
 
@@ -301,8 +249,8 @@ class AllFiles extends React.Component {
 }
 
 class FilesForm extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       file: [],
@@ -378,11 +326,12 @@ class FilesForm extends React.Component {
         if (xhr.status === 200) {
           document.getElementById('uploadFileModalClose').click();
           alert("Файл успешно загружен");
+          this.props.history.replace('/files')
         } else {
           console.log(xhr.response);
           // alert("Ошибка " + xhr.status + ': ' + xhr.statusText);
         }
-      }
+      }.bind(this)
       console.log(data);
       xhr.send(formData);
     }
@@ -413,7 +362,7 @@ class FilesForm extends React.Component {
         <div className="modal fade" id="uploadFileModal" tabIndex="-1" role="dialog" aria-hidden="true">
           <div className="modal-dialog" role="document">
             <div className="modal-content">
-              <form onSubmit={this.uploadFile}>
+              <form>
                 <div className="modal-header">
                   <h5 className="modal-title">Загрузить файл</h5>
                   <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
@@ -450,7 +399,7 @@ class FilesForm extends React.Component {
                   </div>
                 </div>
                 <div className="modal-footer">
-                  <input type="submit" className="btn btn-primary" value="Загрузить" />
+                  <input type="button" onClick={this.uploadFile} className="btn btn-primary" value="Загрузить" />
                   <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                 </div>
               </form>
