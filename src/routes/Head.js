@@ -739,7 +739,7 @@ class ShowApz extends React.Component {
                 </button>
               </div>
               <div className="modal-body">
-                {apz.gasResponse ? 
+                {apz.GasResponse ? 
                   <table className="table table-bordered table-striped">
                     <tbody>
                       <tr>
