@@ -170,10 +170,15 @@ export default class Header extends Component {
                  </div>
               </li>
               <li className="nav-item">
-                <NavLink to={'/reviews'} replace className="nav-link">{e.reviews}</NavLink>
-              </li>
-              <li className="nav-item">
                 <NavLink to={'/budget_plan'} replace className="nav-link">{e.budget_plan}</NavLink>
+              </li>
+              <li className="nav-item dropdown">
+                <button className="nav-link dropdown-toggle" style={navBtnStyle} href="#" id="additionalDropdownMenuLink" data-toggle="dropdown" >
+                  {e.additional}
+                </button>
+                <div className="dropdown-menu" aria-labelledby="additionalDropdownMenuLink">
+                  <NavLink to={'/tutorials'} replace className="dropdown-item">{e.tutorials}</NavLink>
+                 </div>
               </li>
             </ul>
             
