@@ -24,7 +24,7 @@ export default class VideoTutorials extends React.Component {
       <div className="content container video_tutorials-plan-page">
         <div className="card">
           <div className="card-header">
-          <h4 className="mb-0">Обучающий материал</h4></div>
+          <h4 className="mb-0">Пример работы</h4></div>
           <div className="card-body">
             <div className="list-group" id="video_list">
               <a className="list-group-item list-group-item-action" data-toggle="list" href="#tab1">
