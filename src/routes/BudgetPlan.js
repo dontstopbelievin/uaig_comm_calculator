@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+//import { NavLink } from 'react-router-dom';
 
 export default class BudgetPlan extends React.Component {
   constructor(props) {
@@ -41,7 +41,7 @@ export default class BudgetPlan extends React.Component {
       } else {
         alert('Не удалось скачать файл');
       }
-    }.bind(this)
+    }
     xhr.send();
   }
 

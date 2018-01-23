@@ -325,8 +325,42 @@ class ShowApz extends React.Component {
 
   // print technical condition
   printTechCon(apzId, project) {
-    //var token = sessionStorage.getItem('tokenInfo');
-    //code goes here
+    var token = sessionStorage.getItem('tokenInfo');
+    if (token) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/apz/print/tc/electro/" + apzId, true);
+      xhr.responseType = "blob";
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.onload = function () {
+        console.log(xhr);
+        console.log(xhr.status);
+        if (xhr.status === 200) {
+          //test of IE
+          if (typeof window.navigator.msSaveBlob === "function") {
+            window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
+          } 
+          else {
+            var blob = xhr.response;
+            var link = document.createElement('a');
+            var today = new Date();
+            var curr_date = today.getDate();
+            var curr_month = today.getMonth() + 1;
+            var curr_year = today.getFullYear();
+            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+            //console.log(curr_day);
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "ТУ-Электр-" + project + formated_date + ".pdf";
+
+            //append the link to the document body
+            document.body.appendChild(link);
+            link.click();
+          }
+        }
+      }
+      xhr.send();
+    } else {
+      console.log('session expired');
+    }
   }
 
   toggleMap(e) {
