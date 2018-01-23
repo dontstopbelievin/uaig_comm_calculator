@@ -320,54 +320,122 @@ class ShowApz extends React.Component {
 
   // print technical condition of gasProvider
   printGasTechCon(apzId, project) {
-    //var token = sessionStorage.getItem('tokenInfo');
-    // if (token) {
-    //   var xhr = new XMLHttpRequest();
-    //   xhr.open("get", window.url + "api/apz/print/tc/gas/" + apzId, true);
-    //   xhr.responseType = "blob";
-    //   xhr.setRequestHeader("Authorization", "Bearer " + token);
-    //   xhr.onload = function () {
-    //     console.log(xhr);
-    //     console.log(xhr.status);
-    //     if (xhr.status === 200) {
-    //       //test of IE
-    //       if (typeof window.navigator.msSaveBlob === "function") {
-    //         window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
-    //       } 
-    //       else {
-    //         var blob = xhr.response;
-    //         var link = document.createElement('a');
-    //         var today = new Date();
-    //         var curr_date = today.getDate();
-    //         var curr_month = today.getMonth() + 1;
-    //         var curr_year = today.getFullYear();
-    //         var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
-    //         //console.log(curr_day);
-    //         link.href = window.URL.createObjectURL(blob);
-    //         link.download = "ТУ-Газ-" + project + formated_date + ".pdf";
+    var token = sessionStorage.getItem('tokenInfo');
+    if (token) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/apz/print/tc/gas/" + apzId, true);
+      xhr.responseType = "blob";
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.onload = function () {
+        console.log(xhr);
+        console.log(xhr.status);
+        if (xhr.status === 200) {
+          //test of IE
+          if (typeof window.navigator.msSaveBlob === "function") {
+            window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
+          } 
+          else {
+            var blob = xhr.response;
+            var link = document.createElement('a');
+            var today = new Date();
+            var curr_date = today.getDate();
+            var curr_month = today.getMonth() + 1;
+            var curr_year = today.getFullYear();
+            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+            //console.log(curr_day);
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "ТУ-Газ-" + project + formated_date + ".pdf";
 
-    //         //append the link to the document body
-    //         document.body.appendChild(link);
-    //         link.click();
-    //       }
-    //     }
-    //   }
-    //   xhr.send();
-    // } else {
-    //   console.log('session expired');
-    // }
+            //append the link to the document body
+            document.body.appendChild(link);
+            link.click();
+          }
+        }
+      }
+      xhr.send();
+    } else {
+      console.log('session expired');
+    }
   }
 
   // print technical condition of electroProvider
   printElectroTechCon(apzId, project) {
-    //var token = sessionStorage.getItem('tokenInfo');
-    // code goes here
+    var token = sessionStorage.getItem('tokenInfo');
+    if (token) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/apz/print/tc/electro/" + apzId, true);
+      xhr.responseType = "blob";
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.onload = function () {
+        console.log(xhr);
+        console.log(xhr.status);
+        if (xhr.status === 200) {
+          //test of IE
+          if (typeof window.navigator.msSaveBlob === "function") {
+            window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
+          } 
+          else {
+            var blob = xhr.response;
+            var link = document.createElement('a');
+            var today = new Date();
+            var curr_date = today.getDate();
+            var curr_month = today.getMonth() + 1;
+            var curr_year = today.getFullYear();
+            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+            //console.log(curr_day);
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "ТУ-Электр-" + project + formated_date + ".pdf";
+
+            //append the link to the document body
+            document.body.appendChild(link);
+            link.click();
+          }
+        }
+      }
+      xhr.send();
+    } else {
+      console.log('session expired');
+    }
   }
 
   // print technical condition of heatProvider
   printHeatTechCon(apzId, project) {
-    //var token = sessionStorage.getItem('tokenInfo');
-    // code goes here
+    var token = sessionStorage.getItem('tokenInfo');
+    if (token) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/apz/print/tc/heat/" + apzId, true);
+      xhr.responseType = "blob";
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.onload = function () {
+        console.log(xhr);
+        console.log(xhr.status);
+        if (xhr.status === 200) {
+          //test of IE
+          if (typeof window.navigator.msSaveBlob === "function") {
+            window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
+          } 
+          else {
+            var blob = xhr.response;
+            var link = document.createElement('a');
+            var today = new Date();
+            var curr_date = today.getDate();
+            var curr_month = today.getMonth() + 1;
+            var curr_year = today.getFullYear();
+            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+            //console.log(curr_day);
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "ТУ-Тепло-" + project + formated_date + ".pdf";
+
+            //append the link to the document body
+            document.body.appendChild(link);
+            link.click();
+          }
+        }
+      }
+      xhr.send();
+    } else {
+      console.log('session expired');
+    }
   }
 
   toggleMap(e) {
@@ -475,44 +543,28 @@ class ShowApz extends React.Component {
             <tbody>
                 <tr>
                   <td style={{width: '40%'}}>
-                  {apz.WaterResponse ?
-                    <b>ТУ Вода</b>
-                    :
-                    <b>МО Вода</b>
-                  }
+                    <b>Водоснабжение</b>
                   </td> 
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#water_provier_modal">Просмотр</a></td>
                 </tr>
              
                 <tr>
                   <td style={{width: '40%'}}>
-                    {apz.HeatResponse ?
-                      <b>ТУ Тепло</b>
-                      :
-                      <b>МО Тепло</b>
-                    }
+                    <b>Теплоснабжение</b>
                   </td> 
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#heat_provier_modal">Просмотр</a></td>
                 </tr>
               
                 <tr>
                   <td style={{width: '40%'}}>
-                    {apz.ElectroResponse ?
-                      <b>ТУ Электро</b>
-                      :
-                      <b>МО Электро</b>
-                    }
+                    <b>Электроснабжение</b>
                   </td> 
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#electro_provier_modal">Просмотр</a></td>
                 </tr>
               
                 <tr>
                   <td style={{width: '40%'}}>
-                    {apz.GasResponse ?
-                      <b>ТУ Газ</b>
-                      :
-                      <b>МО Газ</b>
-                    }
+                    <b>Газоснабжение</b>
                   </td> 
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#gas_provier_modal">Просмотр</a></td>
                 </tr>
@@ -614,7 +666,7 @@ class ShowApz extends React.Component {
           <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Детали водоснабжения</h5>
+                <h5 className="modal-title">Решение водоснабжения</h5>
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -622,38 +674,54 @@ class ShowApz extends React.Component {
               <div className="modal-body">
                 <table className="table table-bordered table-striped">
                   <tbody>
-                    <tr>
-                      <td style={{width: '50%'}}><b>Общая потребность (м<sup>3</sup>/сутки)</b></td>
-                      <td>{apz.GenWaterReq}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Хозпитьевые нужды (м<sup>3</sup>/сутки)</b></td>
-                      <td>{apz.DrinkingWater}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Производственные нужды (м<sup>3</sup>/сутки)</b></td>
-                      <td>{apz.ProdWater}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Расходы пожаротушения внутренные (л/сек)</b></td>
-                      <td>{apz.FireFightingWaterIn}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Расходы пожаротушения внешные (л/сек)</b></td>
-                      <td>{apz.FireFightingWaterOut}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Точка подключения</b></td>
-                      <td>{apz.WaterConnectionPoint}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Рекомендация</b></td>
-                      <td>{apz.WaterRecomendation}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Номер документа</b></td>
-                      <td>{apz.WaterDocNumber}</td>
-                    </tr>
+                    {apz.WaterDoc && apz.WaterResponse &&
+                      <tr>
+                        <td style={{width: '50%'}}><b>Общая потребность (м<sup>3</sup>/сутки)</b></td>
+                        <td>{apz.GenWaterReq}</td>
+                      </tr>
+                    }
+                    {apz.WaterDoc && apz.WaterResponse &&
+                      <tr>
+                        <td><b>Хозпитьевые нужды (м<sup>3</sup>/сутки)</b></td>
+                        <td>{apz.DrinkingWater}</td>
+                      </tr>
+                    }
+                    {apz.WaterDoc && apz.WaterResponse &&
+                      <tr>
+                        <td><b>Производственные нужды (м<sup>3</sup>/сутки)</b></td>
+                        <td>{apz.ProdWater}</td>
+                      </tr>
+                    }
+                    {apz.WaterDoc && apz.WaterResponse &&
+                      <tr>
+                        <td><b>Расходы пожаротушения внутренные (л/сек)</b></td>
+                        <td>{apz.FireFightingWaterIn}</td>
+                      </tr>
+                    }
+                    {apz.WaterDoc && apz.WaterResponse &&
+                      <tr>
+                        <td><b>Расходы пожаротушения внешные (л/сек)</b></td>
+                        <td>{apz.FireFightingWaterOut}</td>
+                      </tr>
+                    }
+                    {apz.WaterDoc && apz.WaterResponse &&
+                      <tr>
+                        <td><b>Точка подключения</b></td>
+                        <td>{apz.WaterConnectionPoint}</td>
+                      </tr>
+                    }
+                    {apz.WaterDoc && apz.WaterResponse &&
+                      <tr>
+                        <td><b>Рекомендация</b></td>
+                        <td>{apz.WaterRecomendation}</td>
+                      </tr>
+                    }
+                    {apz.WaterDoc && apz.WaterResponse &&
+                      <tr>
+                        <td><b>Номер документа</b></td>
+                        <td>{apz.WaterDocNumber}</td>
+                      </tr>
+                    }
                     
                     {apz.WaterDoc && apz.WaterResponse &&
                       <tr>
@@ -688,7 +756,7 @@ class ShowApz extends React.Component {
           <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Детали теплоснабжения</h5>
+                <h5 className="modal-title">Решение теплоснабжения</h5>
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -696,42 +764,60 @@ class ShowApz extends React.Component {
               <div className="modal-body">
                 <table className="table table-bordered table-striped">
                   <tbody>
-                    <tr> 
-                      <td style={{width: '50%'}}><b>Источник теплоснабжения</b></td>
-                      <td>{apz.HeatResource}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Точка подключения</b></td>
-                      <td>{apz.HeatConnectionPoint}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Давление теплоносителя</b></td>
-                      <td>{apz.HeatTransPressure}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Тепловые нагрузки по договору</b></td>
-                      <td>{apz.HeatLoadContractNum}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Отопление (Гкал/ч)</b></td>
-                      <td>{apz.HeatMainInContract}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Вентиляция (Гкал/ч)</b></td>
-                      <td>{apz.HeatVenInContract}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Горячее водоснабжение (Гкал/ч)</b></td>
-                      <td>{apz.HeatWaterInContract}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Дополнительное</b></td>
-                      <td>{apz.HeatAddition}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Номер документа</b></td>
-                      <td>{apz.HeatDocNumber}</td> 
-                    </tr>
+                    {apz.HeatDoc && apz.HeatResponse &&
+                      <tr> 
+                        <td style={{width: '50%'}}><b>Источник теплоснабжения</b></td>
+                        <td>{apz.HeatResource}</td>
+                      </tr>
+                    }
+                    {apz.HeatDoc && apz.HeatResponse &&
+                      <tr>
+                        <td><b>Точка подключения</b></td>
+                        <td>{apz.HeatConnectionPoint}</td>
+                      </tr>
+                    }
+                    {apz.HeatDoc && apz.HeatResponse &&
+                      <tr>
+                        <td><b>Давление теплоносителя</b></td>
+                        <td>{apz.HeatTransPressure}</td>
+                      </tr>
+                    }
+                    {apz.HeatDoc && apz.HeatResponse &&
+                      <tr>
+                        <td><b>Тепловые нагрузки по договору</b></td>
+                        <td>{apz.HeatLoadContractNum}</td>
+                      </tr>
+                    }
+                    {apz.HeatDoc && apz.HeatResponse &&
+                      <tr>
+                        <td><b>Отопление (Гкал/ч)</b></td>
+                        <td>{apz.HeatMainInContract}</td>
+                      </tr>
+                    }
+                    {apz.HeatDoc && apz.HeatResponse &&
+                      <tr>
+                        <td><b>Вентиляция (Гкал/ч)</b></td>
+                        <td>{apz.HeatVenInContract}</td>
+                      </tr>
+                    }
+                    {apz.HeatDoc && apz.HeatResponse &&
+                      <tr>
+                        <td><b>Горячее водоснабжение (Гкал/ч)</b></td>
+                        <td>{apz.HeatWaterInContract}</td>
+                      </tr>
+                    }
+                    {apz.HeatDoc && apz.HeatResponse &&
+                      <tr>
+                        <td><b>Дополнительное</b></td>
+                        <td>{apz.HeatAddition}</td>
+                      </tr>
+                    }
+                    {apz.HeatDoc && apz.HeatResponse &&
+                      <tr>
+                        <td><b>Номер документа</b></td>
+                        <td>{apz.HeatDocNumber}</td> 
+                      </tr>
+                    }
 
                     {apz.HeatDoc && apz.HeatResponse &&
                       <tr>
@@ -766,7 +852,7 @@ class ShowApz extends React.Component {
           <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Детали электроснабжения</h5>
+                <h5 className="modal-title">Решение электроснабжения</h5>
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -774,30 +860,42 @@ class ShowApz extends React.Component {
               <div className="modal-body">
                 <table className="table table-bordered table-striped">
                   <tbody>
-                    <tr>
-                      <td style={{width: '50%'}}><b>Требуемая мощность (кВт)</b></td>
-                      <td>{apz.ElecReqPower}</td>
-                    </tr>
-                    <tr> 
-                      <td><b>Характер нагрузки (фаза)</b></td>
-                      <td>{apz.ElecPhase}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Категория по надежности (кВт)</b></td>
-                      <td>{apz.ElecSafeCategory}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Точка подключения</b></td>
-                      <td>{apz.ElecConnectionPoint}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Рекомендация</b></td>
-                      <td>{apz.ElecRecomendation}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Номер документа</b></td>
-                      <td>{apz.ElecDocNumber}</td> 
-                    </tr>
+                    {apz.ElectroDoc && apz.ElectroResponse &&
+                      <tr>
+                        <td style={{width: '50%'}}><b>Требуемая мощность (кВт)</b></td>
+                        <td>{apz.ElecReqPower}</td>
+                      </tr>
+                    }
+                    {apz.ElectroDoc && apz.ElectroResponse &&
+                      <tr> 
+                        <td><b>Характер нагрузки (фаза)</b></td>
+                        <td>{apz.ElecPhase}</td>
+                      </tr>
+                    }
+                    {apz.ElectroDoc && apz.ElectroResponse &&
+                      <tr>
+                        <td><b>Категория по надежности (кВт)</b></td>
+                        <td>{apz.ElecSafeCategory}</td>
+                      </tr>
+                    }
+                    {apz.ElectroDoc && apz.ElectroResponse &&
+                      <tr>
+                        <td><b>Точка подключения</b></td>
+                        <td>{apz.ElecConnectionPoint}</td>
+                      </tr>
+                    }
+                    {apz.ElectroDoc && apz.ElectroResponse &&
+                      <tr>
+                        <td><b>Рекомендация</b></td>
+                        <td>{apz.ElecRecomendation}</td>
+                      </tr>
+                    }
+                    {apz.ElectroDoc && apz.ElectroResponse &&
+                      <tr>
+                        <td><b>Номер документа</b></td>
+                        <td>{apz.ElecDocNumber}</td> 
+                      </tr>
+                    }
 
                     {apz.ElectroDoc && apz.ElectroResponse &&
                       <tr>
@@ -832,7 +930,7 @@ class ShowApz extends React.Component {
           <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Детали газоснабжения</h5>
+                <h5 className="modal-title">Решение газоснабжения</h5>
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -840,41 +938,51 @@ class ShowApz extends React.Component {
               <div className="modal-body">
                 <table className="table table-bordered table-striped">
                   <tbody>
-                    <tr>
-                      <td style={{width: '50%'}}><b>Точка подключения</b></td>
-                      <td>{apz.GasConnectionPoint}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Диаметр газопровода (мм)</b></td>
-                      <td>{apz.GasPipeDiameter}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Предполагаемый объем (м<sup>3</sup>/час)</b></td>
-                      <td>{apz.AssumedCapacity}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Предусмотрение</b></td>
-                      <td>{apz.GasReconsideration}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Номер документа</b></td>
-                      <td>{apz.GasDocNumber}</td>
-                    </tr>
+                    {apz.GasDoc && apz.GasResponse &&
+                      <tr>
+                        <td style={{width: '50%'}}><b>Точка подключения</b></td>
+                        <td>{apz.GasConnectionPoint}</td>
+                      </tr>
+                    }
+                    {apz.GasDoc && apz.GasResponse &&
+                      <tr>
+                        <td><b>Диаметр газопровода (мм)</b></td>
+                        <td>{apz.GasPipeDiameter}</td>
+                      </tr>
+                    }
+                    {apz.GasDoc && apz.GasResponse &&
+                      <tr>
+                        <td><b>Предполагаемый объем (м<sup>3</sup>/час)</b></td>
+                        <td>{apz.AssumedCapacity}</td>
+                      </tr>
+                    }
+                    {apz.GasDoc && apz.GasResponse &&
+                      <tr>
+                        <td><b>Предусмотрение</b></td>
+                        <td>{apz.GasReconsideration}</td>
+                      </tr>
+                    }
+                    {apz.GasDoc && apz.GasResponse &&
+                      <tr>
+                        <td><b>Номер документа</b></td>
+                        <td>{apz.GasDocNumber}</td>
+                      </tr>
+                    }
 
-                    {apz.GasDoc && apz.gasResponse &&
+                    {apz.GasDoc && apz.GasResponse &&
                       <tr>
                         <td><b>Загруженный ТУ</b></td> 
                         <td><a className="text-info pointer" data-file={apz.GasDoc} data-name="ТУ Газ" data-ext={apz.GasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
                     }
-                    {apz.GasDoc && apz.gasResponse &&
+                    {apz.GasDoc && apz.GasResponse &&
                       <tr>
                         <td><b>Сформированный ТУ</b></td>  
                         <td><a className="text-info pointer" onClick={this.printGasTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
                       </tr>
                     }
 
-                    {apz.GasDoc && !apz.gasResponse &&
+                    {apz.GasDoc && !apz.GasResponse &&
                       <tr>
                         <td style={{width: '50%'}}><b>МО Газ</b></td>  
                         <td><a className="text-info pointer" data-file={apz.GasDoc} data-name="МО Газ" data-ext={apz.GasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>

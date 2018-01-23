@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+//import { NavLink } from 'react-router-dom';
 
 export default class BudgetPlan extends React.Component {
   constructor(props) {
@@ -16,7 +16,7 @@ export default class BudgetPlan extends React.Component {
   }
 
   getFiles() {
-    var category = 6;
+    //var category = 6;
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + "api/File/budget_plan/", true);
@@ -74,7 +74,7 @@ export default class BudgetPlan extends React.Component {
 
         saveByteArray([base64ToArrayBuffer(data.File)], data.Name + data.Extension);
       }
-    }.bind(this)
+    }
     xhr.send();
   }
 

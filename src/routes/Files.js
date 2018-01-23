@@ -284,7 +284,7 @@ class AllFiles extends React.Component {
                     Скачать 
                   </a>
 
-                  {this.state.roles.indexOf('Admin') != -1 &&
+                  {this.state.roles.indexOf('Admin') !== -1 &&
                     <a className="pointer control_buttons" data-name={file.Name} data-id={file.Id} onClick={this.deleteFile.bind(this)}>
                       Удалить
                     </a>

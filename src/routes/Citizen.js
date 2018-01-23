@@ -315,7 +315,7 @@ class AddApz extends React.Component {
     {
       if(document.getElementsByName('ObjectArea')[0].value !== '')
       {
-        var ObjectArea = parseInt(document.getElementsByName('ObjectArea')[0].value);
+        var ObjectArea = parseInt(document.getElementsByName('ObjectArea')[0].value, 3);
         switch (true) 
         {
           case (ObjectArea <= 100):
@@ -339,7 +339,7 @@ class AddApz extends React.Component {
 
       if(document.getElementsByName('ElectricRequiredPower')[0].value !== '')
       {
-        var ElectricRequiredPower = parseInt(document.getElementsByName('ElectricRequiredPower')[0].value);
+        var ElectricRequiredPower = parseInt(document.getElementsByName('ElectricRequiredPower')[0].value, 3);
         var select = document.getElementsByName('ElectricityPhase')[0];
         switch (true) 
         {
@@ -354,6 +354,8 @@ class AddApz extends React.Component {
             select.options[select.options.length] = new Option('Постоянная', 'Постоянная');
             select.options[select.options.length] = new Option('Временная', 'Временная');
             select.options[select.options.length] = new Option('Сезонная', 'Сезонная');
+            break;
+          default:
             break;
         }
       }
@@ -519,7 +521,7 @@ class AddApz extends React.Component {
                 </div>
                 <div className="form-group">
                   <label htmlFor="ObjectArea">Площадь здания (кв.м)</label>
-                  <input type="number" step="any" required className="form-control" name="ObjectArea" onChange={this.ObjectArea.bind(this)} readonly="readonly" />
+                  <input type="number" step="any" required className="form-control" name="ObjectArea" onChange={this.ObjectArea.bind(this)} readOnly="readonly" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="ObjectRooms">Количество квартир (номеров, кабинетов)</label>
@@ -579,7 +581,7 @@ class AddApz extends React.Component {
                 </div>*/}
                 <div className="form-group">
                   <label htmlFor="ElectricMaxLoadDevice">Из указанной макс. нагрузки относятся к электроприемникам (кВА):</label>
-                  <input type="number" className="form-control" readonly="readonly" name="ElectricMaxLoadDevice" placeholder="" />
+                  <input type="number" className="form-control" readOnly="readonly" name="ElectricMaxLoadDevice" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="ElectricMaxLoad">Существующая максимальная нагрузка (кВА)</label>
@@ -603,11 +605,11 @@ class AddApz extends React.Component {
                 </div>
                 <div className="form-group">
                   <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
-                  <input type="number" readonly="readonly" className="form-control" name="WaterRequirement" placeholder="" />
+                  <input type="number" readOnly="readonly" className="form-control" name="WaterRequirement" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="WaterSewage">Канализация (м<sup>3</sup>/сутки)</label>
-                  <input type="number" readonly="readonly" className="form-control" name="WaterSewage" />
+                  <input type="number" readOnly="readonly" className="form-control" name="WaterSewage" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="WaterProduction">На производственные нужды (м<sup>3</sup>/сутки)</label>
