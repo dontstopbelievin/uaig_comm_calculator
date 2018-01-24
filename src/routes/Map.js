@@ -47,7 +47,7 @@ export default class MapView extends Component {
             var view = new SceneView({
               container: containerNode,
               map: map,
-              center: [76.886, 43.250], // lon, lat
+              center: [76.923 , 43.232], // lon, lat
               scale: 10000
             });
             
@@ -70,9 +70,9 @@ export default class MapView extends Component {
             });
   
             view.when( function(callback){
-              var layerList = new LayerList({
-                view: view
-              });
+              // var layerList = new LayerList({
+              //   view: view
+              // });
 
               // Add the search widget to the top right corner of the view
               view.ui.add(searchWidget, {
@@ -80,7 +80,7 @@ export default class MapView extends Component {
               });
 
               // Add widget to the bottom right corner of the view
-              view.ui.add(layerList, "bottom-right");
+              //view.ui.add(layerList, "bottom-right");
 
             }, function(error) {
               console.log('MapView promise rejected! Message: ', error);

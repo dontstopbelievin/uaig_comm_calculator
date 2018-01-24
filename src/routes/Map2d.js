@@ -29,13 +29,13 @@ export default class Map2dView extends Component {
             'esri/WebMap',
             
             'esri/widgets/LayerList',
-
+            'esri/widgets/Expand',
             'esri/layers/FeatureLayer',
             'esri/widgets/Search',
             'dojo/domReady!'
           ]}    
           
-          onReady={({loadedModules: [MapView, WebMap, LayerList, FeatureLayer, Search], containerNode}) => {
+          onReady={({loadedModules: [MapView, WebMap, LayerList, Expand, FeatureLayer, Search], containerNode}) => {
             var webmap = new WebMap({
               portalItem: { // autocasts as new PortalItem()
                 id: "6bb8a51c86c04b35adca0d9fc8d3a155"
@@ -49,7 +49,8 @@ export default class Map2dView extends Component {
               container: containerNode,
               map: webmap,
               center: [76.886, 43.250], // lon, lat
-              scale: 10000
+              //scale: 10000
+              zoom: 11
             });
             
             var searchWidget = new Search({
@@ -72,6 +73,7 @@ export default class Map2dView extends Component {
   
             view.when( function(callback){
               var layerList = new LayerList({
+                container: document.createElement("div"),
                 view: view
               });
 
@@ -80,8 +82,16 @@ export default class Map2dView extends Component {
                 position: "top-right"
               });
 
+              var layerListExpand = new Expand({
+                expandIconClass: "esri-icon-layer-list",  // see https://developers.arcgis.com/javascript/latest/guide/esri-icon-font/
+                expandTooltip: "Развернуть список", // optional, defaults to "Expand" for English locale
+                collapseTooltip: "Свернуть список",
+                view: view,
+                content: layerList.domNode
+              });
+
               // Add widget to the bottom right corner of the view
-              view.ui.add(layerList, "bottom-right");
+              view.ui.add(layerListExpand, "bottom-right");
 
             }, function(error) {
               console.log('MapView promise rejected! Message: ', error);
