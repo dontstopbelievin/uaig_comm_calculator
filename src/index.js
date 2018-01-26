@@ -25,6 +25,7 @@ import Files from './routes/Files';
 import Sketch from './routes/Sketch';
 import Review from './routes/Review';
 import BudgetPlan from './routes/BudgetPlan';
+import Polls from './routes/Polls';
 import Footer from './components/Footer';
 
 window.jQuery = require('jquery');
@@ -43,7 +44,7 @@ export default class Main extends React.Component {
 
   componentWillMount() {
     this.setLang();
-    window.url = 'https://work.uaig.kz:4443/';
+    window.url = 'http://localhost:53844/';
     //window.url = 'http://localhost:53844/';
   }
 
@@ -85,6 +86,7 @@ export default class Main extends React.Component {
               <Route path="/files" render={(props) => (<Files {...props} />)} />
               <Route path="/sketch" render={(props) => (<Sketch {...props} />)} />
               <Route path="/reviews" render={(props) => (<Review {...props} />)} />
+              <Route path="/polls" render={(props) => (<Polls {...props} />)} />
               <Route path="/budget_plan" render={(props) => (<BudgetPlan {...props} />)} />
             </Switch>
             <Footer />

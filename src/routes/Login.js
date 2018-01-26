@@ -157,7 +157,7 @@ function signXmlBack(result) {
     let signedXml = result.result;
     var data = { XmlDoc: signedXml }
     $.ajax({
-        url: window.url + 'api/Account/LoginCert',
+        url: window.url + 'api/Account/LoginWithECP',
         type: "POST",
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(data),
@@ -165,12 +165,25 @@ function signXmlBack(result) {
            // var commonName = response.commonName;
            // var commonNameValues = commonName.split("?");
            // you will get response from your php page (what you echo or print)  
-            window.result = response;
-            $('#userName').val(response.IIN);
+            //window.result = response;
+            //$('#userName').val(response.IIN);
+
+            var roles = response.role1;
+            if(response.role2)
+              roles.push(response.role2);
+            if(response.role3)
+              roles.push(response.role3);
+            // сохраняем в хранилище sessionStorage токен доступа
+            sessionStorage.setItem('tokenInfo', response.access_token);
+            sessionStorage.setItem('userName', response.userName);
+            sessionStorage.setItem('userRoles', JSON.stringify(roles));
+            sessionStorage.setItem('logStatus', true);
+            window.location.reload();
+
             //$('#firstName').val(response.firstName);
             //$('#lastName').val(response.lastName);
             //$('#middleName').val(response.middleName);
-            alert(response.firstName + ", ЭЦП успешно загружен! Заполните остальные поля.");
+            //alert(response.firstName + ", ЭЦП успешно загружен! Заполните остальные поля.");
         },
         error: function(jqXHR, textStatus, errorThrown) {
            console.log(textStatus, errorThrown);

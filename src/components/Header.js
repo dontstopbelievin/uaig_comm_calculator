@@ -175,6 +175,9 @@ export default class Header extends Component {
               <li className="nav-item">
                 <NavLink to={'/budget_plan'} replace className="nav-link">{e.budget_plan}</NavLink>
               </li>
+              <li className="nav-item">
+                <NavLink to={'/polls'} replace className="nav-link">{e.polls}</NavLink>
+              </li>
             </ul>
             
             <div className="justify-content-end">
