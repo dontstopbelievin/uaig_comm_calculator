@@ -143,7 +143,6 @@ class ShowApz extends React.Component {
       showMapText: 'Показать карту',
     };
 
-    this.toggleMap = this.toggleMap.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
   }
 
@@ -247,18 +246,18 @@ class ShowApz extends React.Component {
     xhr.send(formData); 
   }
 
-  toggleMap(e) {
+  toggleMap(value) {
     this.setState({
-      showMap: !this.state.showMap
+      showMap: value
     })
 
-    if (this.state.showMap) {
+    if (value) {
       this.setState({
-        showMapText: 'Показать карту'
+        showMapText: 'Скрыть карту'
       })
     } else {
       this.setState({
-        showMapText: 'Скрыть карту'
+        showMapText: 'Показать карту'
       })
     }
   }
@@ -314,7 +313,13 @@ class ShowApz extends React.Component {
             </tr>
             <tr>
               <td><b>Адрес проекта</b></td>
-              <td>{apz.ProjectAddress}</td>
+              <td>
+                {apz.ProjectAddress}
+
+                {apz.ProjectAddressCoordinates != null &&
+                  <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
+                }
+              </td>
             </tr>
             <tr>
               <td><b>Дата заявления</b></td>
@@ -379,9 +384,9 @@ class ShowApz extends React.Component {
           </div>
         </div>
 
-        {this.state.showMap && <ShowMap />} 
+        {this.state.showMap && <ShowMap coordinates={apz.ProjectAddressCoordinates} />} 
 
-        <button className="btn btn-raised btn-info" onClick={this.toggleMap} style={{margin: '20px auto 10px'}}>
+        <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
           {this.state.showMapText}
         </button>
 
@@ -400,6 +405,8 @@ class ShowMap extends React.Component {
       url: 'https://js.arcgis.com/4.6/'
     };
 
+    var coordinates = this.props.coordinates;
+
     return (
       <div>
         <h5 className="block-title-2 mt-5 mb-3">Карта</h5>
@@ -415,10 +422,13 @@ class ShowMap extends React.Component {
               'esri/layers/TileLayer',
               'esri/widgets/Search',
               'esri/WebMap',
+              'esri/geometry/support/webMercatorUtils',
+              'dojo/dom',
+              'esri/Graphic',
               'dojo/domReady!'
             ]}    
             
-            onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap], containerNode}) => {
+            onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap, webMercatorUtils, dom, Graphic], containerNode}) => {
               var map = new WebMap({
                 portalItem: {
                   id: "caa580cafc1449dd9aa4fd8eafd3a14d"
@@ -447,13 +457,46 @@ class ShowMap extends React.Component {
                 });
                 map.add(flGosAkts);
               */
-              
-              var view = new MapView({
-                container: containerNode,
-                map: map,
-                center: [76.886, 43.250], // lon, lat
-                scale: 10000
-              });
+
+              if (coordinates) {
+                var coordinatesArray = coordinates.split(", ");
+
+                var view = new MapView({
+                  container: containerNode,
+                  map: map,
+                  center: [parseFloat(coordinatesArray[0]), parseFloat(coordinatesArray[1])], 
+                  scale: 10000
+                });
+
+                var point = {
+                  type: "point",
+                  longitude: parseFloat(coordinatesArray[0]),
+                  latitude: parseFloat(coordinatesArray[1])
+                };
+
+                var markerSymbol = {
+                  type: "simple-marker",
+                  color: [226, 119, 40],
+                  outline: {
+                    color: [255, 255, 255],
+                    width: 2
+                  }
+                };
+
+                var pointGraphic = new Graphic({
+                  geometry: point,
+                  symbol: markerSymbol
+                });
+
+                view.graphics.add(pointGraphic);
+              } else {
+                var view = new MapView({
+                  container: containerNode,
+                  map: map,
+                  center: [76.886, 43.250], 
+                  scale: 10000
+                });
+              }
               
               var searchWidget = new Search({
                 view: view,

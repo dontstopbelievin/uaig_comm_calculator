@@ -158,13 +158,17 @@ class AddApz extends React.Component {
     this.state = {
       personalIdFile: null,
       confirmedTaskFile: null,
-      titleDocumentFile: null
+      titleDocumentFile: null,
+      showMap: false,
+      hasCoordinates: false
     }
     
     this.tabSubmission = this.tabSubmission.bind(this);
     this.onPersonalIdFileChange = this.onPersonalIdFileChange.bind(this);
     this.onConfirmedTaskFileChange = this.onConfirmedTaskFileChange.bind(this);
     this.onTitleDocumentFileChange = this.onTitleDocumentFileChange.bind(this);
+    this.hasCoordinates = this.hasCoordinates.bind(this);
+    this.toggleMap = this.toggleMap.bind(this);
   }
 
   onPersonalIdFileChange(e) {
@@ -178,6 +182,30 @@ class AddApz extends React.Component {
   onTitleDocumentFileChange(e) {
     this.setState({ titleDocumentFile: e.target.files[0] });
   }
+
+  hasCoordinates(value) {
+
+    if (value) {
+      $('.coordinates_block div:eq(0)').removeClass('col-sm-7').addClass('col-sm-6');
+      $('.coordinates_block div:eq(1)').removeClass('col-sm-5').addClass('col-sm-6');
+    } else {
+      $('.coordinates_block div:eq(0)').removeClass('col-sm-6').addClass('col-sm-7');
+      $('.coordinates_block div:eq(1)').removeClass('col-sm-6').addClass('col-sm-5');
+    }
+    this.setState({ hasCoordinates: value });
+  }
+
+  toggleMap(value) {
+    this.setState({
+      showMap: value
+    })
+
+    if (value) {
+      $('#tab0-form').slideUp();
+    } else {
+      $('#tab0-form').slideDown();
+    }
+  }
 
   tabSubmission(elem) { 
     elem.preventDefault();
@@ -452,7 +480,21 @@ class AddApz extends React.Component {
                   </div>
                   <div className="form-group">
                     <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
-                    <input type="text" required className="form-control" name="ProjectAddress" />
+                    <div className="row coordinates_block">
+                      <div className="col-sm-7">
+                        <input type="text" required className="form-control" name="ProjectAddress" />
+                        <input type="hidden" id="ProjectAddressCoordinates" name="ProjectAddressCoordinates" />
+                      </div>
+                      <div className="col-sm-5 p-0">
+                        <a className="btn btn-outline-secondary btn-sm" onClick={() => this.toggleMap(true)}>
+                          {this.state.hasCoordinates &&
+                            <i className="glyphicon glyphicon-ok coordinateIcon mr-1"></i>
+                          }
+
+                          Отметить на карте
+                        </a>
+                      </div>
+                    </div>
                   </div>
                   <div className="form-group">
                     <label htmlFor="ConfirmedTaskFile">Прикрепить файл</label>
@@ -474,6 +516,13 @@ class AddApz extends React.Component {
                 <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
               </div>
               </form>
+
+              {this.state.showMap && 
+                <div className="mb-4">
+                  <ShowMap point={true} mapFunction={this.toggleMap} hasCoordinates={this.hasCoordinates}/>
+                </div>
+              }
+
               <button onClick={this.requestSubmission} className="btn btn-outline-success">Отправить заявку</button>
             </div>
             <div className="tab-pane fade" id="tab1" role="tabpanel" aria-labelledby="tab1-link">
@@ -816,8 +865,6 @@ class ShowApz extends React.Component {
       showMap: false,
       showMapText: 'Показать карту'
     };
-
-    this.toggleMap = this.toggleMap.bind(this);
   }
 
   componentWillMount() {
@@ -919,18 +966,18 @@ class ShowApz extends React.Component {
     }
   }
 
-  toggleMap(e) {
+  toggleMap(value) {
     this.setState({
-      showMap: !this.state.showMap
+      showMap: value
     })
 
-    if (this.state.showMap) {
+    if (value) {
       this.setState({
-        showMapText: 'Показать карту'
+        showMapText: 'Скрыть карту'
       })
     } else {
       this.setState({
-        showMapText: 'Скрыть карту'
+        showMapText: 'Показать карту'
       })
     }
   }
@@ -986,7 +1033,13 @@ class ShowApz extends React.Component {
             </tr>
             <tr>
               <td><b>Адрес проекта</b></td>
-              <td>{apz.ProjectAddress}</td>
+              <td>
+                {apz.ProjectAddress}
+
+                {apz.ProjectAddressCoordinates != null &&
+                  <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
+                }
+              </td>
             </tr>
             <tr>
               <td><b>Дата заявления</b></td>
@@ -1046,9 +1099,9 @@ class ShowApz extends React.Component {
           </div>
         }
 
-        {this.state.showMap && <ShowMap />} 
+        {this.state.showMap && <ShowMap coordinates={apz.ProjectAddressCoordinates} />} 
 
-        <button className="btn btn-raised btn-info" onClick={this.toggleMap} style={{margin: '20px auto 10px'}}>
+        <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
           {this.state.showMapText}
         </button>
 
@@ -1065,14 +1118,54 @@ class ShowApz extends React.Component {
 }
 
 class ShowMap extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.toggleMap = this.toggleMap.bind(this);
+  }
+
+  toggleMap(value) {
+    this.props.mapFunction(value)
+  }
+
+  saveCoordinates() {
+    $('#ProjectAddressCoordinates').val($('#coordinates').html());
+
+    this.props.hasCoordinates(true)
+
+    if (window.confirm('Местоположение отмечено. Закрыть карту?')) {
+      this.toggleMap(false);
+    }
+  }
+
   render() {
     const options = {
       url: 'https://js.arcgis.com/4.6/'
     };
 
+    var oldPoint = [];
+    var withPoint = this.props.point;
+    var coordinates = this.props.coordinates;
+    var toggleMap = this.toggleMap;
+
     return (
       <div>
-        <h5 className="block-title-2 mt-5 mb-3">Карта</h5>
+        {withPoint ? 
+          <div className="row">
+            <div className="col-sm-6">
+              <h5 className="block-title-2 mt-0 mb-3">Карта</h5>
+            </div>
+            <div className="col-sm-6">
+              <div className="pull-right">
+                <button type="button" className="btn btn-outline-success mr-1" onClick={() => this.saveCoordinates()}>Сохранить</button>
+                <button type="button" className="btn btn-outline-secondary" onClick={() => this.toggleMap(false)}>Закрыть карту</button>
+              </div>
+            </div>
+          </div>
+          :
+          <h5 className="block-title-2 mt-5 mb-3">Карта</h5>
+        }
+        <div id="coordinates" style={{display: 'none'}}></div>
         <div className="col-md-12 viewDiv"> 
           <EsriLoaderReact options={options} 
             modulesToLoad={[
@@ -1085,16 +1178,20 @@ class ShowMap extends React.Component {
               'esri/layers/TileLayer',
               'esri/widgets/Search',
               'esri/WebMap',
+              'esri/geometry/support/webMercatorUtils',
+              'dojo/dom',
+              'esri/Graphic',
               'dojo/domReady!'
             ]}    
             
-            onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap], containerNode}) => {
+            onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap, webMercatorUtils, dom, Graphic], containerNode}) => {
               var map = new WebMap({
+                basemap: "streets",
                 portalItem: {
                   id: "caa580cafc1449dd9aa4fd8eafd3a14d"
                 }
               });
-              
+
               /*var flRedLines = new FeatureLayer({
                 url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D1%8B%D0%B5_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B8/FeatureServer",
                 outFields: ["*"],
@@ -1115,14 +1212,81 @@ class ShowMap extends React.Component {
                 title: "Гос акты"
               });
               map.add(flGosAkts);*/
+
+              if (coordinates) {
+                var coordinatesArray = coordinates.split(", ");
+
+                var view = new MapView({
+                  container: containerNode,
+                  map: map,
+                  center: [parseFloat(coordinatesArray[0]), parseFloat(coordinatesArray[1])], 
+                  scale: 10000
+                });
+
+                var point = {
+                  type: "point",
+                  longitude: parseFloat(coordinatesArray[0]),
+                  latitude: parseFloat(coordinatesArray[1])
+                };
+
+                var markerSymbol = {
+                  type: "simple-marker",
+                  color: [226, 119, 40],
+                  outline: {
+                    color: [255, 255, 255],
+                    width: 2
+                  }
+                };
+
+                var pointGraphic = new Graphic({
+                  geometry: point,
+                  symbol: markerSymbol
+                });
+
+                view.graphics.add(pointGraphic);
+              } else {
+                var view = new MapView({
+                  container: containerNode,
+                  map: map,
+                  center: [76.886, 43.250], 
+                  scale: 10000
+                });
+              }
               
-              var view = new MapView({
-                container: containerNode,
-                map: map,
-                center: [76.886, 43.250], // lon, lat
-                scale: 10000
-              });
-              
+              if (withPoint) {
+                view.on("click", showCoordinates);
+
+                function showCoordinates(evt) {
+                  var mp = webMercatorUtils.webMercatorToGeographic(evt.mapPoint);
+                  dom.byId("coordinates").innerHTML = mp.x.toFixed(5) + ", " + mp.y.toFixed(5);
+
+                  var point = {
+                    type: "point",
+                    longitude: mp.x.toFixed(5),
+                    latitude: mp.y.toFixed(5)
+                  };
+
+                  var markerSymbol = {
+                    type: "simple-marker",
+                    color: [226, 119, 40],
+                    outline: {
+                      color: [255, 255, 255],
+                      width: 2
+                    }
+                  };
+
+                  var pointGraphic = new Graphic({
+                    geometry: point,
+                    symbol: markerSymbol
+                  });
+
+                  view.graphics.remove(oldPoint);
+                  view.graphics.add(pointGraphic);
+
+                  oldPoint = pointGraphic;
+                }
+              }
+
               var searchWidget = new Search({
                 view: view,
                 sources: [{
