@@ -25,8 +25,9 @@ export default class Guest extends React.Component {
   showAlert() {
     $('#alertModal').modal('show');
     //alert('Вам надо зайти в систему или зарегистрироваться!');
+	//dferfe
   }
-
+ 
   componentWillMount() {
     //console.log("GuestComponent will mount");
   }
