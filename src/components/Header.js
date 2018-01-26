@@ -180,6 +180,9 @@ export default class Header extends Component {
                   <NavLink to={'/tutorials'} replace className="dropdown-item">{e.tutorials}</NavLink>
                  </div>
               </li>
+              <li className="nav-item">
+                <NavLink to={'/polls'} replace className="nav-link">{e.polls}</NavLink>
+              </li>
             </ul>
             
             <div className="justify-content-end">
