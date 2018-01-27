@@ -433,7 +433,7 @@ class ShowApz extends React.Component {
                 <td>
                   {apz.ProjectAddress}
 
-                  {apz.ProjectAddressCoordinates != null &&
+                  {apz.ProjectAddressCoordinates != "" &&
                     <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
                   }
                 </td>

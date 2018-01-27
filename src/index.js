@@ -15,6 +15,7 @@ import Urban from './routes/Urban';
 import Head from './routes/Head';
 import ProviderElectro from './routes/ProviderElectro';
 import ProviderGas from './routes/ProviderGas';
+import ProviderPhone from './routes/ProviderPhone';
 import ProviderHeat from './routes/ProviderHeat';
 import ProviderWater from './routes/ProviderWater';
 import Project from './routes/Project';
@@ -78,6 +79,7 @@ export default class Main extends React.Component {
               <Route path="/citizen" render={(props) => (<Citizen {...props} />)} />
               <Route path="/providerelectro" render={(props) => (<ProviderElectro {...props} />)} />
               <Route path="/providergas" render={(props) => (<ProviderGas {...props} />)} />
+              <Route path="/providerphone" render={(props) => (<ProviderPhone {...props} />)} />
               <Route path="/providerheat" render={(props) => (<ProviderHeat {...props} />)} />
               <Route path="/providerwater" render={(props) => (<ProviderWater {...props} />)} />
               <Route path="/project" render={(props) => (<Project {...props} />)} />
