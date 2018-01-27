@@ -26,6 +26,17 @@ import Sketch from './routes/Sketch';
 import Review from './routes/Review';
 import BudgetPlan from './routes/BudgetPlan';
 import Footer from './components/Footer';
+import News from './routes/News';
+import npm from './routes/npm';
+import public_services from './routes/public_services';
+import permission_and_covoting from './routes/permission_and_covoting';
+import legalpurchase from './routes/legalpurchase';
+import counteraction from './routes/counteraction';
+import contacts from './routes/contacts';
+import architectural_and_town_planning_activity from './routes/architectural_and_town_planning_activity';
+
+
+
 
 window.jQuery = require('jquery');
 window.Popper = require('popper.js').default;
@@ -86,6 +97,15 @@ export default class Main extends React.Component {
               <Route path="/sketch" render={(props) => (<Sketch {...props} />)} />
               <Route path="/reviews" render={(props) => (<Review {...props} />)} />
               <Route path="/budget_plan" render={(props) => (<BudgetPlan {...props} />)} />
+              <Route path="/news" render={(props) => (<News {...props}/>)}/>
+              <Route path="/public_services" render={(props) => (<public_services {...props}/>)}/>
+              <Route path="/permission_and_covoting" render={(props) => (<permission_and_covoting {...props}/>)}/>
+              <Route path="/npm" render={(props) => (<npm {...props}/>)}/>
+              <Route path="/legalpurchese" render={(props) => (<legalpurchese {...props}/>)}/>
+              <Route path="/counteraction" render={(props) => (<counteraction {...props}/>)}/>
+              <Route path="/control" render={(props) => (<control {...props}/>)}/>
+              <Route path="/contacts" render={(props) => (<contacts {...props}/>)}/>
+              <Route path="/architectural_and_town_planning_activity" render={(props) => (<architectural_and_town_planning_activity {...props}/>)}/>
             </Switch>
             <Footer />
           </div>
