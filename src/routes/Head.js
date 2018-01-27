@@ -194,7 +194,7 @@ class ShowApz extends React.Component {
           this.setState({showButtons: true}); 
         }
 
-        if ([data.WaterResponse, data.ElectroResponse, data.HeatResponse, data.GasResponse].indexOf(false) === -1) {
+        if ([data.WaterResponse, data.ElectroResponse, data.HeatResponse, data.GasResponse, data.PhoneResponse].indexOf(false) === -1) {
           this.setState({response: true});
         }
       }
