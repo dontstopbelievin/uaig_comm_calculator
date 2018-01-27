@@ -258,7 +258,10 @@ class LogoutBtn extends Component {
                     }
                     else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Heat'){
                       return <HeatProviderMenu />;
-                    }
+                    } 
+                    else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Phone'){
+                      return <PhoneProviderMenu />;
+                    } 
                     else{
                       return <WaterProviderMenu />;
                     }
@@ -343,6 +346,18 @@ class WaterProviderMenu extends Component {
     return (
       <div>
         <NavLink to={"/providerwater"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
+        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
+        <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
+      </div>
+    )
+  }
+}
+
+class PhoneProviderMenu extends Component {
+  render() {
+    return (
+      <div>
+        <NavLink to={"/providerphone"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
         <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
       </div>

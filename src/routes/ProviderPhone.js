@@ -4,7 +4,7 @@ import EsriLoaderReact from 'esri-loader-react';
 //import { NavLink } from 'react-router-dom';
 import { Route, NavLink, Link, Switch, Redirect } from 'react-router-dom';
 
-export default class ProviderWater extends React.Component {
+export default class ProviderPhone extends React.Component {
   render() {
     return (
       <div className="content container urban-apz-page">
@@ -13,9 +13,9 @@ export default class ProviderWater extends React.Component {
           <h4 className="mb-0">Архитектурно-планировочное задание</h4></div>
           <div className="card-body">
             <Switch>
-              <Route path="/providerwater/status/:status" component={AllApzs} />
-              <Route path="/providerwater/:id" component={ShowApz} />
-              <Redirect from="/providerwater" to="/providerwater/status/active" />
+              <Route path="/providerphone/status/:status" component={AllApzs} />
+              <Route path="/providerphone/:id" component={ShowApz} />
+              <Redirect from="/providerphone" to="/providerphone/status/active" />
             </Switch>
           </div>
         </div>
@@ -70,15 +70,15 @@ class AllApzs extends React.Component {
         
         switch (status) {
           case 'active':
-            var apzs = data.filter(function(obj) { return obj.ApzWaterStatus === 2 && obj.Status === 3; });
+            var apzs = data.filter(function(obj) { return obj.ApzPhoneStatus === 2 && obj.Status === 3; });
             break;
 
           case 'accepted':
-            apzs = data.filter(function(obj) { return obj.ApzWaterStatus === 1; });
+            apzs = data.filter(function(obj) { return obj.ApzPhoneStatus === 1; });
             break;
 
           case 'declined':
-            apzs = data.filter(function(obj) { return obj.ApzWaterStatus === 0; });
+            apzs = data.filter(function(obj) { return obj.ApzPhoneStatus === 0; });
             break;
 
           default:
@@ -96,9 +96,9 @@ class AllApzs extends React.Component {
     return (
       <div>
         <ul className="nav nav-tabs mb-2 pull-right">
-          <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerwater/status/active" replace>Активные</NavLink></li>
-          <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerwater/status/accepted" replace>Принятые</NavLink></li>
-          <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerwater/status/declined" replace>Отказанные</NavLink></li>
+          <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerphone/status/active" replace>Активные</NavLink></li>
+          <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerphone/status/accepted" replace>Принятые</NavLink></li>
+          <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerphone/status/declined" replace>Отказанные</NavLink></li>
         </ul>
 
         <table className="table">
@@ -115,20 +115,20 @@ class AllApzs extends React.Component {
                 <tr key={index}>
                   <td>{apz.ProjectName}</td>
                   <td>
-                    {apz.ApzWaterStatus === 0 &&
+                    {apz.ApzPhoneStatus === 0 &&
                       <span className="text-danger">Отказано</span>
                     }
 
-                    {apz.ApzWaterStatus === 1 &&
+                    {apz.ApzPhoneStatus === 1 &&
                       <span className="text-success">Принято</span>
                     }
 
-                    {apz.ApzWaterStatus === 2 && apz.Status === 3 &&
+                    {apz.ApzPhoneStatus === 2 && apz.Status === 3 &&
                       <span className="text-info">В процессе</span>
                     }
                   </td>
                   <td>
-                    <Link className="btn btn-outline-info" to={'/providerwater/' + apz.Id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                    <Link className="btn btn-outline-info" to={'/providerphone/' + apz.Id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                   </td>
                 </tr>
                 );
@@ -151,56 +151,38 @@ class ShowApz extends React.Component {
       showButtons: false,
       showTechCon: false,
       file: false,
-      genWaterReq: "",
-      drinkingWater: "",
-      prodWater: "",
-      fireFightingWaterIn: "",
-      fireFightingWaterOut: "",
-      connectionPoint: "",
-      recomendation: "",
+      responseServiceNum: "",
+      responseCapacity: "",
+      responseSewage: "",
+      responseClientWishes: "",
       docNumber: "",
       description: '',
-      showMapText: 'Показать карту'
+      showMapText: 'Показать карту',
     };
 
-    this.onGenWaterReqChange = this.onGenWaterReqChange.bind(this);
-    this.onDrinkingWaterChange = this.onDrinkingWaterChange.bind(this);
-    this.onProdWaterChange = this.onProdWaterChange.bind(this);
-    this.onFireFightingWaterInChange = this.onFireFightingWaterInChange.bind(this);
-    this.onFireFightingWaterOutChange = this.onFireFightingWaterOutChange.bind(this);
-    this.onConnectionPointChange = this.onConnectionPointChange.bind(this);
-    this.onRecomendationChange = this.onRecomendationChange.bind(this);
+    this.onResponseServiceNumChange = this.onResponseServiceNumChange.bind(this);
+    this.onResponseCapacityChange = this.onResponseCapacityChange.bind(this);
+    this.onResponseSewageChange = this.onResponseSewageChange.bind(this);
     this.onDocNumberChange = this.onDocNumberChange.bind(this);
+    this.onResponseClientWishesChange = this.onResponseClientWishesChange.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
   }
 
-  onGenWaterReqChange(e) {
-    this.setState({ genWaterReq: e.target.value });
+  onResponseServiceNumChange(e) {
+    this.setState({ responseServiceNum: e.target.value });
   }
 
-  onDrinkingWaterChange(e) {
-    this.setState({ drinkingWater: e.target.value });
+  onResponseCapacityChange(e) {
+    this.setState({ responseCapacity: e.target.value });
   }
 
-  onProdWaterChange(e) {
-    this.setState({ prodWater: e.target.value });
+  onResponseSewageChange(e) {
+    this.setState({ responseSewage: e.target.value });
   }
 
-  onFireFightingWaterInChange(e) {
-    this.setState({ fireFightingWaterIn: e.target.value });
-  }
-
-  onFireFightingWaterOutChange(e) {
-    this.setState({ fireFightingWaterOut: e.target.value });
-  }
-
-  onConnectionPointChange(e) {
-    this.setState({ connectionPoint: e.target.value });
-  }
-
-  onRecomendationChange(e) {
-    this.setState({ recomendation: e.target.value });
+  onResponseClientWishesChange(e) {
+    this.setState({ responseClientWishes: e.target.value });
   }
 
   onDocNumberChange(e) {
@@ -243,10 +225,10 @@ class ShowApz extends React.Component {
         this.setState({showButtons: false});
         this.setState({showTechCon: false});
 
-        if (data.Status === 3 && data.ApzWaterStatus === 2) { 
+        if (data.Status === 3 && data.ApzPhoneStatus === 2) { 
           this.setState({showButtons: true}); 
         }
-        if(data.ApzWaterStatus === 1){
+        if(data.ApzPhoneStatus === 1){
           this.setState({showTechCon: true});
         }
       }
@@ -303,13 +285,10 @@ class ShowApz extends React.Component {
     formData.append('file', file);
     formData.append('Response', status);
     formData.append('Message', comment);
-    formData.append('GenWaterReq', this.state.genWaterReq);
-    formData.append('DrinkingWater', this.state.drinkingWater);
-    formData.append('ProdWater', this.state.prodWater);
-    formData.append('FireFightingWaterIn', this.state.fireFightingWaterIn);
-    formData.append('FireFightingWaterOut', this.state.fireFightingWaterOut);
-    formData.append('ConnectionPoint', this.state.connectionPoint);
-    formData.append('Recomendation', this.state.recomendation);
+    formData.append('ResponseServiceNum', this.state.responseServiceNum);
+    formData.append('ResponseCapacity', this.state.responseCapacity);
+    formData.append('ResponseSewage', this.state.responseSewage);
+    formData.append('ResponseClientWishes', this.state.responseClientWishes);
     formData.append('DocNumber', this.state.docNumber);
 
     var xhr = new XMLHttpRequest();
@@ -317,13 +296,12 @@ class ShowApz extends React.Component {
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function () {
       if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
+        //var data = JSON.parse(xhr.responseText);
 
-        if(data.ApzWaterStatus === 1) {
+        if(status === true) {
           alert("Заявление принято!");
           this.setState({ showButtons: false });
-        } 
-        else if(data.ApzWaterStatus === 0) {
+        } else {
           alert("Заявление отклонено!");
           this.setState({ showButtons: false });
         }
@@ -342,7 +320,7 @@ class ShowApz extends React.Component {
     var token = sessionStorage.getItem('tokenInfo');
     if (token) {
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/print/tc/water/" + apzId, true);
+      xhr.open("get", window.url + "api/apz/print/tc/phone/" + apzId, true);
       xhr.responseType = "blob";
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.onload = function () {
@@ -363,7 +341,7 @@ class ShowApz extends React.Component {
             var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
             //console.log(curr_day);
             link.href = window.URL.createObjectURL(blob);
-            link.download = "ТУ-Вода-" + project + formated_date + ".pdf";
+            link.download = "ТУ-Телефон-" + project + formated_date + ".pdf";
 
             //append the link to the document body
             document.body.appendChild(link);
@@ -483,29 +461,25 @@ class ShowApz extends React.Component {
         </div>
 
         <div className="col-sm-6">
-          <h5 className="block-title-2 mt-3 mb-3">Детали водоснабжения</h5>
+          <h5 className="block-title-2 mt-3 mb-3">Детали телефонизации</h5>
 
           <table className="table table-bordered table-striped">
             <tbody>
               <tr>
-                <td style={{width: '40%'}}>Общая потребность (м<sup>3</sup>/сутки)</td> 
-                <td>{apz.WaterRequirement}</td>
+                <td style={{width: '40%'}}>Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</td> 
+                <td>{apz.PhoneServiceNum}</td>
               </tr>
               <tr>
-                <td>Хозпитьевые нужды (м<sup>3</sup>/сутки)</td>
-                <td>{apz.WaterDrinking}</td>
+                <td>Телефонная емкость</td>
+                <td>{apz.PhoneCapacity}</td>
               </tr>
               <tr>
-                <td>Производ. нужды (м<sup>3</sup>/сутки)</td>
-                <td>{apz.WaterProduction}</td>
+                <td>Планируемая телефонная канализация</td>
+                <td>{apz.PhoneSewage}</td>
               </tr>
               <tr>
-                <td>Расходы пожаротушения (л/сек)</td>
-                <td>{apz.WaterFireFighting}</td>
-              </tr>
-              <tr>
-                <td>Общ. кол. сточных вод (м<sup>3</sup>/сутки)</td>
-                <td>{apz.WaterSewage}</td>
+                <td>Пожелания заказчика (тип оборудования, тип кабеля и др.)</td>
+                <td>{apz.PhoneClientWishes}</td>
               </tr>
             </tbody>
           </table>
@@ -523,108 +497,92 @@ class ShowApz extends React.Component {
             </table>
           </div>
 
-          <div className={this.state.showButtons ? 'btn-group' : 'invisible'} role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
-            <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
-                    data-toggle="modal" data-target="#AcceptApzForm">
-              Одобрить
-            </button>
-            <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#DeclineApzForm">
-              Отклонить
-            </button>
-            <div className="modal fade" id="AcceptApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-              <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title">Одобрение Заявки</h5>
-                    <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div className="modal-body">
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="form-group">
-                          <label htmlFor="pname">Наименование объекта</label>
-                          <input type="text" readOnly="readonly" className="form-control" id="pname" placeholder={apz.ProjectName} />
-                        </div>
-                        <div className="form-group">
-                          <label>Общая потребность (м<sup>3</sup>/сутки)</label>
-                          <input type="number" step="any" className="form-control" placeholder="" value={this.state.genWaterReq} onChange={this.onGenWaterReqChange} />
-                        </div>
-                        <div className="form-group">
-                          <label>Хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
-                          <input type="number" step="any" className="form-control" placeholder="" value={this.state.drinkingWater} onChange={this.onDrinkingWaterChange} />
-                        </div>
-                        <div className="form-group">
-                          <label>Производственные нужды (м<sup>3</sup>/сутки)</label>
-                          <input type="number" step="any" className="form-control" placeholder="" value={this.state.prodWater} onChange={this.onProdWaterChange} />
-                        </div>
-                        <div className="form-group">
-                          <label>Расходы пожаротушения внутренные (л/сек)</label>
-                          <input type="number" step="any" className="form-control" value={this.state.fireFightingWaterIn} onChange={this.onFireFightingWaterInChange} />
-                        </div>
-                        <div className="form-group">
-                          <label>Расходы пожаротушения внешные (л/сек)</label>
-                          <input type="number" step="any" className="form-control" value={this.state.fireFightingWaterOut} onChange={this.onFireFightingWaterOutChange} />
-                        </div>
+          <div className={this.state.showButtons ? '' : 'invisible'}>
+            <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
+              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
+                      data-toggle="modal" data-target="#AcceptApzForm">
+                Одобрить
+              </button>
+              <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#DeclineApzForm">
+                Отклонить
+              </button>
+              <div className="modal fade" id="AcceptApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                <div className="modal-dialog" role="document">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title">Одобрение Заявки</h5>
+                      <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div className="modal-body">
+                      <div className="form-group">
+                        <label htmlFor="pname">Наименование объекта</label>
+                        <input type="text" className="form-control" id="pname" placeholder={apz.ProjectName} />
                       </div>
-                      <div className="col-md-6">
-                        <div className="form-group">
-                          <label htmlFor="adress">Адрес объекта</label>
-                          <input type="text" readOnly="readonly" className="form-control" id="adress" placeholder={apz.ProjectAddress} />
-                        </div>
-                        <div className="form-group">
-                          <label>Точка подключения</label>
-                          <input type="text" className="form-control" placeholder="" value={this.state.connectionPoint} onChange={this.onConnectionPointChange} />
-                        </div>
-                        <div className="form-group">
-                          <label>Рекомендация</label>
-                          <textarea rows="5" className="form-control" value={this.state.recomendation} onChange={this.onRecomendationChange} placeholder="Описание"></textarea>
-                        </div>
-                        <div className="form-group">
-                          <label>Номер документа</label>
-                          <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="upload_file">Прикрепить файл</label>
-                          <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
-                        </div>
+                      <div className="form-group">
+                        <label htmlFor="adress">Адрес объекта</label>
+                        <input type="text" className="form-control" id="adress" placeholder={apz.ProjectAddress} />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="responseServiceNum">Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</label>
+                        <input type="text" className="form-control" id="responseServiceNum" placeholder="" value={this.state.responseServiceNum} onChange={this.onResponseServiceNumChange} />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="responseCapacity">Телефонная емкость</label>
+                        <input type="number" step="any" className="form-control" id="responseCapacity" placeholder="" value={this.state.responseCapacity} onChange={this.onResponseCapacityChange} />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="responseSewage">Планируемая телефонная канализация</label>
+                        <input type="number" step="any" className="form-control" id="responseSewage" placeholder="" value={this.state.responseSewage} onChange={this.onResponseSewageChange} />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="responseClientWishes">Пожелания заказчика (тип оборудования, тип кабеля и др.)</label>
+                        <textarea rows="5" id="responseClientWishes" className="form-control" value={this.state.responseClientWishes} onChange={this.onResponseClientWishesChange}></textarea>
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="docNumber">Номер документа</label>
+                        <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="upload_file">Прикрепить файл</label>
+                        <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
                       </div>
                     </div>
-                  </div>
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, apz.Id, true, "your form was accepted")}>Отправить</button>
-                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    <div className="modal-footer">
+                      <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, apz.Id, true, "your form was accepted")}>Отправить</button>
+                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="modal fade" id="DeclineApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-              <div className="modal-dialog" role="document">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title">Отклонение Заявки</h5>
-                    <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div className="modal-body">
-                    <div className="form-group">
-                      <label htmlFor="docNumber">Номер документа</label>
-                      <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+              <div className="modal fade" id="DeclineApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                <div className="modal-dialog" role="document">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title">Отклонение Заявки</h5>
+                      <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
                     </div>
-                    <div className="form-group">
-                     <label>Причина отклонения</label>
-                      <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
+                    <div className="modal-body">
+                      <div className="form-group">
+                        <label htmlFor="docNumber">Номер документа</label>
+                        <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+                      </div>
+                      <div className="form-group">
+                       <label>Причина отклонения</label>
+                        <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="upload_file">Прикрепить файл</label>
+                        <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                      </div>
                     </div>
-                    <div className="form-group">
-                      <label htmlFor="upload_file">Прикрепить файл</label>
-                      <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                    <div className="modal-footer">
+                      <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, apz.Id, false, this.state.description)}>Отправить</button>
+                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                     </div>
-                  </div>
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, apz.Id, false, this.state.description)}>Отправить</button>
-                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                   </div>
                 </div>
               </div>
@@ -633,7 +591,7 @@ class ShowApz extends React.Component {
         </div>
 
         <div className="col-sm-12">
-           {this.state.showMap && <ShowMap coordinates={apz.ProjectAddressCoordinates} />} 
+          {this.state.showMap && <ShowMap coordinates={apz.ProjectAddressCoordinates} />}
 
           <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
             {this.state.showMapText}
@@ -642,7 +600,7 @@ class ShowApz extends React.Component {
 
         <div className="col-sm-12">
           <hr />
-          <Link className="btn btn-outline-secondary pull-right" to={'/providerwater/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+          <Link className="btn btn-outline-secondary pull-right" to={'/providerphone/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
         </div>
       </div>
     )
@@ -681,40 +639,10 @@ class ShowMap extends React.Component {
             onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap, webMercatorUtils, dom, Graphic], containerNode}) => {
               var map = new WebMap({
                 portalItem: {
-                  id: "a0b7247966fa4754ad21634c3844371f"
+                  id: "eee53cd3ef0949ae8c7bc25f92cee3aa"
                 }
               });
-
-              /*
-              var waterLines = new FeatureLayer({
-                url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%A2%D1%80%D1%83%D0%B1%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D1%8B_%D0%B2%D0%BE%D0%B4%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F2/FeatureServer",
-                outFields: ["*"],
-                title: "Трубопроводы водоснабжения"
-              });
-              map.add(waterLines);
-
-              var waterLineSafetyZone = new FeatureLayer({
-                url: 'https://gis.uaig.kz/server/rest/services/Hosted/%D0%9E%D1%85%D1%80%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F_%D0%B7%D0%BE%D0%BD%D0%B0_%D0%B2%D0%BE%D0%B4%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D0%B0/FeatureServer',
-                outFields: ["*"],
-                title: "Охранная зона водопровода"
-              });
-              map.add(waterLineSafetyZone);
-
-              var waterResourse = new FeatureLayer({
-                url: 'https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%BE%D0%BD%D0%B0_%D0%BE%D0%B1%D0%B5%D1%81%D0%BF%D0%B5%D1%87%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8_%D0%B2%D0%BE%D0%B4%D0%BD%D1%8B%D0%BC%D0%B8_%D1%80%D0%B5%D1%81%D1%83%D1%80%D1%81%D0%B0%D0%BC%D0%B8/FeatureServer',
-                outFields: ["*"],
-                title: "Зоны обеспеч. водными ресурсами"
-              });
-              map.add(waterResourse);
-
-              var flGosAkts = new FeatureLayer({
-                url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-                outFields: ["*"],
-                title: "Гос акты"
-              });
-              map.add(flGosAkts);
-              */
-
+              
               if (coordinates) {
                 var coordinatesArray = coordinates.split(", ");
 

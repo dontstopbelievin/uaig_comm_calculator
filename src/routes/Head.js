@@ -437,6 +437,46 @@ class ShowApz extends React.Component {
     }
   }
 
+  // print technical condition of phoneProvider
+  printPhoneTechCon(apzId, project) {
+    var token = sessionStorage.getItem('tokenInfo');
+    if (token) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/apz/print/tc/phone/" + apzId, true);
+      xhr.responseType = "blob";
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.onload = function () {
+        console.log(xhr);
+        console.log(xhr.status);
+        if (xhr.status === 200) {
+          //test of IE
+          if (typeof window.navigator.msSaveBlob === "function") {
+            window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
+          } 
+          else {
+            var blob = xhr.response;
+            var link = document.createElement('a');
+            var today = new Date();
+            var curr_date = today.getDate();
+            var curr_month = today.getMonth() + 1;
+            var curr_year = today.getFullYear();
+            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+            //console.log(curr_day);
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "ТУ-Телефон-" + project + formated_date + ".pdf";
+
+            //append the link to the document body
+            document.body.appendChild(link);
+            link.click();
+          }
+        }
+      }
+      xhr.send();
+    } else {
+      console.log('session expired');
+    }
+  }
+
   toggleMap(value) {
     this.setState({
       showMap: value
@@ -572,6 +612,13 @@ class ShowApz extends React.Component {
                     <b>Газоснабжение</b>
                   </td> 
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#gas_provier_modal">Просмотр</a></td>
+                </tr>
+
+                <tr>
+                  <td style={{width: '40%'}}>
+                    <b>Телефонизация</b>
+                  </td> 
+                  <td><a className="text-info pointer" data-toggle="modal" data-target="#phone_provier_modal">Просмотр</a></td>
                 </tr>
             </tbody>
           </table>
@@ -992,6 +1039,79 @@ class ShowApz extends React.Component {
                       <tr>
                         <td style={{width: '50%'}}><b>МО Газ</b></td>  
                         <td><a className="text-info pointer" data-file={apz.GasDoc} data-name="МО Газ" data-ext={apz.GasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="modal fade" id="phone_provier_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+          <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Решение телефонизации</h5>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <table className="table table-bordered table-striped">
+                  <tbody>
+                    {apz.PhoneDoc && apz.PhoneResponse &&
+                      <tr>
+                        <td style={{width: '50%'}}><b>Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</b></td>
+                        <td>{apz.ResponseServiceNum}</td>
+                      </tr>
+                    }
+                    {apz.PhoneDoc && apz.PhoneResponse &&
+                      <tr>
+                        <td><b>Телефонная емкость</b></td>
+                        <td>{apz.ResponseCapacity}</td>
+                      </tr>
+                    }
+                    {apz.PhoneDoc && apz.PhoneResponse &&
+                      <tr>
+                        <td><b>Планируемая телефонная канализация</b></td>
+                        <td>{apz.ResponseSewage}</td>
+                      </tr>
+                    }
+                    {apz.PhoneDoc && apz.PhoneResponse &&
+                      <tr>
+                        <td><b>Пожелания заказчика (тип оборудования, тип кабеля и др.)</b></td>
+                        <td>{apz.ResponseClientWishes}</td>
+                      </tr>
+                    }
+                    {apz.PhoneDoc && apz.PhoneResponse &&
+                      <tr>
+                        <td><b>Номер документа</b></td>
+                        <td>{apz.ResponseDocNumber}</td>
+                      </tr>
+                    }
+
+                    {apz.PhoneDoc && apz.PhoneResponse &&
+                      <tr>
+                        <td><b>Загруженный ТУ</b></td> 
+                        <td><a className="text-info pointer" data-file={apz.PhoneDoc} data-name="ТУ Телефон" data-ext={apz.PhoneDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                      </tr>
+                    }
+
+                    {apz.PhoneDoc && apz.PhoneResponse &&
+                      <tr>
+                        <td><b>Сформированный ТУ</b></td>  
+                        <td><a className="text-info pointer" onClick={this.printPhoneTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
+                      </tr>
+                    }
+
+                    {apz.PhoneDoc && !apz.PhoneResponse &&
+                      <tr>
+                        <td style={{width: '50%'}}><b>МО Газ</b></td>  
+                        <td><a className="text-info pointer" data-file={apz.PhoneDoc} data-name="МО Телефон" data-ext={apz.PhoneDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
                     }
                   </tbody>
