@@ -1,8 +1,29 @@
 {
   "ru": {
-      "publicServices": "Государственные услуги"
+      "news": "НОВОСТИ",
+      "control":"УПРАВЛЕНИЕ",
+      "contacts": "КОНТАКТЫ",
+      "publicServices": "ГОСУДАРСТВЕННЫЕ УСЛУГИ",
+      "npm":"НОРМАТИВНО-ПРАВОВАЯ БАЗА",
+      "legalpurchese":"ГОСУДАРСТВЕННЫЕ ЗАКУПКИ",
+      "counteraction":"ПРОТИВОДЕЙСТВИЕ КОРРУПЦИИ",
+      "budget_plan": "БЮДЖЕТНОЕ ПРАНИРОВАНИЕ",
+      "reviews": "ОТЗЫВЫ",
+      "architectural_and_town_planning_activity":"АРХИТЕКТУРНО-ГРАДОСТРОИТЕЛЬНАЯ ДЕЯТЕЛЬНОСТЬ",
+      "permission_and_covoting":"РАЗРЕШЕНИЕ И СОГЛОСОВАНИЕ БЕЗ ОЧЕРЕДИ",
+      "public_services":"ГОСУДАРСТВЕННЫЕ УСЛУГИ"
   },
   "kk": {
-      "publicServices": "Мемлекеттік қызметтер"
+    "news": "ЖАҢАЛЫҚТАР",
+    "control":"БАСҚАРУ",
+    "contacts": "БАЙЛАНЫСТАР",
+    "npm":"ҚҰҚЫҚТЫҚ ЖӘНЕ НОРМАТИВТІК БАЗА",
+    "reviews": "ПІКІРЛЕР",
+    "legalpurchese":"МЕМЛЕКЕТТІК САТЫП АЛУ",
+    "budget_plan": "БЮДЖЕТТІК БАҒДАРЛАМА",
+    "counteraction":"СЫБАЙЛАС ЖЕМҚОРЛЫҚҚА ҚАРСЫ КҮРЕС",
+    "architectural_and_town_planning_activity":"СӘЙЛЕТТІК ҚАЛА ҚҰРЫЛЫСЫ",
+    "permission_and_covoting":"КЕЗЕКСІЗ РҰҚСАТ БЕРУ ЖӘНЕ БЕКІТУ",
+    "public_services":"МЕМЛЕКЕТТІК ҚЫЗМЕТТЕР"
     }
 }

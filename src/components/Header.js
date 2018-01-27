@@ -115,12 +115,12 @@ export default class Header extends Component {
             </div>
             <div className="col-md-1 text-muted">
               {localStorage.getItem('lang') === 'kk' ?
-                (<span>ҚАЗ</span>) : 
+                (<span>ҚАЗ</span>) :
                 (<a style={{cursor: 'pointer', color: 'lightblue'}} onClick={this.updateLanguage.bind(this, 'kk')}>ҚАЗ</a>)
               }
               <br />
               {localStorage.getItem('lang') === 'ru' ?
-                (<span>РУС</span>) : 
+                (<span>РУС</span>) :
                 (<a style={{cursor: 'pointer', color: 'lightblue'}} onClick={this.updateLanguage.bind(this, 'ru')}>РУС</a>)
               }
             </div>
@@ -146,7 +146,7 @@ export default class Header extends Component {
                 <NavLink to={'/Map2d'} replace style={{color: '#e9ecef'}} >{e.map2d}</NavLink>
               </li>
               <li className="nav-item">
-                
+
               </li>
               {/*<li className="nav-item">
                 <NavLink to={'/Photos'} replace className="nav-link">{e.photos}</NavLink>
@@ -184,7 +184,7 @@ export default class Header extends Component {
                 <NavLink to={'/polls'} replace className="nav-link">{e.polls}</NavLink>
               </li>
             </ul>
-            
+
             <div className="justify-content-end">
               {sessionStorage.getItem('logStatus') ? (
                 <LogoutBtn logout={this.logout} history={this.props.history} />
@@ -214,7 +214,7 @@ class LoginBtn extends Component {
 class LogoutBtn extends Component {
   constructor() {
     super();
-    
+
     this.onLogout = this.onLogout.bind(this);
     // this.gotoCabinet = this.gotoCabinet.bind(this);
   }
@@ -242,7 +242,7 @@ class LogoutBtn extends Component {
               {(() => {
                 switch(JSON.parse(sessionStorage.getItem('userRoles'))[0]) {
                   case 'Admin': return <AdminMenu />;
-                  case 'Urban': 
+                  case 'Urban':
                     if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Head') {
                       return <HeadMenu />
                     }
@@ -258,7 +258,7 @@ class LogoutBtn extends Component {
                     }
                     else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Heat'){
                       return <HeatProviderMenu />;
-                    } 
+                    }
                     else{
                       return <WaterProviderMenu />;
                     }

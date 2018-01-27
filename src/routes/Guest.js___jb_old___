@@ -26,9 +26,8 @@ export default class Guest extends React.Component {
   showAlert() {
     $('#alertModal').modal('show');
     //alert('Вам надо зайти в систему или зарегистрироваться!');
-	//dferfe
   }
- 
+
   componentWillMount() {
     //console.log("GuestComponent will mount");
   }
@@ -71,13 +70,24 @@ export default class Guest extends React.Component {
           <div class="col_3">
             <ul>
               <li><NavLink to={'/counteraction'} replace className="">{e.counteraction}</NavLink></li>
+              <li><NavLink to={'/review'} replace className="">{e.reviews}</NavLink></li>
             </ul>
           </div>
           <div class="col_4">
             <ul>
-              <li id="s"><NavLink to={'/news'} replace className="">{e.news}</NavLink></li>
+
+
+
+
+
+
+
               <li id="s"><NavLink to={'/control'} replace className="">{e.control}</NavLink></li>
               <li id="t"><NavLink to={'/contacts'} replace className="">{e.contacts}</NavLink></li>
+
+
+
+
             </ul>
 
 

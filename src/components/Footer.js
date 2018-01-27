@@ -14,7 +14,8 @@ export default class Footer extends React.Component {
 			<footer>
 				<div className="container">
 	                <p>&copy; 2017 - <strong>{e.copyright}</strong></p>
-	            </div>
+	       </div>
+
 	        </footer>
 		)
 	}
