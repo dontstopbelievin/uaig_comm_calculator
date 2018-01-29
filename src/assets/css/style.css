@@ -735,3 +735,11 @@ img {
 .video_tutorials-plan-page .video_block .row {
   align-items: center;
 }
+
+.h4-inline {
+  display: inline;
+}
+
+.nav-link-reports {
+  padding: 0 0.857em !important;
+}

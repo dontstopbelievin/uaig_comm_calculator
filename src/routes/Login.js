@@ -314,7 +314,12 @@ export default class Login extends Component {
           sessionStorage.setItem(userNameKey, JSON.parse(e.target.response).userName);
           sessionStorage.setItem(userRoleKey, JSON.stringify(roles));
           sessionStorage.setItem(logStatusKey, true);
-          this.props.history.push('/');
+          if(roles[0] === 'Urban'){
+            this.props.history.push('/urbanreport');
+          }
+          else{
+            this.props.history.push('/');
+          }
         } 
         else if(xhr.status === 400) {
           this.setState({loadingVisible: false});

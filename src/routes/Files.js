@@ -161,6 +161,7 @@ class AllFiles extends React.Component {
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
+        console.log(JSON.parse(xhr.responseText));
         if (xhr.status === 200) {
           this.setState({ files: JSON.parse(xhr.responseText) });
         } else {

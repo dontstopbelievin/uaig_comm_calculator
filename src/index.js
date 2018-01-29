@@ -12,6 +12,7 @@ import Register from './routes/Register';
 import Temporary from './routes/Temporary';
 import Citizen from './routes/Citizen';
 import Urban from './routes/Urban';
+import UrbanReport from './routes/UrbanReport';
 import Head from './routes/Head';
 import ProviderElectro from './routes/ProviderElectro';
 import ProviderGas from './routes/ProviderGas';
@@ -44,8 +45,8 @@ export default class Main extends React.Component {
 
   componentWillMount() {
     this.setLang();
-    //window.url = 'https://work.uaig.kz:4443/';
-    window.url = 'http://localhost:53844/';
+    window.url = 'https://work.uaig.kz:4443/';
+    //window.url = 'http://localhost:53844/';
   }
 
   componentDidMount() {
@@ -73,6 +74,7 @@ export default class Main extends React.Component {
               <Route path="/register" render={(props) => (<Register {...props} />)} />
               <Route path="/temporary" render={(props) => (<Temporary {...props} />)} />
               <Route path="/urban" render={(props) => (<Urban {...props} />)} />
+              <Route path="/urbanreport" render={(props) => (<UrbanReport {...props} />)} />
               <Route path="/head" render={(props) => (<Head {...props} />)} />
               <Route path="/citizen" render={(props) => (<Citizen {...props} />)} />
               <Route path="/providerelectro" render={(props) => (<ProviderElectro {...props} />)} />
