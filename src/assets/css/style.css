@@ -808,3 +808,11 @@ img {
 #t{
   padding-bottom: 0px;
 }
+
+.h4-inline {
+  display: inline;
+}
+
+.nav-link-reports {
+  padding: 0 0.857em !important;
+}

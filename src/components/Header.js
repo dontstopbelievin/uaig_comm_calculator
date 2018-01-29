@@ -16,6 +16,10 @@ export default class Header extends Component {
     super();
     (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
 
+    this.state = {
+      rolename: ""
+    }
+
     this.checkToken = this.checkToken.bind(this);
     this.logout = this.logout.bind(this);
   }
@@ -79,6 +83,16 @@ export default class Header extends Component {
 
   componentDidMount() {
     //console.log("Header did mount");
+    if(sessionStorage.getItem('tokenInfo')){
+      var roleName = JSON.parse(sessionStorage.getItem('userRoles'))[0];
+      if(roleName === 'Urban' || roleName === 'Provider' || 'Citizen'){
+        roleName = JSON.parse(sessionStorage.getItem('userRoles'))[1];
+        this.setState({ rolename: roleName });
+      }
+      else{
+        this.setState({ rolename: roleName });
+      }
+    }
   }
 
   componentWillUnmount() {
@@ -136,7 +150,18 @@ export default class Header extends Component {
           <div className="container collapse navbar-collapse" id="navbarTogglerDemo03">
             <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
               <li className="nav-item">
-                <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
+                {this.state.rolename === 'Region' &&
+                  <NavLink to={'/urbanreport'} exact replace className="nav-link">{e.home}</NavLink>
+                }
+                {(this.state.rolename === 'Business' || this.state.rolename === 'Individual') &&
+                  <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
+                }
+                {this.state.rolename === 'Gas' &&
+                  <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
+                }
+                {(this.state.rolename === '' || this.state.rolename === 'Head') && 
+                  <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
+                }
               </li>
               <li className="nav-item" style={{color: '#e9ecef', padding: '7px 0 0 10px'}}>
                 Карта:

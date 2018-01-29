@@ -270,7 +270,7 @@ class ShowApz extends React.Component {
       }
       else if(xhr.status === 401){
         sessionStorage.clear();
-        alert("Token is expired, please login again!");
+        alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
       }
     }.bind(this);
@@ -313,7 +313,7 @@ class ShowApz extends React.Component {
       }
       xhr.send();
     } else {
-      console.log('session expired');
+      console.log('Время сессии истекло.');
     }
   }
 
@@ -353,7 +353,7 @@ class ShowApz extends React.Component {
       }
       xhr.send();
     } else {
-      console.log('session expired');
+      console.log('Время сессии истекло.');
     }
   }
 
@@ -393,7 +393,7 @@ class ShowApz extends React.Component {
       }
       xhr.send();
     } else {
-      console.log('session expired');
+      console.log('Время сессии истекло.');
     }
   }
 
@@ -433,7 +433,7 @@ class ShowApz extends React.Component {
       }
       xhr.send();
     } else {
-      console.log('session expired');
+      console.log('Время сессии истекло.');
     }
   }
 
