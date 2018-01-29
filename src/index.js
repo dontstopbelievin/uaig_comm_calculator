@@ -37,6 +37,8 @@ import legalpurchase from './routes/legalpurchase';
 import counteraction from './routes/counteraction';
 import contacts from './routes/contacts';
 import architectural_and_town_planning_activity from './routes/architectural_and_town_planning_activity';
+import Engineer from './routes/Engineer.js';
+import Apz from './routes/Apz.js';
 
 
 
@@ -112,6 +114,8 @@ export default class Main extends React.Component {
               <Route path="/control" render={(props) => (<control {...props}/>)}/>
               <Route path="/contacts" render={(props) => (<contacts {...props}/>)}/>
               <Route path="/architectural_and_town_planning_activity" render={(props) => (<architectural_and_town_planning_activity {...props}/>)}/>
+              <Route path="/engineer" render={(props) => (<Engineer {...props}/>)}/>
+              <Route path="/apz" render={(props) => (<Apz {...props}/>)}/>
             </Switch>
             <Footer />
           </div>

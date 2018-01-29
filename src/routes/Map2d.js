@@ -22,82 +22,12 @@ export default class Map2dView extends Component {
     };
 
     return (
-      <div className="viewDiv"> 
-        <EsriLoaderReact options={options} 
-          modulesToLoad={[
-            'esri/views/MapView',
-            'esri/WebMap',
-            
-            'esri/widgets/LayerList',
-            'esri/widgets/Expand',
-            'esri/layers/FeatureLayer',
-            'esri/widgets/Search',
-            'dojo/domReady!'
-          ]}    
-          
-          onReady={({loadedModules: [MapView, WebMap, LayerList, Expand, FeatureLayer, Search], containerNode}) => {
-            var webmap = new WebMap({
-              portalItem: { // autocasts as new PortalItem()
-                id: "6bb8a51c86c04b35adca0d9fc8d3a155"
-              }
-            });
-
-            /************************************************************
-             * Set the WebMap instance to the map property in a MapView.
-             ************************************************************/
-            var view = new MapView({
-              container: containerNode,
-              map: webmap,
-              center: [76.886, 43.250], // lon, lat
-              //scale: 10000
-              zoom: 11
-            });
-            
-            var searchWidget = new Search({
-              view: view,
-              sources: [{
-                featureLayer: new FeatureLayer({
-                  url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-                  popupTemplate: { // autocasts as new PopupTemplate()
-                    title: "Кадастровый номер: {cadastral_number} </br> Назначение: {function} <br/> Вид собственности: {ownership}"
-                  }
-                }),
-                searchFields: ["cadastral_number"],
-                displayField: "cadastral_number",
-                exactMatch: false,
-                outFields: ["cadastral_number", "function", "ownership"],
-                name: "Зарегистрированные государственные акты",
-                placeholder: "Кадастровый поиск"
-              }]
-            });
-  
-            view.when( function(callback){
-              var layerList = new LayerList({
-                container: document.createElement("div"),
-                view: view
-              });
-
-              // Add the search widget to the top right corner of the view
-              view.ui.add(searchWidget, {
-                position: "top-right"
-              });
-
-              var layerListExpand = new Expand({
-                expandIconClass: "esri-icon-layer-list",  // see https://developers.arcgis.com/javascript/latest/guide/esri-icon-font/
-                expandTooltip: "Развернуть список", // optional, defaults to "Expand" for English locale
-                collapseTooltip: "Свернуть список",
-                view: view,
-                content: layerList.domNode
-              });
-
-              // Add widget to the bottom right corner of the view
-              view.ui.add(layerListExpand, "bottom-right");
-
-            }, function(error) {
-              console.log('MapView promise rejected! Message: ', error);
-            });
-          }}
-        />
+      <div>
+        <div class="row" id="newWebApp">    
+          <iframe height="500" width="100%" frameborder="0" scrolling="0" marginheight="0" marginwidth="0" src="https://uaig.maps.arcgis.com/apps/webappviewer/index.html?id=cc2a1d70e8824d9db3a1f065064ccdc8">
+          </iframe>
+        </div>
+        
       </div>
     )
   }

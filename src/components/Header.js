@@ -268,6 +268,8 @@ class LogoutBtn extends Component {
                   case 'Citizen': return <CitizenMenu />;
                   case 'PhotoReport': return <PhotoReportMenu />;
                   case 'Temporary': return <TemporaryMenu />;
+                  case 'Engineer': return <EngineerMenu />;
+                  case 'Apz': return <ApzMenu />;
                   default: return null;
                 }
               })()}
@@ -405,6 +407,26 @@ class TemporaryMenu extends Component {
     return (
       <div>
         <NavLink to={"/temporary"} replace className="dropdown-item" activeClassName="active">Личный кабинет</NavLink>
+      </div>
+    )
+  }
+}
+
+class EngineerMenu extends Component {
+  render() {
+    return (
+      <div>
+        <NavLink to={"/engineer"} replace className="dropdown-item" activeClassName="active">Личный кабинет</NavLink>
+      </div>
+    )
+  }
+}
+
+class ApzMenu extends Component {
+  render() {
+    return (
+      <div>
+        <NavLink to={"/apz"} replace className="dropdown-item" activeClassName="active">Личный кабинет</NavLink>
       </div>
     )
   }

@@ -50,7 +50,7 @@ export default class MapView extends Component {
               center: [76.923 , 43.232], // lon, lat
               scale: 10000
             });
-            
+            /*
             var searchWidget = new Search({
               view: view,
               sources: [{
@@ -68,16 +68,18 @@ export default class MapView extends Component {
                 placeholder: "Кадастровый поиск"
               }]
             });
-  
+            */
             view.when( function(callback){
               // var layerList = new LayerList({
               //   view: view
               // });
 
               // Add the search widget to the top right corner of the view
+              /*
               view.ui.add(searchWidget, {
                 position: "top-right"
               });
+              */
 
               // Add widget to the bottom right corner of the view
               //view.ui.add(layerList, "bottom-right");
