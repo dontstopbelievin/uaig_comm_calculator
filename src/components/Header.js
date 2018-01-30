@@ -105,15 +105,15 @@ export default class Header extends Component {
       <div>
         <div className="container logo">
           <div className="row">
-            <div className="col-md-8">
+            <div className="col-md-9">
               <div className="row">
-                <div className="col-md-2">
+                <div className="col-md-2 site-logo">
                   <NavLink to={'/'} replace><img width="70" src="/images/logo.png" alt="Управление Архитектуры и Градостроительства города Алматы" /></NavLink>
                 </div>
-                <div className="col-md-5">
+                <div className="col-md-6 site-title">
                   <b>{e.title}</b>
                 </div>
-                <div className="col-md-5">
+                <div className="col-md-4">
                   <form>
                     <div className="form-group">
                       <input type="email" className="form-control" aria-describedby="emailHelp" placeholder={e.search} />
@@ -123,7 +123,7 @@ export default class Header extends Component {
                 </div>
               </div>
             </div>
-            <div className="col-md-3 text-muted" align="center">
+            <div className="col-md-2 text-muted" align="center">
               {e.contactCenter}<br />
               <b>+7 (727) 279-58-24</b>
             </div>
@@ -191,7 +191,8 @@ export default class Header extends Component {
                   <button className="dropdown-item" href="#">Выдача решения о перепрофилировании (изменении функционального<br /> назначения) зданий (сооружений) в культовые здания (сооружения)</button>
                   <button className="dropdown-item" href="#">Предоставление земельного участка для строительства объекта<br /> в черте населенного пункта</button>
                   <button className="dropdown-item" href="#">Согласование эскиза (эскизного проекта)</button>
-                  <button className="dropdown-item" href="#">Другое</button>
+                  <NavLink to={'/reports'} replace className="dropdown-item">Отчет за 2017 год</NavLink>
+                  <NavLink to={'/stats'} replace className="dropdown-item">Статистика выданных АПЗ в текущий период времени</NavLink>
                  </div>
               </li>
               <li className="nav-item">
@@ -205,8 +206,18 @@ export default class Header extends Component {
                   <NavLink to={'/tutorials'} replace className="dropdown-item">{e.tutorials}</NavLink>
                  </div>
               </li>
+              <li className="nav-item dropdown">
+                <button className="nav-link dropdown-toggle polls-menu" style={navBtnStyle} href="#" id="additionalDropdownMenuLink" data-toggle="dropdown" >
+                  {e.polls}
+                </button>
+                <div className="dropdown-menu" aria-labelledby="additionalDropdownMenuLink">
+                  <NavLink to={'/polls'} replace className="dropdown-item">Реконструкция пешеходных улиц 2018</NavLink>
+                  <NavLink to={'/designCode'} replace className="dropdown-item">Дизайн код</NavLink>
+                  <NavLink to={'/councilMaterials'} replace className="dropdown-item">Материалы градостроительного совета</NavLink>
+                </div>
+              </li>
               <li className="nav-item">
-                <NavLink to={'/polls'} replace className="nav-link">{e.polls}</NavLink>
+                
               </li>
             </ul>
 

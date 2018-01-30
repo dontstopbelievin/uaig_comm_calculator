@@ -793,7 +793,7 @@ img {
   font-size: 12px!important;
 }
  .mish{
-   background-color: #00327d;
+   background-color: #1a4482;
  }
  .mish .container .row ul li{
    list-style: none;
@@ -815,4 +815,21 @@ img {
 
 .nav-link-reports {
   padding: 0 0.857em !important;
+}
+.text-muted {
+  font-size: 10pt;
+}
+.site-title {
+  font-size: 14pt;
+}
+.site-logo {
+  text-align: center;
+}
+.polls-menu {
+  background-color: #E53935 !important;
+}
+.tableReports td {
+  padding: 5px;
+  vertical-align: top;
+  border-color: #000;
 }
