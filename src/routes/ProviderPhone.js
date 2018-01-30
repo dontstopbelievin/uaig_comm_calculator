@@ -157,7 +157,13 @@ class ShowApz extends React.Component {
       responseClientWishes: "",
       docNumber: "",
       description: '',
+      responseId: 0,
+      response: false,
+      responseFileExt: null,
       showMapText: 'Показать карту',
+      accept: true,
+      callSaveFromSend: false,
+      phoneStatus: 2
     };
 
     this.onResponseServiceNumChange = this.onResponseServiceNumChange.bind(this);
@@ -167,6 +173,8 @@ class ShowApz extends React.Component {
     this.onResponseClientWishesChange = this.onResponseClientWishesChange.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
+    this.saveResponseForm = this.saveResponseForm.bind(this);
+    this.sendPhoneResponse = this.sendPhoneResponse.bind(this);
   }
 
   onResponseServiceNumChange(e) {
@@ -197,6 +205,11 @@ class ShowApz extends React.Component {
     this.setState({ file: e.target.files[0] });
   }
 
+  // this function to show one of the forms Accept/Decline
+  toggleAcceptDecline(value) {
+    this.setState({accept: value});
+  }
+
   componentWillMount() {
     this.getApzInfo();
   }
@@ -207,7 +220,7 @@ class ShowApz extends React.Component {
 
     if (roles == null) {
         sessionStorage.clear();
-        alert("Token is expired, please login again!");
+        alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
         return false;
     }
@@ -221,9 +234,23 @@ class ShowApz extends React.Component {
     xhr.onload = function() {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
+        //console.log(data);
         this.setState({apz: data});
         this.setState({showButtons: false});
         this.setState({showTechCon: false});
+        this.setState({description: data.PhoneResponseText});
+        this.setState({responseServiceNum: data.ResponseServiceNum});
+        this.setState({responseCapacity: data.ResponsePhoneCapacity});
+        this.setState({responseSewage: data.ResponsePhoneSewage});
+        this.setState({responseClientWishes: data.ResponsePhoneClientWishes});
+        this.setState({docNumber: data.PhoneDocNumber});
+        this.setState({responseId: data.PhoneResponseId});
+        this.setState({response: data.PhoneResponse});
+        if(data.PhoneResponseId !== -1){
+          this.setState({accept: data.PhoneResponse});
+        }
+        this.setState({responseFileExt: data.PhoneResponseFileExt});
+        this.setState({phoneStatus: data.ApzPhoneStatus});
 
         if (data.Status === 3 && data.ApzPhoneStatus === 2) { 
           this.setState({showButtons: true}); 
@@ -233,6 +260,24 @@ class ShowApz extends React.Component {
         }
       }
     }.bind(this)
+    xhr.send();
+  }
+
+  // Скачивание файла (ТУ/МО)
+  downloadResponseFile(event) {
+    var token = sessionStorage.getItem('tokenInfo');
+    var id =  event.target.getAttribute("data-id");
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/apz/download/provider/phone/" + id, true);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        window.location = window.url + "api/apz/download/provider/phone/" + id
+      } else {
+        alert('Не удалось скачать файл');
+      }
+    }
     xhr.send();
   }
 
@@ -277,7 +322,8 @@ class ShowApz extends React.Component {
     saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
   }
 
-  acceptDeclineApzForm(apzId, status, comment) {
+  // this function is to save the respones form when any change is made
+  saveResponseForm(apzId, status, comment){
     var token = sessionStorage.getItem('tokenInfo');
     var file = this.state.file;
 
@@ -285,34 +331,88 @@ class ShowApz extends React.Component {
     formData.append('file', file);
     formData.append('Response', status);
     formData.append('Message', comment);
-    formData.append('ResponseServiceNum', this.state.responseServiceNum);
-    formData.append('ResponseCapacity', this.state.responseCapacity);
-    formData.append('ResponseSewage', this.state.responseSewage);
-    formData.append('ResponseClientWishes', this.state.responseClientWishes);
+    if(status === false){
+      formData.append('ResponseServiceNum', "");
+      formData.append('ResponseCapacity', "");
+      formData.append('ResponseSewage', "");
+      formData.append('ResponseClientWishes', "");
+    }
+    else{
+      formData.append('ResponseServiceNum', this.state.responseServiceNum);
+      formData.append('ResponseCapacity', this.state.responseCapacity);
+      formData.append('ResponseSewage', this.state.responseSewage);
+      formData.append('ResponseClientWishes', this.state.responseClientWishes);
+    }
     formData.append('DocNumber', this.state.docNumber);
 
     var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + "api/apz/status/" + apzId, true);
+    xhr.open("post", window.url + "api/apz/save/provider/phone/" + apzId, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function () {
       if (xhr.status === 200) {
-        //var data = JSON.parse(xhr.responseText);
-
-        if(status === true) {
-          alert("Заявление принято!");
-          this.setState({ showButtons: false });
-        } else {
-          alert("Заявление отклонено!");
-          this.setState({ showButtons: false });
+        var data = JSON.parse(xhr.responseText);
+        //console.log(data);
+        this.setState({responseId: data.ResponseId});
+        this.setState({response: data.Response});
+        this.setState({accept: data.Response});
+        this.setState({description: data.ResponseText});
+        this.setState({responseFileExt: data.PhoneResponseFileExt});
+        this.setState({responseServiceNum: data.PhoneServiceNum});
+        this.setState({responseCapacity: data.PhoneCapacity});
+        this.setState({responseSewage: data.PhoneSewage});
+        this.setState({responseClientWishes: data.PhoneClientWishes});
+        if(this.state.callSaveFromSend){
+          this.setState({callSaveFromSend: false});
+          this.sendPhoneResponse(apzId, status, comment);
+        }
+        else{
+          alert("Ответ сохранен!");
         }
       }
       else if(xhr.status === 401){
         sessionStorage.clear();
-        alert("Token is expired, please login again!");
+        alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
       }
     }.bind(this);
-    xhr.send(formData); 
+    xhr.send(formData);
+  }
+
+  // this function is to send the final response
+  sendPhoneResponse(apzId, status, comment) {
+    if(this.state.responseId < 0){
+      this.setState({callSaveFromSend: true});
+      this.saveResponseForm(apzId, status, comment);
+    }
+    else{
+      var token = sessionStorage.getItem('tokenInfo');
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/apz/update/provider/phone/" + apzId, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+
+          if(data.ApzPhoneStatus === 1) {
+            alert("Заявление принято!");
+            this.setState({ showButtons: false });
+            this.setState({ phoneStatus: 1 });
+            this.setState({showTechCon: true});
+          } 
+          else if(data.ApzPhoneStatus === 0) {
+            alert("Заявление отклонено!");
+            this.setState({ showButtons: false });
+            this.setState({ phoneStatus: 0 })
+          }
+        }
+        else if(xhr.status === 401){
+          sessionStorage.clear();
+          alert("Время сессии истекло. Пожалуйста войдите заново!");
+          this.props.history.replace("/login");
+        }
+      }.bind(this);
+      xhr.send();
+    } 
   }
 
   // print technical condition
@@ -324,8 +424,6 @@ class ShowApz extends React.Component {
       xhr.responseType = "blob";
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.onload = function () {
-        console.log(xhr);
-        console.log(xhr.status);
         if (xhr.status === 200) {
           //test of IE
           if (typeof window.navigator.msSaveBlob === "function") {
@@ -351,7 +449,7 @@ class ShowApz extends React.Component {
       }
       xhr.send();
     } else {
-      console.log('session expired');
+      console.log('Время сессии истекло.');
     }
   }
 
@@ -392,7 +490,7 @@ class ShowApz extends React.Component {
 
     return (
       <div className="row">
-        <div className="col-sm-6">
+        <div className="col-sm-4">
           <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
           
           <table className="table table-bordered table-striped">
@@ -426,7 +524,7 @@ class ShowApz extends React.Component {
                 <td>
                   {apz.ProjectAddress}
 
-                  {apz.ProjectAddressCoordinates != "" &&
+                  {apz.ProjectAddressCoordinates !== "" &&
                     <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
                   }
                 </td>
@@ -460,8 +558,8 @@ class ShowApz extends React.Component {
           </table>
         </div>
 
-        <div className="col-sm-6">
-          <h5 className="block-title-2 mt-3 mb-3">Детали телефонизации</h5>
+        <div className="col-sm-4">
+          <h5 className="block-title-2 mt-3 mb-3">Детали</h5>
 
           <table className="table table-bordered table-striped">
             <tbody>
@@ -483,10 +581,164 @@ class ShowApz extends React.Component {
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <div className="col-sm-4">
+          <div className="row" style={{margin: '16px 0'}}>
+            <div className="col-sm-6">
+              <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ</h5> 
+            </div>
+            <div className="col-sm-6">
+              {this.state.showButtons &&
+                <div className="btn-group" style={{float: 'right', margin: '0'}}>
+                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, true)}>
+                    <i className="glyphicon glyphicon-ok"></i>
+                  </button>
+                  <button className="btn btn-raised btn-danger" onClick={this.toggleAcceptDecline.bind(this, false)}>
+                    <i className="glyphicon glyphicon-remove"></i>
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+
+          {this.state.accept && this.state.phoneStatus === 2 &&
+            <form style={{border: 'solid 3px #46A149', padding: '5px'}}>
+              <div className="form-group">
+                <label htmlFor="responseServiceNum">Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</label>
+                <input type="text" className="form-control" id="responseServiceNum" placeholder="" value={this.state.responseServiceNum} onChange={this.onResponseServiceNumChange} />
+              </div>
+              <div className="form-group">
+                <label htmlFor="responseCapacity">Телефонная емкость</label>
+                <input type="number" step="any" className="form-control" id="responseCapacity" placeholder="" value={this.state.responseCapacity} onChange={this.onResponseCapacityChange} />
+              </div>
+              <div className="form-group">
+                <label htmlFor="responseSewage">Планируемая телефонная канализация</label>
+                <input type="number" step="any" className="form-control" id="responseSewage" placeholder="" value={this.state.responseSewage} onChange={this.onResponseSewageChange} />
+              </div>
+              <div className="form-group">
+                <label htmlFor="responseClientWishes">Пожелания заказчика (тип оборудования, тип кабеля и др.)</label>
+                <textarea rows="5" id="responseClientWishes" className="form-control" value={this.state.responseClientWishes} onChange={this.onResponseClientWishesChange}></textarea>
+              </div>
+              <div className="form-group">
+                <label>Номер документа</label>
+                <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+              </div>
+              {(this.state.response === true && this.state.responseFileExt) &&
+                <div className="form-group">
+                  <label style={{display: 'block'}}>Прикрепленный файл</label>
+                  <a className="pointer text-info" title="Скачать" data-id={this.state.responseId} onClick={this.downloadResponseFile.bind(this)}>
+                    Скачать 
+                  </a>
+                </div>
+              }
+              <div className="form-group">
+                <label htmlFor="upload_file">Прикрепить файл</label>
+                <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+              </div>
+              <div className="form-group">
+                <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.Id, true, "")}>
+                  Сохранить
+                </button>
+                <button type="button" className="btn btn-primary" onClick={this.sendPhoneResponse.bind(this, apz.Id, true, "")}>
+                  Отправить
+                </button>
+              </div>
+            </form>
+          }
+
+          {this.state.accept && this.state.phoneStatus === 1 &&
+            <table className="table table-bordered table-striped">
+              <tbody>
+                <tr>
+                  <td style={{width: '40%'}}>Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</td> 
+                  <td>{this.state.responseServiceNum}</td>
+                </tr>
+                <tr>
+                  <td>Телефонная емкость</td> 
+                  <td>{this.state.responseCapacity}</td>
+                </tr> 
+                <tr>
+                  <td>Планируемая телефонная канализация</td>
+                  <td>{this.state.responseSewage}</td>
+                </tr>
+                <tr>
+                  <td>Пожелания заказчика (тип оборудования, тип кабеля и др.)</td>
+                  <td>{this.state.responseClientWishes}</td>
+                </tr>
+                <tr>
+                  <td>Номер документа</td>
+                  <td>{this.state.docNumber}</td>
+                </tr>
+                <tr>
+                  <td>Прикрепленный файл</td>
+                  <td>
+                    <a className="pointer text-info" title="Скачать" data-id={this.state.responseId} onClick={this.downloadResponseFile.bind(this)}>
+                      Скачать 
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          }
+
+          {!this.state.accept && this.state.phoneStatus === 2 &&
+            <form style={{border: 'solid 3px #F55549', padding: '5px'}}>
+              <div className="form-group">
+                <label>Номер документа</label>
+                <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+              </div>
+              <div className="form-group">
+               <label>Причина отклонения</label>
+                <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
+              </div>
+              {(this.state.response === false && this.state.responseFileExt) &&
+                <div className="form-group">
+                  <label style={{display: 'block'}}>Прикрепленный файл</label>
+                  <a className="pointer text-info" title="Скачать" data-id={this.state.responseId} onClick={this.downloadResponseFile.bind(this)}>
+                    Скачать 
+                  </a>
+                </div>
+              }
+              <div className="form-group">
+                <label htmlFor="upload_file">Прикрепить файл</label>
+                <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+              </div>
+              <div className="form-group">
+                <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.Id, false, this.state.description)}>
+                  Сохранить
+                </button>
+                <button type="button" className="btn btn-primary" onClick={this.sendPhoneResponse.bind(this, apz.Id, false, this.state.description)}>
+                  Отправить
+                </button>
+              </div>
+            </form>
+          }
+
+          {!this.state.accept && this.state.phoneStatus === 0 &&
+            <table className="table table-bordered table-striped">
+              <tbody>
+                <tr>
+                  <td style={{width: '40%'}}>Причина отклонения</td> 
+                  <td>{this.state.description}</td>
+                </tr>
+                <tr>
+                  <td>Номер документа</td>
+                  <td>{this.state.docNumber}</td>
+                </tr>
+                <tr>
+                  <td>Прикрепленный файл</td>
+                  <td>
+                    <a className="pointer text-info" title="Скачать" data-id={this.state.responseId} onClick={this.downloadResponseFile.bind(this)}>
+                      Скачать 
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          }
 
           <div className={this.state.showTechCon ? '' : 'invisible'}>
-            <h5 className="block-title-2 mt-3 mb-3">Ответ</h5>
-
             <table className="table table-bordered table-striped">
               <tbody>
                 <tr>
@@ -495,98 +747,6 @@ class ShowApz extends React.Component {
                 </tr>
               </tbody>
             </table>
-          </div>
-
-          <div className={this.state.showButtons ? '' : 'invisible'}>
-            <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
-              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
-                      data-toggle="modal" data-target="#AcceptApzForm">
-                Одобрить
-              </button>
-              <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#DeclineApzForm">
-                Отклонить
-              </button>
-              <div className="modal fade" id="AcceptApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                <div className="modal-dialog" role="document">
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h5 className="modal-title">Одобрение Заявки</h5>
-                      <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div className="modal-body">
-                      <div className="form-group">
-                        <label htmlFor="pname">Наименование объекта</label>
-                        <input type="text" className="form-control" id="pname" placeholder={apz.ProjectName} />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="adress">Адрес объекта</label>
-                        <input type="text" className="form-control" id="adress" placeholder={apz.ProjectAddress} />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="responseServiceNum">Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</label>
-                        <input type="text" className="form-control" id="responseServiceNum" placeholder="" value={this.state.responseServiceNum} onChange={this.onResponseServiceNumChange} />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="responseCapacity">Телефонная емкость</label>
-                        <input type="number" step="any" className="form-control" id="responseCapacity" placeholder="" value={this.state.responseCapacity} onChange={this.onResponseCapacityChange} />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="responseSewage">Планируемая телефонная канализация</label>
-                        <input type="number" step="any" className="form-control" id="responseSewage" placeholder="" value={this.state.responseSewage} onChange={this.onResponseSewageChange} />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="responseClientWishes">Пожелания заказчика (тип оборудования, тип кабеля и др.)</label>
-                        <textarea rows="5" id="responseClientWishes" className="form-control" value={this.state.responseClientWishes} onChange={this.onResponseClientWishesChange}></textarea>
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="docNumber">Номер документа</label>
-                        <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="upload_file">Прикрепить файл</label>
-                        <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
-                      </div>
-                    </div>
-                    <div className="modal-footer">
-                      <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, apz.Id, true, "your form was accepted")}>Отправить</button>
-                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="modal fade" id="DeclineApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                <div className="modal-dialog" role="document">
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h5 className="modal-title">Отклонение Заявки</h5>
-                      <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div className="modal-body">
-                      <div className="form-group">
-                        <label htmlFor="docNumber">Номер документа</label>
-                        <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
-                      </div>
-                      <div className="form-group">
-                       <label>Причина отклонения</label>
-                        <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="upload_file">Прикрепить файл</label>
-                        <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
-                      </div>
-                    </div>
-                    <div className="modal-footer">
-                      <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, apz.Id, false, this.state.description)}>Отправить</button>
-                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -675,7 +835,7 @@ class ShowMap extends React.Component {
 
                 view.graphics.add(pointGraphic);
               } else {
-                var view = new MapView({
+                  view = new MapView({
                   container: containerNode,
                   map: map,
                   center: [76.886, 43.250], 

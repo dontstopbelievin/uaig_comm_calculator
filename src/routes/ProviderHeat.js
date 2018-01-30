@@ -258,13 +258,12 @@ class ShowApz extends React.Component {
     xhr.onload = function() {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-        console.log(data);
+        //console.log(data);
         this.setState({apz: data});
         this.setState({showButtons: false});
         this.setState({showTechCon: false});
         this.setState({description: data.HeatResponseText});
         this.setState({connectionPoint: data.HeatConnectionPoint});
-        this.setState({responseFileExt: data.HeatResponseFileExt});
         this.setState({heatResource: data.HeatResource});
         this.setState({heatTransPressure: data.HeatTransPressure});
         this.setState({heatLoadContractNum: data.HeatLoadContractNum});
@@ -292,7 +291,7 @@ class ShowApz extends React.Component {
     xhr.send();
   }
 
-  // Скачивание файла
+  // Скачивание файла (ТУ/МО)
   downloadResponseFile(event) {
     var token = sessionStorage.getItem('tokenInfo');
     var id =  event.target.getAttribute("data-id");
@@ -465,8 +464,6 @@ class ShowApz extends React.Component {
       xhr.responseType = "blob";
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.onload = function () {
-        console.log(xhr);
-        console.log(xhr.status);
         if (xhr.status === 200) {
           //test of IE
           if (typeof window.navigator.msSaveBlob === "function") {
@@ -492,7 +489,7 @@ class ShowApz extends React.Component {
       }
       xhr.send();
     } else {
-      console.log('session expired');
+      console.log('Время сессии истекло.');
     }
   }
 
@@ -567,7 +564,7 @@ class ShowApz extends React.Component {
                 <td>
                   {apz.ProjectAddress}
 
-                  {apz.ProjectAddressCoordinates != "" &&
+                  {apz.ProjectAddressCoordinates !== "" &&
                     <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
                   }
                 </td>
@@ -933,7 +930,7 @@ class ShowMap extends React.Component {
 
                 view.graphics.add(pointGraphic);
               } else {
-                var view = new MapView({
+                  view = new MapView({
                   container: containerNode,
                   map: map,
                   center: [76.886, 43.250], 

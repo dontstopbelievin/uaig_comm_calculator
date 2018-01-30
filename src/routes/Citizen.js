@@ -885,7 +885,7 @@ class ShowApz extends React.Component {
         
         this.setState({apz: apz});
 
-        if (apz.Status == 0 || apz.Status == 1) {
+        if (apz.Status === 0 || apz.Status === 1) {
           var provider_xhr = new XMLHttpRequest();
           provider_xhr.open("get", window.url + "api/apz/detail/" + id + '/providers', true);
           provider_xhr.setRequestHeader("Authorization", "Bearer " + token);
@@ -1254,7 +1254,7 @@ class ShowApz extends React.Component {
               <td>
                 {apz.ProjectAddress}
 
-                {apz.ProjectAddressCoordinates != "" &&
+                {apz.ProjectAddressCoordinates !== "" &&
                   <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
                 }
               </td>
@@ -1813,7 +1813,6 @@ class ShowMap extends React.Component {
     var oldPoint = [];
     var withPoint = this.props.point;
     var coordinates = this.props.coordinates;
-    var toggleMap = this.toggleMap;
 
     return (
       <div>
@@ -1825,7 +1824,7 @@ class ShowMap extends React.Component {
             <div className="col-sm-6">
               <div className="pull-right">
                 <button type="button" className="btn btn-outline-success mr-1" onClick={() => this.saveCoordinates()}>Сохранить</button>
-                <button type="button" className="btn btn-outline-secondary" onClick={() => this.toggleMap(false)}>Закрыть карту</button>
+                <button type="button" className="btn btn-outline-secondary" onClick={() => this.toggleMap.bind(this, false)}>Закрыть карту</button>
               </div>
             </div>
           </div>
@@ -1912,7 +1911,7 @@ class ShowMap extends React.Component {
 
                 view.graphics.add(pointGraphic);
               } else {
-                var view = new MapView({
+                  view = new MapView({
                   container: containerNode,
                   map: map,
                   center: [76.886, 43.250], 

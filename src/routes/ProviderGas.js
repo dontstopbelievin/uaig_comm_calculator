@@ -263,7 +263,7 @@ class ShowApz extends React.Component {
     xhr.send();
   }
 
-  // Скачивание файла
+  // Скачивание файла (ТУ/МО)
   downloadResponseFile(event) {
     var token = sessionStorage.getItem('tokenInfo');
     var id =  event.target.getAttribute("data-id");
@@ -523,7 +523,7 @@ class ShowApz extends React.Component {
                 <td>
                   {apz.ProjectAddress}
 
-                  {apz.ProjectAddressCoordinates != "" &&
+                  {apz.ProjectAddressCoordinates !== "" &&
                     <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
                   }
                 </td>
@@ -865,7 +865,7 @@ class ShowMap extends React.Component {
 
                 view.graphics.add(pointGraphic);
               } else {
-                var view = new MapView({
+                  view = new MapView({
                   container: containerNode,
                   map: map,
                   center: [76.886, 43.250], 
