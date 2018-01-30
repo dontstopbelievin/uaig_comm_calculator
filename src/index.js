@@ -28,6 +28,10 @@ import Review from './routes/Review';
 import BudgetPlan from './routes/BudgetPlan';
 import VideoTutorials from './routes/VideoTutorials';
 import Polls from './routes/Polls';
+import DesignCode from './routes/DesignCode';
+import CouncilMaterials from './routes/CouncilMaterials';
+import Reports from './routes/Reports';
+import Stats from './routes/Stats';
 import Footer from './components/Footer';
 import News from './routes/News';
 import npm from './routes/npm';
@@ -59,8 +63,8 @@ export default class Main extends React.Component {
 
   componentWillMount() {
     this.setLang();
-    //window.url = 'https://work.uaig.kz:4443/';
-    window.url = 'http://localhost:53844/';
+    window.url = 'https://work.uaig.kz:4443/';
+    //window.url = 'http://localhost:53844/';
   }
 
   componentDidMount() {
@@ -103,6 +107,10 @@ export default class Main extends React.Component {
               <Route path="/sketch" render={(props) => (<Sketch {...props} />)} />
               <Route path="/reviews" render={(props) => (<Review {...props} />)} />
               <Route path="/polls" render={(props) => (<Polls {...props} />)} />
+              <Route path="/designCode" render={(props) => (<DesignCode {...props} />)} />
+              <Route path="/councilMaterials" render={(props) => (<CouncilMaterials {...props} />)} />
+              <Route path="/reports" render={(props) => (<Reports {...props} />)} />
+              <Route path="/stats" render={(props) => (<Stats {...props} />)} />
               <Route path="/budget_plan" render={(props) => (<BudgetPlan {...props} />)} />
               <Route path="/tutorials" render={(props) => (<VideoTutorials {...props} />)} />
               <Route path="/news" render={(props) => (<News {...props}/>)}/>
