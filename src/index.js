@@ -29,15 +29,15 @@ import VideoTutorials from './routes/VideoTutorials';
 import Polls from './routes/Polls';
 import Footer from './components/Footer';
 import News from './routes/News';
-import npm from './routes/npm';
+import Npm from './routes/Npm';
 import public_services from './routes/public_services';
 import permission_and_covoting from './routes/permission_and_covoting';
-import legalpurchase from './routes/legalpurchase';
-import counteraction from './routes/counteraction';
-import contacts from './routes/contacts';
-import architectural_and_town_planning_activity from './routes/architectural_and_town_planning_activity';
-
-
+import legalpurchase from './routes/Legalpurchase';
+import Counteraction from './routes/Counteraction';
+import Contacts from './routes/Contacts';
+import architectural_and_town_planning_activity from './routes/Architectural_and_town_planning_activity';
+import Control from './routes/Control';
+import TimeOfReception from './routes/TimeOfReception';
 
 
 window.jQuery = require('jquery');
@@ -104,11 +104,12 @@ export default class Main extends React.Component {
               <Route path="/news" render={(props) => (<News {...props}/>)}/>
               <Route path="/public_services" render={(props) => (<public_services {...props}/>)}/>
               <Route path="/permission_and_covoting" render={(props) => (<permission_and_covoting {...props}/>)}/>
-              <Route path="/npm" render={(props) => (<npm {...props}/>)}/>
+              <Route path="/npm" render={(props) => (<Npm {...props}/>)}/>
               <Route path="/legalpurchese" render={(props) => (<legalpurchese {...props}/>)}/>
-              <Route path="/counteraction" render={(props) => (<counteraction {...props}/>)}/>
-              <Route path="/control" render={(props) => (<control {...props}/>)}/>
-              <Route path="/contacts" render={(props) => (<contacts {...props}/>)}/>
+              <Route path="/counteraction" render={(props) => (<Counteraction {...props}/>)}/>
+              <Route path="/control" render={(props) => (<Control {...props}/>)}/>
+              <Route path="/contacts" render={(props) => (<Contacts {...props}/>)}/>
+              <Route path="/timeOfReception" render={(props) => (<TimeOfReception {...props}/>)}/>
               <Route path="/architectural_and_town_planning_activity" render={(props) => (<architectural_and_town_planning_activity {...props}/>)}/>
             </Switch>
             <Footer />

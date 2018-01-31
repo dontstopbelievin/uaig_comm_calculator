@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../languages/header.json';
+import $ from 'jquery';
 
 let e = new LocalizedStrings({ru,kk});
 
@@ -11,11 +12,14 @@ var navBtnStyle = {
   cursor: 'pointer'
 }
 
+
+
+
+
 export default class Header extends Component {
   constructor() {
     super();
     (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
-
     this.checkToken = this.checkToken.bind(this);
     this.logout = this.logout.bind(this);
   }
@@ -39,6 +43,12 @@ export default class Header extends Component {
     }.bind(this);
     xhr.send();
   }
+
+
+
+
+// использование
+
 
   updateLanguage(name){
     localStorage.setItem('lang', name);
@@ -71,7 +81,6 @@ export default class Header extends Component {
         xhr.send();
     }
   }
-
   componentWillMount() {
     //console.log("Header will mount");
     this.checkToken();
@@ -172,13 +181,18 @@ export default class Header extends Component {
               <li className="nav-item">
                 <NavLink to={'/budget_plan'} replace className="nav-link">{e.budget_plan}</NavLink>
               </li>
+
               <li className="nav-item dropdown">
-                <button className="nav-link dropdown-toggle" style={navBtnStyle} href="#" id="additionalDropdownMenuLink" data-toggle="dropdown" >
-                  {e.additional}
+                <button className="nav-link dropdown-toggle" style={navBtnStyle} href="#" id="additionalDropdownMenuLink" data-toggle="dropdown"   >
+                <a class="hider">  {e.additional}</a>
                 </button>
-                <div className="dropdown-menu" aria-labelledby="additionalDropdownMenuLink">
-                  <NavLink to={'/tutorials'} replace className="dropdown-item">{e.tutorials}</NavLink>
-                 </div>
+
+
+
+
+
+
+
               </li>
               <li className="nav-item">
                 <NavLink to={'/polls'} replace className="nav-link">{e.polls}</NavLink>
@@ -194,6 +208,43 @@ export default class Header extends Component {
             </div>
           </div>
         </nav>
+
+        <div class="mish" id="mish">
+          <div class="container">
+            <div class="row" style={{fontFamely:'Roboto'}}>
+              <div class="col_1">
+                <ul>
+                  <li><NavLink to={'/npm'} replace className="">{e.npm}</NavLink></li>
+                  <li><NavLink to={'/tutorials'} replace className="">{e.tutorials}</NavLink></li>
+                </ul>
+              </div>
+              <div class="col_2">
+                <ul>
+                  <li><a target="_blank" href="https://v3bl.goszakup.gov.kz/ru/register/plansreg?name_bin=990740001176&number_plan=&name_plan=&years_plan=2017&trade_method=&trade_vid=&attribute=&point_status=&pln_month=&region=&finance_point=&adm_bud=&program=&sub_program=&spec">{e.legalpurchese}</a></li>
+                  <li><NavLink to={'/timeOfReception'} replace className="">{e.timeOfReception}</NavLink></li>
+                </ul>
+              </div>
+              <div class="col_3">
+                <ul>
+                  <li><NavLink to={'/counteraction'} replace className="">{e.counteraction}</NavLink></li>
+                </ul>
+              </div>
+              <div class="col_4">
+                <ul>
+                  <li id="s"><NavLink to={'/news'} replace className="">{e.news}</NavLink></li>
+                  <li id="s"><NavLink to={'/control'} replace className="">{e.control}</NavLink></li>
+                  <li id="t"><NavLink to={'/contacts'} replace className="">{e.contacts}</NavLink></li>
+                </ul>
+
+
+
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+
       </div>
     )
   }

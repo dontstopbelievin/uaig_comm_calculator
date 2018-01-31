@@ -1,5 +1,9 @@
 import React from 'react';
-//import { NavLink } from 'react-router-dom';
+import LocalizedStrings from 'react-localization';
+import $ from 'jquery';
+import {ru, kk} from '../languages/guest.json';
+import { NavLink } from 'react-router-dom';
+let e = new LocalizedStrings({ru,kk});
 
 export default class BudgetPlan extends React.Component {
   constructor(props) {
@@ -47,6 +51,9 @@ export default class BudgetPlan extends React.Component {
 
   render() {
     return (
+        <div>
+
+
       <div className="content container budget-plan-page">
         <div className="card">
           <div className="card-header">
@@ -72,6 +79,7 @@ export default class BudgetPlan extends React.Component {
           </div>
         </div>
       </div>
+        </div>
     )
   }
 }

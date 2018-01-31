@@ -1,8 +1,23 @@
 import React from 'react';
 import $ from 'jquery';
 import { NavLink } from 'react-router-dom';
+import LocalizedStrings from 'react-localization';
+import {ru, kk} from '../languages/header.json';
+
+let e = new LocalizedStrings({ru,kk});
 
 export default class VideoTutorials extends React.Component {
+
+    constructor() {
+        super();
+        (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
+
+        this.state = {
+            tokenExists: false,
+            rolename: ""
+        }
+    }
+
   componentDidMount() {
     $('#video_list .list-group-item').click(function() {
       var state = $(this).hasClass('active');
@@ -21,6 +36,10 @@ export default class VideoTutorials extends React.Component {
 
   render() {
     return (
+        <div>
+    <div className="container navigational_price">
+      <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.tutorials}
+    </div>
       <div className="content container video_tutorials-plan-page">
         <div className="card">
           <div className="card-header">
@@ -108,6 +127,7 @@ export default class VideoTutorials extends React.Component {
           </div>
         </div>
       </div>
+        </div>
     )
   }
 }

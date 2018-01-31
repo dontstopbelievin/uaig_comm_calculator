@@ -6,7 +6,7 @@ import {ru, kk} from '../languages/header.json';
 let e = new LocalizedStrings({ru,kk});
 
 
-export default class Control extends React.Component{
+export default class Contacts extends React.Component{
 
     constructor() {
         super();
@@ -20,9 +20,12 @@ export default class Control extends React.Component{
 
     render() {
         return(
-          <div className="container navigational_price">
-            <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.control}
-          </div>
+    <div>
+        <div class="container navigational_price">
+          <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.contacts}
+
+        </div>
+    </div>
         )
     }
 }
