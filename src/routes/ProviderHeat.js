@@ -161,7 +161,13 @@ class ShowApz extends React.Component {
       addition: "",
       docNumber: "",
       description: '',
+      responseId: 0,
+      response: false,
+      responseFileExt: null,
       showMapText: 'Показать карту',
+      accept: true,
+      callSaveFromSend: false,
+      heatStatus: 2
     };
 
     this.onHeatResourceChange = this.onHeatResourceChange.bind(this);
@@ -175,6 +181,8 @@ class ShowApz extends React.Component {
     this.onDocNumberChange = this.onDocNumberChange.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
+    this.saveResponseForm = this.saveResponseForm.bind(this);
+    this.sendHeatResponse = this.sendHeatResponse.bind(this);
   }
 
   onHeatResourceChange(e) {
@@ -221,6 +229,11 @@ class ShowApz extends React.Component {
     this.setState({ file: e.target.files[0] });
   }
 
+  // this function to show one of the forms Accept/Decline
+  toggleAcceptDecline(value) {
+    this.setState({accept: value});
+  }
+
   componentWillMount() {
     this.getApzInfo();
   }
@@ -231,7 +244,7 @@ class ShowApz extends React.Component {
 
     if (roles == null) {
         sessionStorage.clear();
-        alert("Token is expired, please login again!");
+        alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
         return false;
     }
@@ -245,9 +258,27 @@ class ShowApz extends React.Component {
     xhr.onload = function() {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
+        //console.log(data);
         this.setState({apz: data});
         this.setState({showButtons: false});
         this.setState({showTechCon: false});
+        this.setState({description: data.HeatResponseText});
+        this.setState({connectionPoint: data.HeatConnectionPoint});
+        this.setState({heatResource: data.HeatResource});
+        this.setState({heatTransPressure: data.HeatTransPressure});
+        this.setState({heatLoadContractNum: data.HeatLoadContractNum});
+        this.setState({heatMainInContract: data.HeatMainInContract});
+        this.setState({heatVenInContract: data.HeatVenInContract});
+        this.setState({heatWaterInContract: data.HeatWaterInContract});
+        this.setState({addition: data.HeatAddition});
+        this.setState({docNumber: data.HeatDocNumber});
+        this.setState({responseId: data.HeatResponseId});
+        this.setState({response: data.HeatResponse});
+        if(data.HeatResponseId !== -1){
+          this.setState({accept: data.HeatResponse});
+        }
+        this.setState({responseFileExt: data.HeatResponseFileExt});
+        this.setState({heatStatus: data.ApzHeatStatus});
 
         if (data.Status === 3 && data.ApzHeatStatus === 2) { 
           this.setState({showButtons: true}); 
@@ -257,6 +288,24 @@ class ShowApz extends React.Component {
         }
       }
     }.bind(this)
+    xhr.send();
+  }
+
+  // Скачивание файла (ТУ/МО)
+  downloadResponseFile(event) {
+    var token = sessionStorage.getItem('tokenInfo');
+    var id =  event.target.getAttribute("data-id");
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/apz/download/provider/heat/" + id, true);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        window.location = window.url + "api/apz/download/provider/heat/" + id
+      } else {
+        alert('Не удалось скачать файл');
+      }
+    }
     xhr.send();
   }
 
@@ -301,7 +350,8 @@ class ShowApz extends React.Component {
     saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
   }
 
-  acceptDeclineApzForm(apzId, status, comment) {
+  // this function is to save the respones form when any change is made
+  saveResponseForm(apzId, status, comment){
     var token = sessionStorage.getItem('tokenInfo');
     var file = this.state.file;
 
@@ -309,38 +359,100 @@ class ShowApz extends React.Component {
     formData.append('file', file);
     formData.append('Response', status);
     formData.append('Message', comment);
-    formData.append('HeatResource', this.state.heatResource);
-    formData.append('HeatTransPressure', this.state.heatTransPressure);
-    formData.append('HeatLoadContractNum', this.state.heatLoadContractNum);
-    formData.append('HeatMainInContract', this.state.heatMainInContract);
-    formData.append('HeatVenInContract', this.state.heatVenInContract);
-    formData.append('HeatWaterInContract', this.state.heatWaterInContract);
-    formData.append('ConnectionPoint', this.state.connectionPoint);
-    formData.append('Addition', this.state.addition);
+    if(status === false){
+      formData.append('HeatResource', "");
+      formData.append('HeatTransPressure', "");
+      formData.append('HeatLoadContractNum', "");
+      formData.append('HeatMainInContract', "");
+      formData.append('HeatVenInContract', "");
+      formData.append('HeatWaterInContract', "");
+      formData.append('ConnectionPoint', "");
+      formData.append('Addition', "");
+    }
+    else{
+      formData.append('HeatResource', this.state.heatResource);
+      formData.append('HeatTransPressure', this.state.heatTransPressure);
+      formData.append('HeatLoadContractNum', this.state.heatLoadContractNum);
+      formData.append('HeatMainInContract', this.state.heatMainInContract);
+      formData.append('HeatVenInContract', this.state.heatVenInContract);
+      formData.append('HeatWaterInContract', this.state.heatWaterInContract);
+      formData.append('ConnectionPoint', this.state.connectionPoint);
+      formData.append('Addition', this.state.addition);
+    }
     formData.append('DocNumber', this.state.docNumber);
 
     var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + "api/apz/status/" + apzId, true);
+    xhr.open("post", window.url + "api/apz/save/provider/heat/" + apzId, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function () {
       if (xhr.status === 200) {
-        //var data = JSON.parse(xhr.responseText);
-
-        if(status === true) {
-          alert("Заявление принято!");
-          this.setState({ showButtons: false });
-        } else {
-          alert("Заявление отклонено!");
-          this.setState({ showButtons: false });
+        var data = JSON.parse(xhr.responseText);
+        //console.log(data);
+        this.setState({responseId: data.ResponseId});
+        this.setState({response: data.Response});
+        this.setState({accept: data.Response});
+        this.setState({description: data.ResponseText});
+        this.setState({responseFileExt: data.HeatResponseFileExt});
+        this.setState({connectionPoint: data.ConnectionPoint});
+        this.setState({heatResource: data.HeatResource});
+        this.setState({heatTransPressure: data.HeatTransPressure});
+        this.setState({heatLoadContractNum: data.HeatLoadContractNum});
+        this.setState({heatMainInContract: data.HeatMainInContract});
+        this.setState({heatVenInContract: data.HeatVenInContract});
+        this.setState({heatWaterInContract: data.HeatWaterInContract});
+        this.setState({addition: data.Addition});
+        if(this.state.callSaveFromSend){
+          this.setState({callSaveFromSend: false});
+          this.sendHeatResponse(apzId, status, comment);
+        }
+        else{
+          alert("Ответ сохранен!");
         }
       }
       else if(xhr.status === 401){
         sessionStorage.clear();
-        alert("Token is expired, please login again!");
+        alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
       }
     }.bind(this);
-    xhr.send(formData); 
+    xhr.send(formData);
+  }
+
+  // this function is to send the final response
+  sendHeatResponse(apzId, status, comment) {
+    if(this.state.responseId < 0){
+      this.setState({callSaveFromSend: true});
+      this.saveResponseForm(apzId, status, comment);
+    }
+    else{
+      var token = sessionStorage.getItem('tokenInfo');
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/apz/update/provider/heat/" + apzId, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+
+          if(data.ApzHeatStatus === 1) {
+            alert("Заявление принято!");
+            this.setState({ showButtons: false });
+            this.setState({ heatStatus: 1 });
+            this.setState({showTechCon: true});
+          } 
+          else if(data.ApzHeatStatus === 0) {
+            alert("Заявление отклонено!");
+            this.setState({ showButtons: false });
+            this.setState({ heatStatus: 0 })
+          }
+        }
+        else if(xhr.status === 401){
+          sessionStorage.clear();
+          alert("Время сессии истекло. Пожалуйста войдите заново!");
+          this.props.history.replace("/login");
+        }
+      }.bind(this);
+      xhr.send();
+    } 
   }
 
   // print technical condition
@@ -352,8 +464,6 @@ class ShowApz extends React.Component {
       xhr.responseType = "blob";
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.onload = function () {
-        console.log(xhr);
-        console.log(xhr.status);
         if (xhr.status === 200) {
           //test of IE
           if (typeof window.navigator.msSaveBlob === "function") {
@@ -379,7 +489,7 @@ class ShowApz extends React.Component {
       }
       xhr.send();
     } else {
-      console.log('session expired');
+      console.log('Время сессии истекло.');
     }
   }
 
@@ -420,7 +530,7 @@ class ShowApz extends React.Component {
 
     return (
       <div className="row">
-        <div className="col-sm-6">
+        <div className="col-sm-4">
           <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
           
           <table className="table table-bordered table-striped">
@@ -454,7 +564,7 @@ class ShowApz extends React.Component {
                 <td>
                   {apz.ProjectAddress}
 
-                  {apz.ProjectAddressCoordinates != null &&
+                  {apz.ProjectAddressCoordinates !== "" &&
                     <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
                   }
                 </td>
@@ -488,8 +598,8 @@ class ShowApz extends React.Component {
           </table>
         </div>
 
-        <div className="col-sm-6">
-          <h5 className="block-title-2 mt-3 mb-3">Детали теплоснабжения</h5>
+        <div className="col-sm-4">
+          <h5 className="block-title-2 mt-3 mb-3">Детали</h5>
 
           <table className="table table-bordered table-striped">
             <tbody>
@@ -523,10 +633,191 @@ class ShowApz extends React.Component {
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <div className="col-sm-4">
+          <div className="row" style={{margin: '16px 0'}}>
+            <div className="col-sm-6">
+              <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ</h5> 
+            </div>
+            <div className="col-sm-6">
+              {this.state.showButtons &&
+                <div className="btn-group" style={{float: 'right', margin: '0'}}>
+                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, true)}>
+                    <i className="glyphicon glyphicon-ok"></i>
+                  </button>
+                  <button className="btn btn-raised btn-danger" onClick={this.toggleAcceptDecline.bind(this, false)}>
+                    <i className="glyphicon glyphicon-remove"></i>
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+
+          {this.state.accept && this.state.heatStatus === 2 &&
+            <form style={{border: 'solid 3px #46A149', padding: '5px'}}>
+              <div className="form-group">
+                <label>Теплоснабжение осуществляется от источников</label>
+                <input type="text" className="form-control" placeholder="" value={this.state.heatResource} onChange={this.onHeatResourceChange} />
+              </div>
+              <div className="form-group">
+                <label>Точка подключения</label>
+                <input type="text" className="form-control" placeholder="" value={this.state.connectionPoint} onChange={this.onConnectionPointChange} />
+              </div>
+              <div className="form-group">
+                <label>Давление теплоносителя в тепловой камере {this.state.connectionPoint}</label>
+                <input type="text" className="form-control" placeholder="" value={this.state.heatTransPressure} onChange={this.onHeatTransPressureChange} />
+              </div>
+              <div className="form-group">
+                <label>Тепловые нагрузки по договору 
+                  <input type="text" className="form-control" placeholder="Введите номер договора" value={this.state.heatLoadContractNum} onChange={this.onHeatLoadContractNumChange} />
+                </label>
+                <label>Отопление (Гкал/ч)</label>
+                <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatMainInContract} onChange={this.onHeatMainInContractChange} />
+                <label>Вентиляция (Гкал/ч)</label>
+                <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatVenInContract} onChange={this.onHeatVenInContractChange} />
+                <label>Горячее водоснабжение (Гкал/ч)</label>
+                <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatWaterInContract} onChange={this.onHeatWaterInContractChange} />
+              </div>
+              <div className="form-group">
+                <label>Дополнительное</label>
+                <textarea rows="5" className="form-control" value={this.state.addition} onChange={this.onAdditionChange} placeholder="Описание"></textarea>
+              </div>
+              <div className="form-group">
+                <label>Номер документа</label>
+                <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+              </div>
+              {(this.state.response === true && this.state.responseFileExt) &&
+                <div className="form-group">
+                  <label style={{display: 'block'}}>Прикрепленный файл</label>
+                  <a className="pointer text-info" title="Скачать" data-id={this.state.responseId} onClick={this.downloadResponseFile.bind(this)}>
+                    Скачать 
+                  </a>
+                </div>
+              }
+              <div className="form-group">
+                <label htmlFor="upload_file">Прикрепить файл</label>
+                <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+              </div>
+              <div className="form-group">
+                <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.Id, true, "")}>
+                  Сохранить
+                </button>
+                <button type="button" className="btn btn-primary" onClick={this.sendHeatResponse.bind(this, apz.Id, true, "")}>
+                  Отправить
+                </button>
+              </div>
+            </form>
+          }
+
+          {this.state.accept && this.state.heatStatus === 1 &&
+            <table className="table table-bordered table-striped">
+              <tbody>
+                <tr>
+                  <td style={{width: '40%'}}>Источник</td> 
+                  <td>{this.state.heatResource}</td>
+                </tr>
+                <tr>
+                  <td>Точка подключения</td> 
+                  <td>{this.state.connectionPoint}</td>
+                </tr> 
+                <tr>
+                  <td>Давление теплоносителя в тепловой камере {this.state.connectionPoint}</td>
+                  <td>{this.state.heatTransPressure}</td>
+                </tr>
+                <tr>
+                  <td>Тепловые нагрузки по договору</td>
+                  <td>{this.state.heatLoadContractNum}</td>
+                </tr>
+                <tr>
+                  <td>Отопление (Гкал/ч)</td>
+                  <td>{this.state.heatMainInContract}</td>
+                </tr>
+                <tr>
+                  <td>Вентиляция (Гкал/ч)</td>
+                  <td>{this.state.heatVenInContract}</td>
+                </tr>
+                <tr>
+                  <td>Горячее водоснабжение (Гкал/ч)</td>
+                  <td>{this.state.heatWaterInContract}</td>
+                </tr>
+                <tr>
+                  <td>Дополнительное</td>
+                  <td>{this.state.addition}</td>
+                </tr>
+                <tr>
+                  <td>Номер документа</td>
+                  <td>{this.state.docNumber}</td>
+                </tr>
+                <tr>
+                  <td>Прикрепленный файл</td>
+                  <td>
+                    <a className="pointer text-info" title="Скачать" data-id={this.state.responseId} onClick={this.downloadResponseFile.bind(this)}>
+                      Скачать 
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          }
+
+          {!this.state.accept && this.state.heatStatus === 2 &&
+            <form style={{border: 'solid 3px #F55549', padding: '5px'}}>
+              <div className="form-group">
+                <label>Номер документа</label>
+                <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+              </div>
+              <div className="form-group">
+               <label>Причина отклонения</label>
+                <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
+              </div>
+              {(this.state.response === false && this.state.responseFileExt) &&
+                <div className="form-group">
+                  <label style={{display: 'block'}}>Прикрепленный файл</label>
+                  <a className="pointer text-info" title="Скачать" data-id={this.state.responseId} onClick={this.downloadResponseFile.bind(this)}>
+                    Скачать 
+                  </a>
+                </div>
+              }
+              <div className="form-group">
+                <label htmlFor="upload_file">Прикрепить файл</label>
+                <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+              </div>
+              <div className="form-group">
+                <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.Id, false, this.state.description)}>
+                  Сохранить
+                </button>
+                <button type="button" className="btn btn-primary" onClick={this.sendHeatResponse.bind(this, apz.Id, false, this.state.description)}>
+                  Отправить
+                </button>
+              </div>
+            </form>
+          }
+
+          {!this.state.accept && this.state.heatStatus === 0 &&
+            <table className="table table-bordered table-striped">
+              <tbody>
+                <tr>
+                  <td style={{width: '40%'}}>Причина отклонения</td> 
+                  <td>{this.state.description}</td>
+                </tr>
+                <tr>
+                  <td>Номер документа</td>
+                  <td>{this.state.docNumber}</td>
+                </tr>
+                <tr>
+                  <td>Прикрепленный файл</td>
+                  <td>
+                    <a className="pointer text-info" title="Скачать" data-id={this.state.responseId} onClick={this.downloadResponseFile.bind(this)}>
+                      Скачать 
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          }
 
           <div className={this.state.showTechCon ? '' : 'invisible'}>
-            <h5 className="block-title-2 mt-3 mb-3">Ответ</h5>
-
             <table className="table table-bordered table-striped">
               <tbody>
                 <tr>
@@ -535,115 +826,6 @@ class ShowApz extends React.Component {
                 </tr>
               </tbody>
             </table>
-          </div>
-
-          <div className={this.state.showButtons ? '' : 'invisible'}>
-            <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
-              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
-                      data-toggle="modal" data-target="#AcceptApzForm">
-                Одобрить
-              </button>
-              <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#DeclineApzForm">
-                Отклонить
-              </button>
-              <div className="modal fade" id="AcceptApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h5 className="modal-title">Одобрение Заявки</h5>
-                      <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div className="modal-body">
-                      <div className="row">
-                        <div className="col-md-6">
-                          <div className="form-group">
-                            <label>Теплоснабжение осуществляется от источников</label>
-                            <input type="text" className="form-control" placeholder="" value={this.state.heatResource} onChange={this.onHeatResourceChange} />
-                          </div>
-                          <div className="form-group">
-                            <label>Точка подключения</label>
-                            <input type="text" className="form-control" placeholder="" value={this.state.connectionPoint} onChange={this.onConnectionPointChange} />
-                          </div>
-                          <div className="form-group">
-                            <label>Давление теплоносителя в тепловой камере {this.state.connectionPoint}</label>
-                            <input type="text" className="form-control" placeholder="" value={this.state.heatTransPressure} onChange={this.onHeatTransPressureChange} />
-                          </div>
-                          <div className="form-group">
-                            <label>Тепловые нагрузки по договору (Гкал/ч), 
-                              <input type="text" className="form-control" placeholder="Введите номер договора" value={this.state.heatLoadContractNum} onChange={this.onHeatLoadContractNumChange} />
-                            </label>
-                            <label>Отопление</label>
-                            <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatMainInContract} onChange={this.onHeatMainInContractChange} />
-                            <label>Вентиляция</label>
-                            <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatVenInContract} onChange={this.onHeatVenInContractChange} />
-                            <label>Горячее водоснабжение</label>
-                            <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatWaterInContract} onChange={this.onHeatWaterInContractChange} />
-                          </div>
-                        </div>
-                        <div className="col-md-6">
-                          <div className="form-group">
-                            <label htmlFor="pname">Наименование объекта</label>
-                            <input type="text" className="form-control" id="pname" placeholder={apz.ProjectName} />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="adress">Адрес объекта</label>
-                            <input type="text" className="form-control" id="adress" placeholder={apz.ProjectAddress} />
-                          </div>
-                          <div className="form-group">
-                            <label>Дополнительное</label>
-                            <textarea rows="5" className="form-control" value={this.state.addition} onChange={this.onAdditionChange} placeholder="Описание"></textarea>
-                          </div>
-                          <div className="form-group">
-                            <label>Номер документа</label>
-                            <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="upload_file">Прикрепить файл</label>
-                            <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="modal-footer">
-                      <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, apz.Id, true, "your form was accepted")}>Отправить</button>
-                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="modal fade" id="DeclineApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                <div className="modal-dialog" role="document">
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h5 className="modal-title">Отклонение Заявки</h5>
-                      <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div className="modal-body">
-                      <div className="form-group">
-                        <label htmlFor="docNumber">Номер документа</label>
-                        <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
-                      </div>
-                      <div className="form-group">
-                       <label>Причина отклонения</label>
-                        <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="upload_file">Прикрепить файл</label>
-                        <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
-                      </div>
-                    </div>
-                    <div className="modal-footer">
-                      <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, apz.Id, false, this.state.description)}>Отправить</button>
-                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -748,7 +930,7 @@ class ShowMap extends React.Component {
 
                 view.graphics.add(pointGraphic);
               } else {
-                var view = new MapView({
+                  view = new MapView({
                   container: containerNode,
                   map: map,
                   center: [76.886, 43.250], 

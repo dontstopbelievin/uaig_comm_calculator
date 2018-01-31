@@ -12,9 +12,11 @@ import Register from './routes/Register';
 import Temporary from './routes/Temporary';
 import Citizen from './routes/Citizen';
 import Urban from './routes/Urban';
+import UrbanReport from './routes/UrbanReport';
 import Head from './routes/Head';
 import ProviderElectro from './routes/ProviderElectro';
 import ProviderGas from './routes/ProviderGas';
+import ProviderPhone from './routes/ProviderPhone';
 import ProviderHeat from './routes/ProviderHeat';
 import ProviderWater from './routes/ProviderWater';
 import Project from './routes/Project';
@@ -27,6 +29,10 @@ import Review from './routes/Review';
 import BudgetPlan from './routes/BudgetPlan';
 import VideoTutorials from './routes/VideoTutorials';
 import Polls from './routes/Polls';
+import DesignCode from './routes/DesignCode';
+import CouncilMaterials from './routes/CouncilMaterials';
+import Reports from './routes/Reports';
+import Stats from './routes/Stats';
 import Footer from './components/Footer';
 import News from './routes/News';
 import Npm from './routes/Npm';
@@ -38,7 +44,8 @@ import Contacts from './routes/Contacts';
 import architectural_and_town_planning_activity from './routes/Architectural_and_town_planning_activity';
 import Control from './routes/Control';
 import TimeOfReception from './routes/TimeOfReception';
-
+import Engineer from './routes/Engineer.js';
+import Apz from './routes/Apz.js';
 
 window.jQuery = require('jquery');
 window.Popper = require('popper.js').default;
@@ -56,8 +63,8 @@ export default class Main extends React.Component {
 
   componentWillMount() {
     this.setLang();
-    //window.url = 'https://work.uaig.kz:4443/';
-    window.url = 'http://localhost:53844/';
+    window.url = 'https://work.uaig.kz:4443/';
+    //window.url = 'http://localhost:53844/';
   }
 
   componentDidMount() {
@@ -85,10 +92,12 @@ export default class Main extends React.Component {
               <Route path="/register" render={(props) => (<Register {...props} />)} />
               <Route path="/temporary" render={(props) => (<Temporary {...props} />)} />
               <Route path="/urban" render={(props) => (<Urban {...props} />)} />
+              <Route path="/urbanreport" render={(props) => (<UrbanReport {...props} />)} />
               <Route path="/head" render={(props) => (<Head {...props} />)} />
               <Route path="/citizen" render={(props) => (<Citizen {...props} />)} />
               <Route path="/providerelectro" render={(props) => (<ProviderElectro {...props} />)} />
               <Route path="/providergas" render={(props) => (<ProviderGas {...props} />)} />
+              <Route path="/providerphone" render={(props) => (<ProviderPhone {...props} />)} />
               <Route path="/providerheat" render={(props) => (<ProviderHeat {...props} />)} />
               <Route path="/providerwater" render={(props) => (<ProviderWater {...props} />)} />
               <Route path="/project" render={(props) => (<Project {...props} />)} />
@@ -99,6 +108,10 @@ export default class Main extends React.Component {
               <Route path="/sketch" render={(props) => (<Sketch {...props} />)} />
               <Route path="/reviews" render={(props) => (<Review {...props} />)} />
               <Route path="/polls" render={(props) => (<Polls {...props} />)} />
+              <Route path="/designCode" render={(props) => (<DesignCode {...props} />)} />
+              <Route path="/councilMaterials" render={(props) => (<CouncilMaterials {...props} />)} />
+              <Route path="/reports" render={(props) => (<Reports {...props} />)} />
+              <Route path="/stats" render={(props) => (<Stats {...props} />)} />
               <Route path="/budget_plan" render={(props) => (<BudgetPlan {...props} />)} />
               <Route path="/tutorials" render={(props) => (<VideoTutorials {...props} />)} />
               <Route path="/news" render={(props) => (<News {...props}/>)}/>
@@ -111,6 +124,8 @@ export default class Main extends React.Component {
               <Route path="/contacts" render={(props) => (<Contacts {...props}/>)}/>
               <Route path="/timeOfReception" render={(props) => (<TimeOfReception {...props}/>)}/>
               <Route path="/architectural_and_town_planning_activity" render={(props) => (<architectural_and_town_planning_activity {...props}/>)}/>
+              <Route path="/engineer" render={(props) => (<Engineer {...props}/>)}/>
+              <Route path="/apz" render={(props) => (<Apz {...props}/>)}/>
             </Switch>
             <Footer />
           </div>
