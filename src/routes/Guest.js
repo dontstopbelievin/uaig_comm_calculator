@@ -28,7 +28,7 @@ export default class Guest extends React.Component {
     //alert('Вам надо зайти в систему или зарегистрироваться!');
 	//dferfe
   }
-  
+
 
   componentWillMount() {
     //console.log("GuestComponent will mount");
@@ -56,6 +56,7 @@ export default class Guest extends React.Component {
   render() {
     return (
       <div>
+      //NurseitTest
         <div className="mish">
           <div className="container">
             <div className="row" style={{fontFamely:'Roboto'}}>
