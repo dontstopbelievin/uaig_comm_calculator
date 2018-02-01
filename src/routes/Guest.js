@@ -56,7 +56,6 @@ export default class Guest extends React.Component {
   render() {
     return (
       <div>
-      //NurseitTest
         <div className="mish">
           <div className="container">
             <div className="row" style={{fontFamely:'Roboto'}}>
