@@ -50,6 +50,7 @@ export default class Guest extends React.Component {
   }
 
   componentWillUnmount() {
+    //another comment
     //console.log("GuestComponent will unmount");
   }
 
