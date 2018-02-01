@@ -8,12 +8,10 @@ export default class Stats extends React.Component {
         <div className="card">
           <div className="card-header"><h4 className="mb-0">Статистика выданных АПЗ в текущий период времени</h4></div>
           <div className="card-body">
-            <ol start="1">
-            <li>
             <p><strong>Отчет по согласованным проектам за январь месяц &ndash; 2018 года</strong></p>
-            <p>&nbsp;</p>
-            <table className="tableReports" border="1">
+            <table className="table table-striped">
             <tbody>
+            <thead>
             <tr>
             <td width="45">
             <p><strong>№</strong></p>
@@ -388,13 +386,14 @@ export default class Stats extends React.Component {
             <p><strong>56</strong></p>
             </td>
             </tr>
+            </thead>
             </tbody>
             </table>
             <p>&nbsp;</p>
-            <p>&nbsp;</p>
             <p><strong>Отчет по АПЗ &nbsp;за январь месяц &ndash; 2018 года</strong></p>
-            <table className="tableReports" border="1">
+            <table className="table table-striped">
             <tbody>
+            <thead>
             <tr>
             <td width="45">
             <p><strong>№</strong></p>
@@ -769,14 +768,14 @@ export default class Stats extends React.Component {
             <p><strong>103</strong></p>
             </td>
             </tr>
+            </thead>
             </tbody>
             </table>
             <p>&nbsp;</p>
-            <p>&nbsp;</p>
             <p><strong>Отчет по</strong> <strong>АПЗ за январь &nbsp;месяц &ndash; 2018 года</strong></p>
-            <p>&nbsp;</p>
-            <table className="tableReports" border="1">
+            <table className="table table-striped">
             <tbody>
+            <thead>
             <tr>
             <td width="45">
             <p><strong>№</strong></p>
@@ -1140,11 +1139,10 @@ export default class Stats extends React.Component {
             <p><strong>159</strong></p>
             </td>
             </tr>
+            </thead>
             </tbody>
             </table>
             <p>&nbsp;</p>
-            </li>
-            </ol>
           </div>
         </div>
       </div>
