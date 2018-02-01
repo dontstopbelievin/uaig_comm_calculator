@@ -112,7 +112,8 @@ export default class Header extends Component {
   render() {
     //console.log("rendering the Header");
     return (
-      <div>
+      <div> 
+        <div className="header">
         <div className="container logo">
           <div className="row">
             <div className="col-md-9">
@@ -123,7 +124,7 @@ export default class Header extends Component {
                 <div className="col-md-6 site-title">
                   <b>{e.title}</b>
                 </div>
-                <div className="col-md-4">
+                <div className="col-md-4 header-search">
                   <form>
                     <div className="form-group">
                       <input type="email" className="form-control" aria-describedby="emailHelp" placeholder={e.search} />
@@ -149,6 +150,7 @@ export default class Header extends Component {
               }
             </div>
           </div>
+        </div>
         </div>
         <nav className="navbar navbar-expand-lg navbar-light bg-blue">
           <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">

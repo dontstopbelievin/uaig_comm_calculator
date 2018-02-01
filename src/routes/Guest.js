@@ -57,34 +57,6 @@ export default class Guest extends React.Component {
   render() {
     return (
       <div>
-        <div className="mish">
-          <div className="container">
-            <div className="row" style={{fontFamely:'Roboto'}}>
-              <div className="col_1">
-                <ul>
-                  <li><NavLink to={'/npm'} replace className="">{e.npm}</NavLink></li>
-                </ul>
-              </div>
-              <div className="col_2">
-                <ul>
-                  <li><a target="_blank" href="https://v3bl.goszakup.gov.kz/ru/register/plansreg?name_bin=990740001176&number_plan=&name_plan=&years_plan=2017&trade_method=&trade_vid=&attribute=&point_status=&pln_month=&region=&finance_point=&adm_bud=&program=&sub_program=&spec">{e.legalpurchese}</a></li>
-                </ul>
-              </div>
-              <div className="col_3">
-                <ul>
-                  <li><NavLink to={'/counteraction'} replace className="">{e.counteraction}</NavLink></li>
-                </ul>
-              </div>
-              <div className="col_4">
-                <ul>
-                  <li id="s"><NavLink to={'/news'} replace className="">{e.news}</NavLink></li>
-                  <li id="s"><NavLink to={'/control'} replace className="">{e.control}</NavLink></li>
-                  <li id="t"><NavLink to={'/contacts'} replace className="">{e.contacts}</NavLink></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
         {/*<div className="slide">
           <h1>УПРАВЛЕНИЕ АРХИТЕКТУРЫ И ГРАДОСТРОИТЕЛЬСТВА ГОРОДА АЛМАТЫ</h1>
           <h2>Официальный сайт</h2>
