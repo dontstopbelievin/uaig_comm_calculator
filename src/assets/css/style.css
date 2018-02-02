@@ -874,3 +874,27 @@ table{
 .header-search input::placeholder {
   color: #fff;
 }
+
+.captionline{
+  padding-color: 0px;
+  font-size: 20px;
+  font-family: "Roboto";
+  font-weight: 100;
+  text-align: center;
+  padding-top: 20px;
+  background: #fafafa;
+}
+thead{
+  font-size: 12px;
+  font-family: "Roboto";
+}
+th{
+  padding-top: 20px;
+}
+td{
+  padding-top: 20px;
+}
+th img{
+  width:100px;
+  margin: 0 auto;
+}
