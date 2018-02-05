@@ -33,15 +33,49 @@ export default class BudgetPlan extends React.Component {
   downloadFile(event) {
     var id =  event.target.getAttribute("data-id");
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/File/download/" + id, true);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        window.location = window.url + "api/File/download/" + id
-      } else {
-        alert('Не удалось скачать файл');
+    xhr.open("get", window.url + 'api/file/download/systemfile/budget/' + id, true);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+          var base64ToArrayBuffer = (function () {
+        
+            return function (base64) {
+              var binaryString =  window.atob(base64);
+              var binaryLen = binaryString.length;
+              var bytes = new Uint8Array(binaryLen);
+              
+              for (var i = 0; i < binaryLen; i++) {
+                var ascii = binaryString.charCodeAt(i);
+                bytes[i] = ascii;
+              }
+              
+              return bytes; 
+            }
+            
+          }());
+
+          var saveByteArray = (function () {
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+            a.style = "display: none";
+            
+            return function (data, name) {
+              var blob = new Blob(data, {type: "octet/stream"}),
+                  url = window.URL.createObjectURL(blob);
+              a.href = url;
+              a.download = name;
+              a.click();
+              window.URL.revokeObjectURL(url);
+            };
+
+          }());
+
+          saveByteArray([base64ToArrayBuffer(data.byteFile)], data.fileName + data.fileExt);
+        } else {
+          alert('Не удалось скачать файл');
+        }
       }
-    }
     xhr.send();
   }
 
