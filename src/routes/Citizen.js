@@ -1299,7 +1299,7 @@ class ShowApz extends React.Component {
           </tbody>
         </table>
 
-        { apz.HeadResponseExist != null &&
+        {apz.HeadResponseExist &&
           <div>
             <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
 

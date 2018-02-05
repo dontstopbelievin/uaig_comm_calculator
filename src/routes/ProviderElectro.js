@@ -270,24 +270,6 @@ class ShowApz extends React.Component {
     xhr.send();
   }
 
-  // Скачивание файла (ТУ/МО)
-  downloadResponseFile(event) {
-    var token = sessionStorage.getItem('tokenInfo');
-    var id =  event.target.getAttribute("data-id");
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/download/provider/electro/" + id, true);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        window.location = window.url + "api/apz/download/provider/electro/" + id
-      } else {
-        alert('Не удалось скачать файл');
-      }
-    }
-    xhr.send();
-  }
-
   downloadFile(event) {
     var token = sessionStorage.getItem('tokenInfo');
     var apzId = this.props.match.params.id;
@@ -667,7 +649,7 @@ class ShowApz extends React.Component {
               {(this.state.response === true && this.state.responseFileExt) &&
                 <div className="form-group">
                   <label style={{display: 'block'}}>Прикрепленный файл</label>
-                  <a className="pointer text-info" title="Скачать" data-id={this.state.responseId} onClick={this.downloadResponseFile.bind(this)}>
+                  <a className="pointer text-info" title="Скачать" data-url={'response/electroResponse/' + this.state.responseId} onClick={this.downloadFile.bind(this)}>
                     Скачать 
                   </a>
                 </div>
@@ -717,7 +699,7 @@ class ShowApz extends React.Component {
                 <tr>
                   <td>Прикрепленный файл</td>
                   <td>
-                    <a className="pointer text-info" title="Скачать" data-id={this.state.responseId} onClick={this.downloadResponseFile.bind(this)}>
+                    <a className="pointer text-info" title="Скачать" data-url={'response/electroResponse/' + this.state.responseId} onClick={this.downloadFile.bind(this)}>
                       Скачать 
                     </a>
                   </td>
@@ -739,7 +721,7 @@ class ShowApz extends React.Component {
               {(this.state.response === false && this.state.responseFileExt) &&
                 <div className="form-group">
                   <label style={{display: 'block'}}>Прикрепленный файл</label>
-                  <a className="pointer text-info" title="Скачать" data-id={this.state.responseId} onClick={this.downloadResponseFile.bind(this)}>
+                  <a className="pointer text-info" title="Скачать" data-url={'response/electroResponse/' + this.state.responseId} onClick={this.downloadFile.bind(this)}>
                     Скачать 
                   </a>
                 </div>
@@ -773,7 +755,7 @@ class ShowApz extends React.Component {
                 <tr>
                   <td>Прикрепленный файл</td>
                   <td>
-                    <a className="pointer text-info" title="Скачать" data-id={this.state.responseId} onClick={this.downloadResponseFile.bind(this)}>
+                    <a className="pointer text-info" title="Скачать" data-url={'response/electroResponse/' + this.state.responseId} onClick={this.downloadFile.bind(this)}>
                       Скачать 
                     </a>
                   </td>
