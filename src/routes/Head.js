@@ -203,44 +203,56 @@ class ShowApz extends React.Component {
   }
 
   downloadFile(event) {
-    var buffer = event.target.getAttribute("data-file")
-    var name = event.target.getAttribute("data-name");
-    var ext = event.target.getAttribute("data-ext");
+    var token = sessionStorage.getItem('tokenInfo');
+    var apzId = this.props.match.params.id;
+    var url =  event.target.getAttribute("data-url");
 
-    var base64ToArrayBuffer = (function () {
-      
-      return function (base64) {
-        var binaryString =  window.atob(base64);
-        var binaryLen = binaryString.length;
-        var bytes = new Uint8Array(binaryLen);
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + 'api/file/download/' + url + '/' + apzId, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+          var base64ToArrayBuffer = (function () {
         
-        for (var i = 0; i < binaryLen; i++)        {
-          var ascii = binaryString.charCodeAt(i);
-          bytes[i] = ascii;
+            return function (base64) {
+              var binaryString =  window.atob(base64);
+              var binaryLen = binaryString.length;
+              var bytes = new Uint8Array(binaryLen);
+              
+              for (var i = 0; i < binaryLen; i++) {
+                var ascii = binaryString.charCodeAt(i);
+                bytes[i] = ascii;
+              }
+              
+              return bytes; 
+            }
+            
+          }());
+
+          var saveByteArray = (function () {
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+            a.style = "display: none";
+            
+            return function (data, name) {
+              var blob = new Blob(data, {type: "octet/stream"}),
+                  url = window.URL.createObjectURL(blob);
+              a.href = url;
+              a.download = name;
+              a.click();
+              window.URL.revokeObjectURL(url);
+            };
+
+          }());
+
+          saveByteArray([base64ToArrayBuffer(data.byteFile)], data.fileName + data.fileExt);
+        } else {
+          alert('Не удалось скачать файл');
         }
-        
-        return bytes; 
       }
-      
-    }());
-
-    var saveByteArray = (function () {
-      var a = document.createElement("a");
-      document.body.appendChild(a);
-      a.style = "display: none";
-      
-      return function (data, name) {
-        var blob = new Blob(data, {type: "octet/stream"}),
-            url = window.URL.createObjectURL(blob);
-        a.href = url;
-        a.download = name;
-        a.click();
-        window.URL.revokeObjectURL(url);
-      };
-
-    }());
-
-    saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
+    xhr.send();
   }
 
   acceptDeclineApzForm(apzId, status, comment) {
@@ -558,24 +570,24 @@ class ShowApz extends React.Component {
                 <td>{apz.ApzDate && this.toDate(apz.ApzDate)}</td>
               </tr>
               
-              {apz.PersonalIdFile != null &&
+              {apz.PersonalIdExist &&
                 <tr>
                   <td><b>Уд. лич./ Реквизиты</b></td>
-                  <td><a className="text-info pointer" data-file={apz.PersonalIdFile} data-name="Уд. лич./Реквизиты" data-ext={apz.PersonalIdFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  <td><a className="text-info pointer" data-url={'citizenfile/personalId/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                 </tr>
               }
 
-              {apz.ConfirmedTaskFile != null &&
+              {apz.ConfirmedTaskExist &&
                 <tr>
                   <td><b>Утвержденное задание</b></td>
-                  <td><a className="text-info pointer" data-file={apz.ConfirmedTaskFile} data-name="Утвержденное задание" data-ext={apz.ConfirmedTaskFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  <td><a className="text-info pointer" data-url={'citizenfile/confirmedTask/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                 </tr>
               }
 
-              {apz.TitleDocumentFile != null &&
+              {apz.TitleDocumentExist &&
                 <tr>
                   <td><b>Правоустанавл. документ</b></td>
-                  <td><a className="text-info pointer" data-file={apz.TitleDocumentFile} data-name="Правоустанавл. документ" data-ext={apz.TitleDocumentFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  <td><a className="text-info pointer" data-url={'citizenfile/titleDocument/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                 </tr>
               }
             </tbody>
@@ -726,72 +738,72 @@ class ShowApz extends React.Component {
               <div className="modal-body">
                 <table className="table table-bordered table-striped">
                   <tbody>
-                    {apz.WaterDoc && apz.WaterResponse &&
+                    {apz.WaterDocExist && apz.WaterResponse &&
                       <tr>
                         <td style={{width: '50%'}}><b>Общая потребность (м<sup>3</sup>/сутки)</b></td>
                         <td>{apz.GenWaterReq}</td>
                       </tr>
                     }
-                    {apz.WaterDoc && apz.WaterResponse &&
+                    {apz.WaterDocExist && apz.WaterResponse &&
                       <tr>
                         <td><b>Хозпитьевые нужды (м<sup>3</sup>/сутки)</b></td>
                         <td>{apz.DrinkingWater}</td>
                       </tr>
                     }
-                    {apz.WaterDoc && apz.WaterResponse &&
+                    {apz.WaterDocExist && apz.WaterResponse &&
                       <tr>
                         <td><b>Производственные нужды (м<sup>3</sup>/сутки)</b></td>
                         <td>{apz.ProdWater}</td>
                       </tr>
                     }
-                    {apz.WaterDoc && apz.WaterResponse &&
+                    {apz.WaterDocExist && apz.WaterResponse &&
                       <tr>
                         <td><b>Расходы пожаротушения внутренные (л/сек)</b></td>
                         <td>{apz.FireFightingWaterIn}</td>
                       </tr>
                     }
-                    {apz.WaterDoc && apz.WaterResponse &&
+                    {apz.WaterDocExist && apz.WaterResponse &&
                       <tr>
                         <td><b>Расходы пожаротушения внешные (л/сек)</b></td>
                         <td>{apz.FireFightingWaterOut}</td>
                       </tr>
                     }
-                    {apz.WaterDoc && apz.WaterResponse &&
+                    {apz.WaterDocExist && apz.WaterResponse &&
                       <tr>
                         <td><b>Точка подключения</b></td>
                         <td>{apz.WaterConnectionPoint}</td>
                       </tr>
                     }
-                    {apz.WaterDoc && apz.WaterResponse &&
+                    {apz.WaterDocExist && apz.WaterResponse &&
                       <tr>
                         <td><b>Рекомендация</b></td>
                         <td>{apz.WaterRecomendation}</td>
                       </tr>
                     }
-                    {apz.WaterDoc && apz.WaterResponse &&
+                    {apz.WaterDocExist && apz.WaterResponse &&
                       <tr>
                         <td><b>Номер документа</b></td>
                         <td>{apz.WaterDocNumber}</td>
                       </tr>
                     }
                     
-                    {apz.WaterDoc && apz.WaterResponse &&
+                    {apz.WaterDocExist && apz.WaterResponse &&
                       <tr>
                         <td><b>Загруженный ТУ</b></td>  
-                        <td><a className="text-info pointer" data-file={apz.WaterDoc} data-name="ТУ Вода" data-ext={apz.WaterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                        <td><a className="text-info pointer" data-url={'response/waterResponse/' + apz.WaterDocId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
                     }
-                    {apz.WaterDoc && apz.WaterResponse &&
+                    {apz.WaterDocExist && apz.WaterResponse &&
                       <tr>
                         <td><b>Сформированный ТУ</b></td>  
                         <td><a className="text-info pointer" onClick={this.printWaterTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
                       </tr>
                     }
 
-                    {apz.WaterDoc && !apz.WaterResponse &&
+                    {apz.WaterDocExist && !apz.WaterResponse &&
                       <tr>
                         <td style={{width: '50%'}}><b>МО Вода</b></td>  
-                        <td><a className="text-info pointer" data-file={apz.WaterDoc} data-name="МО Вода" data-ext={apz.WaterDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                        <td><a className="text-info pointer" data-url={'response/waterResponse/' + apz.WaterDocId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
                     }
                   </tbody>
@@ -816,78 +828,78 @@ class ShowApz extends React.Component {
               <div className="modal-body">
                 <table className="table table-bordered table-striped">
                   <tbody>
-                    {apz.HeatDoc && apz.HeatResponse &&
+                    {apz.HeatDocExist && apz.HeatResponse &&
                       <tr> 
                         <td style={{width: '50%'}}><b>Источник теплоснабжения</b></td>
                         <td>{apz.HeatResource}</td>
                       </tr>
                     }
-                    {apz.HeatDoc && apz.HeatResponse &&
+                    {apz.HeatDocExist && apz.HeatResponse &&
                       <tr>
                         <td><b>Точка подключения</b></td>
                         <td>{apz.HeatConnectionPoint}</td>
                       </tr>
                     }
-                    {apz.HeatDoc && apz.HeatResponse &&
+                    {apz.HeatDocExist && apz.HeatResponse &&
                       <tr>
                         <td><b>Давление теплоносителя</b></td>
                         <td>{apz.HeatTransPressure}</td>
                       </tr>
                     }
-                    {apz.HeatDoc && apz.HeatResponse &&
+                    {apz.HeatDocExist && apz.HeatResponse &&
                       <tr>
                         <td><b>Тепловые нагрузки по договору</b></td>
                         <td>{apz.HeatLoadContractNum}</td>
                       </tr>
                     }
-                    {apz.HeatDoc && apz.HeatResponse &&
+                    {apz.HeatDocExist && apz.HeatResponse &&
                       <tr>
                         <td><b>Отопление (Гкал/ч)</b></td>
                         <td>{apz.HeatMainInContract}</td>
                       </tr>
                     }
-                    {apz.HeatDoc && apz.HeatResponse &&
+                    {apz.HeatDocExist && apz.HeatResponse &&
                       <tr>
                         <td><b>Вентиляция (Гкал/ч)</b></td>
                         <td>{apz.HeatVenInContract}</td>
                       </tr>
                     }
-                    {apz.HeatDoc && apz.HeatResponse &&
+                    {apz.HeatDocExist && apz.HeatResponse &&
                       <tr>
                         <td><b>Горячее водоснабжение (Гкал/ч)</b></td>
                         <td>{apz.HeatWaterInContract}</td>
                       </tr>
                     }
-                    {apz.HeatDoc && apz.HeatResponse &&
+                    {apz.HeatDocExist && apz.HeatResponse &&
                       <tr>
                         <td><b>Дополнительное</b></td>
                         <td>{apz.HeatAddition}</td>
                       </tr>
                     }
-                    {apz.HeatDoc && apz.HeatResponse &&
+                    {apz.HeatDocExist && apz.HeatResponse &&
                       <tr>
                         <td><b>Номер документа</b></td>
                         <td>{apz.HeatDocNumber}</td> 
                       </tr>
                     }
 
-                    {apz.HeatDoc && apz.HeatResponse &&
+                    {apz.HeatDocExist && apz.HeatResponse &&
                       <tr>
                         <td><b>Загруженный ТУ</b>:</td> 
-                        <td><a className="text-info pointer" data-file={apz.HeatDoc} data-name="ТУ Тепло" data-ext={apz.HeatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                        <td><a className="text-info pointer" data-url={'response/heatResponse/' + apz.HeatDocId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
                     }
-                    {apz.HeatDoc && apz.HeatResponse &&
+                    {apz.HeatDocExist && apz.HeatResponse &&
                       <tr>
                         <td><b>Сформированный ТУ</b></td>  
                         <td><a className="text-info pointer" onClick={this.printHeatTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
                       </tr>
                     }
 
-                    {apz.HeatDoc && !apz.HeatResponse &&
+                    {apz.HeatDocExist && !apz.HeatResponse &&
                       <tr>
                         <td style={{width: '50%'}}><b>МО Тепло</b></td>  
-                        <td><a className="text-info pointer" data-file={apz.HeatDoc} data-name="МО Тепло" data-ext={apz.HeatDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                        <td><a className="text-info pointer" data-url={'response/heatResponse/' + apz.HeatDocId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
                     }
                   </tbody>
@@ -912,60 +924,60 @@ class ShowApz extends React.Component {
               <div className="modal-body">
                 <table className="table table-bordered table-striped">
                   <tbody>
-                    {apz.ElectroDoc && apz.ElectroResponse &&
+                    {apz.ElectroDocExist && apz.ElectroResponse &&
                       <tr>
                         <td style={{width: '50%'}}><b>Требуемая мощность (кВт)</b></td>
                         <td>{apz.ElecReqPower}</td>
                       </tr>
                     }
-                    {apz.ElectroDoc && apz.ElectroResponse &&
+                    {apz.ElectroDocExist && apz.ElectroResponse &&
                       <tr> 
                         <td><b>Характер нагрузки (фаза)</b></td>
                         <td>{apz.ElecPhase}</td>
                       </tr>
                     }
-                    {apz.ElectroDoc && apz.ElectroResponse &&
+                    {apz.ElectroDocExist && apz.ElectroResponse &&
                       <tr>
                         <td><b>Категория по надежности (кВт)</b></td>
                         <td>{apz.ElecSafeCategory}</td>
                       </tr>
                     }
-                    {apz.ElectroDoc && apz.ElectroResponse &&
+                    {apz.ElectroDocExist && apz.ElectroResponse &&
                       <tr>
                         <td><b>Точка подключения</b></td>
                         <td>{apz.ElecConnectionPoint}</td>
                       </tr>
                     }
-                    {apz.ElectroDoc && apz.ElectroResponse &&
+                    {apz.ElectroDocExist && apz.ElectroResponse &&
                       <tr>
                         <td><b>Рекомендация</b></td>
                         <td>{apz.ElecRecomendation}</td>
                       </tr>
                     }
-                    {apz.ElectroDoc && apz.ElectroResponse &&
+                    {apz.ElectroDocExist && apz.ElectroResponse &&
                       <tr>
                         <td><b>Номер документа</b></td>
                         <td>{apz.ElecDocNumber}</td> 
                       </tr>
                     }
 
-                    {apz.ElectroDoc && apz.ElectroResponse &&
+                    {apz.ElectroDocExist && apz.ElectroResponse &&
                       <tr>
                         <td><b>Загруженный ТУ</b>:</td> 
-                        <td><a className="text-info pointer" data-file={apz.ElectroDoc} data-name="ТУ Электро" data-ext={apz.ElectroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                        <td><a className="text-info pointer" data-url={'response/electroResponse/' + apz.ElectroDocId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
                     }
-                    {apz.ElectroDoc && apz.ElectroResponse &&
+                    {apz.ElectroDocExist && apz.ElectroResponse &&
                       <tr>
                         <td><b>Сформированный ТУ</b></td>  
                         <td><a className="text-info pointer" onClick={this.printElectroTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
                       </tr>
                     }
 
-                    {apz.ElectroDoc && !apz.ElectroResponse &&
+                    {apz.ElectroDocExist && !apz.ElectroResponse &&
                       <tr>
                         <td style={{width: '50%'}}><b>МО Электро</b></td>  
-                        <td><a className="text-info pointer" data-file={apz.ElectroDoc} data-name="МО Электро" data-ext={apz.ElectroDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                        <td><a className="text-info pointer" data-url={'response/electroResponse/' + apz.ElectroDocId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
                     }
                   </tbody>
@@ -990,55 +1002,55 @@ class ShowApz extends React.Component {
               <div className="modal-body">
                 <table className="table table-bordered table-striped">
                   <tbody>
-                    {apz.GasDoc && apz.GasResponse &&
+                    {apz.GasDocExist && apz.GasResponse &&
                       <tr>
                         <td style={{width: '50%'}}><b>Точка подключения</b></td>
                         <td>{apz.GasConnectionPoint}</td>
                       </tr>
                     }
-                    {apz.GasDoc && apz.GasResponse &&
+                    {apz.GasDocExist && apz.GasResponse &&
                       <tr>
                         <td><b>Диаметр газопровода (мм)</b></td>
                         <td>{apz.GasPipeDiameter}</td>
                       </tr>
                     }
-                    {apz.GasDoc && apz.GasResponse &&
+                    {apz.GasDocExist && apz.GasResponse &&
                       <tr>
                         <td><b>Предполагаемый объем (м<sup>3</sup>/час)</b></td>
                         <td>{apz.AssumedCapacity}</td>
                       </tr>
                     }
-                    {apz.GasDoc && apz.GasResponse &&
+                    {apz.GasDocExist && apz.GasResponse &&
                       <tr>
                         <td><b>Предусмотрение</b></td>
                         <td>{apz.GasReconsideration}</td>
                       </tr>
                     }
-                    {apz.GasDoc && apz.GasResponse &&
+                    {apz.GasDocExist && apz.GasResponse &&
                       <tr>
                         <td><b>Номер документа</b></td>
                         <td>{apz.GasDocNumber}</td>
                       </tr>
                     }
 
-                    {apz.GasDoc && apz.GasResponse &&
+                    {apz.GasDocExist && apz.GasResponse &&
                       <tr>
                         <td><b>Загруженный ТУ</b></td> 
-                        <td><a className="text-info pointer" data-file={apz.GasDoc} data-name="ТУ Газ" data-ext={apz.GasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                        <td><a className="text-info pointer" data-url={'response/gasResponse/' + apz.GasDocId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
                     }
 
-                    {apz.GasDoc && apz.GasResponse &&
+                    {apz.GasDocExist && apz.GasResponse &&
                       <tr>
                         <td><b>Сформированный ТУ</b></td>  
                         <td><a className="text-info pointer" onClick={this.printGasTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
                       </tr>
                     }
 
-                    {apz.GasDoc && !apz.GasResponse &&
+                    {apz.GasDocExist && !apz.GasResponse &&
                       <tr>
                         <td style={{width: '50%'}}><b>МО Газ</b></td>  
-                        <td><a className="text-info pointer" data-file={apz.GasDoc} data-name="МО Газ" data-ext={apz.GasDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                        <td><a className="text-info pointer" data-url={'response/gasResponse/' + apz.GasDocId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
                     }
                   </tbody>
@@ -1063,55 +1075,55 @@ class ShowApz extends React.Component {
               <div className="modal-body">
                 <table className="table table-bordered table-striped">
                   <tbody>
-                    {apz.PhoneDoc && apz.PhoneResponse &&
+                    {apz.PhoneDocExist && apz.PhoneResponse &&
                       <tr>
                         <td style={{width: '50%'}}><b>Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</b></td>
                         <td>{apz.ResponseServiceNum}</td>
                       </tr>
                     }
-                    {apz.PhoneDoc && apz.PhoneResponse &&
+                    {apz.PhoneDocExist && apz.PhoneResponse &&
                       <tr>
                         <td><b>Телефонная емкость</b></td>
                         <td>{apz.ResponseCapacity}</td>
                       </tr>
                     }
-                    {apz.PhoneDoc && apz.PhoneResponse &&
+                    {apz.PhoneDocExist && apz.PhoneResponse &&
                       <tr>
                         <td><b>Планируемая телефонная канализация</b></td>
                         <td>{apz.ResponseSewage}</td>
                       </tr>
                     }
-                    {apz.PhoneDoc && apz.PhoneResponse &&
+                    {apz.PhoneDocExist && apz.PhoneResponse &&
                       <tr>
                         <td><b>Пожелания заказчика (тип оборудования, тип кабеля и др.)</b></td>
                         <td>{apz.ResponseClientWishes}</td>
                       </tr>
                     }
-                    {apz.PhoneDoc && apz.PhoneResponse &&
+                    {apz.PhoneDocExist && apz.PhoneResponse &&
                       <tr>
                         <td><b>Номер документа</b></td>
                         <td>{apz.ResponseDocNumber}</td>
                       </tr>
                     }
 
-                    {apz.PhoneDoc && apz.PhoneResponse &&
+                    {apz.PhoneDocExist && apz.PhoneResponse &&
                       <tr>
                         <td><b>Загруженный ТУ</b></td> 
-                        <td><a className="text-info pointer" data-file={apz.PhoneDoc} data-name="ТУ Телефон" data-ext={apz.PhoneDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                        <td><a className="text-info pointer" data-url={'response/phoneResponse/' + apz.PhoneDocId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
                     }
 
-                    {apz.PhoneDoc && apz.PhoneResponse &&
+                    {apz.PhoneDocExist && apz.PhoneResponse &&
                       <tr>
                         <td><b>Сформированный ТУ</b></td>  
                         <td><a className="text-info pointer" onClick={this.printPhoneTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
                       </tr>
                     }
 
-                    {apz.PhoneDoc && !apz.PhoneResponse &&
+                    {apz.PhoneDocExist && !apz.PhoneResponse &&
                       <tr>
                         <td style={{width: '50%'}}><b>МО Газ</b></td>  
-                        <td><a className="text-info pointer" data-file={apz.PhoneDoc} data-name="МО Телефон" data-ext={apz.PhoneDocExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                        <td><a className="text-info pointer" data-url={'response/phoneResponse/' + apz.PhoneDocId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                       </tr>
                     }
                   </tbody>

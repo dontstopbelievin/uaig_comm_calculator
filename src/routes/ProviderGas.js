@@ -282,44 +282,56 @@ class ShowApz extends React.Component {
   }
 
   downloadFile(event) {
-    var buffer = event.target.getAttribute("data-file")
-    var name = event.target.getAttribute("data-name");
-    var ext = event.target.getAttribute("data-ext");
+    var token = sessionStorage.getItem('tokenInfo');
+    var apzId = this.props.match.params.id;
+    var url =  event.target.getAttribute("data-url");
 
-    var base64ToArrayBuffer = (function () {
-      
-      return function (base64) {
-        var binaryString =  window.atob(base64);
-        var binaryLen = binaryString.length;
-        var bytes = new Uint8Array(binaryLen);
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + 'api/file/download/' + url + '/' + apzId, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+          var base64ToArrayBuffer = (function () {
         
-        for (var i = 0; i < binaryLen; i++)        {
-          var ascii = binaryString.charCodeAt(i);
-          bytes[i] = ascii;
+            return function (base64) {
+              var binaryString = window.atob(base64);
+              var binaryLen = binaryString.length;
+              var bytes = new Uint8Array(binaryLen);
+              
+              for (var i = 0; i < binaryLen; i++) {
+                var ascii = binaryString.charCodeAt(i);
+                bytes[i] = ascii;
+              }
+              
+              return bytes; 
+            }
+            
+          }());
+
+          var saveByteArray = (function () {
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+            a.style = "display: none";
+            
+            return function (data, name) {
+              var blob = new Blob(data, {type: "octet/stream"}),
+                  url = window.URL.createObjectURL(blob);
+              a.href = url;
+              a.download = name;
+              a.click();
+              window.URL.revokeObjectURL(url);
+            };
+
+          }());
+
+          saveByteArray([base64ToArrayBuffer(data.byteFile)], data.fileName + data.fileExt);
+        } else {
+          alert('Не удалось скачать файл');
         }
-        
-        return bytes; 
       }
-      
-    }());
-
-    var saveByteArray = (function () {
-      var a = document.createElement("a");
-      document.body.appendChild(a);
-      a.style = "display: none";
-      
-      return function (data, name) {
-        var blob = new Blob(data, {type: "octet/stream"}),
-            url = window.URL.createObjectURL(blob);
-        a.href = url;
-        a.download = name;
-        a.click();
-        window.URL.revokeObjectURL(url);
-      };
-
-    }());
-
-    saveByteArray([base64ToArrayBuffer(buffer)], name + ext);
+    xhr.send();
   }
 
   // this function is to save the respones form when any change is made
@@ -533,24 +545,24 @@ class ShowApz extends React.Component {
                 <td>{apz.ApzDate && this.toDate(apz.ApzDate)}</td>
               </tr>
               
-              {apz.PersonalIdFile != null &&
+              {apz.PersonalIdExist &&
                 <tr>
                   <td><b>Уд. лич./ Реквизиты</b></td>
-                  <td><a className="text-info pointer" data-file={apz.PersonalIdFile} data-name="Уд. лич./Реквизиты" data-ext={apz.PersonalIdFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  <td><a className="text-info pointer" data-url={'citizenfile/personalId/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                 </tr>
               }
 
-              {apz.ConfirmedTaskFile != null &&
+              {apz.ConfirmedTaskExist &&
                 <tr>
                   <td><b>Утвержденное задание</b></td>
-                  <td><a className="text-info pointer" data-file={apz.ConfirmedTaskFile} data-name="Утвержденное задание" data-ext={apz.ConfirmedTaskFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  <td><a className="text-info pointer" data-url={'citizenfile/confirmedTask/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                 </tr>
               }
 
-              {apz.TitleDocumentFile != null &&
+              {apz.TitleDocumentExist &&
                 <tr>
                   <td><b>Правоустанавл. документ</b></td>
-                  <td><a className="text-info pointer" data-file={apz.TitleDocumentFile} data-name="Правоустанавл. документ" data-ext={apz.TitleDocumentFileExt} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  <td><a className="text-info pointer" data-url={'citizenfile/titleDocument/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
                 </tr>
               }
             </tbody>
