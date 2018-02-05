@@ -28,8 +28,8 @@ export default class DesignCode extends React.Component {
             </Document>
             <p>Страница {pageNumber} из {numPages}</p>
             <p>
-              <button className="btn btn-outline-secondary" onClick={() => this.setState({ pageNumber: this.state.pageNumber - 1 })}>«</button>&nbsp;
-              <button className="btn btn-outline-secondary" onClick={() => this.setState({ pageNumber: this.state.pageNumber + 1 })}>»</button>
+              <button className="btn btn-outline-secondary" onClick={() => (this.state.pageNumber > 1) ? this.setState({ pageNumber: this.state.pageNumber - 1 }) : ""}>«</button>&nbsp;
+              <button className="btn btn-outline-secondary" onClick={() => (this.state.pageNumber < this.state.numPages) ? this.setState({ pageNumber: this.state.pageNumber + 1 }) : ""}>»</button>
             </p>
           </div>
         </div>
