@@ -359,7 +359,7 @@ class AddApz extends React.Component {
 
       if(document.getElementsByName('ElectricAllowedPower')[0].value !== '')
       {
-        console.log(1);
+        //console.log(1);
         document.getElementsByName("ElectricRequiredPower")[0].required = false;
         document.getElementsByName("ElectricityPhase")[0].required = false;
         document.getElementsByName("ElectricSafetyCategory")[0].required = false;
@@ -590,7 +590,7 @@ class AddApz extends React.Component {
                 <div className="col-md-6">
                 <div className="form-group">
                   <label htmlFor="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)</label>
-                  <input type="number" name="ElectricAllowedPower" onChange={this.ObjectArea.bind(this)} className="form-control" />
+                  <input type="number" step="any" name="ElectricAllowedPower" onChange={this.ObjectArea.bind(this)} className="form-control" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
@@ -668,11 +668,11 @@ class AddApz extends React.Component {
                 <div className="col-md-6">
                 <div className="form-group">
                   <label htmlFor="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
-                  <input type="number" className="form-control" name="WaterDrinking" placeholder="" />
+                  <input type="number" step="any" className="form-control" name="WaterDrinking" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="WaterFireFighting">Потребные расходы наружного пожаротушения (л/сек)</label>
-                  <input type="number" min="10" value="10" className="form-control" name="WaterFireFighting" />
+                  <input type="number" min="10" defaultValue="10" className="form-control" name="WaterFireFighting" />
                 </div>
                 <div className="form-group">
                   <label>Потребные расходы внутреннего пожаротушения (л/сек)</label>
@@ -2058,64 +2058,62 @@ class ShowStatusBar extends React.Component {
 
   render() {
     return (
-      <div>
-        <div className="row">
-          <div className="row statusBar">
-            {/*<div id="infoDiv">Нажмите на участок или объект, чтобы получить информацию</div>*/}
-            {/*<div id="viewDiv"></div>*/}
-            <div className="progressBar">
-              <div className={this.getStatusForArch(this.props.apz.Status, this.props.apz.RegionDate, this.props.apz.RegionResponse)}>
-                <span className="label">1</span>
-                <span className="title">Районный архитектор</span>
+      <div className="row">
+        <div className="row statusBar">
+          {/*<div id="infoDiv">Нажмите на участок или объект, чтобы получить информацию</div>*/}
+          {/*<div id="viewDiv"></div>*/}
+          <div className="progressBar">
+            <div className={this.getStatusForArch(this.props.apz.Status, this.props.apz.RegionDate, this.props.apz.RegionResponse)}>
+              <span className="label">1</span>
+              <span className="title">Районный архитектор</span>
+            </div>
+            <span className="bar"></span>
+            <div className="box">
+              <div className={this.getStatusForProvider(this.props.apz.Status, this.props.apz.ApzWaterStatus)}>
+                <span className="label">2</span>
+                <span className="title">Поставщик (вода) </span>
               </div>
               <span className="bar"></span>
-              <div className="box">
-                <div className={this.getStatusForProvider(this.props.apz.Status, this.props.apz.ApzWaterStatus)}>
-                  <span className="label">2</span>
-                  <span className="title">Поставщик (вода) </span>
-                </div>
-                <span className="bar"></span>
-                <div className={this.getStatusForProvider(this.props.apz.Status, this.props.apz.ApzGasStatus)}>
-                  <span className="label">2</span>
-                  <span className="title">Поставщик (газ)</span>
-                </div>
-                <span className="bar"></span>
-                <div className={this.getStatusForProvider(this.props.apz.Status, this.props.apz.ApzHeatStatus)}>
-                  <span className="label">2</span>
-                  <span className="title">Поставщик (тепло)</span>
-                </div>
-                <span className="bar"></span>
-                <div className={this.getStatusForProvider(this.props.apz.Status, this.props.apz.ApzElectricityStatus)}>
-                  <span className="label">2</span>
-                  <span className="title">Поставщик (электр)</span>
-                </div>
-                <span className="bar"></span>
-                <div className={this.getStatusForProvider(this.props.apz.Status, this.props.apz.ApzPhoneStatus)}>
-                  <span className="label">2</span>
-                  <span className="title">Поставщик (телефон)</span>
-                </div>
+              <div className={this.getStatusForProvider(this.props.apz.Status, this.props.apz.ApzGasStatus)}>
+                <span className="label">2</span>
+                <span className="title">Поставщик (газ)</span>
               </div>
               <span className="bar"></span>
-              <div className={this.getStatusForHeadArch(this.props.apz.Status, this.props.apz.HeadDate, this.props.apz.HeadResponse)}>
-                <span className="label">3</span>
-                <span className="title">Главный архитектор</span>
+              <div className={this.getStatusForProvider(this.props.apz.Status, this.props.apz.ApzHeatStatus)}>
+                <span className="label">2</span>
+                <span className="title">Поставщик (тепло)</span>
+              </div>
+              <span className="bar"></span>
+              <div className={this.getStatusForProvider(this.props.apz.Status, this.props.apz.ApzElectricityStatus)}>
+                <span className="label">2</span>
+                <span className="title">Поставщик (электр)</span>
+              </div>
+              <span className="bar"></span>
+              <div className={this.getStatusForProvider(this.props.apz.Status, this.props.apz.ApzPhoneStatus)}>
+                <span className="label">2</span>
+                <span className="title">Поставщик (телефон)</span>
               </div>
             </div>
-            <div className="row actionDate">
-              <div className="col-3"></div>
-              <div className="col-7" style={{padding: '0', fontSize: '0.8em'}}>
-                <div className="row">
-                  <div className="col-2">{this.props.apz.RegionDate && this.toDate(this.props.apz.RegionDate)}</div>
-                  <div className="col-2">{this.props.apz.ProviderWaterDate && this.toDate(this.props.apz.ProviderWaterDate)}</div>
-                  <div className="col-2">{this.props.apz.ProviderGasDate && this.toDate(this.props.apz.ProviderGasDate)}</div>
-                  <div className="col-2">{this.props.apz.ProviderHeatDate && this.toDate(this.props.apz.ProviderHeatDate)}</div>
-                  <div className="col-2">{this.props.apz.ProviderElectricityDate && this.toDate(this.props.apz.ProviderElectricityDate)}</div>
-                  <div className="col-2">{this.props.apz.ProviderPhoneDate && this.toDate(this.props.apz.ProviderPhoneDate)}</div>
-                  <div className="col-2">{this.props.apz.HeadDate && this.toDate(this.props.apz.HeadDate)}</div>
-                </div>
-              </div>
-              <div className="col-2"></div>
+            <span className="bar"></span>
+            <div className={this.getStatusForHeadArch(this.props.apz.Status, this.props.apz.HeadDate, this.props.apz.HeadResponse)}>
+              <span className="label">3</span>
+              <span className="title">Главный архитектор</span>
             </div>
+          </div>
+          <div className="row actionDate">
+            <div className="col-2" style={{padding: '0'}}></div>
+            <div className="col-8" style={{padding: '0', fontSize: '0.9em'}}>
+              <div className="row">
+                <div className="col-2">{this.props.apz.RegionDate && this.toDate(this.props.apz.RegionDate)}</div>
+                <div className="col-1point5">{this.props.apz.ProviderWaterDate && this.toDate(this.props.apz.ProviderWaterDate)}</div>
+                <div className="col-1point5">{this.props.apz.ProviderGasDate && this.toDate(this.props.apz.ProviderGasDate)}</div>
+                <div className="col-1point5">{this.props.apz.ProviderHeatDate && this.toDate(this.props.apz.ProviderHeatDate)}</div>
+                <div className="col-2">{this.props.apz.ProviderElectricityDate && this.toDate(this.props.apz.ProviderElectricityDate)}</div>
+                <div className="col-2">{this.props.apz.ProviderPhoneDate && this.toDate(this.props.apz.ProviderPhoneDate)}</div>
+                <div className="col-2">{this.props.apz.HeadDate && this.toDate(this.props.apz.HeadDate)}</div>
+              </div>
+            </div>
+            <div className="col-2" style={{padding: '0'}}></div>
           </div>
         </div>
       </div>

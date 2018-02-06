@@ -469,7 +469,7 @@ export default class Admin extends React.Component {
                                   </div>
                                 )
                               }
-                              else if(r.RoleName === 'Head') {
+                              else if(r.RoleName === 'Head' || r.RoleName === 'Engineer') {
                                 return(
                                   <div key={i} className="btn-group" style={{margin: '0 5px 0 0'}}>
                                     <button type="button" className="btn btn-sm btn-raised btn-urban" style={{cursor: 'auto'}}>

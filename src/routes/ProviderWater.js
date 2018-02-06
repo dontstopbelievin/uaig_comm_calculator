@@ -693,7 +693,7 @@ class ShowApz extends React.Component {
             </form>
           }
 
-          {!this.state.accept && this.state.waterStatus === 1 &&
+          {this.state.accept && this.state.waterStatus === 1 &&
             <table className="table table-bordered table-striped">
               <tbody>
                 <tr>

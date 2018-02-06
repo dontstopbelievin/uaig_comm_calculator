@@ -83,16 +83,6 @@ export default class Header extends Component {
 
   componentDidMount() {
     //console.log("Header did mount");
-    if(sessionStorage.getItem('tokenInfo')){
-      var roleName = JSON.parse(sessionStorage.getItem('userRoles'))[0];
-      if(roleName === 'Urban' || roleName === 'Provider' || 'Citizen'){
-        roleName = JSON.parse(sessionStorage.getItem('userRoles'))[1];
-        this.setState({ rolename: roleName });
-      }
-      else{
-        this.setState({ rolename: roleName });
-      }
-    }
   }
 
   componentWillUnmount() {
@@ -101,6 +91,16 @@ export default class Header extends Component {
 
   render() {
     //console.log("rendering the Header");
+    var rolename = "";
+    if(sessionStorage.getItem('tokenInfo')){
+      rolename = JSON.parse(sessionStorage.getItem('userRoles'))[0];
+      if(JSON.parse(sessionStorage.getItem('userRoles'))[1]){
+        rolename = JSON.parse(sessionStorage.getItem('userRoles'))[1];
+      }
+      else{
+        rolename = JSON.parse(sessionStorage.getItem('userRoles'))[0];
+      }
+    }
     return (
       <div>
         <div className="container logo">
@@ -150,16 +150,25 @@ export default class Header extends Component {
           <div className="container collapse navbar-collapse" id="navbarTogglerDemo03">
             <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
               <li className="nav-item">
-                {this.state.rolename === 'Region' &&
-                  <NavLink to={'/urbanreport'} exact replace className="nav-link">{e.home}</NavLink>
-                }
-                {(this.state.rolename === 'Business' || this.state.rolename === 'Individual') &&
+                {(rolename === 'Business' || rolename === 'Individual') &&
                   <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
                 }
-                {this.state.rolename === 'Gas' &&
+                {rolename === 'Region' &&
+                  <NavLink to="/urbanreport" replace className="nav-link">{e.home}</NavLink>
+                }
+                {rolename === 'Head' && 
                   <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
                 }
-                {(this.state.rolename === '' || this.state.rolename === 'Head') && 
+                {rolename === 'Engineer' && 
+                  <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
+                }
+                {(rolename === 'Gas' || rolename === 'Water' || rolename === 'Electricity' || rolename === 'Heat' || rolename === 'Phone') && 
+                  <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
+                }
+                {rolename === 'Apz' && 
+                  <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
+                }
+                {rolename === '' && 
                   <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
                 }
               </li>
@@ -261,15 +270,18 @@ class LogoutBtn extends Component {
         <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
           <li className="nav-item dropdown">
             <button className="btn btn-outline-secondary btn-white" href="#" id="cabinetDropdownMenuLink" data-toggle="dropdown">
-              <span>{sessionStorage.getItem('userName')} <i className="glyphicon glyphicon-user"></i></span>
+              <span>{sessionStorage.getItem('userName')} <i className="glyphicon glyphicon-menu-hamburger"></i></span>
             </button>
-            <div className="dropdown-menu" aria-labelledby="cabinetDropdownMenuLink">
+            <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="cabinetDropdownMenuLink">
               {(() => {
                 switch(JSON.parse(sessionStorage.getItem('userRoles'))[0]) {
                   case 'Admin': return <AdminMenu />;
                   case 'Urban':
                     if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Head') {
                       return <HeadMenu />
+                    }
+                    else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Engineer') {
+                      return <EngineerMenu />
                     }
                     else{
                       return <UrbanMenu />;
@@ -293,14 +305,13 @@ class LogoutBtn extends Component {
                   case 'Citizen': return <CitizenMenu />;
                   case 'PhotoReport': return <PhotoReportMenu />;
                   case 'Temporary': return <TemporaryMenu />;
-                  case 'Engineer': return <EngineerMenu />;
                   case 'Apz': return <ApzMenu />;
                   default: return null;
                 }
               })()}
               <button className="dropdown-item">Изменить пароль</button>
               <button onClick={this.onLogout} className="dropdown-item" href="#">Выйти</button>
-            </div>
+            </ul>
           </li>
         </ul>
       </div>
