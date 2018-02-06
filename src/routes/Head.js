@@ -66,7 +66,7 @@ class AllApzs extends React.Component {
     xhr.onload = function () {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-        
+        console.log(data);
         switch (status) {
           case 'active':
             var apzs = data.filter(function(obj) { return obj.Status === 4; });
@@ -186,7 +186,7 @@ class ShowApz extends React.Component {
     xhr.onload = function() {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-
+        console.log(data);
         this.setState({apz: data});
         this.setState({showButtons: false});
 
@@ -1213,7 +1213,7 @@ class ShowMap extends React.Component {
 
                 view.graphics.add(pointGraphic);
               } else {
-                var view = new MapView({
+                  view = new MapView({
                   container: containerNode,
                   map: map,
                   center: [76.886, 43.250], 

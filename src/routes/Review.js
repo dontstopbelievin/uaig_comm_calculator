@@ -2,34 +2,29 @@ import React from 'react';
 import $ from 'jquery';
 import 'jquery-serializejson';
 import { Route, Switch, Redirect} from 'react-router-dom';
-import LocalizedStrings from 'react-localization';
-import {ru, kk} from '../languages/header.json';
-import { NavLink } from 'react-router-dom';
-let e = new LocalizedStrings({ru,kk});
+//import LocalizedStrings from 'react-localization';
+//import {ru, kk} from '../languages/header.json';
+//import { NavLink } from 'react-router-dom';
+
+//let e = new LocalizedStrings({ru,kk});
 
 export default class Review extends React.Component {
   render() {
     return (
-<div>
-
-
-      <div className="content container review-page">
-
-
-
-        <div className="card">
-          <div className="card-header"><h4 className="mb-0">Отзывы</h4></div>
-          <div className="card-body">
-            <Switch>
-              <Route path="/reviews/all" component={AllReviews} />
-              <Route path="/reviews/:tag" component={ReviewsByTag} />
-              <Redirect from="/reviews" to="/reviews/all" />
-            </Switch>
+      <div>
+        <div className="content container review-page">
+          <div className="card">
+            <div className="card-header"><h4 className="mb-0">Отзывы</h4></div>
+            <div className="card-body">
+              <Switch>
+                <Route path="/reviews/all" component={AllReviews} />
+                <Route path="/reviews/:tag" component={ReviewsByTag} />
+                <Redirect from="/reviews" to="/reviews/all" />
+              </Switch>
+            </div>
           </div>
         </div>
-        
       </div>
-</div>
     )
   }
 }

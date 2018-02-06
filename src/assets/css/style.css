@@ -423,6 +423,7 @@ footer {
 
 .statusBar, .actionDate {
   width: 100%;
+  margin: auto;
 }
 
 .allResponseText {
@@ -853,6 +854,7 @@ table{
 .nav-link-reports {
   padding: 0 0.857em !important;
 }
+
 .text-muted {
   font-size: 10pt;
   color: #fff !important;
@@ -897,4 +899,33 @@ td{
 th img{
   width:100px;
   margin: 0 auto;
+}
+
+.col-1point5 {
+  position: relative;
+  width: 100%;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+  flex: 0 0 12.5%;
+  max-width: 12.5%;
+}
+
+.sorting-period-header{
+  margin: 0 0 15px;
+}
+
+.sorted-info-body{
+  margin: 0;
+}
+
+.sortingType {
+  border-bottom: 0.214rem solid;
+  border-color: #009688;
+  background-color: #fafafa;
+  cursor: pointer;
+}
+
+.noStyleSortType {
+  cursor: pointer;
 }

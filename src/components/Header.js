@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../languages/header.json';
-import $ from 'jquery';
+//import $ from 'jquery';
 
 let e = new LocalizedStrings({ru,kk});
 
@@ -11,10 +11,6 @@ var navBtnStyle = {
   border: 'none',
   cursor: 'pointer'
 }
-
-
-
-
 
 export default class Header extends Component {
   constructor() {
@@ -49,12 +45,6 @@ export default class Header extends Component {
     xhr.send();
   }
 
-
-
-
-// использование
-
-
   updateLanguage(name){
     localStorage.setItem('lang', name);
     window.location.reload();
@@ -86,6 +76,7 @@ export default class Header extends Component {
         xhr.send();
     }
   }
+
   componentWillMount() {
     //console.log("Header will mount");
     this.checkToken();
@@ -93,16 +84,6 @@ export default class Header extends Component {
 
   componentDidMount() {
     //console.log("Header did mount");
-    if(sessionStorage.getItem('tokenInfo')){
-      var roleName = JSON.parse(sessionStorage.getItem('userRoles'))[0];
-      if(roleName === 'Urban' || roleName === 'Provider' || 'Citizen'){
-        roleName = JSON.parse(sessionStorage.getItem('userRoles'))[1];
-        this.setState({ rolename: roleName });
-      }
-      else{
-        this.setState({ rolename: roleName });
-      }
-    }
   }
 
   componentWillUnmount() {
@@ -111,6 +92,17 @@ export default class Header extends Component {
 
   render() {
     //console.log("rendering the Header");
+    var rolename = "";
+    if(sessionStorage.getItem('tokenInfo')){
+      rolename = JSON.parse(sessionStorage.getItem('userRoles'))[0];
+      if(JSON.parse(sessionStorage.getItem('userRoles'))[1]){
+        rolename = JSON.parse(sessionStorage.getItem('userRoles'))[1];
+      }
+      else{
+        rolename = JSON.parse(sessionStorage.getItem('userRoles'))[0];
+      }
+    }
+
     return (
       <div> 
         <div className="header">
@@ -162,16 +154,25 @@ export default class Header extends Component {
           <div className="container collapse navbar-collapse" id="navbarTogglerDemo03">
             <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
               <li className="nav-item">
-                {this.state.rolename === 'Region' &&
-                  <NavLink to={'/urbanreport'} exact replace className="nav-link">{e.home}</NavLink>
-                }
-                {(this.state.rolename === 'Business' || this.state.rolename === 'Individual') &&
+                {(rolename === 'Business' || rolename === 'Individual') &&
                   <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
                 }
-                {this.state.rolename === 'Gas' &&
+                {rolename === 'Region' &&
+                  <NavLink to="/urbanreport" replace className="nav-link">{e.home}</NavLink>
+                }
+                {rolename === 'Head' && 
                   <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
                 }
-                {(this.state.rolename === '' || this.state.rolename === 'Head') && 
+                {rolename === 'Engineer' && 
+                  <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
+                }
+                {(rolename === 'Gas' || rolename === 'Water' || rolename === 'Electricity' || rolename === 'Heat' || rolename === 'Phone') && 
+                  <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
+                }
+                {rolename === 'Apz' && 
+                  <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
+                }
+                {rolename === '' && 
                   <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
                 }
               </li>
@@ -213,15 +214,8 @@ export default class Header extends Component {
 
               <li className="nav-item dropdown">
                 <button className="nav-link dropdown-toggle" style={navBtnStyle} href="#" id="additionalDropdownMenuLink" data-toggle="dropdown"   >
-                <a class="hider">  {e.additional}</a>
+                <a className="hider">  {e.additional}</a>
                 </button>
-
-
-
-
-
-
-
               </li>
               <li className="nav-item dropdown">
                 <button className="nav-link dropdown-toggle polls-menu" style={navBtnStyle} href="#" id="additionalDropdownMenuLink" data-toggle="dropdown" >
@@ -233,8 +227,7 @@ export default class Header extends Component {
                   <NavLink to={'/councilMaterials'} replace className="dropdown-item">Материалы градостроительного совета</NavLink>
                 </div>
               </li>
-              <li className="nav-item">
-                
+              <li className="nav-item"> 
               </li>
             </ul>
 
@@ -248,42 +241,36 @@ export default class Header extends Component {
           </div>
         </nav>
 
-        <div class="mish" id="mish">
-          <div class="container">
-            <div class="row" style={{fontFamely:'Roboto'}}>
-              <div class="col_1">
+        <div className="mish" id="mish">
+          <div className="container">
+            <div className="row" style={{fontFamely:'Roboto'}}>
+              <div className="col_1">
                 <ul>
                   <li><NavLink to={'/npm'} replace className="">{e.npm}</NavLink></li>
                   <li><NavLink to={'/tutorials'} replace className="">{e.tutorials}</NavLink></li>
                 </ul>
               </div>
-              <div class="col_2">
+              <div className="col_2">
                 <ul>
                   <li><a target="_blank" href="https://v3bl.goszakup.gov.kz/ru/register/plansreg?name_bin=990740001176&number_plan=&name_plan=&years_plan=2017&trade_method=&trade_vid=&attribute=&point_status=&pln_month=&region=&finance_point=&adm_bud=&program=&sub_program=&spec">{e.legalpurchese}</a></li>
                   <li><NavLink to={'/timeOfReception'} replace className="">{e.timeOfReception}</NavLink></li>
                 </ul>
               </div>
-              <div class="col_3">
+              <div className="col_3">
                 <ul>
                   <li><NavLink to={'/counteraction'} replace className="">{e.counteraction}</NavLink></li>
                 </ul>
               </div>
-              <div class="col_4">
+              <div className="col_4">
                 <ul>
                   <li id="s"><NavLink to={'/news'} replace className="">{e.news}</NavLink></li>
                   <li id="s"><NavLink to={'/control'} replace className="">{e.control}</NavLink></li>
                   <li id="t"><NavLink to={'/contacts'} replace className="">{e.contacts}</NavLink></li>
                 </ul>
-
-
-
               </div>
-
-
             </div>
           </div>
         </div>
-
       </div>
     )
   }
@@ -326,15 +313,18 @@ class LogoutBtn extends Component {
         <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
           <li className="nav-item dropdown">
             <button className="btn btn-outline-secondary btn-white" href="#" id="cabinetDropdownMenuLink" data-toggle="dropdown">
-              <span>{sessionStorage.getItem('userName')} <i className="glyphicon glyphicon-user"></i></span>
+              <span>{sessionStorage.getItem('userName')} <i className="glyphicon glyphicon-menu-hamburger"></i></span>
             </button>
-            <div className="dropdown-menu" aria-labelledby="cabinetDropdownMenuLink">
+            <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="cabinetDropdownMenuLink">
               {(() => {
                 switch(JSON.parse(sessionStorage.getItem('userRoles'))[0]) {
                   case 'Admin': return <AdminMenu />;
                   case 'Urban':
                     if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Head') {
                       return <HeadMenu />
+                    }
+                    else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Engineer') {
+                      return <EngineerMenu />
                     }
                     else{
                       return <UrbanMenu />;
@@ -358,14 +348,13 @@ class LogoutBtn extends Component {
                   case 'Citizen': return <CitizenMenu />;
                   case 'PhotoReport': return <PhotoReportMenu />;
                   case 'Temporary': return <TemporaryMenu />;
-                  case 'Engineer': return <EngineerMenu />;
                   case 'Apz': return <ApzMenu />;
                   default: return null;
                 }
               })()}
               <button className="dropdown-item">Изменить пароль</button>
               <button onClick={this.onLogout} className="dropdown-item" href="#">Выйти</button>
-            </div>
+            </ul>
           </li>
         </ul>
       </div>

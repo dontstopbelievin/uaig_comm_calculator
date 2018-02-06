@@ -28,16 +28,12 @@ export default class Footer extends React.Component {
 			<footer>
 				<div className="container">
 	                <p>&copy; 2017 - <strong>{e.copyright}</strong></p>
-
-									<span id="_zero_70316">
-										<a href="https://zero.kz/catalog/70316_upravlenie-arxitekturi-i-gradostroitelstva-goroda-almati" target="_blank">
-											<img src="http://c.zero.kz/z.png?u=70316" width="88" height="31" alt="ZERO.kz" />
-										</a>
-									</span>
-
-
-	       </div>
-
+					<span id="_zero_70316">
+						<a href="https://zero.kz/catalog/70316_upravlenie-arxitekturi-i-gradostroitelstva-goroda-almati" target="_blank">
+							<img src="http://c.zero.kz/z.png?u=70316" width="88" height="31" alt="ZERO.kz" />
+						</a>
+					</span>
+	       		</div>
 	        </footer>
 		)
 	}

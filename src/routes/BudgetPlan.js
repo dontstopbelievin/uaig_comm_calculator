@@ -1,9 +1,9 @@
 import React from 'react';
-import LocalizedStrings from 'react-localization';
-import $ from 'jquery';
-import {ru, kk} from '../languages/guest.json';
-import { NavLink } from 'react-router-dom';
-let e = new LocalizedStrings({ru,kk});
+//import LocalizedStrings from 'react-localization';
+//import $ from 'jquery';
+//import {ru, kk} from '../languages/guest.json';
+//import { NavLink } from 'react-router-dom';
+//let e = new LocalizedStrings({ru,kk});
 
 export default class BudgetPlan extends React.Component {
   constructor(props) {

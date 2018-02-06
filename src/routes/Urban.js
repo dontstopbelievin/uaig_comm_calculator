@@ -29,6 +29,7 @@ class AllApzs extends React.Component {
     super(props);
 
     this.state = {
+      allApzs: [],
       apzs: []
     };
 
@@ -40,7 +41,7 @@ class AllApzs extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if(this.props.match.params.status !== nextProps.match.params.status) {
-       this.getApzs(nextProps.match.params.status);
+       this.sortApzs(nextProps.match.params.status);
    }
   }
 
@@ -58,28 +59,35 @@ class AllApzs extends React.Component {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
         
-        switch (status) {
-          case 'active':
-            var apzs = data.filter(function(obj) { return obj.Status === 2; });
-            break;
-
-          case 'accepted':
-            apzs = data.filter(function(obj) { return ((obj.Status === 0 || obj.Status === 1 || obj.Status === 3 || obj.Status === 4) && (obj.RegionDate !== null && obj.RegionResponse === null)); });
-            break;
-
-          case 'declined':
-            apzs = data.filter(function(obj) { return (obj.Status === 0 && (obj.RegionDate !== null && obj.RegionResponse !== null)); });
-            break;
-
-          default:
-            apzs = data;
-            break;
-        }
-        
-        this.setState({apzs: apzs});
+        this.setState({allApzs: data});
       }
     }.bind(this);
     xhr.send();
+  }
+
+  // when switching between active, accepted and declined
+  sortApzs(status) {
+    var data = this.state.allApzs;
+    
+    switch (status) {
+      case 'active':
+        var apzs = data.filter(function(obj) { return obj.Status === 2; });
+        break;
+
+      case 'accepted':
+        apzs = data.filter(function(obj) { return ((obj.Status === 0 || obj.Status === 1 || obj.Status === 3 || obj.Status === 4) && (obj.RegionDate !== null && obj.RegionResponse === null)); });
+        break;
+
+      case 'declined':
+        apzs = data.filter(function(obj) { return (obj.Status === 0 && (obj.RegionDate !== null && obj.RegionResponse !== null)); });
+        break;
+
+      default:
+        apzs = data;
+        break;
+    }
+ 
+    this.setState({apzs: apzs});
   }
 
   render() {
@@ -328,7 +336,7 @@ class ShowApz extends React.Component {
               <td>
                 {apz.ProjectAddress}
 
-                {apz.ProjectAddressCoordinates != "" &&
+                {apz.ProjectAddressCoordinates !== "" &&
                   <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
                 }
               </td>
@@ -502,7 +510,7 @@ class ShowMap extends React.Component {
 
                 view.graphics.add(pointGraphic);
               } else {
-                var view = new MapView({
+                  view = new MapView({
                   container: containerNode,
                   map: map,
                   center: [76.886, 43.250], 

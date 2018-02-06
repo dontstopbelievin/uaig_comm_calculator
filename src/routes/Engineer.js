@@ -1201,7 +1201,7 @@ class ShowMap extends React.Component {
 
                 view.graphics.add(pointGraphic);
               } else {
-                var view = new MapView({
+                  view = new MapView({
                   container: containerNode,
                   map: map,
                   center: [76.886, 43.250], 
