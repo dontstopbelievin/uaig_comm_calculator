@@ -23,9 +23,8 @@ export default class MapView extends Component {
 
     return (
       <div>
-        <div class="row" id="newWebApp">    
-          <iframe title="map" height="700" width="100%" frameborder="0" scrolling="0" marginheight="0" marginwidth="0" src="https://uaig.maps.arcgis.com/apps/webappviewer3d/index.html?id=a43eb467e2ec4ed7b05675c8d977417a">
-          </iframe>
+        <div id="newWebApp">    
+          <iframe height="700" width="100%" frameborder="0" scrolling="0" marginheight="0" marginwidth="0" src="https://uaig.maps.arcgis.com/apps/webappviewer3d/index.html?id=a43eb467e2ec4ed7b05675c8d977417a"></iframe>
         </div>
       </div>
     )
