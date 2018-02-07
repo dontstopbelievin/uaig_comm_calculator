@@ -1,8 +1,11 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import Slider from 'react-slick';
 import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../languages/guest.json';
 import $ from 'jquery';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 
 let e = new LocalizedStrings({ru,kk});
@@ -65,7 +68,7 @@ export default class Guest extends React.Component {
 
         <div className="container home-page">
           <div className="row">
-            <div className="col-9 block-main">
+            <div className="col-md-9 col-xs-12 block-main">
               <h5>{e.publicServices}</h5>
 
               <div className="card-deck">
@@ -166,8 +169,15 @@ export default class Guest extends React.Component {
               </div>
             </div>
 
-            <div className="col-3 block-main">
+            <div className="col-md-3 col-xs-12 block-main">
               <h5>Новости</h5>
+              <div className="news">
+                {/* Новости */}
+              </div>
+            </div>
+
+            <div className="col-md-12 banners">
+              <Banners />
             </div>
 
           </div>
@@ -196,5 +206,32 @@ export default class Guest extends React.Component {
 
 
     )
+  }
+}
+
+class Banners extends React.Component{
+  render() {
+    var settings = {
+      dots: false,
+      arrows: false,
+      autoplay: true,
+      infinite: true,
+      speed: 1000,
+      variableWidth: true,
+      slidesToScroll: 1,
+      centerPadding: '0px'
+    }
+    return (
+      <div>
+        <Slider {...settings}>
+          <div style={{marginRight: '10px'}}><a href="http://www.akorda.kz/" target="_blank"><img src='/images/banners/uC9sJ0jW1yIX.jpg' height="100" /></a></div>
+          <div style={{marginRight: '10px'}}><a href="http://strategy2050.kz/" target="_blank"><img src='/images/banners/ban3.png' height="100" /></a></div>
+          <div style={{marginRight: '10px'}}><a href="http://1494.kz/" target="_blank"><img src='/images/banners/Bm0YK96vqHZX.png' height="100" /></a></div>
+          <div style={{marginRight: '10px'}}><a href="http://egov.kz/wps/portal/" target="_blank"><img src='/images/banners/uRzlOYe8hEsN.png' height="100" /></a></div>
+          <div style={{marginRight: '10px'}}><a href="http://www.safekaznet.kz/" target="_blank"><img src='/images/banners/BpawOjICq4xT.png' height="100" /></a></div>
+          <div style={{marginRight: '10px'}}><a href="http://almaty.gov.kz/" target="_blank"><img src='/images/banners/ban1.png' height="100" /></a></div>
+        </Slider>
+      </div>
+    );
   }
 }

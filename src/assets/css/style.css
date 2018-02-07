@@ -16,6 +16,17 @@
   
 }
 
+.news {
+  padding-bottom: 500px;
+  background-color: #fff; 
+  background-clip: border-box; 
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.banners {
+  margin:25px 0;
+}
+
 .btn:focus {
   box-shadow: none;
 }
