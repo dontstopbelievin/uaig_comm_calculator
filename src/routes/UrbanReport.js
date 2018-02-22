@@ -122,12 +122,9 @@ class ApzListReport extends React.Component {
     xhr.onload = function () {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-        //console.log(data); 
 
-        var sortedData = data.filter(function(obj) { return ((obj.Status === 0 || obj.Status === 1 || obj.Status === 3 || obj.Status === 4) && (obj.RegionDate !== null && obj.RegionResponse === null)); }); 
-     
         this.setState({apzs: data});
-        this.setState({sortedApzs: sortedData});
+        this.setState({sortedApzs: data.accepted});
       }
       else{
         alert("Время сессии истекло. Пожалуйста войдите заново!");
@@ -142,15 +139,15 @@ class ApzListReport extends React.Component {
     
     switch (status) {
       case 'accepted':
-        var apzs = data.filter(function(obj) { return ((obj.Status === 0 || obj.Status === 1 || obj.Status === 3 || obj.Status === 4) && (obj.RegionDate !== null && obj.RegionResponse === null)); });
+        var apzs = data.accepted;
         break;
 
       case 'declined':
-        apzs = data.filter(function(obj) { return (obj.Status === 0 && (obj.RegionDate !== null && obj.RegionResponse !== null)); });
+        apzs = data.declined;
         break;
 
       default:
-        apzs = data;
+        apzs = data.in_process;
         break;
     }
  
@@ -251,9 +248,9 @@ class ApzListReport extends React.Component {
                 {this.state.sortedApzs.map(function(apz, index) {
                   return(
                     <tr key={index}>
-                      <td>{apz.ProjectName}</td>
+                      <td>{apz.project_name}</td>
                       <td>
-                        <Link className="btn btn-outline-info" to={'/urban/' + apz.Id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link className="btn btn-outline-info" to={'/urban/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
                     </tr>
                     );

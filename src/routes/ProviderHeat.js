@@ -70,15 +70,15 @@ class AllApzs extends React.Component {
         
         switch (status) {
           case 'active':
-            var apzs = data.filter(function(obj) { return obj.ApzHeatStatus === 2 && obj.Status === 3; });
+            var apzs = data.in_process;
             break;
 
           case 'accepted':
-            apzs = data.filter(function(obj) { return obj.ApzHeatStatus === 1; });
+            apzs = data.accepted;
             break;
 
           case 'declined':
-            apzs = data.filter(function(obj) { return obj.ApzHeatStatus === 0; });
+            apzs = data.declined;
             break;
 
           default:
@@ -113,22 +113,22 @@ class AllApzs extends React.Component {
             {this.state.apzs.map(function(apz, index) {
               return(
                 <tr key={index}>
-                  <td>{apz.ProjectName}</td>
+                  <td>{apz.project_name}</td>
                   <td>
-                    {apz.ApzHeatStatus === 0 &&
+                    {apz.apz_heat.status === 0 &&
                       <span className="text-danger">Отказано</span>
                     }
 
-                    {apz.ApzHeatStatus === 1 &&
+                    {apz.apz_heat.status === 1 &&
                       <span className="text-success">Принято</span>
                     }
 
-                    {apz.ApzHeatStatus === 2 && apz.Status === 3 &&
+                    {apz.apz_heat.status === 2 && apz.status_id === 5 &&
                       <span className="text-info">В процессе</span>
                     }
                   </td>
                   <td>
-                    <Link className="btn btn-outline-info" to={'/providerheat/' + apz.Id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                    <Link className="btn btn-outline-info" to={'/providerheat/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                   </td>
                 </tr>
                 );
@@ -163,7 +163,10 @@ class ShowApz extends React.Component {
       description: '',
       responseId: 0,
       response: false,
-      responseFileExt: null,
+      responseFile: null,
+      personalIdFile: false,
+      confirmedTaskFile: false,
+      titleDocumentFile: false,
       showMapText: 'Показать карту',
       accept: true,
       callSaveFromSend: false,
@@ -262,28 +265,35 @@ class ShowApz extends React.Component {
         this.setState({apz: data});
         this.setState({showButtons: false});
         this.setState({showTechCon: false});
-        this.setState({description: data.HeatResponseText});
-        this.setState({connectionPoint: data.HeatConnectionPoint});
-        this.setState({heatResource: data.HeatResource});
-        this.setState({heatTransPressure: data.HeatTransPressure});
-        this.setState({heatLoadContractNum: data.HeatLoadContractNum});
-        this.setState({heatMainInContract: data.HeatMainInContract});
-        this.setState({heatVenInContract: data.HeatVenInContract});
-        this.setState({heatWaterInContract: data.HeatWaterInContract});
-        this.setState({addition: data.HeatAddition});
-        this.setState({docNumber: data.HeatDocNumber});
-        this.setState({responseId: data.HeatResponseId});
-        this.setState({response: data.HeatResponse});
-        if(data.HeatResponseId !== -1){
-          this.setState({accept: data.HeatResponse});
-        }
-        this.setState({responseFileExt: data.HeatResponseFileExt});
-        this.setState({heatStatus: data.ApzHeatStatus});
+        this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
+        this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
+        this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
 
-        if (data.Status === 3 && data.ApzHeatStatus === 2) { 
+        if (data.commission.apz_heat_response) {
+          this.setState({description: data.commission.apz_heat_response.response_text});
+          this.setState({connectionPoint: data.commission.apz_heat_response.connection_point});
+          this.setState({heatResource: data.commission.apz_heat_response.resource});
+          this.setState({heatTransPressure: data.commission.apz_heat_response.trans_pressure});
+          this.setState({heatLoadContractNum: data.commission.apz_heat_response.load_contract_num});
+          this.setState({heatMainInContract: data.commission.apz_heat_response.main_in_contract});
+          this.setState({heatVenInContract: data.commission.apz_heat_response.ven_in_contract});
+          this.setState({heatWaterInContract: data.commission.apz_heat_response.water_in_contract});
+          this.setState({addition: data.commission.apz_heat_response.addition});
+          this.setState({docNumber: data.commission.apz_heat_response.doc_number});
+          this.setState({responseId: data.commission.apz_heat_response.id});
+          this.setState({response: data.commission.apz_heat_response.response});
+          if(data.commission.apz_heat_response.id !== -1){
+            this.setState({accept: data.commission.apz_heat_response.response});
+          }
+          this.setState({responseFile: data.commission.apz_phone_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12})[0]});
+        }
+
+        this.setState({heatStatus: data.apz_heat.status});
+
+        if (data.status_id === 5 && data.apz_heat.status === 2) { 
           this.setState({showButtons: true}); 
         }
-        if(data.ApzHeatStatus === 1){
+        if(data.apz_heat.status === 1){
           this.setState({showTechCon: true});
         }
       }
@@ -291,13 +301,11 @@ class ShowApz extends React.Component {
     xhr.send();
   }
 
-  downloadFile(event) {
+  downloadFile(id) {
     var token = sessionStorage.getItem('tokenInfo');
-    var apzId = this.props.match.params.id;
-    var url =  event.target.getAttribute("data-url");
 
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + 'api/file/download/' + url + '/' + apzId, true);
+    xhr.open("get", window.url + 'api/file/download/' + id, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
@@ -336,7 +344,7 @@ class ShowApz extends React.Component {
 
           }());
 
-          saveByteArray([base64ToArrayBuffer(data.byteFile)], data.fileName + data.fileExt);
+          saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
         } else {
           alert('Не удалось скачать файл');
         }
@@ -376,25 +384,25 @@ class ShowApz extends React.Component {
     formData.append('DocNumber', this.state.docNumber);
 
     var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + "api/apz/save/provider/heat/" + apzId, true);
+    xhr.open("post", window.url + "api/apz/provider/heat/" + apzId + '/save', true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function () {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
         //console.log(data);
-        this.setState({responseId: data.ResponseId});
-        this.setState({response: data.Response});
-        this.setState({accept: data.Response});
-        this.setState({description: data.ResponseText});
-        this.setState({responseFileExt: data.HeatResponseFileExt});
-        this.setState({connectionPoint: data.ConnectionPoint});
-        this.setState({heatResource: data.HeatResource});
-        this.setState({heatTransPressure: data.HeatTransPressure});
-        this.setState({heatLoadContractNum: data.HeatLoadContractNum});
-        this.setState({heatMainInContract: data.HeatMainInContract});
-        this.setState({heatVenInContract: data.HeatVenInContract});
-        this.setState({heatWaterInContract: data.HeatWaterInContract});
-        this.setState({addition: data.Addition});
+        this.setState({responseId: data.id});
+        this.setState({response: data.response});
+        this.setState({accept: data.response});
+        this.setState({description: data.response_text});
+        this.setState({responseFile: data.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+        this.setState({connectionPoint: data.connection_point});
+        this.setState({heatResource: data.resource});
+        this.setState({heatTransPressure: data.trans_pressure});
+        this.setState({heatLoadContractNum: data.load_contract_num});
+        this.setState({heatMainInContract: data.main_in_contract});
+        this.setState({heatVenInContract: data.ven_in_contract});
+        this.setState({heatWaterInContract: data.water_in_contract});
+        this.setState({addition: data.addition});
         if(this.state.callSaveFromSend){
           this.setState({callSaveFromSend: false});
           this.sendHeatResponse(apzId, status, comment);
@@ -414,26 +422,26 @@ class ShowApz extends React.Component {
 
   // this function is to send the final response
   sendHeatResponse(apzId, status, comment) {
-    if(this.state.responseId < 0){
+    if(this.state.responseId <= 0){
       this.setState({callSaveFromSend: true});
       this.saveResponseForm(apzId, status, comment);
     }
     else{
       var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/update/provider/heat/" + apzId, true);
+      xhr.open("get", window.url + "api/apz/provider/heat/" + apzId + '/update', true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.onload = function () {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
 
-          if(data.ApzHeatStatus === 1) {
+          if(data.response === 1) {
             alert("Заявление принято!");
             this.setState({ showButtons: false });
             this.setState({ heatStatus: 1 });
             this.setState({showTechCon: true});
           } 
-          else if(data.ApzHeatStatus === 0) {
+          else if(data.response === 0) {
             alert("Заявление отклонено!");
             this.setState({ showButtons: false });
             this.setState({ heatStatus: 0 })
@@ -522,6 +530,10 @@ class ShowApz extends React.Component {
   render() {
     var apz = this.state.apz;
 
+    if (apz.length === 0) {
+      return false;
+    }
+
     return (
       <div className="row">
         <div className="col-sm-4">
@@ -531,61 +543,61 @@ class ShowApz extends React.Component {
             <tbody>
               <tr>
                 <td style={{width: '40%'}}><b>Заявитель</b></td>
-                <td>{apz.Applicant}</td>
+                <td>{apz.applicant}</td>
               </tr>
               <tr>
                 <td><b>Адрес</b></td>
-                <td>{apz.Address}</td>
+                <td>{apz.address}</td>
               </tr>
               <tr>
                 <td><b>Телефон</b></td>
-                <td>{apz.Phone}</td>
+                <td>{apz.phone}</td>
               </tr>
               <tr>
                 <td><b>Заказчик</b></td>
-                <td>{apz.Customer}</td>
+                <td>{apz.customer}</td>
               </tr>
               <tr>
                 <td><b>Разработчик</b></td>
-                <td>{apz.Designer}</td>
+                <td>{apz.designer}</td>
               </tr>
               <tr>
                 <td><b>Название проекта</b></td>
-                <td>{apz.ProjectName}</td>
+                <td>{apz.project_name}</td>
               </tr>
               <tr>
                 <td><b>Адрес проекта</b></td>
                 <td>
-                  {apz.ProjectAddress}
+                  {apz.project_address}
 
-                  {apz.ProjectAddressCoordinates !== "" &&
+                  {apz.project_address_coordinates &&
                     <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
                   }
                 </td>
               </tr>
               <tr>
                 <td><b>Дата заявления</b></td>
-                <td>{apz.ApzDate && this.toDate(apz.ApzDate)}</td>
+                <td>{apz.created_at && this.toDate(apz.created_at)}</td>
               </tr>
               
-              {apz.PersonalIdExist &&
+              {this.state.personalIdFile &&
                 <tr>
                   <td><b>Уд. лич./ Реквизиты</b></td>
-                  <td><a className="text-info pointer" data-url={'citizenfile/personalId/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id)}>Скачать</a></td>
                 </tr>
               }
 
-              {apz.ConfirmedTaskExist &&
+              {this.state.confirmedTaskFile &&
                 <tr>
                   <td><b>Утвержденное задание</b></td>
-                  <td><a className="text-info pointer" data-url={'citizenfile/confirmedTask/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.confirmedTaskFile.id)}>Скачать</a></td>
                 </tr>
               }
 
-              {apz.TitleDocumentExist &&
+              {this.state.titleDocumentFile &&
                 <tr>
                   <td><b>Правоустанавл. документ</b></td>
-                  <td><a className="text-info pointer" data-url={'citizenfile/titleDocument/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>Скачать</a></td>
                 </tr>
               }
             </tbody>
@@ -599,31 +611,31 @@ class ShowApz extends React.Component {
             <tbody>
               <tr>
                 <td style={{width: '40%'}}>Общая нагрузка (Гкал/ч)</td> 
-                <td>{apz.HeatGeneral}</td>
+                <td>{apz.apz_heat.HeatGeneral}</td>
               </tr>
               <tr>
                 <td>Отопление (Гкал/ч)</td>
-                <td>{apz.HeatMain}</td>
+                <td>{apz.apz_heat.main}</td>
               </tr>
               <tr>
                 <td>Вентиляция (Гкал/ч)</td>
-                <td>{apz.HeatVentilation}</td>
+                <td>{apz.apz_heat.ventilation}</td>
               </tr>
               <tr>
                 <td>Энергосб. мероприятие</td>
-                <td>{apz.HeatSaving}</td>
+                <td>{apz.apz_heat.saving}</td>
               </tr>
               <tr>
                 <td>Горячее водоснаб.(Гкал/ч)</td>
-                <td>{apz.HeatWater}</td>
+                <td>{apz.apz_heat.water}</td>
               </tr>
               <tr>
                 <td>Технолог. нужды(пар) (Т/ч)</td>
-                <td>{apz.HeatTech}</td>
+                <td>{apz.apz_heat.tech}</td>
               </tr>
               <tr>
                 <td>Разделить нагрузку</td>
-                <td>{apz.HeatDistribution}</td>
+                <td>{apz.apz_heat.distribution}</td>
               </tr>
             </tbody>
           </table>
@@ -681,10 +693,10 @@ class ShowApz extends React.Component {
                 <label>Номер документа</label>
                 <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
               </div>
-              {(this.state.response === true && this.state.responseFileExt) &&
+              {(this.state.response === true && this.state.responseFile) &&
                 <div className="form-group">
                   <label style={{display: 'block'}}>Прикрепленный файл</label>
-                  <a className="pointer text-info" title="Скачать" data-url={'response/heatResponse/' + this.state.responseId} onClick={this.downloadFile.bind(this)}>
+                  <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
                     Скачать 
                   </a>
                 </div>
@@ -694,10 +706,10 @@ class ShowApz extends React.Component {
                 <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
               </div>
               <div className="form-group">
-                <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.Id, true, "")}>
+                <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
                   Сохранить
                 </button>
-                <button type="button" className="btn btn-primary" onClick={this.sendHeatResponse.bind(this, apz.Id, true, "")}>
+                <button type="button" className="btn btn-primary" onClick={this.sendHeatResponse.bind(this, apz.id, true, "")}>
                   Отправить
                 </button>
               </div>
@@ -743,14 +755,16 @@ class ShowApz extends React.Component {
                   <td>Номер документа</td>
                   <td>{this.state.docNumber}</td>
                 </tr>
-                <tr>
-                  <td>Прикрепленный файл</td>
-                  <td>
-                    <a className="pointer text-info" title="Скачать" data-url={'response/heatResponse/' + this.state.responseId} onClick={this.downloadFile.bind(this)}>
-                      Скачать 
-                    </a>
-                  </td>
-                </tr>
+                {this.state.responseFile &&
+                  <tr>
+                    <td>Прикрепленный файл</td>
+                    <td>
+                      <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
+                        Скачать 
+                      </a>
+                    </td>
+                  </tr>
+                }
               </tbody>
             </table>
           }
@@ -765,10 +779,10 @@ class ShowApz extends React.Component {
                <label>Причина отклонения</label>
                 <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
               </div>
-              {(this.state.response === false && this.state.responseFileExt) &&
+              {(this.state.response === false && this.state.responseFile) &&
                 <div className="form-group">
                   <label style={{display: 'block'}}>Прикрепленный файл</label>
-                  <a className="pointer text-info" title="Скачать" data-url={'response/heatResponse/' + this.state.responseId} onClick={this.downloadFile.bind(this)}>
+                  <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
                     Скачать 
                   </a>
                 </div>
@@ -778,10 +792,10 @@ class ShowApz extends React.Component {
                 <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
               </div>
               <div className="form-group">
-                <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.Id, false, this.state.description)}>
+                <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, false, this.state.description)}>
                   Сохранить
                 </button>
-                <button type="button" className="btn btn-primary" onClick={this.sendHeatResponse.bind(this, apz.Id, false, this.state.description)}>
+                <button type="button" className="btn btn-primary" onClick={this.sendHeatResponse.bind(this, apz.id, false, this.state.description)}>
                   Отправить
                 </button>
               </div>
@@ -799,14 +813,16 @@ class ShowApz extends React.Component {
                   <td>Номер документа</td>
                   <td>{this.state.docNumber}</td>
                 </tr>
-                <tr>
-                  <td>Прикрепленный файл</td>
-                  <td>
-                    <a className="pointer text-info" title="Скачать" data-url={'response/heatResponse/' + this.state.responseId} onClick={this.downloadFile.bind(this)}>
-                      Скачать 
-                    </a>
-                  </td>
-                </tr>
+                {this.state.responseFile &&
+                  <tr>
+                    <td>Прикрепленный файл</td>
+                    <td>
+                      <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
+                        Скачать 
+                      </a>
+                    </td>
+                  </tr>
+                }
               </tbody>
             </table>
           }
@@ -816,7 +832,7 @@ class ShowApz extends React.Component {
               <tbody>
                 <tr>
                   <td><b>Сформированный ТУ</b></td>  
-                  <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
+                  <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
                 </tr>
               </tbody>
             </table>
@@ -824,7 +840,7 @@ class ShowApz extends React.Component {
         </div>
 
         <div className="col-sm-12">
-          {this.state.showMap && <ShowMap coordinates={apz.ProjectAddressCoordinates} />} 
+          {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />} 
 
           <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
             {this.state.showMapText}

@@ -2,9 +2,9 @@ import React from 'react';
 //import * as esriLoader from 'esri-loader';
 import EsriLoaderReact from 'esri-loader-react';
 //import { NavLink } from 'react-router-dom';
-import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
+import { Route, NavLink, Link, Switch, Redirect } from 'react-router-dom';
 
-export default class Urban extends React.Component {
+export default class ApzDepartment extends React.Component {
   render() {
     return (
       <div className="content container urban-apz-page">
@@ -13,9 +13,9 @@ export default class Urban extends React.Component {
           <h4 className="mb-0">Архитектурно-планировочное задание</h4></div>
           <div className="card-body">
             <Switch>
-              <Route path="/urban/status/:status" component={AllApzs} />
-              <Route path="/urban/:id" component={ShowApz} />
-              <Redirect from="/urban" to="/urban/status/active" />
+              <Route path="/apz_department/status/:status" component={AllApzs} />
+              <Route path="/apz_department/:id" component={ShowApz} />
+              <Redirect from="/apz_department" to="/apz_department/status/active" />
             </Switch>
           </div>
         </div>
@@ -29,7 +29,6 @@ class AllApzs extends React.Component {
     super(props);
 
     this.state = {
-      allApzs: [],
       apzs: []
     };
 
@@ -41,7 +40,7 @@ class AllApzs extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if(this.props.match.params.status !== nextProps.match.params.status) {
-       this.sortApzs(nextProps.match.params.status);
+       this.getApzs(nextProps.match.params.status);
    }
   }
 
@@ -51,53 +50,41 @@ class AllApzs extends React.Component {
     }
 
     var token = sessionStorage.getItem('tokenInfo');
+
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/region", true);
+    xhr.open("get", window.url + "api/apz/apz_department", true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
         
-        this.setState({allApzs: data});
-        this.sortApzs(status);
+        switch (status) {
+          case 'active':
+            var apzs = data.in_process;
+            break;
+
+          case 'accepted':
+            apzs = data.accepted;
+            break;
+
+          default:
+            apzs = data;
+            break;
+        }
+        
+        this.setState({apzs: apzs});
       }
     }.bind(this);
     xhr.send();
-  }
-
-  // when switching between active, accepted and declined
-  sortApzs(status) {
-    var data = this.state.allApzs;
-    
-    switch (status) {
-      case 'active':
-        var apzs = data.in_process;
-        break;
-
-      case 'accepted':
-        apzs = data.accepted;
-        break;
-
-      case 'declined':
-        apzs = data.declined;
-        break;
-
-      default:
-        apzs = data;
-        break;
-    }
- 
-    this.setState({apzs: apzs});
   }
 
   render() {
     return (
       <div>
         <ul className="nav nav-tabs mb-2 pull-right">
-          <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/urban/status/active" replace>Активные</NavLink></li>
-          <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/urban/status/accepted" replace>Принятые</NavLink></li>
-          <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/urban/status/declined" replace>Отказанные</NavLink></li>
+          <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/apz_department/status/active" replace>Активные</NavLink></li>
+          <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/apz_department/status/accepted" replace>Принятые</NavLink></li>
         </ul>
 
         <table className="table">
@@ -118,16 +105,16 @@ class AllApzs extends React.Component {
                       <span className="text-danger">Отказано</span>
                     }
 
-                    {apz.status_id != 1 && apz.status_id != 3 &&
+                    {apz.status_id === 1 &&
                       <span className="text-success">Принято</span>
                     }
 
-                    {apz.status_id === 3 &&
+                    {apz.status_id === 6 &&
                       <span className="text-info">В процессе</span>
                     }
                   </td>
                   <td>
-                    <Link className="btn btn-outline-info" to={'/urban/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                    <Link className="btn btn-outline-info" to={'/apz_department/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                   </td>
                 </tr>
                 );
@@ -147,19 +134,34 @@ class ShowApz extends React.Component {
     this.state = {
       apz: [],
       showMap: false,
-      showButtons: true,
+      showButtons: false,
+      showTechCon: false,
+      file: null,
+      elecReqPower: "",
+      elecPhase: "Однофазная",
+      elecSafeCategory: "",
+      connectionPoint: "",
+      recomendation: "",
+      docNumber: "",
       description: '',
-      showMapText: 'Показать карту',
+      responseId: 0,
+      response: false,
+      responseFile: null,
       personalIdFile: false,
       confirmedTaskFile: false,
       titleDocumentFile: false,
+      showMapText: 'Показать карту',
+      accept: true,
+      callSaveFromSend: false,
+      elecStatus: 2
     };
 
-    this.onDescriptionChange = this.onDescriptionChange.bind(this);
+    this.onFileChange = this.onFileChange.bind(this);
+    this.sendForm = this.sendForm.bind(this);
   }
 
-  onDescriptionChange(e) {
-    this.setState({ description: e.target.value });
+  onFileChange(e) {
+    this.setState({ file: e.target.files[0] });
   }
 
   componentWillMount() {
@@ -170,19 +172,21 @@ class ShowApz extends React.Component {
     var id = this.props.match.params.id;
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/region/detail/" + id, true);
+    xhr.open("get", window.url + "api/apz/apz_department/detail/" + id, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function() {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
+        //console.log(data);
         this.setState({apz: data});
+        this.setState({showButtons: false});
+        this.setState({showTechCon: false});
         this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
         this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
-        this.setState({showButtons: false});
 
-        if (data.status_id === 3) { 
+        if (data.status_id === 6) { 
           this.setState({showButtons: true}); 
         }
       }
@@ -241,38 +245,64 @@ class ShowApz extends React.Component {
     xhr.send();
   }
 
-  acceptDeclineApzForm(apzId, status, comment) {
+  sendForm(apzId) {
     var token = sessionStorage.getItem('tokenInfo');
 
-    var registerData = {
-      response: status,
-      message: comment
-    };
-    
-    var data = JSON.stringify(registerData);
-
     var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + "api/apz/region/status/" + apzId, true);
+    xhr.open("post", window.url + "api/apz/apz_department/status/" + apzId, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function () {
+    xhr.onload = function () {
       if (xhr.status === 200) {
-        //var data = JSON.parse(xhr.responseText);
+        var data = JSON.parse(xhr.responseText);
 
-        if(status === true) {
-          alert("Заявление принято!");
-          this.setState({ showButtons: false });
-        } else {
-          alert("Заявление отклонено!");
-          this.setState({ showButtons: false });
-        }
-      } else if (xhr.status === 401) {
+        alert("Заявление отправлено!");
+        this.setState({ showButtons: false });
+      }
+      else if(xhr.status === 401){
         sessionStorage.clear();
-        alert("Token is expired, please login again!");
+        alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
       }
     }.bind(this);
-    xhr.send(data); 
+    xhr.send();
+  }
+
+  // print technical condition
+  printTechCon(apzId, project) {
+    var token = sessionStorage.getItem('tokenInfo');
+    if (token) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/apz/print/tc/electro/" + apzId, true);
+      xhr.responseType = "blob";
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          //test of IE
+          if (typeof window.navigator.msSaveBlob === "function") {
+            window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
+          } 
+          else {
+            var blob = xhr.response;
+            var link = document.createElement('a');
+            var today = new Date();
+            var curr_date = today.getDate();
+            var curr_month = today.getMonth() + 1;
+            var curr_year = today.getFullYear();
+            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+            //console.log(curr_day);
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "ТУ-Электр-" + project + formated_date + ".pdf";
+
+            //append the link to the document body
+            document.body.appendChild(link);
+            link.click();
+          }
+        }
+      }
+      xhr.send();
+    } else {
+      console.log('Время сессии истекло.');
+    }
   }
 
   toggleMap(value) {
@@ -309,6 +339,10 @@ class ShowApz extends React.Component {
   
   render() {
     var apz = this.state.apz;
+
+    if (apz.length === 0) {
+      return false;
+    }
 
     return (
       <div>
@@ -380,36 +414,9 @@ class ShowApz extends React.Component {
 
         <div className={this.state.showButtons ? '' : 'invisible'}>
           <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-            <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
-                    onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>
+            <button className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id)}>
               Одобрить
             </button>
-            
-            <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
-              Отклонить
-            </button>
-            
-            <div className="modal fade" id="accDecApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-              <div className="modal-dialog" role="document">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title">Причина отклонения</h5>
-                    <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div className="modal-body">
-                    <div className="form-group">
-                      <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
-                    </div>
-                  </div>
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.description)}>Отправить</button>
-                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -419,10 +426,8 @@ class ShowApz extends React.Component {
           {this.state.showMapText}
         </button>
 
-        <div className="col-sm-12">
-          <hr />
-          <Link className="btn btn-outline-secondary pull-right" to={'/urban/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
-        </div>
+        <hr />
+        <Link className="btn btn-outline-secondary pull-right" to={'/providerelectro/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
       </div>
     )
   }
@@ -460,33 +465,47 @@ class ShowMap extends React.Component {
             onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap, webMercatorUtils, dom, Graphic], containerNode}) => {
               var map = new WebMap({
                 portalItem: {
-                  id: "caa580cafc1449dd9aa4fd8eafd3a14d"
+                  id: "b8c18c52c9a342c98d04f3ecd08c3f28"
                 }
               });
 
               /*
-                var flRedLines = new FeatureLayer({
-                  url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D1%8B%D0%B5_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B8/FeatureServer",
-                  outFields: ["*"],
-                  title: "Красные линии"
-                });
-                map.add(flRedLines);
+              var electroLines = new FeatureLayer({
+                url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%9B%D0%B8%D0%BD%D0%B5%D0%B9%D0%BD%D1%8B%D0%B9_%D0%BE%D0%B1%D1%8A%D0%B5%D0%BA%D1%82_%D0%B3%D0%B8%D0%B4%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%B82/FeatureServerkb",
+                outFields: ["*"],
+                title: "Линии электроснабжения"
+              });
+              map.add(electroLines);
 
-                var flFunZones = new FeatureLayer({
-                  url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%A4%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B7%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B52/FeatureServer",
-                  outFields: ["*"],
-                  title: "Функциональное зонирование"
-                });
-                map.add(flFunZones);
+              var electroLinesUnderground = new FeatureLayer({
+                url: "http://gis.uaig.kz/server/rest/services/Hosted/%D0%AD%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BA%D0%B0%D0%B1%D0%B5%D0%BB%D0%B8_%D0%BF%D0%BE%D0%B4%D0%B7%D0%B5%D0%BC%D0%BD%D1%8B%D0%B5/FeatureServer",
+                outFields: ["*"],
+                title: "Электрокабели подземные"
+              });
+              map.add(electroLinesUnderground);
+
+              var sysElectroLines = new FeatureLayer({
+                url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%A1%D0%BE%D0%BE%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D1%8B_%D1%8D%D0%BD%D0%B5%D1%80%D0%B3%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F/FeatureServer",
+                outFields: ["*"],
+                title: "Cооружения системы электроснабжения"
+              });
+              map.add(sysElectroLines);
+
+              var stolby = new FeatureLayer({
+                url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%A1%D1%82%D0%BE%D0%BB%D0%B1%D1%8B_%D0%B2%D0%BE%D0%B7%D0%B4%D1%83%D1%88%D0%BD%D1%8B%D1%85_%D0%BB%D0%B8%D0%BD%D0%B8%D0%B9_%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BF%D0%B5%D1%80%D0%B5%D0%B4%D0%B0%D1%872/FeatureServer",
+                outFields: ["*"],
+                title: "Cтолбы возд. линий электропередач"
+              });
+              map.add(stolby);
               
-                var flGosAkts = new FeatureLayer({
-                  url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-                  outFields: ["*"],
-                  title: "Гос акты"
-                });
-                map.add(flGosAkts);
+              var flGosAkts = new FeatureLayer({
+                url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+                outFields: ["*"],
+                title: "Гос акты"
+              });
+              map.add(flGosAkts);
               */
-
+              
               if (coordinates) {
                 var coordinatesArray = coordinates.split(", ");
 

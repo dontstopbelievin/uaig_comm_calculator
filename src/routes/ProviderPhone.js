@@ -70,15 +70,15 @@ class AllApzs extends React.Component {
         
         switch (status) {
           case 'active':
-            var apzs = data.filter(function(obj) { return obj.ApzPhoneStatus === 2 && obj.Status === 3; });
+            var apzs = data.in_process;
             break;
 
           case 'accepted':
-            apzs = data.filter(function(obj) { return obj.ApzPhoneStatus === 1; });
+            apzs = data.accepted;
             break;
 
           case 'declined':
-            apzs = data.filter(function(obj) { return obj.ApzPhoneStatus === 0; });
+            apzs = data.declined;
             break;
 
           default:
@@ -113,22 +113,22 @@ class AllApzs extends React.Component {
             {this.state.apzs.map(function(apz, index) {
               return(
                 <tr key={index}>
-                  <td>{apz.ProjectName}</td>
+                  <td>{apz.project_name}</td>
                   <td>
-                    {apz.ApzPhoneStatus === 0 &&
+                    {apz.apz_phone.status === 0 &&
                       <span className="text-danger">Отказано</span>
                     }
 
-                    {apz.ApzPhoneStatus === 1 &&
+                    {apz.apz_phone.status === 1 &&
                       <span className="text-success">Принято</span>
                     }
 
-                    {apz.ApzPhoneStatus === 2 && apz.Status === 3 &&
+                    {apz.apz_phone.status === 2 && apz.status_id === 5 &&
                       <span className="text-info">В процессе</span>
                     }
                   </td>
                   <td>
-                    <Link className="btn btn-outline-info" to={'/providerphone/' + apz.Id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                    <Link className="btn btn-outline-info" to={'/providerphone/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                   </td>
                 </tr>
                 );
@@ -159,7 +159,10 @@ class ShowApz extends React.Component {
       description: '',
       responseId: 0,
       response: false,
-      responseFileExt: null,
+      responseFile: null,
+      personalIdFile: false,
+      confirmedTaskFile: false,
+      titleDocumentFile: false,
       showMapText: 'Показать карту',
       accept: true,
       callSaveFromSend: false,
@@ -238,24 +241,32 @@ class ShowApz extends React.Component {
         this.setState({apz: data});
         this.setState({showButtons: false});
         this.setState({showTechCon: false});
-        this.setState({description: data.PhoneResponseText});
-        this.setState({responseServiceNum: data.ResponseServiceNum});
-        this.setState({responseCapacity: data.ResponsePhoneCapacity});
-        this.setState({responseSewage: data.ResponsePhoneSewage});
-        this.setState({responseClientWishes: data.ResponsePhoneClientWishes});
-        this.setState({docNumber: data.PhoneDocNumber});
-        this.setState({responseId: data.PhoneResponseId});
-        this.setState({response: data.PhoneResponse});
-        if(data.PhoneResponseId !== -1){
-          this.setState({accept: data.PhoneResponse});
-        }
-        this.setState({responseFileExt: data.PhoneResponseFileExt});
-        this.setState({phoneStatus: data.ApzPhoneStatus});
+        this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
+        this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
+        this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
 
-        if (data.Status === 3 && data.ApzPhoneStatus === 2) { 
+        if (data.commission.apz_phone_response) {
+          this.setState({description: data.commission.apz_phone_response.response_text});
+          this.setState({responseServiceNum: data.commission.apz_phone_response.service_num});
+          this.setState({responseCapacity: data.commission.apz_phone_response.capacity});
+          this.setState({responseSewage: data.commission.apz_phone_response.sewage});
+          this.setState({responseClientWishes: data.commission.apz_phone_response.client_wishes});
+          this.setState({docNumber: data.commission.apz_phone_response.doc_number});
+          this.setState({responseId: data.commission.apz_phone_response.id});
+          this.setState({response: data.commission.apz_phone_response.response});
+          if(data.PhoneResponseId !== -1){
+            this.setState({accept: data.commission.apz_phone_response.response});
+          }
+          this.setState({responseFile: data.commission.apz_phone_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12})[0]});
+        }
+
+        this.setState({phoneStatus: data.apz_phone.status});
+
+        if (data.status_id === 5 && data.apz_phone.status === 2) { 
           this.setState({showButtons: true}); 
         }
-        if(data.ApzPhoneStatus === 1){
+
+        if(data.apz_phone.status === 1){
           this.setState({showTechCon: true});
         }
       }
@@ -263,13 +274,11 @@ class ShowApz extends React.Component {
     xhr.send();
   }
 
-  downloadFile(event) {
+  downloadFile(id) {
     var token = sessionStorage.getItem('tokenInfo');
-    var apzId = this.props.match.params.id;
-    var url =  event.target.getAttribute("data-url");
 
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + 'api/file/download/' + url + '/' + apzId, true);
+    xhr.open("get", window.url + 'api/file/download/' + id, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
@@ -308,7 +317,7 @@ class ShowApz extends React.Component {
 
           }());
 
-          saveByteArray([base64ToArrayBuffer(data.byteFile)], data.fileName + data.fileExt);
+          saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
         } else {
           alert('Не удалось скачать файл');
         }
@@ -340,21 +349,21 @@ class ShowApz extends React.Component {
     formData.append('DocNumber', this.state.docNumber);
 
     var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + "api/apz/save/provider/phone/" + apzId, true);
+    xhr.open("post", window.url + "api/apz/provider/phone/" + apzId + '/save', true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function () {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
         //console.log(data);
-        this.setState({responseId: data.ResponseId});
-        this.setState({response: data.Response});
-        this.setState({accept: data.Response});
-        this.setState({description: data.ResponseText});
-        this.setState({responseFileExt: data.PhoneResponseFileExt});
-        this.setState({responseServiceNum: data.PhoneServiceNum});
-        this.setState({responseCapacity: data.PhoneCapacity});
-        this.setState({responseSewage: data.PhoneSewage});
-        this.setState({responseClientWishes: data.PhoneClientWishes});
+        this.setState({responseId: data.id});
+        this.setState({response: data.response});
+        this.setState({accept: data.response});
+        this.setState({description: data.response_text});
+        this.setState({responseFile: data.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+        this.setState({responseServiceNum: data.service_num});
+        this.setState({responseCapacity: data.capacity});
+        this.setState({responseSewage: data.sewage});
+        this.setState({responseClientWishes: data.client_wishes});
         if(this.state.callSaveFromSend){
           this.setState({callSaveFromSend: false});
           this.sendPhoneResponse(apzId, status, comment);
@@ -374,26 +383,26 @@ class ShowApz extends React.Component {
 
   // this function is to send the final response
   sendPhoneResponse(apzId, status, comment) {
-    if(this.state.responseId < 0){
+    if(this.state.responseId <= 0){
       this.setState({callSaveFromSend: true});
       this.saveResponseForm(apzId, status, comment);
     }
     else{
       var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/update/provider/phone/" + apzId, true);
+      xhr.open("get", window.url + "api/apz/provider/phone/" + apzId + '/update', true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.onload = function () {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
 
-          if(data.ApzPhoneStatus === 1) {
+          if(data.response === 1) {
             alert("Заявление принято!");
             this.setState({ showButtons: false });
             this.setState({ phoneStatus: 1 });
             this.setState({showTechCon: true});
           } 
-          else if(data.ApzPhoneStatus === 0) {
+          else if(data.response === 0) {
             alert("Заявление отклонено!");
             this.setState({ showButtons: false });
             this.setState({ phoneStatus: 0 })
@@ -482,6 +491,10 @@ class ShowApz extends React.Component {
   render() {
     var apz = this.state.apz;
 
+    if (apz.length === 0) {
+      return false;
+    }
+
     return (
       <div className="row">
         <div className="col-sm-4">
@@ -491,61 +504,61 @@ class ShowApz extends React.Component {
             <tbody>
               <tr>
                 <td style={{width: '40%'}}><b>Заявитель</b></td>
-                <td>{apz.Applicant}</td>
+                <td>{apz.applicant}</td>
               </tr>
               <tr>
                 <td><b>Адрес</b></td>
-                <td>{apz.Address}</td>
+                <td>{apz.address}</td>
               </tr>
               <tr>
                 <td><b>Телефон</b></td>
-                <td>{apz.Phone}</td>
+                <td>{apz.phone}</td>
               </tr>
               <tr>
                 <td><b>Заказчик</b></td>
-                <td>{apz.Customer}</td>
+                <td>{apz.customer}</td>
               </tr>
               <tr>
                 <td><b>Разработчик</b></td>
-                <td>{apz.Designer}</td>
+                <td>{apz.designer}</td>
               </tr>
               <tr>
                 <td><b>Название проекта</b></td>
-                <td>{apz.ProjectName}</td>
+                <td>{apz.project_name}</td>
               </tr>
               <tr>
                 <td><b>Адрес проекта</b></td>
                 <td>
-                  {apz.ProjectAddress}
+                  {apz.project_address}
 
-                  {apz.ProjectAddressCoordinates !== "" &&
+                  {apz.project_address_coordinates &&
                     <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
                   }
                 </td>
               </tr>
               <tr>
                 <td><b>Дата заявления</b></td>
-                <td>{apz.ApzDate && this.toDate(apz.ApzDate)}</td>
+                <td>{apz.created_at && this.toDate(apz.created_at)}</td>
               </tr>
               
-              {apz.PersonalIdExist &&
+              {this.state.personalIdFile &&
                 <tr>
                   <td><b>Уд. лич./ Реквизиты</b></td>
-                  <td><a className="text-info pointer" data-url={'citizenfile/personalId/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id)}>Скачать</a></td>
                 </tr>
               }
 
-              {apz.ConfirmedTaskExist &&
+              {this.state.confirmedTaskFile &&
                 <tr>
                   <td><b>Утвержденное задание</b></td>
-                  <td><a className="text-info pointer" data-url={'citizenfile/confirmedTask/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.confirmedTaskFile.id)}>Скачать</a></td>
                 </tr>
               }
 
-              {apz.TitleDocumentExist &&
+              {this.state.titleDocumentFile &&
                 <tr>
                   <td><b>Правоустанавл. документ</b></td>
-                  <td><a className="text-info pointer" data-url={'citizenfile/titleDocument/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>Скачать</a></td>
                 </tr>
               }
             </tbody>
@@ -559,19 +572,19 @@ class ShowApz extends React.Component {
             <tbody>
               <tr>
                 <td style={{width: '40%'}}>Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</td> 
-                <td>{apz.PhoneServiceNum}</td>
+                <td>{apz.apz_phone.service_num}</td>
               </tr>
               <tr>
                 <td>Телефонная емкость</td>
-                <td>{apz.PhoneCapacity}</td>
+                <td>{apz.apz_phone.capacity}</td>
               </tr>
               <tr>
                 <td>Планируемая телефонная канализация</td>
-                <td>{apz.PhoneSewage}</td>
+                <td>{apz.apz_phone.sewage}</td>
               </tr>
               <tr>
                 <td>Пожелания заказчика (тип оборудования, тип кабеля и др.)</td>
-                <td>{apz.PhoneClientWishes}</td>
+                <td>{apz.apz_phone.client_wishes}</td>
               </tr>
             </tbody>
           </table>
@@ -618,10 +631,10 @@ class ShowApz extends React.Component {
                 <label>Номер документа</label>
                 <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
               </div>
-              {(this.state.response === true && this.state.responseFileExt) &&
+              {(this.state.response === true && this.state.responseFile) &&
                 <div className="form-group">
                   <label style={{display: 'block'}}>Прикрепленный файл</label>
-                  <a className="pointer text-info" title="Скачать" data-url={'response/phoneResponse/' + this.state.responseId} onClick={this.downloadFile.bind(this)}>
+                  <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
                     Скачать 
                   </a>
                 </div>
@@ -631,10 +644,10 @@ class ShowApz extends React.Component {
                 <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
               </div>
               <div className="form-group">
-                <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.Id, true, "")}>
+                <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
                   Сохранить
                 </button>
-                <button type="button" className="btn btn-primary" onClick={this.sendPhoneResponse.bind(this, apz.Id, true, "")}>
+                <button type="button" className="btn btn-primary" onClick={this.sendPhoneResponse.bind(this, apz.id, true, "")}>
                   Отправить
                 </button>
               </div>
@@ -664,14 +677,16 @@ class ShowApz extends React.Component {
                   <td>Номер документа</td>
                   <td>{this.state.docNumber}</td>
                 </tr>
-                <tr>
-                  <td>Прикрепленный файл</td>
-                  <td>
-                    <a className="pointer text-info" title="Скачать" data-url={'response/phoneResponse/' + this.state.responseId} onClick={this.downloadFile.bind(this)}>
-                      Скачать 
-                    </a>
-                  </td>
-                </tr>
+                {this.state.titleDocumentFile &&
+                  <tr>
+                    <td>Прикрепленный файл</td>
+                    <td>
+                      <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>
+                        Скачать 
+                      </a>
+                    </td>
+                  </tr>
+                }
               </tbody>
             </table>
           }
@@ -686,10 +701,10 @@ class ShowApz extends React.Component {
                <label>Причина отклонения</label>
                 <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
               </div>
-              {(this.state.response === false && this.state.responseFileExt) &&
+              {(this.state.response === false && this.state.responseFile) &&
                 <div className="form-group">
                   <label style={{display: 'block'}}>Прикрепленный файл</label>
-                  <a className="pointer text-info" title="Скачать" data-url={'response/phoneResponse/' + this.state.responseId} onClick={this.downloadFile.bind(this)}>
+                  <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
                     Скачать 
                   </a>
                 </div>
@@ -699,10 +714,10 @@ class ShowApz extends React.Component {
                 <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
               </div>
               <div className="form-group">
-                <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.Id, false, this.state.description)}>
+                <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, false, this.state.description)}>
                   Сохранить
                 </button>
-                <button type="button" className="btn btn-primary" onClick={this.sendPhoneResponse.bind(this, apz.Id, false, this.state.description)}>
+                <button type="button" className="btn btn-primary" onClick={this.sendPhoneResponse.bind(this, apz.id, false, this.state.description)}>
                   Отправить
                 </button>
               </div>
@@ -720,14 +735,16 @@ class ShowApz extends React.Component {
                   <td>Номер документа</td>
                   <td>{this.state.docNumber}</td>
                 </tr>
-                <tr>
-                  <td>Прикрепленный файл</td>
-                  <td>
-                    <a className="pointer text-info" title="Скачать" data-url={'response/phoneResponse/' + this.state.responseId} onClick={this.downloadFile.bind(this)}>
-                      Скачать 
-                    </a>
-                  </td>
-                </tr>
+                {this.state.responseFile &&
+                  <tr>
+                    <td>Прикрепленный файл</td>
+                    <td>
+                      <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
+                        Скачать 
+                      </a>
+                    </td>
+                  </tr>
+                }
               </tbody>
             </table>
           }
@@ -737,7 +754,7 @@ class ShowApz extends React.Component {
               <tbody>
                 <tr>
                   <td><b>Сформированный ТУ</b></td>  
-                  <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
+                  <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
                 </tr>
               </tbody>
             </table>
@@ -745,7 +762,7 @@ class ShowApz extends React.Component {
         </div>
 
         <div className="col-sm-12">
-          {this.state.showMap && <ShowMap coordinates={apz.ProjectAddressCoordinates} />}
+          {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
 
           <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
             {this.state.showMapText}

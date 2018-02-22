@@ -233,6 +233,8 @@ export default class Register extends React.Component {
     super();
     this.state = {
       username: "", 
+      iin: "", 
+      bin: "", 
       firstName: "",
       lastName: "",
       middleName: "",
@@ -322,13 +324,15 @@ export default class Register extends React.Component {
     console.log("registerWithoutECP function started");
 
     var registerData = {
-      UserName: this.state.username,
-      FirstName: this.state.firstName,
-      LastName: this.state.lastName,
-      MiddleName: this.state.middleName,
-      Email: this.state.email,
-      Password: this.state.pwd.trim(),
-      ConfirmPassword: this.state.confirmPwd.trim()
+      name: this.state.username,
+      iin: this.state.iin,
+      bin: this.state.bin,
+      first_name: this.state.firstName,
+      last_name: this.state.lastName,
+      middle_name: this.state.middleName,
+      email: this.state.email,
+      password: this.state.pwd.trim(),
+      password_confirmation: this.state.confirmPwd.trim()
     };
 
     console.log(registerData);
@@ -341,7 +345,7 @@ export default class Register extends React.Component {
     else {
       this.setState({loadingVisible: true});
       var xhr = new XMLHttpRequest();
-      xhr.open("post", window.url + "api/Account/Register", true);
+      xhr.open("post", window.url + "api/register", true);
       //Send the proper header information along with the request
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
@@ -412,7 +416,15 @@ export default class Register extends React.Component {
                     <p>&nbsp;</p>
                     <form onSubmit={this.registerWithoutECP.bind(this)}>
                       <div className="form-group">
-                        <label>ИИН/БИН:</label>
+                        <label>ИИН:</label>
+                        <input type="text" className="form-control" required onChange={(e) => this.setState({iin: e.target.value})} />
+                      </div>
+                      <div className="form-group">
+                        <label>БИН:</label>
+                        <input type="text" className="form-control" required onChange={(e) => this.setState({bin: e.target.value})} />
+                      </div>
+                      <div className="form-group">
+                        <label>Логин:</label>
                         <input type="text" className="form-control" required onChange={(e) => this.setState({username: e.target.value})} />
                       </div>
                       <div className="form-group">

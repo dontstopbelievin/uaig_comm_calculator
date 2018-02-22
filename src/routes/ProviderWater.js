@@ -70,15 +70,15 @@ class AllApzs extends React.Component {
         
         switch (status) {
           case 'active':
-            var apzs = data.filter(function(obj) { return obj.ApzWaterStatus === 2 && obj.Status === 3; });
+            var apzs = data.in_process;
             break;
 
           case 'accepted':
-            apzs = data.filter(function(obj) { return obj.ApzWaterStatus === 1; });
+            apzs = data.accepted;
             break;
 
           case 'declined':
-            apzs = data.filter(function(obj) { return obj.ApzWaterStatus === 0; });
+            apzs = data.declined;
             break;
 
           default:
@@ -113,22 +113,22 @@ class AllApzs extends React.Component {
             {this.state.apzs.map(function(apz, index) {
               return(
                 <tr key={index}>
-                  <td>{apz.ProjectName}</td>
+                  <td>{apz.project_name}</td>
                   <td>
-                    {apz.ApzWaterStatus === 0 &&
+                    {apz.apz_water.status === 0 &&
                       <span className="text-danger">Отказано</span>
                     }
 
-                    {apz.ApzWaterStatus === 1 &&
+                    {apz.apz_water.status === 1 &&
                       <span className="text-success">Принято</span>
                     }
 
-                    {apz.ApzWaterStatus === 2 && apz.Status === 3 &&
+                    {apz.apz_water.status === 2 && apz.status_id === 5 &&
                       <span className="text-info">В процессе</span>
                     }
                   </td>
                   <td>
-                    <Link className="btn btn-outline-info" to={'/providerwater/' + apz.Id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                    <Link className="btn btn-outline-info" to={'/providerwater/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                   </td>
                 </tr>
                 );
@@ -162,7 +162,10 @@ class ShowApz extends React.Component {
       description: '',
       responseId: 0,
       response: false,
-      responseFileExt: null,
+      responseFile: null,
+      personalIdFile: false,
+      confirmedTaskFile: false,
+      titleDocumentFile: false,
       showMapText: 'Показать карту',
       accept: true,
       callSaveFromSend: false,
@@ -252,45 +255,52 @@ class ShowApz extends React.Component {
     xhr.onload = function() {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-        //console.log(data);
+        
         this.setState({apz: data});
         this.setState({showButtons: false});
         this.setState({showTechCon: false});
-        this.setState({description: data.WaterResponseText});
-        this.setState({connectionPoint: data.WaterConnectionPoint});
-        this.setState({genWaterReq: data.GenWaterReq});
-        this.setState({drinkingWater: data.DrinkingWater});
-        this.setState({prodWater: data.ProdWater});
-        this.setState({fireFightingWaterIn: data.FireFightingWaterIn});
-        this.setState({fireFightingWaterOut: data.FireFightingWaterOut});
-        this.setState({recomendation: data.WaterRecomendation});
-        this.setState({docNumber: data.WaterDocNumber});
-        this.setState({responseId: data.WaterResponseId})
-        this.setState({response: data.WaterResponse});
-        if(data.WaterResponseId !== -1){
-          this.setState({accept: data.WaterResponse});
-        }
-        this.setState({responseFileExt: data.WaterResponseFileExt});
-        this.setState({waterStatus: data.ApzWaterStatus})
+        this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
+        this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
+        this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
 
-        if (data.Status === 3 && data.ApzWaterStatus === 2) { 
-          this.setState({showButtons: true}); 
+        if (data.commission && data.commission.apz_water_response) {
+          this.setState({description: data.commission.apz_water_response.response_text});
+          this.setState({connectionPoint: data.commission.apz_water_response.connection_point});
+          this.setState({genWaterReq: data.commission.apz_water_response.gen_water_req});
+          this.setState({drinkingWater: data.commission.apz_water_response.drinking_water});
+          this.setState({prodWater: data.commission.apz_water_response.prod_water});
+          this.setState({fireFightingWaterIn: data.commission.apz_water_response.fire_fighting_water_in});
+          this.setState({fireFightingWaterOut: data.commission.apz_water_response.fire_fighting_water_out});
+          this.setState({recomendation: data.commission.apz_water_response.recommendation});
+          this.setState({docNumber: data.commission.apz_water_response.doc_number});
+          this.setState({responseId: data.commission.apz_water_response.id})
+          this.setState({response: data.commission.apz_water_response.response});
+          if(data.commission.apz_water_response.id !== -1){
+            this.setState({accept: data.commission.apz_water_response.response});
+          }
+          this.setState({responseFile: data.commission.apz_water_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12})[0]});
         }
-        if(data.ApzWaterStatus === 1){
+
+        this.setState({waterStatus: data.apz_water.status})
+
+        if(data.apz_water.status === 1){
           this.setState({showTechCon: true});
         }
+
+        if (data.status_id === 5 && data.apz_water.status === 2) { 
+          this.setState({showButtons: true});
+        }
+        
       }
-    }.bind(this)
+    }.bind(this);
     xhr.send();
   }
 
-  downloadFile(event) {
+  downloadFile(id) {
     var token = sessionStorage.getItem('tokenInfo');
-    var apzId = this.props.match.params.id;
-    var url =  event.target.getAttribute("data-url");
 
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + 'api/file/download/' + url + '/' + apzId, true);
+    xhr.open("get", window.url + 'api/file/download/' + id, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
@@ -329,7 +339,7 @@ class ShowApz extends React.Component {
 
           }());
 
-          saveByteArray([base64ToArrayBuffer(data.byteFile)], data.fileName + data.fileExt);
+          saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
         } else {
           alert('Не удалось скачать файл');
         }
@@ -367,24 +377,24 @@ class ShowApz extends React.Component {
     formData.append('DocNumber', this.state.docNumber);
 
     var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + "api/apz/save/provider/water/" + apzId, true);
+    xhr.open("post", window.url + "api/apz/provider/water/" + apzId + '/save', true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function () {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
         //console.log(data);
-        this.setState({responseId: data.ResponseId});
-        this.setState({response: data.Response});
-        this.setState({accept: data.Response});
-        this.setState({description: data.ResponseText});
-        this.setState({responseFileExt: data.WaterResponseFileExt});
-        this.setState({connectionPoint: data.ConnectionPoint});
-        this.setState({genWaterReq: data.GenWaterReq});
-        this.setState({drinkingWater: data.DrinkingWater});
-        this.setState({prodWater: data.ProdWater});
-        this.setState({fireFightingWaterIn: data.FireFightingWaterIn});
-        this.setState({fireFightingWaterOut: data.FireFightingWaterOut});
-        this.setState({recomendation: data.Recomendation});
+        this.setState({responseId: data.id});
+        this.setState({response: data.response});
+        this.setState({accept: data.response});
+        this.setState({description: data.response_text});
+        this.setState({responseFile: data.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+        this.setState({connectionPoint: data.connection_point});
+        this.setState({genWaterReq: data.gen_water_req});
+        this.setState({drinkingWater: data.drinking_water});
+        this.setState({prodWater: data.prod_water});
+        this.setState({fireFightingWaterIn: data.fire_fighting_water_in});
+        this.setState({fireFightingWaterOut: data.fire_fighting_water_out});
+        this.setState({recomendation: data.recommendation});
         if(this.state.callSaveFromSend){
           this.setState({callSaveFromSend: false});
           this.sendWaterResponse(apzId, status, comment);
@@ -404,26 +414,26 @@ class ShowApz extends React.Component {
 
   // this function is to send the final response
   sendWaterResponse(apzId, status, comment) {
-    if(this.state.responseId < 0){
+    if(this.state.responseId <= 0){
       this.setState({callSaveFromSend: true});
       this.saveResponseForm(apzId, status, comment);
     }
     else{
       var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/update/provider/water/" + apzId, true);
+      xhr.open("get", window.url + "api/apz/provider/water/" + apzId + '/update', true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.onload = function () {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
 
-          if(data.ApzWaterStatus === 1) {
+          if(data.response === 1) {
             alert("Заявление принято!");
             this.setState({ showButtons: false });
             this.setState({ waterStatus: 1 });
             this.setState({ showTechCon: true });
           } 
-          else if(data.ApzWaterStatus === 0) {
+          else if(data.response === 0) {
             alert("Заявление отклонено!");
             this.setState({ showButtons: false });
             this.setState({ waterStatus: 0 });
@@ -512,6 +522,10 @@ class ShowApz extends React.Component {
   render() {
     var apz = this.state.apz;
 
+    if (apz.length === 0) {
+      return false;
+    }
+
     return (
       <div className="row">
         <div className="col-sm-4">
@@ -521,61 +535,61 @@ class ShowApz extends React.Component {
             <tbody>
               <tr>
                 <td style={{width: '40%'}}><b>Заявитель</b></td>
-                <td>{apz.Applicant}</td>
+                <td>{apz.applicant}</td>
               </tr>
               <tr>
                 <td><b>Адрес</b></td>
-                <td>{apz.Address}</td>
+                <td>{apz.address}</td>
               </tr>
               <tr>
                 <td><b>Телефон</b></td>
-                <td>{apz.Phone}</td>
+                <td>{apz.phone}</td>
               </tr>
               <tr>
                 <td><b>Заказчик</b></td>
-                <td>{apz.Customer}</td>
+                <td>{apz.customer}</td>
               </tr>
               <tr>
                 <td><b>Разработчик</b></td>
-                <td>{apz.Designer}</td>
+                <td>{apz.designer}</td>
               </tr>
               <tr>
                 <td><b>Название проекта</b></td>
-                <td>{apz.ProjectName}</td>
+                <td>{apz.project_name}</td>
               </tr>
               <tr>
                 <td><b>Адрес проекта</b></td>
                 <td>
-                  {apz.ProjectAddress}
+                  {apz.project_address}
 
-                  {apz.ProjectAddressCoordinates !== "" &&
+                  {apz.project_address_coordinates &&
                     <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
                   }
                 </td>
               </tr>
               <tr>
                 <td><b>Дата заявления</b></td>
-                <td>{apz.ApzDate && this.toDate(apz.ApzDate)}</td>
+                <td>{apz.created_at && this.toDate(apz.created_at)}</td>
               </tr>
               
-              {apz.PersonalIdExist &&
+              {this.state.personalIdFile &&
                 <tr>
                   <td><b>Уд. лич./ Реквизиты</b></td>
-                  <td><a className="text-info pointer" data-url={'citizenfile/personalId/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id)}>Скачать</a></td>
                 </tr>
               }
 
-              {apz.ConfirmedTaskExist &&
+              {this.state.confirmedTaskFile &&
                 <tr>
                   <td><b>Утвержденное задание</b></td>
-                  <td><a className="text-info pointer" data-url={'citizenfile/confirmedTask/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.confirmedTaskFile.id)}>Скачать</a></td>
                 </tr>
               }
 
-              {apz.TitleDocumentExist &&
+              {this.state.titleDocumentFile &&
                 <tr>
                   <td><b>Правоустанавл. документ</b></td>
-                  <td><a className="text-info pointer" data-url={'citizenfile/titleDocument/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>Скачать</a></td>
                 </tr>
               }
             </tbody>
@@ -589,23 +603,23 @@ class ShowApz extends React.Component {
             <tbody>
               <tr>
                 <td style={{width: '40%'}}>Общая потребность (м<sup>3</sup>/сутки)</td> 
-                <td>{apz.WaterRequirement}</td>
+                <td>{apz.apz_water.requirement}</td>
               </tr>
               <tr>
                 <td>Хозпитьевые нужды (м<sup>3</sup>/сутки)</td>
-                <td>{apz.WaterDrinking}</td>
+                <td>{apz.apz_water.drinking}</td>
               </tr>
               <tr>
                 <td>Производ. нужды (м<sup>3</sup>/сутки)</td>
-                <td>{apz.WaterProduction}</td>
+                <td>{apz.apz_water.production}</td>
               </tr>
               <tr>
                 <td>Расходы пожаротушения (л/сек)</td>
-                <td>{apz.WaterFireFighting}</td>
+                <td>{apz.apz_water.fire_fighting}</td>
               </tr>
               <tr>
                 <td>Общ. кол. сточных вод (м<sup>3</sup>/сутки)</td>
-                <td>{apz.WaterSewage}</td>
+                <td>{apz.apz_water.sewage}</td>
               </tr>
             </tbody>
           </table>
@@ -664,10 +678,10 @@ class ShowApz extends React.Component {
                 <label>Рекомендация</label>
                 <textarea rows="5" className="form-control" value={this.state.recomendation} onChange={this.onRecomendationChange} placeholder="Описание"></textarea>
               </div>
-              {(this.state.response === true && this.state.responseFileExt) &&
+              {(this.state.response === true && this.state.responseFile) &&
                 <div className="form-group">
                   <label style={{display: 'block'}}>Прикрепленный файл</label>
-                  <a className="pointer text-info" title="Скачать" data-url={'response/waterResponse/' + this.state.responseId} onClick={this.downloadFile.bind(this)}>
+                  <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
                     Скачать 
                   </a>
                 </div>
@@ -677,10 +691,10 @@ class ShowApz extends React.Component {
                 <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
               </div>
               <div className="form-group">
-                <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.Id, true, "")}>
+                <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
                   Сохранить
                 </button>
-                <button type="button" className="btn btn-primary" onClick={this.sendWaterResponse.bind(this, apz.Id, true, "")}>
+                <button type="button" className="btn btn-primary" onClick={this.sendWaterResponse.bind(this, apz.id, true, "")}>
                   Отправить
                 </button>
               </div>
@@ -722,14 +736,16 @@ class ShowApz extends React.Component {
                   <td>Рекомендация</td>
                   <td>{this.state.recomendation}</td>
                 </tr>
-                <tr>
-                  <td>Прикрепленный файл</td>
-                  <td>
-                    <a className="pointer text-info" title="Скачать" data-url={'response/waterResponse/' + this.state.responseId} onClick={this.downloadFile.bind(this)}>
-                      Скачать 
-                    </a>
-                  </td>
-                </tr>
+                {this.state.responseFile &&
+                  <tr>
+                    <td>Прикрепленный файл</td>
+                    <td>
+                      <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
+                        Скачать 
+                      </a>
+                    </td>
+                  </tr>
+                }
               </tbody>
             </table>
           }
@@ -744,10 +760,10 @@ class ShowApz extends React.Component {
                <label>Причина отклонения</label>
                 <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
               </div>
-              {(this.state.response === false && this.state.responseFileExt) &&
+              {(this.state.response === false && this.state.responseFile) &&
                 <div className="form-group">
                   <label style={{display: 'block'}}>Прикрепленный файл</label>
-                  <a className="pointer text-info" title="Скачать" data-url={'response/waterResponse/' + this.state.responseId} onClick={this.downloadFile.bind(this)}>
+                  <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
                     Скачать 
                   </a>
                 </div>
@@ -757,10 +773,10 @@ class ShowApz extends React.Component {
                 <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
               </div>
               <div className="form-group">
-                <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.Id, false, this.state.description)}>
+                <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, false, this.state.description)}>
                   Сохранить
                 </button>
-                <button type="button" className="btn btn-primary" onClick={this.sendWaterResponse.bind(this, apz.Id, false, this.state.description)}>
+                <button type="button" className="btn btn-primary" onClick={this.sendWaterResponse.bind(this, apz.id, false, this.state.description)}>
                   Отправить
                 </button>
               </div>
@@ -781,7 +797,7 @@ class ShowApz extends React.Component {
                 <tr>
                   <td>Прикрепленный файл</td>
                   <td>
-                    <a className="pointer text-info" title="Скачать" data-url={'response/waterResponse/' + this.state.responseId} onClick={this.downloadFile.bind(this)}>
+                    <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
                       Скачать 
                     </a>
                   </td>
@@ -795,7 +811,7 @@ class ShowApz extends React.Component {
               <tbody>
                 <tr>
                   <td><b>Сформированный ТУ</b></td>  
-                  <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
+                  <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
                 </tr>
               </tbody>
             </table>
@@ -803,7 +819,7 @@ class ShowApz extends React.Component {
         </div>
 
         <div className="col-sm-12">
-           {this.state.showMap && <ShowMap coordinates={apz.ProjectAddressCoordinates} />} 
+           {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />} 
 
           <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
             {this.state.showMapText}
