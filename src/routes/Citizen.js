@@ -5,6 +5,7 @@ import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
 import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
+//import Loader from 'react-loader-spinner';
 
 export default class Citizen extends React.Component {
   render() {
@@ -85,8 +86,6 @@ class AllApzs extends React.Component {
       }
     }.bind(this)
     xhr.send();
-
-
   }
 
   render() {
@@ -882,7 +881,7 @@ class ShowApz extends React.Component {
     xhr.onload = function() {
       if (xhr.status === 200) {
         var apz = JSON.parse(xhr.responseText);
-        
+        console.log(apz);
         this.setState({apz: apz});
 
         if (apz.Status === 0 || apz.Status === 1) {
@@ -893,7 +892,7 @@ class ShowApz extends React.Component {
           provider_xhr.onload = function() {
             if (provider_xhr.status === 200) {
               this.setState({apzProviders: JSON.parse(provider_xhr.responseText)});
-              console.log(this.state.apzProviders);
+              //console.log(this.state.apzProviders);
             }
           }.bind(this)
           provider_xhr.send();
@@ -956,6 +955,7 @@ class ShowApz extends React.Component {
     xhr.send();
   }
 
+  // this function is to print Apz
   printApz(apzId, project) {
     var token = sessionStorage.getItem('tokenInfo');
     if (token) {
@@ -1011,6 +1011,7 @@ class ShowApz extends React.Component {
     }
   }
 
+  // format the date
   toDate(date) {
     if(date === null) {
       return date;
@@ -1275,31 +1276,22 @@ class ShowApz extends React.Component {
               <td><b>Дата заявления</b></td>
               <td>{apz.ApzDate && this.toDate(apz.ApzDate)}</td>
             </tr>
-            
-            {apz.PersonalIdExist &&
-              <tr>
-                <td><b>Уд. лич./ Реквизиты</b></td>
-                <td><a className="text-info pointer" data-url={'citizenfile/personalId/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
-              </tr>
-            }
-
-            {apz.ConfirmedTaskExist &&
-              <tr>
-                <td><b>Утвержденное задание</b></td>
-                <td><a className="text-info pointer" data-url={'citizenfile/confirmedTask/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
-              </tr>
-            }
-
-            {apz.TitleDocumentExist &&
-              <tr>
-                <td><b>Правоустанавл. документ</b></td>
-                <td><a className="text-info pointer" data-url={'citizenfile/titleDocument/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
-              </tr>
-            }
+            <tr>
+              <td><b>Уд. лич./ Реквизиты</b></td>
+              <td><a className="text-info pointer" data-url={'citizenfile/personalId/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+            </tr>     
+            <tr>
+              <td><b>Утвержденное задание</b></td>
+              <td><a className="text-info pointer" data-url={'citizenfile/confirmedTask/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+            </tr>
+            <tr>
+              <td><b>Правоустанавл. документ</b></td>
+              <td><a className="text-info pointer" data-url={'citizenfile/titleDocument/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+            </tr>  
           </tbody>
         </table>
 
-        {apz.HeadResponseExist &&
+        
           <div>
             <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
 
@@ -1778,7 +1770,7 @@ class ShowApz extends React.Component {
               </div>
             </div>
           </div>
-        }
+        
 
         {this.state.showMap && <ShowMap coordinates={apz.ProjectAddressCoordinates} />} 
 

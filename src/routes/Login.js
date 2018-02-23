@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import PreloaderIcon, {ICON_TYPE} from 'react-preloader-icon';
+import Loader from 'react-loader-spinner';
 import $ from 'jquery';
 
 //var rw = null;
@@ -19,7 +19,7 @@ export default class Login extends Component {
     this.state = {
       username: "", 
       pwd: "",
-      loadingVisible: false,
+      loaderHidden: true,
       storageAlias: "PKCS12"
     }
 
@@ -48,7 +48,7 @@ export default class Login extends Component {
   //user login function
   login(e) {
     e.preventDefault();
-    console.log("login function started");
+    //console.log("login function started");
     var tokenKey = "tokenInfo";
     var userNameKey = "userName";
     var userRoleKey = "userRoles";
@@ -77,7 +77,7 @@ export default class Login extends Component {
       return;
     } 
     else {
-      this.setState({loadingVisible: true});
+      this.setState({loaderHidden: false});
       
       var xhr = new XMLHttpRequest();
       xhr.open("post", window.url + "Token", true);
@@ -85,8 +85,8 @@ export default class Login extends Component {
       xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
       xhr.onload = function(e) {
         if (xhr.status === 200) {
-          this.setState({loadingVisible: false});
-          console.log("success");
+          this.setState({loaderHidden: true});
+          console.log("loggedIn");
           //console.log(e.target.response);
           var roles = [JSON.parse(e.target.response).role1];
           if(JSON.parse(e.target.response).role2)
@@ -99,14 +99,24 @@ export default class Login extends Component {
           sessionStorage.setItem(userRoleKey, JSON.stringify(roles));
           sessionStorage.setItem(logStatusKey, true);
           if(roles[0] === 'Urban'){
-            this.props.history.push('/urbanreport');
+            var role = roles[1];
+            switch(role){
+              case 'Region': this.props.history.push('/urbanreport');
+              break;
+
+              case 'Head': this.props.history.push('/headreport');
+              break;
+
+              default: this.props.history.push('/');
+              break;
+            }
           }
           else{
             this.props.history.push('/');
           }
         } 
         else if(xhr.status === 400) {
-          this.setState({loadingVisible: false});
+          this.setState({loaderHidden: true});
           alert("Вы ввели неверный логин и/или пароль.");
         }
       }.bind(this);
@@ -132,6 +142,7 @@ export default class Login extends Component {
     if (path !== null && path !== "" && this.state.storageAlias !== null && this.state.storageAlias !== "") {
       if (password !== null && password !== "") {
         this.getKeys(this.state.storageAlias, path, password, keyType, "loadKeysBack");
+        this.setState({loaderHidden: true});
         //console.log(this.state.resultIIN);
       } else {
         alert("Введите пароль к хранилищу");
@@ -398,86 +409,86 @@ export default class Login extends Component {
       <div>
         <div id="loginModal" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div className="modal-dialog" role="document">
-            <div id="loading">
-              {
-                this.state.loadingVisible
-                  ? <Loading />
-                  : <div></div>
-              }
-            </div>
-            <div className="modal-content">
-              <div className="modal-header">
-                <Link to="/">
-                  <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </Link>
-                <h4 className="modal-title" id="myModalLabel">Вход в систему</h4>
-              </div>
-              <div className="modal-body">
-                <ul className="nav nav-tabs">
-                  <li className="nav-item"><a className="nav-link active" data-toggle="tab" href="#menu1">Вход без ЭЦП</a></li>
-                  <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu2">Вход с ЭЦП</a></li>
-                </ul>
+              <div className="modal-content">
+                <div className="modal-header">
+                  <Link to="/">
+                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </Link>
+                  <h4 className="modal-title" id="myModalLabel">Вход в систему</h4>
+                </div>
+                <div className="modal-body">
+                  <ul className="nav nav-tabs">
+                    <li className="nav-item"><a className="nav-link active" data-toggle="tab" href="#menu1">Вход без ЭЦП</a></li>
+                    <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu2">Вход с ЭЦП</a></li>
+                  </ul>
 
-                <div className="tab-content">
-                  <div id="menu1" className="tab-pane fade active show">
-                    <p>&nbsp;</p>
-                    <form id="loginForm" onSubmit={this.login}>
+                  <div className="tab-content">
+                    <div id="menu1" className="tab-pane fade active show">
+                      <p>&nbsp;</p>
+                      <form id="loginForm" onSubmit={this.login}>
+                        <div className="form-group">
+                          <label className="control-label">ИИН/БИН:</label>
+                          <input type="text" className="form-control" id="userName" value={this.state.username} onChange={this.onUsernameChange} required />
+                        </div>
+                        <div className="form-group">
+                          <label className="control-label">Пароль:</label>
+                          <input type="password" className="form-control" value={this.state.pwd} onChange={this.onPwdChange} required />
+                        </div>
+                        <div className="modal-footer">
+                          {!this.state.loaderHidden &&
+                            <div style={{margin: '0 auto'}}>
+                              <Loader type="Ball-Triangle" color="#46B3F2" height="70" width="70" />
+                            </div>
+                          }
+                          {this.state.loaderHidden &&
+                            <div>
+                              <button type="submit" className="btn btn-primary">Войти</button>
+                              <Link to="/" style={{marginRight:'5px'}}>
+                                <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
+                              </Link>
+                            </div>
+                          }
+                        </div>
+                      </form>
+                    </div>
+                    <div id="menu2" className="tab-pane fade">
+                      <p>&nbsp;</p>
                       <div className="form-group">
-                        <label className="control-label">ИИН/БИН:</label>
-                        <input type="text" className="form-control" id="userName" value={this.state.username} onChange={this.onUsernameChange} required />
+                        <label className="control-label">Путь к ЭЦП
+                          <input className="form-control" type="text" id="storagePath" readOnly />
+                        </label>
+                        <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button> 
                       </div>
                       <div className="form-group">
-                        <label className="control-label">Пароль:</label>
-                        <input type="password" className="form-control" value={this.state.pwd} onChange={this.onPwdChange} required />
+                        <label className="control-label">Пароль от ЭЦП
+                          <input className="form-control" id="inpPassword" type="password" />
+                        </label>
+                        <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
                       </div>
                       <div className="modal-footer">
-                        <input type="submit" className="btn btn-primary" value="Войти" />
-                        <Link to="/" style={{marginRight:'5px'}}>
-                          <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
-                        </Link>
+                        {!this.state.loaderHidden &&
+                          <div style={{margin: '0 auto'}}>
+                            <Loader type="Ball-Triangle" color="#57BAB1" height="70" width="70" />
+                          </div>
+                        }
+                        {this.state.loaderHidden &&
+                          <div>
+                            <button type="submit" className="btn btn-primary">Войти</button>
+                            <Link to="/" style={{marginRight:'5px'}}>
+                              <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
+                            </Link>
+                          </div>
+                        }
                       </div>
-                    </form>
-                  </div>
-                  <div id="menu2" className="tab-pane fade">
-                    <p>&nbsp;</p>
-                    <div className="form-group">
-                      <label className="control-label">Путь к ЭЦП
-                        <input className="form-control" type="text" id="storagePath" readOnly />
-                      </label>
-                      <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button> 
                     </div>
-                    <div className="form-group">
-                      <label className="control-label">Пароль от ЭЦП
-                        <input className="form-control" id="inpPassword" type="password" />
-                      </label>
-                      <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
-                    </div>
-                    <div className="modal-footer">
-                      <button type="submit" className="btn btn-primary">Войти</button>
-                      <Link to="/" style={{marginRight:'5px'}}>
-                        <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
-                      </Link>
-                      </div>
                   </div>
-                </div>
-                
+                </div>    
               </div>
-              
-              
-            </div>
           </div>
         </div>
       </div>
     )
-  }
-}
-
-class Loading extends Component {
-  render() {
-    return (
-      <PreloaderIcon type={ICON_TYPE.OVAL} size={32} strokeWidth={8} strokeColor="#135ead" duration={800} />
-      )
   }
 }

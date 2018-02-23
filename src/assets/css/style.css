@@ -300,7 +300,10 @@ thead {
   text-transform: uppercase;
 }
 
-footer {
+.footer {
+  /*position: absolute;
+  bottom: 0;
+  width: 100%;*/
   margin-top: 15px;
   background-color: #222;
   padding: 50px 0;
@@ -905,17 +908,14 @@ table{
   padding-top: 20px;
   background: #fafafa;
 }
-thead{
-  font-size: 12px;
-  font-family: "Roboto";
+
+.table-own-style, .th-own-style{
+  font-size: 12px !important;
+  font-family: "Roboto" !important;
 }
-th{
-  padding-top: 20px;
-}
-td{
-  padding-top: 20px;
-}
-th img{
+
+.td-img{
+  display: inline;
   width:100px;
   margin: 0 auto;
 }
