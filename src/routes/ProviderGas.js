@@ -422,31 +422,58 @@ class ShowApz extends React.Component {
     var token = sessionStorage.getItem('tokenInfo');
     if (token) {
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/print/tc/gas/" + apzId, true);
-      xhr.responseType = "blob";
+      xhr.open("get", window.url + "api/print/tc/gas/" + apzId, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.onload = function () {
         if (xhr.status === 200) {
           //test of IE
           if (typeof window.navigator.msSaveBlob === "function") {
             window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
-          } 
-          else {
-            var blob = xhr.response;
-            var link = document.createElement('a');
+          } else {
+            var data = JSON.parse(xhr.responseText);
             var today = new Date();
             var curr_date = today.getDate();
             var curr_month = today.getMonth() + 1;
             var curr_year = today.getFullYear();
             var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
-            //console.log(curr_day);
-            link.href = window.URL.createObjectURL(blob);
-            link.download = "ТУ-Газ-" + project + formated_date + ".pdf";
 
-            //append the link to the document body
-            document.body.appendChild(link);
-            link.click();
+            var base64ToArrayBuffer = (function () {
+        
+              return function (base64) {
+                var binaryString =  window.atob(base64);
+                var binaryLen = binaryString.length;
+                var bytes = new Uint8Array(binaryLen);
+                
+                for (var i = 0; i < binaryLen; i++) {
+                  var ascii = binaryString.charCodeAt(i);
+                  bytes[i] = ascii;
+                }
+                
+                return bytes; 
+              }
+              
+            }());
+
+            var saveByteArray = (function () {
+              var a = document.createElement("a");
+              document.body.appendChild(a);
+              a.style = "display: none";
+              
+              return function (data, name) {
+                var blob = new Blob(data, {type: "octet/stream"}),
+                    url = window.URL.createObjectURL(blob);
+                a.href = url;
+                a.download = name;
+                a.click();
+                window.URL.revokeObjectURL(url);
+              };
+
+            }());
+
+            saveByteArray([base64ToArrayBuffer(data.file)], "ТУ-Газ-" + project + formated_date + ".pdf");
           }
+        } else {
+          alert('Не удалось скачать файл');
         }
       }
       xhr.send();
