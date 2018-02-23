@@ -1,8 +1,8 @@
 import React from 'react';
 //import * as esriLoader from 'esri-loader';
 import EsriLoaderReact from 'esri-loader-react';
-//import { NavLink } from 'react-router-dom';
 import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
+import Loader from 'react-loader-spinner';
 
 export default class Urban extends React.Component {
   render() {
@@ -29,27 +29,20 @@ class AllApzs extends React.Component {
     super(props);
 
     this.state = {
-      allApzs: [],
-      apzs: []
+      activeApzs: [],
+      acceptedApzs: [],
+      declinedApzs: [],
+      loaderHidden: false
     };
 
   }
 
   componentDidMount() {
+    //console.log("Urban componentDidMount");
     this.getApzs();
   }
 
-  componentWillReceiveProps(nextProps) {
-    if(this.props.match.params.status !== nextProps.match.params.status) {
-       this.sortApzs(nextProps.match.params.status);
-   }
-  }
-
-  getApzs(status = null) {
-    if (!status) {
-      status = this.props.match.params.status;
-    }
-
+  getApzs() {
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + "api/apz/region", true);
@@ -59,81 +52,81 @@ class AllApzs extends React.Component {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
         
-        this.setState({allApzs: data});
+        //this.setState({allApzs: data});
+
+        this.setState({ activeApzs: data.filter(function(obj) { return obj.Status === 2; }) });
+        this.setState({ acceptedApzs: data.filter(function(obj) { return ((obj.Status === 0 || obj.Status === 1 || obj.Status === 3 || obj.Status === 4) && (obj.RegionDate !== null && obj.RegionResponse === null)); }) });
+        this.setState({ declinedApzs: data.filter(function(obj) { return (obj.Status === 0 && (obj.RegionDate !== null && obj.RegionResponse !== null)); }) });
+      
+        this.setState({loaderHidden: true});
       }
     }.bind(this);
     xhr.send();
   }
 
-  // when switching between active, accepted and declined
-  sortApzs(status) {
-    var data = this.state.allApzs;
-    
-    switch (status) {
-      case 'active':
-        var apzs = data.filter(function(obj) { return obj.Status === 2; });
-        break;
-
-      case 'accepted':
-        apzs = data.filter(function(obj) { return ((obj.Status === 0 || obj.Status === 1 || obj.Status === 3 || obj.Status === 4) && (obj.RegionDate !== null && obj.RegionResponse === null)); });
-        break;
-
-      case 'declined':
-        apzs = data.filter(function(obj) { return (obj.Status === 0 && (obj.RegionDate !== null && obj.RegionResponse !== null)); });
-        break;
-
-      default:
-        apzs = data;
-        break;
-    }
- 
-    this.setState({apzs: apzs});
-  }
-
   render() {
+    var apzs = [];
+    if(this.props.match.params.status === 'active'){
+      apzs = this.state.activeApzs;
+    }
+    else if(this.props.match.params.status === 'accepted'){
+      apzs = this.state.acceptedApzs;
+    }
+    else{
+      apzs = this.state.declinedApzs;
+    }
     return (
       <div>
-        <ul className="nav nav-tabs mb-2 pull-right">
-          <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/urban/status/active" replace>Активные</NavLink></li>
-          <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/urban/status/accepted" replace>Принятые</NavLink></li>
-          <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/urban/status/declined" replace>Отказанные</NavLink></li>
-        </ul>
+        {this.state.loaderHidden &&
+          <div>
+            <ul className="nav nav-tabs mb-2 pull-right">
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/urban/status/active" replace>Активные</NavLink></li>
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/urban/status/accepted" replace>Принятые</NavLink></li>
+              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/urban/status/declined" replace>Отказанные</NavLink></li>
+            </ul>
 
-        <table className="table">
-          <thead>
-            <tr>
-              <th style={{width: '85%'}}>Название</th>
-              <th style={{width: '15%'}}>Статус</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.apzs.map(function(apz, index) {
-              return(
-                <tr key={index}>
-                  <td>{apz.ProjectName}</td>
-                  <td>
-                    {apz.Status === 0 && (apz.RegionDate !== null && apz.RegionResponse !== null) &&
-                      <span className="text-danger">Отказано</span>
-                    }
-
-                    {(apz.Status === 0 || apz.Status === 1 || apz.Status === 3 || apz.Status === 4) && (apz.RegionDate !== null && apz.RegionResponse === null) &&
-                      <span className="text-success">Принято</span>
-                    }
-
-                    {apz.Status === 2 &&
-                      <span className="text-info">В процессе</span>
-                    }
-                  </td>
-                  <td>
-                    <Link className="btn btn-outline-info" to={'/urban/' + apz.Id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
-                  </td>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th style={{width: '85%'}}>Название</th>
+                  <th style={{width: '15%'}}>Статус</th>
+                  <th></th>
                 </tr>
-                );
-              })
-            }
-          </tbody>
-        </table>
+              </thead>
+              <tbody>
+                {apzs.map(function(apz, index) {
+                  return(
+                    <tr key={index}>
+                      <td>{apz.ProjectName}</td>
+                      <td>
+                        {apz.Status === 0 && (apz.RegionDate !== null && apz.RegionResponse !== null) &&
+                          <span className="text-danger">Отказано</span>
+                        }
+
+                        {(apz.Status === 0 || apz.Status === 1 || apz.Status === 3 || apz.Status === 4) && (apz.RegionDate !== null && apz.RegionResponse === null) &&
+                          <span className="text-success">Принято</span>
+                        }
+
+                        {apz.Status === 2 &&
+                          <span className="text-info">В процессе</span>
+                        }
+                      </td>
+                      <td>
+                        <Link className="btn btn-outline-info" to={'/urban/' + apz.Id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                      </td>
+                    </tr>
+                    );
+                  })
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+        {!this.state.loaderHidden && 
+          <div style={{textAlign: 'center'}}>
+            <Loader type="Oval" color="#46B3F2" height="200" width="200" />
+          </div>
+        }
       </div>  
     )
   }
@@ -149,6 +142,7 @@ class ShowApz extends React.Component {
       showButtons: true,
       description: '',
       showMapText: 'Показать карту',
+      loaderHidden: false
     };
 
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
@@ -178,6 +172,13 @@ class ShowApz extends React.Component {
         if (data.Status === 2) { 
           this.setState({showButtons: true}); 
         }
+
+        this.setState({loaderHidden: true});
+      }
+      else if (xhr.status === 401){
+        sessionStorage.clear();
+        alert("Время сессии истекло. Пожалуйста войдите заново!");
+        this.props.history.replace("/login");
       }
     }.bind(this)
     xhr.send();
@@ -257,9 +258,10 @@ class ShowApz extends React.Component {
           alert("Заявление отклонено!");
           this.setState({ showButtons: false });
         }
-      } else if (xhr.status === 401) {
+      } 
+      else if (xhr.status === 401) {
         sessionStorage.clear();
-        alert("Token is expired, please login again!");
+        alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
       }
     }.bind(this);
@@ -303,117 +305,126 @@ class ShowApz extends React.Component {
 
     return (
       <div>
-        <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
-        
-        <table className="table table-bordered table-striped">
-          <tbody>
-            <tr>
-              <td style={{width: '22%'}}><b>Заявитель</b></td>
-              <td>{apz.Applicant}</td>
-            </tr>
-            <tr>
-              <td><b>Адрес</b></td>
-              <td>{apz.Address}</td>
-            </tr>
-            <tr>
-              <td><b>Телефон</b></td>
-              <td>{apz.Phone}</td>
-            </tr>
-            <tr>
-              <td><b>Заказчик</b></td>
-              <td>{apz.Customer}</td>
-            </tr>
-            <tr>
-              <td><b>Разработчик</b></td>
-              <td>{apz.Designer}</td>
-            </tr>
-            <tr>
-              <td><b>Название проекта</b></td>
-              <td>{apz.ProjectName}</td>
-            </tr>
-            <tr>
-              <td><b>Адрес проекта</b></td>
-              <td>
-                {apz.ProjectAddress}
+        {this.state.loaderHidden &&
+          <div>
+            <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
+            
+            <table className="table table-bordered table-striped">
+              <tbody>
+                <tr>
+                  <td style={{width: '22%'}}><b>Заявитель</b></td>
+                  <td>{apz.Applicant}</td>
+                </tr>
+                <tr>
+                  <td><b>Адрес</b></td>
+                  <td>{apz.Address}</td>
+                </tr>
+                <tr>
+                  <td><b>Телефон</b></td>
+                  <td>{apz.Phone}</td>
+                </tr>
+                <tr>
+                  <td><b>Заказчик</b></td>
+                  <td>{apz.Customer}</td>
+                </tr>
+                <tr>
+                  <td><b>Разработчик</b></td>
+                  <td>{apz.Designer}</td>
+                </tr>
+                <tr>
+                  <td><b>Название проекта</b></td>
+                  <td>{apz.ProjectName}</td>
+                </tr>
+                <tr>
+                  <td><b>Адрес проекта</b></td>
+                  <td>
+                    {apz.ProjectAddress}
 
-                {apz.ProjectAddressCoordinates !== "" &&
-                  <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
+                    {apz.ProjectAddressCoordinates !== "" &&
+                      <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
+                    }
+                  </td>
+                </tr>
+                <tr>
+                  <td><b>Дата заявления</b></td>
+                  <td>{apz.ApzDate && this.toDate(apz.ApzDate)}</td>
+                </tr>
+                
+                {apz.PersonalIdExist &&
+                  <tr>
+                    <td><b>Уд. лич./ Реквизиты</b></td>
+                    <td><a className="text-info pointer" data-url={'citizenfile/personalId/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  </tr>
                 }
-              </td>
-            </tr>
-            <tr>
-              <td><b>Дата заявления</b></td>
-              <td>{apz.ApzDate && this.toDate(apz.ApzDate)}</td>
-            </tr>
-            
-            {apz.PersonalIdExist &&
-              <tr>
-                <td><b>Уд. лич./ Реквизиты</b></td>
-                <td><a className="text-info pointer" data-url={'citizenfile/personalId/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
-              </tr>
-            }
 
-            {apz.ConfirmedTaskExist &&
-              <tr>
-                <td><b>Утвержденное задание</b></td>
-                <td><a className="text-info pointer" data-url={'citizenfile/confirmedTask/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
-              </tr>
-            }
+                {apz.ConfirmedTaskExist &&
+                  <tr>
+                    <td><b>Утвержденное задание</b></td>
+                    <td><a className="text-info pointer" data-url={'citizenfile/confirmedTask/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  </tr>
+                }
 
-            {apz.TitleDocumentExist &&
-              <tr>
-                <td><b>Правоустанавл. документ</b></td>
-                <td><a className="text-info pointer" data-url={'citizenfile/titleDocument/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
-              </tr>
-            }
-          </tbody>
-        </table>
+                {apz.TitleDocumentExist &&
+                  <tr>
+                    <td><b>Правоустанавл. документ</b></td>
+                    <td><a className="text-info pointer" data-url={'citizenfile/titleDocument/' + apz.CitizenFileId} onClick={this.downloadFile.bind(this)}>Скачать</a></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
 
-        <div className={this.state.showButtons ? '' : 'invisible'}>
-          <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-            <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
-                    onClick={this.acceptDeclineApzForm.bind(this, apz.Id, true, "your form was accepted")}>
-              Одобрить
-            </button>
-            
-            <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
-              Отклонить
-            </button>
-            
-            <div className="modal fade" id="accDecApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-              <div className="modal-dialog" role="document">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title">Причина отклонения</h5>
-                    <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div className="modal-body">
-                    <div className="form-group">
-                      <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
+            <div className={this.state.showButtons ? '' : 'invisible'}>
+              <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
+                        onClick={this.acceptDeclineApzForm.bind(this, apz.Id, true, "your form was accepted")}>
+                  Одобрить
+                </button>
+                
+                <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
+                  Отклонить
+                </button>
+                
+                <div className="modal fade" id="accDecApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                  <div className="modal-dialog" role="document">
+                    <div className="modal-content">
+                      <div className="modal-header">
+                        <h5 className="modal-title">Причина отклонения</h5>
+                        <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div className="modal-body">
+                        <div className="form-group">
+                          <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
+                        </div>
+                      </div>
+                      <div className="modal-footer">
+                        <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, apz.Id, false, this.state.description)}>Отправить</button>
+                        <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                      </div>
                     </div>
-                  </div>
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, apz.Id, false, this.state.description)}>Отправить</button>
-                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                   </div>
                 </div>
               </div>
             </div>
+
+            {this.state.showMap && <ShowMap coordinates={apz.ProjectAddressCoordinates} />} 
+
+            <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
+              {this.state.showMapText}
+            </button>
+
+            <div className="col-sm-12">
+              <hr />
+              <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
+            </div>
           </div>
-        </div>
-
-        {this.state.showMap && <ShowMap coordinates={apz.ProjectAddressCoordinates} />} 
-
-        <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
-          {this.state.showMapText}
-        </button>
-
-        <div className="col-sm-12">
-          <hr />
-          <Link className="btn btn-outline-secondary pull-right" to={'/urban/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
-        </div>
+        }
+        {!this.state.loaderHidden &&
+          <div style={{textAlign: 'center'}}>
+            <Loader type="Oval" color="#46B3F2" height="200" width="200" />
+          </div>
+        }
       </div>
     )
   }

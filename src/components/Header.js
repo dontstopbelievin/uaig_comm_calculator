@@ -18,11 +18,13 @@ export default class Header extends Component {
     (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
 
     this.state = {
-      rolename: ""
+      rolename: "",
+      showBottomNavbar: false
     }
 
     this.checkToken = this.checkToken.bind(this);
     this.logout = this.logout.bind(this);
+    this.toggleBottomNavbar = this.toggleBottomNavbar.bind(this);
   }
 
   logout() {
@@ -36,6 +38,7 @@ export default class Header extends Component {
       if (xhr.status === 200) {
         sessionStorage.clear();
         this.props.history.replace('/');
+        console.log("loggedOut");
       }
       else if(xhr.status === 401){
         sessionStorage.clear();
@@ -73,8 +76,12 @@ export default class Header extends Component {
           //alert("Your token is invalid please refresh the page.");
         }
       }.bind(this);
-        xhr.send();
+      xhr.send();
     }
+  }
+
+  toggleBottomNavbar() {
+    this.setState({showBottomNavbar: !this.state.showBottomNavbar});
   }
 
   componentWillMount() {
@@ -161,7 +168,7 @@ export default class Header extends Component {
                   <NavLink to="/urbanreport" replace className="nav-link">{e.home}</NavLink>
                 }
                 {rolename === 'Head' && 
-                  <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
+                  <NavLink to={'/headreport'} replace className="nav-link">{e.home}</NavLink>
                 }
                 {rolename === 'Engineer' && 
                   <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
@@ -211,11 +218,10 @@ export default class Header extends Component {
               <li className="nav-item">
                 <NavLink to={'/budget_plan'} replace className="nav-link">{e.budget_plan}</NavLink>
               </li>
-
-              <li className="nav-item dropdown">
-                <button className="nav-link dropdown-toggle" style={navBtnStyle} href="#" id="additionalDropdownMenuLink" data-toggle="dropdown"   >
-                <a className="hider">  {e.additional}</a>
-                </button>
+              <li className="nav-item">
+                <a className="nav-link pointer" onClick={this.toggleBottomNavbar}>
+                  {e.additional} <i className="glyphicon glyphicon-menu-down mr-2"></i>
+                </a>
               </li>
               <li className="nav-item dropdown">
                 <button className="nav-link dropdown-toggle polls-menu" style={navBtnStyle} href="#" id="additionalDropdownMenuLink" data-toggle="dropdown" >
@@ -241,36 +247,38 @@ export default class Header extends Component {
           </div>
         </nav>
 
-        <div className="mish" id="mish">
-          <div className="container">
-            <div className="row" style={{fontFamely:'Roboto'}}>
-              <div className="col_1">
-                <ul>
-                  <li><NavLink to={'/npm'} replace className="">{e.npm}</NavLink></li>
-                  <li><NavLink to={'/tutorials'} replace className="">{e.tutorials}</NavLink></li>
-                </ul>
-              </div>
-              <div className="col_2">
-                <ul>
-                  <li><a target="_blank" href="https://v3bl.goszakup.gov.kz/ru/register/plansreg?name_bin=990740001176&number_plan=&name_plan=&years_plan=2017&trade_method=&trade_vid=&attribute=&point_status=&pln_month=&region=&finance_point=&adm_bud=&program=&sub_program=&spec">{e.legalpurchese}</a></li>
-                  <li><NavLink to={'/timeOfReception'} replace className="">{e.timeOfReception}</NavLink></li>
-                </ul>
-              </div>
-              <div className="col_3">
-                <ul>
-                  <li><NavLink to={'/counteraction'} replace className="">{e.counteraction}</NavLink></li>
-                </ul>
-              </div>
-              <div className="col_4">
-                <ul>
-                  <li id="s"><NavLink to={'/news'} replace className="">{e.news}</NavLink></li>
-                  <li id="s"><NavLink to={'/control'} replace className="">{e.control}</NavLink></li>
-                  <li id="t"><NavLink to={'/contacts'} replace className="">{e.contacts}</NavLink></li>
-                </ul>
+        {this.state.showBottomNavbar && 
+          <div className="mish" id="mish">
+            <div className="container">
+              <div className="row" style={{fontFamely:'Roboto'}}>
+                <div className="col_1">
+                  <ul>
+                    <li><NavLink to={'/npm'} replace className="">{e.npm}</NavLink></li>
+                    <li><NavLink to={'/tutorials'} replace className="">{e.tutorials}</NavLink></li>
+                  </ul>
+                </div>
+                <div className="col_2">
+                  <ul>
+                    <li><a target="_blank" href="https://v3bl.goszakup.gov.kz/ru/register/plansreg?name_bin=990740001176&number_plan=&name_plan=&years_plan=2017&trade_method=&trade_vid=&attribute=&point_status=&pln_month=&region=&finance_point=&adm_bud=&program=&sub_program=&spec" rel="noopener noreferrer">{e.legalpurchese}</a></li>
+                    <li><NavLink to={'/timeOfReception'} replace className="">{e.timeOfReception}</NavLink></li>
+                  </ul>
+                </div>
+                <div className="col_3">
+                  <ul>
+                    <li><NavLink to={'/counteraction'} replace className="">{e.counteraction}</NavLink></li>
+                  </ul>
+                </div>
+                <div className="col_4">
+                  <ul>
+                    <li id="s"><NavLink to={'/news'} replace className="">{e.news}</NavLink></li>
+                    <li id="s"><NavLink to={'/control'} replace className="">{e.control}</NavLink></li>
+                    <li id="t"><NavLink to={'/contacts'} replace className="">{e.contacts}</NavLink></li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        }
       </div>
     )
   }

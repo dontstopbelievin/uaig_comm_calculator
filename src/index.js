@@ -14,6 +14,7 @@ import Citizen from './routes/Citizen';
 import Urban from './routes/Urban';
 import UrbanReport from './routes/UrbanReport';
 import Head from './routes/Head';
+import HeadReport from './routes/HeadReport';
 import ProviderElectro from './routes/ProviderElectro';
 import ProviderGas from './routes/ProviderGas';
 import ProviderPhone from './routes/ProviderPhone';
@@ -81,7 +82,7 @@ export default class Main extends React.Component {
     //console.log(this.props);
     return (
         <HashRouter>
-          <div>
+          <div style={{minHeight: '100vh', position: 'relative'}}>
             <Route render={(props) => (<Header {...props} />)} />
             <Switch>
               <Route exact path="/" render={(props) => (<Guest {...props} />)} />
@@ -94,6 +95,7 @@ export default class Main extends React.Component {
               <Route path="/urban" render={(props) => (<Urban {...props} />)} />
               <Route path="/urbanreport" render={(props) => (<UrbanReport {...props} />)} />
               <Route path="/head" render={(props) => (<Head {...props} />)} />
+              <Route path="/headreport" render={(props) => (<HeadReport {...props} />)} />
               <Route path="/citizen" render={(props) => (<Citizen {...props} />)} />
               <Route path="/providerelectro" render={(props) => (<ProviderElectro {...props} />)} />
               <Route path="/providergas" render={(props) => (<ProviderGas {...props} />)} />

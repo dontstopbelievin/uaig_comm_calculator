@@ -2,7 +2,7 @@ import React from 'react';
 import Loader from 'react-loader-spinner';
 import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
 
-export default class UrbanReport extends React.Component {
+export default class HeadReport extends React.Component {
 
   render() {
     return (
@@ -11,14 +11,14 @@ export default class UrbanReport extends React.Component {
           <div className="card-header">
             <h4 className="mb-0 h4-inline">Архитектурно-планировочное задание / Отчет</h4>
             <ul className="nav nav-tabs mb-2 pull-right">
-              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link nav-link-reports" activeStyle={{color:"black"}} to="/urbanreport/apzs/accepted" replace>Принятые</NavLink></li>
-              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link nav-link-reports" activeStyle={{color:"black"}} to="/urbanreport/apzs/declined" replace>Отказанные</NavLink></li>
+              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link nav-link-reports" activeStyle={{color:"black"}} to="/headreport/apzs/accepted" replace>Принятые</NavLink></li>
+              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link nav-link-reports" activeStyle={{color:"black"}} to="/headreport/apzs/declined" replace>Отказанные</NavLink></li>
             </ul>
           </div>
           <div className="card-body">
             <Switch>
-              <Route path="/urbanreport/apzs/:status" component={ApzListReport} />
-              <Redirect from="/urbanreport" to="/urbanreport/apzs/accepted" />
+              <Route path="/headreport/apzs/:status" component={ApzListReport} />
+              <Redirect from="/headreport" to="/headreport/apzs/accepted" />
             </Switch>
           </div>
         </div>
@@ -32,8 +32,8 @@ class ApzListReport extends React.Component {
     super(props);
 
     this.state = {
-      acceptedApzs: [],
-      declinedApzs: [],
+      apzs: [],
+      sortedApzs: [],
       periodClicked: true,
       filtr2Clicked: false,
       startDate: "",
@@ -84,8 +84,8 @@ class ApzListReport extends React.Component {
     if(sessionStorage.getItem('tokenInfo')){
       //console.log("token exist");
       var status = this.props.match.params.status;
-      if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Region'){
-        this.props.history.replace('/urbanreport/apzs/' + status);
+      if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Head'){
+        this.props.history.replace('/headreport/apzs/' + status);
       }
       else {
         this.props.history.replace('/');
@@ -100,9 +100,16 @@ class ApzListReport extends React.Component {
     //console.log("UrbanReport Component didMount");
     if(sessionStorage.getItem('tokenInfo')){
       //console.log("token exist");
-      if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Region'){
+      if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Head'){
         this.getApzs();
       }
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    //console.log("componentWillReceiveProps is called");
+    if(this.props.match.params.status !== nextProps.match.params.status) {
+      this.sortApzs(nextProps.match.params.status);
     }
   }
 
@@ -110,7 +117,7 @@ class ApzListReport extends React.Component {
   getApzs() {
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/region", true);
+    xhr.open("get", window.url + "api/apz/all", true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
@@ -118,18 +125,40 @@ class ApzListReport extends React.Component {
         var data = JSON.parse(xhr.responseText);
         //console.log(data); 
 
-        this.setState({ acceptedApzs: data.filter(function(obj) { return ((obj.Status === 0 || obj.Status === 1 || obj.Status === 3 || obj.Status === 4) && (obj.RegionDate !== null && obj.RegionResponse === null)); }) });
-        this.setState({ declinedApzs: data.filter(function(obj) { return (obj.Status === 0 && (obj.RegionDate !== null && obj.RegionResponse !== null)); }) });
+        var sortedData = data.filter(function(obj) { return obj.Status === 1 && (obj.HeadDate !== null && obj.HeadResponse === null); }); 
+     
+        this.setState({apzs: data});
+        this.setState({sortedApzs: sortedData});
         this.setState({loaderHidden: true});
       }
       else if (xhr.status === 401){
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
-        this.setState({loaderHidden: true});
         this.props.history.replace("/login");
       }
     }.bind(this);
     xhr.send();
+  }
+
+  // when switching between accepted and declined
+  sortApzs(status) {
+    var data = this.state.apzs;
+    
+    switch (status) {
+      case 'accepted':
+        var apzs = data.filter(function(obj) { return obj.Status === 1 && (obj.HeadDate !== null && obj.HeadResponse === null); });
+        break;
+
+      case 'declined':
+        apzs = data.filter(function(obj) { return obj.Status === 0 && (obj.HeadDate !== null && obj.HeadResponse !== null); });
+        break;
+
+      default:
+        apzs = data;
+        break;
+    }
+ 
+    this.setState({sortedApzs: apzs});
   }
 
   // give the list sorted by date
@@ -144,7 +173,7 @@ class ApzListReport extends React.Component {
       var endDate = this.addDay(end);
       var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/region/" + status + "/" + start + "/" + endDate, true);
+      xhr.open("get", window.url + "api/apz/head/" + status + "/" + start + "/" + endDate, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function () {
@@ -162,7 +191,6 @@ class ApzListReport extends React.Component {
         else if (xhr.status === 401){
           sessionStorage.clear();
           alert("Время сессии истекло. Пожалуйста войдите заново!");
-          this.setState({loaderHidden: true});
           this.props.history.replace("/login");
         }
       }.bind(this);
@@ -182,13 +210,6 @@ class ApzListReport extends React.Component {
   }
 
   render() {
-    var apzs = [];
-    if(this.props.match.params.status === 'accepted'){
-      apzs = this.state.acceptedApzs;
-    }
-    else{
-      apzs = this.state.declinedApzs;
-    }
     return (
       <div className="row">
         <div className="col-2">
@@ -235,27 +256,27 @@ class ApzListReport extends React.Component {
                 <thead>
                   <tr>
                     <th style={{width: '50%'}}><b>Общее количество:</b></th>
-                    <th style={{width: '50%'}}>{apzs.length}</th>
+                    <th style={{width: '50%'}}>{this.state.sortedApzs.length}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {apzs.length > 0 &&
+                  {this.state.sortedApzs.length > 0 &&
                     <tr style={{textAlign: 'center', fontSize: '18px', color: 'peru'}}>
                       <td colSpan="2">Список заявлении</td>
                     </tr>
                   }
-                  {apzs.length > 0 &&
+                  {this.state.sortedApzs.length > 0 &&
                     <tr>
                       <td><b>Название</b></td>
                       <td><b>Детали</b></td>
                     </tr>
                   }
-                  {apzs.map(function(apz, index) {
+                  {this.state.sortedApzs.map(function(apz, index) {
                     return(
                       <tr key={index}>
                         <td>{apz.ProjectName}</td>
                         <td>
-                          <Link className="btn btn-outline-info" to={'/urban/' + apz.Id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                          <Link className="btn btn-outline-info" to={'/head/' + apz.Id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                         </td>
                       </tr>
                       );

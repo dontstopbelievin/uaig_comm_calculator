@@ -10,7 +10,7 @@ export default class Footer extends React.Component {
 	    (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
   	}
 	render(){
-		var _zero_kz_ = _zero_kz_ || [];
+		var _zero_kz_ = [];
 		_zero_kz_.push(["id", 70316]);
 		_zero_kz_.push(["type", 1]);
 
@@ -19,22 +19,22 @@ export default class Footer extends React.Component {
 		    s = document.createElement("script");
 		    s.type = "text/javascript";
 		    s.async = true;
-		    s.src = (document.location.protocol == "https:" ? "https:" : "http:")
+		    s.src = (document.location.protocol === "https:" ? "https:" : "http:")
 		    + "//c.zero.kz/z.js";
 		    a.parentNode.insertBefore(s, a);
 		})(); 
 
 		return(
-			<footer>
+			<div className="footer">
 				<div className="container">
 	                <p>&copy; 2017 - <strong>{e.copyright}</strong></p>
 					<span id="_zero_70316">
-						<a href="https://zero.kz/catalog/70316_upravlenie-arxitekturi-i-gradostroitelstva-goroda-almati" target="_blank">
+						<a href="https://zero.kz/catalog/70316_upravlenie-arxitekturi-i-gradostroitelstva-goroda-almati" target="_blank" rel="noopener noreferrer">
 							<img src="http://c.zero.kz/z.png?u=70316" width="88" height="31" alt="ZERO.kz" />
 						</a>
 					</span>
 	       		</div>
-	        </footer>
+	        </div>
 		)
 	}
 }

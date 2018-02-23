@@ -21,7 +21,7 @@ export default class Npm extends React.Component{
   render() {
     return(
         <div>
-        <div class="container navigational_price">
+        <div className="container navigational_price">
 
           <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.npm}
 
