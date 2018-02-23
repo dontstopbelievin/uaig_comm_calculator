@@ -54,7 +54,7 @@ export default class timeOfReception extends React.Component{
                         <td>{e.col_2_1}</td>
                         <td>{e.col_2_2}</td>
                         <th>
-                            <img style={{width: '', height: '', display: "inline"}} src="/images/architects/zhanbyrshy.png"/>
+                            <img style={{width: '100px', height: '', display: "inline"}} src="/images/architects/zhanbyrshy.png"/>
                         </th>
                         <td>{e.col_2_3}
                             <br/>
@@ -70,7 +70,7 @@ export default class timeOfReception extends React.Component{
                         <td>{e.col_3_1}</td>
                         <td>{e.col_3_2}</td>
                         <th>
-                            <img style={{width: '', height: '', display: "inline"}} src="/images/architects/tolepbergen.png"/>
+                            <img style={{width: '100px', height: '', display: "inline"}} src="/images/architects/tolepbergen.png"/>
                         </th>
                         <td>{e.col_3_3}
                             <br/>
@@ -86,7 +86,7 @@ export default class timeOfReception extends React.Component{
                         <td>{e.col_4_1}</td>
                         <td>{e.col_4_2}</td>
                         <th>
-                            <img style={{width: '', height: '', display: "inline"}} src="/images/architects/rymzhanov.png"/>
+                            <img style={{width: '100px', height: '', display: "inline"}} src="/images/architects/rymzhanov.png"/>
                         </th>
                         <td>{e.col_4_3}
                             <br/>
@@ -102,7 +102,7 @@ export default class timeOfReception extends React.Component{
                         <td>{e.col_5_1}</td>
                         <td>{e.col_5_2}</td>
                         <th>
-                            <img style={{width: '', height: '', display: "inline"}} src="/images/architects/isaev.png"/>
+                            <img style={{width: '100px', height: '', display: "inline"}} src="/images/architects/isaev.png"/>
                         </th>
                         <td>{e.col_5_3}
                             <br/>
@@ -118,7 +118,7 @@ export default class timeOfReception extends React.Component{
                         <td>{e.col_6_1}</td>
                         <td>{e.col_6_2}</td>
                         <th>
-                            <img style={{width: '', height: '', display: "inline"}} src="/images/architects/kultasov.png"/>
+                            <img style={{width: '100px', height: '', display: "inline"}} src="/images/architects/kultasov.png"/>
                         </th>
                         <td>{e.col_6_3}
                             <br/>
@@ -134,7 +134,7 @@ export default class timeOfReception extends React.Component{
                         <td>{e.col_7_1}</td>
                         <td>{e.col_7_2}</td>
                         <th>
-                            <img style={{width: '', height: '', display: "inline"}} src="/images/architects/zhumabekov.png"/>
+                            <img style={{width: '100px', height: '', display: "inline"}} src="/images/architects/zhumabekov.png"/>
                         </th>
                         <td>{e.col_7_3}
                             <br/>
@@ -150,7 +150,7 @@ export default class timeOfReception extends React.Component{
                         <td>{e.col_8_1}</td>
                         <td>{e.col_8_2}</td>
                         <th>
-                            <img style={{width: '', height: '', display: "inline"}} src="/images/architects/myrzekov.png"/>
+                            <img style={{width: '100px', height: '', display: "inline"}} src="/images/architects/myrzekov.png"/>
                         </th>
                         <td>{e.col_8_3}
                             <br/>
@@ -166,7 +166,7 @@ export default class timeOfReception extends React.Component{
                         <td>{e.col_9_1}</td>
                         <td>{e.col_9_2}</td>
                         <th>
-                            <img style={{width: '', height: '', display: "inline"}} src="/images/architects/sembaev.png"/>
+                            <img style={{width: '100px', height: '', display: "inline"}} src="/images/architects/sembaev.png"/>
                         </th>
                         <td>{e.col_9_3}
                             <br/>

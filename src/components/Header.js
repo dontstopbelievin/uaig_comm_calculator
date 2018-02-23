@@ -259,6 +259,7 @@ export default class Header extends Component {
               <div className="col_3">
                 <ul>
                   <li><NavLink to={'/counteraction'} replace className="">{e.counteraction}</NavLink></li>
+                  <li><NavLink to={'/doingBusiness'} replace className="">DOING BUSINESS</NavLink></li>
                 </ul>
               </div>
               <div className="col_4">

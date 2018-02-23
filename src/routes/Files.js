@@ -392,7 +392,7 @@ class FilesForm extends React.Component {
     else 
     {
       var xhr = new XMLHttpRequest();
-      xhr.open("post", window.url + "api/File/Upload", true);
+      xhr.open("post", "http://uaig/api/File/Upload", true);
       //Send the proper header information along with the request
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       //xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");

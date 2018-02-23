@@ -46,6 +46,7 @@ import Control from './routes/Control';
 import TimeOfReception from './routes/TimeOfReception';
 import Engineer from './routes/Engineer.js';
 import Apz from './routes/Apz.js';
+import DoingBusiness from './routes/DoingBusiness.js';
 
 window.jQuery = require('jquery');
 window.Popper = require('popper.js').default;
@@ -126,6 +127,7 @@ export default class Main extends React.Component {
               <Route path="/architectural_and_town_planning_activity" render={(props) => (<architectural_and_town_planning_activity {...props}/>)}/>
               <Route path="/engineer" render={(props) => (<Engineer {...props}/>)}/>
               <Route path="/apz" render={(props) => (<Apz {...props}/>)}/>
+              <Route path="/doingBusiness" render={(props) => (<DoingBusiness {...props}/>)}/>
             </Switch>
             <Footer />
           </div>

@@ -224,12 +224,15 @@ class Banners extends React.Component{
     return (
       <div>
         <Slider {...settings}>
-          <div style={{marginRight: '10px'}}><a href="http://www.akorda.kz/" target="_blank"><img src='/images/banners/uC9sJ0jW1yIX.jpg' height="100" /></a></div>
-          <div style={{marginRight: '10px'}}><a href="http://strategy2050.kz/" target="_blank"><img src='/images/banners/ban3.png' height="100" /></a></div>
-          <div style={{marginRight: '10px'}}><a href="http://1494.kz/" target="_blank"><img src='/images/banners/Bm0YK96vqHZX.png' height="100" /></a></div>
-          <div style={{marginRight: '10px'}}><a href="http://egov.kz/wps/portal/" target="_blank"><img src='/images/banners/uRzlOYe8hEsN.png' height="100" /></a></div>
-          <div style={{marginRight: '10px'}}><a href="http://www.safekaznet.kz/" target="_blank"><img src='/images/banners/BpawOjICq4xT.png' height="100" /></a></div>
-          <div style={{marginRight: '10px'}}><a href="http://almaty.gov.kz/" target="_blank"><img src='/images/banners/ban1.png' height="100" /></a></div>
+          <div style={{marginRight: '10px', border: '1px solid #ccc'}}><a href="http://www.akorda.kz/" target="_blank"><img src='/images/banners/uC9sJ0jW1yIX.jpg' height="100" /></a></div>
+          <div style={{marginRight: '10px', border: '1px solid #ccc'}}><a href="http://strategy2050.kz/" target="_blank"><img src='/images/banners/ban3.png' height="100" /></a></div>
+          <div style={{marginRight: '10px', border: '1px solid #ccc'}}><a href="http://1494.kz/" target="_blank"><img src='/images/banners/Bm0YK96vqHZX.png' height="100" /></a></div>
+          <div style={{marginRight: '10px', border: '1px solid #ccc'}}><a href="http://egov.kz/wps/portal/" target="_blank"><img src='/images/banners/uRzlOYe8hEsN.png' height="100" /></a></div>
+          <div style={{marginRight: '10px', border: '1px solid #ccc'}}><a href="http://www.safekaznet.kz/" target="_blank"><img src='/images/banners/BpawOjICq4xT.png' height="100" /></a></div>
+          <div style={{marginRight: '10px', border: '1px solid #ccc'}}><a href="http://almaty.gov.kz/" target="_blank"><img src='/images/banners/ban1.png' height="100" /></a></div>
+          <div style={{marginRight: '10px', border: '1px solid #ccc'}}><a href="#"><img src='/images/banners/astana20.png' height="100" /></a></div>
+          <div style={{marginRight: '10px', border: '1px solid #ccc'}}><a href="http://www.almaty.gov.kz/page.php?page_id=3447&lang=1&article_id=27333" target="_blank"><img src='/images/banners/modernization_ru.png' height="100" /></a></div>
+          <div style={{marginRight: '10px', border: '1px solid #ccc'}}><a href="http://ruh.kz/" target="_blank"><img src='/images/banners/ruhan_zhangyru.jpg' height="100" /></a></div>
         </Slider>
       </div>
     );

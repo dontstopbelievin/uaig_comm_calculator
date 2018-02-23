@@ -48,6 +48,14 @@
   right: auto !important;
 }
 
+.isCompany {
+  margin: 20px 0;
+}
+
+.isCompany label {
+  margin-right: 20px;
+}
+
 .bold {
   font-weight: bold;
 }

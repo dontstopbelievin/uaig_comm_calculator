@@ -24,7 +24,7 @@ export default class Map2dView extends Component {
     return (
       <div>
         <div id="newWebApp">    
-          <iframe height="700" width="100%" frameborder="0" scrolling="0" marginheight="0" marginwidth="0" src="https://uaig.maps.arcgis.com/apps/webappviewer/index.html?id=cc2a1d70e8824d9db3a1f065064ccdc8"></iframe>
+          <iframe height="700" width="100%" frameborder="0" scrolling="0" marginheight="0" marginwidth="0" src="https://uaig.maps.arcgis.com/apps/webappviewer/index.html?id=d94c6cd9142e4a4da54cfbf0b7207f76"></iframe>
         </div>
       </div>
     )
