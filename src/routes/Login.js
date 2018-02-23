@@ -55,7 +55,7 @@ export default class Login extends Component {
     var logStatusKey = "logStatus";
     var username = this.state.username.trim();
     var pwd = this.state.pwd.trim();
-    var params = 'grant_type=password&username=' + username + '&password='+ pwd;
+    var params = 'grant_type=password&username=' + username + '&password='+ pwd + '&client_secret=' + window.clientSecret + '&client_id=2';
       
     //========================================
     /*var loginData = {
@@ -80,7 +80,7 @@ export default class Login extends Component {
       this.setState({loaderHidden: false});
       
       var xhr = new XMLHttpRequest();
-      xhr.open("post", window.url + "Token", true);
+      xhr.open("post", window.url + "api/token", true);
       //Send the proper header information along with the request
       xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
       xhr.onload = function(e) {
@@ -95,16 +95,13 @@ export default class Login extends Component {
             roles.push(JSON.parse(e.target.response).role3);
           // сохраняем в хранилище sessionStorage токен доступа
           sessionStorage.setItem(tokenKey, JSON.parse(e.target.response).access_token);
-          sessionStorage.setItem(userNameKey, JSON.parse(e.target.response).userName);
+          sessionStorage.setItem(userNameKey, JSON.parse(e.target.response).iin);
           sessionStorage.setItem(userRoleKey, JSON.stringify(roles));
           sessionStorage.setItem(logStatusKey, true);
           if(roles[0] === 'Urban'){
             var role = roles[1];
             switch(role){
               case 'Region': this.props.history.push('/urbanreport');
-              break;
-
-              case 'Head': this.props.history.push('/headreport');
               break;
 
               default: this.props.history.push('/');

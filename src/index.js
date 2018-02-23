@@ -48,6 +48,7 @@ import TimeOfReception from './routes/TimeOfReception';
 import Engineer from './routes/Engineer.js';
 import Apz from './routes/Apz.js';
 import DoingBusiness from './routes/DoingBusiness.js';
+import ApzDepartment from './routes/ApzDepartment.js';
 
 window.jQuery = require('jquery');
 window.Popper = require('popper.js').default;
@@ -65,8 +66,10 @@ export default class Main extends React.Component {
 
   componentWillMount() {
     this.setLang();
-    window.url = 'https://work.uaig.kz:4443/';
-    // window.url = 'http://localhost:53844/';
+    //window.url = 'https://work.uaig.kz:4443/';
+    //window.url = 'http://localhost:53844/';
+    window.url = 'http://uaig/';
+    window.clientSecret = 'I8hgKG3HcYsJTxiyLEBFPjXnHtvCKSCVa7KO2S2y';
   }
 
   componentDidMount() {
@@ -130,6 +133,7 @@ export default class Main extends React.Component {
               <Route path="/engineer" render={(props) => (<Engineer {...props}/>)}/>
               <Route path="/apz" render={(props) => (<Apz {...props}/>)}/>
               <Route path="/doingBusiness" render={(props) => (<DoingBusiness {...props}/>)}/>
+              <Route path="/apz_department" render={(props) => (<ApzDepartment {...props}/>)}/>
             </Switch>
             <Footer />
           </div>

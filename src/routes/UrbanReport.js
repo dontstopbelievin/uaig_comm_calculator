@@ -1,5 +1,5 @@
 import React from 'react';
-import Loader from 'react-loader-spinner';
+//import * as esriLoader from 'esri-loader';
 import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
 
 export default class UrbanReport extends React.Component {
@@ -32,13 +32,12 @@ class ApzListReport extends React.Component {
     super(props);
 
     this.state = {
-      acceptedApzs: [],
-      declinedApzs: [],
+      apzs: [],
+      sortedApzs: [],
       periodClicked: true,
       filtr2Clicked: false,
       startDate: "",
-      endDate: "",
-      loaderHidden: false
+      endDate: ""
     };
 
     this.onStartDateChange = this.onStartDateChange.bind(this);
@@ -83,9 +82,9 @@ class ApzListReport extends React.Component {
     //console.log("inside WillMount");
     if(sessionStorage.getItem('tokenInfo')){
       //console.log("token exist");
-      var status = this.props.match.params.status;
       if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Region'){
-        this.props.history.replace('/urbanreport/apzs/' + status);
+        this.props.history.replace('/urbanreport/apzs/accepted');
+        //this.getApzs();
       }
       else {
         this.props.history.replace('/');
@@ -106,67 +105,80 @@ class ApzListReport extends React.Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    //console.log("componentWillReceiveProps is called");
+    if(this.props.match.params.status !== nextProps.match.params.status) {
+      this.sortApzs(nextProps.match.params.status);
+    }
+  }
+
   // get the list of all Apzs
   getApzs() {
     var token = sessionStorage.getItem('tokenInfo');
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/region", true);
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/apz/region", true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function () {
+    xhr.onload = function () {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-        //console.log(data); 
 
-        this.setState({ acceptedApzs: data.filter(function(obj) { return ((obj.Status === 0 || obj.Status === 1 || obj.Status === 3 || obj.Status === 4) && (obj.RegionDate !== null && obj.RegionResponse === null)); }) });
-        this.setState({ declinedApzs: data.filter(function(obj) { return (obj.Status === 0 && (obj.RegionDate !== null && obj.RegionResponse !== null)); }) });
-        this.setState({loaderHidden: true});
+        this.setState({apzs: data});
+        this.setState({sortedApzs: data.accepted});
       }
-      else if (xhr.status === 401){
-        sessionStorage.clear();
+      else{
         alert("Время сессии истекло. Пожалуйста войдите заново!");
-        this.setState({loaderHidden: true});
-        this.props.history.replace("/login");
       }
-    }.bind(this);
-    xhr.send();
+    }.bind(this);
+    xhr.send();
+  }
+
+  // when switching between accepted and declined
+  sortApzs(status) {
+    var data = this.state.apzs;
+    
+    switch (status) {
+      case 'accepted':
+        var apzs = data.accepted;
+        break;
+
+      case 'declined':
+        apzs = data.declined;
+        break;
+
+      default:
+        apzs = data.in_process;
+        break;
+    }
+ 
+    this.setState({sortedApzs: apzs});
   }
 
   // give the list sorted by date
   sortByDate(start, end){
-    this.setState({loaderHidden: false});
     if(!start || !end){
-      this.setState({loaderHidden: true});
       alert("Выберите временной отрезок.");
     }
     else {
       var status = this.props.match.params.status;
       var endDate = this.addDay(end);
       var token = sessionStorage.getItem('tokenInfo');
-      var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/region/" + status + "/" + start + "/" + endDate, true);
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/apz/region/" + status + "/" + start + "/" + endDate, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-      xhr.onload = function () {
+      xhr.onload = function () {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
           //console.log(data);
-          this.setState({sortedApzs: data});
-          this.setState({loaderHidden: true});
+          this.setState({sortedApzs: data}); 
         }
         else if(xhr.status === 404){
           this.setState({sortedApzs: []});
           alert("По данному запросу ничего не найдено.");
-          this.setState({loaderHidden: true});
         }
-        else if (xhr.status === 401){
-          sessionStorage.clear();
-          alert("Время сессии истекло. Пожалуйста войдите заново!");
-          this.setState({loaderHidden: true});
-          this.props.history.replace("/login");
-        }
-      }.bind(this);
-      xhr.send();
+      }.bind(this);
+      xhr.send();
     }
   }
 
@@ -182,13 +194,6 @@ class ApzListReport extends React.Component {
   }
 
   render() {
-    var apzs = [];
-    if(this.props.match.params.status === 'accepted'){
-      apzs = this.state.acceptedApzs;
-    }
-    else{
-      apzs = this.state.declinedApzs;
-    }
     return (
       <div className="row">
         <div className="col-2">
@@ -200,16 +205,10 @@ class ApzListReport extends React.Component {
             </thead>
             <tbody>
               <tr>
-                <td className={this.getStyleForSortingType(this.state.periodClicked)} 
-                    onClick={this.changeSortingType.bind(this, 'period')}>
-                  За период
-                </td>
+                <td className={this.getStyleForSortingType(this.state.periodClicked)} onClick={this.changeSortingType.bind(this, 'period')}>За период</td>
               </tr>
               <tr>
-                <td className={this.getStyleForSortingType(this.state.filtr2Clicked)} 
-                    onClick={this.changeSortingType.bind(this, 'filtr2')}>
-                  Второй фильтр
-                </td>
+                <td className={this.getStyleForSortingType(this.state.filtr2Clicked)} onClick={this.changeSortingType.bind(this, 'filtr2')}>Второй фильтр</td>
               </tr>
             </tbody>
           </table>
@@ -223,52 +222,42 @@ class ApzListReport extends React.Component {
               До: <input type="date" value={this.state.endDate} onChange={this.onEndDateChange} className="form-control" name="ApzDate" />
             </div>
             <div className="col-2">
-              <button className="btn btn-outline-info" 
-                      onClick={this.sortByDate.bind(this, this.state.startDate, this.state.endDate)}>
-                Найти
-              </button>
+              <button className="btn btn-outline-info" onClick={this.sortByDate.bind(this, this.state.startDate, this.state.endDate)}>Ok</button>
             </div>  
           </div>
           <div className="row sorted-info-body">
-            {this.state.loaderHidden &&
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th style={{width: '50%'}}><b>Общее количество:</b></th>
-                    <th style={{width: '50%'}}>{apzs.length}</th>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th style={{width: '50%'}}><b>Общее количество:</b></th>
+                  <th style={{width: '50%'}}>{this.state.sortedApzs.length}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.sortedApzs.length > 0 &&
+                  <tr style={{textAlign: 'center', fontSize: '18px', color: 'peru'}}>
+                    <td colSpan="2">Список заявлении</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {apzs.length > 0 &&
-                    <tr style={{textAlign: 'center', fontSize: '18px', color: 'peru'}}>
-                      <td colSpan="2">Список заявлении</td>
+                }
+                {this.state.sortedApzs.length > 0 &&
+                  <tr>
+                    <td><b>Название</b></td>
+                    <td><b>Детали</b></td>
+                  </tr>
+                }
+                {this.state.sortedApzs.map(function(apz, index) {
+                  return(
+                    <tr key={index}>
+                      <td>{apz.project_name}</td>
+                      <td>
+                        <Link className="btn btn-outline-info" to={'/urban/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                      </td>
                     </tr>
-                  }
-                  {apzs.length > 0 &&
-                    <tr>
-                      <td><b>Название</b></td>
-                      <td><b>Детали</b></td>
-                    </tr>
-                  }
-                  {apzs.map(function(apz, index) {
-                    return(
-                      <tr key={index}>
-                        <td>{apz.ProjectName}</td>
-                        <td>
-                          <Link className="btn btn-outline-info" to={'/urban/' + apz.Id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
-                        </td>
-                      </tr>
-                      );
-                    })
-                  }
-                </tbody>
-              </table>
-            }
-            {!this.state.loaderHidden &&
-              <div style={{margin: '0 auto'}}>
-                <Loader type="Oval" color="#46B3F2" height="200" width="200" />
-              </div>
-            }
+                    );
+                  })
+                }
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

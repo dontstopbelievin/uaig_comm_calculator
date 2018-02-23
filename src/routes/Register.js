@@ -18,6 +18,8 @@ export default class Register extends React.Component {
     this.state = {
       username: "", 
       companyName: "", 
+      iin: "", 
+      bin: "", 
       firstName: "",
       lastName: "",
       middleName: "",
@@ -112,12 +114,16 @@ export default class Register extends React.Component {
     var registerData = {
       user_name: this.state.username,
       company_name: this.state.companyName,
+      name: this.state.username,
+      iin: this.state.iin,
+      bin: this.state.bin,
       first_name: this.state.firstName,
       last_name: this.state.lastName,
       middle_name: this.state.middleName,
       email: this.state.email,
       password: this.state.pwd.trim(),
-      confirm_password: this.state.confirmPwd.trim()
+      confirm_password: this.state.confirmPwd.trim(),
+      password_confirmation: this.state.confirmPwd.trim()
     };
 
     console.log(registerData);
@@ -130,7 +136,7 @@ export default class Register extends React.Component {
     else {
       this.setState({loadingVisible: true});
       var xhr = new XMLHttpRequest();
-      xhr.open("post", window.url + "api/Account/Register", true);
+      xhr.open("post", window.url + "api/register", true);
       //Send the proper header information along with the request
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {

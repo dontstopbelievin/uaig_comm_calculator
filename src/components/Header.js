@@ -29,8 +29,9 @@ export default class Header extends Component {
 
   logout() {
     var token = sessionStorage.getItem('tokenInfo');
+    console.log(token);
     var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + "api/Account/Logout", true);
+    xhr.open("post", window.url + "api/logout", true);
     //Send the proper header information along with the request
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
@@ -61,7 +62,7 @@ export default class Header extends Component {
     //var logstatus = sessionStorage.getItem('logStatus');
     if(token){
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/account/userinfo", true);
+      xhr.open("get", window.url + "api/user_info", true);
       //Send the proper header information along with the request
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.onload = function(e) {
@@ -166,9 +167,6 @@ export default class Header extends Component {
                 }
                 {rolename === 'Region' &&
                   <NavLink to="/urbanreport" replace className="nav-link">{e.home}</NavLink>
-                }
-                {rolename === 'Head' && 
-                  <NavLink to={'/headreport'} replace className="nav-link">{e.home}</NavLink>
                 }
                 {rolename === 'Engineer' && 
                   <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
@@ -358,6 +356,7 @@ class LogoutBtn extends Component {
                   case 'PhotoReport': return <PhotoReportMenu />;
                   case 'Temporary': return <TemporaryMenu />;
                   case 'Apz': return <ApzMenu />;
+                  case 'ApzDepartment': return <ApzDepartmentMenu />;
                   default: return null;
                 }
               })()}
@@ -504,7 +503,7 @@ class EngineerMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/engineer"} replace className="dropdown-item" activeClassName="active">Личный кабинет</NavLink>
+        <NavLink to={"/engineer"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
       </div>
     )
   }
@@ -515,6 +514,16 @@ class ApzMenu extends Component {
     return (
       <div>
         <NavLink to={"/apz"} replace className="dropdown-item" activeClassName="active">Личный кабинет</NavLink>
+      </div>
+    )
+  }
+}
+
+class ApzDepartmentMenu extends Component {
+  render() {
+    return (
+      <div>
+        <NavLink to={"/apz_department"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
       </div>
     )
   }
