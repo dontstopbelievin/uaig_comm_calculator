@@ -32,7 +32,8 @@ class ApzListReport extends React.Component {
     super(props);
 
     this.state = {
-      apzs: [],
+      acceptedApzs: [],
+      declinedApzs: [],
       sortedApzs: [],
       periodClicked: true,
       filtr2Clicked: false,
@@ -106,30 +107,21 @@ class ApzListReport extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    //console.log("componentWillReceiveProps is called");
-    if(this.props.match.params.status !== nextProps.match.params.status) {
-      this.sortApzs(nextProps.match.params.status);
-    }
-  }
-
   // get the list of all Apzs
   getApzs() {
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/all", true);
+    xhr.open("get", window.url + "api/apz/head", true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-        //console.log(data); 
 
-        var sortedData = data.filter(function(obj) { return obj.Status === 1 && (obj.HeadDate !== null && obj.HeadResponse === null); }); 
-     
-        this.setState({apzs: data});
-        this.setState({sortedApzs: sortedData});
-        this.setState({loaderHidden: true});
+        this.setState({ acceptedApzs: data.accepted });
+        this.setState({ declinedApzs: data.declined });
+        this.setState({ loaderHidden: true });
+        this.setState({ loaderHidden: true });
       }
       else if (xhr.status === 401){
         sessionStorage.clear();
@@ -138,27 +130,6 @@ class ApzListReport extends React.Component {
       }
     }.bind(this);
     xhr.send();
-  }
-
-  // when switching between accepted and declined
-  sortApzs(status) {
-    var data = this.state.apzs;
-    
-    switch (status) {
-      case 'accepted':
-        var apzs = data.filter(function(obj) { return obj.Status === 1 && (obj.HeadDate !== null && obj.HeadResponse === null); });
-        break;
-
-      case 'declined':
-        apzs = data.filter(function(obj) { return obj.Status === 0 && (obj.HeadDate !== null && obj.HeadResponse !== null); });
-        break;
-
-      default:
-        apzs = data;
-        break;
-    }
- 
-    this.setState({sortedApzs: apzs});
   }
 
   // give the list sorted by date
@@ -210,6 +181,14 @@ class ApzListReport extends React.Component {
   }
 
   render() {
+    var apzs = [];
+
+    if(this.props.match.params.status === 'accepted'){
+      apzs = this.state.acceptedApzs;
+    } else {
+      apzs = this.state.declinedApzs;
+    }
+
     return (
       <div className="row">
         <div className="col-2">
@@ -260,23 +239,23 @@ class ApzListReport extends React.Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {this.state.sortedApzs.length > 0 &&
+                  {apzs.length > 0 &&
                     <tr style={{textAlign: 'center', fontSize: '18px', color: 'peru'}}>
                       <td colSpan="2">Список заявлении</td>
                     </tr>
                   }
-                  {this.state.sortedApzs.length > 0 &&
+                  {apzs > 0 &&
                     <tr>
                       <td><b>Название</b></td>
                       <td><b>Детали</b></td>
                     </tr>
                   }
-                  {this.state.sortedApzs.map(function(apz, index) {
+                  {apzs.map(function(apz, index) {
                     return(
                       <tr key={index}>
-                        <td>{apz.ProjectName}</td>
+                        <td>{apz.project_name}</td>
                         <td>
-                          <Link className="btn btn-outline-info" to={'/head/' + apz.Id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                          <Link className="btn btn-outline-info" to={'/head/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                         </td>
                       </tr>
                       );

@@ -168,6 +168,9 @@ export default class Header extends Component {
                 {rolename === 'Region' &&
                   <NavLink to="/urbanreport" replace className="nav-link">{e.home}</NavLink>
                 }
+                {rolename === 'Head' && 
+                  <NavLink to={'/headreport'} replace className="nav-link">{e.home}</NavLink>
+                }
                 {rolename === 'Engineer' && 
                   <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
                 }

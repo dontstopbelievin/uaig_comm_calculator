@@ -5,6 +5,7 @@ import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
 import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
+import Loader from 'react-loader-spinner';
 
 export default class Citizen extends React.Component {
   render() {
@@ -34,7 +35,8 @@ class AllApzs extends React.Component {
     super(props);
 
     this.state = {
-      apzs: []
+      apzs: [],
+      loaderHidden: false
     };
 
   }
@@ -82,71 +84,84 @@ class AllApzs extends React.Component {
         }
         
         this.setState({apzs: apzs});
+        this.setState({ loaderHidden: true });
+      } else if (xhr.status === 401) {
+        sessionStorage.clear();
+        alert("Время сессии истекло. Пожалуйста войдите заново!");
+        this.props.history.replace("/login");
       }
     }.bind(this)
     xhr.send();
-
-
   }
 
   render() {
     return (
-      <div>  
-        <div className="row">
-          <div className="col-sm-8">
-            <Link className="btn btn-outline-primary mb-3" to="/citizen/add">Создать заявление</Link>
-          </div>
-          <div className="col-sm-4">
-            <ul className="nav nav-tabs mb-2 pull-right">
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/active" replace>Активные</NavLink></li>
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/accepted" replace>Принятые</NavLink></li>
-              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/declined" replace>Отказанные</NavLink></li>
-            </ul>
-          </div>
-        </div>
+      <div>
+        {this.state.loaderHidden &&
+          <div>  
+            <div className="row">
+              <div className="col-sm-8">
+                <Link className="btn btn-outline-primary mb-3" to="/citizen/add">Создать заявление</Link>
+              </div>
+              <div className="col-sm-4">
+                <ul className="nav nav-tabs mb-2 pull-right">
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/active" replace>Активные</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/accepted" replace>Принятые</NavLink></li>
+                  <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/declined" replace>Отказанные</NavLink></li>
+                </ul>
+              </div>
+            </div>
 
-        <table className="table">
-          <thead>
-            <tr>
-              <th style={{width: '85%'}}>Название</th>
-              <th style={{width: '15%'}}>Статус</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.apzs.map(function(apz, index) {
-              return(
-                <tr key={index}>
-                  <td>{apz.project_name}</td>
-                  <td>
-                    {apz.status_id === 1 &&
-                      <span className="text-danger">Отказано</span>
-                    }
-
-                    {apz.status_id === 2 &&
-                      <span className="text-success">Принято</span>
-                    }
-
-                    {apz.status_id !== 1 && apz.status_id !== 2 &&
-                      <span className="text-info">В процессе</span>
-                    }
-                  </td>
-                  <td>
-                    <Link className="btn btn-outline-info" to={'/citizen/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
-                  </td>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th style={{width: '85%'}}>Название</th>
+                  <th style={{width: '15%'}}>Статус</th>
+                  <th></th>
                 </tr>
-                );
-              })
-            }
+              </thead>
+              <tbody>
+                {this.state.apzs.map(function(apz, index) {
+                  return(
+                    <tr key={index}>
+                      <td>{apz.project_name}</td>
+                      <td>
+                        {apz.status_id === 1 &&
+                          <span className="text-danger">Отказано</span>
+                        }
 
-            {this.state.apzs.length === 0 &&
-              <tr>
-                <td colSpan="3">Пусто</td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>  
+                        {apz.status_id === 2 &&
+                          <span className="text-success">Принято</span>
+                        }
+
+                        {apz.status_id !== 1 && apz.status_id !== 2 &&
+                          <span className="text-info">В процессе</span>
+                        }
+                      </td>
+                      <td>
+                        <Link className="btn btn-outline-info" to={'/citizen/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                      </td>
+                    </tr>
+                    );
+                  })
+                }
+
+                {this.state.apzs.length === 0 &&
+                  <tr>
+                    <td colSpan="3">Пусто</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+
+        {!this.state.loaderHidden &&
+          <div style={{textAlign: 'center'}}>
+            <Loader type="Oval" color="#46B3F2" height="200" width="200" />
+          </div>
+        }
+      </div>
     )
   }
 }
@@ -873,6 +888,7 @@ class ShowApz extends React.Component {
       personalIdFile: false,
       confirmedTaskFile: false,
       titleDocumentFile: false,
+      loaderHidden: false
     };
   }
 
@@ -925,6 +941,12 @@ class ShowApz extends React.Component {
             this.setState({headResponseFile: apz.apz_head_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
           }
         }
+
+        this.setState({loaderHidden: true});
+      } else if (xhr.status === 401) {
+        sessionStorage.clear();
+        alert("Время сессии истекло. Пожалуйста войдите заново!");
+        this.props.history.replace("/login");
       }
     }.bind(this)
     xhr.send();
@@ -1412,503 +1434,513 @@ class ShowApz extends React.Component {
 
     return (
       <div>
-        <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
-        
-        <table className="table table-bordered table-striped">
-          <tbody>
-            <tr>
-              <td style={{width: '22%'}}><b>Заявитель</b></td>
-              <td>{apz.applicant}</td>
-            </tr>
-            <tr>
-              <td><b>Адрес</b></td>
-              <td>{apz.address}</td>
-            </tr>
-            <tr>
-              <td><b>Телефон</b></td>
-              <td>{apz.phone}</td>
-            </tr>
-            <tr>
-              <td><b>Заказчик</b></td>
-              <td>{apz.customer}</td>
-            </tr>
-            <tr>
-              <td><b>Разработчик</b></td>
-              <td>{apz.designer}</td>
-            </tr>
-            <tr>
-              <td><b>Название проекта</b></td>
-              <td>{apz.project_name}</td>
-            </tr>
-            <tr>
-              <td><b>Адрес проекта</b></td>
-              <td>
-                {apz.project_address}
-
-                {apz.project_address_coordinates &&
-                  <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
-                }
-              </td>
-            </tr>
-            <tr>
-              <td><b>Дата заявления</b></td>
-              <td>{apz.created_at && this.toDate(apz.created_at)}</td>
-            </tr>
-            
-            {this.state.personalIdFile &&
-              <tr>
-                <td><b>Уд. лич./ Реквизиты</b></td>
-                <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id)}>Скачать</a></td>
-              </tr>
-            }
-
-            {this.state.confirmedTaskFile &&
-              <tr>
-                <td><b>Утвержденное задание</b></td>
-                <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.confirmedTaskFile.id)}>Скачать</a></td>
-              </tr>
-            }
-
-            {this.state.titleDocumentFile &&
-              <tr>
-                <td><b>Правоустанавл. документ</b></td>
-                <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>Скачать</a></td>
-              </tr>
-            }
-          </tbody>
-        </table>
-
-        {this.state.headResponseFile &&
+        {this.state.loaderHidden &&
           <div>
-            <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
+            <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
+            
+            <table className="table table-bordered table-striped">
+              <tbody>
+                <tr>
+                  <td style={{width: '22%'}}><b>Заявитель</b></td>
+                  <td>{apz.applicant}</td>
+                </tr>
+                <tr>
+                  <td><b>Адрес</b></td>
+                  <td>{apz.address}</td>
+                </tr>
+                <tr>
+                  <td><b>Телефон</b></td>
+                  <td>{apz.phone}</td>
+                </tr>
+                <tr>
+                  <td><b>Заказчик</b></td>
+                  <td>{apz.customer}</td>
+                </tr>
+                <tr>
+                  <td><b>Разработчик</b></td>
+                  <td>{apz.designer}</td>
+                </tr>
+                <tr>
+                  <td><b>Название проекта</b></td>
+                  <td>{apz.project_name}</td>
+                </tr>
+                <tr>
+                  <td><b>Адрес проекта</b></td>
+                  <td>
+                    {apz.project_address}
 
-            { apz.status_id !== 1 ? 
-              <table className="table table-bordered table-striped">
-                <tbody>
-                  <tr>
-                    <td style={{width: '22%'}}><b>Загруженный АПЗ</b></td> 
-                    <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.headResponseFile.id)}>Скачать</a></td>
-                  </tr>
-                  <tr>
-                    <td><b>Сформированный АПЗ</b></td>
-                    <td><a className="text-info pointer" onClick={this.printApz.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
-                  </tr>
-                </tbody>
-              </table>
-              :
-              <table className="table table-bordered">
-                <tbody>
-                  <tr>
-                    <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
-                    <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.headResponseFile.id)}>Скачать</a></td>
-                  </tr>
-                </tbody>
-              </table>
-            }
-
-            {(apz.status_id === 1 || apz.status_id === 2) &&
-              <table className="table table-bordered table-striped">
-                <tbody>
-                  {this.state.waterResponseFile &&
-                    <tr>
-                      <td style={{width: '22%'}}>
-                        <b>Водоснабжение</b>
-                      </td> 
-                      <td><a className="text-info pointer" data-toggle="modal" data-target="#water_provier_modal">Просмотр</a></td>
-                    </tr>
-                  }
-                  
-                  {this.state.heatResponseFile &&
-                    <tr>
-                      <td>
-                        <b>Теплоснабжение</b>
-                      </td> 
-                      <td><a className="text-info pointer" data-toggle="modal" data-target="#heat_provier_modal">Просмотр</a></td>
-                    </tr>
-                  }
+                    {apz.project_address_coordinates &&
+                      <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
+                    }
+                  </td>
+                </tr>
+                <tr>
+                  <td><b>Дата заявления</b></td>
+                  <td>{apz.created_at && this.toDate(apz.created_at)}</td>
+                </tr>
                 
-                  {this.state.electroResponseFile &&
-                    <tr>
-                      <td>
-                        <b>Электроснабжение</b>
-                      </td> 
-                      <td><a className="text-info pointer" data-toggle="modal" data-target="#electro_provier_modal">Просмотр</a></td>
-                    </tr>
-                  }
-                
-                  {this.state.gasResponseFile &&
-                    <tr>
-                      <td>
-                        <b>Газоснабжение</b>
-                      </td> 
-                      <td><a className="text-info pointer" data-toggle="modal" data-target="#gas_provier_modal">Просмотр</a></td>
-                    </tr>
-                  }
+                {this.state.personalIdFile &&
+                  <tr>
+                    <td><b>Уд. лич./ Реквизиты</b></td>
+                    <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id)}>Скачать</a></td>
+                  </tr>
+                }
 
-                  {this.state.phoneResponseFile &&
-                    <tr>
-                      <td>
-                        <b>Телефонизация</b>
-                      </td> 
-                      <td><a className="text-info pointer" data-toggle="modal" data-target="#phone_provier_modal">Просмотр</a></td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            }
+                {this.state.confirmedTaskFile &&
+                  <tr>
+                    <td><b>Утвержденное задание</b></td>
+                    <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.confirmedTaskFile.id)}>Скачать</a></td>
+                  </tr>
+                }
 
-            {this.state.waterResponseFile &&
-              <div className="modal fade" id="water_provier_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h5 className="modal-title">Решение водоснабжения</h5>
-                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div className="modal-body">
-                      <table className="table table-bordered table-striped">
-                        {apz.commission.apz_water_response.response ?
-                          <tbody>
-                            <tr>
-                              <td style={{width: '50%'}}><b>Общая потребность (м<sup>3</sup>/сутки)</b></td>
-                              <td>{apz.commission.apz_water_response.gen_water_req}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Хозпитьевые нужды (м<sup>3</sup>/сутки)</b></td>
-                              <td>{apz.commission.apz_water_response.drinking_water}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Производственные нужды (м<sup>3</sup>/сутки)</b></td>
-                              <td>{apz.commission.apz_water_response.prod_water}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Расходы пожаротушения внутренные (л/сек)</b></td>
-                              <td>{apz.commission.apz_water_response.fire_fighting_water_in}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Расходы пожаротушения внешные (л/сек)</b></td>
-                              <td>{apz.commission.apz_water_response.fire_fighting_water_out}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Точка подключения</b></td>
-                              <td>{apz.commission.apz_water_response.connection_point}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Рекомендация</b></td>
-                              <td>{apz.commission.apz_water_response.recommendation}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Номер документа</b></td>
-                              <td>{apz.commission.apz_water_response.doc_number}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Загруженный ТУ</b></td>  
-                              <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.waterResponseFile.id)}>Скачать</a></td>
-                            </tr>
-                            <tr>
-                              <td><b>Сформированный ТУ</b></td>  
-                              <td><a className="text-info pointer" onClick={this.printWaterTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
-                            </tr>
-                          </tbody>
-                          :
-                          <tbody>
-                            <tr>
-                              <td style={{width: '50%'}}><b>МО Вода</b></td>  
-                              <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.waterResponseFile.id)}>Скачать</a></td>
-                            </tr>
-                          </tbody>
-                        }
-                      </table>
-                    </div>
-                    <div className="modal-footer">
-                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                {this.state.titleDocumentFile &&
+                  <tr>
+                    <td><b>Правоустанавл. документ</b></td>
+                    <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>Скачать</a></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+
+            {this.state.headResponseFile &&
+              <div>
+                <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
+
+                { apz.status_id !== 1 ? 
+                  <table className="table table-bordered table-striped">
+                    <tbody>
+                      <tr>
+                        <td style={{width: '22%'}}><b>Загруженный АПЗ</b></td> 
+                        <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.headResponseFile.id)}>Скачать</a></td>
+                      </tr>
+                      <tr>
+                        <td><b>Сформированный АПЗ</b></td>
+                        <td><a className="text-info pointer" onClick={this.printApz.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  :
+                  <table className="table table-bordered">
+                    <tbody>
+                      <tr>
+                        <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
+                        <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.headResponseFile.id)}>Скачать</a></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                }
+
+                {(apz.status_id === 1 || apz.status_id === 2) &&
+                  <table className="table table-bordered table-striped">
+                    <tbody>
+                      {this.state.waterResponseFile &&
+                        <tr>
+                          <td style={{width: '22%'}}>
+                            <b>Водоснабжение</b>
+                          </td> 
+                          <td><a className="text-info pointer" data-toggle="modal" data-target="#water_provier_modal">Просмотр</a></td>
+                        </tr>
+                      }
+                      
+                      {this.state.heatResponseFile &&
+                        <tr>
+                          <td>
+                            <b>Теплоснабжение</b>
+                          </td> 
+                          <td><a className="text-info pointer" data-toggle="modal" data-target="#heat_provier_modal">Просмотр</a></td>
+                        </tr>
+                      }
+                    
+                      {this.state.electroResponseFile &&
+                        <tr>
+                          <td>
+                            <b>Электроснабжение</b>
+                          </td> 
+                          <td><a className="text-info pointer" data-toggle="modal" data-target="#electro_provier_modal">Просмотр</a></td>
+                        </tr>
+                      }
+                    
+                      {this.state.gasResponseFile &&
+                        <tr>
+                          <td>
+                            <b>Газоснабжение</b>
+                          </td> 
+                          <td><a className="text-info pointer" data-toggle="modal" data-target="#gas_provier_modal">Просмотр</a></td>
+                        </tr>
+                      }
+
+                      {this.state.phoneResponseFile &&
+                        <tr>
+                          <td>
+                            <b>Телефонизация</b>
+                          </td> 
+                          <td><a className="text-info pointer" data-toggle="modal" data-target="#phone_provier_modal">Просмотр</a></td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                }
+
+                {this.state.waterResponseFile &&
+                  <div className="modal fade" id="water_provier_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                    <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title">Решение водоснабжения</h5>
+                          <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div className="modal-body">
+                          <table className="table table-bordered table-striped">
+                            {apz.commission.apz_water_response.response ?
+                              <tbody>
+                                <tr>
+                                  <td style={{width: '50%'}}><b>Общая потребность (м<sup>3</sup>/сутки)</b></td>
+                                  <td>{apz.commission.apz_water_response.gen_water_req}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Хозпитьевые нужды (м<sup>3</sup>/сутки)</b></td>
+                                  <td>{apz.commission.apz_water_response.drinking_water}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Производственные нужды (м<sup>3</sup>/сутки)</b></td>
+                                  <td>{apz.commission.apz_water_response.prod_water}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Расходы пожаротушения внутренные (л/сек)</b></td>
+                                  <td>{apz.commission.apz_water_response.fire_fighting_water_in}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Расходы пожаротушения внешные (л/сек)</b></td>
+                                  <td>{apz.commission.apz_water_response.fire_fighting_water_out}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Точка подключения</b></td>
+                                  <td>{apz.commission.apz_water_response.connection_point}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Рекомендация</b></td>
+                                  <td>{apz.commission.apz_water_response.recommendation}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Номер документа</b></td>
+                                  <td>{apz.commission.apz_water_response.doc_number}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Загруженный ТУ</b></td>  
+                                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.waterResponseFile.id)}>Скачать</a></td>
+                                </tr>
+                                <tr>
+                                  <td><b>Сформированный ТУ</b></td>  
+                                  <td><a className="text-info pointer" onClick={this.printWaterTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
+                                </tr>
+                              </tbody>
+                              :
+                              <tbody>
+                                <tr>
+                                  <td style={{width: '50%'}}><b>МО Вода</b></td>  
+                                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.waterResponseFile.id)}>Скачать</a></td>
+                                </tr>
+                              </tbody>
+                            }
+                          </table>
+                        </div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                }
+
+                {this.state.heatResponseFile &&
+                  <div className="modal fade" id="heat_provier_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                    <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title">Решение теплоснабжения</h5>
+                          <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div className="modal-body">
+                          <table className="table table-bordered table-striped">
+                            {apz.commission.apz_heat_response.response ?
+                              <tbody>
+                                <tr> 
+                                  <td style={{width: '50%'}}><b>Источник теплоснабжения</b></td>
+                                  <td>{apz.commission.apz_heat_response.resource}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Точка подключения</b></td>
+                                  <td>{apz.commission.apz_heat_response.connection_point}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Давление теплоносителя</b></td>
+                                  <td>{apz.commission.apz_heat_response.trans_pressure}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Тепловые нагрузки по договору</b></td>
+                                  <td>{apz.commission.apz_heat_response.load_contract_num}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Отопление (Гкал/ч)</b></td>
+                                  <td>{apz.commission.apz_heat_response.main_in_contract}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Вентиляция (Гкал/ч)</b></td>
+                                  <td>{apz.commission.apz_heat_response.ven_in_contract}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Горячее водоснабжение (Гкал/ч)</b></td>
+                                  <td>{apz.commission.apz_heat_response.water_in_contract}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Дополнительное</b></td>
+                                  <td>{apz.commission.apz_heat_response.addition}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Номер документа</b></td>
+                                  <td>{apz.commission.apz_heat_response.doc_number}</td> 
+                                </tr>
+                                <tr>
+                                  <td><b>Загруженный ТУ</b>:</td> 
+                                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.heatResponseFile.id)}>Скачать</a></td>
+                                </tr>
+                                <tr>
+                                  <td><b>Сформированный ТУ</b></td>  
+                                  <td><a className="text-info pointer" onClick={this.printHeatTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
+                                </tr>
+                              </tbody>
+                              :
+                              <tbody>
+                                <tr>
+                                  <td style={{width: '50%'}}><b>МО Тепло</b></td>  
+                                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.heatResponseFile.id)}>Скачать</a></td>
+                                </tr>
+                              </tbody>
+                            }
+                          </table>
+                        </div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+
+                {this.state.electroResponseFile &&
+                  <div className="modal fade" id="electro_provier_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                    <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title">Решение электроснабжения</h5>
+                          <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div className="modal-body">
+                          <table className="table table-bordered table-striped">
+                            {apz.commission.apz_heat_response.response ?
+                              <tbody>
+                                <tr>
+                                  <td style={{width: '50%'}}><b>Требуемая мощность (кВт)</b></td>
+                                  <td>{apz.commission.apz_heat_response.req_power}</td>
+                                </tr>
+                                <tr> 
+                                  <td><b>Характер нагрузки (фаза)</b></td>
+                                  <td>{apz.commission.apz_heat_response.phase}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Категория по надежности (кВт)</b></td>
+                                  <td>{apz.commission.apz_heat_response.safe_category}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Точка подключения</b></td>
+                                  <td>{apz.commission.apz_heat_response.connection_point}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Рекомендация</b></td>
+                                  <td>{apz.commission.apz_heat_response.recommendation}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Номер документа</b></td>
+                                  <td>{apz.commission.apz_heat_response.doc_number}</td> 
+                                </tr>
+                                <tr>
+                                  <td><b>Загруженный ТУ</b>:</td> 
+                                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.electroResponseFile.id)}>Скачать</a></td>
+                                </tr>
+                                <tr>
+                                  <td><b>Сформированный ТУ</b></td>  
+                                  <td><a className="text-info pointer" onClick={this.printElectroTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
+                                </tr>
+                              </tbody>
+                              :
+                              <tbody>
+                                <tr>
+                                  <td style={{width: '50%'}}><b>МО Электро</b></td>  
+                                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.electroResponseFile.id)}>Скачать</a></td>
+                                </tr>
+                              </tbody>
+                            }
+                          </table>
+                        </div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+
+                {this.state.gasResponseFile &&
+                  <div className="modal fade" id="gas_provier_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                    <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title">Решение газоснабжения</h5>
+                          <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div className="modal-body">
+                          <table className="table table-bordered table-striped">
+                            {apz.commission.apz_gas_response.response ?
+                              <tbody>
+                                <tr>
+                                  <td style={{width: '50%'}}><b>Точка подключения</b></td>
+                                  <td>{apz.commission.apz_gas_response.connection_point}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Диаметр газопровода (мм)</b></td>
+                                  <td>{apz.commission.apz_gas_response.gas_pipe_diameter}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Предполагаемый объем (м<sup>3</sup>/час)</b></td>
+                                  <td>{apz.commission.apz_gas_response.assumed_capacity}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Предусмотрение</b></td>
+                                  <td>{apz.commission.apz_gas_response.GasReconsideration}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Номер документа</b></td>
+                                  <td>{apz.commission.apz_gas_response.doc_number}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Загруженный ТУ</b></td> 
+                                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.gasResponseFile.id)}>Скачать</a></td>
+                                </tr>
+                                <tr>
+                                  <td><b>Сформированный ТУ</b></td>  
+                                  <td><a className="text-info pointer" onClick={this.printGasTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
+                                </tr>
+                              </tbody>
+                              :
+                              <tbody>
+                                <tr>
+                                  <td style={{width: '50%'}}><b>МО Газ</b></td>  
+                                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.gasResponseFile.id)}>Скачать</a></td>
+                                </tr>
+                              </tbody>
+                            }
+                          </table>
+                        </div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+
+                {this.state.phoneResponseFile &&
+                  <div className="modal fade" id="phone_provier_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                    <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title">Решение телефонизации</h5>
+                          <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div className="modal-body">
+                          <table className="table table-bordered table-striped">
+                            {apz.commission.apz_phone_response.response ?
+                              <tbody>
+                                <tr>
+                                  <td style={{width: '50%'}}><b>Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</b></td>
+                                  <td>{apz.commission.apz_phone_response.service_num}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Телефонная емкость</b></td>
+                                  <td>{apz.commission.apz_phone_response.capacity}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Планируемая телефонная канализация</b></td>
+                                  <td>{apz.commission.apz_phone_response.sewage}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Пожелания заказчика (тип оборудования, тип кабеля и др.)</b></td>
+                                  <td>{apz.commission.apz_phone_response.client_wishes}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Номер документа</b></td>
+                                  <td>{apz.commission.apz_phone_response.doc_number}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Загруженный ТУ</b></td>
+                                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.phoneResponseFile.id)}>Скачать</a></td>
+                                </tr>
+                                <tr>
+                                  <td><b>Сформированный ТУ</b></td>
+                                  <td><a className="text-info pointer" onClick={this.printPhoneTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
+                                </tr>
+                              </tbody>
+                              :
+                              <tbody>
+                                <tr>
+                                  <td style={{width: '50%'}}><b>МО Газ</b></td>
+                                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.phoneResponseFile.id)}>Скачать</a></td>
+                                </tr>
+                              </tbody>
+                            }
+                          </table>
+                        </div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
               </div>
             }
 
-            {this.state.heatResponseFile &&
-              <div className="modal fade" id="heat_provier_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h5 className="modal-title">Решение теплоснабжения</h5>
-                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div className="modal-body">
-                      <table className="table table-bordered table-striped">
-                        {apz.commission.apz_heat_response.response ?
-                          <tbody>
-                            <tr> 
-                              <td style={{width: '50%'}}><b>Источник теплоснабжения</b></td>
-                              <td>{apz.commission.apz_heat_response.resource}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Точка подключения</b></td>
-                              <td>{apz.commission.apz_heat_response.connection_point}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Давление теплоносителя</b></td>
-                              <td>{apz.commission.apz_heat_response.trans_pressure}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Тепловые нагрузки по договору</b></td>
-                              <td>{apz.commission.apz_heat_response.load_contract_num}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Отопление (Гкал/ч)</b></td>
-                              <td>{apz.commission.apz_heat_response.main_in_contract}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Вентиляция (Гкал/ч)</b></td>
-                              <td>{apz.commission.apz_heat_response.ven_in_contract}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Горячее водоснабжение (Гкал/ч)</b></td>
-                              <td>{apz.commission.apz_heat_response.water_in_contract}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Дополнительное</b></td>
-                              <td>{apz.commission.apz_heat_response.addition}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Номер документа</b></td>
-                              <td>{apz.commission.apz_heat_response.doc_number}</td> 
-                            </tr>
-                            <tr>
-                              <td><b>Загруженный ТУ</b>:</td> 
-                              <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.heatResponseFile.id)}>Скачать</a></td>
-                            </tr>
-                            <tr>
-                              <td><b>Сформированный ТУ</b></td>  
-                              <td><a className="text-info pointer" onClick={this.printHeatTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
-                            </tr>
-                          </tbody>
-                          :
-                          <tbody>
-                            <tr>
-                              <td style={{width: '50%'}}><b>МО Тепло</b></td>  
-                              <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.heatResponseFile.id)}>Скачать</a></td>
-                            </tr>
-                          </tbody>
-                        }
-                      </table>
-                    </div>
-                    <div className="modal-footer">
-                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            }
+            {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />} 
 
-            {this.state.electroResponseFile &&
-              <div className="modal fade" id="electro_provier_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h5 className="modal-title">Решение электроснабжения</h5>
-                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div className="modal-body">
-                      <table className="table table-bordered table-striped">
-                        {apz.commission.apz_heat_response.response ?
-                          <tbody>
-                            <tr>
-                              <td style={{width: '50%'}}><b>Требуемая мощность (кВт)</b></td>
-                              <td>{apz.commission.apz_heat_response.req_power}</td>
-                            </tr>
-                            <tr> 
-                              <td><b>Характер нагрузки (фаза)</b></td>
-                              <td>{apz.commission.apz_heat_response.phase}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Категория по надежности (кВт)</b></td>
-                              <td>{apz.commission.apz_heat_response.safe_category}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Точка подключения</b></td>
-                              <td>{apz.commission.apz_heat_response.connection_point}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Рекомендация</b></td>
-                              <td>{apz.commission.apz_heat_response.recommendation}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Номер документа</b></td>
-                              <td>{apz.commission.apz_heat_response.doc_number}</td> 
-                            </tr>
-                            <tr>
-                              <td><b>Загруженный ТУ</b>:</td> 
-                              <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.electroResponseFile.id)}>Скачать</a></td>
-                            </tr>
-                            <tr>
-                              <td><b>Сформированный ТУ</b></td>  
-                              <td><a className="text-info pointer" onClick={this.printElectroTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
-                            </tr>
-                          </tbody>
-                          :
-                          <tbody>
-                            <tr>
-                              <td style={{width: '50%'}}><b>МО Электро</b></td>  
-                              <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.electroResponseFile.id)}>Скачать</a></td>
-                            </tr>
-                          </tbody>
-                        }
-                      </table>
-                    </div>
-                    <div className="modal-footer">
-                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            }
+            <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
+              {this.state.showMapText}
+            </button>
 
-            {this.state.gasResponseFile &&
-              <div className="modal fade" id="gas_provier_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h5 className="modal-title">Решение газоснабжения</h5>
-                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div className="modal-body">
-                      <table className="table table-bordered table-striped">
-                        {apz.commission.apz_gas_response.response ?
-                          <tbody>
-                            <tr>
-                              <td style={{width: '50%'}}><b>Точка подключения</b></td>
-                              <td>{apz.commission.apz_gas_response.connection_point}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Диаметр газопровода (мм)</b></td>
-                              <td>{apz.commission.apz_gas_response.gas_pipe_diameter}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Предполагаемый объем (м<sup>3</sup>/час)</b></td>
-                              <td>{apz.commission.apz_gas_response.assumed_capacity}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Предусмотрение</b></td>
-                              <td>{apz.commission.apz_gas_response.GasReconsideration}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Номер документа</b></td>
-                              <td>{apz.commission.apz_gas_response.doc_number}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Загруженный ТУ</b></td> 
-                              <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.gasResponseFile.id)}>Скачать</a></td>
-                            </tr>
-                            <tr>
-                              <td><b>Сформированный ТУ</b></td>  
-                              <td><a className="text-info pointer" onClick={this.printGasTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
-                            </tr>
-                          </tbody>
-                          :
-                          <tbody>
-                            <tr>
-                              <td style={{width: '50%'}}><b>МО Газ</b></td>  
-                              <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.gasResponseFile.id)}>Скачать</a></td>
-                            </tr>
-                          </tbody>
-                        }
-                      </table>
-                    </div>
-                    <div className="modal-footer">
-                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            }
+            <h5 className="block-title-2 mt-5 mb-3">Статус</h5>
+            <ShowStatusBar apz={this.state.apz} />
 
-            {this.state.phoneResponseFile &&
-              <div className="modal fade" id="phone_provier_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h5 className="modal-title">Решение телефонизации</h5>
-                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div className="modal-body">
-                      <table className="table table-bordered table-striped">
-                        {apz.commission.apz_phone_response.response ?
-                          <tbody>
-                            <tr>
-                              <td style={{width: '50%'}}><b>Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</b></td>
-                              <td>{apz.commission.apz_phone_response.service_num}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Телефонная емкость</b></td>
-                              <td>{apz.commission.apz_phone_response.capacity}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Планируемая телефонная канализация</b></td>
-                              <td>{apz.commission.apz_phone_response.sewage}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Пожелания заказчика (тип оборудования, тип кабеля и др.)</b></td>
-                              <td>{apz.commission.apz_phone_response.client_wishes}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Номер документа</b></td>
-                              <td>{apz.commission.apz_phone_response.doc_number}</td>
-                            </tr>
-                            <tr>
-                              <td><b>Загруженный ТУ</b></td>
-                              <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.phoneResponseFile.id)}>Скачать</a></td>
-                            </tr>
-                            <tr>
-                              <td><b>Сформированный ТУ</b></td>
-                              <td><a className="text-info pointer" onClick={this.printPhoneTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
-                            </tr>
-                          </tbody>
-                          :
-                          <tbody>
-                            <tr>
-                              <td style={{width: '50%'}}><b>МО Газ</b></td>
-                              <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.phoneResponseFile.id)}>Скачать</a></td>
-                            </tr>
-                          </tbody>
-                        }
-                      </table>
-                    </div>
-                    <div className="modal-footer">
-                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            }
+            <div className="col-sm-12">
+              <hr />
+              <Link className="btn btn-outline-secondary pull-right" to={'/citizen/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+            </div>
           </div>
         }
-
-        {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />} 
-
-        <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
-          {this.state.showMapText}
-        </button>
-
-        <h5 className="block-title-2 mt-5 mb-3">Статус</h5>
-        <ShowStatusBar apz={this.state.apz} />
-
-        <div className="col-sm-12">
-          <hr />
-          <Link className="btn btn-outline-secondary pull-right" to={'/citizen/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
-        </div>
+          
+        {!this.state.loaderHidden &&
+          <div style={{textAlign: 'center'}}>
+            <Loader type="Oval" color="#46B3F2" height="200" width="200" />
+          </div>
+        }
       </div>
     )
   }

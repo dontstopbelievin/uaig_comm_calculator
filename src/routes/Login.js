@@ -104,6 +104,9 @@ export default class Login extends Component {
               case 'Region': this.props.history.push('/urbanreport');
               break;
 
+              case 'Head': this.props.history.push('/headreport');
+              break;
+
               default: this.props.history.push('/');
               break;
             }

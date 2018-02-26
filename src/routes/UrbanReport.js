@@ -1,5 +1,6 @@
 import React from 'react';
 //import * as esriLoader from 'esri-loader';
+import Loader from 'react-loader-spinner';
 import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
 
 export default class UrbanReport extends React.Component {
@@ -32,12 +33,14 @@ class ApzListReport extends React.Component {
     super(props);
 
     this.state = {
-      apzs: [],
+      acceptedApzs: [],
+      declinedApzs: [],
       sortedApzs: [],
       periodClicked: true,
       filtr2Clicked: false,
       startDate: "",
-      endDate: ""
+      endDate: "",
+      loaderHidden: false
     };
 
     this.onStartDateChange = this.onStartDateChange.bind(this);
@@ -82,9 +85,10 @@ class ApzListReport extends React.Component {
     //console.log("inside WillMount");
     if(sessionStorage.getItem('tokenInfo')){
       //console.log("token exist");
+      var status = this.props.match.params.status;
+
       if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Region'){
-        this.props.history.replace('/urbanreport/apzs/accepted');
-        //this.getApzs();
+        this.props.history.replace('/urbanreport/apzs/' + status);
       }
       else {
         this.props.history.replace('/');
@@ -105,12 +109,12 @@ class ApzListReport extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    //console.log("componentWillReceiveProps is called");
-    if(this.props.match.params.status !== nextProps.match.params.status) {
-      this.sortApzs(nextProps.match.params.status);
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   //console.log("componentWillReceiveProps is called");
+  //   if(this.props.match.params.status !== nextProps.match.params.status) {
+  //     this.sortApzs(nextProps.match.params.status);
+  //   }
+  // }
 
   // get the list of all Apzs
   getApzs() {
@@ -123,41 +127,27 @@ class ApzListReport extends React.Component {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
 
-        this.setState({apzs: data});
-        this.setState({sortedApzs: data.accepted});
+        this.setState({ acceptedApzs: data.accepted });
+        this.setState({ declinedApzs: data.declined });
+        this.setState({ loaderHidden: true });
       }
-      else{
+      else if (xhr.status === 401) {
+        sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
+        this.setState({ loaderHidden: true });
+        this.props.history.replace("/login");
       }
     }.bind(this);
     xhr.send();
   }
 
-  // when switching between accepted and declined
-  sortApzs(status) {
-    var data = this.state.apzs;
-    
-    switch (status) {
-      case 'accepted':
-        var apzs = data.accepted;
-        break;
-
-      case 'declined':
-        apzs = data.declined;
-        break;
-
-      default:
-        apzs = data.in_process;
-        break;
-    }
- 
-    this.setState({sortedApzs: apzs});
-  }
-
   // give the list sorted by date
   sortByDate(start, end){
+    this.setState({loaderHidden: false});
+
     if(!start || !end){
       alert("Выберите временной отрезок.");
+      this.setState({loaderHidden: true});
     }
     else {
       var status = this.props.match.params.status;
@@ -173,10 +163,17 @@ class ApzListReport extends React.Component {
           //console.log(data);
           this.setState({sortedApzs: data}); 
         }
-        else if(xhr.status === 404){
+        else if (xhr.status === 404) {
           this.setState({sortedApzs: []});
           alert("По данному запросу ничего не найдено.");
+          this.setState({loaderHidden: true});
         }
+        else if (xhr.status === 401){
+          sessionStorage.clear();
+          alert("Время сессии истекло. Пожалуйста войдите заново!");
+          this.setState({loaderHidden: true});
+          this.props.history.replace("/login");
+         }
       }.bind(this);
       xhr.send();
     }
@@ -194,6 +191,14 @@ class ApzListReport extends React.Component {
   }
 
   render() {
+    var apzs = [];
+
+    if(this.props.match.params.status === 'accepted'){
+      apzs = this.state.acceptedApzs;
+    } else {
+      apzs = this.state.declinedApzs;
+    }
+
     return (
       <div className="row">
         <div className="col-2">
@@ -222,42 +227,50 @@ class ApzListReport extends React.Component {
               До: <input type="date" value={this.state.endDate} onChange={this.onEndDateChange} className="form-control" name="ApzDate" />
             </div>
             <div className="col-2">
-              <button className="btn btn-outline-info" onClick={this.sortByDate.bind(this, this.state.startDate, this.state.endDate)}>Ok</button>
+              <button className="btn btn-outline-info" onClick={this.sortByDate.bind(this, this.state.startDate, this.state.endDate)}>Найти</button>
             </div>  
           </div>
           <div className="row sorted-info-body">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th style={{width: '50%'}}><b>Общее количество:</b></th>
-                  <th style={{width: '50%'}}>{this.state.sortedApzs.length}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.state.sortedApzs.length > 0 &&
-                  <tr style={{textAlign: 'center', fontSize: '18px', color: 'peru'}}>
-                    <td colSpan="2">Список заявлении</td>
-                  </tr>
-                }
-                {this.state.sortedApzs.length > 0 &&
+            {this.state.loaderHidden &&
+              <table className="table">
+                <thead>
                   <tr>
-                    <td><b>Название</b></td>
-                    <td><b>Детали</b></td>
+                    <th style={{width: '50%'}}><b>Общее количество:</b></th>
+                    <th style={{width: '50%'}}>{apzs.length}</th>
                   </tr>
-                }
-                {this.state.sortedApzs.map(function(apz, index) {
-                  return(
-                    <tr key={index}>
-                      <td>{apz.project_name}</td>
-                      <td>
-                        <Link className="btn btn-outline-info" to={'/urban/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
-                      </td>
+                </thead>
+                <tbody>
+                  {apzs.length > 0 &&
+                    <tr style={{textAlign: 'center', fontSize: '18px', color: 'peru'}}>
+                      <td colSpan="2">Список заявлении</td>
                     </tr>
-                    );
-                  })
-                }
-              </tbody>
-            </table>
+                  }
+                  {apzs.length > 0 &&
+                    <tr>
+                      <td><b>Название</b></td>
+                      <td><b>Детали</b></td>
+                    </tr>
+                  }
+                  {apzs.map(function(apz, index) {
+                    return(
+                      <tr key={index}>
+                        <td>{apz.project_name}</td>
+                        <td>
+                          <Link className="btn btn-outline-info" to={'/urban/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        </td>
+                      </tr>
+                      );
+                    })
+                  }
+                </tbody>
+              </table>
+            }
+
+            {!this.state.loaderHidden &&
+              <div style={{margin: '0 auto'}}>
+                <Loader type="Oval" color="#46B3F2" height="200" width="200" />
+              </div>
+            }
           </div>
         </div>
       </div>
