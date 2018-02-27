@@ -538,7 +538,7 @@ class AddApz extends React.Component {
                 </div>
               }
 
-              <button onClick={this.requestSubmission} className="btn btn-outline-success">Отправить заявку</button>
+              <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
             </div>
             <div className="tab-pane fade" id="tab1" role="tabpanel" aria-labelledby="tab1-link">
               <form id="tab1-form" data-tab="1" onSubmit={this.tabSubmission.bind(this)}>
@@ -597,7 +597,7 @@ class AddApz extends React.Component {
                 <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
               </div>
               </form>
-              <button onClick={this.requestSubmission} className="btn btn-outline-success">Отправить заявку</button>
+              <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
             </div>
             <div className="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-link">
               <form id="tab2-form" data-tab="2" onSubmit={this.tabSubmission.bind(this)}>
@@ -657,7 +657,7 @@ class AddApz extends React.Component {
                 <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
               </div>
               </form>
-              <button onClick={this.requestSubmission} className="btn btn-outline-success">Отправить заявку</button>
+              <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
             </div>
             <div className="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-link">
               <form id="tab3-form" data-tab="3" onSubmit={this.tabSubmission.bind(this)}>
@@ -699,7 +699,7 @@ class AddApz extends React.Component {
                 <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
               </div>
               </form>
-              <button onClick={this.requestSubmission} className="btn btn-outline-success">Отправить заявку</button>
+              <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
             </div>
             <div className="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-link">
               <form id="tab4-form" data-tab="4" onSubmit={this.tabSubmission.bind(this)}>
@@ -729,7 +729,7 @@ class AddApz extends React.Component {
                 <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
               </div>
               </form>
-              <button onClick={this.requestSubmission} className="btn btn-outline-success">Отправить заявку</button>
+              <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
             </div>
             <div className="tab-pane fade" id="tab5" role="tabpanel" aria-labelledby="tab5-link">
               <form id="tab5-form" data-tab="5" onSubmit={this.tabSubmission.bind(this)}>
@@ -771,7 +771,7 @@ class AddApz extends React.Component {
                 <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
               </div>
               </form>
-              <button onClick={this.requestSubmission} className="btn btn-outline-success">Отправить заявку</button>
+              <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
             </div>
             <div className="tab-pane fade" id="tab6" role="tabpanel" aria-labelledby="tab6-link">
               <form id="tab6-form" data-tab="6" onSubmit={this.tabSubmission.bind(this)}>
@@ -787,7 +787,7 @@ class AddApz extends React.Component {
                 <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
               </div>
               </form>
-              <button onClick={this.requestSubmission} className="btn btn-outline-success">Отправить заявку</button>
+              <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
             </div>
             <div className="tab-pane fade" id="tab7" role="tabpanel" aria-labelledby="tab7-link">
               <form id="tab7-form" data-tab="7" onSubmit={this.tabSubmission.bind(this)}>
@@ -817,7 +817,7 @@ class AddApz extends React.Component {
                 <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
               </div>
               </form>
-              <button onClick={this.requestSubmission} className="btn btn-outline-success">Отправить заявку</button>
+              <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
             </div>
             <div className="tab-pane fade" id="tab8" role="tabpanel" aria-labelledby="tab8-link">
               <form id="tab8-form" data-tab="8" onSubmit={this.tabSubmission.bind(this)}>
