@@ -58,7 +58,6 @@ class ApzListReport extends React.Component {
 
   changeSortingType(sortName){
     if(sortName === 'period'){
-      this.sortApzs(this.props.match.params.status);
       this.setState({
         periodClicked: true,
         filtr2Clicked: false,
@@ -150,18 +149,18 @@ class ApzListReport extends React.Component {
       this.setState({loaderHidden: true});
     }
     else {
-      var status = this.props.match.params.status;
       var endDate = this.addDay(end);
       var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/region/" + status + "/" + start + "/" + endDate, true);
+      xhr.open("get", window.url + "api/apz/region?start_date=" + start + "&end_date=" + endDate, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function () {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
           //console.log(data);
-          this.setState({sortedApzs: data}); 
+          this.setState({acceptedApzs: data.accepted});
+          this.setState({declinedApzs: data.declined});
         }
         else if (xhr.status === 404) {
           this.setState({sortedApzs: []});
@@ -173,7 +172,9 @@ class ApzListReport extends React.Component {
           alert("Время сессии истекло. Пожалуйста войдите заново!");
           this.setState({loaderHidden: true});
           this.props.history.replace("/login");
-         }
+        }
+
+        this.setState({loaderHidden: true});
       }.bind(this);
       xhr.send();
     }
