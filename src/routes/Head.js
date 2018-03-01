@@ -2,6 +2,7 @@ import React from 'react';
 //import * as esriLoader from 'esri-loader';
 import EsriLoaderReact from 'esri-loader-react';
 import Loader from 'react-loader-spinner';
+import $ from 'jquery';
 import { Route, NavLink, Link, Switch, Redirect } from 'react-router-dom';
 
 export default class Head extends React.Component {
@@ -150,7 +151,7 @@ class ShowApz extends React.Component {
       confirmedTaskFile: false,
       titleDocumentFile: false,
       showMapText: 'Показать карту',
-      response: true,
+      response: false,
       loaderHidden: false
     };
 
@@ -186,6 +187,9 @@ class ShowApz extends React.Component {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
         var commission = data.commission;
+        var hasDeclined = data.state_history.filter(function(obj) { 
+          return obj.state_id === 9 || obj.state_id === 11 || obj.state_id === 13 || obj.state_id === 15 || obj.state_id === 17
+        });
 
         this.setState({apz: data});
         this.setState({showButtons: false});
@@ -193,24 +197,26 @@ class ShowApz extends React.Component {
         this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
 
-        if (commission.apz_water_response && commission.apz_water_response.files) {
-          this.setState({waterResponseFile: commission.apz_water_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-        }
-        
-        if (commission.apz_electricity_response && commission.apz_electricity_response.files) {
-          this.setState({electroResponseFile: commission.apz_electricity_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-        }
+        if (commission) {
+          if (commission.apz_water_response && commission.apz_water_response.files) {
+            this.setState({waterResponseFile: commission.apz_water_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+          }
+          
+          if (commission.apz_electricity_response && commission.apz_electricity_response.files) {
+            this.setState({electroResponseFile: commission.apz_electricity_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+          }
 
-        if (commission.apz_phone_response && commission.apz_phone_response.files) {
-          this.setState({phoneResponseFile: commission.apz_phone_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-        }
+          if (commission.apz_phone_response && commission.apz_phone_response.files) {
+            this.setState({phoneResponseFile: commission.apz_phone_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+          }
 
-        if (commission.apz_heat_response && commission.apz_heat_response.files) {
-          this.setState({heatResponseFile: commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-        }
+          if (commission.apz_heat_response && commission.apz_heat_response.files) {
+            this.setState({heatResponseFile: commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+          }
 
-        if (commission.apz_gas_response && commission.apz_gas_response.files) {
-          this.setState({gasResponseFile: commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+          if (commission.apz_gas_response && commission.apz_gas_response.files) {
+            this.setState({gasResponseFile: commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+          }
         }
 
         if (data.status_id === 7) { 
@@ -219,9 +225,9 @@ class ShowApz extends React.Component {
 
         this.setState({loaderHidden: true});
 
-        // if ([commission.apz_water_response.response, commission.apz_electricity_response.response, commission.apz_heat_response.response, commission.apz_gas_response.response, commission.apz_phone_response.response].indexOf(false) === -1) {
-        //   this.setState({response: true});
-        // }
+        if (hasDeclined.length == 0) {
+          this.setState({response: true});
+        }
       } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
@@ -286,6 +292,11 @@ class ShowApz extends React.Component {
     var token = sessionStorage.getItem('tokenInfo');
     var file = this.state.file;
 
+    if (!file) {
+      alert('Не выбран файл');
+      return false;
+    }
+
     var formData = new FormData();
     formData.append('file', file);
     formData.append('Response', status);
@@ -314,6 +325,10 @@ class ShowApz extends React.Component {
       }
     }.bind(this);
     xhr.send(formData);
+
+    $('#AcceptApzForm').modal('hide');
+    $('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
   }
 
   // print technical condition of waterProvider
@@ -753,55 +768,62 @@ class ShowApz extends React.Component {
             </div>
 
             <div className="col-sm-6">
-              <h5 className="block-title-2 mt-3 mb-3">Решение</h5>
-              <table className="table table-bordered table-striped">
-                <tbody>
-                  {apz.commission.apz_water_response &&
-                    <tr>
-                      <td style={{width: '40%'}}>
-                        <b>Водоснабжение</b>
-                      </td> 
-                      <td><a className="text-info pointer" data-toggle="modal" data-target="#water_provier_modal">Просмотр</a></td>
-                    </tr>
-                  }
+              {Object.keys(apz.commission).length > 0 || this.state.showButtons ?
+                <h5 className="block-title-2 mt-3 mb-3">Решение</h5>
+                :
+                ''
+              }
 
-                  {apz.commission.apz_heat_response &&
-                    <tr>
-                      <td style={{width: '40%'}}>
-                        <b>Теплоснабжение</b>
-                      </td> 
-                      <td><a className="text-info pointer" data-toggle="modal" data-target="#heat_provier_modal">Просмотр</a></td>
-                    </tr>
-                  }
+              {Object.keys(apz.commission).length > 0 &&
+                <table className="table table-bordered table-striped">
+                  <tbody>
+                    {apz.commission.apz_water_response &&
+                      <tr>
+                        <td style={{width: '40%'}}>
+                          <b>Водоснабжение</b>
+                        </td> 
+                        <td><a className="text-info pointer" data-toggle="modal" data-target="#water_provier_modal">Просмотр</a></td>
+                      </tr>
+                    }
 
-                  {apz.commission.apz_electricity_response &&
-                    <tr>
-                      <td style={{width: '40%'}}>
-                        <b>Электроснабжение</b>
-                      </td> 
-                      <td><a className="text-info pointer" data-toggle="modal" data-target="#electro_provier_modal">Просмотр</a></td>
-                    </tr>
-                  }
+                    {apz.commission.apz_heat_response &&
+                      <tr>
+                        <td style={{width: '40%'}}>
+                          <b>Теплоснабжение</b>
+                        </td> 
+                        <td><a className="text-info pointer" data-toggle="modal" data-target="#heat_provier_modal">Просмотр</a></td>
+                      </tr>
+                    }
 
-                  {apz.commission.apz_gas_response &&
-                     <tr>
-                      <td style={{width: '40%'}}>
-                        <b>Газоснабжение</b>
-                      </td> 
-                      <td><a className="text-info pointer" data-toggle="modal" data-target="#gas_provier_modal">Просмотр</a></td>
-                    </tr>
-                  }
+                    {apz.commission.apz_electricity_response &&
+                      <tr>
+                        <td style={{width: '40%'}}>
+                          <b>Электроснабжение</b>
+                        </td> 
+                        <td><a className="text-info pointer" data-toggle="modal" data-target="#electro_provier_modal">Просмотр</a></td>
+                      </tr>
+                    }
 
-                  {apz.commission.apz_phone_response &&
-                    <tr>
-                      <td style={{width: '40%'}}>
-                        <b>Телефонизация</b>
-                      </td> 
-                      <td><a className="text-info pointer" data-toggle="modal" data-target="#phone_provier_modal">Просмотр</a></td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
+                    {apz.commission.apz_gas_response &&
+                       <tr>
+                        <td style={{width: '40%'}}>
+                          <b>Газоснабжение</b>
+                        </td> 
+                        <td><a className="text-info pointer" data-toggle="modal" data-target="#gas_provier_modal">Просмотр</a></td>
+                      </tr>
+                    }
+
+                    {apz.commission.apz_phone_response &&
+                      <tr>
+                        <td style={{width: '40%'}}>
+                          <b>Телефонизация</b>
+                        </td> 
+                        <td><a className="text-info pointer" data-toggle="modal" data-target="#phone_provier_modal">Просмотр</a></td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              }
 
               <div className={this.state.showButtons ? '' : 'invisible'}>
                 <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
@@ -846,7 +868,7 @@ class ShowApz extends React.Component {
                           </div>
                         </div>
                         <div className="modal-footer">
-                          <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>Отправить</button>
+                          <button type="button" className="btn btn-primary" onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>Отправить</button>
                           <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                         </div>
                       </div>
@@ -876,7 +898,7 @@ class ShowApz extends React.Component {
                           </div>
                         </div>
                         <div className="modal-footer">
-                          <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.description)}>Отправить</button>
+                          <button type="button" className="btn btn-primary" onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.description)}>Отправить</button>
                           <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                         </div>
                       </div>
@@ -1056,31 +1078,31 @@ class ShowApz extends React.Component {
                     </div>
                     <div className="modal-body">
                       <table className="table table-bordered table-striped">
-                        {apz.commission.apz_heat_response.response ?
+                        {apz.commission.apz_electricity_response.response ?
                           <tbody>
                             <tr>
                               <td style={{width: '50%'}}><b>Требуемая мощность (кВт)</b></td>
-                              <td>{apz.commission.apz_heat_response.req_power}</td>
+                              <td>{apz.commission.apz_electricity_response.req_power}</td>
                             </tr>
                             <tr> 
                               <td><b>Характер нагрузки (фаза)</b></td>
-                              <td>{apz.commission.apz_heat_response.phase}</td>
+                              <td>{apz.commission.apz_electricity_response.phase}</td>
                             </tr>
                             <tr>
                               <td><b>Категория по надежности (кВт)</b></td>
-                              <td>{apz.commission.apz_heat_response.safe_category}</td>
+                              <td>{apz.commission.apz_electricity_response.safe_category}</td>
                             </tr>
                             <tr>
                               <td><b>Точка подключения</b></td>
-                              <td>{apz.commission.apz_heat_response.connection_point}</td>
+                              <td>{apz.commission.apz_electricity_response.connection_point}</td>
                             </tr>
                             <tr>
                               <td><b>Рекомендация</b></td>
-                              <td>{apz.commission.apz_heat_response.recommendation}</td>
+                              <td>{apz.commission.apz_electricity_response.recommendation}</td>
                             </tr>
                             <tr>
                               <td><b>Номер документа</b></td>
-                              <td>{apz.commission.apz_heat_response.doc_number}</td> 
+                              <td>{apz.commission.apz_electricity_response.doc_number}</td> 
                             </tr>
                             <tr>
                               <td><b>Загруженный ТУ</b>:</td> 

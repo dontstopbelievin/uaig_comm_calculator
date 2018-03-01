@@ -95,7 +95,7 @@ export default class Login extends Component {
             roles.push(JSON.parse(e.target.response).role3);
           // сохраняем в хранилище sessionStorage токен доступа
           sessionStorage.setItem(tokenKey, JSON.parse(e.target.response).access_token);
-          sessionStorage.setItem(userNameKey, JSON.parse(e.target.response).iin);
+          sessionStorage.setItem(userNameKey, JSON.parse(e.target.response).name);
           sessionStorage.setItem(userRoleKey, JSON.stringify(roles));
           sessionStorage.setItem(logStatusKey, true);
           if(roles[0] === 'Urban'){

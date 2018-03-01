@@ -1743,31 +1743,31 @@ class ShowApz extends React.Component {
                         </div>
                         <div className="modal-body">
                           <table className="table table-bordered table-striped">
-                            {apz.commission.apz_heat_response.response ?
+                            {apz.commission.apz_electricity_response.response ?
                               <tbody>
                                 <tr>
                                   <td style={{width: '50%'}}><b>Требуемая мощность (кВт)</b></td>
-                                  <td>{apz.commission.apz_heat_response.req_power}</td>
+                                  <td>{apz.commission.apz_electricity_response.req_power}</td>
                                 </tr>
                                 <tr> 
                                   <td><b>Характер нагрузки (фаза)</b></td>
-                                  <td>{apz.commission.apz_heat_response.phase}</td>
+                                  <td>{apz.commission.apz_electricity_response.phase}</td>
                                 </tr>
                                 <tr>
                                   <td><b>Категория по надежности (кВт)</b></td>
-                                  <td>{apz.commission.apz_heat_response.safe_category}</td>
+                                  <td>{apz.commission.apz_electricity_response.safe_category}</td>
                                 </tr>
                                 <tr>
                                   <td><b>Точка подключения</b></td>
-                                  <td>{apz.commission.apz_heat_response.connection_point}</td>
+                                  <td>{apz.commission.apz_electricity_response.connection_point}</td>
                                 </tr>
                                 <tr>
                                   <td><b>Рекомендация</b></td>
-                                  <td>{apz.commission.apz_heat_response.recommendation}</td>
+                                  <td>{apz.commission.apz_electricity_response.recommendation}</td>
                                 </tr>
                                 <tr>
                                   <td><b>Номер документа</b></td>
-                                  <td>{apz.commission.apz_heat_response.doc_number}</td> 
+                                  <td>{apz.commission.apz_electricity_response.doc_number}</td> 
                                 </tr>
                                 <tr>
                                   <td><b>Загруженный ТУ</b>:</td> 

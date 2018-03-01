@@ -337,6 +337,11 @@ class ShowApz extends React.Component {
     var token = sessionStorage.getItem('tokenInfo');
     var file = this.state.file;
 
+    if (!file) {
+      alert('Не выбран файл');
+      return false;
+    }
+
     var formData = new FormData();
     formData.append('file', file);
     formData.append('Response', status);

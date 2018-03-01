@@ -112,9 +112,7 @@ export default class Register extends React.Component {
     console.log("registerWithoutECP function started");
 
     var registerData = {
-      user_name: this.state.username,
       company_name: this.state.companyName,
-      name: this.state.username,
       iin: this.state.iin,
       bin: this.state.bin,
       first_name: this.state.firstName,
@@ -441,7 +439,7 @@ export default class Register extends React.Component {
                           <div>
                             <div className="form-group">
                                 <label>БИН:</label>
-                                <input type="text" className="form-control" required onChange={(e) => this.setState({username: e.target.value})} />
+                                <input type="text" className="form-control" required onChange={(e) => this.setState({bin: e.target.value})} />
                             </div>
                             <div className="form-group">
                                 <label>Название компании:</label>
@@ -451,7 +449,7 @@ export default class Register extends React.Component {
                           : 
                           <div className="form-group">
                               <label>ИИН:</label>
-                              <input type="text" className="form-control" required onChange={(e) => this.setState({username: e.target.value})} />
+                              <input type="text" className="form-control" required onChange={(e) => this.setState({iin: e.target.value})} />
                           </div>
                       }
                       <div className="form-group">

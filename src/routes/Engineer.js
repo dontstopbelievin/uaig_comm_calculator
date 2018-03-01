@@ -151,6 +151,7 @@ class ShowApz extends React.Component {
       providers: [],
       showMap: false,
       showButtons: false,
+      showCommission: false,
       file: false,
       docNumber: "",
       description: '',
@@ -200,6 +201,7 @@ class ShowApz extends React.Component {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
         var commission = data.commission;
+        var hasReponse = data.state_history.filter(function(obj) { return obj.state_id === 5 || obj.state_id === 6 });
 
         this.setState({apz: data});
         this.setState({showButtons: false});
@@ -227,10 +229,14 @@ class ShowApz extends React.Component {
           if (commission.apz_gas_response && commission.apz_gas_response.files) {
             this.setState({gasResponseFile: commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
           }
+        }
 
-          if (commission.status_id === 2 && data.status_id === 4) {
-            this.setState({showButtons: true});
-          }
+        if (data.status_id === 4 && hasReponse.length == 0) {
+          this.setState({showButtons: true});
+        }
+
+        if (hasReponse.length == 0) {
+          this.setState({showCommission: true});
         }
       }
     }.bind(this)
@@ -661,6 +667,12 @@ class ShowApz extends React.Component {
 
   createCommission(id) {
     var data = $('.commission_users_table input').serializeJSON();
+
+    if (Object.keys(data).length == 0) {
+      alert('Не выбраны провайдеры');
+      return false;
+    }
+
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
     xhr.open("post", window.url + "api/apz/engineer/create_commission/" + id, true);
@@ -699,6 +711,8 @@ class ShowApz extends React.Component {
           alert("Заявление отклонено!");
           this.setState({ showButtons: false });
         }
+
+        this.setState({ showCommission: false });
       }
       else if(xhr.status === 401){
         sessionStorage.clear();
@@ -810,99 +824,103 @@ class ShowApz extends React.Component {
         </div>
 
         <div className="col-sm-12">
-          <h5 className="block-title-2 mt-3 mb-3">Решение</h5>
+          {this.state.showCommission &&
+            <div>
+              <h5 className="block-title-2 mt-3 mb-3">Решение</h5>
 
-          <table className="table table-bordered commission_users_table">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Название провайдера</th>
-                <th>Кол. дней осталось</th>
-                <th>Статус</th>
-              </tr>
-            </thead>
-            
-            {apz.commission && Object.keys(apz.commission).length > 0 ?
-              <tbody>
-                {apz.commission.users.map(function(item, index) {
-                  return(
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>
-                        <a className="text-info pointer" data-toggle="modal" data-target={'#' + item.role.name.toLowerCase() + '_provider_modal'}>{item.role.description}</a>
-                      </td>
-                      <td></td>
-                      <td>{item.status.name}</td>
-                    </tr>
-                    );
-                  })
-                }
-              </tbody>
-              :
-              <tbody>
-                {this.state.providers.water &&
+              <table className="table table-bordered commission_users_table">
+                <thead>
                   <tr>
-                    <td>
-                      <input className="form-control" type="checkbox" name="commission_users[Water]" value={this.state.providers.water.id} />
-                    </td>
-                    <td>Водоснабжение</td>
-                    <td></td>
-                    <td></td>
+                    <th></th>
+                    <th>Название провайдера</th>
+                    <th>Кол. дней осталось</th>
+                    <th>Статус</th>
                   </tr>
-                }
+                </thead>
                 
-                {this.state.providers.heat &&
-                  <tr>
-                    <td>
-                      <input className="form-control" type="checkbox" name="commission_users[Heat]" value={this.state.providers.heat.id} />
-                    </td>
-                    <td>Теплоснабжение</td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                }
+                {apz.commission && Object.keys(apz.commission).length > 0 ?
+                  <tbody>
+                    {apz.commission.users.map(function(item, index) {
+                      return(
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>
+                            <a className="text-info pointer" data-toggle="modal" data-target={'#' + item.role.name.toLowerCase() + '_provider_modal'}>{item.role.description}</a>
+                          </td>
+                          <td></td>
+                          <td>{item.status.name}</td>
+                        </tr>
+                        );
+                      })
+                    }
+                  </tbody>
+                  :
+                  <tbody>
+                    {this.state.providers.water &&
+                      <tr>
+                        <td>
+                          <input className="form-control" type="checkbox" name="commission_users[Water]" value={this.state.providers.water.id} />
+                        </td>
+                        <td>Водоснабжение</td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    }
+                    
+                    {this.state.providers.heat &&
+                      <tr>
+                        <td>
+                          <input className="form-control" type="checkbox" name="commission_users[Heat]" value={this.state.providers.heat.id} />
+                        </td>
+                        <td>Теплоснабжение</td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    }
 
-                {this.state.providers.electro &&
-                  <tr>
-                    <td>
-                      <input className="form-control" type="checkbox" name="commission_users[Electricity]" value={this.state.providers.electro.id} />
-                    </td>
-                    <td>Электроснабжение</td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                }
+                    {this.state.providers.electro &&
+                      <tr>
+                        <td>
+                          <input className="form-control" type="checkbox" name="commission_users[Electricity]" value={this.state.providers.electro.id} />
+                        </td>
+                        <td>Электроснабжение</td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    }
 
-                {this.state.providers.gas &&
-                  <tr>
-                    <td>
-                      <input className="form-control" type="checkbox" name="commission_users[Gas]" value={this.state.providers.gas.id} />
-                    </td>
-                    <td>Газоснабжение</td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                }
+                    {this.state.providers.gas &&
+                      <tr>
+                        <td>
+                          <input className="form-control" type="checkbox" name="commission_users[Gas]" value={this.state.providers.gas.id} />
+                        </td>
+                        <td>Газоснабжение</td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    }
 
-                {this.state.providers.phone &&
-                  <tr>
-                    <td>
-                      <input className="form-control" type="checkbox" name="commission_users[Phone]" value={this.state.providers.phone.id} />
-                    </td>
-                    <td>Телефонизация</td>
-                    <td></td>
-                    <td></td>
-                  </tr>
+                    {this.state.providers.phone &&
+                      <tr>
+                        <td>
+                          <input className="form-control" type="checkbox" name="commission_users[Phone]" value={this.state.providers.phone.id} />
+                        </td>
+                        <td>Телефонизация</td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    }
+                  </tbody>
                 }
-              </tbody>
-            }
-          </table>
+              </table>
 
-          {!apz.commission &&
-            <div className="col-sm-12">
-              <button className="btn btn-raised btn-info" onClick={this.createCommission.bind(this, apz.id)} style={{margin: '20px auto 10px'}}>
-                Создать комиссию
-              </button>
+              {!apz.commission &&
+                <div className="col-sm-12">
+                  <button className="btn btn-raised btn-info" onClick={this.createCommission.bind(this, apz.id)} style={{margin: '20px auto 10px'}}>
+                    Создать комиссию
+                  </button>
+                </div>
+              }
             </div>
           }
 
@@ -1089,19 +1107,19 @@ class ShowApz extends React.Component {
                   </div>
                   <div className="modal-body">
                     <table className="table table-bordered table-striped">
-                      {apz.commission.apz_heat_response.response ?
+                      {apz.commission.apz_electricity_response.response ?
                         <tbody>
                           <tr>
                             <td style={{width: '50%'}}><b>Требуемая мощность (кВт)</b></td>
-                            <td>{apz.commission.apz_heat_response.req_power}</td>
+                            <td>{apz.commission.apz_electricity_response.req_power}</td>
                           </tr>
                           <tr> 
                             <td><b>Характер нагрузки (фаза)</b></td>
-                            <td>{apz.commission.apz_heat_response.phase}</td>
+                            <td>{apz.commission.apz_electricity_response.phase}</td>
                           </tr>
                           <tr>
                             <td><b>Категория по надежности (кВт)</b></td>
-                            <td>{apz.commission.apz_heat_response.safe_category}</td>
+                            <td>{apz.commission.apz_electricity_response.safe_category}</td>
                           </tr>
                           <tr>
                             <td><b>Точка подключения</b></td>
@@ -1109,11 +1127,11 @@ class ShowApz extends React.Component {
                           </tr>
                           <tr>
                             <td><b>Рекомендация</b></td>
-                            <td>{apz.commission.apz_heat_response.recommendation}</td>
+                            <td>{apz.commission.apz_electricity_response.recommendation}</td>
                           </tr>
                           <tr>
                             <td><b>Номер документа</b></td>
-                            <td>{apz.commission.apz_heat_response.doc_number}</td> 
+                            <td>{apz.commission.apz_electricity_response.doc_number}</td> 
                           </tr>
                           <tr>
                             <td><b>Загруженный ТУ</b>:</td> 
