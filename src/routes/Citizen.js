@@ -349,7 +349,7 @@ class AddApz extends React.Component {
 
   //правила вкладки Объект/Газоснабжение
   ObjectType(e) {
-    document.getElementsByName('ObjectArea')[0].disabled = false;
+    // document.getElementsByName('ObjectArea')[0].disabled = false;
   }
 
   ObjectArea(e) {
@@ -380,28 +380,28 @@ class AddApz extends React.Component {
         document.getElementsByName("ElectricSafetyCategory")[0].required = false;
       }
 
-      if(document.getElementsByName('ElectricRequiredPower')[0].value !== '')
-      {
-        var ElectricRequiredPower = parseInt(document.getElementsByName('ElectricRequiredPower')[0].value, 3);
-        var select = document.getElementsByName('ElectricityPhase')[0];
-        switch (true) 
-        {
-          case (ElectricRequiredPower <= 5):
-            document.getElementsByName('ElectricityPhase')[0].options.length = 0; //очищаем список
-            select.options[select.options.length] = new Option('Однофазная', 'Однофазная');
-            select.options[select.options.length] = new Option('Двухфазная', 'Двухфазная');
-            break;
-          case (ElectricRequiredPower >= 6):
-            document.getElementsByName('ElectricityPhase')[0].options.length = 0;
-            select.options[select.options.length] = new Option('Трехфазная', 'Трехфазная');
-            select.options[select.options.length] = new Option('Постоянная', 'Постоянная');
-            select.options[select.options.length] = new Option('Временная', 'Временная');
-            select.options[select.options.length] = new Option('Сезонная', 'Сезонная');
-            break;
-          default:
-            break;
-        }
-      }
+      // if(document.getElementsByName('ElectricRequiredPower')[0].value !== '')
+      // {
+      //   var ElectricRequiredPower = parseInt(document.getElementsByName('ElectricRequiredPower')[0].value, 3);
+      //   var select = document.getElementsByName('ElectricityPhase')[0];
+      //   switch (true) 
+      //   {
+      //     case (ElectricRequiredPower <= 5):
+      //       document.getElementsByName('ElectricityPhase')[0].options.length = 0; //очищаем список
+      //       select.options[select.options.length] = new Option('Однофазная', 'Однофазная');
+      //       select.options[select.options.length] = new Option('Двухфазная', 'Двухфазная');
+      //       break;
+      //     case (ElectricRequiredPower >= 6):
+      //       document.getElementsByName('ElectricityPhase')[0].options.length = 0;
+      //       select.options[select.options.length] = new Option('Трехфазная', 'Трехфазная');
+      //       select.options[select.options.length] = new Option('Постоянная', 'Постоянная');
+      //       select.options[select.options.length] = new Option('Временная', 'Временная');
+      //       select.options[select.options.length] = new Option('Сезонная', 'Сезонная');
+      //       break;
+      //     default:
+      //       break;
+      //   }
+      // }
       
     }
     if(document.getElementById('ObjectType').value === 'obj_mjk') //МЖК
@@ -448,42 +448,42 @@ class AddApz extends React.Component {
               <form id="tab0-form" data-tab="0" onSubmit={this.tabSubmission.bind(this)}>
               <div className="row">
                 <div className="col-md-6">
-                <div className="form-group">
-                  <label htmlFor="Applicant">Наименование заявителя:</label>
-                  <input type="text" className="form-control" required name="Applicant" placeholder="Наименование" />
-                  <span className="help-block">Ф.И.О. (при его наличии) физического лица <br />или наименование юридического лица</span>
-                </div>
-                <div className="form-group">
-                  <label htmlFor="PersonalIdFile">Прикрепить личные данные</label>
-                  <input type="file" required name="PersonalIdFile" className="form-control" onChange={this.onPersonalIdFileChange}/>
-                  <span className="help-block">Удостверение личности (физ. лица) <br />или Реквизиты (юр. лица)</span>
-                </div>
-                <div className="form-group">
-                  <label htmlFor="Address">Адрес:</label>
-                  <input type="text" className="form-control" required id="ApzAddressForm" name="Address" placeholder="Адрес" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="Phone">Телефон</label>
-                  <input type="tel" className="form-control" name="Phone" placeholder="Телефон" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="Region">Район</label>
-                  <select className="form-control" name="Region">
-                  <option>Наурызбай</option>
-                  <option>Алатау</option>
-                  <option>Алмалы</option>
-                  <option>Ауезов</option>
-                  <option>Бостандық</option>
-                  <option>Жетісу</option>
-                  <option>Медеу</option>
-                  <option>Турксиб</option>
-                  </select>
-                </div>
+                  <div className="form-group">
+                    <label htmlFor="Applicant">Заявитель:</label>
+                    <input type="text" className="form-control" required name="Applicant" placeholder="ФИО / Наименование компании" />
+                    <span className="help-block"></span>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="PersonalIdFile">Уд.личности/Реквизиты</label>
+                    <input type="file" required name="PersonalIdFile" className="form-control" onChange={this.onPersonalIdFileChange}/>
+                    <span className="help-block">документ в формате pdf, doc, docx</span>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="Phone">Телефон</label>
+                    <input type="tel" className="form-control" name="Phone" placeholder="8 (7xx) xxx xx xx" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="Region">Район</label>
+                    <select className="form-control" name="Region">
+                    <option>Наурызбай</option>
+                    <option>Алатау</option>
+                    <option>Алмалы</option>
+                    <option>Ауезов</option>
+                    <option>Бостандық</option>
+                    <option>Жетісу</option>
+                    <option>Медеу</option>
+                    <option>Турксиб</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="Address">Адрес:</label>
+                    <input type="text" className="form-control" required id="ApzAddressForm" name="Address" placeholder="ул. Абая, д.25" />
+                  </div>
                 </div>
                 <div className="col-md-6">
                   <div className="form-group">
                     <label htmlFor="Customer">Заказчик</label>
-                    <input type="text" required className="form-control" name="Customer" placeholder="Заказчик" />
+                    <input type="text" required className="form-control" name="Customer" placeholder="ФИО / Наименование компании" />
                   </div>
                   <div className="form-group">
                     <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
@@ -512,14 +512,14 @@ class AddApz extends React.Component {
                     </div>
                   </div>
                   <div className="form-group">
-                    <label htmlFor="ConfirmedTaskFile">Прикрепить файл</label>
+                    <label htmlFor="ConfirmedTaskFile">Утвержденное задание на проектирование</label>
                     <input type="file" required name="ConfirmedTaskFile" className="form-control" onChange={this.onConfirmedTaskFileChange} />
-                    <span className="help-block">Утвержденное задание на проектирование</span>
+                    <span className="help-block">документ в формате pdf, doc, docx</span>
                   </div>
                   <div className="form-group">
-                    <label htmlFor="TitleDocumentFile">Прикрепить файл</label>
+                    <label htmlFor="TitleDocumentFile">Правоустанавливающий документ на земельный участок</label>
                     <input type="file" required name="TitleDocumentFile" className="form-control" onChange={this.onTitleDocumentFileChange} />
-                    <span className="help-block">Правоустанавливающий документ на земельный участок</span>
+                    <span className="help-block">документ в формате pdf, doc, docx</span>
                   </div>
                   {/*<div className="form-group">
                     <label htmlFor="ApzDate">Дата</label>
@@ -554,14 +554,14 @@ class AddApz extends React.Component {
                       <option value="obj_pp">ПромПред</option>
                     </select>
                   </div>
-                  <div className="form-group">
+                  {/*<div className="form-group">
                     <label htmlFor="ObjectClient">Заказчик</label>
                     <input type="text" required className="form-control" name="ObjectClient" placeholder="" />
                   </div>
                   <div className="form-group">
                     <label htmlFor="ObjectName">Наименование объекта:</label>
                     <input type="text" required className="form-control" name="ObjectName" placeholder="наименование" />
-                  </div>
+                  </div>*/}
                   <div className="form-group">
                     <label htmlFor="CadastralNumber">Кадастровый номер:</label>
                     <input type="text" className="form-control" name="CadastralNumber" placeholder="" />
@@ -585,7 +585,7 @@ class AddApz extends React.Component {
                 </div>
                 <div className="form-group">
                   <label htmlFor="ObjectArea">Площадь здания (кв.м)</label>
-                  <input type="number" step="any" className="form-control" name="ObjectArea" onChange={this.ObjectArea.bind(this)} readOnly="readonly" />
+                  <input type="number" step="any" className="form-control" name="ObjectArea" onChange={this.ObjectArea.bind(this)} />
                 </div>
                 <div className="form-group">
                   <label htmlFor="ObjectRooms">Количество квартир (номеров, кабинетов)</label>
@@ -614,6 +614,12 @@ class AddApz extends React.Component {
                 <div className="form-group">
                   <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
                   <select className="form-control" name="ElectricityPhase">
+                    <option>Однофазная</option>
+                    <option>Двухфазная</option>
+                    <option>Трехфазная</option>
+                    <option>Постоянная</option>
+                    <option>Временная</option>
+                    <option>Сезонная</option>
                   </select>
                 </div>
                 <div className="form-group">
@@ -645,7 +651,7 @@ class AddApz extends React.Component {
                 </div>*/}
                 <div className="form-group">
                   <label htmlFor="ElectricMaxLoadDevice">Из указанной макс. нагрузки относятся к электроприемникам (кВА):</label>
-                  <input type="number" className="form-control" readOnly="readonly" name="ElectricMaxLoadDevice" placeholder="" />
+                  <input type="number" className="form-control" name="ElectricMaxLoadDevice" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="ElectricMaxLoad">Существующая максимальная нагрузка (кВА)</label>
@@ -665,7 +671,7 @@ class AddApz extends React.Component {
                 <div className="col-md-6">
                 <div className="form-group">
                   <label>Количество людей</label>
-                  <input type="number" required className="form-control" name="PeopleCount" onChange={this.PeopleCount.bind(this)} placeholder="" />
+                  <input type="number" step="0.1" required className="form-control" name="PeopleCount" onChange={this.PeopleCount.bind(this)} placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
@@ -710,7 +716,7 @@ class AddApz extends React.Component {
                   <input type="number" step="any" required className="form-control" name="SewageAmount" placeholder="" />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="SewageFeksal">фекcальных (м<sup>3</sup>/сутки)</label>
+                  <label htmlFor="SewageFeksal">Фекальных (м<sup>3</sup>/сутки)</label>
                   <input type="number" step="any" className="form-control" name="SewageFeksal" placeholder="" />
                 </div>
                 </div>
@@ -737,25 +743,25 @@ class AddApz extends React.Component {
                 <div className="col-md-6">
                 <div className="form-group">
                   <label htmlFor="HeatGeneral">Общая тепловая нагрузка (Гкал/ч)</label>
-                  <input type="number" step="any" className="form-control" name="HeatGeneral" placeholder="" />
+                  <input type="number" step="0.1" className="form-control" name="HeatGeneral" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="HeatMain">Отопление (Гкал/ч)</label>
-                  <input type="number" step="any" className="form-control" name="HeatMain" placeholder="" />
+                  <input type="number" step="0.1" className="form-control" name="HeatMain" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="HeatVentilation">Вентиляция (Гкал/ч)</label>
-                  <input type="number" step="any" className="form-control" name="HeatVentilation" placeholder="" />
+                  <input type="number" step="0.1" className="form-control" name="HeatVentilation" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="HeatWater">Горячее водоснабжение (Гкал/ч)</label>
-                  <input type="number" step="any" className="form-control" id="HeatWater" placeholder="" />
+                  <input type="number" step="0.1" className="form-control" id="HeatWater" placeholder="" />
                 </div>
                 </div>
                 <div className="col-md-6">
                 <div className="form-group">
                   <label htmlFor="HeatTech">Технологические нужды(пар) (Т/ч)</label>
-                  <input type="number" step="any" className="form-control" name="HeatTech" placeholder="" />
+                  <input type="number" step="0.1" className="form-control" name="HeatTech" placeholder="" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="HeatDistribution">Разделить нагрузку по жилью и по встроенным помещениям</label>
@@ -793,24 +799,24 @@ class AddApz extends React.Component {
               <form id="tab7-form" data-tab="7" onSubmit={this.tabSubmission.bind(this)}>
               <div className="row">
                 <div className="col-md-6">
-                <div className="form-group">
-                  <label htmlFor="PhoneServiceNum">Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</label>
-                  <input type="number" step="any" className="form-control" name="PhoneServiceNum" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="PhoneCapacity">Телефонная емкость</label>
-                  <input type="text" className="form-control" name="PhoneCapacity" placeholder="" />
-                </div>
+                  <div className="form-group">
+                    <label htmlFor="PhoneServiceNum">Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</label>
+                    <input type="number" step="any" className="form-control" name="PhoneServiceNum" placeholder="" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="PhoneCapacity">Телефонная емкость</label>
+                    <input type="text" className="form-control" name="PhoneCapacity" placeholder="" />
+                  </div>
                 </div>
                 <div className="col-md-6">
-                <div className="form-group">
-                  <label htmlFor="PhoneSewage">Планируемая телефонная канализация</label>
-                  <input type="text" className="form-control" name="PhoneSewage" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="PhoneClientWishes">Пожелания заказчика (тип оборудования, тип кабеля и др.)</label>
-                  <input type="text" className="form-control" name="PhoneClientWishes" />
-                </div>
+                  <div className="form-group">
+                    <label htmlFor="PhoneSewage">Планируемая телефонная канализация</label>
+                    <input type="text" className="form-control" name="PhoneSewage" placeholder="" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="PhoneClientWishes">Пожелания заказчика</label>
+                    <input type="text" className="form-control" name="PhoneClientWishes" placeholder="Тип оборудования, тип кабеля и др." />
+                  </div>
                 </div>
               </div>
               <div>
@@ -823,32 +829,32 @@ class AddApz extends React.Component {
               <form id="tab8-form" data-tab="8" onSubmit={this.tabSubmission.bind(this)}>
               <div className="row">
                 <div className="col-md-6">
-                <div className="form-group">
-                  <label htmlFor="GasGeneral">Общая потребность (м<sup>3</sup>/час)</label>
-                  <input type="number" step="any" required className="form-control" name="GasGeneral" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="GasCooking">На приготовление пищи (м<sup>3</sup>/час)</label>
-                  <input type="number" step="any" className="form-control" name="GasCooking" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="GasHeat">Отопление (м<sup>3</sup>/час)</label>
-                  <input type="number" step="any" required className="form-control" name="GasHeat" placeholder="" />
-                </div>
+                  <div className="form-group">
+                    <label htmlFor="GasGeneral">Общая потребность (м<sup>3</sup>/час)</label>
+                    <input type="number" step="any" required className="form-control" name="GasGeneral" placeholder="" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="GasCooking">На приготовление пищи (м<sup>3</sup>/час)</label>
+                    <input type="number" step="any" className="form-control" name="GasCooking" placeholder="" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="GasHeat">Отопление (м<sup>3</sup>/час)</label>
+                    <input type="number" step="any" required className="form-control" name="GasHeat" placeholder="" />
+                  </div>
                 </div>
                 <div className="col-md-6">
-                <div className="form-group">
-                  <label htmlFor="GasVentilation">Вентиляция (м<sup>3</sup>/час)</label>
-                  <input type="number" step="any" className="form-control" name="GasVentilation" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="GasConditioner">Кондиционирование (м<sup>3</sup>/час)</label>
-                  <input type="number" step="any" className="form-control" name="GasConditioner" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="GasWater">Горячее водоснабжение при газификации многоэтажных домов (м<sup>3</sup>/час)</label>
-                  <input type="number" step="any" className="form-control" name="GasWater" />
-                </div>
+                  <div className="form-group">
+                    <label htmlFor="GasVentilation">Вентиляция (м<sup>3</sup>/час)</label>
+                    <input type="number" step="any" className="form-control" name="GasVentilation" placeholder="" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="GasConditioner">Кондиционирование (м<sup>3</sup>/час)</label>
+                    <input type="number" step="any" className="form-control" name="GasConditioner" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="GasWater">Горячее водоснабжение при газификации многоэтажных домов (м<sup>3</sup>/час)</label>
+                    <input type="number" step="any" className="form-control" name="GasWater" />
+                  </div>
                 </div>
               </div>
               <div>
