@@ -60,7 +60,7 @@ class Images extends React.Component {
     console.log("getFiles started");
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/File/images", true);
+    xhr.open("get", window.url + "api/file/images", true);
     //Send the proper header information along with the request
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
@@ -77,12 +77,11 @@ class Images extends React.Component {
   }
 
   // Скачивание файла
-  downloadFile(event) {
-    var id =  event.target.getAttribute("data-id");
+  downloadFile(id) {
     var token = sessionStorage.getItem('tokenInfo');
 
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/File/download/" + id, true);
+    xhr.open("get", window.url + 'api/file/download/' + id, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
@@ -91,7 +90,7 @@ class Images extends React.Component {
           var base64ToArrayBuffer = (function () {
         
             return function (base64) {
-              var binaryString =  window.atob(base64);
+              var binaryString = window.atob(base64);
               var binaryLen = binaryString.length;
               var bytes = new Uint8Array(binaryLen);
               
@@ -121,12 +120,12 @@ class Images extends React.Component {
 
           }());
 
-          saveByteArray([base64ToArrayBuffer(data.byteFile)], data.fileName + data.fileExt);
+          saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
         } else {
           alert('Не удалось скачать файл');
         }
       }
-      xhr.send();
+    xhr.send();
   }
 
   render() {
@@ -140,14 +139,14 @@ class Images extends React.Component {
                   return(
                     <div className="card" key={index}>
                       <div className="image-thumbnail">
-                        <div style={{background: 'url(data:' + image.ContentType + ';base64,' + image.File + ') center center'}}></div>
+                        <div style={{background: 'url(data:' + image.ContentType + ';base64,' + image.base64 + ') center center'}}></div>
                       </div>
                       <div className="card-body">
-                        <h4 className="card-title">{image.Name}</h4>
-                        <p className="card-text">{image.Description}</p>
+                        <h4 className="card-title">{image.name}</h4>
+                        <p className="card-text">{image.description}</p>
                       </div>
                       <div className="card-footer">
-                        <button type="button" className="btn btn-outline-primary" data-id={image.Id} onClick={this.downloadFile.bind(this)}>
+                        <button type="button" className="btn btn-outline-primary" onClick={this.downloadFile.bind(this, image.id)}>
                           Скачать
                         </button>
                       </div>
@@ -193,7 +192,7 @@ class AllFiles extends React.Component {
     console.log("getFiles started");
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/File/all", true);
+    xhr.open("get", window.url + "api/file/all", true);
       //Send the proper header information along with the request
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
@@ -211,11 +210,10 @@ class AllFiles extends React.Component {
   }
 
   // Скачивание файла
-  downloadFile(event) {
-    var id =  event.target.getAttribute("data-id");
+  downloadFile(id) {
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/File/download/" + id, true);
+    xhr.open("get", window.url + 'api/file/download/' + id, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
@@ -224,7 +222,7 @@ class AllFiles extends React.Component {
           var base64ToArrayBuffer = (function () {
         
             return function (base64) {
-              var binaryString =  window.atob(base64);
+              var binaryString = window.atob(base64);
               var binaryLen = binaryString.length;
               var bytes = new Uint8Array(binaryLen);
               
@@ -254,12 +252,12 @@ class AllFiles extends React.Component {
 
           }());
 
-          saveByteArray([base64ToArrayBuffer(data.byteFile)], data.fileName + data.fileExt);
+          saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
         } else {
           alert('Не удалось скачать файл');
         }
       }
-      xhr.send();
+    xhr.send();
   }
 
   deleteFile(event) {
@@ -272,7 +270,7 @@ class AllFiles extends React.Component {
     }
 
     var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + "api/File/delete/" + id, true);
+    xhr.open("post", window.url + "api/file/delete/" + id, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function() {
@@ -298,16 +296,20 @@ class AllFiles extends React.Component {
           {this.state.files.map(function(file, index){
             return(
               <tr key={index}>
-                <td>{file.Name}</td>
-                <td>{file.Category.Name}</td>
-                <td>{file.Description}</td>
+                <td>{file.name}</td>
                 <td>
-                  <a className="pointer control_buttons" title="Скачать" data-id={file.Id} onClick={this.downloadFile.bind(this)}>
+                  {file.category &&
+                    file.category.name_ru
+                  }
+                </td>
+                <td>{file.description}</td>
+                <td>
+                  <a className="pointer control_buttons" title="Скачать" data-id={file.id} onClick={this.downloadFile.bind(this, file.id)}>
                     Скачать 
                   </a>
 
                   {this.state.roles.indexOf('Admin') !== -1 &&
-                    <a className="pointer control_buttons" data-name={file.Name} data-id={file.Id} onClick={this.deleteFile.bind(this)}>
+                    <a className="pointer control_buttons" data-name={file.name} data-id={file.id} onClick={this.deleteFile.bind(this)}>
                       Удалить
                     </a>
                   }
@@ -392,7 +394,7 @@ class FilesForm extends React.Component {
     else 
     {
       var xhr = new XMLHttpRequest();
-      xhr.open("post", "http://uaig/api/File/Upload", true);
+      xhr.open("post", "http://uaig/api/file/upload", true);
       //Send the proper header information along with the request
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       //xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
@@ -414,7 +416,7 @@ class FilesForm extends React.Component {
   getCategories() {
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/File/categoriesList", true);
+    xhr.open("get", window.url + "api/file/categoriesList", true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
@@ -456,7 +458,7 @@ class FilesForm extends React.Component {
                         this.state.categories.map(function(category, index)
                           {
                             return(
-                              <option value={category.Id}  key={index}>{category.Name}</option>
+                              <option value={category.id}  key={index}>{category.name_ru}</option>
                             )
                           }
                         )

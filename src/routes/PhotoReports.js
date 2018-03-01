@@ -35,7 +35,7 @@ export default class PhotoReports extends React.Component {
   getList() {
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/photoreport/request/personal", true);
+    xhr.open("get", window.url + "api/photoreport/personal", true);
     //Send the proper header information along with the request
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
@@ -53,24 +53,24 @@ export default class PhotoReports extends React.Component {
     // console.log(e);
     this.setState({ showDetails: true });
     this.setState({ showPhotos: false });
-    this.setState({ linkToggle: e.Id });
-    this.setState({ RequestId: e.Id });
-    this.setState({ CompanyName: e.CompanyName });
-    this.setState({ CompanyLegalAddress: e.CompanyLegalAddress });
-    this.setState({ CompanyFactualAddress: e.CompanyFactualAddress });
-    this.setState({ PhotoAddress: e.PhotoAddress });
-    this.setState({ CompanyRegion: e.CompanyRegion });
-    this.setState({ IIN: e.IIN });
-    this.setState({ CompanyPhone: e.CompanyPhone });
-    this.setState({ Comments: e.Comments });
-    this.setState({ Status: e.Status });
-    this.setState(() => { var x = new Date(e.ApplicationDate);
+    this.setState({ linkToggle: e.id });
+    this.setState({ RequestId: e.id });
+    this.setState({ CompanyName: e.company_name });
+    this.setState({ CompanyLegalAddress: e.company_legal_address });
+    this.setState({ CompanyFactualAddress: e.company_factual_address });
+    this.setState({ PhotoAddress: e.photo_address });
+    this.setState({ CompanyRegion: e.company_region });
+    this.setState({ IIN: e.iin });
+    this.setState({ CompanyPhone: e.company_phone });
+    this.setState({ Comments: e.comments });
+    this.setState({ Status: e.status_id });
+    this.setState(() => { var x = new Date(e.created_at);
       return { ApplicationDate: (x.getDate()) + "." + (x.getMonth()+1) + "." + (x.getFullYear()) }
     });
-    this.setState(() => { var x = new Date(e.StartDate);
+    this.setState(() => { var x = new Date(e.start_date);
       return { StartDate: (x.getDate()) + "." + (x.getMonth()+1) + "." + (x.getFullYear()) }
     });
-    this.setState(() => { var x = new Date(e.EndDate);
+    this.setState(() => { var x = new Date(e.end_date);
       return { EndDate: (x.getDate()) + "." + (x.getMonth()+1) + "." + (x.getFullYear()) }
     });
   }
@@ -125,7 +125,7 @@ export default class PhotoReports extends React.Component {
       this.setState({loadingVisible: true});
       var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
-      xhr.open("post", window.url + "api/photoreport/request/create", true);
+      xhr.open("post", window.url + "api/photoreport/create", true);
       //Send the proper header information along with the request
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
@@ -235,7 +235,7 @@ export default class PhotoReports extends React.Component {
                       this.state.activeList.map(function(e, i){
                       return(
                           <li key={i}>
-                            <a onClick={this.getDetails.bind(this, e)} className={(this.state.linkToggle === e.Id) ? 'bold btn btn-primary' : 'btn btn-primary'}>{e.PhotoAddress}</a>
+                            <a onClick={this.getDetails.bind(this, e)} className={(this.state.linkToggle === e.Id) ? 'bold btn btn-primary' : 'btn btn-primary'}>{e.photo_address}</a>
                           </li>
                         )
                       }.bind(this))
@@ -261,25 +261,25 @@ export default class PhotoReports extends React.Component {
                       <div className="alert alert-primary">
                       {(() => {
                         switch (this.state.Status) {
-                          case '0': return (
+                          case 1: return (
                             <div>
                               <p>Управление архитектуры и градостроительства города Алматы, рассмотрев Ваше обращение от {this.state.ApplicationDate}, сообщает следующее.</p>
                               <p>Для объективного, всестороннего рассмотрения обращений по вопросам размещения наружных (визуальных) информационных объектов в городе Алматы необходимо представить Уполномоченному органу - Управление архитектуры и градостроительства города Алматы документы, материалы, имеющие значение для рассмотрения обращений <small><i>(эскиз, включающий дневное и ночное изображение информационного объекта, объекта, на который предлагается разместить информационный объект; копия правоустанавливающего документа на земельный участок или объект, на который предлагается разместить объект наружной (визуальной) рекламы либо договора о размещении объекта наружной (визуальной) рекламы, заключенный заявителем с собственником (собственниками) объекта, на который предлагается разместить объект наружной (визуальный) информационный объект, органом управления объектом кондоминиума или лицами, обладающими иными вещными правами; а также нотариально засвидетельствованная копия свидетельства на знаки обслуживания в соответствии с п.3 ст. 1024 ГК РК, либо нотариально засвидетельствованная копия договора о передачи права пользования (рекламы) на знаки обслуживания, уведомление «о погашении налоговой задолженности» (код платежа-105424) от Департамента государственных доходов г. Алматы и другие материалы, имеющие значение для рассмотрения обращений (документы подтверждающие принадлежность, а также сведения касательно месторасположения объектов наружных (визуальных) информационных объектов).</i></small></p> 
                               <p>В соответствии с п. 6 ст. 14 Закона Республики Казахстан «О порядке рассмотрения обращений физических и юридических лиц» Вы имеете право обжаловать действие (бездействие) должностных лиц либо решение, принятое по обращению.</p>
                             </div>);
-                          case '1': return (
+                          case 2: return (
                             <div>
                               <p>Управление архитектуры и градостроительства города Алматы, рассмотрев Ваше обращение от {this.state.ApplicationDate} направляет Вам фотографии объектов наружной (визуальной) рекламы. Вместе с тем, сообщаем, что сведения в органы государственных доходов Управлением подаются без указания наименования и ИИН (БИН) налогоплательщика.</p> 
                               <p>В соответствии с п. 6 ст. 14 Закона Республики Казахстан «О порядке рассмотрения обращений физических и юридических лиц» Вы имеете право обжаловать действие (бездействие) должностных лиц либо решение, принятое по обращению.</p>
                             </div>
                             )
-                          case '2': return 'Ваше заявление находится в обработке.';
+                          case 3: return 'Ваше заявление находится в обработке.';
                           default: return '';
                         }
                       })()}
                       </div>
                       {
-                        (this.state.Status === 1)
+                        (this.state.Status === 2)
                           ? <div><button onClick={this.getPhotos} className="btn btn-outline-primary">Показать фото</button></div>
                           : <div></div>
                       }
