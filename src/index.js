@@ -69,7 +69,7 @@ export default class Main extends React.Component {
     // window.url = 'https://work.uaig.kz:4443/';
     //window.url = 'http://localhost:53844/';
     window.url = 'http://api.uaig.kz:8880/';
-    window.clientSecret = 'GipDgvbRVlY0O2HRIrubLfLkhe9uVONMP1XCJtSu';
+    window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4';
   }
 
   componentDidMount() {
