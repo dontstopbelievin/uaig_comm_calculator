@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import LocalizedStrings from 'react-localization';
-import {ru, kk} from '../languages/header.json';
+import {ru, kk} from '../languages/timeOfReception.json';
 //import $ from 'jquery';
 
 let e = new LocalizedStrings({ru,kk});
@@ -47,7 +47,7 @@ export default class timeOfReception extends React.Component{
                             <td>{e.col_2_1}</td>
                             <td>{e.col_2_2}</td>
                             <td>
-                                <img className="td-img" src="/images/architects/zhanbyrshy.png" alt="" />
+                                <img className="td-img" src="/images/architects/zhanbyrshy.png" width="87" />
                             </td>
                             <td>{e.col_2_3}
                                 <br/>
@@ -63,7 +63,7 @@ export default class timeOfReception extends React.Component{
                             <td>{e.col_3_1}</td>
                             <td>{e.col_3_2}</td>
                             <td>
-                                <img className="td-img" src="/images/architects/tolepbergen.png" alt="" />
+                                <img className="td-img" src="/images/architects/tolepbergen.png" width="87" />
                             </td>
                             <td>{e.col_3_3}
                                 <br/>
@@ -79,7 +79,7 @@ export default class timeOfReception extends React.Component{
                             <td>{e.col_4_1}</td>
                             <td>{e.col_4_2}</td>
                             <td>
-                                <img className="td-img" src="/images/architects/rymzhanov.png" alt="" />
+                                <img className="td-img" src="/images/architects/rymzhanov.png" width="87" />
                             </td>
                             <td>{e.col_4_3}
                                 <br/>
@@ -95,7 +95,7 @@ export default class timeOfReception extends React.Component{
                             <td>{e.col_5_1}</td>
                             <td>{e.col_5_2}</td>
                             <td>
-                                <img className="td-img" src="/images/architects/isaev.png" alt="" />
+                                <img className="td-img" src="/images/architects/isaev.png"  width="87" />
                             </td>
                             <td>{e.col_5_3}
                                 <br/>
@@ -111,7 +111,7 @@ export default class timeOfReception extends React.Component{
                             <td>{e.col_6_1}</td>
                             <td>{e.col_6_2}</td>
                             <td>
-                                <img className="td-img" src="/images/architects/kultasov.png" alt="" />
+                                <img className="td-img" src="/images/architects/kultasov.png" width="87" />
                             </td>
                             <td>{e.col_6_3}
                                 <br/>
@@ -127,7 +127,7 @@ export default class timeOfReception extends React.Component{
                             <td>{e.col_7_1}</td>
                             <td>{e.col_7_2}</td>
                             <td>
-                                <img className="td-img" src="/images/architects/zhumabekov.png" alt="" />
+                                <img className="td-img" src="/images/architects/zhumabekov.png" width="87" />
                             </td>
                             <td>{e.col_7_3}
                                 <br/>
@@ -143,7 +143,7 @@ export default class timeOfReception extends React.Component{
                             <td>{e.col_8_1}</td>
                             <td>{e.col_8_2}</td>
                             <td>
-                                <img className="td-img" src="/images/architects/myrzekov.png" alt="" />
+                                <img className="td-img" src="/images/architects/myrzekov.png" width="87" />
                             </td>
                             <td>{e.col_8_3}
                                 <br/>
@@ -159,7 +159,7 @@ export default class timeOfReception extends React.Component{
                             <td>{e.col_9_1}</td>
                             <td>{e.col_9_2}</td>
                             <td>
-                                <img className="td-img" src="/images/architects/sembaev.png" alt="" />
+                                <img className="td-img" src="/images/architects/sembaev.png" width="87" />
                             </td>
                             <td>{e.col_9_3}
                                 <br/>
