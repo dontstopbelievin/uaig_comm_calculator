@@ -60,57 +60,7 @@ export default class Register extends React.Component {
     }
   }
 
-  //use register function
   register() {
-    console.log("register function started");
-    // var username = this.state.username.trim();
-    var email = this.state.email.trim();
-    var pwd = this.state.pwd.trim();
-    var confirmPwd = this.state.confirmPwd.trim();
-
-    var registerData = {
-      user_name: this.state.username,
-      company_name: this.state.companyName,
-      first_name: this.state.firstName,
-      last_name: this.state.lastName,
-      middle_name: this.state.middleName,
-      email: this.state.email,
-      password: this.state.pwd.trim(),
-      confirm_password: this.state.confirmPwd.trim()
-    };
-
-    console.log(registerData);
-
-    var data = JSON.stringify(registerData);
-
-    if (!!email && !pwd && !confirmPwd) {
-      return;
-    } 
-    else {
-      this.setState({loadingVisible: true});
-      var xhr = new XMLHttpRequest();
-      xhr.open("post", window.url + "api/Account/Register", true);
-      //Send the proper header information along with the request
-      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          alert("Вы успешно зарегистрировались!\n Можете войти через созданный аккаунт!");
-          this.setState({loadingVisible: false});
-        } else {
-          console.log(xhr.response);
-          this.setState({loadingVisible: false}); 
-          //alert("Ошибка " + xhr.status + ': ' + xhr.statusText);
-        }
-      }.bind(this);
-      //console.log(data);
-      xhr.send(data);
-    }
-    
-  }
-
-  registerWithoutECP() {
-    console.log("registerWithoutECP function started");
-
     var registerData = {
       company_name: this.state.companyName,
       iin: this.state.iin,
@@ -254,7 +204,7 @@ export default class Register extends React.Component {
   getTokenXml(alias) {
     let storagePath = $('#storagePath').val();
     let password = $('#inpPassword').val();
-    $.get(window.url + 'api/Account/GetTokenXml', function (tokenXml) {
+    $.get(window.url + 'api/get_token_xml', function (tokenXml) {
         if (storagePath !== null && storagePath !== "" && this.state.storageAlias !== null && this.state.storageAlias !== "") {
           if (password !== null && password !== "") {
             if (alias !== null && alias !== "") {
@@ -299,7 +249,7 @@ export default class Register extends React.Component {
       let signedXml = result.result;
       var data = { XmlDoc: signedXml }
       $.ajax({
-          url: window.url + 'api/Account/LoginCert',
+          url: window.url + 'api/login_with_cert',
           type: "POST",
           contentType: "application/json; charset=utf-8",
           data: JSON.stringify(data),
@@ -307,15 +257,13 @@ export default class Register extends React.Component {
              // var commonName = response.commonName;
              // var commonNameValues = commonName.split("?");
              // you will get response from your php page (what you echo or print)  
-              this.setState({user_name: response.IIN});
-              this.setState({firstName: response.firstName});
-              this.setState({last_name: response.last_name});
-              this.setState({middleName: response.middleName});
-              $('#userName').val(response.IIN);
-              $('#firstName').val(response.firstName);
-              $('#lastName').val(response.lastName);
-              $('#middleName').val(response.middleName);
-              alert(response.firstName + ", ЭЦП успешно загружен! Заполните остальные поля.");
+              this.setState({bin: response.bin});
+              this.setState({iin: response.iin});
+              this.setState({firstName: response.first_name});
+              this.setState({lastName: response.last_name});
+              this.setState({middleName: response.middle_name});
+              this.setState({email: response.email});
+              //alert(response.firstName + ", ЭЦП успешно загружен! Заполните остальные поля.");
           }.bind(this),
           error: function(jqXHR, textStatus, errorThrown) {
              console.log(textStatus, errorThrown);
@@ -341,6 +289,10 @@ export default class Register extends React.Component {
   }
 
   loadKeysBack(result) {
+    if (result.errorCode === "WRONG_PASSWORD") {
+      return alert('Неправильный пароль!');
+    }
+
     let alias = "";
     if (result && result.result) {
       let arr = result.result.split('|');
@@ -432,7 +384,7 @@ export default class Register extends React.Component {
                         <input type="radio" name="userType" onClick={(e) => this.setState({isCompany: true})} /> Юридическое лицо
                       </label>
                     </div>
-                    <form onSubmit={this.registerWithoutECP.bind(this)}>
+                    <form>
                       {
                         this.state.isCompany
                           ? 
@@ -477,7 +429,7 @@ export default class Register extends React.Component {
                         <input type="password" className="form-control" required value={this.state.confirmPwd} onChange={(e) => this.setState({confirmPwd: e.target.value})} />
                       </div>
                       <div className="modal-footer">
-                        <button type="submit" className="btn btn-primary">Регистрация</button>
+                        <button type="button" className="btn btn-primary" onClick={this.register.bind(this)}>Регистрация</button>
                         <Link to="/" style={{marginRight:'5px'}}>
                           <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
                         </Link>
@@ -507,10 +459,10 @@ export default class Register extends React.Component {
                       <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
                     </div>
                     <hr />
-                    <form id="registerForm" onSubmit={this.register.bind(this)}>
+                    <form>
                       <div className="form-group">
                         <label htmlFor="UserName" className="control-label">ИИН/БИН:</label>
-                        <input type="text" className="form-control" id="userName" required disabled />
+                        <input type="text" className="form-control" value={this.state.bin ? this.state.bin : this.state.iin} id="userName" required disabled />
                       </div>
                       {
                         this.state.isCompany
@@ -523,15 +475,15 @@ export default class Register extends React.Component {
                       }
                       <div className="form-group">
                         <label htmlFor="surname" className="control-label">Фамилия:</label>
-                        <input type="text" className="form-control" id="lastName" required disabled />
+                        <input type="text" className="form-control" value={this.state.lastName} id="lastName" required disabled />
                       </div>
                       <div className="form-group">
                         <label htmlFor="name" className="control-label">Имя:</label>
-                        <input type="text" className="form-control" id="firstName" required disabled />
+                        <input type="text" className="form-control" value={this.state.firstName} id="firstName" required disabled />
                       </div>
                       <div className="form-group">
                         <label htmlFor="patronymic" className="control-label">Отчество:</label>
-                        <input type="text" className="form-control" id="middleName" disabled />
+                        <input type="text" className="form-control" value={this.state.middleName} id="middleName" disabled />
                       </div>
                       <div className="form-group">
                         <label htmlFor="Email" className="control-label">E-mail:</label>
@@ -546,7 +498,7 @@ export default class Register extends React.Component {
                         <input type="password" className="form-control" required value={this.state.confirmPwd} onChange={(e) => this.setState({confirmPwd: e.target.value})} />
                       </div>
                       <div className="modal-footer">
-                        <button type="submit" className="btn btn-primary">Регистрация</button>
+                        <button type="button" className="btn btn-primary" onClick={this.register.bind(this)}>Регистрация</button>
                         <Link to="/" style={{marginRight:'5px'}}>
                           <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
                         </Link>

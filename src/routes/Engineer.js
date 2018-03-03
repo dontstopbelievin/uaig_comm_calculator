@@ -1123,7 +1123,7 @@ class ShowApz extends React.Component {
                           </tr>
                           <tr>
                             <td><b>Точка подключения</b></td>
-                            <td>{apz.commission.apz_heat_response.connection_point}</td>
+                            <td>{apz.commission.apz_electricity_response.connection_point}</td>
                           </tr>
                           <tr>
                             <td><b>Рекомендация</b></td>

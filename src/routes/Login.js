@@ -254,7 +254,7 @@ export default class Login extends Component {
   getTokenXml(alias) {
     let storagePath = $('#storagePath').val();
     let password = $('#inpPassword').val();
-    $.get(window.url + 'api/Account/GetTokenXml', function (tokenXml) {
+    $.get(window.url + 'api/get_token_xml', function (tokenXml) {
         if (storagePath !== null && storagePath !== "" && this.state.storageAlias !== null && this.state.storageAlias !== "") {
           if (password !== null && password !== "") {
             if (alias !== null && alias !== "") {
@@ -299,10 +299,10 @@ export default class Login extends Component {
       let signedXml = result.result;
       var data = { XmlDoc: signedXml }
       $.ajax({
-          url: window.url + 'api/Account/LoginWithECP',
+          url: window.url + 'api/login_with_cert',
           type: "POST",
-          contentType: "application/json; charset=utf-8",
-          data: JSON.stringify(data),
+          //contentType: "application/json; charset=utf-8",
+          data: data,
           success: function (response) {
              // var commonName = response.commonName;
              // var commonNameValues = commonName.split("?");
@@ -310,23 +310,25 @@ export default class Login extends Component {
               //window.result = response;
               //$('#userName').val(response.IIN);
 
-              var roles = response.role1;
-              if(response.role2)
-                roles.push(response.role2);
-              if(response.role3)
-                roles.push(response.role3);
-              // сохраняем в хранилище sessionStorage токен доступа
-              sessionStorage.setItem('tokenInfo', response.access_token);
-              sessionStorage.setItem('userName', response.userName);
-              sessionStorage.setItem('userRoles', JSON.stringify(roles));
-              sessionStorage.setItem('logStatus', true);
-              window.location.reload();
+              //var roles = response.role1;
+              //if(response.role2)
+              //  roles.push(response.role2);
+              //if(response.role3)
+              //  roles.push(response.role3);
+              //// сохраняем в хранилище sessionStorage токен доступа
+              //sessionStorage.setItem('tokenInfo', response.access_token);
+              //sessionStorage.setItem('userName', response.userName);
+              //sessionStorage.setItem('userRoles', JSON.stringify(roles));
+              //sessionStorage.setItem('logStatus', true);
+              //window.location.reload();
+
+              this.setState({username: response});
 
               //$('#firstName').val(response.firstName);
               //$('#lastName').val(response.lastName);
               //$('#middleName').val(response.middleName);
               //alert(response.firstName + ", ЭЦП успешно загружен! Заполните остальные поля.");
-          },
+          }.bind(this),
           error: function(jqXHR, textStatus, errorThrown) {
              console.log(textStatus, errorThrown);
           }
@@ -351,6 +353,10 @@ export default class Login extends Component {
   }
 
   loadKeysBack(result) {
+    if (result.errorCode === "WRONG_PASSWORD") {
+      return alert('Неправильный пароль!');
+    }
+
     let alias = "";
     if (result && result.result) {
       let arr = result.result.split('|');
@@ -467,21 +473,32 @@ export default class Login extends Component {
                         </label>
                         <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
                       </div>
-                      <div className="modal-footer">
-                        {!this.state.loaderHidden &&
-                          <div style={{margin: '0 auto'}}>
-                            <Loader type="Ball-Triangle" color="#57BAB1" height="70" width="70" />
-                          </div>
-                        }
-                        {this.state.loaderHidden &&
-                          <div>
-                            <button type="submit" className="btn btn-primary">Войти</button>
-                            <Link to="/" style={{marginRight:'5px'}}>
-                              <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
-                            </Link>
-                          </div>
-                        }
-                      </div>
+
+                      <form id="loginForm" onSubmit={this.login}>
+                        <div className="form-group">
+                          <label className="control-label">ИИН/БИН:</label>
+                          <input type="text" className="form-control" value={this.state.username} readOnly required />
+                        </div>
+                        <div className="form-group">
+                          <label className="control-label">Пароль:</label>
+                          <input type="password" className="form-control" value={this.state.pwd} onChange={this.onPwdChange} required />
+                        </div>
+                        <div className="modal-footer">
+                          {!this.state.loaderHidden &&
+                            <div style={{margin: '0 auto'}}>
+                              <Loader type="Ball-Triangle" color="#57BAB1" height="70" width="70" />
+                            </div>
+                          }
+                          {this.state.loaderHidden &&
+                            <div>
+                              <button type="submit" className="btn btn-primary">Войти</button>
+                              <Link to="/" style={{marginRight:'5px'}}>
+                                <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
+                              </Link>
+                            </div>
+                          }
+                        </div>
+                      </form>
                     </div>
                   </div>
                 </div>    
