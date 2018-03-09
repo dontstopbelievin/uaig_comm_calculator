@@ -499,10 +499,6 @@ class ShowApz extends React.Component {
         }
       }.bind(this);
       xhr.send(JSON.stringify(data));
-
-      // $.post(window.url + 'api/apz/provider/save_xml/water/' + this.state.apz.id, {xml: signedXml}, function (data) {
-      //     alert('RESULT: ' + data);
-      // }.bind(this));
     }
     else {
       if (result['errorCode'] === "WRONG_PASSWORD" && result['result'] > -1) {

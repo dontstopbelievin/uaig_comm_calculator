@@ -145,10 +145,20 @@ class ShowApz extends React.Component {
   constructor(props) {
     super(props);
 
+    this.webSocket = new WebSocket('wss://127.0.0.1:13579/');
+    this.heartbeat_msg = '--heartbeat--';
+    this.heartbeat_interval = null;
+    this.missed_heartbeats = 0;
+    this.missed_heartbeats_limit_min = 3;
+    this.missed_heartbeats_limit_max = 50;
+    this.missed_heartbeats_limit = this.missed_heartbeats_limit_min;
+    this.callback = null;
+
     this.state = {
       apz: [],
       showMap: false,
       showButtons: false,
+      showSignButtons: false,
       showTechCon: false,
       file: false,
       connectionPoint: "",
@@ -166,7 +176,10 @@ class ShowApz extends React.Component {
       showMapText: 'Показать карту',
       accept: true,
       callSaveFromSend: false,
-      gasStatus: 2
+      gasStatus: 2,
+      storageAlias: "PKCS12",
+      xmlFile: false,
+      isSigned: false
     };
 
     this.onConnectionPointChange = this.onConnectionPointChange.bind(this);
@@ -257,7 +270,8 @@ class ShowApz extends React.Component {
           if(data.commission.apz_gas_response.id !== -1){
             this.setState({accept: data.commission.apz_gas_response.response});
           }
-          this.setState({responseFile: data.commission.apz_phone_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12})[0]});
+          this.setState({responseFile: data.commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12})[0]});
+          this.setState({xmlFile: data.commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 14})[0]});
         }
 
         this.setState({gasStatus: data.apz_gas.status});
@@ -268,6 +282,10 @@ class ShowApz extends React.Component {
         
         if(data.apz_gas.status === 1){
           this.setState({showTechCon: true});
+        }
+
+        if (this.state.xmlFile) {
+          this.setState({isSigned: true});
         }
       }
     }.bind(this)
@@ -325,6 +343,237 @@ class ShowApz extends React.Component {
     xhr.send();
   }
 
+  setMissedHeartbeatsLimitToMax() {
+    this.missed_heartbeats_limit = this.missed_heartbeats_limit_max;
+  }
+
+  setMissedHeartbeatsLimitToMin() {
+    this.missed_heartbeats_limit = this.missed_heartbeats_limit_min;
+  }
+
+  browseKeyStore(storageName, fileExtension, currentDirectory, callBack) {
+    var browseKeyStore = {
+      "method": "browseKeyStore",
+      "args": [storageName, fileExtension, currentDirectory]
+    };
+    this.callback = callBack;
+    this.webSocketFunction();
+    this.setMissedHeartbeatsLimitToMax();
+    this.webSocket.send(JSON.stringify(browseKeyStore));
+  }
+
+  getKeys(storageName, storagePath, password, type, callBack) {
+    var getKeys = {
+      "method": "getKeys",
+      "args": [storageName, storagePath, password, type]
+    };
+    this.callback = callBack;
+    this.webSocketFunction();
+    this.setMissedHeartbeatsLimitToMax();
+    this.webSocket.send(JSON.stringify(getKeys));
+  }
+
+  chooseFile() {
+    var browseKeyStore = {
+      "method": "browseKeyStore",
+      "args": [this.state.storageAlias, "P12", '']
+    };
+    this.callback = "chooseStoragePathBack";
+    this.webSocketFunction();
+    this.setMissedHeartbeatsLimitToMax();
+    this.webSocket.send(JSON.stringify(browseKeyStore));
+  }
+
+  signMessage() {
+    let password = document.getElementById("inpPassword").value;
+    let path = document.getElementById("storagePath").value;
+    let keyType = "SIGN";
+    if (path !== null && path !== "" && this.state.storageAlias !== null && this.state.storageAlias !== "") {
+      if (password !== null && password !== "") {
+        this.getKeys(this.state.storageAlias, path, password, keyType, "loadKeysBack");
+      } else {
+        alert("Введите пароль к хранилищу");
+      }
+    } else {
+      alert("Не выбран хранилище!");
+    }
+  }
+
+  loadKeysBack(result) {
+    let alias = "";
+    if (result && result.result) {
+      let keys = result.result.split('/n');
+      if (keys && keys.length > 0) {
+        let arr = keys[0].split('|');
+        alias = arr[3];
+        this.getTokenXml(alias);
+      }
+    }
+    if (!alias) {
+      alert('Нет ключа подписания');
+    }
+  }
+
+  getTokenXml(alias) {
+    let password = document.getElementById("inpPassword").value;
+    let storagePath = document.getElementById("storagePath").value;
+    var token = sessionStorage.getItem('tokenInfo');
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + 'api/apz/provider/get_xml/gas/' + this.state.apz.id, true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      var tokenXml = xhr.responseText;
+
+      if (storagePath !== null && storagePath !== "" && this.state.storageAlias !== null && this.state.storageAlias !== "") {
+        if (password !== null && password !== "") {
+          if (alias !== null && alias !== "") {
+            if (tokenXml !== null && tokenXml !== "") {
+                this.signXml(this.state.storageAlias, storagePath, alias, password, tokenXml, "signXmlBack");
+            }
+            else {
+                alert("Нет данных для подписания!");
+            }
+          } else {
+              alert("Вы не выбрали ключ!");
+          }
+        } else {
+            alert("Введите пароль к хранилищу");
+        }
+      } else {
+          alert("Не выбран хранилище!");
+      }
+    }.bind(this);
+    xhr.send();
+  }
+
+  signXml(storageName, storagePath, alias, password, xmlToSign, callBack) {
+    var signXml = {
+      "method": "signXml",
+      "args": [storageName, storagePath, alias, password, xmlToSign]
+    };
+    this.callback = callBack;
+    this.webSocketFunction();
+    this.setMissedHeartbeatsLimitToMax();
+    this.webSocket.send(JSON.stringify(signXml));
+  }
+
+  signXmlBack(result) {
+    if (result['errorCode'] === "NONE") {
+      let signedXml = result.result;
+      var token = sessionStorage.getItem('tokenInfo');
+      var data = {xml: signedXml}
+
+      console.log("SIGNED XML ------> \n", signedXml);
+
+      var xhr = new XMLHttpRequest();
+      xhr.open("post", window.url + 'api/apz/provider/save_xml/gas/' + this.state.apz.id, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          this.setState({ isSigned: true });
+        }
+      }.bind(this);
+      xhr.send(JSON.stringify(data));
+    }
+    else {
+      if (result['errorCode'] === "WRONG_PASSWORD" && result['result'] > -1) {
+        alert("Неправильный пароль! Количество оставшихся попыток: " + result['result']);
+      } else if (result['errorCode'] === "WRONG_PASSWORD") {
+        alert("Неправильный пароль!");
+      } else {
+        alert(result['errorCode']);
+      }
+    }
+  }
+
+  chooseStoragePathBack(rw) {
+    if (rw.getErrorCode() === "NONE") {
+      var storagePath = rw.getResult();
+      if (storagePath !== null && storagePath !== "") {
+        document.getElementById("storagePath").value = storagePath;
+      }
+      else {
+        document.getElementById("storagePath").value = "";
+      }
+    } else {
+      document.getElementById("storagePath").value = "";
+    }
+  }
+
+  webSocketFunction() {
+    this.webSocket.onopen = function (event) {
+      if (this.heartbeat_interval == "") {
+        this.missed_heartbeats = 0;
+        this.heartbeat_interval = setInterval(this.pingLayer, 2000);
+      }
+      console.log("Connection opened");
+    }.bind(this);
+
+    this.webSocket.onclose = function (event) {
+      if (event.wasClean) {
+        console.log('connection has been closed');
+      } 
+      else {
+        console.log('Connection error');
+        this.openDialog();
+      }
+      console.log('Code: ' + event.code + ' Reason: ' + event.reason);
+    }.bind(this);
+
+    this.webSocket.onmessage = function (event) {
+      if (event.data === this.heartbeat_msg) {
+        this.missed_heartbeats = 0;
+        return;
+      }
+
+      var result = JSON.parse(event.data);
+
+      if (result != null) {
+        var rw = {
+          result: result['result'],
+          secondResult: result['secondResult'],
+          errorCode: result['errorCode'],
+          getResult: function () {
+            return this.result;
+          },
+          getSecondResult: function () {
+            return this.secondResult;
+          },
+          getErrorCode: function () {
+            return this.errorCode;
+          }
+        };
+        
+        switch (this.callback) {
+          case 'chooseStoragePathBack':
+            this.chooseStoragePathBack(rw);
+            break;
+
+          case 'loadKeysBack':
+            this.loadKeysBack(rw);
+            break;
+
+          case 'signXmlBack':
+            this.signXmlBack(rw);
+            break;
+          default:
+            break;
+        }
+      }
+      //console.log(event);
+      this.setMissedHeartbeatsLimitToMin();
+    }.bind(this);
+  }
+
+  openDialog() {
+    if (window.confirm("Ошибка при подключений к прослойке. Убедитесь что программа запущена и нажмите ОК") === true) {
+      window.location.reload();
+    }
+  }
+
   // this function is to save the respones form when any change is made
   saveResponseForm(apzId, status, comment){
     var token = sessionStorage.getItem('tokenInfo');
@@ -374,6 +623,8 @@ class ShowApz extends React.Component {
         }
         else{
           alert("Ответ сохранен!");
+
+          this.setState({showSignButtons: true})
         }
       }
       else if(xhr.status === 401){
@@ -635,7 +886,7 @@ class ShowApz extends React.Component {
               <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ</h5> 
             </div>
             <div className="col-sm-6">
-              {this.state.showButtons &&
+              {this.state.showButtons && !this.state.isSigned &&
                 <div className="btn-group" style={{float: 'right', margin: '0'}}>
                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, true)}>
                     <i className="glyphicon glyphicon-ok"></i>
@@ -648,7 +899,7 @@ class ShowApz extends React.Component {
             </div>
           </div>
 
-          {this.state.accept && this.state.gasStatus === 2 &&
+          {(this.state.accept === true || this.state.accept === 1) && this.state.gasStatus === 2 && !this.state.xmlFile && !this.state.isSigned &&
             <form style={{border: 'solid 3px #46A149', padding: '5px'}}>
               <div className="form-group">
                 <label htmlFor="connectionPoint">Точка подключения</label>
@@ -682,55 +933,87 @@ class ShowApz extends React.Component {
                 <label htmlFor="upload_file">Прикрепить файл</label>
                 <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
               </div>
-              <div className="form-group">
-                <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
-                  Сохранить
-                </button>
-                <button type="button" className="btn btn-primary" onClick={this.sendGasResponse.bind(this, apz.id, true, "")}>
-                  Отправить
-                </button>
-              </div>
+              
+              {!this.state.xmlFile && !this.state.showSignButtons &&
+                <div className="form-group">
+                  <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
+                    Сохранить
+                  </button>
+                </div>
+              }
+
+              {!this.state.xmlFile && this.state.showSignButtons && !this.state.isSigned &&
+                <div>
+                  <div className="row form-group">
+                    <div className="col-sm-7">
+                      <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
+                    </div>
+
+                    <div className="col-sm-5 p-0">
+                      <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                  </div>
+
+                  <div className="form-group">
+                    <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                  </div>
+                </div>
+              }
             </form>
           }
 
-          {this.state.accept && this.state.gasStatus === 1 &&
-            <table className="table table-bordered table-striped">
-              <tbody>
-                <tr>
-                  <td style={{width: '40%'}}>Точка подключения</td> 
-                  <td>{this.state.connectionPoint}</td>
-                </tr>
-                <tr>
-                  <td>Диаметр газопровода (мм)</td>
-                  <td>{this.state.gasPipeDiameter}</td>
-                </tr>
-                <tr>
-                  <td>Предполагаемый объем (м<sup>3</sup>/час)</td>
-                  <td>{this.state.assumedCapacity}</td>
-                </tr>
-                <tr>
-                  <td>Предусмотрение</td>
-                  <td>{this.state.reconsideration}</td>
-                </tr>
-                <tr>
-                  <td>Номер документа</td>
-                  <td>{this.state.docNumber}</td>
-                </tr>
-                {this.state.responseFile &&
+          {(this.state.accept === 1 || this.state.accept === true) && (this.state.gasStatus === 1 || this.state.isSigned) &&
+            <div>
+              <table className="table table-bordered table-striped">
+                <tbody>
                   <tr>
-                    <td>Прикрепленный файл</td>
-                    <td>
-                      <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
-                        Скачать 
-                      </a>
-                    </td>
+                    <td style={{width: '40%'}}>Точка подключения</td> 
+                    <td>{this.state.connectionPoint}</td>
                   </tr>
-                }
-              </tbody>
-            </table>
+                  <tr>
+                    <td>Диаметр газопровода (мм)</td>
+                    <td>{this.state.gasPipeDiameter}</td>
+                  </tr>
+                  <tr>
+                    <td>Предполагаемый объем (м<sup>3</sup>/час)</td>
+                    <td>{this.state.assumedCapacity}</td>
+                  </tr>
+                  <tr>
+                    <td>Предусмотрение</td>
+                    <td>{this.state.reconsideration}</td>
+                  </tr>
+                  <tr>
+                    <td>Номер документа</td>
+                    <td>{this.state.docNumber}</td>
+                  </tr>
+                  {this.state.responseFile &&
+                    <tr>
+                      <td>Прикрепленный файл</td>
+                      <td>
+                        <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
+                          Скачать 
+                        </a>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+
+              {this.state.gasStatus === 2 && this.state.isSigned &&
+                <div className="form-group">
+                  <button type="button" className="btn btn-primary" onClick={this.sendGasResponse.bind(this, apz.id, true, "")}>
+                    Отправить
+                  </button>
+                </div>
+              }
+            </div>
           }
 
-          {!this.state.accept && this.state.gasStatus === 2 &&
+          {(this.state.accept === false || this.state.accept === 0) && this.state.gasStatus === 2 && !this.state.xmlFile && !this.state.isSigned &&
             <form style={{border: 'solid 3px #F55549', padding: '5px'}}>
               <div className="form-group">
                 <label>Номер документа</label>
@@ -752,40 +1035,72 @@ class ShowApz extends React.Component {
                 <label htmlFor="upload_file">Прикрепить файл</label>
                 <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
               </div>
-              <div className="form-group">
-                <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, false, this.state.description)}>
-                  Сохранить
-                </button>
-                <button type="button" className="btn btn-primary" onClick={this.sendGasResponse.bind(this, apz.id, false, this.state.description)}>
-                  Отправить
-                </button>
-              </div>
+              
+              {!this.state.xmlFile && !this.state.showSignButtons &&
+                <div className="form-group">
+                  <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, false, this.state.description)}>
+                    Сохранить
+                  </button>
+                </div>
+              }
+
+              {!this.state.xmlFile && this.state.showSignButtons && !this.state.isSigned &&
+                <div>
+                  <div className="row form-group">
+                    <div className="col-sm-7">
+                      <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
+                    </div>
+
+                    <div className="col-sm-5 p-0">
+                      <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                  </div>
+
+                  <div className="form-group">
+                    <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                  </div>
+                </div>
+              }
             </form>
           }
 
-          {!this.state.accept && this.state.gasStatus === 0 &&
-            <table className="table table-bordered table-striped">
-              <tbody>
-                <tr>
-                  <td style={{width: '40%'}}>Причина отклонения</td> 
-                  <td>{this.state.description}</td>
-                </tr>
-                <tr>
-                  <td>Номер документа</td>
-                  <td>{this.state.docNumber}</td>
-                </tr>
-                {this.state.responseFile &&
+          {(this.state.accept === 0 || this.state.accept === false) && (this.state.gasStatus === 0 || this.state.isSigned) &&
+            <div>
+              <table className="table table-bordered table-striped">
+                <tbody>
                   <tr>
-                    <td>Прикрепленный файл</td>
-                    <td>
-                      <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
-                        Скачать 
-                      </a>
-                    </td>
+                    <td style={{width: '40%'}}>Причина отклонения</td> 
+                    <td>{this.state.description}</td>
                   </tr>
-                }
-              </tbody>
-            </table>
+                  <tr>
+                    <td>Номер документа</td>
+                    <td>{this.state.docNumber}</td>
+                  </tr>
+                  {this.state.responseFile &&
+                    <tr>
+                      <td>Прикрепленный файл</td>
+                      <td>
+                        <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
+                          Скачать 
+                        </a>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+
+              {this.state.gasStatus === 2 && this.state.isSigned &&
+                <div className="form-group">
+                  <button type="button" className="btn btn-primary" onClick={this.sendGasResponse.bind(this, apz.id, false, this.state.description)}>
+                    Отправить
+                  </button>
+                </div>
+              }
+            </div>
           }
 
           <div className={this.state.showTechCon ? '' : 'invisible'}>
