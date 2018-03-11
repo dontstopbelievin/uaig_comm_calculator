@@ -428,6 +428,11 @@ class ShowApz extends React.Component {
   }
 
   loadKeysBack(result) {
+    if (result.errorCode === "WRONG_PASSWORD") {
+      alert("Неверный пароль!");
+      return false;
+    }
+    
     let alias = "";
     if (result && result.result) {
       let keys = result.result.split('/n');
@@ -502,6 +507,8 @@ class ShowApz extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           this.setState({ isSigned: true });
+        } else {
+          alert("Не удалось подписать файл");
         }
       }.bind(this);
       xhr.send(JSON.stringify(data));

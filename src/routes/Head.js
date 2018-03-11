@@ -134,10 +134,21 @@ class ShowApz extends React.Component {
   constructor(props) {
     super(props);
 
+    this.webSocket = new WebSocket('wss://127.0.0.1:13579/');
+    this.heartbeat_msg = '--heartbeat--';
+    this.heartbeat_interval = null;
+    this.missed_heartbeats = 0;
+    this.missed_heartbeats_limit_min = 3;
+    this.missed_heartbeats_limit_max = 50;
+    this.missed_heartbeats_limit = this.missed_heartbeats_limit_min;
+    this.callback = null;
+
     this.state = {
       apz: [],
       showMap: false,
       showButtons: false,
+      showSendButton: false,
+      showSignButtons: false,
       file: false,
       docNumber: "",
       description: '',
@@ -147,12 +158,17 @@ class ShowApz extends React.Component {
       electroResponseFile: null,
       heatResponseFile: null,
       gasResponseFile: null,
+      headResponseFile: null,
       personalIdFile: false,
       confirmedTaskFile: false,
       titleDocumentFile: false,
       showMapText: 'Показать карту',
+      headResponse: null,
       response: false,
-      loaderHidden: false
+      loaderHidden: false,
+      storageAlias: "PKCS12",
+      xmlFile: false,
+      isSigned: false
     };
 
     this.onDocNumberChange = this.onDocNumberChange.bind(this);
@@ -219,8 +235,29 @@ class ShowApz extends React.Component {
           }
         }
 
-        if (data.status_id === 7) { 
+        if (data.apz_head_response && data.apz_head_response.files) {
+          this.setState({headResponseFile: data.apz_head_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+        }
+
+        if (data.apz_head_response && data.apz_head_response.files) {
+          this.setState({xmlFile: data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0]});
+          this.setState({headResponse: data.apz_head_response.response});
+        }
+
+        if (data.status_id === 7 && !data.apz_head_response) { 
           this.setState({showButtons: true}); 
+        }
+
+        if (this.state.xmlFile) {
+          this.setState({isSigned: true});
+        }
+
+        if (this.state.xmlFile && data.status_id === 7) {
+          this.setState({showSendButton: true});
+        }
+
+        if (!this.state.xmlFile && this.state.headResponseFile) {
+          this.setState({showSignButtons: true});
         }
 
         this.setState({loaderHidden: true});
@@ -288,7 +325,246 @@ class ShowApz extends React.Component {
     xhr.send();
   }
 
-  acceptDeclineApzForm(apzId, status, comment) {
+  setMissedHeartbeatsLimitToMax() {
+    this.missed_heartbeats_limit = this.missed_heartbeats_limit_max;
+  }
+
+  setMissedHeartbeatsLimitToMin() {
+    this.missed_heartbeats_limit = this.missed_heartbeats_limit_min;
+  }
+
+  browseKeyStore(storageName, fileExtension, currentDirectory, callBack) {
+    var browseKeyStore = {
+      "method": "browseKeyStore",
+      "args": [storageName, fileExtension, currentDirectory]
+    };
+    this.callback = callBack;
+    this.webSocketFunction();
+    this.setMissedHeartbeatsLimitToMax();
+    this.webSocket.send(JSON.stringify(browseKeyStore));
+  }
+
+  getKeys(storageName, storagePath, password, type, callBack) {
+    var getKeys = {
+      "method": "getKeys",
+      "args": [storageName, storagePath, password, type]
+    };
+    this.callback = callBack;
+    this.webSocketFunction();
+    this.setMissedHeartbeatsLimitToMax();
+    this.webSocket.send(JSON.stringify(getKeys));
+  }
+
+  chooseFile() {
+    var browseKeyStore = {
+      "method": "browseKeyStore",
+      "args": [this.state.storageAlias, "P12", '']
+    };
+    this.callback = "chooseStoragePathBack";
+    this.webSocketFunction();
+    this.setMissedHeartbeatsLimitToMax();
+    this.webSocket.send(JSON.stringify(browseKeyStore));
+  }
+
+  signMessage() {
+    let password = document.getElementById("inpPassword").value;
+    let path = document.getElementById("storagePath").value;
+    let keyType = "SIGN";
+    if (path !== null && path !== "" && this.state.storageAlias !== null && this.state.storageAlias !== "") {
+      if (password !== null && password !== "") {
+        this.getKeys(this.state.storageAlias, path, password, keyType, "loadKeysBack");
+      } else {
+        alert("Введите пароль к хранилищу");
+      }
+    } else {
+      alert("Не выбран хранилище!");
+    }
+  }
+
+  loadKeysBack(result) {
+    if (result.errorCode === "WRONG_PASSWORD") {
+      alert("Неверный пароль!");
+      return false;
+    }
+    
+    let alias = "";
+    if (result && result.result) {
+      let keys = result.result.split('/n');
+      if (keys && keys.length > 0) {
+        let arr = keys[0].split('|');
+        alias = arr[3];
+        this.getTokenXml(alias);
+      }
+    }
+    if (!alias) {
+      alert('Нет ключа подписания');
+    }
+  }
+
+  getTokenXml(alias) {
+    let password = document.getElementById("inpPassword").value;
+    let storagePath = document.getElementById("storagePath").value;
+    var token = sessionStorage.getItem('tokenInfo');
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + 'api/apz/head/get_xml/' + this.state.apz.id, true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      var tokenXml = xhr.responseText;
+
+      if (storagePath !== null && storagePath !== "" && this.state.storageAlias !== null && this.state.storageAlias !== "") {
+        if (password !== null && password !== "") {
+          if (alias !== null && alias !== "") {
+            if (tokenXml !== null && tokenXml !== "") {
+                this.signXml(this.state.storageAlias, storagePath, alias, password, tokenXml, "signXmlBack");
+            }
+            else {
+                alert("Нет данных для подписания!");
+            }
+          } else {
+              alert("Вы не выбрали ключ!");
+          }
+        } else {
+            alert("Введите пароль к хранилищу");
+        }
+      } else {
+          alert("Не выбран хранилище!");
+      }
+    }.bind(this);
+    xhr.send();
+  }
+
+  signXml(storageName, storagePath, alias, password, xmlToSign, callBack) {
+    var signXml = {
+      "method": "signXml",
+      "args": [storageName, storagePath, alias, password, xmlToSign]
+    };
+    this.callback = callBack;
+    this.webSocketFunction();
+    this.setMissedHeartbeatsLimitToMax();
+    this.webSocket.send(JSON.stringify(signXml));
+  }
+
+  signXmlBack(result) {
+    if (result['errorCode'] === "NONE") {
+      let signedXml = result.result;
+      var token = sessionStorage.getItem('tokenInfo');
+      var data = {xml: signedXml}
+
+      console.log("SIGNED XML ------> \n", signedXml);
+
+      var xhr = new XMLHttpRequest();
+      xhr.open("post", window.url + 'api/apz/head/save_xml/' + this.state.apz.id, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          this.setState({ isSigned: true });
+          this.setState({ showSendButton: true });
+        } else {
+          alert("Не удалось подписать файл");
+        }
+      }.bind(this);
+      xhr.send(JSON.stringify(data));
+    }
+    else {
+      if (result['errorCode'] === "WRONG_PASSWORD" && result['result'] > -1) {
+        alert("Неправильный пароль! Количество оставшихся попыток: " + result['result']);
+      } else if (result['errorCode'] === "WRONG_PASSWORD") {
+        alert("Неправильный пароль!");
+      } else {
+        alert(result['errorCode']);
+      }
+    }
+  }
+
+  chooseStoragePathBack(rw) {
+    if (rw.getErrorCode() === "NONE") {
+      var storagePath = rw.getResult();
+      if (storagePath !== null && storagePath !== "") {
+        document.getElementById("storagePath").value = storagePath;
+      }
+      else {
+        document.getElementById("storagePath").value = "";
+      }
+    } else {
+      document.getElementById("storagePath").value = "";
+    }
+  }
+
+  webSocketFunction() {
+    this.webSocket.onopen = function (event) {
+      if (this.heartbeat_interval == "") {
+        this.missed_heartbeats = 0;
+        this.heartbeat_interval = setInterval(this.pingLayer, 2000);
+      }
+      console.log("Connection opened");
+    }.bind(this);
+
+    this.webSocket.onclose = function (event) {
+      if (event.wasClean) {
+        console.log('connection has been closed');
+      } 
+      else {
+        console.log('Connection error');
+        this.openDialog();
+      }
+      console.log('Code: ' + event.code + ' Reason: ' + event.reason);
+    }.bind(this);
+
+    this.webSocket.onmessage = function (event) {
+      if (event.data === this.heartbeat_msg) {
+        this.missed_heartbeats = 0;
+        return;
+      }
+
+      var result = JSON.parse(event.data);
+
+      if (result != null) {
+        var rw = {
+          result: result['result'],
+          secondResult: result['secondResult'],
+          errorCode: result['errorCode'],
+          getResult: function () {
+            return this.result;
+          },
+          getSecondResult: function () {
+            return this.secondResult;
+          },
+          getErrorCode: function () {
+            return this.errorCode;
+          }
+        };
+        
+        switch (this.callback) {
+          case 'chooseStoragePathBack':
+            this.chooseStoragePathBack(rw);
+            break;
+
+          case 'loadKeysBack':
+            this.loadKeysBack(rw);
+            break;
+
+          case 'signXmlBack':
+            this.signXmlBack(rw);
+            break;
+          default:
+            break;
+        }
+      }
+      //console.log(event);
+      this.setMissedHeartbeatsLimitToMin();
+    }.bind(this);
+  }
+
+  openDialog() {
+    if (window.confirm("Ошибка при подключений к прослойке. Убедитесь что программа запущена и нажмите ОК") === true) {
+      window.location.reload();
+    }
+  }
+
+  saveApzForm(apzId, status, comment) {
     var token = sessionStorage.getItem('tokenInfo');
     var file = this.state.file;
 
@@ -304,19 +580,16 @@ class ShowApz extends React.Component {
     formData.append('DocNumber', this.state.docNumber);
 
     var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + "api/apz/head/status/" + apzId, true);
+    xhr.open("post", window.url + "api/apz/head/save/" + apzId, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function () {
       if (xhr.status === 200) {
-        //var data = JSON.parse(xhr.responseText);
-
-        if(status === true) {
-          alert("Заявление принято!");
-          this.setState({ showButtons: false });
-        } else {
-          alert("Заявление отклонено!");
-          this.setState({ showButtons: false });
-        }
+        alert("Ответ сохранен!");
+        var data = JSON.parse(xhr.responseText);
+        
+        this.setState({ showSignButtons: true });
+        this.setState({ showButtons: false });
+        this.setState({ headResponse: data.response });
       }
       else if(xhr.status === 401){
         sessionStorage.clear();
@@ -329,6 +602,36 @@ class ShowApz extends React.Component {
     $('#AcceptApzForm').modal('hide');
     $('body').removeClass('modal-open');
     $('.modal-backdrop').remove();
+  }
+
+  acceptDeclineApzForm(apzId, status) {
+    var token = sessionStorage.getItem('tokenInfo');
+
+    var formData = new FormData();
+    formData.append('Response', status);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("post", window.url + "api/apz/head/status/" + apzId, true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        //var data = JSON.parse(xhr.responseText);
+
+        if(status === true) {
+          alert("Заявление принято!");
+          this.setState({ showSendButton: false });
+        } else {
+          alert("Заявление отклонено!");
+          this.setState({ showSendButton: false });
+        }
+      }
+      else if(xhr.status === 401){
+        sessionStorage.clear();
+        alert("Время сессии истекло. Пожалуйста войдите заново!");
+        this.props.history.replace("/login");
+      }
+    }.bind(this);
+    xhr.send(formData);
   }
 
   // print technical condition of waterProvider
@@ -825,86 +1128,114 @@ class ShowApz extends React.Component {
                 </table>
               }
 
-              <div className={this.state.showButtons ? '' : 'invisible'}>
-                <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
-                  { this.state.response ? 
-                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} 
-                            data-toggle="modal" data-target="#AcceptApzForm">
-                      Одобрить
-                    </button>
-                    :
-                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled="disabled">
-                      Одобрить
-                    </button>
-                  }
-                  <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#DeclineApzForm">
-                    Отклонить
-                  </button>
-                  <div className="modal fade" id="AcceptApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                    <div className="modal-dialog" role="document">
-                      <div className="modal-content">
-                        <div className="modal-header">
-                          <h5 className="modal-title">Одобрение Заявки</h5>
-                          <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </div>
-                        <div className="modal-body">
-                          <div className="form-group">
-                            <label htmlFor="pname">Наименование объекта</label>
-                            <input type="text" readOnly="readonly" className="form-control" id="pname" placeholder={apz.project_name} />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="adress">Адрес объекта</label>
-                            <input type="text" readOnly="readonly" className="form-control" id="adress" placeholder={apz.project_address} />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="docNumber">Номер документа</label>
-                            <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="upload_file">Прикрепить файл</label>
-                            <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
-                          </div>
-                        </div>
-                        <div className="modal-footer">
-                          <button type="button" className="btn btn-primary" onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>Отправить</button>
-                          <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                        </div>
-                      </div>
+              {this.state.showSignButtons && !this.state.isSigned &&
+                <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                  <div className="row form-group">
+                    <div className="col-sm-7">
+                      <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
+                    </div>
+
+                    <div className="col-sm-5 p-0">
+                      <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
                     </div>
                   </div>
-                  <div className="modal fade" id="DeclineApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                    <div className="modal-dialog" role="document">
-                      <div className="modal-content">
-                        <div className="modal-header">
-                          <h5 className="modal-title">Отклонение Заявки</h5>
-                          <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </div>
-                        <div className="modal-body">
-                          <div className="form-group">
-                            <label htmlFor="docNumber">Номер документа</label>
-                            <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
-                          </div>
-                          <div className="form-group">
-                           <label>Причина отклонения</label>
-                            <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="upload_file">Прикрепить файл</label>
-                            <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
-                          </div>
-                        </div>
-                        <div className="modal-footer">
-                          <button type="button" className="btn btn-primary" onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.description)}>Отправить</button>
-                          <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                        </div>
-                      </div>
-                    </div>
+
+                  <div className="form-group">
+                    <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                  </div>
+
+                  <div className="form-group">
+                    <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
                   </div>
                 </div>
+              }
+
+              <div>
+                {this.state.showButtons &&
+                  <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
+                    { this.state.response ? 
+                      <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} 
+                              data-toggle="modal" data-target="#AcceptApzForm">
+                        Одобрить
+                      </button>
+                      :
+                      <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled="disabled">
+                        Одобрить
+                      </button>
+                    }
+                    <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#DeclineApzForm">
+                      Отклонить
+                    </button>
+                    <div className="modal fade" id="AcceptApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                      <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                          <div className="modal-header">
+                            <h5 className="modal-title">Одобрение Заявки</h5>
+                            <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div className="modal-body">
+                            <div className="form-group">
+                              <label htmlFor="pname">Наименование объекта</label>
+                              <input type="text" readOnly="readonly" className="form-control" id="pname" placeholder={apz.project_name} />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="adress">Адрес объекта</label>
+                              <input type="text" readOnly="readonly" className="form-control" id="adress" placeholder={apz.project_address} />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="docNumber">Номер документа</label>
+                              <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="upload_file">Прикрепить файл</label>
+                              <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                            </div>
+                          </div>
+                          <div className="modal-footer">
+                            <button type="button" className="btn btn-primary" onClick={this.saveApzForm.bind(this, apz.id, true, "your form was accepted")}>Отправить</button>
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="modal fade" id="DeclineApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                      <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                          <div className="modal-header">
+                            <h5 className="modal-title">Отклонение Заявки</h5>
+                            <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div className="modal-body">
+                            <div className="form-group">
+                              <label htmlFor="docNumber">Номер документа</label>
+                              <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+                            </div>
+                            <div className="form-group">
+                             <label>Причина отклонения</label>
+                              <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="upload_file">Прикрепить файл</label>
+                              <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                            </div>
+                          </div>
+                          <div className="modal-footer">
+                            <button type="button" className="btn btn-primary" onClick={this.saveApzForm.bind(this, apz.id, false, this.state.description)}>Отправить</button>
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+
+                {this.state.showSendButton &&
+                  <button type="button" className="btn btn-primary" onClick={this.acceptDeclineApzForm.bind(this, apz.id, this.state.headResponse ? true : false)}>Отправить</button>
+                }
               </div>
             </div>
 
