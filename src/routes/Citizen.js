@@ -475,20 +475,16 @@ class AddApz extends React.Component {
                     <option>Турксиб</option>
                     </select>
                   </div>
-                  <div className="form-group">
+                  {/*<div className="form-group">
                     <label htmlFor="Address">Адрес:</label>
                     <input type="text" className="form-control" required id="ApzAddressForm" name="Address" placeholder="ул. Абая, д.25" />
+                  </div>*/}
+                  <div className="form-group">
+                    <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
+                    <input type="text" className="form-control" name="Designer" />
                   </div>
                 </div>
                 <div className="col-md-6">
-                  <div className="form-group">
-                    <label htmlFor="Customer">Заказчик</label>
-                    <input type="text" required className="form-control" name="Customer" placeholder="ФИО / Наименование компании" />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
-                    <input type="text" required className="form-control" name="Designer" />
-                  </div>
                   <div className="form-group">
                     <label htmlFor="ProjectName">Наименование проектируемого объекта</label>
                     <input type="text" required className="form-control" id="ProjectName" name="ProjectName" />
@@ -563,6 +559,10 @@ class AddApz extends React.Component {
                     <input type="text" required className="form-control" name="ObjectName" placeholder="наименование" />
                   </div>*/}
                   <div className="form-group">
+                    <label htmlFor="Customer">Заказчик</label>
+                    <input type="text" required className="form-control" name="Customer" placeholder="ФИО / Наименование компании" />
+                  </div>
+                  <div className="form-group">
                     <label htmlFor="CadastralNumber">Кадастровый номер:</label>
                     <input type="text" className="form-control" name="CadastralNumber" placeholder="" />
                   </div>
@@ -603,33 +603,14 @@ class AddApz extends React.Component {
               <form id="tab2-form" data-tab="2" onSubmit={this.tabSubmission.bind(this)}>
               <div className="row">
                 <div className="col-md-6">
-                <div className="form-group">
-                  <label htmlFor="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)</label>
-                  <input type="number" step="any" name="ElectricAllowedPower" onChange={this.ObjectArea.bind(this)} className="form-control" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
-                  <input type="number" step="any" required className="form-control" onChange={this.ObjectArea.bind(this)}  name="ElectricRequiredPower" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
-                  <select className="form-control" name="ElectricityPhase">
-                    <option>Однофазная</option>
-                    <option>Двухфазная</option>
-                    <option>Трехфазная</option>
-                    <option>Постоянная</option>
-                    <option>Временная</option>
-                    <option>Сезонная</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label htmlFor="ElectricSafetyCategory">Категория по надежности (кВт)</label>
-                  <select required className="form-control" name="ElectricSafetyCategory" defaultValue="3">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                  </select>
-                </div>
+                  <div className="form-group">
+                    <label htmlFor="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)</label>
+                    <input type="number" step="any" name="ElectricAllowedPower" onChange={this.ObjectArea.bind(this)} className="form-control" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
+                    <input type="number" step="any" required className="form-control" onChange={this.ObjectArea.bind(this)}  name="ElectricRequiredPower" placeholder="" />
+                  </div>
                 </div>
                 <div className="col-md-6">
                 {/*<div className="form-group">
@@ -648,7 +629,7 @@ class AddApz extends React.Component {
                     <li><input type="checkbox" id="CB5"><span style="padding-left: 3px" htmlFor="CB5">электроводонагреватели</span><input type="text" className="form-control" placeholder=""></li>
                   </ul>
                   </div>
-                </div>*/}
+                </div>
                 <div className="form-group">
                   <label htmlFor="ElectricMaxLoadDevice">Из указанной макс. нагрузки относятся к электроприемникам (кВА):</label>
                   <input type="number" className="form-control" name="ElectricMaxLoadDevice" placeholder="" />
@@ -656,7 +637,26 @@ class AddApz extends React.Component {
                 <div className="form-group">
                   <label htmlFor="ElectricMaxLoad">Существующая максимальная нагрузка (кВА)</label>
                   <input type="number" className="form-control" name="ElectricMaxLoad" />
-                </div>
+                </div>*/}
+                  <div className="form-group">
+                    <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
+                    <select className="form-control" name="ElectricityPhase">
+                      <option>Однофазная</option>
+                      <option>Двухфазная</option>
+                      <option>Трехфазная</option>
+                      <option>Постоянная</option>
+                      <option>Временная</option>
+                      <option>Сезонная</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="ElectricSafetyCategory">Категория по надежности (кВт)</label>
+                    <select required className="form-control" name="ElectricSafetyCategory" defaultValue="3">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                    </select>
+                  </div>
                 </div>
               </div>
               <div>
