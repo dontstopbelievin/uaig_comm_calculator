@@ -404,7 +404,7 @@ class ShowApz extends React.Component {
       alert("Неверный пароль!");
       return false;
     }
-    
+
     let alias = "";
     if (result && result.result) {
       let keys = result.result.split('/n');
@@ -1042,36 +1042,11 @@ class ShowApz extends React.Component {
                 <label htmlFor="upload_file">Прикрепить файл</label>
                 <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
               </div>
-              
-              {!this.state.xmlFile && !this.state.showSignButtons &&
-                <div className="form-group">
-                  <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, false, this.state.description)}>
-                    Сохранить
-                  </button>
-                </div>
-              }
-
-              {!this.state.xmlFile && this.state.showSignButtons && !this.state.isSigned &&
-                <div>
-                  <div className="row form-group">
-                    <div className="col-sm-7">
-                      <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
-                    </div>
-
-                    <div className="col-sm-5 p-0">
-                      <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
-                    </div>
-                  </div>
-
-                  <div className="form-group">
-                    <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
-                  </div>
-
-                  <div className="form-group">
-                    <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
-                  </div>
-                </div>
-              }
+              <div className="form-group">
+                <button type="button" className="btn btn-secondary" onClick={this.sendGasResponse.bind(this, apz.id, false, this.state.description)}>
+                  Вернуть архитектору
+                </button>
+              </div>
             </form>
           }
 
@@ -1099,14 +1074,6 @@ class ShowApz extends React.Component {
                   }
                 </tbody>
               </table>
-
-              {this.state.gasStatus === 2 && this.state.isSigned &&
-                <div className="form-group">
-                  <button type="button" className="btn btn-primary" onClick={this.sendGasResponse.bind(this, apz.id, false, this.state.description)}>
-                    Отправить
-                  </button>
-                </div>
-              }
             </div>
           }
 

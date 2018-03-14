@@ -159,6 +159,7 @@ class ShowApz extends React.Component {
       heatResponseFile: null,
       gasResponseFile: null,
       headResponseFile: null,
+      callSaveFromSend: false,
       personalIdFile: false,
       confirmedTaskFile: false,
       titleDocumentFile: false,
@@ -256,7 +257,7 @@ class ShowApz extends React.Component {
           this.setState({showSendButton: true});
         }
 
-        if (!this.state.xmlFile && this.state.headResponseFile) {
+        if (!this.state.xmlFile && this.state.headResponseFile && data.status_id === 7) {
           this.setState({showSignButtons: true});
         }
 
@@ -584,12 +585,18 @@ class ShowApz extends React.Component {
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function () {
       if (xhr.status === 200) {
-        alert("Ответ сохранен!");
         var data = JSON.parse(xhr.responseText);
-        
-        this.setState({ showSignButtons: true });
+
         this.setState({ showButtons: false });
         this.setState({ headResponse: data.response });
+
+        if(this.state.callSaveFromSend){
+          this.setState({callSaveFromSend: false});
+          this.acceptDeclineApzForm(apzId, status, comment);
+        } else {
+          alert("Ответ сохранен!");
+          this.setState({ showSignButtons: true });
+        }
       }
       else if(xhr.status === 401){
         sessionStorage.clear();
@@ -599,12 +606,19 @@ class ShowApz extends React.Component {
     }.bind(this);
     xhr.send(formData);
 
-    $('#AcceptApzForm').modal('hide');
+    $('.modal').modal('hide');
     $('body').removeClass('modal-open');
     $('.modal-backdrop').remove();
   }
 
-  acceptDeclineApzForm(apzId, status) {
+  acceptDeclineApzForm(apzId, status, comment) {
+    if(this.state.headResponse === null){
+      this.setState({callSaveFromSend: true});
+      this.saveApzForm(apzId, status, comment);
+      
+      return true;
+    }
+
     var token = sessionStorage.getItem('tokenInfo');
 
     var formData = new FormData();
@@ -619,11 +633,12 @@ class ShowApz extends React.Component {
 
         if(status === true) {
           alert("Заявление принято!");
-          this.setState({ showSendButton: false });
         } else {
           alert("Заявление отклонено!");
-          this.setState({ showSendButton: false });
         }
+
+        this.setState({ showButtons: false });
+        this.setState({ showSendButton: false });
       }
       else if(xhr.status === 401){
         sessionStorage.clear();
@@ -1164,7 +1179,7 @@ class ShowApz extends React.Component {
                       </button>
                     }
                     <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#DeclineApzForm">
-                      Отклонить
+                      Вернуть архитектору
                     </button>
                     <div className="modal fade" id="AcceptApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
                       <div className="modal-dialog" role="document">
@@ -1204,7 +1219,7 @@ class ShowApz extends React.Component {
                       <div className="modal-dialog" role="document">
                         <div className="modal-content">
                           <div className="modal-header">
-                            <h5 className="modal-title">Отклонение Заявки</h5>
+                            <h5 className="modal-title">Вернуть архитектору</h5>
                             <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                             </button>
@@ -1224,7 +1239,7 @@ class ShowApz extends React.Component {
                             </div>
                           </div>
                           <div className="modal-footer">
-                            <button type="button" className="btn btn-primary" onClick={this.saveApzForm.bind(this, apz.id, false, this.state.description)}>Отправить</button>
+                            <button type="button" className="btn btn-primary" onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.description)}>Отправить</button>
                             <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                           </div>
                         </div>
@@ -1234,7 +1249,7 @@ class ShowApz extends React.Component {
                 }
 
                 {this.state.showSendButton &&
-                  <button type="button" className="btn btn-primary" onClick={this.acceptDeclineApzForm.bind(this, apz.id, this.state.headResponse ? true : false)}>Отправить</button>
+                  <button type="button" className="btn btn-primary" onClick={this.acceptDeclineApzForm.bind(this, apz.id, this.state.headResponse ? true : false, "")}>Отправить</button>
                 }
               </div>
             </div>

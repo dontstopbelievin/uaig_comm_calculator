@@ -141,7 +141,9 @@ class ShowApz extends React.Component {
       loaderHidden: false,
       personalIdFile: false,
       confirmedTaskFile: false,
-      titleDocumentFile: false
+      titleDocumentFile: false,
+      returnedState: false,
+      response: true
     };
 
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
@@ -170,9 +172,14 @@ class ShowApz extends React.Component {
         this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
         this.setState({showButtons: false});
+        this.setState({returnedState: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null })[0]});
 
         if (data.status_id === 3) { 
           this.setState({showButtons: true}); 
+        }
+
+        if (this.state.returnedState) {
+          this.setState({response: false}); 
         }
 
         this.setState({loaderHidden: true});
@@ -375,17 +382,28 @@ class ShowApz extends React.Component {
               </tbody>
             </table>
 
+            {this.state.returnedState &&
+              <div className="alert alert-danger">
+                {this.state.returnedState.comment}
+              </div>
+            }
+
             <div className={this.state.showButtons ? '' : 'invisible'}>
               <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
-                        onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>
-                  Одобрить
-                </button>
+                {this.state.response ?
+                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
+                          onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>
+                    Одобрить
+                  </button>
+                  :
+                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled="disabled">Одобрить</button>
+                }
                 
+
                 <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
                   Отклонить
                 </button>
-                
+
                 <div className="modal fade" id="accDecApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
                   <div className="modal-dialog" role="document">
                     <div className="modal-content">

@@ -932,7 +932,7 @@ class ShowApz extends React.Component {
               </button>
                 
               <button className="btn btn-raised btn-danger" onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.description)}>
-                Отклонить
+                Вернуть архитектору
               </button>
             </div>
           </div>

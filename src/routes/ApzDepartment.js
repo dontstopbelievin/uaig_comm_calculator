@@ -68,6 +68,10 @@ class AllApzs extends React.Component {
             apzs = data.accepted;
             break;
 
+          case 'declined':
+            apzs = data.declined;
+            break;
+
           default:
             apzs = data;
             break;
@@ -80,11 +84,14 @@ class AllApzs extends React.Component {
   }
 
   render() {
+    var status = this.props.match.params.status;
+    
     return (
       <div>
         <ul className="nav nav-tabs mb-2 pull-right">
           <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/apz_department/status/active" replace>Активные</NavLink></li>
           <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/apz_department/status/accepted" replace>Принятые</NavLink></li>
+          <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/apz_department/status/declined" replace>Отказанные</NavLink></li>
         </ul>
 
         <table className="table">
@@ -101,15 +108,15 @@ class AllApzs extends React.Component {
                 <tr key={index}>
                   <td>{apz.project_name}</td>
                   <td>
-                    {apz.status_id === 1 &&
+                    {status === 'declined' &&
                       <span className="text-danger">Отказано</span>
                     }
 
-                    {apz.status_id === 1 &&
+                    {status === 'accepted' &&
                       <span className="text-success">Принято</span>
                     }
 
-                    {apz.status_id === 6 &&
+                    {status === 'active' &&
                       <span className="text-info">В процессе</span>
                     }
                   </td>
@@ -152,6 +159,7 @@ class ShowApz extends React.Component {
       elecSafeCategory: "",
       connectionPoint: "",
       recomendation: "",
+      description: "",
       docNumber: "",
       description: '',
       responseId: 0,
@@ -170,11 +178,16 @@ class ShowApz extends React.Component {
     };
 
     this.onFileChange = this.onFileChange.bind(this);
+    this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.sendForm = this.sendForm.bind(this);
   }
 
   onFileChange(e) {
     this.setState({ file: e.target.files[0] });
+  }
+
+  onDescriptionChange(e) {
+    this.setState({ description: e.target.value });
   }
 
   componentWillMount() {
@@ -321,7 +334,7 @@ class ShowApz extends React.Component {
       alert("Неверный пароль!");
       return false;
     }
-    
+
     let alias = "";
     if (result && result.result) {
       let keys = result.result.split('/n');
@@ -498,8 +511,12 @@ class ShowApz extends React.Component {
     }
   }
 
-  sendForm(apzId) {
+  sendForm(apzId, status, comment) {
     var token = sessionStorage.getItem('tokenInfo');
+
+    var formData = new FormData();
+    formData.append('response', status);
+    formData.append('message', comment);
 
     var xhr = new XMLHttpRequest();
     xhr.open("post", window.url + "api/apz/apz_department/status/" + apzId, true);
@@ -517,7 +534,7 @@ class ShowApz extends React.Component {
         this.props.history.replace("/login");
       }
     }.bind(this);
-    xhr.send();
+    xhr.send(formData);
   }
 
   // print technical condition
@@ -665,32 +682,63 @@ class ShowApz extends React.Component {
           </tbody>
         </table>
 
-        {!this.state.xmlFile && !this.state.isSigned ?
-          <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-            <div className="row form-group">
-              <div className="col-sm-7">
-                <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
+        {this.state.showButtons &&
+          <div>
+            {!this.state.xmlFile && !this.state.isSigned ?
+              <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                <div className="row form-group">
+                  <div className="col-sm-7">
+                    <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
+                  </div>
+
+                  <div className="col-sm-5 p-0">
+                    <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                </div>
+
+                <div className="form-group">
+                  <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                  <button type="button" className="btn btn-secondary" data-toggle="modal" data-target="#declined_modal">Вернуть архитектору</button>
+                </div>
               </div>
-
-              <div className="col-sm-5 p-0">
-                <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
+              :
+              <div className={this.state.showButtons ? '' : 'invisible'}>
+                <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                  <button className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "")}>
+                    Одобрить
+                  </button>
+                  <button type="button" className="btn btn-secondary" data-toggle="modal" data-target="#declined_modal">Вернуть архитектору</button>
+                </div>
               </div>
-            </div>
+            }
 
-            <div className="form-group">
-              <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
-            </div>
-
-            <div className="form-group">
-              <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
-            </div>
-          </div>
-          :
-          <div className={this.state.showButtons ? '' : 'invisible'}>
-            <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-              <button className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id)}>
-                Одобрить
-              </button>
+            <div className="modal fade" id="declined_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+              <div className="modal-dialog" role="document">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title">Вернуть архитектору</h5>
+                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div className="modal-body">
+                    <div className="form-group">
+                      <label>Причина отклонения</label>
+                      <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
+                    </div>
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.sendForm.bind(this, apz.id, false, this.state.description)}>
+                      Вернуть архитектору
+                    </button>
+                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         }
