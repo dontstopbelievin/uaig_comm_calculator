@@ -175,7 +175,8 @@ class AddApz extends React.Component {
       confirmedTaskFile: null,
       titleDocumentFile: null,
       showMap: false,
-      hasCoordinates: false
+      hasCoordinates: false,
+      loaderHidden: true
     }
     
     this.tabSubmission = this.tabSubmission.bind(this);
@@ -271,15 +272,16 @@ class AddApz extends React.Component {
   }
 
   requestSubmission(e) {
-    if ($('#tab0-link').children().hasClass('glyphicon-ok')
-                && $('#tab1-link').children().hasClass('glyphicon-ok')
-                && $('#tab2-link').children().hasClass('glyphicon-ok')
-                && $('#tab3-link').children().hasClass('glyphicon-ok')
-                && $('#tab4-link').children().hasClass('glyphicon-ok')
-                && $('#tab5-link').children().hasClass('glyphicon-ok')
-                && $('#tab6-link').children().hasClass('glyphicon-ok')
-                && $('#tab7-link').children().hasClass('glyphicon-ok')
-                && $('#tab8-link').children().hasClass('glyphicon-ok')) 
+    this.setState({loaderHidden: false});
+    if ($('#tab0-link').children().hasClass('glyphicon-ok') && 
+        $('#tab1-link').children().hasClass('glyphicon-ok') && 
+        $('#tab2-link').children().hasClass('glyphicon-ok') && 
+        $('#tab3-link').children().hasClass('glyphicon-ok') && 
+        $('#tab4-link').children().hasClass('glyphicon-ok') && 
+        $('#tab5-link').children().hasClass('glyphicon-ok') && 
+        $('#tab6-link').children().hasClass('glyphicon-ok') && 
+        $('#tab7-link').children().hasClass('glyphicon-ok') && 
+        $('#tab8-link').children().hasClass('glyphicon-ok')) 
     {
       var apzData = $('#tab0-form, #tab1-form, #tab2-form, #tab3-form, #tab4-form, #tab5-form, #tab6-form, #tab7-form, #tab8-form').serializeJSON();
       if (sessionStorage.getItem('tokenInfo')) {
@@ -307,6 +309,16 @@ class AddApz extends React.Component {
               processData: false,
               success: function (data) {
                 // after form is submitted: calls the function from CitizenComponent to update the list 
+                $('#tab0-form')[0].reset();
+                $('#tab1-form')[0].reset();
+                $('#tab2-form')[0].reset();
+                $('#tab3-form')[0].reset();
+                $('#tab4-form')[0].reset();
+                $('#tab5-form')[0].reset();
+                $('#tab6-form')[0].reset();
+                $('#tab7-form')[0].reset();
+                $('#tab8-form')[0].reset();
+                $('#tabIcon').removeClass();
                 this.props.history.replace('/citizen/status/active');
                 alert("Заявка успешно подана");
               }.bind(this),
@@ -321,16 +333,7 @@ class AddApz extends React.Component {
               complete: function (jqXHR) {
               }
             });
-            $('#tab0-form')[0].reset();
-            $('#tab1-form')[0].reset();
-            $('#tab2-form')[0].reset();
-            $('#tab3-form')[0].reset();
-            $('#tab4-form')[0].reset();
-            $('#tab5-form')[0].reset();
-            $('#tab6-form')[0].reset();
-            $('#tab7-form')[0].reset();
-            $('#tab8-form')[0].reset();
-            $('#tabIcon').removeClass();
+            this.setState({loaderHidden: true});
           }.bind(this),
           fail: function (jqXHR) {
             alert("Ошибка " + jqXHR.status + ': ' + jqXHR.statusText);
@@ -427,446 +430,454 @@ class AddApz extends React.Component {
   render() {
     return (
       <div className="container" id="apzFormDiv">
-        <div className="tab-pane">
-          <div className="row">
-          <div className="col-4">
-            <div className="nav flex-column nav-pills container-fluid" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-            <a className="nav-link active" id="tab0-link" data-toggle="pill" href="#tab0" role="tab" aria-controls="tab0" aria-selected="true">Заявление <span id="tabIcon"></span></a>
-            <a className="nav-link" id="tab1-link" data-toggle="pill" href="#tab1" role="tab" aria-controls="tab1" aria-selected="false">Объект <span id="tabIcon"></span></a>
-            <a className="nav-link" id="tab2-link" data-toggle="pill" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">Электроснабжение <span id="tabIcon"></span></a>
-            <a className="nav-link" id="tab3-link" data-toggle="pill" href="#tab3" role="tab" aria-controls="tab3" aria-selected="false">Водоснабжение <span id="tabIcon"></span></a>
-            <a className="nav-link" id="tab4-link" data-toggle="pill" href="#tab4" role="tab" aria-controls="tab4" aria-selected="false">Канализация <span id="tabIcon"></span></a>
-            <a className="nav-link" id="tab5-link" data-toggle="pill" href="#tab5" role="tab" aria-controls="tab5" aria-selected="false">Теплоснабжение <span id="tabIcon"></span></a>
-            <a className="nav-link" id="tab6-link" data-toggle="pill" href="#tab6" role="tab" aria-controls="tab6" aria-selected="false">Ливневая канализация <span id="tabIcon"></span></a>
-            <a className="nav-link" id="tab7-link" data-toggle="pill" href="#tab7" role="tab" aria-controls="tab7" aria-selected="false">Телефонизация <span id="tabIcon"></span></a>
-            <a className="nav-link" id="tab8-link" data-toggle="pill" href="#tab8" role="tab" aria-controls="tab8" aria-selected="false">Газоснабжение <span id="tabIcon"></span></a>
+        {this.state.loaderHidden &&
+          <div className="tab-pane">
+            <div className="row">
+            <div className="col-4">
+              <div className="nav flex-column nav-pills container-fluid" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+              <a className="nav-link active" id="tab0-link" data-toggle="pill" href="#tab0" role="tab" aria-controls="tab0" aria-selected="true">Заявление <span id="tabIcon"></span></a>
+              <a className="nav-link" id="tab1-link" data-toggle="pill" href="#tab1" role="tab" aria-controls="tab1" aria-selected="false">Объект <span id="tabIcon"></span></a>
+              <a className="nav-link" id="tab2-link" data-toggle="pill" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">Электроснабжение <span id="tabIcon"></span></a>
+              <a className="nav-link" id="tab3-link" data-toggle="pill" href="#tab3" role="tab" aria-controls="tab3" aria-selected="false">Водоснабжение <span id="tabIcon"></span></a>
+              <a className="nav-link" id="tab4-link" data-toggle="pill" href="#tab4" role="tab" aria-controls="tab4" aria-selected="false">Канализация <span id="tabIcon"></span></a>
+              <a className="nav-link" id="tab5-link" data-toggle="pill" href="#tab5" role="tab" aria-controls="tab5" aria-selected="false">Теплоснабжение <span id="tabIcon"></span></a>
+              <a className="nav-link" id="tab6-link" data-toggle="pill" href="#tab6" role="tab" aria-controls="tab6" aria-selected="false">Ливневая канализация <span id="tabIcon"></span></a>
+              <a className="nav-link" id="tab7-link" data-toggle="pill" href="#tab7" role="tab" aria-controls="tab7" aria-selected="false">Телефонизация <span id="tabIcon"></span></a>
+              <a className="nav-link" id="tab8-link" data-toggle="pill" href="#tab8" role="tab" aria-controls="tab8" aria-selected="false">Газоснабжение <span id="tabIcon"></span></a>
+              </div>
             </div>
-          </div>
-          <div className="col-8">
-            <div className="tab-content" id="v-pills-tabContent">
-            <div className="tab-pane fade show active" id="tab0" role="tabpanel" aria-labelledby="tab0-link">
-              <form id="tab0-form" data-tab="0" onSubmit={this.tabSubmission.bind(this)}>
-              <div className="row">
-                <div className="col-md-6">
-                  <div className="form-group">
-                    <label htmlFor="Applicant">Заявитель:</label>
-                    <input type="text" className="form-control" required name="Applicant" placeholder="ФИО / Наименование компании" />
-                    <span className="help-block"></span>
+            <div className="col-8">
+              <div className="tab-content" id="v-pills-tabContent">
+              <div className="tab-pane fade show active" id="tab0" role="tabpanel" aria-labelledby="tab0-link">
+                <form id="tab0-form" data-tab="0" onSubmit={this.tabSubmission.bind(this)}>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label htmlFor="Applicant">Заявитель:</label>
+                      <input type="text" className="form-control" required name="Applicant" placeholder="ФИО / Наименование компании" />
+                      <span className="help-block"></span>
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="PersonalIdFile">Уд.личности/Реквизиты</label>
+                      <input type="file" required name="PersonalIdFile" className="form-control" onChange={this.onPersonalIdFileChange}/>
+                      <span className="help-block">документ в формате pdf, doc, docx</span>
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="Phone">Телефон</label>
+                      <input type="tel" className="form-control" name="Phone" placeholder="8 (7xx) xxx xx xx" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="Region">Район</label>
+                      <select className="form-control" name="Region">
+                      <option>Наурызбай</option>
+                      <option>Алатау</option>
+                      <option>Алмалы</option>
+                      <option>Ауезов</option>
+                      <option>Бостандық</option>
+                      <option>Жетісу</option>
+                      <option>Медеу</option>
+                      <option>Турксиб</option>
+                      </select>
+                    </div>
+                    {/*<div className="form-group">
+                      <label htmlFor="Address">Адрес:</label>
+                      <input type="text" className="form-control" required id="ApzAddressForm" name="Address" placeholder="ул. Абая, д.25" />
+                    </div>*/}
+                    <div className="form-group">
+                      <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
+                      <input type="text" className="form-control" name="Designer" />
+                    </div>
                   </div>
-                  <div className="form-group">
-                    <label htmlFor="PersonalIdFile">Уд.личности/Реквизиты</label>
-                    <input type="file" required name="PersonalIdFile" className="form-control" onChange={this.onPersonalIdFileChange}/>
-                    <span className="help-block">документ в формате pdf, doc, docx</span>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="Phone">Телефон</label>
-                    <input type="tel" className="form-control" name="Phone" placeholder="8 (7xx) xxx xx xx" />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="Region">Район</label>
-                    <select className="form-control" name="Region">
-                    <option>Наурызбай</option>
-                    <option>Алатау</option>
-                    <option>Алмалы</option>
-                    <option>Ауезов</option>
-                    <option>Бостандық</option>
-                    <option>Жетісу</option>
-                    <option>Медеу</option>
-                    <option>Турксиб</option>
-                    </select>
-                  </div>
-                  {/*<div className="form-group">
-                    <label htmlFor="Address">Адрес:</label>
-                    <input type="text" className="form-control" required id="ApzAddressForm" name="Address" placeholder="ул. Абая, д.25" />
-                  </div>*/}
-                  <div className="form-group">
-                    <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
-                    <input type="text" className="form-control" name="Designer" />
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label htmlFor="ProjectName">Наименование проектируемого объекта</label>
+                      <input type="text" required className="form-control" id="ProjectName" name="ProjectName" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
+                      <div className="row coordinates_block">
+                        <div className="col-sm-7">
+                          <input type="text" required className="form-control" name="ProjectAddress" />
+                          <input type="hidden" id="ProjectAddressCoordinates" name="ProjectAddressCoordinates" />
+                        </div>
+                        <div className="col-sm-5 p-0">
+                          <a className="btn btn-outline-secondary btn-sm" onClick={() => this.toggleMap(true)}>
+                            {this.state.hasCoordinates &&
+                              <i className="glyphicon glyphicon-ok coordinateIcon mr-1"></i>
+                            }
+
+                            Отметить на карте
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="ConfirmedTaskFile">Утвержденное задание на проектирование</label>
+                      <input type="file" required name="ConfirmedTaskFile" className="form-control" onChange={this.onConfirmedTaskFileChange} />
+                      <span className="help-block">документ в формате pdf, doc, docx</span>
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="TitleDocumentFile">Правоустанавливающий документ на земельный участок</label>
+                      <input type="file" required name="TitleDocumentFile" className="form-control" onChange={this.onTitleDocumentFileChange} />
+                      <span className="help-block">документ в формате pdf, doc, docx</span>
+                    </div>
+                    {/*<div className="form-group">
+                      <label htmlFor="ApzDate">Дата</label>
+                      <input type="date" required className="form-control" name="ApzDate" />
+                    </div>*/}
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div>
+                  <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
+                </div>
+                </form>
+
+                {this.state.showMap && 
+                  <div className="mb-4">
+                    <ShowMap point={true} mapFunction={this.toggleMap} hasCoordinates={this.hasCoordinates}/>
+                  </div>
+                }
+
+                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+              </div>
+              <div className="tab-pane fade" id="tab1" role="tabpanel" aria-labelledby="tab1-link">
+                <form id="tab1-form" data-tab="1" onSubmit={this.tabSubmission.bind(this)}>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label htmlFor="ObjectType">Тип объекта</label>
+                      <select required className="form-control" id="ObjectType" onChange={this.ObjectType.bind(this)} defaultValue="null">
+                        <option value="null" disabled>Выберите тип объекта</option>
+                        <option value="obj_ijs">ИЖС</option>
+                        <option value="obj_mjk">МЖК</option>
+                        <option value="obj_kb">КомБыт</option>
+                        <option value="obj_pp">ПромПред</option>
+                      </select>
+                    </div>
+                    {/*<div className="form-group">
+                      <label htmlFor="ObjectClient">Заказчик</label>
+                      <input type="text" required className="form-control" name="ObjectClient" placeholder="" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="ObjectName">Наименование объекта:</label>
+                      <input type="text" required className="form-control" name="ObjectName" placeholder="наименование" />
+                    </div>*/}
+                    <div className="form-group">
+                      <label htmlFor="Customer">Заказчик</label>
+                      <input type="text" required className="form-control" name="Customer" placeholder="ФИО / Наименование компании" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="CadastralNumber">Кадастровый номер:</label>
+                      <input type="text" className="form-control" name="CadastralNumber" placeholder="" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="ObjectTerm">Срок строительства по нормам</label>
+                      <input type="text" className="form-control" id="ObjectTerm" placeholder="" />
+                    </div>
+                    {/* <div className="form-group">
+                      <label htmlFor="">Правоустанавливающие документы на объект (реконструкция)</label>
+                      <div className="fileinput fileinput-new" data-provides="fileinput">
+                      <span className="btn btn-default btn-file"><span></span><input type="file" multiple /></span>
+                      <span className="fileinput-filename"></span><span className="fileinput-new"></span>
+                      </div>
+                    </div> */}
+                  </div>
+                  <div className="col-md-6">
                   <div className="form-group">
-                    <label htmlFor="ProjectName">Наименование проектируемого объекта</label>
-                    <input type="text" required className="form-control" id="ProjectName" name="ProjectName" />
+                    <label htmlFor="ObjectLevel">Этажность</label>
+                    <input type="number" className="form-control" name="ObjectLevel" placeholder="" />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
-                    <div className="row coordinates_block">
-                      <div className="col-sm-7">
-                        <input type="text" required className="form-control" name="ProjectAddress" />
-                        <input type="hidden" id="ProjectAddressCoordinates" name="ProjectAddressCoordinates" />
-                      </div>
-                      <div className="col-sm-5 p-0">
-                        <a className="btn btn-outline-secondary btn-sm" onClick={() => this.toggleMap(true)}>
-                          {this.state.hasCoordinates &&
-                            <i className="glyphicon glyphicon-ok coordinateIcon mr-1"></i>
-                          }
-
-                          Отметить на карте
-                        </a>
-                      </div>
+                    <label htmlFor="ObjectArea">Площадь здания (кв.м)</label>
+                    <input type="number" step="any" className="form-control" name="ObjectArea" onChange={this.ObjectArea.bind(this)} />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="ObjectRooms">Количество квартир (номеров, кабинетов)</label>
+                    <input type="number" className="form-control" name="OBjectRooms" />
+                  </div>
+                  </div>
+                </div>
+                <div>
+                  <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
+                </div>
+                </form>
+                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+              </div>
+              <div className="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-link">
+                <form id="tab2-form" data-tab="2" onSubmit={this.tabSubmission.bind(this)}>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label htmlFor="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)</label>
+                      <input type="number" step="any" name="ElectricAllowedPower" onChange={this.ObjectArea.bind(this)} className="form-control" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
+                      <input type="number" step="any" required className="form-control" onChange={this.ObjectArea.bind(this)}  name="ElectricRequiredPower" placeholder="" />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                  {/*<div className="form-group">
+                    <label htmlFor="">Предполагается установить</label>
+                    <br />
+                    <div className="col-md-6">
+                    <ul style="list-style-type: none; padding-left: 3px">
+                      <li><input type="checkbox" id="CB1"><span style="padding-left: 3px" htmlFor="CB1">электрокотлы</span><input type="text" className="form-control" placeholder=""></li>
+                      <li><input type="checkbox" id="CB2"><span style="padding-left: 3px" htmlFor="CB2">электрокалориферы</span><input type="text" className="form-control" placeholder=""></li>
+                      <li><input type="checkbox" id="CB3"><span style="padding-left: 3px" htmlFor="CB3">электроплитки</span><input type="text" className="form-control" placeholder=""></li>
+                    </ul>
+                    </div>
+                    <div className="col-md-6">
+                    <ul style="list-style-type: none; padding-left: 3px">
+                      <li><input type="checkbox" id="CB4"><span style="padding-left: 3px" htmlFor="CB4">электропечи</span><input type="text" className="form-control" placeholder=""></li>
+                      <li><input type="checkbox" id="CB5"><span style="padding-left: 3px" htmlFor="CB5">электроводонагреватели</span><input type="text" className="form-control" placeholder=""></li>
+                    </ul>
                     </div>
                   </div>
                   <div className="form-group">
-                    <label htmlFor="ConfirmedTaskFile">Утвержденное задание на проектирование</label>
-                    <input type="file" required name="ConfirmedTaskFile" className="form-control" onChange={this.onConfirmedTaskFileChange} />
-                    <span className="help-block">документ в формате pdf, doc, docx</span>
+                    <label htmlFor="ElectricMaxLoadDevice">Из указанной макс. нагрузки относятся к электроприемникам (кВА):</label>
+                    <input type="number" className="form-control" name="ElectricMaxLoadDevice" placeholder="" />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="TitleDocumentFile">Правоустанавливающий документ на земельный участок</label>
-                    <input type="file" required name="TitleDocumentFile" className="form-control" onChange={this.onTitleDocumentFileChange} />
-                    <span className="help-block">документ в формате pdf, doc, docx</span>
-                  </div>
-                  {/*<div className="form-group">
-                    <label htmlFor="ApzDate">Дата</label>
-                    <input type="date" required className="form-control" name="ApzDate" />
+                    <label htmlFor="ElectricMaxLoad">Существующая максимальная нагрузка (кВА)</label>
+                    <input type="number" className="form-control" name="ElectricMaxLoad" />
                   </div>*/}
-                </div>
-              </div>
-              <div>
-                <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
-              </div>
-              </form>
-
-              {this.state.showMap && 
-                <div className="mb-4">
-                  <ShowMap point={true} mapFunction={this.toggleMap} hasCoordinates={this.hasCoordinates}/>
-                </div>
-              }
-
-              <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
-            </div>
-            <div className="tab-pane fade" id="tab1" role="tabpanel" aria-labelledby="tab1-link">
-              <form id="tab1-form" data-tab="1" onSubmit={this.tabSubmission.bind(this)}>
-              <div className="row">
-                <div className="col-md-6">
-                  <div className="form-group">
-                    <label htmlFor="ObjectType">Тип объекта</label>
-                    <select required className="form-control" id="ObjectType" onChange={this.ObjectType.bind(this)} defaultValue="null">
-                      <option value="null" disabled>Выберите тип объекта</option>
-                      <option value="obj_ijs">ИЖС</option>
-                      <option value="obj_mjk">МЖК</option>
-                      <option value="obj_kb">КомБыт</option>
-                      <option value="obj_pp">ПромПред</option>
-                    </select>
-                  </div>
-                  {/*<div className="form-group">
-                    <label htmlFor="ObjectClient">Заказчик</label>
-                    <input type="text" required className="form-control" name="ObjectClient" placeholder="" />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="ObjectName">Наименование объекта:</label>
-                    <input type="text" required className="form-control" name="ObjectName" placeholder="наименование" />
-                  </div>*/}
-                  <div className="form-group">
-                    <label htmlFor="Customer">Заказчик</label>
-                    <input type="text" required className="form-control" name="Customer" placeholder="ФИО / Наименование компании" />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="CadastralNumber">Кадастровый номер:</label>
-                    <input type="text" className="form-control" name="CadastralNumber" placeholder="" />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="ObjectTerm">Срок строительства по нормам</label>
-                    <input type="text" className="form-control" id="ObjectTerm" placeholder="" />
-                  </div>
-                  {/* <div className="form-group">
-                    <label htmlFor="">Правоустанавливающие документы на объект (реконструкция)</label>
-                    <div className="fileinput fileinput-new" data-provides="fileinput">
-                    <span className="btn btn-default btn-file"><span></span><input type="file" multiple /></span>
-                    <span className="fileinput-filename"></span><span className="fileinput-new"></span>
+                    <div className="form-group">
+                      <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
+                      <select className="form-control" name="ElectricityPhase">
+                        <option>Однофазная</option>
+                        <option>Двухфазная</option>
+                        <option>Трехфазная</option>
+                        <option>Постоянная</option>
+                        <option>Временная</option>
+                        <option>Сезонная</option>
+                      </select>
                     </div>
-                  </div> */}
-                </div>
-                <div className="col-md-6">
-                <div className="form-group">
-                  <label htmlFor="ObjectLevel">Этажность</label>
-                  <input type="number" className="form-control" name="ObjectLevel" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="ObjectArea">Площадь здания (кв.м)</label>
-                  <input type="number" step="any" className="form-control" name="ObjectArea" onChange={this.ObjectArea.bind(this)} />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="ObjectRooms">Количество квартир (номеров, кабинетов)</label>
-                  <input type="number" className="form-control" name="OBjectRooms" />
-                </div>
-                </div>
-              </div>
-              <div>
-                <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
-              </div>
-              </form>
-              <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
-            </div>
-            <div className="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-link">
-              <form id="tab2-form" data-tab="2" onSubmit={this.tabSubmission.bind(this)}>
-              <div className="row">
-                <div className="col-md-6">
-                  <div className="form-group">
-                    <label htmlFor="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)</label>
-                    <input type="number" step="any" name="ElectricAllowedPower" onChange={this.ObjectArea.bind(this)} className="form-control" />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
-                    <input type="number" step="any" required className="form-control" onChange={this.ObjectArea.bind(this)}  name="ElectricRequiredPower" placeholder="" />
+                    <div className="form-group">
+                      <label htmlFor="ElectricSafetyCategory">Категория по надежности (кВт)</label>
+                      <select required className="form-control" name="ElectricSafetyCategory" defaultValue="3">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
-                <div className="col-md-6">
-                {/*<div className="form-group">
-                  <label htmlFor="">Предполагается установить</label>
-                  <br />
+                <div>
+                  <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
+                </div>
+                </form>
+                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+              </div>
+              <div className="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-link">
+                <form id="tab3-form" data-tab="3" onSubmit={this.tabSubmission.bind(this)}>
+                <div className="row">
                   <div className="col-md-6">
-                  <ul style="list-style-type: none; padding-left: 3px">
-                    <li><input type="checkbox" id="CB1"><span style="padding-left: 3px" htmlFor="CB1">электрокотлы</span><input type="text" className="form-control" placeholder=""></li>
-                    <li><input type="checkbox" id="CB2"><span style="padding-left: 3px" htmlFor="CB2">электрокалориферы</span><input type="text" className="form-control" placeholder=""></li>
-                    <li><input type="checkbox" id="CB3"><span style="padding-left: 3px" htmlFor="CB3">электроплитки</span><input type="text" className="form-control" placeholder=""></li>
-                  </ul>
+                  <div className="form-group">
+                    <label>Количество людей</label>
+                    <input type="number" step="0.1" required className="form-control" name="PeopleCount" onChange={this.PeopleCount.bind(this)} placeholder="" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
+                    <input type="number" readOnly="readonly" className="form-control" name="WaterRequirement" placeholder="" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="WaterSewage">Канализация (м<sup>3</sup>/сутки)</label>
+                    <input type="number" readOnly="readonly" className="form-control" name="WaterSewage" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="WaterProduction">На производственные нужды (м<sup>3</sup>/сутки)</label>
+                    <input type="number" step="any" className="form-control" name="WaterProduction" placeholder="" />
+                  </div>
                   </div>
                   <div className="col-md-6">
-                  <ul style="list-style-type: none; padding-left: 3px">
-                    <li><input type="checkbox" id="CB4"><span style="padding-left: 3px" htmlFor="CB4">электропечи</span><input type="text" className="form-control" placeholder=""></li>
-                    <li><input type="checkbox" id="CB5"><span style="padding-left: 3px" htmlFor="CB5">электроводонагреватели</span><input type="text" className="form-control" placeholder=""></li>
-                  </ul>
-                  </div>
-                </div>
-                <div className="form-group">
-                  <label htmlFor="ElectricMaxLoadDevice">Из указанной макс. нагрузки относятся к электроприемникам (кВА):</label>
-                  <input type="number" className="form-control" name="ElectricMaxLoadDevice" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="ElectricMaxLoad">Существующая максимальная нагрузка (кВА)</label>
-                  <input type="number" className="form-control" name="ElectricMaxLoad" />
-                </div>*/}
                   <div className="form-group">
-                    <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
-                    <select className="form-control" name="ElectricityPhase">
-                      <option>Однофазная</option>
-                      <option>Двухфазная</option>
-                      <option>Трехфазная</option>
-                      <option>Постоянная</option>
-                      <option>Временная</option>
-                      <option>Сезонная</option>
-                    </select>
+                    <label htmlFor="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
+                    <input type="number" step="any" className="form-control" name="WaterDrinking" placeholder="" />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="ElectricSafetyCategory">Категория по надежности (кВт)</label>
-                    <select required className="form-control" name="ElectricSafetyCategory" defaultValue="3">
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
-              </div>
-              </form>
-              <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
-            </div>
-            <div className="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-link">
-              <form id="tab3-form" data-tab="3" onSubmit={this.tabSubmission.bind(this)}>
-              <div className="row">
-                <div className="col-md-6">
-                <div className="form-group">
-                  <label>Количество людей</label>
-                  <input type="number" step="0.1" required className="form-control" name="PeopleCount" onChange={this.PeopleCount.bind(this)} placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
-                  <input type="number" readOnly="readonly" className="form-control" name="WaterRequirement" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="WaterSewage">Канализация (м<sup>3</sup>/сутки)</label>
-                  <input type="number" readOnly="readonly" className="form-control" name="WaterSewage" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="WaterProduction">На производственные нужды (м<sup>3</sup>/сутки)</label>
-                  <input type="number" step="any" className="form-control" name="WaterProduction" placeholder="" />
-                </div>
-                </div>
-                <div className="col-md-6">
-                <div className="form-group">
-                  <label htmlFor="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
-                  <input type="number" step="any" className="form-control" name="WaterDrinking" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="WaterFireFighting">Потребные расходы наружного пожаротушения (л/сек)</label>
-                  <input type="number" min="10" defaultValue="10" className="form-control" name="WaterFireFighting" />
-                </div>
-                <div className="form-group">
-                  <label>Потребные расходы внутреннего пожаротушения (л/сек)</label>
-                  <input type="number" className="form-control" />
-                </div>
-                </div>
-              </div>
-              <div>
-                <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
-              </div>
-              </form>
-              <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
-            </div>
-            <div className="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-link">
-              <form id="tab4-form" data-tab="4" onSubmit={this.tabSubmission.bind(this)}>
-              <div className="row">
-                <div className="col-md-6">
-                <div className="form-group">
-                  <label htmlFor="SewageAmount">Общее количество сточных вод  (м<sup>3</sup>/сутки)</label>
-                  <input type="number" step="any" required className="form-control" name="SewageAmount" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="SewageFeksal">Фекальных (м<sup>3</sup>/сутки)</label>
-                  <input type="number" step="any" className="form-control" name="SewageFeksal" placeholder="" />
-                </div>
-                </div>
-                <div className="col-md-6">
-                <div className="form-group">
-                  <label htmlFor="SewageProduction">Производственно-загрязненных (м<sup>3</sup>/сутки)</label>
-                  <input type="number" step="any" className="form-control" name="SewageProduction" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="SewageToCity">Условно-чистых сбрасываемых на городскую канализацию (м<sup>3</sup>/сутки)</label>
-                  <input type="number" step="any" className="form-control" name="SewageToCity" />
-                </div>
-                </div>
-              </div>
-              <div>
-                <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
-              </div>
-              </form>
-              <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
-            </div>
-            <div className="tab-pane fade" id="tab5" role="tabpanel" aria-labelledby="tab5-link">
-              <form id="tab5-form" data-tab="5" onSubmit={this.tabSubmission.bind(this)}>
-              <div className="row">
-                <div className="col-md-6">
-                <div className="form-group">
-                  <label htmlFor="HeatGeneral">Общая тепловая нагрузка (Гкал/ч)</label>
-                  <input type="number" step="0.1" className="form-control" name="HeatGeneral" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="HeatMain">Отопление (Гкал/ч)</label>
-                  <input type="number" step="0.1" className="form-control" name="HeatMain" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="HeatVentilation">Вентиляция (Гкал/ч)</label>
-                  <input type="number" step="0.1" className="form-control" name="HeatVentilation" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="HeatWater">Горячее водоснабжение (Гкал/ч)</label>
-                  <input type="number" step="0.1" className="form-control" id="HeatWater" placeholder="" />
-                </div>
-                </div>
-                <div className="col-md-6">
-                <div className="form-group">
-                  <label htmlFor="HeatTech">Технологические нужды(пар) (Т/ч)</label>
-                  <input type="number" step="0.1" className="form-control" name="HeatTech" placeholder="" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="HeatDistribution">Разделить нагрузку по жилью и по встроенным помещениям</label>
-                  <input type="text" className="form-control" name="HeatDistribution" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="HeatSaving">Энергосберегающее мероприятие</label>
-                  <input type="text" className="form-control" name="HeatSaving" />
-                </div>
-                </div>
-              </div>
-              <div>
-                <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
-              </div>
-              </form>
-              <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
-            </div>
-            <div className="tab-pane fade" id="tab6" role="tabpanel" aria-labelledby="tab6-link">
-              <form id="tab6-form" data-tab="6" onSubmit={this.tabSubmission.bind(this)}>
-              <div className="row">
-                <div className="col-md-12">
-                <div className="form-group">
-                  <label htmlFor="SewageClientWishes">Пожелание заказчика</label>
-                  <input type="text" className="form-control" name="SewageClientWishes" placeholder="" />
-                </div>
-                </div>
-              </div>
-              <div>
-                <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
-              </div>
-              </form>
-              <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
-            </div>
-            <div className="tab-pane fade" id="tab7" role="tabpanel" aria-labelledby="tab7-link">
-              <form id="tab7-form" data-tab="7" onSubmit={this.tabSubmission.bind(this)}>
-              <div className="row">
-                <div className="col-md-6">
-                  <div className="form-group">
-                    <label htmlFor="PhoneServiceNum">Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</label>
-                    <input type="number" step="any" className="form-control" name="PhoneServiceNum" placeholder="" />
+                    <label htmlFor="WaterFireFighting">Потребные расходы наружного пожаротушения (л/сек)</label>
+                    <input type="number" min="10" defaultValue="10" className="form-control" name="WaterFireFighting" />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="PhoneCapacity">Телефонная емкость</label>
-                    <input type="text" className="form-control" name="PhoneCapacity" placeholder="" />
+                    <label>Потребные расходы внутреннего пожаротушения (л/сек)</label>
+                    <input type="number" className="form-control" />
+                  </div>
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div>
+                  <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
+                </div>
+                </form>
+                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+              </div>
+              <div className="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-link">
+                <form id="tab4-form" data-tab="4" onSubmit={this.tabSubmission.bind(this)}>
+                <div className="row">
+                  <div className="col-md-6">
                   <div className="form-group">
-                    <label htmlFor="PhoneSewage">Планируемая телефонная канализация</label>
-                    <input type="text" className="form-control" name="PhoneSewage" placeholder="" />
+                    <label htmlFor="SewageAmount">Общее количество сточных вод  (м<sup>3</sup>/сутки)</label>
+                    <input type="number" step="any" required className="form-control" name="SewageAmount" placeholder="" />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="PhoneClientWishes">Пожелания заказчика</label>
-                    <input type="text" className="form-control" name="PhoneClientWishes" placeholder="Тип оборудования, тип кабеля и др." />
+                    <label htmlFor="SewageFeksal">Фекальных (м<sup>3</sup>/сутки)</label>
+                    <input type="number" step="any" className="form-control" name="SewageFeksal" placeholder="" />
+                  </div>
+                  </div>
+                  <div className="col-md-6">
+                  <div className="form-group">
+                    <label htmlFor="SewageProduction">Производственно-загрязненных (м<sup>3</sup>/сутки)</label>
+                    <input type="number" step="any" className="form-control" name="SewageProduction" placeholder="" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="SewageToCity">Условно-чистых сбрасываемых на городскую канализацию (м<sup>3</sup>/сутки)</label>
+                    <input type="number" step="any" className="form-control" name="SewageToCity" />
+                  </div>
                   </div>
                 </div>
+                <div>
+                  <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
+                </div>
+                </form>
+                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
-              <div>
-                <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
-              </div>
-              </form>
-              <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
-            </div>
-            <div className="tab-pane fade" id="tab8" role="tabpanel" aria-labelledby="tab8-link">
-              <form id="tab8-form" data-tab="8" onSubmit={this.tabSubmission.bind(this)}>
-              <div className="row">
-                <div className="col-md-6">
+              <div className="tab-pane fade" id="tab5" role="tabpanel" aria-labelledby="tab5-link">
+                <form id="tab5-form" data-tab="5" onSubmit={this.tabSubmission.bind(this)}>
+                <div className="row">
+                  <div className="col-md-6">
                   <div className="form-group">
-                    <label htmlFor="GasGeneral">Общая потребность (м<sup>3</sup>/час)</label>
-                    <input type="number" step="any" required className="form-control" name="GasGeneral" placeholder="" />
+                    <label htmlFor="HeatGeneral">Общая тепловая нагрузка (Гкал/ч)</label>
+                    <input type="number" step="0.1" className="form-control" name="HeatGeneral" placeholder="" />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="GasCooking">На приготовление пищи (м<sup>3</sup>/час)</label>
-                    <input type="number" step="any" className="form-control" name="GasCooking" placeholder="" />
+                    <label htmlFor="HeatMain">Отопление (Гкал/ч)</label>
+                    <input type="number" step="0.1" className="form-control" name="HeatMain" placeholder="" />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="GasHeat">Отопление (м<sup>3</sup>/час)</label>
-                    <input type="number" step="any" required className="form-control" name="GasHeat" placeholder="" />
+                    <label htmlFor="HeatVentilation">Вентиляция (Гкал/ч)</label>
+                    <input type="number" step="0.1" className="form-control" name="HeatVentilation" placeholder="" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="HeatWater">Горячее водоснабжение (Гкал/ч)</label>
+                    <input type="number" step="0.1" className="form-control" id="HeatWater" placeholder="" />
+                  </div>
+                  </div>
+                  <div className="col-md-6">
+                  <div className="form-group">
+                    <label htmlFor="HeatTech">Технологические нужды(пар) (Т/ч)</label>
+                    <input type="number" step="0.1" className="form-control" name="HeatTech" placeholder="" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="HeatDistribution">Разделить нагрузку по жилью и по встроенным помещениям</label>
+                    <input type="text" className="form-control" name="HeatDistribution" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="HeatSaving">Энергосберегающее мероприятие</label>
+                    <input type="text" className="form-control" name="HeatSaving" />
+                  </div>
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div>
+                  <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
+                </div>
+                </form>
+                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+              </div>
+              <div className="tab-pane fade" id="tab6" role="tabpanel" aria-labelledby="tab6-link">
+                <form id="tab6-form" data-tab="6" onSubmit={this.tabSubmission.bind(this)}>
+                <div className="row">
+                  <div className="col-md-12">
                   <div className="form-group">
-                    <label htmlFor="GasVentilation">Вентиляция (м<sup>3</sup>/час)</label>
-                    <input type="number" step="any" className="form-control" name="GasVentilation" placeholder="" />
+                    <label htmlFor="SewageClientWishes">Пожелание заказчика</label>
+                    <input type="text" className="form-control" name="SewageClientWishes" placeholder="" />
                   </div>
-                  <div className="form-group">
-                    <label htmlFor="GasConditioner">Кондиционирование (м<sup>3</sup>/час)</label>
-                    <input type="number" step="any" className="form-control" name="GasConditioner" />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="GasWater">Горячее водоснабжение при газификации многоэтажных домов (м<sup>3</sup>/час)</label>
-                    <input type="number" step="any" className="form-control" name="GasWater" />
                   </div>
                 </div>
+                <div>
+                  <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
+                </div>
+                </form>
+                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
-              <div>
-                <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
+              <div className="tab-pane fade" id="tab7" role="tabpanel" aria-labelledby="tab7-link">
+                <form id="tab7-form" data-tab="7" onSubmit={this.tabSubmission.bind(this)}>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label htmlFor="PhoneServiceNum">Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</label>
+                      <input type="number" step="any" className="form-control" name="PhoneServiceNum" placeholder="" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="PhoneCapacity">Телефонная емкость</label>
+                      <input type="text" className="form-control" name="PhoneCapacity" placeholder="" />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label htmlFor="PhoneSewage">Планируемая телефонная канализация</label>
+                      <input type="text" className="form-control" name="PhoneSewage" placeholder="" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="PhoneClientWishes">Пожелания заказчика</label>
+                      <input type="text" className="form-control" name="PhoneClientWishes" placeholder="Тип оборудования, тип кабеля и др." />
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
+                </div>
+                </form>
+                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
-              </form>
-              <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+              <div className="tab-pane fade" id="tab8" role="tabpanel" aria-labelledby="tab8-link">
+                <form id="tab8-form" data-tab="8" onSubmit={this.tabSubmission.bind(this)}>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label htmlFor="GasGeneral">Общая потребность (м<sup>3</sup>/час)</label>
+                      <input type="number" step="any" required className="form-control" name="GasGeneral" placeholder="" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="GasCooking">На приготовление пищи (м<sup>3</sup>/час)</label>
+                      <input type="number" step="any" className="form-control" name="GasCooking" placeholder="" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="GasHeat">Отопление (м<sup>3</sup>/час)</label>
+                      <input type="number" step="any" required className="form-control" name="GasHeat" placeholder="" />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label htmlFor="GasVentilation">Вентиляция (м<sup>3</sup>/час)</label>
+                      <input type="number" step="any" className="form-control" name="GasVentilation" placeholder="" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="GasConditioner">Кондиционирование (м<sup>3</sup>/час)</label>
+                      <input type="number" step="any" className="form-control" name="GasConditioner" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="GasWater">Горячее водоснабжение при газификации многоэтажных домов (м<sup>3</sup>/час)</label>
+                      <input type="number" step="any" className="form-control" name="GasWater" />
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
+                </div>
+                </form>
+                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+              </div>
+              </div>
             </div>
             </div>
           </div>
+        }
+
+        {!this.state.loaderHidden &&
+          <div style={{textAlign: 'center'}}>
+            <Loader type="Oval" color="#46B3F2" height="200" width="200" />
           </div>
-        </div>
+        }
 
         <div>
           <hr />
