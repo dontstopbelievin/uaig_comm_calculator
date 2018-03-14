@@ -16,6 +16,8 @@ export default class Polls extends React.Component {
                                 <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu3">пр. Абылайхана (восточ.ст)</a></li>
                                 <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu4">пр. Назарбаева (восточ.ст)</a></li>
                                 <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu5">пр. Назарбаева (запад.ст)</a></li>
+                                <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu7">Реконструкции проспекта Абая от проспекта Достык до реки Есентай</a></li>
+                                <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu8">пр. Достык</a></li>
                             </ul>
                             <br/>
 
@@ -68,6 +70,27 @@ export default class Polls extends React.Component {
                                     Результаты опроса
                                 </a>
                                 <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeG5YLPUx0yg0_2Fbz6qxgzfoldcOnJlRd-wEDP82aCmfcKOA/viewform?embedded=true" width="100%" height="1800" frameborder="0" marginheight="0" marginwidth="0">Загрузка...</iframe>
+                              </div>
+                              <div id="menu6" className="tab-pane fade">
+                                <p>Разработка проекта преобразования жилищно-гражданских объектов по проспекту Назарбаева</p>
+                                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfvIhhM7Vlyqu3EiVxCghuE4Yl5DAM3dW_t8AcRHuYYXoyl0A/viewanalytics" className="btn btn-outline-danger" target="_blank">
+                                    Результаты опроса
+                                </a>
+                                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfvIhhM7Vlyqu3EiVxCghuE4Yl5DAM3dW_t8AcRHuYYXoyl0A/viewform?embedded=true" width="100%" height="1800" frameborder="0" marginheight="0" marginwidth="0">Загрузка...</iframe>
+                              </div>
+                              <div id="menu7" className="tab-pane fade">
+                                <p>Обоснование проектного предложение Дендроплана по реконструкции проспекта Абая от проспекта Достык до реки Есентай</p>
+                                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfutm2u35Lzzd_ukKaypclc6LnjnKvoy_z2NFLLGuMAnFFRdA/viewanalytics" className="btn btn-outline-danger" target="_blank">
+                                    Результаты опроса
+                                </a>
+                                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfutm2u35Lzzd_ukKaypclc6LnjnKvoy_z2NFLLGuMAnFFRdA/viewform?embedded=true" width="100%" height="1800" frameborder="0" marginheight="0" marginwidth="0">Загрузка...</iframe>
+                              </div>
+                              <div id="menu8" className="tab-pane fade">
+                                <p>пр. Достык</p>
+                                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfVvJ4bNbzEJ9UoLNA0CGyzcH9oQa9JyKZ4XF4NrBW-ZL-gPw/viewanalytics" className="btn btn-outline-danger" target="_blank">
+                                    Результаты опроса
+                                </a>
+                                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfVvJ4bNbzEJ9UoLNA0CGyzcH9oQa9JyKZ4XF4NrBW-ZL-gPw/viewform?embedded=true" width="100%" height="1800" frameborder="0" marginheight="0" marginwidth="0">Загрузка...</iframe>
                               </div>
                             </div>
                         </div>
