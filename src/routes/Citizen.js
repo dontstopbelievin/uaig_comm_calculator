@@ -2019,7 +2019,7 @@ class ShowMap extends React.Component {
             <div className="col-sm-6">
               <div className="pull-right">
                 <button type="button" className="btn btn-outline-success mr-1" onClick={() => this.saveCoordinates()}>Сохранить</button>
-                <button type="button" className="btn btn-outline-secondary" onClick={() => this.toggleMap.bind(this, false)}>Закрыть карту</button>
+                <button type="button" className="btn btn-outline-secondary" onClick={this.toggleMap.bind(this, false)}>Закрыть карту</button>
               </div>
             </div>
           </div>
