@@ -94,6 +94,22 @@ class AllApzs extends React.Component {
     xhr.send();
   }
 
+  toDate(date) {
+    if(date === null) {
+      return date;
+    }
+
+    var jDate = new Date(date);
+    var curr_date = jDate.getDate() < 10 ? "0" + jDate.getDate() : jDate.getDate();
+    var curr_month = (jDate.getMonth() + 1) < 10 ? "0" + (jDate.getMonth() + 1) : jDate.getMonth() + 1;
+    var curr_year = jDate.getFullYear();
+    var curr_hour = jDate.getHours() < 10 ? "0" + jDate.getHours() : jDate.getHours();
+    var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
+    var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
+    
+    return formated_date;
+  }
+
   render() {
     return (
       <div>
@@ -115,8 +131,11 @@ class AllApzs extends React.Component {
             <table className="table">
               <thead>
                 <tr>
-                  <th style={{width: '85%'}}>Название</th>
-                  <th style={{width: '15%'}}>Статус</th>
+                  <th style={{width: '23%'}}>Название</th>
+                  <th style={{width: '23%'}}>Заявитель</th>
+                  <th style={{width: '20%'}}>Адрес</th>
+                  <th style={{width: '20%'}}>Дата заявления</th>
+                  <th style={{width: '14%'}}>Срок</th>
                   <th></th>
                 </tr>
               </thead>
@@ -124,26 +143,23 @@ class AllApzs extends React.Component {
                 {this.state.apzs.map(function(apz, index) {
                   return(
                     <tr key={index}>
-                      <td>{apz.project_name}</td>
                       <td>
-                        {apz.status_id === 1 &&
-                          <span className="text-danger">Отказано</span>
-                        }
+                        {apz.project_name} 
 
-                        {apz.status_id === 2 &&
-                          <span className="text-success">Принято</span>
-                        }
-
-                        {apz.status_id !== 1 && apz.status_id !== 2 &&
-                          <span className="text-info">В процессе</span>
+                        {apz.object_type &&
+                          <span className="ml-1">({apz.object_type})</span>
                         }
                       </td>
+                      <td>{apz.applicant}</td>
+                      <td>{apz.project_address}</td>
+                      <td>{this.toDate(apz.created_at)}</td>
+                      <td>{apz.object_term}</td>
                       <td>
                         <Link className="btn btn-outline-info" to={'/citizen/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
                     </tr>
                     );
-                  })
+                  }.bind(this))
                 }
 
                 {this.state.apzs.length === 0 &&
@@ -357,7 +373,7 @@ class AddApz extends React.Component {
 
   ObjectArea(e) {
     //ИЖС if selected
-    if(document.getElementById('ObjectType').value === 'obj_ijs')
+    if(document.getElementById('ObjectType').value === 'ИЖС')
     {
       if(document.getElementsByName('ObjectArea')[0].value !== '')
       {
@@ -407,15 +423,15 @@ class AddApz extends React.Component {
       // }
       
     }
-    if(document.getElementById('ObjectType').value === 'obj_mjk') //МЖК
+    if(document.getElementById('ObjectType').value === 'МЖК') //МЖК
     {
       //rules
     }
-    if(document.getElementById('ObjectType').value === 'obj_kp') 
+    if(document.getElementById('ObjectType').value === 'КомБыт') 
     {
       //rules
     }
-    if(document.getElementById('ObjectType').value === 'obj_pp') 
+    if(document.getElementById('ObjectType').value === 'ПромПред') 
     {
       //rules
     }
@@ -546,12 +562,12 @@ class AddApz extends React.Component {
                   <div className="col-md-6">
                     <div className="form-group">
                       <label htmlFor="ObjectType">Тип объекта</label>
-                      <select required className="form-control" id="ObjectType" onChange={this.ObjectType.bind(this)} defaultValue="null">
+                      <select required className="form-control" name="ObjectType" id="ObjectType" onChange={this.ObjectType.bind(this)} defaultValue="null">
                         <option value="null" disabled>Выберите тип объекта</option>
-                        <option value="obj_ijs">ИЖС</option>
-                        <option value="obj_mjk">МЖК</option>
-                        <option value="obj_kb">КомБыт</option>
-                        <option value="obj_pp">ПромПред</option>
+                        <option>ИЖС</option>
+                        <option>МЖК</option>
+                        <option>КомБыт</option>
+                        <option>ПромПред</option>
                       </select>
                     </div>
                     {/*<div className="form-group">
@@ -572,7 +588,7 @@ class AddApz extends React.Component {
                     </div>
                     <div className="form-group">
                       <label htmlFor="ObjectTerm">Срок строительства по нормам</label>
-                      <input type="text" className="form-control" id="ObjectTerm" placeholder="" />
+                      <input type="text" name="ObjectTerm" className="form-control" id="ObjectTerm" placeholder="" />
                     </div>
                     {/* <div className="form-group">
                       <label htmlFor="">Правоустанавливающие документы на объект (реконструкция)</label>
@@ -613,7 +629,7 @@ class AddApz extends React.Component {
                     </div>
                     <div className="form-group">
                       <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
-                      <input type="number" step="any" required className="form-control" onChange={this.ObjectArea.bind(this)}  name="ElectricRequiredPower" placeholder="" />
+                      <input type="number" step="any" required className="form-control" onChange={this.ObjectArea.bind(this)} name="ElectricRequiredPower" placeholder="" />
                     </div>
                   </div>
                   <div className="col-md-6">
@@ -1458,12 +1474,12 @@ class ShowApz extends React.Component {
             <table className="table table-bordered table-striped">
               <tbody>
                 <tr>
-                  <td style={{width: '22%'}}><b>Заявитель</b></td>
-                  <td>{apz.applicant}</td>
+                  <td style={{width: '22%'}}><b>ИД заявки</b></td>
+                  <td>{apz.id}</td>
                 </tr>
                 <tr>
-                  <td><b>Адрес</b></td>
-                  <td>{apz.address}</td>
+                  <td><b>Заявитель</b></td>
+                  <td>{apz.applicant}</td>
                 </tr>
                 <tr>
                   <td><b>Телефон</b></td>
@@ -1482,7 +1498,7 @@ class ShowApz extends React.Component {
                   <td>{apz.project_name}</td>
                 </tr>
                 <tr>
-                  <td><b>Адрес проекта</b></td>
+                  <td><b>Адрес проектируемого объекта</b></td>
                   <td>
                     {apz.project_address}
 
