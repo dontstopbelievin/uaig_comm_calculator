@@ -167,6 +167,7 @@ class ShowApz extends React.Component {
       heatMainInContract: "",
       heatVenInContract: "",
       heatWaterInContract: "",
+      heatWaterMaxInContract: "",
       connectionPoint: "",
       addition: "",
       docNumber: "",
@@ -183,7 +184,32 @@ class ShowApz extends React.Component {
       heatStatus: 2,
       storageAlias: "PKCS12",
       xmlFile: false,
-      isSigned: false
+      isSigned: false,
+      reconcileConnectionsWith: "ЦЭР ТОО «АлТС» (тел. 274-04-47).",
+      heatTransporter: '2-трубной схеме',
+      twoPipePressureInTc: "",
+      twoPipePressureInSc: "",
+      twoPipePressureInRc: "",
+      fourHeatPipePressureInTc: "",
+      fourWaterPipePressureInTc: "",
+      fourHeatPipePressureInSc: "",
+      fourWaterPipePressureInSc: "",
+      fourHeatPipePressureInRc: "",
+      fourWaterPipePressureInRc: "",
+      temperatureChart: "",
+      connectionTerms: "– Подключение выполнить по технологии присоединения к предызолированным трубопроводам. \n\n– Размещение зданий и сооружений Вашего объекта предусмотреть на расстоянии с учетом соблюдения охранной зоны тепловых сетей 2dy_____ мм, проложенных __________ Вашего объекта. В противном случае выполнить их вынос из-под пятна застройки с переключением существующих потребителей. Проект выноса тепловых сетей согласовать с ТОО «АлТС»",
+      heatingNetworksDesign: "– Тепловые сети запроектировать с применением предварительно изолированных трубопроводов с устройством системы оперативного дистанционного контроля. Способ прокладки тепловых сетей определить проектом с учетом требований МСН 4.02-02-2004 «Тепловые сети». \n\n– После выполнения работ комплект исполнительной документации на бумажном носителе и в электронном исполнении, зарегистрированный в КГУ «Управление архитектуры и градостроительства г. Алматы», передать в ТОО «АлТС».",
+      finalHeatLoads: "Окончательные тепловые нагрузки уточнить проектом и согласовать с Оперативно-диспетчерским управлением ТОО «АлТС» (тел.: 378-07-00, вн.1007). Договор на оказание услуг по передаче и распределению тепловой энергии будет заключен на согласованную уточненную тепловую нагрузку.\n\nВ соответствии с п. 12.1 СНиП РК 4.02-42-2006 «Отопление, вентиляция и кондиционирование» в системе вентиляции при обосновании предусмотреть устройства утилизации теплоты вентиляционных выбросов (рекуперация, рециркуляция вытяжного воздуха) с учетом пунктов 12.2, 12.5 СНиП РК 4.02-42-2006 «Отопление, вентиляция и кондиционирование».",
+      heatNetworksRelaying: "– В связи с увеличением циркуляционного расхода выполнить перекладку тепловых сетей от ТК ___ до ТК ___ с увеличением диаметра с 2Dу___ мм на 2Dу___ мм. Реконструируемые тепловые сети в установленном порядке передать на баланс ТОО «АлТС». \n\n– Выполнить поверочный расчет диаметров трубопроводов внутриплощадочных тепловых сетей с учетом дополнительно подключаемой нагрузки. В случае необходимости – выполнить их замену.",
+      condensateReturn: "Возврат конденсата не предусмотрен.",
+      thermalEnergyMeters: "На вводе для каждой категории абонентов установить прибор учета тепловой энергии, оборудованный модемной связью. Системы отопления и горячего водоснабжения каждой квартиры оборудовать индивидуальными приборами учета расхода теплоты и горячей воды с возможностью дистанционного снятия показаний. Проект на установку системы учета, схему организации учета, место установки приборов учета согласовать со Службой контроля приборов учета тепловой энергии ТОО «АлТС» (тел.: 341-07-77, вн. 2140).",
+      heatSupplySystem: "Открытая",
+      heatSupplySystemNote: "- Предусмотреть догрев ГВС в межотопительный период \n\n- Предусмотреть тепловую изоляцию разводящих трубопроводов и стояков системы горячего водоснабжения. При присоединении распределительной гребенки индивидуальных потребителей к стояку общедомовой системы горячего водоснабжения предусмотреть установку обратного клапана",
+      connectionScheme: "по зависимой схеме",
+      connectionSchemeNote: "В случае применения в системе отопления трубопроводов из полимерных материалов – проектирование вести с учетом требований п. 7.1.3 СНиП РК 4.02-42-2006 «Отопление, вентиляция и кондиционирование»",
+      afterControlUnitInstallation: "По завершении монтажа узла управления выполнить пуско-наладочные работы по автоматизации теплового пункта.",
+      negotiation: "После предварительного согласования с ЦЭР ТОО «АлТС» проектную документацию (чертежи марки ОВ, ТС, сводный план инженерных сетей) согласовать с Техническим отделом ТОО «АлТС» (тел.: 378-07-00, вн. 1023). \n\nСогласованный проект на бумажном и электронном носителях предоставить в ТОО «АлТС».",
+      technicalConditionsTerms: "нормативный период проектирования и строительства, предусмотренный в проектно-сметной документации."
     };
 
     this.onHeatResourceChange = this.onHeatResourceChange.bind(this);
@@ -192,6 +218,7 @@ class ShowApz extends React.Component {
     this.onHeatMainInContractChange = this.onHeatMainInContractChange.bind(this);
     this.onHeatVenInContractChange = this.onHeatVenInContractChange.bind(this);
     this.onHeatWaterInContractChange = this.onHeatWaterInContractChange.bind(this);
+    this.onHeatWaterMaxInContractChange = this.onHeatWaterMaxInContractChange.bind(this);
     this.onConnectionPointChange = this.onConnectionPointChange.bind(this);
     this.onAdditionChange = this.onAdditionChange.bind(this);
     this.onDocNumberChange = this.onDocNumberChange.bind(this);
@@ -199,6 +226,26 @@ class ShowApz extends React.Component {
     this.onFileChange = this.onFileChange.bind(this);
     this.saveResponseForm = this.saveResponseForm.bind(this);
     this.sendHeatResponse = this.sendHeatResponse.bind(this);
+    this.onTwoPipePressureInTcChange = this.onTwoPipePressureInTcChange.bind(this);
+    this.onTwoPipePressureInScChange = this.onTwoPipePressureInScChange.bind(this);
+    this.onTwoPipePressureInRcChange = this.onTwoPipePressureInRcChange.bind(this);
+    this.onFourHeatPipePressureInTcChange = this.onFourHeatPipePressureInTcChange.bind(this);
+    this.onFourWaterPipePressureInTcChange = this.onFourWaterPipePressureInTcChange.bind(this);
+    this.onFourHeatPipePressureInScChange = this.onFourHeatPipePressureInScChange.bind(this);
+    this.onFourWaterPipePressureInScChange = this.onFourWaterPipePressureInScChange.bind(this);
+    this.onFourHeatPipePressureInRcChange = this.onFourHeatPipePressureInRcChange.bind(this);
+    this.onFourWaterPipePressureInRcChange = this.onFourWaterPipePressureInRcChange.bind(this);
+    this.onTemperatureChartChange = this.onTemperatureChartChange.bind(this);
+    this.onConnectionTermsChange = this.onConnectionTermsChange.bind(this);
+    this.onHeatingNetworksDesignChange = this.onHeatingNetworksDesignChange.bind(this);
+    this.onFinalHeatLoadsChange = this.onFinalHeatLoadsChange.bind(this);
+    this.onHeatNetworksRelayingChange = this.onHeatNetworksRelayingChange.bind(this);
+    this.onThermalEnergyMetersChange = this.onThermalEnergyMetersChange.bind(this);
+    this.onHeatSupplySystemNoteChange = this.onHeatSupplySystemNoteChange.bind(this);
+    this.onConnectionSchemeNoteChange = this.onConnectionSchemeNoteChange.bind(this);
+    this.onAfterControlUnitInstallationChange = this.onAfterControlUnitInstallationChange.bind(this);
+    this.onNegotiationChange = this.onNegotiationChange.bind(this);
+    this.onTechnicalConditionsTermsChange = this.onTechnicalConditionsTermsChange.bind(this);
   }
 
   onHeatResourceChange(e) {
@@ -225,6 +272,10 @@ class ShowApz extends React.Component {
     this.setState({ heatWaterInContract: e.target.value });
   }
 
+  onHeatWaterMaxInContractChange(e) {
+    this.setState({ heatWaterMaxInContract: e.target.value });
+  }
+
   onConnectionPointChange(e) {
     this.setState({ connectionPoint: e.target.value });
   }
@@ -239,6 +290,98 @@ class ShowApz extends React.Component {
 
   onDescriptionChange(e) {
     this.setState({ description: e.target.value });
+  }
+
+  onHeatTransporterChange(transType) {
+    this.setState({ heatTransporter: transType });
+  }
+
+  onTwoPipePressureInTcChange(e) {
+    this.setState({ twoPipePressureInTc: e.target.value });
+  }
+
+  onTwoPipePressureInScChange(e) {
+    this.setState({ twoPipePressureInSc: e.target.value });
+  }
+
+  onTwoPipePressureInRcChange(e) {
+    this.setState({ twoPipePressureInRc: e.target.value });
+  }
+
+  onFourHeatPipePressureInTcChange(e) {
+    this.setState({ fourHeatPipePressureInTc: e.target.value });
+  }
+
+  onFourWaterPipePressureInTcChange(e) {
+    this.setState({ fourWaterPipePressureInTc: e.target.value });
+  }
+
+  onFourHeatPipePressureInScChange(e) {
+    this.setState({ fourHeatPipePressureInSc: e.target.value });
+  }
+
+  onFourWaterPipePressureInScChange(e) {
+    this.setState({ fourWaterPipePressureInSc: e.target.value });
+  }
+
+  onFourHeatPipePressureInRcChange(e) {
+    this.setState({ fourHeatPipePressureInRc: e.target.value });
+  }
+
+  onFourWaterPipePressureInRcChange(e) {
+    this.setState({ fourWaterPipePressureInRc: e.target.value });
+  }
+
+  onTemperatureChartChange(e) {
+    this.setState({ temperatureChart: e.target.value });
+  }
+
+  onConnectionTermsChange(e) {
+    this.setState({ connectionTerms: e.target.value });
+  }
+
+  onHeatingNetworksDesignChange(e) {
+    this.setState({ heatingNetworksDesign: e.target.value });
+  }
+
+  onFinalHeatLoadsChange(e) {
+    this.setState({ finalHeatLoads: e.target.value });
+  }
+
+  onHeatNetworksRelayingChange(e) {
+    this.setState({ heatNetworksRelaying: e.target.value });
+  }
+
+  onThermalEnergyMetersChange(e) {
+    this.setState({ thermalEnergyMeters: e.target.value });
+  }
+
+  onHeatSupplySystemChange(supplySysType) {
+    this.setState({ heatSupplySystem: supplySysType });
+  }
+
+  onHeatSupplySystemNoteChange(e) {
+    this.setState({ heatSupplySystemNote: e.target.value });
+  }
+
+  onConnectionSchemeChange(scheme) {
+    this.setState({ connectionScheme: scheme });
+  }
+
+  onConnectionSchemeNoteChange(e) {
+    this.setState({ connectionSchemeNote: e.target.value });
+  }
+
+  onAfterControlUnitInstallationChange(e) {
+    this.setState({ afterControlUnitInstallation: e.target.value });
+  }
+
+  onNegotiationChange(e) {
+    this.setState({ negotiation: e.target.value });
+  }
+
+  onTechnicalConditionsTermsChange(e) {
+    this.setState({ technicalConditionsTerms: e.target.value });
   }
 
   onFileChange(e) {
@@ -274,7 +417,7 @@ class ShowApz extends React.Component {
     xhr.onload = function() {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-        //console.log(data);
+        console.log(data);
         this.setState({apz: data});
         this.setState({showButtons: false});
         this.setState({showTechCon: false});
@@ -283,21 +426,45 @@ class ShowApz extends React.Component {
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
 
         if (data.commission.apz_heat_response) {
-          this.setState({description: data.commission.apz_heat_response.response_text});
-          this.setState({connectionPoint: data.commission.apz_heat_response.connection_point});
-          this.setState({heatResource: data.commission.apz_heat_response.resource});
-          this.setState({heatTransPressure: data.commission.apz_heat_response.trans_pressure});
-          this.setState({heatLoadContractNum: data.commission.apz_heat_response.load_contract_num});
-          this.setState({heatMainInContract: data.commission.apz_heat_response.main_in_contract});
-          this.setState({heatVenInContract: data.commission.apz_heat_response.ven_in_contract});
-          this.setState({heatWaterInContract: data.commission.apz_heat_response.water_in_contract});
-          this.setState({addition: data.commission.apz_heat_response.addition});
+          data.commission.apz_heat_response.response_text ? this.setState({description: data.commission.apz_heat_response.response_text}) : this.setState({description: ""});
+          data.commission.apz_heat_response.connection_point ? this.setState({connectionPoint: data.commission.apz_heat_response.connection_point}) : this.setState({connectionPoint: ""});
+          data.commission.apz_heat_response.resource ? this.setState({heatResource: data.commission.apz_heat_response.resource}) : this.setState({heatResource: ""});
+          data.commission.apz_heat_response.trans_pressure ? this.setState({heatTransPressure: data.commission.apz_heat_response.trans_pressure}) : this.setState({heatTransPressure: ""});
+          data.commission.apz_heat_response.load_contract_num ? this.setState({heatLoadContractNum: data.commission.apz_heat_response.load_contract_num}) : this.setState({heatLoadContractNum: ""});
+          data.commission.apz_heat_response.main_in_contract ? this.setState({heatMainInContract: data.commission.apz_heat_response.main_in_contract}) : this.setState({heatMainInContract: ""});
+          data.commission.apz_heat_response.ven_in_contract ? this.setState({heatVenInContract: data.commission.apz_heat_response.ven_in_contract}) : this.setState({heatVenInContract: ""});
+          data.commission.apz_heat_response.water_in_contract ? this.setState({heatWaterInContract: data.commission.apz_heat_response.water_in_contract}) : this.setState({heatWaterInContract: ""});
+          data.commission.apz_heat_response.water_in_contract_max ? this.setState({heatWaterMaxInContract: data.commission.apz_heat_response.water_in_contract_max}) : this.setState({heatWaterMaxInContract: ""});
+          data.commission.apz_heat_response.addition ? this.setState({addition: data.commission.apz_heat_response.addition}) : this.setState({addition: ""});
+          data.commission.apz_heat_response.transporter ? this.setState({heatTransporter: data.commission.apz_heat_response.transporter}) : this.setState({heatTransporter: "2-трубной схеме"}); 
+          data.commission.apz_heat_response.two_pipe_pressure_in_tc ? this.setState({twoPipePressureInTc: data.commission.apz_heat_response.two_pipe_pressure_in_tc}) : this.setState({twoPipePressureInTc: ""});
+          data.commission.apz_heat_response.two_pipe_pressure_in_sc ? this.setState({twoPipePressureInSc: data.commission.apz_heat_response.two_pipe_pressure_in_sc}) : this.setState({twoPipePressureInSc: ""});
+          data.commission.apz_heat_response.two_pipe_pressure_in_rc ? this.setState({twoPipePressureInRc: data.commission.apz_heat_response.two_pipe_pressure_in_rc}) : this.setState({twoPipePressureInRc: ""});
+          data.commission.apz_heat_response.heat_four_pipe_pressure_in_tc ? this.setState({ fourHeatPipePressureInTc: data.commission.apz_heat_response.heat_four_pipe_pressure_in_tc}) : this.setState({ fourHeatPipePressureInTc: ""});
+          data.commission.apz_heat_response.heat_four_pipe_pressure_in_sc ? this.setState({ fourHeatPipePressureInSc: data.commission.apz_heat_response.heat_four_pipe_pressure_in_sc}) : this.setState({ fourHeatPipePressureInSc: ""});
+          data.commission.apz_heat_response.heat_four_pipe_pressure_in_rc ? this.setState({ fourHeatPipePressureInRc: data.commission.apz_heat_response.heat_four_pipe_pressure_in_rc}) : this.setState({ fourHeatPipePressureInRc: ""});
+          data.commission.apz_heat_response.water_four_pipe_pressure_in_tc ? this.setState({ fourWaterPipePressureInTc: data.commission.apz_heat_response.water_four_pipe_pressure_in_tc}) : this.setState({ fourWaterPipePressureInTc: ""}); 
+          data.commission.apz_heat_response.water_four_pipe_pressure_in_sc ? this.setState({ fourWaterPipePressureInSc: data.commission.apz_heat_response.water_four_pipe_pressure_in_sc}) : this.setState({ fourWaterPipePressureInSc: ""});
+          data.commission.apz_heat_response.water_four_pipe_pressure_in_rc ? this.setState({ fourWaterPipePressureInRc: data.commission.apz_heat_response.water_four_pipe_pressure_in_rc}) : this.setState({ fourWaterPipePressureInRc: ""});
+          data.commission.apz_heat_response.temperature_chart ? this.setState({temperatureChart: data.commission.apz_heat_response.temperature_chart}) : this.setState({temperatureChart: ""});
+          data.commission.apz_heat_response.reconcile_connections_with ? this.setState({reconcileConnectionsWith: data.commission.apz_heat_response.reconcile_connections_with}) : this.setState({reconcileConnectionsWith: ""});
+          data.commission.apz_heat_response.connection_terms ? this.setState({connectionTerms: data.commission.apz_heat_response.connection_terms}) : this.setState({connectionTerms: ""});
+          data.commission.apz_heat_response.heating_networks_design ? this.setState({heatingNetworksDesign: data.commission.apz_heat_response.heating_networks_design}) : this.setState({heatingNetworksDesign: ""});
+          data.commission.apz_heat_response.final_heat_loads ? this.setState({finalHeatLoads: data.commission.apz_heat_response.final_heat_loads}) : this.setState({finalHeatLoads: ""});
+          data.commission.apz_heat_response.heat_networks_relaying ? this.setState({heatNetworksRelaying: data.commission.apz_heat_response.heat_networks_relaying}) : this.setState({heatNetworksRelaying: ""});
+          data.commission.apz_heat_response.condensate_return ? this.setState({condensateReturn: data.commission.apz_heat_response.condensate_return}) : this.setState({condensateReturn: ""});
+          data.commission.apz_heat_response.thermal_energy_meters ? this.setState({thermalEnergyMeters: data.commission.apz_heat_response.thermal_energy_meters}) : this.setState({thermalEnergyMeters: ""});
+          data.commission.apz_heat_response.heat_supply_system ? this.setState({heatSupplySystem: data.commission.apz_heat_response.heat_supply_system}) : this.setState({heatSupplySystem: ""});
+          data.commission.apz_heat_response.heat_supply_system_note ? this.setState({heatSupplySystemNote: data.commission.apz_heat_response.heat_supply_system_note}) : this.setState({heatSupplySystemNote: ""});
+          data.commission.apz_heat_response.connection_scheme ? this.setState({connectionScheme: data.commission.apz_heat_response.connection_scheme}) : this.setState({connectionScheme: ""});
+          data.commission.apz_heat_response.connection_scheme_note ? this.setState({connectionSchemeNote: data.commission.apz_heat_response.connection_scheme_note}) : this.setState({connectionSchemeNote: ""});
+          data.commission.apz_heat_response.after_control_unit_installation ? this.setState({afterControlUnitInstallation: data.commission.apz_heat_response.after_control_unit_installation}) : this.setState({afterControlUnitInstallation: ""});
+          data.commission.apz_heat_response.negotiation ? this.setState({negotiation: data.commission.apz_heat_response.negotiation}) : this.setState({negotiation: ""});
+          data.commission.apz_heat_response.technical_conditions_terms ? this.setState({technicalConditionsTerms: data.commission.apz_heat_response.technical_conditions_terms}) : this.setState({technicalConditionsTerms: ""});
           this.setState({docNumber: data.commission.apz_heat_response.doc_number});
           this.setState({responseId: data.commission.apz_heat_response.id});
           this.setState({response: data.commission.apz_heat_response.response});
-          if(data.commission.apz_heat_response.id !== -1){
-            this.setState({accept: data.commission.apz_heat_response.response});
-          }
+          this.setState({accept: data.commission.apz_heat_response.response});
           this.setState({responseFile: data.commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12})[0]});
           this.setState({xmlFile: data.commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 16})[0]});
         }
@@ -623,7 +790,7 @@ class ShowApz extends React.Component {
     formData.append('file', file);
     formData.append('Response', status);
     formData.append('Message', comment);
-    if(status === false){
+    if(status === 0){
       formData.append('HeatResource', "");
       formData.append('HeatTransPressure', "");
       formData.append('HeatLoadContractNum', "");
@@ -632,6 +799,32 @@ class ShowApz extends React.Component {
       formData.append('HeatWaterInContract', "");
       formData.append('ConnectionPoint', "");
       formData.append('Addition', "");
+      formData.append('Transporter', "");
+      formData.append('Two_pipe_pressure_in_tc', "");
+      formData.append('Two_pipe_pressure_in_sc', "");
+      formData.append('Two_pipe_pressure_in_rc', "");
+      formData.append('Heat_four_pipe_pressure_in_tc', "");
+      formData.append('Heat_four_pipe_pressure_in_sc', "");
+      formData.append('Heat_four_pipe_pressure_in_rc', "");
+      formData.append('Water_four_pipe_pressure_in_tc', "");
+      formData.append('Water_four_pipe_pressure_in_sc', "");
+      formData.append('Water_four_pipe_pressure_in_rc', "");
+      formData.append('Temperature_chart', "");
+      formData.append('Reconcile_connections_with', "");
+      formData.append('Connection_terms', "");
+      formData.append('Heating_networks_design', "");
+      formData.append('Final_heat_loads', "");
+      formData.append('Heat_networks_relaying', "");
+      formData.append('Condensate_return', "");
+      formData.append('Thermal_energy_meters', "");
+      formData.append('Heat_supply_system', "");
+      formData.append('Heat_supply_system_note', "");
+      formData.append('Connection_scheme', "");
+      formData.append('Connection_scheme_note', "");
+      formData.append('After_control_unit_installation', "");
+      formData.append('Negotiation', "");
+      formData.append('Technical_conditions_terms', "");
+      formData.append('Water_in_contract_max', "");
     }
     else{
       formData.append('HeatResource', this.state.heatResource);
@@ -642,8 +835,36 @@ class ShowApz extends React.Component {
       formData.append('HeatWaterInContract', this.state.heatWaterInContract);
       formData.append('ConnectionPoint', this.state.connectionPoint);
       formData.append('Addition', this.state.addition);
+      formData.append('Transporter', this.state.heatTransporter);
+      formData.append('Two_pipe_pressure_in_tc', this.state.twoPipePressureInTc);
+      formData.append('Two_pipe_pressure_in_sc', this.state.twoPipePressureInSc);
+      formData.append('Two_pipe_pressure_in_rc', this.state.twoPipePressureInRc);
+      formData.append('Heat_four_pipe_pressure_in_tc', this.state.fourHeatPipePressureInTc);
+      formData.append('Heat_four_pipe_pressure_in_sc', this.state.fourHeatPipePressureInSc);
+      formData.append('Heat_four_pipe_pressure_in_rc', this.state.fourHeatPipePressureInRc);
+      formData.append('Water_four_pipe_pressure_in_tc', this.state.fourWaterPipePressureInTc);
+      formData.append('Water_four_pipe_pressure_in_sc', this.state.fourWaterPipePressureInSc);
+      formData.append('Water_four_pipe_pressure_in_rc', this.state.fourWaterPipePressureInRc);
+      formData.append('Temperature_chart', this.state.temperatureChart);
+      formData.append('Reconcile_connections_with', this.state.reconcileConnectionsWith);
+      formData.append('Connection_terms', this.state.connectionTerms);
+      formData.append('Heating_networks_design', this.state.heatingNetworksDesign);
+      formData.append('Final_heat_loads', this.state.finalHeatLoads);
+      formData.append('Heat_networks_relaying', this.state.heatNetworksRelaying);
+      formData.append('Condensate_return', this.state.condensateReturn);
+      formData.append('Thermal_energy_meters', this.state.thermalEnergyMeters);
+      formData.append('Heat_supply_system', this.state.heatSupplySystem);
+      formData.append('Heat_supply_system_note', this.state.heatSupplySystemNote);
+      formData.append('Connection_scheme', this.state.connectionScheme);
+      formData.append('Connection_scheme_note', this.state.connectionSchemeNote);
+      formData.append('After_control_unit_installation', this.state.afterControlUnitInstallation);
+      formData.append('Negotiation', this.state.negotiation);
+      formData.append('Technical_conditions_terms', this.state.technicalConditionsTerms);
+      formData.append('Water_in_contract_max', this.state.heatWaterMaxInContract);
     }
     formData.append('DocNumber', this.state.docNumber);
+    formData.append('Name', "");
+    formData.append('Area', "");
 
     var xhr = new XMLHttpRequest();
     xhr.open("post", window.url + "api/apz/provider/heat/" + apzId + '/save', true);
@@ -655,16 +876,43 @@ class ShowApz extends React.Component {
         this.setState({responseId: data.id});
         this.setState({response: data.response});
         this.setState({accept: data.response});
-        this.setState({description: data.response_text});
+        data.response_text ? this.setState({description: data.response_text}) : this.setState({description: ""});
         this.setState({responseFile: data.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-        this.setState({connectionPoint: data.connection_point});
-        this.setState({heatResource: data.resource});
-        this.setState({heatTransPressure: data.trans_pressure});
-        this.setState({heatLoadContractNum: data.load_contract_num});
-        this.setState({heatMainInContract: data.main_in_contract});
-        this.setState({heatVenInContract: data.ven_in_contract});
-        this.setState({heatWaterInContract: data.water_in_contract});
-        this.setState({addition: data.addition});
+        data.connection_point ? this.setState({connectionPoint: data.connection_point}) : this.setState({connectionPoint: ""});
+        data.resource ? this.setState({heatResource: data.resource}) : this.setState({heatResource: ""});
+        data.trans_pressure ? this.setState({heatTransPressure: data.trans_pressure}) : this.setState({heatTransPressure: ""});
+        data.load_contract_num ? this.setState({heatLoadContractNum: data.load_contract_num}) : this.setState({heatLoadContractNum: ""});
+        data.main_in_contract ? this.setState({heatMainInContract: data.main_in_contract}) : this.setState({heatMainInContract: ""});
+        data.ven_in_contract ? this.setState({heatVenInContract: data.ven_in_contract}) : this.setState({heatVenInContract: ""});
+        data.water_in_contract ? this.setState({heatWaterInContract: data.water_in_contract}) : this.setState({heatWaterInContract: ""});
+        data.water_in_contract_max ? this.setState({heatWaterMaxInContract: data.water_in_contract_max}) : this.setState({heatWaterMaxInContract: ""});
+        data.addition ? this.setState({addition: data.addition}) : this.setState({addition: ""});
+        data.transporter ? this.setState({heatTransporter: data.transporter}) : this.setState({heatTransporter: "2-трубной схеме"}); 
+        data.two_pipe_pressure_in_tc ? this.setState({twoPipePressureInTc: data.two_pipe_pressure_in_tc}) : this.setState({twoPipePressureInTc: ""});
+        data.two_pipe_pressure_in_sc ? this.setState({twoPipePressureInSc: data.two_pipe_pressure_in_sc}) : this.setState({twoPipePressureInSc: ""});
+        data.two_pipe_pressure_in_rc ? this.setState({twoPipePressureInRc: data.two_pipe_pressure_in_rc}) : this.setState({twoPipePressureInRc: ""});
+        data.heat_four_pipe_pressure_in_tc ? this.setState({ fourHeatPipePressureInTc: data.heat_four_pipe_pressure_in_tc}) : this.setState({ fourHeatPipePressureInTc: ""});
+        data.heat_four_pipe_pressure_in_sc ? this.setState({ fourHeatPipePressureInSc: data.heat_four_pipe_pressure_in_sc}) : this.setState({ fourHeatPipePressureInSc: ""});
+        data.heat_four_pipe_pressure_in_rc ? this.setState({ fourHeatPipePressureInRc: data.heat_four_pipe_pressure_in_rc}) : this.setState({ fourHeatPipePressureInRc: ""});
+        data.water_four_pipe_pressure_in_tc ? this.setState({ fourWaterPipePressureInTc: data.water_four_pipe_pressure_in_tc}) : this.setState({ fourWaterPipePressureInTc: ""}); 
+        data.water_four_pipe_pressure_in_sc ? this.setState({ fourWaterPipePressureInSc: data.water_four_pipe_pressure_in_sc}) : this.setState({ fourWaterPipePressureInSc: ""});
+        data.water_four_pipe_pressure_in_rc ? this.setState({ fourWaterPipePressureInRc: data.water_four_pipe_pressure_in_rc}) : this.setState({ fourWaterPipePressureInRc: ""});
+        data.temperature_chart ? this.setState({temperatureChart: data.temperature_chart}) : this.setState({temperatureChart: ""});
+        data.reconcile_connections_with ? this.setState({reconcileConnectionsWith: data.reconcile_connections_with}) : this.setState({reconcileConnectionsWith: ""});
+        data.connection_terms ? this.setState({connectionTerms: data.connection_terms}) : this.setState({connectionTerms: ""});
+        data.heating_networks_design ? this.setState({heatingNetworksDesign: data.heating_networks_design}) : this.setState({heatingNetworksDesign: ""});
+        data.final_heat_loads ? this.setState({finalHeatLoads: data.final_heat_loads}) : this.setState({finalHeatLoads: ""});
+        data.heat_networks_relaying ? this.setState({heatNetworksRelaying: data.heat_networks_relaying}) : this.setState({heatNetworksRelaying: ""});
+        data.condensate_return ? this.setState({condensateReturn: data.condensate_return}) : this.setState({condensateReturn: ""});
+        data.thermal_energy_meters ? this.setState({thermalEnergyMeters: data.thermal_energy_meters}) : this.setState({thermalEnergyMeters: ""});
+        data.heat_supply_system ? this.setState({heatSupplySystem: data.heat_supply_system}) : this.setState({heatSupplySystem: ""});
+        data.heat_supply_system_note ? this.setState({heatSupplySystemNote: data.heat_supply_system_note}) : this.setState({heatSupplySystemNote: ""});
+        data.connection_scheme ? this.setState({connectionScheme: data.connection_scheme}) : this.setState({connectionScheme: ""});
+        data.connection_scheme_note ? this.setState({connectionSchemeNote: data.connection_scheme_note}) : this.setState({connectionSchemeNote: ""});
+        data.after_control_unit_installation ? this.setState({afterControlUnitInstallation: data.after_control_unit_installation}) : this.setState({afterControlUnitInstallation: ""});
+        data.negotiation ? this.setState({negotiation: data.negotiation}) : this.setState({negotiation: ""});
+        data.technical_conditions_terms ? this.setState({technicalConditionsTerms: data.technical_conditions_terms}) : this.setState({technicalConditionsTerms: ""});
+        this.setState({docNumber: data.doc_number});
         if(this.state.callSaveFromSend){
           this.setState({callSaveFromSend: false});
           this.sendHeatResponse(apzId, status, comment);
@@ -827,7 +1075,7 @@ class ShowApz extends React.Component {
 
     return (
       <div className="row">
-        <div className="col-sm-4">
+        <div className="col-sm-6">
           <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
           
           <table className="table table-bordered table-striped">
@@ -867,6 +1115,22 @@ class ShowApz extends React.Component {
                 </td>
               </tr>
               <tr>
+                <td><b>Кадастровый номер</b></td>
+                <td>{apz.cadastral_number}</td>
+              </tr>
+              <tr>
+                <td><b>Этажность</b></td>
+                <td>{apz.object_level}</td>
+              </tr>
+              <tr>
+                <td><b>Общая площадь</b></td>
+                <td>{apz.object_area}</td>
+              </tr>
+              <tr>
+                <td><b>Отапливаемая площадь</b></td>
+                <td></td>{/*apz.apz_heat.area*/}
+              </tr>
+              <tr>
                 <td><b>Дата заявления</b></td>
                 <td>{apz.created_at && this.toDate(apz.created_at)}</td>
               </tr>
@@ -895,14 +1159,14 @@ class ShowApz extends React.Component {
           </table>
         </div>
 
-        <div className="col-sm-4">
+        <div className="col-sm-6">
           <h5 className="block-title-2 mt-3 mb-3">Детали</h5>
 
           <table className="table table-bordered table-striped">
             <tbody>
               <tr>
                 <td style={{width: '40%'}}>Общая нагрузка (Гкал/ч)</td> 
-                <td>{apz.apz_heat.HeatGeneral}</td>
+                <td>{apz.apz_heat.general}</td>
               </tr>
               <tr>
                 <td>Отопление (Гкал/ч)</td>
@@ -932,7 +1196,7 @@ class ShowApz extends React.Component {
           </table>
         </div>
 
-        <div className="col-sm-4">
+        <div className="col-sm-12">
           <div className="row" style={{margin: '16px 0'}}>
             <div className="col-sm-6">
               <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ</h5> 
@@ -941,10 +1205,10 @@ class ShowApz extends React.Component {
               {this.state.showButtons && !this.state.isSigned &&
                 <div className="btn-group" style={{float: 'right', margin: '0'}}>
                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, true)}>
-                    <i className="glyphicon glyphicon-ok"></i>
+                    Одобрить
                   </button>
                   <button className="btn btn-raised btn-danger" onClick={this.toggleAcceptDecline.bind(this, false)}>
-                    <i className="glyphicon glyphicon-remove"></i>
+                    Отклонить
                   </button>
                 </div>
               }
@@ -952,81 +1216,199 @@ class ShowApz extends React.Component {
           </div>
 
           {(this.state.accept === true || this.state.accept === 1) && this.state.heatStatus === 2 && !this.state.xmlFile && !this.state.isSigned &&
-            <form style={{border: 'solid 3px #46A149', padding: '5px'}}>
-              <div className="form-group">
-                <label>Теплоснабжение осуществляется от источников</label>
-                <input type="text" className="form-control" placeholder="" value={this.state.heatResource} onChange={this.onHeatResourceChange} />
+            <div className="row" style={{border: 'solid 3px #46A149', padding: '15px 5px', margin: '0'}}>
+              <div className="col-sm-4">
+                <div className="form-group">
+                  <label>Номер документа</label>
+                  <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+                </div>
+                <div className="form-group">
+                  <label>Теплоснабжение осуществляется от источников</label>
+                  <input type="text" className="form-control" placeholder="" value={this.state.heatResource} onChange={this.onHeatResourceChange} />
+                </div>
+                <div className="form-group">
+                  <label>Точка подключения</label>
+                  <input type="text" className="form-control" placeholder="" value={this.state.connectionPoint} onChange={this.onConnectionPointChange} />
+                </div>
+                <div className="form-group">
+                  <label>Давление теплоносителя в тепловой камере {this.state.connectionPoint}</label>
+                  <input type="text" className="form-control" placeholder="" value={this.state.heatTransPressure} onChange={this.onHeatTransPressureChange} />
+                </div>
+                <div className="form-group">
+                  <label>Температурный график</label>
+                  <input type="text" className="form-control" placeholder="" value={this.state.temperatureChart} onChange={this.onTemperatureChartChange} />
+                </div>
+                <div className="form-group">
+                  <label>Дополнительные условия и место подключения согласовать с</label>
+                  <input type="text" className="form-control" readOnly="readonly" placeholder="" value={this.state.reconcileConnectionsWith} />
+                </div>
+                <div className="form-group">
+                  <label>Условия подключения:</label>
+                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.connectionTerms} onChange={this.onConnectionTermsChange} />
+                </div>
+                <div className="form-group">
+                  <label>Проектирование тепловых сетей:</label>
+                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.heatingNetworksDesign} onChange={this.onHeatingNetworksDesignChange} />
+                </div>
+                <div className="form-group">
+                  <label>Окончательные тепловые нагрузки:</label>
+                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.finalHeatLoads} onChange={this.onFinalHeatLoadsChange} />
+                </div> 
+                <div className="form-group">
+                  <label>Перекладка тепловых сетей:</label>
+                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.heatNetworksRelaying} onChange={this.onHeatNetworksRelayingChange} />
+                </div>
               </div>
-              <div className="form-group">
-                <label>Точка подключения</label>
-                <input type="text" className="form-control" placeholder="" value={this.state.connectionPoint} onChange={this.onConnectionPointChange} />
-              </div>
-              <div className="form-group">
-                <label>Давление теплоносителя в тепловой камере {this.state.connectionPoint}</label>
-                <input type="text" className="form-control" placeholder="" value={this.state.heatTransPressure} onChange={this.onHeatTransPressureChange} />
-              </div>
-              <div className="form-group">
-                <label>Тепловые нагрузки по договору 
+              <div className="col-sm-4">
+                <div className="form-group">
+                  <label>Тепловые нагрузки (Гкал/ч) по договору</label>
                   <input type="text" className="form-control" placeholder="Введите номер договора" value={this.state.heatLoadContractNum} onChange={this.onHeatLoadContractNumChange} />
-                </label>
-                <label>Отопление (Гкал/ч)</label>
-                <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatMainInContract} onChange={this.onHeatMainInContractChange} />
-                <label>Вентиляция (Гкал/ч)</label>
-                <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatVenInContract} onChange={this.onHeatVenInContractChange} />
-                <label>Горячее водоснабжение (Гкал/ч)</label>
-                <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatWaterInContract} onChange={this.onHeatWaterInContractChange} />
-              </div>
-              <div className="form-group">
-                <label>Дополнительное</label>
-                <textarea rows="5" className="form-control" value={this.state.addition} onChange={this.onAdditionChange} placeholder="Описание"></textarea>
-              </div>
-              <div className="form-group">
-                <label>Номер документа</label>
-                <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
-              </div>
-              {(this.state.response === true && this.state.responseFile) &&
-                <div className="form-group">
-                  <label style={{display: 'block'}}>Прикрепленный файл</label>
-                  <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
-                    Скачать 
-                  </a>
+                  <label>Отопление</label>
+                  <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatMainInContract} onChange={this.onHeatMainInContractChange} />
+                  <label>Вентиляция</label>
+                  <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatVenInContract} onChange={this.onHeatVenInContractChange} />
+                  <label>Горячее водоснабжение, макс/ч</label>
+                  <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatWaterMaxInContract} onChange={this.onHeatWaterMaxInContractChange} />
+                  <label>Горячее водоснабжение, ср/ч</label>
+                  <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatWaterInContract} onChange={this.onHeatWaterInContractChange} />
                 </div>
-              }
-              <div className="form-group">
-                <label htmlFor="upload_file">Прикрепить файл</label>
-                <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
-              </div>
-
-              {!this.state.xmlFile && !this.state.showSignButtons &&
+                <label>Транспортировка тепловой энергии осуществляется по:</label>
+                <input type="radio" name="twoPipe" value="" 
+                        checked={this.state.heatTransporter === "2-трубной схеме"} 
+                        onChange={this.onHeatTransporterChange.bind(this, "2-трубной схеме")} />
+                <label style={{marginRight: '10px'}}>2-трубной схеме</label>
+                <input type="radio" name="fourPipe" value="" 
+                        checked={this.state.heatTransporter === "4-трубной схеме"} 
+                        onChange={this.onHeatTransporterChange.bind(this, "4-трубной схеме")} />
+                <label>4-трубной схеме</label><br /> <br />
+                {this.state.heatTransporter === '2-трубной схеме' &&
+                  <div className="form-group">
+                    <label>Давление теплоносителя в ТК:</label>
+                    <input type="text" className="form-control" placeholder="" value={this.state.twoPipePressureInTc} onChange={this.onTwoPipePressureInTcChange} />
+                    <label>В подающем водоводе:</label>
+                    <input type="number" step="any" className="form-control" placeholder="" value={this.state.twoPipePressureInSc} onChange={this.onTwoPipePressureInScChange} />
+                    <label>В обратном водоводе:</label>
+                    <input type="number" step="any" className="form-control" placeholder="" value={this.state.twoPipePressureInRc} onChange={this.onTwoPipePressureInRcChange} />
+                  </div>
+                }
+                {this.state.heatTransporter === '4-трубной схеме' &&
+                  <div className="form-group">
+                    <div className="row">
+                      <div className="col-sm-6">
+                        <label>Давление теплоносителя в ТК (отопление):</label>
+                        <input type="text" className="form-control" placeholder="" value={this.state.fourHeatPipePressureInTc} onChange={this.onFourHeatPipePressureInTcChange} />
+                        <label>В подающем водоводе:</label>
+                        <input type="number" step="any" className="form-control" placeholder="" value={this.state.fourHeatPipePressureInSc} onChange={this.onFourHeatPipePressureInScChange} />
+                        <label>В обратном водоводе:</label>
+                        <input type="number" step="any" className="form-control" placeholder="" value={this.state.fourHeatPipePressureInRc} onChange={this.onFourHeatPipePressureInRcChange} />
+                      </div>
+                      <div className="col-sm-6">
+                        <label>Давление теплоносителя в ТК (ГВС):</label>
+                        <input type="text" className="form-control" placeholder="" value={this.state.fourWaterPipePressureInTc} onChange={this.onFourWaterPipePressureInTcChange} />
+                        <label>В подающем водоводе:</label>
+                        <input type="number" step="any" className="form-control" placeholder="" value={this.state.fourWaterPipePressureInSc} onChange={this.onFourWaterPipePressureInScChange} />
+                        <label>В обратном водоводе:</label>
+                        <input type="number" step="any" className="form-control" placeholder="" value={this.state.fourWaterPipePressureInRc} onChange={this.onFourWaterPipePressureInRcChange} />
+                      </div>
+                    </div>
+                  </div>
+                }
                 <div className="form-group">
-                  <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
-                    Сохранить
-                  </button>
+                  <label>Возврат конденсата</label>
+                  <input type="text" className="form-control" readOnly="readonly" placeholder="" value={this.state.condensateReturn} />
                 </div>
-              }
+                <div className="form-group">
+                  <label>Приборы учета тепловой энергии:</label>
+                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.thermalEnergyMeters} onChange={this.onThermalEnergyMetersChange} />
+                </div>
+                <label style={{display: 'block'}}>Система теплоснабжения:</label>
+                <input type="radio" value="" 
+                        checked={this.state.heatSupplySystem === "Открытая"} 
+                        onChange={this.onHeatSupplySystemChange.bind(this, "Открытая")} />
+                <label style={{marginRight: '10px'}}>Открытая</label>
+                <input type="radio" value="" 
+                        checked={this.state.heatSupplySystem === "Закрытая"} 
+                        onChange={this.onHeatSupplySystemChange.bind(this, "Закрытая")} />
+                <label>Закрытая</label><br /> <br />
+                <div className="form-group">
+                  <label>Примечание к системе теплоснабжения:</label>
+                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.heatSupplySystemNote} onChange={this.onHeatSupplySystemNoteChange} />
+                </div>
+              </div>
+              <div className="col-sm-4">
+                <label style={{display: 'block'}}>Схема подключения:</label>
+                <input type="radio" value="" 
+                        checked={this.state.connectionScheme === "по зависимой схеме"} 
+                        onChange={this.onConnectionSchemeChange.bind(this, "по зависимой схеме")} />
+                <label style={{marginRight: '10px'}}>по зависимой схеме</label><br />
+                <input type="radio" value="" 
+                        checked={this.state.connectionScheme === "по независимой схеме"} 
+                        onChange={this.onConnectionSchemeChange.bind(this, "по независимой схеме")} />
+                <label>по независимой схеме</label><br /> <br />
+                <div className="form-group">
+                  <label>Примечание к схеме подключения:</label>
+                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.connectionSchemeNote} onChange={this.onConnectionSchemeNoteChange} />
+                </div>
+                <div className="form-group">
+                  <label>По завершении монтажа узла управления:</label>
+                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.afterControlUnitInstallation} onChange={this.onAfterControlUnitInstallationChange} />
+                </div>
+                <div className="form-group">
+                  <label>Согласование:</label>
+                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.negotiation} onChange={this.onNegotiationChange} />
+                </div>
+                <div className="form-group">
+                  <label>Срок действия технических условий:</label>
+                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.technicalConditionsTerms} onChange={this.onTechnicalConditionsTermsChange} />
+                </div>
+                <div className="form-group">
+                  <label>Дополнительное</label>
+                  <textarea style={{border: 'solid 1px black'}} rows="5" className="form-control" value={this.state.addition} onChange={this.onAdditionChange} placeholder="Описание"></textarea>
+                </div>
+                {(this.state.response === true || this.state.response === 1) && this.state.responseFile &&
+                  <div className="form-group">
+                    <label style={{display: 'block'}}>Прикрепленный файл</label>
+                    <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
+                      Скачать 
+                    </a>
+                  </div>
+                }
+                <div className="form-group">
+                  <label htmlFor="upload_file">Прикрепить файл</label>
+                  <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                </div>
 
-              {!this.state.xmlFile && this.state.showSignButtons && !this.state.isSigned &&
-                <div>
-                  <div className="row form-group">
-                    <div className="col-sm-7">
-                      <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
+                {!this.state.xmlFile && !this.state.showSignButtons &&
+                  <div className="form-group">
+                    <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, 1, "")}>
+                      Сохранить
+                    </button>
+                  </div>
+                }
+
+                {!this.state.xmlFile && this.state.showSignButtons && !this.state.isSigned &&
+                  <div>
+                    <div className="row form-group">
+                      <div className="col-sm-7">
+                        <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
+                      </div>
+
+                      <div className="col-sm-5 p-0">
+                        <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
+                      </div>
                     </div>
 
-                    <div className="col-sm-5 p-0">
-                      <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
+                    <div className="form-group">
+                      <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                    </div>
+
+                    <div className="form-group">
+                      <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
                     </div>
                   </div>
-
-                  <div className="form-group">
-                    <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
-                  </div>
-
-                  <div className="form-group">
-                    <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
-                  </div>
-                </div>
-              }
-            </form>
+                }
+              </div>
+            </div>
           }
 
           {(this.state.accept === 1 || this.state.accept === true) && (this.state.heatStatus === 1 || this.state.isSigned) &&
@@ -1102,7 +1484,7 @@ class ShowApz extends React.Component {
                <label>Причина отклонения</label>
                 <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
               </div>
-              {(this.state.response === false && this.state.responseFile) &&
+              {(this.state.response === false || this.state.response === 0) && this.state.responseFile &&
                 <div className="form-group">
                   <label style={{display: 'block'}}>Прикрепленный файл</label>
                   <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
@@ -1117,7 +1499,7 @@ class ShowApz extends React.Component {
               
               {!this.state.xmlFile && !this.state.showSignButtons &&
                 <div className="form-group">
-                  <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, false, this.state.description)}>
+                  <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, 0, this.state.description)}>
                     Сохранить
                   </button>
                 </div>
