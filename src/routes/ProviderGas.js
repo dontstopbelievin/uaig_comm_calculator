@@ -287,7 +287,7 @@ class ShowApz extends React.Component {
             this.setState({accept: data.commission.apz_gas_response.response});
           }
           this.setState({responseFile: data.commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12})[0]});
-          this.setState({xmlFile: data.commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 14})[0]});
+          this.setState({xmlFile: data.commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 14})[0]});
         }
 
         this.setState({gasStatus: data.apz_gas.status});

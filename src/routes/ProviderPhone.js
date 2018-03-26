@@ -287,8 +287,11 @@ class ShowApz extends React.Component {
             this.setState({accept: data.commission.apz_phone_response.response});
           }
           this.setState({responseFile: data.commission.apz_phone_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12})[0]});
-          this.setState({xmlFile: data.commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 17})[0]});
-        }
+          
+
+          this.setState({xmlFile: data.commission.apz_phone_response.files.filter(function(obj) { return obj.category_id === 17})[0]});
+        
+}
 
         this.setState({phoneStatus: data.apz_phone.status});
 
@@ -441,7 +444,7 @@ class ShowApz extends React.Component {
     var token = sessionStorage.getItem('tokenInfo');
 
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + 'api/apz/provider/get_xml/gas/' + this.state.apz.id, true);
+    xhr.open("get", window.url + 'api/apz/provider/get_xml/phone/' + this.state.apz.id, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function() {
@@ -489,7 +492,7 @@ class ShowApz extends React.Component {
       console.log("SIGNED XML ------> \n", signedXml);
 
       var xhr = new XMLHttpRequest();
-      xhr.open("post", window.url + 'api/apz/provider/save_xml/gas/' + this.state.apz.id, true);
+      xhr.open("post", window.url + 'api/apz/provider/save_xml/phone/' + this.state.apz.id, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {

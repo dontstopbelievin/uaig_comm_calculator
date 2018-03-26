@@ -278,51 +278,39 @@ class ShowApz extends React.Component {
   }
 
   // print technical condition of waterProvider
-  printWaterTechCon(apzId, project) {
-    var token = sessionStorage.getItem('tokenInfo');
-    if (token) {
-      var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/print/tc/water/" + apzId, true);
-      xhr.responseType = "blob";
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.onload = function () {
-        console.log(xhr);
-        console.log(xhr.status);
-        if (xhr.status === 200) {
-          //test of IE
-          if (typeof window.navigator.msSaveBlob === "function") {
-            window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
-          } 
-          else {
-            var blob = xhr.response;
-            var link = document.createElement('a');
-            var today = new Date();
-            var curr_date = today.getDate();
-            var curr_month = today.getMonth() + 1;
-            var curr_year = today.getFullYear();
-            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
-            //console.log(curr_day);
-            link.href = window.URL.createObjectURL(blob);
-            link.download = "ТУ-Вода-" + project + formated_date + ".pdf";
 
-            //append the link to the document body
-            document.body.appendChild(link);
-            link.click();
-          }
-        }
-      }
-      xhr.send();
-    } else {
-      console.log('session expired');
+  printTechCon(apzId, project, techcon) {
+    var token = sessionStorage.getItem('tokenInfo');
+    var savedName;
+
+    switch (techcon) {
+      case "water":
+        savedName = "ТУ-Вода-";
+        break;
+
+      case "gas":
+        savedName = "ТУ-Газ-";
+        break;
+
+      case "electro":
+        savedName = "ТУ-Электр-";
+        break;
+
+      case "heat":
+        savedName = "ТУ-Тепло-";
+        break;
+
+      case "phone":
+        savedName = "ТУ-Телефон";
+        break;
+
+      default:
+        return false;
     }
-  }
-
-  // print technical condition of gasProvider
-  printGasTechCon(apzId, project) {
-    var token = sessionStorage.getItem('tokenInfo');
+   
     if (token) {
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/print/tc/gas/" + apzId, true);
+      xhr.open("get", window.url + "api/apz/print/tc/" + techcon + "/" + apzId, true);
       xhr.responseType = "blob";
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.onload = function () {
@@ -343,127 +331,7 @@ class ShowApz extends React.Component {
             var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
             //console.log(curr_day);
             link.href = window.URL.createObjectURL(blob);
-            link.download = "ТУ-Газ-" + project + formated_date + ".pdf";
-
-            //append the link to the document body
-            document.body.appendChild(link);
-            link.click();
-          }
-        }
-      }
-      xhr.send();
-    } else {
-      console.log('session expired');
-    }
-  }
-
-  // print technical condition of electroProvider
-  printElectroTechCon(apzId, project) {
-    var token = sessionStorage.getItem('tokenInfo');
-    if (token) {
-      var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/print/tc/electro/" + apzId, true);
-      xhr.responseType = "blob";
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.onload = function () {
-        console.log(xhr);
-        console.log(xhr.status);
-        if (xhr.status === 200) {
-          //test of IE
-          if (typeof window.navigator.msSaveBlob === "function") {
-            window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
-          } 
-          else {
-            var blob = xhr.response;
-            var link = document.createElement('a');
-            var today = new Date();
-            var curr_date = today.getDate();
-            var curr_month = today.getMonth() + 1;
-            var curr_year = today.getFullYear();
-            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
-            //console.log(curr_day);
-            link.href = window.URL.createObjectURL(blob);
-            link.download = "ТУ-Электр-" + project + formated_date + ".pdf";
-
-            //append the link to the document body
-            document.body.appendChild(link);
-            link.click();
-          }
-        }
-      }
-      xhr.send();
-    } else {
-      console.log('session expired');
-    }
-  }
-
-  // print technical condition of heatProvider
-  printHeatTechCon(apzId, project) {
-    var token = sessionStorage.getItem('tokenInfo');
-    if (token) {
-      var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/print/tc/heat/" + apzId, true);
-      xhr.responseType = "blob";
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.onload = function () {
-        console.log(xhr);
-        console.log(xhr.status);
-        if (xhr.status === 200) {
-          //test of IE
-          if (typeof window.navigator.msSaveBlob === "function") {
-            window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
-          } 
-          else {
-            var blob = xhr.response;
-            var link = document.createElement('a');
-            var today = new Date();
-            var curr_date = today.getDate();
-            var curr_month = today.getMonth() + 1;
-            var curr_year = today.getFullYear();
-            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
-            //console.log(curr_day);
-            link.href = window.URL.createObjectURL(blob);
-            link.download = "ТУ-Тепло-" + project + formated_date + ".pdf";
-
-            //append the link to the document body
-            document.body.appendChild(link);
-            link.click();
-          }
-        }
-      }
-      xhr.send();
-    } else {
-      console.log('session expired');
-    }
-  }
-
-  // print technical condition of phoneProvider
-  printPhoneTechCon(apzId, project) {
-    var token = sessionStorage.getItem('tokenInfo');
-    if (token) {
-      var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/print/tc/phone/" + apzId, true);
-      xhr.responseType = "blob";
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.onload = function () {
-        console.log(xhr);
-        console.log(xhr.status);
-        if (xhr.status === 200) {
-          //test of IE
-          if (typeof window.navigator.msSaveBlob === "function") {
-            window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
-          } 
-          else {
-            var blob = xhr.response;
-            var link = document.createElement('a');
-            var today = new Date();
-            var curr_date = today.getDate();
-            var curr_month = today.getMonth() + 1;
-            var curr_year = today.getFullYear();
-            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
-            //console.log(curr_day);
-            link.href = window.URL.createObjectURL(blob);
-            link.download = "ТУ-Телефон-" + project + formated_date + ".pdf";
+            link.download = savedName + project + formated_date + ".pdf";
 
             //append the link to the document body
             document.body.appendChild(link);
@@ -784,7 +652,7 @@ class ShowApz extends React.Component {
                     {apz.WaterDoc && apz.WaterResponse &&
                       <tr>
                         <td><b>Сформированный ТУ</b></td>  
-                        <td><a className="text-info pointer" onClick={this.printWaterTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
+                        <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.Id, apz.ProjectName, "water")}>Скачать</a></td>
                       </tr>
                     }
 
@@ -880,7 +748,7 @@ class ShowApz extends React.Component {
                     {apz.HeatDoc && apz.HeatResponse &&
                       <tr>
                         <td><b>Сформированный ТУ</b></td>  
-                        <td><a className="text-info pointer" onClick={this.printHeatTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
+                        <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.Id, apz.ProjectName, "heat")}>Скачать</a></td>
                       </tr>
                     }
 
@@ -958,7 +826,7 @@ class ShowApz extends React.Component {
                     {apz.ElectroDoc && apz.ElectroResponse &&
                       <tr>
                         <td><b>Сформированный ТУ</b></td>  
-                        <td><a className="text-info pointer" onClick={this.printElectroTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
+                        <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.Id, apz.ProjectName, "electro")}>Скачать</a></td>
                       </tr>
                     }
 
@@ -1031,7 +899,7 @@ class ShowApz extends React.Component {
                     {apz.GasDoc && apz.GasResponse &&
                       <tr>
                         <td><b>Сформированный ТУ</b></td>  
-                        <td><a className="text-info pointer" onClick={this.printGasTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
+                        <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.Id, apz.ProjectName, "gas")}>Скачать</a></td>
                       </tr>
                     }
 
@@ -1104,7 +972,7 @@ class ShowApz extends React.Component {
                     {apz.PhoneDoc && apz.PhoneResponse &&
                       <tr>
                         <td><b>Сформированный ТУ</b></td>  
-                        <td><a className="text-info pointer" onClick={this.printPhoneTechCon.bind(this, apz.Id, apz.ProjectName)}>Скачать</a></td>
+                        <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.Id, apz.ProjectName, "phone")}>Скачать</a></td>
                       </tr>
                     }
 

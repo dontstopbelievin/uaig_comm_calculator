@@ -948,3 +948,6 @@ table{
 .noStyleSortType {
   cursor: pointer;
 }
+.monthlyreport{
+  font-size: 13px;
+}
