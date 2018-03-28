@@ -28,6 +28,7 @@ export default class Login extends Component {
     this.login = this.login.bind(this);
     this.onUpdateLogStatus = this.onUpdateLogStatus.bind(this);
     this.onUpdateUsername = this.onUpdateUsername.bind(this);
+    this.showAlert = this.showAlert.bind(this);
   }
 
   onUsernameChange(e) {
@@ -43,6 +44,10 @@ export default class Login extends Component {
 
   onUpdateUsername(name) {
     sessionStorage.setItem('userName', name);
+  }
+
+  showAlert() {
+    $('#alertModal').modal('show');
   }
 
   //user login function
@@ -168,6 +173,7 @@ export default class Login extends Component {
       else {
         console.log('Connection error');
         this.openDialog();
+        this.showAlert();
       }
       console.log('Code: ' + event.code + ' Reason: ' + event.reason);
     }.bind(this);
@@ -503,6 +509,26 @@ export default class Login extends Component {
                   </div>
                 </div>    
               </div>
+          </div>
+        </div>
+        <div className="modal fade" id="alertModal" tabIndex="-1" role="dialog" aria-hidden="true">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Информация</h5>
+                <button type="button" id="alertModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                У вас не установлен NCALayer. <br />Для авторизации/регистрации установите NCALayer на сайте НУЦ РК. <br /> 
+                Для установки пройдите по ссылке: 
+                <a onClick={() => document.getElementById("alertModalClose").click()} href="http://pki.gov.kz/index.php/ru/ncalayer" target="_blank"> http://pki.gov.kz/index.php/ru/ncalayer</a> 
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
