@@ -285,6 +285,7 @@ class ShowApz extends React.Component {
     xhr.onload = function() {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
+        console.log(data);
         
         this.setState({apz: data});
         this.setState({showButtons: false});
@@ -834,19 +835,33 @@ class ShowApz extends React.Component {
 
     return (
       <div className="row">
-        <div className="col-sm-4">
+        <div className="col-sm-12">
           <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
-          
-          <table className="table table-bordered table-striped">
+        </div>
+        
+        <div className="col-sm-6">  
+          <table className="table table-bordered table-striped" style={{textAlign: 'left'}}>
             <tbody>
               <tr>
-                <td style={{width: '40%'}}><b>ИД заявки</b></td>
+                <td><b>ИД заявки</b></td>
                 <td>{apz.id}</td>
               </tr>
               <tr>
                 <td><b>Заявитель</b></td>
                 <td>{apz.applicant}</td>
               </tr>
+              {apz.user.bin &&
+                <tr> 
+                  <td><b>БИН</b></td>
+                  <td>{apz.user.bin}</td>
+                </tr>
+              }
+              {!apz.user.bin &&
+                <tr> 
+                  <td><b>ИИН</b></td>
+                  <td>{apz.user.iin}</td>
+                </tr>
+              }
               <tr>
                 <td><b>Телефон</b></td>
                 <td>{apz.phone}</td>
@@ -873,6 +888,29 @@ class ShowApz extends React.Component {
                   }
                 </td>
               </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="col-sm-6">  
+          <table className="table table-bordered table-striped" style={{textAlign: 'left'}}>
+            <tbody>
+              <tr>
+                <td><b>Срок строительства</b></td>
+                <td>{apz.object_term}</td>
+              </tr>
+              <tr>
+                <td><b>Этажность</b></td>
+                <td>{apz.object_level}</td>
+              </tr>
+              <tr>
+                <td><b>Площадь здания</b></td>
+                <td>{apz.object_area}</td>
+              </tr>
+              <tr>
+                <td><b>Количество квартир</b></td>
+                <td>{apz.object_rooms}</td>
+              </tr> 
               <tr>
                 <td><b>Дата заявления</b></td>
                 <td>{apz.created_at && this.toDate(apz.created_at)}</td>
@@ -902,36 +940,101 @@ class ShowApz extends React.Component {
           </table>
         </div>
 
-        <div className="col-sm-4">
-          <h5 className="block-title-2 mt-3 mb-3">Детали</h5>
+        <div className="col-sm-6">
+          <h5 className="block-title-2 mt-3 mb-3">Детали водоснабжения</h5>
 
-          <table className="table table-bordered table-striped">
+          <table className="table table-bordered table-striped" style={{textAlign: 'left'}}>
             <tbody>
               <tr>
-                <td style={{width: '40%'}}>Общая потребность (м<sup>3</sup>/сутки)</td> 
+                <td>Общая потребность (м<sup>3</sup>/сутки)</td> 
                 <td>{apz.apz_water.requirement}</td>
+              </tr>
+              <tr>
+                <td>Общая потребность питьевой воды (м<sup>3</sup>/час)</td> 
+                <td>{apz.apz_water.requirement_hour}</td>
+              </tr>
+              <tr>
+                <td>Общая потребность (л/сек макс)</td> 
+                <td>{apz.apz_water.requirement_sec}</td>
               </tr>
               <tr>
                 <td>Хозпитьевые нужды (м<sup>3</sup>/сутки)</td>
                 <td>{apz.apz_water.drinking}</td>
               </tr>
               <tr>
-                <td>Производ. нужды (м<sup>3</sup>/сутки)</td>
+                <td>Хозпитьевые нужды (м<sup>3</sup>/час)</td>
+                <td>{apz.apz_water.drinking_hour}</td>
+              </tr>
+              <tr>
+                <td>Хозпитьевые нужды (л/сек макс)</td>
+                <td>{apz.apz_water.drinking_sec}</td>
+              </tr>
+              <tr>
+                <td>Производственные нужды (м<sup>3</sup>/сутки)</td>
                 <td>{apz.apz_water.production}</td>
               </tr>
               <tr>
-                <td>Расходы пожаротушения (л/сек)</td>
+                <td>Производственные нужды (м<sup>3</sup>/час)</td>
+                <td>{apz.apz_water.production_hour}</td>
+              </tr>
+              <tr>
+                <td>Производственные нужды (л/сек макс)</td>
+                <td>{apz.apz_water.production_sec}</td>
+              </tr>
+              <tr>
+                <td>Расходы пожаротушения (л/сек наружное)</td>
                 <td>{apz.apz_water.fire_fighting}</td>
               </tr>
               <tr>
-                <td>Общ. кол. сточных вод (м<sup>3</sup>/сутки)</td>
-                <td>{apz.apz_water.sewage}</td>
+                <td>Расходы пожаротушения (л/сек внутреннее)</td>
+                <td>{apz.apz_water.fire_fighting}</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <div className="col-sm-4">
+        <div className="col-sm-6">
+          <h5 className="block-title-2 mt-3 mb-3">Детали водоотведения</h5>
+
+          <table className="table table-bordered table-striped" style={{textAlign: 'left'}}>
+            <tbody>
+              <tr>
+                <td>Общее количество сточных вод (м<sup>3</sup>/сутки)</td>
+                <td>{apz.apz_sewage.amount}</td>
+              </tr>
+              <tr>
+                <td>Общее количество сточных вод (м<sup>3</sup>/час макс)</td>
+                <td>{apz.apz_sewage.amount_hour}</td>
+              </tr>
+              <tr>
+                <td>Фекальных (м<sup>3</sup>/сутки)</td>
+                <td>{apz.apz_sewage.feksal}</td>
+              </tr>
+              <tr>
+                <td>Фекальных (м<sup>3</sup>/час макс)</td>
+                <td>{apz.apz_sewage.feksal_hour}</td>
+              </tr>
+              <tr>
+                <td>Производственно-загрязненных (м<sup>3</sup>/сутки)</td>
+                <td>{apz.apz_sewage.production}</td>
+              </tr>
+              <tr>
+                <td>Производственно-загрязненных (м<sup>3</sup>/час макс)</td>
+                <td>{apz.apz_sewage.production_hour}</td>
+              </tr>
+              <tr>
+                <td>Условно-чистых сбрасываемых на городскую сеть (м<sup>3</sup>/сутки)</td>
+                <td>{apz.apz_sewage.to_city}</td>
+              </tr>
+              <tr>
+                <td>Условно-чистых сбрасываемых на городскую сеть (м<sup>3</sup>/час макс)</td>
+                <td>{apz.apz_sewage.to_city_hour}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="col-sm-12">
           <div className="row" style={{margin: '16px 0'}}>
             <div className="col-sm-6">
               <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ</h5> 
@@ -940,10 +1043,10 @@ class ShowApz extends React.Component {
               {this.state.showButtons && !this.state.isSigned &&
                 <div className="btn-group" style={{float: 'right', margin: '0'}}>
                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, true)}>
-                    <i className="glyphicon glyphicon-ok"></i>
+                    Одобрить
                   </button>
                   <button className="btn btn-raised btn-danger" onClick={this.toggleAcceptDecline.bind(this, false)}>
-                    <i className="glyphicon glyphicon-remove"></i>
+                    Отклонить
                   </button>
                 </div>
               }
@@ -952,80 +1055,86 @@ class ShowApz extends React.Component {
 
           {(this.state.accept === true || this.state.accept === 1) && this.state.waterStatus === 2 && !this.state.xmlFile && !this.state.isSigned &&
             <form style={{border: 'solid 3px #46A149', padding: '5px'}}>
-              <div className="form-group">
-                <label>Точка подключения</label>
-                <input type="text" className="form-control" id="connectionPoint" placeholder="" value={this.state.connectionPoint} onChange={this.onConnectionPointChange} />
-              </div>
-              <div className="form-group">
-                <label>Номер документа</label>
-                <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
-              </div>
-              <div className="form-group">
-                <label>Общая потребность (м<sup>3</sup>/сутки)</label>
-                <input type="number" step="any" className="form-control" placeholder="" value={this.state.genWaterReq} onChange={this.onGenWaterReqChange} />
-              </div>
-              <div className="form-group">
-                <label>Хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
-                <input type="number" step="any" className="form-control" placeholder="" value={this.state.drinkingWater} onChange={this.onDrinkingWaterChange} />
-              </div>
-              <div className="form-group">
-                <label>Производственные нужды (м<sup>3</sup>/сутки)</label>
-                <input type="number" step="any" className="form-control" placeholder="" value={this.state.prodWater} onChange={this.onProdWaterChange} />
-              </div>
-              <div className="form-group">
-                <label>Расходы пожаротушения внутренные (л/сек)</label>
-                <input type="number" step="any" className="form-control" value={this.state.fireFightingWaterIn} onChange={this.onFireFightingWaterInChange} />
-              </div>
-              <div className="form-group">
-                <label>Расходы пожаротушения внешные (л/сек)</label>
-                <input type="number" step="any" className="form-control" value={this.state.fireFightingWaterOut} onChange={this.onFireFightingWaterOutChange} />
-              </div>
-              <div className="form-group">
-                <label>Рекомендация</label>
-                <textarea rows="5" className="form-control" value={this.state.recomendation} onChange={this.onRecomendationChange} placeholder="Описание"></textarea>
-              </div>
-              {(this.state.response === true && this.state.responseFile) &&
-                <div className="form-group">
-                  <label style={{display: 'block'}}>Прикрепленный файл</label>
-                  <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
-                    Скачать 
-                  </a>
-                </div>
-              }
-              <div className="form-group">
-                <label htmlFor="upload_file">Прикрепить файл</label>
-                <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
-              </div>
-
-              {!this.state.xmlFile && !this.state.showSignButtons &&
-                <div className="form-group">
-                  <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
-                    Сохранить
-                  </button>
-                </div>
-              }
-
-              {!this.state.xmlFile && this.state.showSignButtons && !this.state.isSigned &&
-                <div>
-                  <div className="row form-group">
-                    <div className="col-sm-7">
-                      <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
-                    </div>
-
-                    <div className="col-sm-5 p-0">
-                      <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
-                    </div>
-                  </div>
-
+              <div className="row">
+                <div className="col-sm-6">
                   <div className="form-group">
-                    <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                    <label>Точка подключения</label>
+                    <input type="text" className="form-control" id="connectionPoint" placeholder="" value={this.state.connectionPoint} onChange={this.onConnectionPointChange} />
                   </div>
-
                   <div className="form-group">
-                    <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                    <label>Номер документа</label>
+                    <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Общая потребность (м<sup>3</sup>/сутки)</label>
+                    <input type="number" step="any" className="form-control" placeholder="" value={this.state.genWaterReq} onChange={this.onGenWaterReqChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
+                    <input type="number" step="any" className="form-control" placeholder="" value={this.state.drinkingWater} onChange={this.onDrinkingWaterChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Производственные нужды (м<sup>3</sup>/сутки)</label>
+                    <input type="number" step="any" className="form-control" placeholder="" value={this.state.prodWater} onChange={this.onProdWaterChange} />
                   </div>
                 </div>
-              }
+                <div className="col-sm-6">
+                  <div className="form-group">
+                    <label>Расходы пожаротушения внутренные (л/сек)</label>
+                    <input type="number" step="any" className="form-control" value={this.state.fireFightingWaterIn} onChange={this.onFireFightingWaterInChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Расходы пожаротушения внешные (л/сек)</label>
+                    <input type="number" step="any" className="form-control" value={this.state.fireFightingWaterOut} onChange={this.onFireFightingWaterOutChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Рекомендация</label>
+                    <textarea rows="5" className="form-control" value={this.state.recomendation} onChange={this.onRecomendationChange} placeholder="Описание"></textarea>
+                  </div>
+                  {(this.state.response === true && this.state.responseFile) &&
+                    <div className="form-group">
+                      <label style={{display: 'block'}}>Прикрепленный файл</label>
+                      <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
+                        Скачать 
+                      </a>
+                    </div>
+                  }
+                  <div className="form-group">
+                    <label htmlFor="upload_file">Прикрепить файл</label>
+                    <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                  </div>
+
+                  {!this.state.xmlFile && !this.state.showSignButtons &&
+                    <div className="form-group">
+                      <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
+                        Сохранить
+                      </button>
+                    </div>
+                  }
+
+                  {!this.state.xmlFile && this.state.showSignButtons && !this.state.isSigned &&
+                    <div>
+                      <div className="row form-group">
+                        <div className="col-sm-7">
+                          <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
+                        </div>
+
+                        <div className="col-sm-5 p-0">
+                          <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
+                        </div>
+                      </div>
+
+                      <div className="form-group">
+                        <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                      </div>
+
+                      <div className="form-group">
+                        <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
             </form>
           }
 
