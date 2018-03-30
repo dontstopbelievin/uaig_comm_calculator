@@ -55,6 +55,7 @@ export default class Login extends Component {
     e.preventDefault();
     //console.log("login function started");
     var tokenKey = "tokenInfo";
+    var userIdKey = "userId";
     var userNameKey = "userName";
     var userRoleKey = "userRoles";
     var logStatusKey = "logStatus";
@@ -100,6 +101,7 @@ export default class Login extends Component {
             roles.push(JSON.parse(e.target.response).role3);
           // сохраняем в хранилище sessionStorage токен доступа
           sessionStorage.setItem(tokenKey, JSON.parse(e.target.response).access_token);
+          sessionStorage.setItem(userIdKey, JSON.parse(e.target.response).id);
           sessionStorage.setItem(userNameKey, JSON.parse(e.target.response).name);
           sessionStorage.setItem(userRoleKey, JSON.stringify(roles));
           sessionStorage.setItem(logStatusKey, true);
