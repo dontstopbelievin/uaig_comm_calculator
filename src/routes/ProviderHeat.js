@@ -170,6 +170,8 @@ class ShowApz extends React.Component {
     this.missed_heartbeats_limit = this.missed_heartbeats_limit_min;
     this.callback = null;
 
+    var roles = JSON.parse(sessionStorage.getItem('userRoles'));
+
     this.state = {
       apz: [],
       showMap: false,
@@ -225,7 +227,12 @@ class ShowApz extends React.Component {
       connectionSchemeNote: "В случае применения в системе отопления трубопроводов из полимерных материалов – проектирование вести с учетом требований п. 7.1.3 СНиП РК 4.02-42-2006 «Отопление, вентиляция и кондиционирование»",
       afterControlUnitInstallation: "По завершении монтажа узла управления выполнить пуско-наладочные работы по автоматизации теплового пункта.",
       negotiation: "После предварительного согласования с ЦЭР ТОО «АлТС» проектную документацию (чертежи марки ОВ, ТС, сводный план инженерных сетей) согласовать с Техническим отделом ТОО «АлТС» (тел.: 378-07-00, вн. 1023). \n\nСогласованный проект на бумажном и электронном носителях предоставить в ТОО «АлТС».",
-      technicalConditionsTerms: "нормативный период проектирования и строительства, предусмотренный в проектно-сметной документации."
+      technicalConditionsTerms: "нормативный период проектирования и строительства, предусмотренный в проектно-сметной документации.",
+      isPerformer: (roles.indexOf('PerformerHeat') != -1),
+      isHead: (roles.indexOf('HeadHeat') != -1),
+      isDirector: (roles.indexOf('DirectorHeat') != -1),
+      heads_responses: [],
+      head_accepted: true
     };
 
     this.onHeatResourceChange = this.onHeatResourceChange.bind(this);
@@ -416,6 +423,7 @@ class ShowApz extends React.Component {
   getApzInfo() {
     var id = this.props.match.params.id;
     var roles = JSON.parse(sessionStorage.getItem('userRoles'));
+    var userId = JSON.parse(sessionStorage.getItem('userId'));
 
     if (roles == null) {
         sessionStorage.clear();
@@ -497,6 +505,12 @@ class ShowApz extends React.Component {
 
         if (this.state.xmlFile) {
           this.setState({isSigned: true});
+        }
+
+        this.setState({heads_responses: data.apz_provider_head_response.filter(function(obj) { return obj.role_id === 33 })});
+
+        if (this.state.isHead && data.apz_provider_head_response.filter(function(obj) { return obj.role_id === 33 && obj.user_id === userId }).length === 0) {
+          this.setState({head_accepted: false});
         }
       }
     }.bind(this)
@@ -985,6 +999,30 @@ class ShowApz extends React.Component {
     } 
   }
 
+  sendHeadResponse(apzId, status, comment) {
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+
+    var formData = new FormData();
+    formData.append('status', status);
+    formData.append('comment', comment);
+
+    xhr.open("post", window.url + "api/apz/provider/headheat/" + apzId + '/response', true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        alert('Ответ успешно отправлен');
+        this.setState({head_accepted: true});
+      }
+      else if(xhr.status === 401){
+        sessionStorage.clear();
+        alert("Время сессии истекло. Пожалуйста войдите заново!");
+        this.props.history.replace("/login");
+      }
+    }.bind(this);
+    xhr.send(formData);
+  }
+
   // print technical condition
   printTechCon(apzId, project) {
     var token = sessionStorage.getItem('tokenInfo');
@@ -1214,11 +1252,13 @@ class ShowApz extends React.Component {
 
         <div className="col-sm-12">
           <div className="row" style={{margin: '16px 0'}}>
+            {(this.state.isPerformer === true || this.state.responseId != 0) &&
+              <div className="col-sm-6">
+                <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ</h5> 
+              </div>
+            }
             <div className="col-sm-6">
-              <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ</h5> 
-            </div>
-            <div className="col-sm-6">
-              {this.state.showButtons && !this.state.isSigned &&
+              {this.state.showButtons && !this.state.isSigned && this.state.isPerformer &&
                 <div className="btn-group" style={{float: 'right', margin: '0'}}>
                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, true)}>
                     Одобрить
@@ -1231,7 +1271,7 @@ class ShowApz extends React.Component {
             </div>
           </div>
 
-          {(this.state.accept === true || this.state.accept === 1) && this.state.heatStatus === 2 && !this.state.xmlFile && !this.state.isSigned &&
+          {(this.state.accept === true || this.state.accept === 1) && this.state.heatStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
             <div className="row" style={{border: 'solid 3px #46A149', padding: '15px 5px', margin: '0'}}>
               <div className="col-sm-4">
                 <div className="form-group">
@@ -1396,38 +1436,16 @@ class ShowApz extends React.Component {
 
                 {!this.state.xmlFile && !this.state.showSignButtons &&
                   <div className="form-group">
-                    <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, 1, "")}>
+                    <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
                       Сохранить
                     </button>
-                  </div>
-                }
-
-                {!this.state.xmlFile && this.state.showSignButtons && !this.state.isSigned &&
-                  <div>
-                    <div className="row form-group">
-                      <div className="col-sm-7">
-                        <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
-                      </div>
-
-                      <div className="col-sm-5 p-0">
-                        <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
-                      </div>
-                    </div>
-
-                    <div className="form-group">
-                      <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
-                    </div>
-
-                    <div className="form-group">
-                      <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
-                    </div>
                   </div>
                 }
               </div>
             </div>
           }
 
-          {(this.state.accept === 1 || this.state.accept === true) && (this.state.heatStatus === 1 || this.state.isSigned) &&
+          {(this.state.accept === 1 || this.state.accept === true) && this.state.responseId != 0 && (this.state.heatStatus === 1 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
             <div>
               <table className="table table-bordered table-striped">
                 <tbody>
@@ -1480,17 +1498,79 @@ class ShowApz extends React.Component {
                 </tbody>
               </table>
 
-              {this.state.heatStatus === 2 && this.state.isSigned &&
-                <div className="form-group">
-                  <button type="button" className="btn btn-primary" onClick={this.sendHeatResponse.bind(this, apz.id, true, "")}>
-                    Отправить
-                  </button>
+              {this.state.heads_responses.length > 0 &&
+                <div>
+                  <h5 className="block-title-2 mt-4 mb-3">Одобрили:</h5>
+
+                  <table className="table table-bordered table-striped">
+                    <tbody>
+                      <tr>
+                        <th>ФИО</th>
+                        <th>Дата</th>
+                      </tr>
+                      {this.state.heads_responses.map(function(item, index) {
+                        return(
+                          <tr key={index}>
+                            <td width="60%">
+                              {item.user.name} 
+                            </td>
+                            <td>{this.toDate(item.created_at)}</td>
+                          </tr>
+                          );
+                        }.bind(this))
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              }
+
+              {!this.state.head_accepted &&
+                <div className={this.state.showButtons ? '' : 'invisible'}>
+                  <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                    <button className="btn btn-raised btn-success" onClick={this.sendHeadResponse.bind(this, apz.id, true, "")}>
+                      Одобрить
+                    </button>
+                  </div>
+                </div>
+              }
+
+              {this.state.isDirector &&
+                <div>
+                  {!this.state.xmlFile && !this.state.isSigned &&
+                    <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                      <div className="row form-group">
+                        <div className="col-sm-7">
+                          <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
+                        </div>
+
+                        <div className="col-sm-5 p-0">
+                          <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
+                        </div>
+                      </div>
+
+                      <div className="form-group">
+                        <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                      </div>
+
+                      <div className="form-group">
+                        <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                      </div>
+                    </div>
+                  }
+
+                  {this.state.heatStatus === 2 && this.state.isSigned &&
+                    <div className="form-group">
+                      <button type="button" className="btn btn-primary" onClick={this.sendHeatResponse.bind(this, apz.id, true, "")}>
+                        Отправить
+                      </button>
+                    </div>
+                  }
                 </div>
               }
             </div>
           }
 
-          {(this.state.accept === false || this.state.accept === 0) && this.state.heatStatus === 2 && !this.state.xmlFile && !this.state.isSigned &&
+          {(this.state.accept === false || this.state.accept === 0) && this.state.heatStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
             <form style={{border: 'solid 3px #F55549', padding: '5px'}}>
               <div className="form-group">
                 <label>Номер документа</label>
@@ -1521,7 +1601,7 @@ class ShowApz extends React.Component {
             </form>
           }
 
-          {(this.state.accept === 0 || this.state.accept === false) && (this.state.heatStatus === 0 || this.state.isSigned) &&
+          {(this.state.accept === 0 || this.state.accept === false) && this.state.responseId != 0 && (this.state.heatStatus === 0 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
             <div>
               <table className="table table-bordered table-striped">
                 <tbody>

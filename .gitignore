@@ -59,6 +59,8 @@ typings/
 # dotenv environment variables file
 .env
 
+/.idea
+
 # Cache files for Sublime Text
 *.tmlanguage.cache
 *.tmPreferences.cache
