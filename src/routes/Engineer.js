@@ -164,7 +164,6 @@ class ShowApz extends React.Component {
 
     this.state = {
       apz: [],
-      providers: [],
       showMap: false,
       showButtons: false,
       showCommission: false,
@@ -203,7 +202,6 @@ class ShowApz extends React.Component {
 
   componentWillMount() {
     this.getApzInfo();
-    this.getProviders();
   }
 
   getApzInfo() {
@@ -667,20 +665,6 @@ class ShowApz extends React.Component {
     return formated_date;
   }
 
-  getProviders() {
-    var token = sessionStorage.getItem('tokenInfo');
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/engineer/get_providers", true);
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        this.setState({providers: JSON.parse(xhr.responseText)});
-      }
-    }.bind(this)
-    xhr.send();
-  }
-
   createCommission(id) {
     var data = $('.commission_users_table input').serializeJSON();
 
@@ -872,60 +856,46 @@ class ShowApz extends React.Component {
                   </tbody>
                   :
                   <tbody>
-                    {this.state.providers.water &&
-                      <tr>
-                        <td>
-                          <input className="form-control" type="checkbox" name="commission_users[Water]" value={this.state.providers.water.id} />
-                        </td>
-                        <td>Водоснабжение</td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                    }
-                    
-                    {this.state.providers.heat &&
-                      <tr>
-                        <td>
-                          <input className="form-control" type="checkbox" name="commission_users[Heat]" value={this.state.providers.heat.id} />
-                        </td>
-                        <td>Теплоснабжение</td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                    }
-
-                    {this.state.providers.electro &&
-                      <tr>
-                        <td>
-                          <input className="form-control" type="checkbox" name="commission_users[Electricity]" value={this.state.providers.electro.id} />
-                        </td>
-                        <td>Электроснабжение</td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                    }
-
-                    {this.state.providers.gas &&
-                      <tr>
-                        <td>
-                          <input className="form-control" type="checkbox" name="commission_users[Gas]" value={this.state.providers.gas.id} />
-                        </td>
-                        <td>Газоснабжение</td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                    }
-
-                    {this.state.providers.phone &&
-                      <tr>
-                        <td>
-                          <input className="form-control" type="checkbox" name="commission_users[Phone]" value={this.state.providers.phone.id} />
-                        </td>
-                        <td>Телефонизация</td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                    }
+                    <tr>
+                      <td>
+                        <input className="form-control" type="checkbox" name="commission_users[]" value="Water" />
+                      </td>
+                      <td>Водоснабжение</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input className="form-control" type="checkbox" name="commission_users[]" value="Heat" />
+                      </td>
+                      <td>Теплоснабжение</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input className="form-control" type="checkbox" name="commission_users[]" value="Electricity" />
+                      </td>
+                      <td>Электроснабжение</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input className="form-control" type="checkbox" name="commission_users[]" value="Gas" />
+                      </td>
+                      <td>Газоснабжение</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input className="form-control" type="checkbox" name="commission_users[]" value="Phone" />
+                      </td>
+                      <td>Телефонизация</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
                   </tbody>
                 }
               </table>

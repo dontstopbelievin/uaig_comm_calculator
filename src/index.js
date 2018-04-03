@@ -36,6 +36,7 @@ import Reports from './routes/Reports';
 import Stats from './routes/Stats';
 import Footer from './components/Footer';
 import News from './routes/News';
+import NewsPanel from './routes/NewsPanel';
 import Npm from './routes/Npm';
 import public_services from './routes/public_services';
 import permission_and_covoting from './routes/permission_and_covoting';
@@ -66,13 +67,11 @@ export default class Main extends React.Component {
 
   componentWillMount() {
     this.setLang();
-    window.url = 'http://uaig/';
-    window.clientSecret = 'ISOzCLPBZCRLPz7V7bS9p7ysuaJUQIPC6N6COoH6'; // Nurseit
-    // window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
-    //window.url = 'http://uaig/';
-    // window.clientSecret = 'aKZx57t6JytyTDgeqr5l5cRt4OSvGTRWz6M0lN5O'; // Bagdat
-    //window.clientSecret = 'g7UsmtbTasm7acpv3aJwU1frnIB9kksHqUjkBt9b'; // Baha
 
+    window.url = 'http://api.uaig.kz:8880/';
+    // window.url = 'http://uaig/';
+    window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
+    // window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // Bagdat
   }
 
   componentDidMount() {
@@ -124,6 +123,7 @@ export default class Main extends React.Component {
               <Route path="/budget_plan" render={(props) => (<BudgetPlan {...props} />)} />
               <Route path="/tutorials" render={(props) => (<VideoTutorials {...props} />)} />
               <Route path="/news" render={(props) => (<News {...props}/>)}/>
+              <Route path="/newsPanel" render={(props) => (<NewsPanel {...props}/>)}/>
               <Route path="/public_services" render={(props) => (<public_services {...props}/>)}/>
               <Route path="/permission_and_covoting" render={(props) => (<permission_and_covoting {...props}/>)}/>
               <Route path="/npm" render={(props) => (<Npm {...props}/>)}/>
