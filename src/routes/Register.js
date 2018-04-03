@@ -28,7 +28,9 @@ export default class Register extends React.Component {
       confirmPwd: "",
       loadingVisible: false,
       isCompany: false,
-      storageAlias: "PKCS12"
+      storageAlias: "PKCS12",
+      openECP: false,
+      closeecp: true
     }
   }
 
@@ -257,6 +259,8 @@ export default class Register extends React.Component {
              // var commonName = response.commonName;
              // var commonNameValues = commonName.split("?");
              // you will get response from your php page (what you echo or print)  
+             this.setState({openECP: !this.state.openECP});
+             this.setState({closeecp: !this.state.closeecp});
               this.setState({bin: response.bin});
               this.setState({iin: response.iin});
               this.setState({firstName: response.first_name});
@@ -438,72 +442,78 @@ export default class Register extends React.Component {
                   </div>
                   <div id="menu2" className="tab-pane fade">
                     <p>&nbsp;</p>
-                    <div className="isCompany">
-                      <label>
-                        <input type="radio" name="userType" onClick={(e) => this.setState({isCompany: false})} /> Физическое лицо
-                      </label>
-                      <label>
-                        <input type="radio" name="userType" onClick={(e) => this.setState({isCompany: true})} /> Юридическое лицо
-                      </label>
-                    </div>
-                    <div className="form-group">
-                      <label className="control-label">Путь к ЭЦП
-                        <input className="form-control" type="text" id="storagePath" readOnly />
-                      </label>
-                      <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button> 
-                    </div>
-                    <div className="form-group">
-                      <label className="control-label">Пароль ЭЦП
-                        <input className="form-control" id="inpPassword" type="password" />
-                      </label>
-                      <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
-                    </div>
-                    <hr />
-                    <form>
-                      <div className="form-group">
-                        <label htmlFor="UserName" className="control-label">ИИН/БИН:</label>
-                        <input type="text" className="form-control" value={this.state.bin ? this.state.bin : this.state.iin} id="userName" required disabled />
+                    {this.state.closeecp &&
+                      <div>
+                        <div className="isCompany">
+                          <label>
+                            <input type="radio" name="userType" onClick={(e) => this.setState({isCompany: false})} /> Физическое лицо
+                          </label>
+                          <label>
+                            <input type="radio" name="userType" onClick={(e) => this.setState({isCompany: true})} /> Юридическое лицо
+                          </label>
+                        </div>
+                        <div className="form-group">
+                          <label className="control-label">Путь к ЭЦП
+                            <input className="form-control" type="text" id="storagePath" readOnly />
+                          </label>
+                          <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button> 
+                        </div>
+                        <div className="form-group">
+                          <label className="control-label">Пароль ЭЦП
+                            <input className="form-control" id="inpPassword" type="password" />
+                          </label>
+                          <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
+                        </div>
+                        <hr />
                       </div>
-                      {
-                        this.state.isCompany
-                          ? 
-                          <div className="form-group">
-                              <label>Название компании:</label>
-                              <input type="text" className="form-control" required onChange={(e) => this.setState({companyName: e.target.value})} />
-                          </div>
-                          : ""
-                      }
-                      <div className="form-group">
-                        <label htmlFor="surname" className="control-label">Фамилия:</label>
-                        <input type="text" className="form-control" value={this.state.lastName} id="lastName" required disabled />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="name" className="control-label">Имя:</label>
-                        <input type="text" className="form-control" value={this.state.firstName} id="firstName" required disabled />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="patronymic" className="control-label">Отчество:</label>
-                        <input type="text" className="form-control" value={this.state.middleName} id="middleName" disabled />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="Email" className="control-label">E-mail:</label>
-                        <input type="email" className="form-control" required value={this.state.email} onChange={(e) => this.setState({email: e.target.value})} />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="Pwd" className="control-label">Пароль:</label>
-                        <input type="password" className="form-control" required value={this.state.pwd} onChange={(e) => this.setState({pwd: e.target.value})} />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="ConfirmPwd" className="control-label">Подтвердите Пароль:</label>
-                        <input type="password" className="form-control" required value={this.state.confirmPwd} onChange={(e) => this.setState({confirmPwd: e.target.value})} />
-                      </div>
-                      <div className="modal-footer">
-                        <button type="button" className="btn btn-primary" onClick={this.register.bind(this)}>Регистрация</button>
-                        <Link to="/" style={{marginRight:'5px'}}>
-                          <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
-                        </Link>
-                      </div>
-                    </form>
+                    }
+                    {this.state.openECP && 
+                      <form>
+                        <div className="form-group">
+                          <label htmlFor="UserName" className="control-label">ИИН/БИН:</label>
+                          <input type="text" className="form-control" value={this.state.bin ? this.state.bin : this.state.iin} id="userName" required disabled />
+                        </div>
+                        {
+                          this.state.isCompany
+                            ? 
+                            <div className="form-group">
+                                <label>Название компании:</label>
+                                <input type="text" className="form-control" required onChange={(e) => this.setState({companyName: e.target.value})} />
+                            </div>
+                            : ""
+                        }
+                        <div className="form-group">
+                          <label htmlFor="surname" className="control-label">Фамилия:</label>
+                          <input type="text" className="form-control" value={this.state.lastName} id="lastName" required disabled />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="name" className="control-label">Имя:</label>
+                          <input type="text" className="form-control" value={this.state.firstName} id="firstName" required disabled />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="patronymic" className="control-label">Отчество:</label>
+                          <input type="text" className="form-control" value={this.state.middleName} id="middleName" disabled />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="Email" className="control-label">E-mail:</label>
+                          <input type="email" className="form-control" required value={this.state.email} onChange={(e) => this.setState({email: e.target.value})} />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="Pwd" className="control-label">Пароль:</label>
+                          <input type="password" className="form-control" required value={this.state.pwd} onChange={(e) => this.setState({pwd: e.target.value})} />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="ConfirmPwd" className="control-label">Подтвердите Пароль:</label>
+                          <input type="password" className="form-control" required value={this.state.confirmPwd} onChange={(e) => this.setState({confirmPwd: e.target.value})} />
+                        </div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-primary" onClick={this.register.bind(this)}>Регистрация</button>
+                          <Link to="/" style={{marginRight:'5px'}}>
+                            <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
+                          </Link>
+                        </div>
+                      </form>
+                    }
                   </div>
                 </div>
                 

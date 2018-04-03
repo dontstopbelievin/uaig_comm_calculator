@@ -233,6 +233,7 @@ class Banners extends React.Component{
           <div style={{marginRight: '10px', border: '1px solid #ccc'}}><a href="#"><img src='/images/banners/astana20.png' height="100" /></a></div>
           <div style={{marginRight: '10px', border: '1px solid #ccc'}}><a href="http://www.almaty.gov.kz/page.php?page_id=3447&lang=1&article_id=27333" target="_blank"><img src='/images/banners/modernization_ru.png' height="100" /></a></div>
           <div style={{marginRight: '10px', border: '1px solid #ccc'}}><a href="http://ruh.kz/" target="_blank"><img src='/images/banners/ruhan_zhangyru.jpg' height="100" /></a></div>
+          <div style={{marginRight: '10px', border: '1px solid #ccc'}}><a href="http://www.akorda.kz/ru/speeches/internal_political_affairs/in_speeches_and_addresses/obrashchenie-prezidenta-respubliki-kazahstan-nanazarbaeva-k-narodu-pyat-socialnyh-iniciativ-prezidenta" target="_blank"><img src='/images/banners/initiv.png' height="100" /></a></div>
         </Slider>
       </div>
     );

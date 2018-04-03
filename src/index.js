@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter, Route, Switch } from 'react-router-dom';
+import ReactToPrint from "react-to-print";
 //import LocalizedStrings from 'react-localization';
 import Header from './components/Header';
 import Guest from './routes/Guest';

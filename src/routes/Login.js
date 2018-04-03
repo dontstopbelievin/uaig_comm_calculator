@@ -20,7 +20,9 @@ export default class Login extends Component {
       username: "", 
       pwd: "",
       loaderHidden: true,
-      storageAlias: "PKCS12"
+      storageAlias: "PKCS12",
+      openECP: false,
+      closeecp: true
     }
 
     this.onUsernameChange = this.onUsernameChange.bind(this);
@@ -28,6 +30,8 @@ export default class Login extends Component {
     this.login = this.login.bind(this);
     this.onUpdateLogStatus = this.onUpdateLogStatus.bind(this);
     this.onUpdateUsername = this.onUpdateUsername.bind(this);
+    this.openecp = this.openecp.bind(this);
+    // this.openIIN = this.openIIN.bind(this);
   }
 
   onUsernameChange(e) {
@@ -143,6 +147,7 @@ export default class Login extends Component {
       if (password !== null && password !== "") {
         this.getKeys(this.state.storageAlias, path, password, keyType, "loadKeysBack");
         this.setState({loaderHidden: true});
+
         //console.log(this.state.resultIIN);
       } else {
         alert("Введите пароль к хранилищу");
@@ -150,6 +155,9 @@ export default class Login extends Component {
     } else {
       alert("Не выбран хранилище!");
     }
+  }
+  openecp(){
+       
   }
 
   webSocketFunction() {
@@ -304,6 +312,8 @@ export default class Login extends Component {
           //contentType: "application/json; charset=utf-8",
           data: data,
           success: function (response) {
+                 this.setState({openECP: !this.state.openECP});
+                 this.setState({closeecp: !this.state.closeecp});
              // var commonName = response.commonName;
              // var commonNameValues = commonName.split("?");
              // you will get response from your php page (what you echo or print)  
@@ -322,7 +332,11 @@ export default class Login extends Component {
               //sessionStorage.setItem('logStatus', true);
               //window.location.reload();
 
-              this.setState({username: response});
+              if(response.iin){
+                this.setState({username: response.iin});
+              }else if(response.bin){
+                this.setState({username: response.bin});
+              }
 
               //$('#firstName').val(response.firstName);
               //$('#lastName').val(response.lastName);
@@ -461,44 +475,51 @@ export default class Login extends Component {
                     </div>
                     <div id="menu2" className="tab-pane fade">
                       <p>&nbsp;</p>
-                      <div className="form-group">
-                        <label className="control-label">Путь к ЭЦП
-                          <input className="form-control" type="text" id="storagePath" readOnly />
-                        </label>
-                        <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button> 
-                      </div>
-                      <div className="form-group">
-                        <label className="control-label">Пароль от ЭЦП
-                          <input className="form-control" id="inpPassword" type="password" />
-                        </label>
-                        <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
-                      </div>
+                      {this.state.closeecp &&
+                        <div>
+                          <div className="form-group">
+                            <label className="control-label">Путь к ЭЦП
+                              <input className="form-control" type="text" id="storagePath" readOnly />
+                            </label>
+                            <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button> 
+                          </div>
+                          <div className="form-group">
+                            <label className="control-label">Пароль от ЭЦП
+                              <input className="form-control" id="inpPassword" type="password" />
+                            </label>
+                            <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
+                          </div>
+                        </div>
+                      }
 
-                      <form id="loginForm" onSubmit={this.login}>
-                        <div className="form-group">
-                          <label className="control-label">ИИН/БИН:</label>
-                          <input type="text" className="form-control" value={this.state.username} readOnly required />
-                        </div>
-                        <div className="form-group">
-                          <label className="control-label">Пароль:</label>
-                          <input type="password" className="form-control" value={this.state.pwd} onChange={this.onPwdChange} required />
-                        </div>
-                        <div className="modal-footer">
-                          {!this.state.loaderHidden &&
-                            <div style={{margin: '0 auto'}}>
-                              <Loader type="Ball-Triangle" color="#57BAB1" height="70" width="70" />
-                            </div>
-                          }
-                          {this.state.loaderHidden &&
-                            <div>
-                              <button type="submit" className="btn btn-primary">Войти</button>
-                              <Link to="/" style={{marginRight:'5px'}}>
-                                <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
-                              </Link>
-                            </div>
-                          }
-                        </div>
-                      </form>
+                      {this.state.openECP && 
+                        <form id="loginForm" onSubmit={this.login}>
+                          <div className="form-group">
+                            <label className="control-label">ИИН/БИН:</label>
+                            <input type="text" className="form-control" value={this.state.username} readOnly required />
+                          </div>
+                          <div className="form-group">
+                            <label className="control-label">Пароль:</label>
+                            <input type="password" className="form-control" value={this.state.pwd} onChange={this.onPwdChange} required />
+                          </div>
+                          <div className="modal-footer">
+                            {!this.state.loaderHidden &&
+                              <div style={{margin: '0 auto'}}>
+                                <Loader type="Ball-Triangle" color="#57BAB1" height="70" width="70" />
+                              </div>
+                            }
+                            {this.state.loaderHidden &&
+                              <div>
+                                <button type="submit" className="btn btn-primary">Войти</button>
+                                <Link to="/" style={{marginRight:'5px'}}>
+                                  <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
+                                </Link>
+                              </div>
+                            }
+                          </div>
+                        </form>
+                      }
+                    
                     </div>
                   </div>
                 </div>    
