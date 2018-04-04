@@ -16,9 +16,9 @@ export default class Polls extends React.Component {
                                 <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu3">пр. Абылайхана (восточ.ст)</a></li>
                                 <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu4">пр. Назарбаева (восточ.ст)</a></li>
                                 <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu5">пр. Назарбаева (запад.ст)</a></li>
-                                <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu7">Реконструкции проспекта Абая от проспекта Достык до реки Есентай</a></li>
+                                <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu7">пр. Абая (Дендроплан)</a></li>
                                 <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu8">пр. Достык</a></li>
-                                <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu9">от пр. Абая до пр. Райымбека</a></li>
+                                <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu9">пр. Назарбаева (Дендроплан)</a></li>
                             </ul>
                             <br/>
 
@@ -94,7 +94,7 @@ export default class Polls extends React.Component {
                                 <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfVvJ4bNbzEJ9UoLNA0CGyzcH9oQa9JyKZ4XF4NrBW-ZL-gPw/viewform?embedded=true" width="100%" height="1800" frameborder="0" marginheight="0" marginwidth="0">Загрузка...</iframe>
                               </div>
                                <div id="menu9" className="tab-pane fade">
-                                <p>пр. Достык</p>
+                                <p>пр. Назарбаева (Дендроплан)</p>
                                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSfvIhhM7Vlyqu3EiVxCghuE4Yl5DAM3dW_t8AcRHuYYXoyl0A/viewanalytics" className="btn btn-outline-danger" target="_blank">
                                     Результаты опроса
                                 </a>

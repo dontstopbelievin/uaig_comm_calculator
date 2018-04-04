@@ -343,8 +343,8 @@ class ShowApz extends React.Component {
     } else {
       console.log('session expired');
     }
-  }
-
+  
+}
   toggleMap(value) {
     this.setState({
       showMap: value
