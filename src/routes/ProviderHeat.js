@@ -182,10 +182,11 @@ class ShowApz extends React.Component {
       heatResource: "",
       heatTransPressure: "",
       heatLoadContractNum: "",
-      heatMainInContract: "",
-      heatVenInContract: "",
-      heatWaterInContract: "",
-      heatWaterMaxInContract: "",
+      heatBlocks: [],
+      heatMainInContract: [],
+      heatVenInContract: [],
+      heatWaterInContract: [],
+      heatWaterMaxInContract: [],
       connectionPoint: "",
       addition: "",
       docNumber: "",
@@ -283,20 +284,32 @@ class ShowApz extends React.Component {
     this.setState({ heatLoadContractNum: e.target.value });
   }
 
-  onHeatMainInContractChange(e) {
-    this.setState({ heatMainInContract: e.target.value });
+  onHeatMainInContractChange(key, e) {
+    var blocks = this.state.heatBlocks;
+    blocks[key]["main"] = e.target.value;
+
+    this.setState({ heatBlocks: blocks });
   }
 
-  onHeatVenInContractChange(e) {
-    this.setState({ heatVenInContract: e.target.value });
+  onHeatVenInContractChange(key, e) {
+    var blocks = this.state.heatBlocks;
+    blocks[key]["ven"] = e.target.value;
+
+    this.setState({ heatBlocks: blocks });
   }
 
-  onHeatWaterInContractChange(e) {
-    this.setState({ heatWaterInContract: e.target.value });
+  onHeatWaterInContractChange(key, e) {
+    var blocks = this.state.heatBlocks;
+    blocks[key]["water"] = e.target.value;
+
+    this.setState({ heatBlocks: blocks });
   }
 
-  onHeatWaterMaxInContractChange(e) {
-    this.setState({ heatWaterMaxInContract: e.target.value });
+  onHeatWaterMaxInContractChange(key, e) {
+    var blocks = this.state.heatBlocks;
+    blocks[key]["waterMax"] = e.target.value;
+
+    this.setState({ heatBlocks: blocks });
   }
 
   onConnectionPointChange(e) {
@@ -441,7 +454,6 @@ class ShowApz extends React.Component {
     xhr.onload = function() {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-        console.log(data);
         this.setState({apz: data});
         this.setState({showButtons: false});
         this.setState({showTechCon: false});
@@ -455,10 +467,10 @@ class ShowApz extends React.Component {
           data.commission.apz_heat_response.resource ? this.setState({heatResource: data.commission.apz_heat_response.resource}) : this.setState({heatResource: ""});
           data.commission.apz_heat_response.trans_pressure ? this.setState({heatTransPressure: data.commission.apz_heat_response.trans_pressure}) : this.setState({heatTransPressure: ""});
           data.commission.apz_heat_response.load_contract_num ? this.setState({heatLoadContractNum: data.commission.apz_heat_response.load_contract_num}) : this.setState({heatLoadContractNum: ""});
-          data.commission.apz_heat_response.main_in_contract ? this.setState({heatMainInContract: data.commission.apz_heat_response.main_in_contract}) : this.setState({heatMainInContract: ""});
-          data.commission.apz_heat_response.ven_in_contract ? this.setState({heatVenInContract: data.commission.apz_heat_response.ven_in_contract}) : this.setState({heatVenInContract: ""});
-          data.commission.apz_heat_response.water_in_contract ? this.setState({heatWaterInContract: data.commission.apz_heat_response.water_in_contract}) : this.setState({heatWaterInContract: ""});
-          data.commission.apz_heat_response.water_in_contract_max ? this.setState({heatWaterMaxInContract: data.commission.apz_heat_response.water_in_contract_max}) : this.setState({heatWaterMaxInContract: ""});
+          // data.commission.apz_heat_response.main_in_contract ? this.setState({heatMainInContract: data.commission.apz_heat_response.main_in_contract}) : this.setState({heatMainInContract: ""});
+          // data.commission.apz_heat_response.ven_in_contract ? this.setState({heatVenInContract: data.commission.apz_heat_response.ven_in_contract}) : this.setState({heatVenInContract: ""});
+          // data.commission.apz_heat_response.water_in_contract ? this.setState({heatWaterInContract: data.commission.apz_heat_response.water_in_contract}) : this.setState({heatWaterInContract: ""});
+          // data.commission.apz_heat_response.water_in_contract_max ? this.setState({heatWaterMaxInContract: data.commission.apz_heat_response.water_in_contract_max}) : this.setState({heatWaterMaxInContract: ""});
           data.commission.apz_heat_response.addition ? this.setState({addition: data.commission.apz_heat_response.addition}) : this.setState({addition: ""});
           data.commission.apz_heat_response.transporter ? this.setState({heatTransporter: data.commission.apz_heat_response.transporter}) : this.setState({heatTransporter: "2-трубной схеме"}); 
           data.commission.apz_heat_response.two_pipe_pressure_in_tc ? this.setState({twoPipePressureInTc: data.commission.apz_heat_response.two_pipe_pressure_in_tc}) : this.setState({twoPipePressureInTc: ""});
@@ -491,6 +503,38 @@ class ShowApz extends React.Component {
           this.setState({accept: data.commission.apz_heat_response.response});
           this.setState({responseFile: data.commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12})[0]});
           this.setState({xmlFile: data.commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 16})[0]});
+        }
+
+        if (data.commission.apz_heat_response && data.commission.apz_heat_response.blocks) {
+          var response_blocks = data.commission.apz_heat_response.blocks;
+          
+          for (var i = 0; i < response_blocks.length; i++) {
+            var blocks = this.state.heatBlocks;
+            
+            blocks[i] = {
+              id: response_blocks[i].block_id,
+              main: response_blocks[i].main_in_contract,
+              ven: response_blocks[i].ven_in_contract,
+              water: response_blocks[i].water_in_contract,
+              waterMax: response_blocks[i].water_in_contract_max
+            };
+
+            this.setState({heatBlocks: blocks});
+          }
+        } else if (data.apz_heat.blocks) {
+          for (var i = 0; i < data.apz_heat.blocks.length; i++) {
+            var blocks = this.state.heatBlocks;
+            
+            blocks[i] = {
+              id: data.apz_heat.blocks[i].id,
+              main: data.apz_heat.blocks[i].main,
+              ven: data.apz_heat.blocks[i].ventilation,
+              water: data.apz_heat.blocks[i].water,
+              waterMax: data.apz_heat.blocks[i].water_max
+            };
+
+            this.setState({heatBlocks: blocks});
+          }
         }
 
         this.setState({heatStatus: data.apz_heat.status});
@@ -860,9 +904,15 @@ class ShowApz extends React.Component {
       formData.append('HeatResource', this.state.heatResource);
       formData.append('HeatTransPressure', this.state.heatTransPressure);
       formData.append('HeatLoadContractNum', this.state.heatLoadContractNum);
-      formData.append('HeatMainInContract', this.state.heatMainInContract);
-      formData.append('HeatVenInContract', this.state.heatVenInContract);
-      formData.append('HeatWaterInContract', this.state.heatWaterInContract);
+      // formData.append('HeatMainInContract', this.state.heatMainInContract);
+      // formData.append('HeatVenInContract', this.state.heatVenInContract);
+      // formData.append('HeatWaterInContract', this.state.heatWaterInContract);
+
+      // for (var i = 0; i < this.state.heatBlocks.length; i++) {
+      //   formData.append('heatBlocks[' + i + ']', JSON.stringify(this.state.heatBlocks[i]));
+      // }
+
+      formData.append('heatBlocks', JSON.stringify(this.state.heatBlocks));
       formData.append('ConnectionPoint', this.state.connectionPoint);
       formData.append('Addition', this.state.addition);
       formData.append('Transporter', this.state.heatTransporter);
@@ -1223,20 +1273,8 @@ class ShowApz extends React.Component {
                 <td>{apz.apz_heat.general}</td>
               </tr>
               <tr>
-                <td>Отопление (Гкал/ч)</td>
-                <td>{apz.apz_heat.main}</td>
-              </tr>
-              <tr>
-                <td>Вентиляция (Гкал/ч)</td>
-                <td>{apz.apz_heat.ventilation}</td>
-              </tr>
-              <tr>
                 <td>Энергосб. мероприятие</td>
                 <td>{apz.apz_heat.saving}</td>
-              </tr>
-              <tr>
-                <td>Горячее водоснаб.(Гкал/ч)</td>
-                <td>{apz.apz_heat.water}</td>
               </tr>
               <tr>
                 <td>Технолог. нужды(пар) (Т/ч)</td>
@@ -1248,6 +1286,37 @@ class ShowApz extends React.Component {
               </tr>
             </tbody>
           </table>
+
+          {apz.apz_heat.blocks &&
+            <div>
+              {apz.apz_heat.blocks.map(function(item, index) {
+                return(
+                  <div key={index}>
+                    {apz.apz_heat.blocks.length > 1 &&
+                      <h5 className="block-title-2 mt-4 mb-3">Здание №{index + 1}</h5>
+                    }
+                    
+                    <table className="table table-bordered table-striped">
+                      <tbody>
+                        <tr>
+                          <td style={{width: '40%'}}>Отопление (Гкал/ч)</td>
+                          <td>{item.main}</td>
+                        </tr>
+                        <tr>
+                          <td>Вентиляция (Гкал/ч)</td>
+                          <td>{item.ventilation}</td>
+                        </tr>
+                        <tr>
+                          <td>Горячее водоснаб.(Гкал/ч)</td>
+                          <td>{item.water}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                );
+              }.bind(this))}
+            </div>
+          }
         </div>
 
         <div className="col-sm-12">
@@ -1310,23 +1379,11 @@ class ShowApz extends React.Component {
                   <label>Окончательные тепловые нагрузки:</label>
                   <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.finalHeatLoads} onChange={this.onFinalHeatLoadsChange} />
                 </div> 
-                <div className="form-group">
-                  <label>Перекладка тепловых сетей:</label>
-                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.heatNetworksRelaying} onChange={this.onHeatNetworksRelayingChange} />
-                </div>
               </div>
               <div className="col-sm-4">
                 <div className="form-group">
                   <label>Тепловые нагрузки (Гкал/ч) по договору</label>
                   <input type="text" className="form-control" placeholder="Введите номер договора" value={this.state.heatLoadContractNum} onChange={this.onHeatLoadContractNumChange} />
-                  <label>Отопление</label>
-                  <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatMainInContract} onChange={this.onHeatMainInContractChange} />
-                  <label>Вентиляция</label>
-                  <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatVenInContract} onChange={this.onHeatVenInContractChange} />
-                  <label>Горячее водоснабжение, макс/ч</label>
-                  <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatWaterMaxInContract} onChange={this.onHeatWaterMaxInContractChange} />
-                  <label>Горячее водоснабжение, ср/ч</label>
-                  <input type="number" step="any" className="form-control" placeholder="" value={this.state.heatWaterInContract} onChange={this.onHeatWaterInContractChange} />
                 </div>
                 <label>Транспортировка тепловой энергии осуществляется по:</label>
                 <input type="radio" name="twoPipe" value="" 
@@ -1390,6 +1447,10 @@ class ShowApz extends React.Component {
                   <label>Примечание к системе теплоснабжения:</label>
                   <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.heatSupplySystemNote} onChange={this.onHeatSupplySystemNoteChange} />
                 </div>
+                <div className="form-group">
+                  <label>Перекладка тепловых сетей:</label>
+                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.heatNetworksRelaying} onChange={this.onHeatNetworksRelayingChange} />
+                </div>
               </div>
               <div className="col-sm-4">
                 <label style={{display: 'block'}}>Схема подключения:</label>
@@ -1442,6 +1503,43 @@ class ShowApz extends React.Component {
                   </div>
                 }
               </div>
+
+              {this.state.heatBlocks.length > 0 &&
+                <div className="col-sm-12">
+                  <div className="block_list">
+                    {this.state.heatBlocks.map(function(item, index) {
+                      return(
+                        <div key={index} className="row" style={{background: '#efefef', margin: '0 0 20px', padding: '20px 0 10px'}}>
+                          <div className="col-md-3">
+                            <div className="form-group">
+                              <label htmlFor="HeatMain">Отопление<br />(Гкал/ч)</label>
+                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].main} onChange={this.onHeatMainInContractChange.bind(this, index)} />
+                            </div>
+                          </div>
+                          <div className="col-md-3">
+                            <div className="form-group">
+                              <label htmlFor="HeatVentilation">Вентиляция<br />(Гкал/ч)</label>
+                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].ven} onChange={this.onHeatVenInContractChange.bind(this, index)} />
+                            </div>
+                          </div>
+                          <div className="col-md-3">
+                            <div className="form-group">
+                              <label htmlFor="HeatWater">Горячее водоснабжение<br />(макс/ч)</label>
+                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].waterMax} onChange={this.onHeatWaterMaxInContractChange.bind(this, index)} />
+                            </div>
+                          </div>
+                          <div className="col-md-3">
+                            <div className="form-group">
+                              <label htmlFor="HeatWater">Горячее водоснабжение<br />(ср/ч)</label>
+                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].water} onChange={this.onHeatWaterInContractChange.bind(this, index)} />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    }.bind(this))}
+                  </div>
+                </div>
+              }
             </div>
           }
 
@@ -1497,6 +1595,37 @@ class ShowApz extends React.Component {
                   }
                 </tbody>
               </table>
+
+              {apz.commission.apz_heat_response.blocks &&
+                <div>
+                  {apz.commission.apz_heat_response.blocks.map(function(item, index) {
+                    return(
+                      <div key={index}>
+                        {apz.commission.apz_heat_response.blocks.length > 1 &&
+                          <h5 className="block-title-2 mt-4 mb-3">Здание №{index + 1}</h5>
+                        }
+                        
+                        <table className="table table-bordered table-striped">
+                          <tbody>
+                            <tr>
+                              <td style={{width: '40%'}}>Отопление (Гкал/ч)</td>
+                              <td>{item.main_in_contract}</td>
+                            </tr>
+                            <tr>
+                              <td>Вентиляция (Гкал/ч)</td>
+                              <td>{item.ven_in_contract}</td>
+                            </tr>
+                            <tr>
+                              <td>Горячее водоснаб.(Гкал/ч)</td>
+                              <td>{item.water_in_contract}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    );
+                  }.bind(this))}
+                </div>
+              }
 
               {this.state.heads_responses.length > 0 &&
                 <div>
