@@ -25,6 +25,7 @@ export default class Citizen extends React.Component {
             </Switch>
           </div>
         </div>
+        
       </div>
     )
   }
@@ -190,6 +191,7 @@ class AddApz extends React.Component {
       personalIdFile: null,
       confirmedTaskFile: null,
       titleDocumentFile: null,
+      paymentPhotoFile: null,
       showMap: false,
       hasCoordinates: false,
       loaderHidden: true,
@@ -200,6 +202,7 @@ class AddApz extends React.Component {
     this.onPersonalIdFileChange = this.onPersonalIdFileChange.bind(this);
     this.onConfirmedTaskFileChange = this.onConfirmedTaskFileChange.bind(this);
     this.onTitleDocumentFileChange = this.onTitleDocumentFileChange.bind(this);
+    this.onPaymentPhotoFileChange = this.onPaymentPhotoFileChange.bind(this);
     this.hasCoordinates = this.hasCoordinates.bind(this);
     this.toggleMap = this.toggleMap.bind(this);
     this.deleteBlock = this.deleteBlock.bind(this);
@@ -215,6 +218,10 @@ class AddApz extends React.Component {
 
   onTitleDocumentFileChange(e) {
     this.setState({ titleDocumentFile: e.target.files[0] });
+  }
+
+  onPaymentPhotoFileChange(e) {
+    this.setState({ paymentPhotoFile: e.target.files[0] });
   }
 
   hasCoordinates(value) {
@@ -336,6 +343,7 @@ class AddApz extends React.Component {
             formData.append('PersonalIdFile', this.state.personalIdFile);
             formData.append('ConfirmedTaskFile', this.state.confirmedTaskFile);
             formData.append('TitleDocumentFile', this.state.titleDocumentFile);
+            formData.append('PaymentPhotoFile', this.state.paymentPhotoFile);
             $.ajax({
               type: 'POST',
               url: window.url + 'api/apz/citizen/upload/' + data.id ,
@@ -791,6 +799,11 @@ class AddApz extends React.Component {
                       <label htmlFor="HeatTech">Технологические нужды(пар) (Т/ч)</label>
                       <input type="number" step="0.1" className="form-control" name="HeatTech" placeholder="" />
                     </div>
+                    <div className="form-group">
+                      <label htmlFor="PhoneCapacity">Сканированный файл оплаты</label>
+                      <input type="file" required name="paymentPhotoFile" className="form-control" onChange={this.onPaymentPhotoFileChange}/>
+                      <span className="help-block">документ в формате pdf, doc, docx</span>
+                    </div>
                   </div>
                   <div className="col-md-6">
                     <div className="form-group">
@@ -941,6 +954,7 @@ class ShowApz extends React.Component {
       personalIdFile: false,
       confirmedTaskFile: false,
       titleDocumentFile: false,
+      paymentPhotoFile: false,
       loaderHidden: false
     };
   }
@@ -965,6 +979,7 @@ class ShowApz extends React.Component {
         this.setState({personalIdFile: apz.files.filter(function(obj) { return obj.category_id === 3 })[0]});
         this.setState({confirmedTaskFile: apz.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
+        this.setState({paymentPhotoFile: apz.files.filter(function(obj) { return obj.category_id === 20 })[0]});
 
         if (apz.status_id === 1 || apz.status_id === 2) {
 
@@ -1550,6 +1565,13 @@ class ShowApz extends React.Component {
                   <tr>
                     <td><b>Правоустанавл. документ</b></td>
                     <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>Скачать</a></td>
+                  </tr>
+                }
+
+                {this.state.paymentPhotoFile &&
+                  <tr>
+                    <td><b>Сканированный файл оплаты</b></td>
+                    <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.paymentPhotoFile.id)}>Скачать</a></td>
                   </tr>
                 }
               </tbody>

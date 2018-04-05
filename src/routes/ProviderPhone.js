@@ -832,6 +832,20 @@ class ShowApz extends React.Component {
     return formated_date;
   }
   
+printData()
+{
+   var divToPrint=document.getElementById("printTable");
+   var divToPrints=document.getElementById("detail_table");
+   var newWin= window.open("");
+   newWin.document.write(divToPrint.outerHTML + divToPrints.outerHTML);
+    var elements = newWin.document.getElementsByClassName('shukichi');
+    while(elements.length > 0){
+        elements[0].parentNode.removeChild(elements[0]);
+    }
+   newWin.print();
+   newWin.close();
+}
+
   render() {
     var apz = this.state.apz;
 
@@ -844,7 +858,7 @@ class ShowApz extends React.Component {
         <div className="col-sm-4">
           <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
           
-          <table className="table table-bordered table-striped">
+          <table className="table table-bordered table-striped"  id="printTable">
             <tbody>
               <tr>
                 <td style={{width: '40%'}}><b>ИД заявки</b></td>
@@ -886,21 +900,21 @@ class ShowApz extends React.Component {
               </tr>
               
               {this.state.personalIdFile &&
-                <tr>
+                <tr className="shukichi">
                   <td><b>Уд. лич./ Реквизиты</b></td>
                   <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id)}>Скачать</a></td>
                 </tr>
               }
 
               {this.state.confirmedTaskFile &&
-                <tr>
+                <tr className="shukichi">
                   <td><b>Утвержденное задание</b></td>
                   <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.confirmedTaskFile.id)}>Скачать</a></td>
                 </tr>
               }
 
               {this.state.titleDocumentFile &&
-                <tr>
+                <tr className="shukichi">
                   <td><b>Правоустанавл. документ</b></td>
                   <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>Скачать</a></td>
                 </tr>
@@ -912,7 +926,7 @@ class ShowApz extends React.Component {
         <div className="col-sm-4">
           <h5 className="block-title-2 mt-3 mb-3">Детали</h5>
 
-          <table className="table table-bordered table-striped">
+          <table className="table table-bordered table-striped"  id="detail_table">
             <tbody>
               <tr>
                 <td style={{width: '40%'}}>Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</td> 
@@ -932,6 +946,7 @@ class ShowApz extends React.Component {
               </tr>
             </tbody>
           </table>
+          <button className="btn btn-raised btn-success" onClick={this.printData}>Печать</button>
         </div>
 
         <div className="col-sm-4">
