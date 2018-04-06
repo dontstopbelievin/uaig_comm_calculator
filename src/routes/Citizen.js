@@ -56,7 +56,9 @@ class AllApzs extends React.Component {
     if (!status) {
       status = this.props.match.params.status;
     }
-    
+
+    this.setState({ loaderHidden: false });
+
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + "api/apz/citizen", true);
@@ -85,12 +87,13 @@ class AllApzs extends React.Component {
         }
         
         this.setState({apzs: apzs});
-        this.setState({ loaderHidden: true });
       } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
       }
+
+      this.setState({ loaderHidden: true });
     }.bind(this)
     xhr.send();
   }
@@ -966,6 +969,9 @@ class ShowApz extends React.Component {
   getApzInfo() {
     var id = this.props.match.params.id;
     var token = sessionStorage.getItem('tokenInfo');
+
+    this.setState({ loaderHidden: false });
+
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + "api/apz/citizen/detail/" + id, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);

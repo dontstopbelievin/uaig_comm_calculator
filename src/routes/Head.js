@@ -42,8 +42,9 @@ class AllApzs extends React.Component {
   }
 
   getApzs() {
-    var token = sessionStorage.getItem('tokenInfo');
+    this.setState({ loaderHidden: false });
 
+    var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + "api/apz/head", true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
@@ -55,8 +56,9 @@ class AllApzs extends React.Component {
         this.setState({ activeApzs: data.in_process });
         this.setState({ acceptedApzs: data.accepted });
         this.setState({ declinedApzs: data.declined });
-        this.setState({ loaderHidden: true });
       }
+
+      this.setState({ loaderHidden: true });
     }.bind(this);
     xhr.send();
   }
