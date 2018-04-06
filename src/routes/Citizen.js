@@ -56,7 +56,9 @@ class AllApzs extends React.Component {
     if (!status) {
       status = this.props.match.params.status;
     }
-    
+
+    this.setState({ loaderHidden: false });
+
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + "api/apz/citizen", true);
@@ -85,12 +87,13 @@ class AllApzs extends React.Component {
         }
         
         this.setState({apzs: apzs});
-        this.setState({ loaderHidden: true });
       } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
       }
+
+      this.setState({ loaderHidden: true });
     }.bind(this)
     xhr.send();
   }
@@ -194,7 +197,8 @@ class AddApz extends React.Component {
       paymentPhotoFile: null,
       showMap: false,
       hasCoordinates: false,
-      loaderHidden: true
+      loaderHidden: true,
+      blocks: [{num: 1}]
     }
     
     this.tabSubmission = this.tabSubmission.bind(this);
@@ -204,6 +208,7 @@ class AddApz extends React.Component {
     this.onPaymentPhotoFileChange = this.onPaymentPhotoFileChange.bind(this);
     this.hasCoordinates = this.hasCoordinates.bind(this);
     this.toggleMap = this.toggleMap.bind(this);
+    this.deleteBlock = this.deleteBlock.bind(this);
   }
 
   onPersonalIdFileChange(e) {
@@ -292,6 +297,26 @@ class AddApz extends React.Component {
     {
       $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-remove');
     }
+  }
+
+  addBlock() {
+    var num = parseInt($('.block_list .col-md-12:last .block_num').html()) + 1;
+
+    this.setState({blocks: this.state.blocks.concat([{num: num}])});
+  }
+
+  deleteBlock(num) {
+    var blocks = this.state.blocks;
+    var index = blocks.map(function(obj) { return obj.num; }).indexOf(num);
+
+    if (index === -1) {
+      return false;
+    }
+
+    blocks.splice(index, 1);
+    this.setState({blocks: blocks});
+
+    $('#heatBlock_' + (num - 1) + ' .block_delete').css('display', 'block');
   }
 
   requestSubmission(e) {
@@ -769,47 +794,40 @@ class AddApz extends React.Component {
                 <form id="tab5-form" data-tab="5" onSubmit={this.tabSubmission.bind(this)}>
                 <div className="row">
                   <div className="col-md-6">
-                  <div className="form-group">
-                    <label htmlFor="HeatGeneral">Общая тепловая нагрузка (Гкал/ч)</label>
-                    <input type="number" step="0.1" className="form-control" name="HeatGeneral" placeholder="" />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="HeatMain">Отопление (Гкал/ч)</label>
-                    <input type="number" step="0.1" className="form-control" name="HeatMain" placeholder="" />
-                  </div>
-
-
-                  <div className="form-group">
-                    <label htmlFor="PhoneCapacity">Сканированный файл оплаты</label>
-                    <input type="file" required name="paymentPhotoFile" className="form-control" onChange={this.onPaymentPhotoFileChange}/>
-                    <span className="help-block">документ в формате pdf, doc, docx</span>
-                  </div>
-                </div>
-                <div className="col-md-6">
-
-                  <div className="form-group">
-                    <label htmlFor="HeatVentilation">Вентиляция (Гкал/ч)</label>
-                    <input type="number" step="0.1" className="form-control" name="HeatVentilation" placeholder="" />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="HeatWater">Горячее водоснабжение (Гкал/ч)</label>
-                    <input type="number" step="0.1" className="form-control" id="HeatWater" placeholder="" />
-                  </div>
+                    <div className="form-group">
+                      <label htmlFor="HeatGeneral">Общая тепловая нагрузка (Гкал/ч)<br /><br /></label>
+                      <input type="number" step="0.1" className="form-control" name="HeatGeneral" placeholder="" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="HeatTech">Технологические нужды(пар) (Т/ч)</label>
+                      <input type="number" step="0.1" className="form-control" name="HeatTech" placeholder="" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="PhoneCapacity">Сканированный файл оплаты</label>
+                      <input type="file" required name="paymentPhotoFile" className="form-control" onChange={this.onPaymentPhotoFileChange}/>
+                      <span className="help-block">документ в формате pdf, doc, docx</span>
+                    </div>
                   </div>
                   <div className="col-md-6">
-                  <div className="form-group">
-                    <label htmlFor="HeatTech">Технологические нужды(пар) (Т/ч)</label>
-                    <input type="number" step="0.1" className="form-control" name="HeatTech" placeholder="" />
+                    <div className="form-group">
+                      <label htmlFor="HeatDistribution">Разделить нагрузку по жилью и по встроенным помещениям</label>
+                      <input type="text" className="form-control" name="HeatDistribution" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="HeatSaving">Энергосберегающее мероприятие</label>
+                      <input type="text" className="form-control" name="HeatSaving" />
+                    </div>
                   </div>
-                  <div className="form-group">
-                    <label htmlFor="HeatDistribution">Разделить нагрузку по жилью и по встроенным помещениям</label>
-                    <input type="text" className="form-control" name="HeatDistribution" />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="HeatSaving">Энергосберегающее мероприятие</label>
-                    <input type="text" className="form-control" name="HeatSaving" />
-                  </div>
-                  </div>
+                </div>
+                <div className="block_list">
+                  {this.state.blocks.map(function(item, index) {
+                    return(
+                      <div id={'heatBlock_' + item.num} className="row" key={index}><AddHeatBlock deleteBlock={this.deleteBlock} num={item.num} /></div>
+                    );
+                  }.bind(this))}
+                </div>
+                <div style={{display: 'table', width: '100%'}}>
+                  <button type="button" className="btn btn-outline-info pull-right" onClick={this.addBlock.bind(this)}>Добавить здания</button>
                 </div>
                 <div>
                   <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
@@ -951,6 +969,9 @@ class ShowApz extends React.Component {
   getApzInfo() {
     var id = this.props.match.params.id;
     var token = sessionStorage.getItem('tokenInfo');
+
+    this.setState({ loaderHidden: false });
+
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + "api/apz/citizen/detail/" + id, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
@@ -1782,6 +1803,37 @@ class ShowApz extends React.Component {
                               </tbody>
                             }
                           </table>
+
+                          {apz.commission.apz_heat_response.response && apz.commission.apz_heat_response.blocks &&
+                            <div>
+                              {apz.commission.apz_heat_response.blocks.map(function(item, index) {
+                                return(
+                                  <div key={index}>
+                                    {apz.commission.apz_heat_response.blocks.length > 1 &&
+                                      <h5>Здание №{index + 1}</h5>
+                                    }
+                                    
+                                    <table className="table table-bordered table-striped">
+                                      <tbody>
+                                        <tr>
+                                          <td style={{width: '50%'}}><b>Отопление (Гкал/ч)</b></td>
+                                          <td>{item.main_in_contract}</td>
+                                        </tr>
+                                        <tr>
+                                          <td><b>Вентиляция (Гкал/ч)</b></td>
+                                          <td>{item.ven_in_contract}</td>
+                                        </tr>
+                                        <tr>
+                                          <td><b>Горячее водоснаб.(Гкал/ч)</b></td>
+                                          <td>{item.water_in_contract}</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                );
+                              }.bind(this))}
+                            </div>
+                          }
                         </div>
                         <div className="modal-footer">
                           <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -2211,6 +2263,51 @@ class ShowMap extends React.Component {
               });
             }}
           /> 
+        </div>
+      </div>
+    )
+  }
+}
+
+class AddHeatBlock extends React.Component {
+  deleteBlock(num) {
+    this.props.deleteBlock(num)
+  }
+
+  componentWillMount() {
+    $('.block_delete').css('display', 'none');
+  }
+
+  render() {
+    return (
+      <div className="col-md-12">
+        <p style={{textTransform: 'uppercase', margin: '10px 0 5px'}}>
+          Здание №<span className="block_num">{this.props.num}</span>
+
+          {this.props.num != 1 &&
+            <span style={{cursor: 'pointer', userSelect: 'none'}} className="block_delete pull-right text-secondary" onClick={this.deleteBlock.bind(this, this.props.num)}>Удалить</span>
+          }
+        </p>
+
+        <div className="row" style={{background: '#efefef', margin: '0 0 20px', padding: '20px 0 10px'}}>
+          <div className="col-md-4">
+            <div className="form-group">
+              <label htmlFor="HeatMain">Отопление<br />(Гкал/ч)</label>
+              <input type="number" step="0.1" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatMain]'} placeholder="" />
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="form-group">
+              <label htmlFor="HeatVentilation">Вентиляция<br />(Гкал/ч)</label>
+              <input type="number" step="0.1" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatVentilation]'} placeholder="" />
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="form-group">
+              <label htmlFor="HeatWater">Горячее водоснабжение<br />(Гкал/ч)</label>
+              <input type="number" step="0.1" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatWater]'} id="HeatWater" placeholder="" />
+            </div>
+          </div>
         </div>
       </div>
     )

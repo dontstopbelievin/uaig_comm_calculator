@@ -3,6 +3,7 @@ import React from 'react';
 import EsriLoaderReact from 'esri-loader-react';
 //import { NavLink } from 'react-router-dom';
 import { Route, NavLink, Link, Switch, Redirect } from 'react-router-dom';
+import Loader from 'react-loader-spinner';
 
 export default class ProviderElectro extends React.Component {
   render() {
@@ -29,7 +30,8 @@ class AllApzs extends React.Component {
     super(props);
 
     this.state = {
-      apzs: []
+      apzs: [],
+      loaderHidden: false
     };
 
   }
@@ -48,6 +50,8 @@ class AllApzs extends React.Component {
     if (!status) {
       status = this.props.match.params.status;
     }
+
+    this.setState({ loaderHidden: false });
 
     var token = sessionStorage.getItem('tokenInfo');
     var roles = JSON.parse(sessionStorage.getItem('userRoles'));
@@ -88,6 +92,8 @@ class AllApzs extends React.Component {
         
         this.setState({apzs: apzs});
       }
+
+      this.setState({ loaderHidden: true });
     }.bind(this);
     xhr.send();
   }
@@ -111,48 +117,58 @@ class AllApzs extends React.Component {
   render() {
     return (
       <div>
-        <ul className="nav nav-tabs mb-2 pull-right">
-          <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerelectro/status/active" replace>Активные</NavLink></li>
-          <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerelectro/status/accepted" replace>Принятые</NavLink></li>
-          <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerelectro/status/declined" replace>Отказанные</NavLink></li>
-        </ul>
+        {this.state.loaderHidden &&
+          <div>
+            <ul className="nav nav-tabs mb-2 pull-right">
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerelectro/status/active" replace>Активные</NavLink></li>
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerelectro/status/accepted" replace>Принятые</NavLink></li>
+              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerelectro/status/declined" replace>Отказанные</NavLink></li>
+            </ul>
 
-        <table className="table">
-          <thead>
-            <tr>
-              <th style={{width: '23%'}}>Название</th>
-              <th style={{width: '23%'}}>Заявитель</th>
-              <th style={{width: '20%'}}>Адрес</th>
-              <th style={{width: '20%'}}>Дата заявления</th>
-              <th style={{width: '14%'}}>Срок</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.apzs.map(function(apz, index) {
-              return(
-                <tr key={index}>
-                  <td>
-                    {apz.project_name} 
-
-                    {apz.object_type &&
-                      <span className="ml-1">({apz.object_type})</span>
-                    }
-                  </td>
-                  <td>{apz.applicant}</td>
-                  <td>{apz.project_address}</td>
-                  <td>{this.toDate(apz.created_at)}</td>
-                  <td>{apz.object_term}</td>
-                  <td>
-                    <Link className="btn btn-outline-info" to={'/providerelectro/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
-                  </td>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th style={{width: '23%'}}>Название</th>
+                  <th style={{width: '23%'}}>Заявитель</th>
+                  <th style={{width: '20%'}}>Адрес</th>
+                  <th style={{width: '20%'}}>Дата заявления</th>
+                  <th style={{width: '14%'}}>Срок</th>
+                  <th></th>
                 </tr>
-                );
-              }.bind(this))
-            }
-          </tbody>
-        </table>
-      </div>  
+              </thead>
+              <tbody>
+                {this.state.apzs.map(function(apz, index) {
+                  return(
+                    <tr key={index}>
+                      <td>
+                        {apz.project_name} 
+
+                        {apz.object_type &&
+                          <span className="ml-1">({apz.object_type})</span>
+                        }
+                      </td>
+                      <td>{apz.applicant}</td>
+                      <td>{apz.project_address}</td>
+                      <td>{this.toDate(apz.created_at)}</td>
+                      <td>{apz.object_term}</td>
+                      <td>
+                        <Link className="btn btn-outline-info" to={'/providerelectro/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                      </td>
+                    </tr>
+                    );
+                  }.bind(this))
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+
+        {!this.state.loaderHidden &&
+          <div style={{textAlign: 'center'}}>
+            <Loader type="Oval" color="#46B3F2" height="200" width="200" />
+          </div>
+        }
+      </div>
     )
   }
 }

@@ -42,8 +42,9 @@ class AllApzs extends React.Component {
   }
 
   getApzs() {
-    var token = sessionStorage.getItem('tokenInfo');
+    this.setState({ loaderHidden: false });
 
+    var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + "api/apz/head", true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
@@ -55,8 +56,9 @@ class AllApzs extends React.Component {
         this.setState({ activeApzs: data.in_process });
         this.setState({ acceptedApzs: data.accepted });
         this.setState({ declinedApzs: data.declined });
-        this.setState({ loaderHidden: true });
       }
+
+      this.setState({ loaderHidden: true });
     }.bind(this);
     xhr.send();
   }
@@ -1419,6 +1421,37 @@ class ShowApz extends React.Component {
                           </tbody>
                         }
                       </table>
+
+                      {apz.commission.apz_heat_response.response && apz.commission.apz_heat_response.blocks &&
+                        <div>
+                          {apz.commission.apz_heat_response.blocks.map(function(item, index) {
+                            return(
+                              <div key={index}>
+                                {apz.commission.apz_heat_response.blocks.length > 1 &&
+                                  <h5>Здание №{index + 1}</h5>
+                                }
+                                
+                                <table className="table table-bordered table-striped">
+                                  <tbody>
+                                    <tr>
+                                      <td style={{width: '50%'}}><b>Отопление (Гкал/ч)</b></td>
+                                      <td>{item.main_in_contract}</td>
+                                    </tr>
+                                    <tr>
+                                      <td><b>Вентиляция (Гкал/ч)</b></td>
+                                      <td>{item.ven_in_contract}</td>
+                                    </tr>
+                                    <tr>
+                                      <td><b>Горячее водоснаб.(Гкал/ч)</b></td>
+                                      <td>{item.water_in_contract}</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            );
+                          }.bind(this))}
+                        </div>
+                      }
                     </div>
                     <div className="modal-footer">
                       <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>

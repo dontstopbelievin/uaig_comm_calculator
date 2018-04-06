@@ -68,10 +68,8 @@ export default class Main extends React.Component {
   componentWillMount() {
     this.setLang();
 
-    window.url = 'http://uaig/';
-    // window.url = 'http://uaig/';
-    window.clientSecret = 'ISOzCLPBZCRLPz7V7bS9p7ysuaJUQIPC6N6COoH6'; // Nurseit
-    // window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // Bagdat
+    window.url = 'http://api.uaig.kz:8880/';
+    window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
   }
 
   componentDidMount() {

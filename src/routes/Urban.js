@@ -42,6 +42,8 @@ class AllApzs extends React.Component {
   }
 
   getApzs() {
+    this.setState({ loaderHidden: false });
+
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + "api/apz/region", true);
@@ -134,6 +136,7 @@ class AllApzs extends React.Component {
             </table>
           </div>
         }
+        
         {!this.state.loaderHidden && 
           <div style={{textAlign: 'center'}}>
             <Loader type="Oval" color="#46B3F2" height="200" width="200" />

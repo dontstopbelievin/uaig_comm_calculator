@@ -82,11 +82,10 @@ export default class Register extends React.Component {
       password_confirmation: this.state.confirmPwd.trim()
     };
 
-    console.log(registerData);
-
     var data = JSON.stringify(registerData);
 
-    if (!!this.state.email && !this.state.pwd && !this.state.confirmPwd) {
+    if (!this.state.email || !this.state.pwd || !this.state.confirmPwd) {
+      alert('Заполните все обязательные поля');
       return;
     } 
     else {
@@ -98,12 +97,15 @@ export default class Register extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           alert("Вы успешно зарегистрировались!\n Можете войти через созданный аккаунт!");
-          this.setState({loadingVisible: false});
+        } else if (xhr.status === 400) {
+          var data = JSON.parse(xhr.responseText);
+          alert(data.join('\n'));
         } else {
-          console.log(xhr.response);
-          this.setState({loadingVisible: false}); 
+          alert('Не удалось зарегистрировать пользователя. Проверьте правильность заполнения формы.');
           //alert("Ошибка " + xhr.status + ': ' + xhr.statusText);
         }
+
+        this.setState({loadingVisible: false}); 
       }.bind(this);
       //console.log(data);
       xhr.send(data);
