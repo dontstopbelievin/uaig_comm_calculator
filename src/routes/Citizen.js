@@ -779,11 +779,6 @@ class AddApz extends React.Component {
                   </div>
 
 
-                  <div className="form-group">
-                    <label htmlFor="PhoneCapacity">Сканированный файл оплаты</label>
-                    <input type="file" required name="paymentPhotoFile" className="form-control" onChange={this.onPaymentPhotoFileChange}/>
-                    <span className="help-block">документ в формате pdf, doc, docx</span>
-                  </div>
                 </div>
                 <div className="col-md-6">
 
@@ -845,6 +840,12 @@ class AddApz extends React.Component {
                       <label htmlFor="PhoneCapacity">Телефонная емкость</label>
                       <input type="text" className="form-control" name="PhoneCapacity" placeholder="" />
                     </div>
+                    
+                  <div className="form-group">
+                    <label htmlFor="PhoneCapacity">Сканированный файл оплаты</label>
+                    <input type="file" required name="paymentPhotoFile" className="form-control" onChange={this.onPaymentPhotoFileChange}/>
+                    <span className="help-block">документ в формате pdf, doc, docx</span>
+                  </div>
                   </div>
                   <div className="col-md-6">
                     <div className="form-group">
