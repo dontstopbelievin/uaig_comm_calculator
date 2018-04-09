@@ -1776,18 +1776,6 @@ class ShowApz extends React.Component {
                                   <td>{apz.commission.apz_heat_response.load_contract_num}</td>
                                 </tr>
                                 <tr>
-                                  <td><b>Отопление (Гкал/ч)</b></td>
-                                  <td>{apz.commission.apz_heat_response.main_in_contract}</td>
-                                </tr>
-                                <tr>
-                                  <td><b>Вентиляция (Гкал/ч)</b></td>
-                                  <td>{apz.commission.apz_heat_response.ven_in_contract}</td>
-                                </tr>
-                                <tr>
-                                  <td><b>Горячее водоснабжение (Гкал/ч)</b></td>
-                                  <td>{apz.commission.apz_heat_response.water_in_contract}</td>
-                                </tr>
-                                <tr>
                                   <td><b>Дополнительное</b></td>
                                   <td>{apz.commission.apz_heat_response.addition}</td>
                                 </tr>
@@ -1827,15 +1815,35 @@ class ShowApz extends React.Component {
                                       <tbody>
                                         <tr>
                                           <td style={{width: '50%'}}><b>Отопление (Гкал/ч)</b></td>
-                                          <td>{item.main_in_contract}</td>
+                                          <td>{item.main}</td>
                                         </tr>
                                         <tr>
                                           <td><b>Вентиляция (Гкал/ч)</b></td>
+                                          <td>{item.ven}</td>
+                                        </tr>
+                                        <tr>
+                                          <td><b>Горячее водоснабжение (ср/ч)</b></td>
+                                          <td>{item.water}</td>
+                                        </tr>
+                                        <tr>
+                                          <td><b>Горячее водоснабжение (макс/ч)</b></td>
+                                          <td>{item.water_max}</td>
+                                        </tr>
+                                        <tr>
+                                          <td><b>Отопление по договору (Гкал/ч)</b></td>
+                                          <td>{item.main_in_contract}</td>
+                                        </tr>
+                                        <tr>
+                                          <td><b>Вентиляция по договору (Гкал/ч)</b></td>
                                           <td>{item.ven_in_contract}</td>
                                         </tr>
                                         <tr>
-                                          <td><b>Горячее водоснаб.(Гкал/ч)</b></td>
+                                          <td><b>Горячее водоснабжение по договору (ср/ч)</b></td>
                                           <td>{item.water_in_contract}</td>
+                                        </tr>
+                                        <tr>
+                                          <td><b>Горячее водоснабжение по договору (макс/ч)</b></td>
+                                          <td>{item.water_in_contract_max}</td>
                                         </tr>
                                       </tbody>
                                     </table>
