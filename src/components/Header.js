@@ -166,10 +166,10 @@ export default class Header extends Component {
                   <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
                 }
                 {rolename === 'Region' &&
-                  <NavLink to="/urbanreport" replace className="nav-link">{e.home}</NavLink>
+                  <NavLink to="/" replace className="nav-link">{e.home}</NavLink>
                 }
                 {rolename === 'Head' && 
-                  <NavLink to={'/headreport'} replace className="nav-link">{e.home}</NavLink>
+                  <NavLink to={'/'} replace className="nav-link">{e.home}</NavLink>
                 }
                 {rolename === 'Engineer' && 
                   <NavLink to={'/'} exact replace className="nav-link">{e.home}</NavLink>
@@ -391,6 +391,7 @@ class UrbanMenu extends Component {
     return (
       <div>
         <NavLink to={"/urban"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
+        <NavLink to={"/urbanreport"} replace className="dropdown-item" activeClassName="active">Фильтр</NavLink>
         <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
       </div>
@@ -463,6 +464,7 @@ class HeadMenu extends Component {
     return (
       <div>
         <NavLink to={"/head"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
+        <NavLink to={"/headreport"} replace className="dropdown-item" activeClassName="active">Фильтр</NavLink>
         <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
       </div>

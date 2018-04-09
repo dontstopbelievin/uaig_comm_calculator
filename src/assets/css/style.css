@@ -956,3 +956,18 @@ table{
     display: none;
   }
 
+  .manual{
+    height: 150px;
+    padding: 10px;
+    margin-bottom: 50px;
+  }
+  .manual ul{
+    padding-left: 0px;
+    margin-left: 0px;
+    margin-bottom: 5px;
+  }
+  .manual li{
+    padding-bottom: 15px;
+    list-style: none;
+  }
+
