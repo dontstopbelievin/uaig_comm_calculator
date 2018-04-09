@@ -302,30 +302,58 @@ class ShowApz extends React.Component {
     this.setState({ heatLoadContractNum: e.target.value });
   }
 
-  onHeatMainInContractChange(key, e) {
+  onHeatMainChange(key, e) {
     var blocks = this.state.heatBlocks;
     blocks[key]["main"] = e.target.value;
 
     this.setState({ heatBlocks: blocks });
   }
 
-  onHeatVenInContractChange(key, e) {
+  onHeatVenChange(key, e) {
     var blocks = this.state.heatBlocks;
     blocks[key]["ven"] = e.target.value;
 
     this.setState({ heatBlocks: blocks });
   }
 
-  onHeatWaterInContractChange(key, e) {
+  onHeatWaterChange(key, e) {
     var blocks = this.state.heatBlocks;
     blocks[key]["water"] = e.target.value;
 
     this.setState({ heatBlocks: blocks });
   }
 
-  onHeatWaterMaxInContractChange(key, e) {
+  onHeatWaterMaxChange(key, e) {
     var blocks = this.state.heatBlocks;
     blocks[key]["waterMax"] = e.target.value;
+
+    this.setState({ heatBlocks: blocks });
+  }
+
+  onHeatMainInContractChange(key, e) {
+    var blocks = this.state.heatBlocks;
+    blocks[key]["main_in_contract"] = e.target.value;
+
+    this.setState({ heatBlocks: blocks });
+  }
+
+  onHeatVenInContractChange(key, e) {
+    var blocks = this.state.heatBlocks;
+    blocks[key]["ven_in_contract"] = e.target.value;
+
+    this.setState({ heatBlocks: blocks });
+  }
+
+  onHeatWaterInContractChange(key, e) {
+    var blocks = this.state.heatBlocks;
+    blocks[key]["water_in_contract"] = e.target.value;
+
+    this.setState({ heatBlocks: blocks });
+  }
+
+  onHeatWaterMaxInContractChange(key, e) {
+    var blocks = this.state.heatBlocks;
+    blocks[key]["water_max_in_contract"] = e.target.value;
 
     this.setState({ heatBlocks: blocks });
   }
@@ -531,10 +559,14 @@ class ShowApz extends React.Component {
             
             blocks[i] = {
               id: response_blocks[i].block_id,
-              main: response_blocks[i].main_in_contract,
-              ven: response_blocks[i].ven_in_contract,
-              water: response_blocks[i].water_in_contract,
-              waterMax: response_blocks[i].water_in_contract_max
+              main: response_blocks[i].main,
+              ven: response_blocks[i].ven,
+              water: response_blocks[i].water,
+              waterMax: response_blocks[i].water_max,
+              main_in_contract: response_blocks[i].main_in_contract,
+              ven_in_contract: response_blocks[i].ven_in_contract,
+              water_in_contract: response_blocks[i].water_in_contract,
+              water_max_in_contract: response_blocks[i].water_in_contract_max
             };
 
             this.setState({heatBlocks: blocks});
@@ -1343,8 +1375,12 @@ printData()
                           <td>{item.ventilation}</td>
                         </tr>
                         <tr>
-                          <td>Горячее водоснаб.(Гкал/ч)</td>
+                          <td>Горячее водоснаб. (ср/ч)</td>
                           <td>{item.water}</td>
+                        </tr>
+                        <tr>
+                          <td>Горячее водоснаб. (макс/ч)</td>
+                          <td>{item.water_max}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -1551,25 +1587,50 @@ printData()
                           <div className="col-md-3">
                             <div className="form-group">
                               <label htmlFor="HeatMain">Отопление<br />(Гкал/ч)</label>
-                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].main} onChange={this.onHeatMainInContractChange.bind(this, index)} />
+                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].main} onChange={this.onHeatMainChange.bind(this, index)} />
                             </div>
                           </div>
                           <div className="col-md-3">
                             <div className="form-group">
                               <label htmlFor="HeatVentilation">Вентиляция<br />(Гкал/ч)</label>
-                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].ven} onChange={this.onHeatVenInContractChange.bind(this, index)} />
+                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].ven} onChange={this.onHeatVenChange.bind(this, index)} />
                             </div>
                           </div>
                           <div className="col-md-3">
                             <div className="form-group">
                               <label htmlFor="HeatWater">Горячее водоснабжение<br />(макс/ч)</label>
-                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].waterMax} onChange={this.onHeatWaterMaxInContractChange.bind(this, index)} />
+                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].waterMax} onChange={this.onHeatWaterMaxChange.bind(this, index)} />
                             </div>
                           </div>
                           <div className="col-md-3">
                             <div className="form-group">
                               <label htmlFor="HeatWater">Горячее водоснабжение<br />(ср/ч)</label>
-                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].water} onChange={this.onHeatWaterInContractChange.bind(this, index)} />
+                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].water} onChange={this.onHeatWaterChange.bind(this, index)} />
+                            </div>
+                          </div>
+
+                          <div className="col-md-3">
+                            <div className="form-group">
+                              <label htmlFor="HeatMain">Отопление по договору<br />(Гкал/ч)</label>
+                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].main_in_contract} onChange={this.onHeatMainInContractChange.bind(this, index)} />
+                            </div>
+                          </div>
+                          <div className="col-md-3">
+                            <div className="form-group">
+                              <label htmlFor="HeatVentilation">Вентиляция по договору<br />(Гкал/ч)</label>
+                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].ven_in_contract} onChange={this.onHeatVenInContractChange.bind(this, index)} />
+                            </div>
+                          </div>
+                          <div className="col-md-3">
+                            <div className="form-group">
+                              <label htmlFor="HeatWater">Горячее водоснабжение по договору (макс/ч)</label>
+                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].water_max_in_contract} onChange={this.onHeatWaterMaxInContractChange.bind(this, index)} />
+                            </div>
+                          </div>
+                          <div className="col-md-3">
+                            <div className="form-group">
+                              <label htmlFor="HeatWater">Горячее водоснабжение по договору (ср/ч)</label>
+                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].water_in_contract} onChange={this.onHeatWaterInContractChange.bind(this, index)} />
                             </div>
                           </div>
                         </div>
@@ -1647,15 +1708,40 @@ printData()
                           <tbody>
                             <tr>
                               <td style={{width: '40%'}}>Отопление (Гкал/ч)</td>
-                              <td>{item.main_in_contract}</td>
+                              <td>{item.main}</td>
                             </tr>
                             <tr>
                               <td>Вентиляция (Гкал/ч)</td>
+                              <td>{item.ven}</td>
+                            </tr>
+                            <tr>
+                              <td>Горячее водоснаб. (ср/ч)</td>
+                              <td>{item.water}</td>
+                            </tr>
+                            <tr>
+                              <td>Горячее водоснаб. (макс/ч)</td>
+                              <td>{item.water_max}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                        <table className="table table-bordered table-striped">
+                          <tbody>
+                            <tr>
+                              <td style={{width: '40%'}}>Отопление по договору (Гкал/ч)</td>
+                              <td>{item.main_in_contract}</td>
+                            </tr>
+                            <tr>
+                              <td>Вентиляция по договору (Гкал/ч)</td>
                               <td>{item.ven_in_contract}</td>
                             </tr>
                             <tr>
-                              <td>Горячее водоснаб.(Гкал/ч)</td>
+                              <td>Горячее водоснабжение по договору (ср/ч)</td>
                               <td>{item.water_in_contract}</td>
+                            </tr>
+                            <tr>
+                              <td>Горячее водоснабжение по договору (макс/ч)</td>
+                              <td>{item.water_in_contract_max}</td>
                             </tr>
                           </tbody>
                         </table>
