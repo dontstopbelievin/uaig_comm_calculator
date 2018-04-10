@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PreloaderIcon, {ICON_TYPE} from 'react-preloader-icon';
 import $ from 'jquery';
+import Loader from 'react-loader-spinner';
 // import browseKeyStore from '../assets/js/crypto_object.js';
 
 export default class Register extends React.Component {
@@ -30,7 +31,9 @@ export default class Register extends React.Component {
       isCompany: false,
       storageAlias: "PKCS12",
       openECP: false,
-      closeecp: true
+      closeecp: true,
+      loaderHidden: true,
+      inviseBtn: true
     }
 
     this.showAlert = this.showAlert.bind(this);
@@ -53,6 +56,8 @@ export default class Register extends React.Component {
   }
 
   btnLogin() {
+    this.setState({loaderHidden: false});
+    this.setState({inviseBtn: !this.state.inviseBtn});
     let password = $('#inpPassword').val();
     let path = $('#storagePath').val();
     let keyType = "AUTH";
@@ -96,8 +101,10 @@ export default class Register extends React.Component {
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
         if (xhr.status === 200) {
+          this.setState({loaderHidden: true});
           alert("Вы успешно зарегистрировались!\n Можете войти через созданный аккаунт!");
         } else if (xhr.status === 400) {
+          this.setState({loaderHidden: true});
           var data = JSON.parse(xhr.responseText);
           alert(data.join('\n'));
         } else {
@@ -276,6 +283,7 @@ export default class Register extends React.Component {
               this.setState({lastName: response.last_name});
               this.setState({middleName: response.middle_name});
               this.setState({email: response.email});
+              this.setState({loaderHidden: true});
               //alert(response.firstName + ", ЭЦП успешно загружен! Заполните остальные поля.");
           }.bind(this),
           error: function(jqXHR, textStatus, errorThrown) {
@@ -303,6 +311,7 @@ export default class Register extends React.Component {
 
   loadKeysBack(result) {
     if (result.errorCode === "WRONG_PASSWORD") {
+      this.setState({loaderHidden: true});
       return alert('Неправильный пароль!');
     }
 
@@ -311,6 +320,7 @@ export default class Register extends React.Component {
       let arr = result.result.split('|');
       alias = arr[3];
     } else {
+      this.setState({loaderHidden: true});
       alert('Неверный ключ')
     }
     this.getTokenXml(alias);
@@ -450,81 +460,90 @@ export default class Register extends React.Component {
                     </form>
                   </div>
                   <div id="menu2" className="tab-pane fade">
-                    <p>&nbsp;</p>
-                    {this.state.closeecp &&
-                      <div>
-                        
-                        <div className="form-group">
+                    <div>
+                      <p>&nbsp;</p>
+                      {this.state.closeecp &&
+                        <div>
+                          
+                          <div className="form-group">
 
-                          <label className="control-label">Путь к ЭЦП
-                            <input className="form-control" type="text" id="storagePath" readOnly />
-                          </label>
-                          <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button> 
+                            <label className="control-label">Путь к ЭЦП
+                              <input className="form-control" type="text" id="storagePath" readOnly />
+                            </label>
+                            <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button> 
+                          </div>
+                          <div className="form-group">
+                            <label className="control-label">Пароль ЭЦП
+                              <input className="form-control" id="inpPassword" type="password" />
+                            </label>
+                            {this.state.inviseBtn &&
+                              <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
+                            }
+                          </div>
+                          <hr />
                         </div>
-                        <div className="form-group">
-                          <label className="control-label">Пароль ЭЦП
-                            <input className="form-control" id="inpPassword" type="password" />
-                          </label>
-                          <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
+                      }
+                      {this.state.openECP && 
+                        <form>
+                        <div className="isCompany">
+                            <label>
+                              <input type="radio" name="userType" onClick={(e) => this.setState({isCompany: false})} /> Физическое лицо
+                            </label>
+                            <label>
+                              <input type="radio" name="userType" onClick={(e) => this.setState({isCompany: true})} /> Юридическое лицо
+                            </label>
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="UserName" className="control-label">ИИН/БИН:</label>
+                            <input type="text" className="form-control" value={this.state.bin ? this.state.bin : this.state.iin} id="userName" required disabled />
+                          </div>
+                          {
+                            this.state.isCompany
+                              ? 
+                              <div className="form-group">
+                                  <label>Название компании:</label>
+                                  <input type="text" className="form-control" required onChange={(e) => this.setState({companyName: e.target.value})} />
+                              </div>
+                              : ""
+                          }
+                          <div className="form-group">
+                            <label htmlFor="surname" className="control-label">Фамилия:</label>
+                            <input type="text" className="form-control" value={this.state.lastName} id="lastName" required disabled />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="name" className="control-label">Имя:</label>
+                            <input type="text" className="form-control" value={this.state.firstName} id="firstName" required disabled />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="patronymic" className="control-label">Отчество:</label>
+                            <input type="text" className="form-control" value={this.state.middleName} id="middleName" disabled />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="Email" className="control-label">E-mail:</label>
+                            <input type="email" className="form-control" required value={this.state.email} onChange={(e) => this.setState({email: e.target.value})} />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="Pwd" className="control-label">Пароль:</label>
+                            <input type="password" className="form-control" required value={this.state.pwd} onChange={(e) => this.setState({pwd: e.target.value})} />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="ConfirmPwd" className="control-label">Подтвердите Пароль:</label>
+                            <input type="password" className="form-control" required value={this.state.confirmPwd} onChange={(e) => this.setState({confirmPwd: e.target.value})} />
+                          </div>
+                          <div className="modal-footer">
+                            <button type="button" className="btn btn-primary" onClick={this.register.bind(this)}>Регистрация</button>
+                            <Link to="/" style={{marginRight:'5px'}}>
+                              <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
+                            </Link>
+                          </div>
+                        </form>
+                      }
+                       {!this.state.loaderHidden &&
+                        <div style={{margin: '0 auto', display: 'table'}}>
+                          <Loader type="Ball-Triangle" color="#46B3F2" height="150" width="150" />
                         </div>
-                        <hr />
-                      </div>
-                    }
-                    {this.state.openECP && 
-                      <form>
-                      <div className="isCompany">
-                          <label>
-                            <input type="radio" name="userType" onClick={(e) => this.setState({isCompany: false})} /> Физическое лицо
-                          </label>
-                          <label>
-                            <input type="radio" name="userType" onClick={(e) => this.setState({isCompany: true})} /> Юридическое лицо
-                          </label>
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="UserName" className="control-label">ИИН/БИН:</label>
-                          <input type="text" className="form-control" value={this.state.bin ? this.state.bin : this.state.iin} id="userName" required disabled />
-                        </div>
-                        {
-                          this.state.isCompany
-                            ? 
-                            <div className="form-group">
-                                <label>Название компании:</label>
-                                <input type="text" className="form-control" required onChange={(e) => this.setState({companyName: e.target.value})} />
-                            </div>
-                            : ""
-                        }
-                        <div className="form-group">
-                          <label htmlFor="surname" className="control-label">Фамилия:</label>
-                          <input type="text" className="form-control" value={this.state.lastName} id="lastName" required disabled />
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="name" className="control-label">Имя:</label>
-                          <input type="text" className="form-control" value={this.state.firstName} id="firstName" required disabled />
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="patronymic" className="control-label">Отчество:</label>
-                          <input type="text" className="form-control" value={this.state.middleName} id="middleName" disabled />
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="Email" className="control-label">E-mail:</label>
-                          <input type="email" className="form-control" required value={this.state.email} onChange={(e) => this.setState({email: e.target.value})} />
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="Pwd" className="control-label">Пароль:</label>
-                          <input type="password" className="form-control" required value={this.state.pwd} onChange={(e) => this.setState({pwd: e.target.value})} />
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="ConfirmPwd" className="control-label">Подтвердите Пароль:</label>
-                          <input type="password" className="form-control" required value={this.state.confirmPwd} onChange={(e) => this.setState({confirmPwd: e.target.value})} />
-                        </div>
-                        <div className="modal-footer">
-                          <button type="button" className="btn btn-primary" onClick={this.register.bind(this)}>Регистрация</button>
-                          <Link to="/" style={{marginRight:'5px'}}>
-                            <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
-                          </Link>
-                        </div>
-                      </form>
-                    }
+                      }
+                    </div>
                   </div>
                 </div>
                 
