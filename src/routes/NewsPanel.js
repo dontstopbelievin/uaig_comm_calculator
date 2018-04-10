@@ -201,7 +201,7 @@ class AddNews extends React.Component {
     this.state = {
       title : '',
       desc : '',
-      content: '<p>Напиши сюда данные, не пожелеешь, брат!</p>',
+      content: '',
       loaderHidden: false
     }
     
@@ -321,7 +321,7 @@ class updateNews extends React.Component {
       id : '',
       title : '',
       desc : '',
-      content: 'cont',
+      content: false,
       loaderHidden: false
     }
     
@@ -435,6 +435,7 @@ class updateNews extends React.Component {
                         </div>
                         <div className="form-group form3">
                             <label htmlFor="text">Содержание статьи</label>
+                            {this.state.content &&
                             <CKEditor 
                               activeClass="p10" 
                               content={this.state.content}
@@ -444,6 +445,7 @@ class updateNews extends React.Component {
                                 "change": this.onChange
                               }}
                              />
+                            }
                         </div>
                         <input type="submit" className="btn btn-outline-success" value="Отправить статью" onClick={this.requestSubmission.bind(this)} />
                         <input type="reset" className="btn btn-outline-warning" value="Очистить" />
