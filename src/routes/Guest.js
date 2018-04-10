@@ -170,10 +170,21 @@ export default class Guest extends React.Component {
             </div>
 
             <div className="col-md-3 col-xs-12 block-main">
+              <h5>Инструкции</h5>
+              <div className="news manual">
+              <ul>
+                <li><a target="_blank" href="/docs/manual_user.pdf">Инструкция пользователя по созданию заявления на АПЗ</a></li>
+                <li><a target="_blank" href="/docs/manual_provider.pdf">Инструкция провайдера по выдаче технических условий</a></li>              
+              </ul> 
+              </div>
               <h5>Новости</h5>
               <div className="news">
                 {/* Новости */}
               </div>
+            </div>
+
+            <div className="col-md-3 col-xs-12 block-main">
+              
             </div>
 
             <div className="col-md-12 banners">
