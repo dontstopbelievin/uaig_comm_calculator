@@ -1043,10 +1043,6 @@ class ShowApz extends React.Component {
                             <td>{apz.commission.apz_heat_response.connection_point}</td>
                           </tr>
                           <tr>
-                            <td><b>Давление теплоносителя</b></td>
-                            <td>{apz.commission.apz_heat_response.trans_pressure}</td>
-                          </tr>
-                          <tr>
                             <td><b>Тепловые нагрузки по договору</b></td>
                             <td>{apz.commission.apz_heat_response.load_contract_num}</td>
                           </tr>

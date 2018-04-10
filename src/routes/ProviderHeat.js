@@ -198,7 +198,7 @@ class ShowApz extends React.Component {
       showTechCon: false,
       file: false,
       heatResource: "",
-      heatTransPressure: "",
+      heatSecondResource: "",
       heatLoadContractNum: "",
       heatBlocks: [],
       heatMainInContract: [],
@@ -224,9 +224,12 @@ class ShowApz extends React.Component {
       isSigned: false,
       reconcileConnectionsWith: "ЦЭР ТОО «АлТС» (тел. 274-04-47).",
       heatTransporter: '2-трубной схеме',
+      twoPipeTcName: "",
       twoPipePressureInTc: "",
       twoPipePressureInSc: "",
       twoPipePressureInRc: "",
+      fourHeatPipeTcName: "",
+      fourHeatPipeScName: "",
       fourHeatPipePressureInTc: "",
       fourWaterPipePressureInTc: "",
       fourHeatPipePressureInSc: "",
@@ -255,7 +258,7 @@ class ShowApz extends React.Component {
     };
 
     this.onHeatResourceChange = this.onHeatResourceChange.bind(this);
-    this.onHeatTransPressureChange = this.onHeatTransPressureChange.bind(this);
+    this.onHeatSecondResourceChange = this.onHeatSecondResourceChange.bind(this);
     this.onHeatLoadContractNumChange = this.onHeatLoadContractNumChange.bind(this);
     this.onHeatMainInContractChange = this.onHeatMainInContractChange.bind(this);
     this.onHeatVenInContractChange = this.onHeatVenInContractChange.bind(this);
@@ -268,9 +271,12 @@ class ShowApz extends React.Component {
     this.onFileChange = this.onFileChange.bind(this);
     this.saveResponseForm = this.saveResponseForm.bind(this);
     this.sendHeatResponse = this.sendHeatResponse.bind(this);
+    this.onTwoPipeTcNameChange = this.onTwoPipeTcNameChange.bind(this);
     this.onTwoPipePressureInTcChange = this.onTwoPipePressureInTcChange.bind(this);
     this.onTwoPipePressureInScChange = this.onTwoPipePressureInScChange.bind(this);
     this.onTwoPipePressureInRcChange = this.onTwoPipePressureInRcChange.bind(this);
+    this.onFourHeatPipeTcNameChange = this.onFourHeatPipeTcNameChange.bind(this);
+    this.onFourHeatPipeScNameChange = this.onFourHeatPipeScNameChange.bind(this);
     this.onFourHeatPipePressureInTcChange = this.onFourHeatPipePressureInTcChange.bind(this);
     this.onFourWaterPipePressureInTcChange = this.onFourWaterPipePressureInTcChange.bind(this);
     this.onFourHeatPipePressureInScChange = this.onFourHeatPipePressureInScChange.bind(this);
@@ -294,8 +300,8 @@ class ShowApz extends React.Component {
     this.setState({ heatResource: e.target.value });
   }
 
-  onHeatTransPressureChange(e) {
-    this.setState({ heatTransPressure: e.target.value });
+  onHeatSecondResourceChange(e) {
+    this.setState({ heatSecondResource: e.target.value });
   }
 
   onHeatLoadContractNumChange(e) {
@@ -378,6 +384,10 @@ class ShowApz extends React.Component {
     this.setState({ heatTransporter: transType });
   }
 
+  onTwoPipeTcNameChange(e) {
+    this.setState({ twoPipeTcName: e.target.value });
+  }
+
   onTwoPipePressureInTcChange(e) {
     this.setState({ twoPipePressureInTc: e.target.value });
   }
@@ -388,6 +398,14 @@ class ShowApz extends React.Component {
 
   onTwoPipePressureInRcChange(e) {
     this.setState({ twoPipePressureInRc: e.target.value });
+  }
+
+  onFourHeatPipeTcNameChange(e) {
+    this.setState({ fourHeatPipeTcName: e.target.value });
+  }
+
+  onFourHeatPipeScNameChange(e) {
+    this.setState({ fourHeatPipeScName: e.target.value });
   }
 
   onFourHeatPipePressureInTcChange(e) {
@@ -511,7 +529,6 @@ class ShowApz extends React.Component {
           data.commission.apz_heat_response.response_text ? this.setState({description: data.commission.apz_heat_response.response_text}) : this.setState({description: ""});
           data.commission.apz_heat_response.connection_point ? this.setState({connectionPoint: data.commission.apz_heat_response.connection_point}) : this.setState({connectionPoint: ""});
           data.commission.apz_heat_response.resource ? this.setState({heatResource: data.commission.apz_heat_response.resource}) : this.setState({heatResource: ""});
-          data.commission.apz_heat_response.trans_pressure ? this.setState({heatTransPressure: data.commission.apz_heat_response.trans_pressure}) : this.setState({heatTransPressure: ""});
           data.commission.apz_heat_response.load_contract_num ? this.setState({heatLoadContractNum: data.commission.apz_heat_response.load_contract_num}) : this.setState({heatLoadContractNum: ""});
           // data.commission.apz_heat_response.main_in_contract ? this.setState({heatMainInContract: data.commission.apz_heat_response.main_in_contract}) : this.setState({heatMainInContract: ""});
           // data.commission.apz_heat_response.ven_in_contract ? this.setState({heatVenInContract: data.commission.apz_heat_response.ven_in_contract}) : this.setState({heatVenInContract: ""});
@@ -519,9 +536,12 @@ class ShowApz extends React.Component {
           // data.commission.apz_heat_response.water_in_contract_max ? this.setState({heatWaterMaxInContract: data.commission.apz_heat_response.water_in_contract_max}) : this.setState({heatWaterMaxInContract: ""});
           data.commission.apz_heat_response.addition ? this.setState({addition: data.commission.apz_heat_response.addition}) : this.setState({addition: ""});
           data.commission.apz_heat_response.transporter ? this.setState({heatTransporter: data.commission.apz_heat_response.transporter}) : this.setState({heatTransporter: "2-трубной схеме"}); 
+          data.commission.apz_heat_response.two_pipe_pressure_in_tc ? this.setState({twoPipeTcName: data.commission.apz_heat_response.two_pipe_tc_name}) : this.setState({twoPipeTcName: ""});
           data.commission.apz_heat_response.two_pipe_pressure_in_tc ? this.setState({twoPipePressureInTc: data.commission.apz_heat_response.two_pipe_pressure_in_tc}) : this.setState({twoPipePressureInTc: ""});
           data.commission.apz_heat_response.two_pipe_pressure_in_sc ? this.setState({twoPipePressureInSc: data.commission.apz_heat_response.two_pipe_pressure_in_sc}) : this.setState({twoPipePressureInSc: ""});
           data.commission.apz_heat_response.two_pipe_pressure_in_rc ? this.setState({twoPipePressureInRc: data.commission.apz_heat_response.two_pipe_pressure_in_rc}) : this.setState({twoPipePressureInRc: ""});
+          data.commission.apz_heat_response.heat_four_pipe_tc_name ? this.setState({ fourHeatPipeTcName: data.commission.apz_heat_response.heat_four_pipe_tc_name}) : this.setState({ fourHeatPipeTcName: ""});
+          data.commission.apz_heat_response.heat_four_pipe_sc_name ? this.setState({ fourHeatPipeScName: data.commission.apz_heat_response.heat_four_pipe_sc_name}) : this.setState({ fourHeatPipeScName: ""});
           data.commission.apz_heat_response.heat_four_pipe_pressure_in_tc ? this.setState({ fourHeatPipePressureInTc: data.commission.apz_heat_response.heat_four_pipe_pressure_in_tc}) : this.setState({ fourHeatPipePressureInTc: ""});
           data.commission.apz_heat_response.heat_four_pipe_pressure_in_sc ? this.setState({ fourHeatPipePressureInSc: data.commission.apz_heat_response.heat_four_pipe_pressure_in_sc}) : this.setState({ fourHeatPipePressureInSc: ""});
           data.commission.apz_heat_response.heat_four_pipe_pressure_in_rc ? this.setState({ fourHeatPipePressureInRc: data.commission.apz_heat_response.heat_four_pipe_pressure_in_rc}) : this.setState({ fourHeatPipePressureInRc: ""});
@@ -916,7 +936,7 @@ class ShowApz extends React.Component {
     formData.append('Message', comment);
     if(status === 0){
       formData.append('HeatResource', "");
-      formData.append('HeatTransPressure', "");
+      formData.append('HeatSecondResource', "");
       formData.append('HeatLoadContractNum', "");
       formData.append('HeatMainInContract', "");
       formData.append('HeatVenInContract', "");
@@ -924,9 +944,12 @@ class ShowApz extends React.Component {
       formData.append('ConnectionPoint', "");
       formData.append('Addition', "");
       formData.append('Transporter', "");
+      formData.append('Two_pipe_tc_name', "");
       formData.append('Two_pipe_pressure_in_tc', "");
       formData.append('Two_pipe_pressure_in_sc', "");
       formData.append('Two_pipe_pressure_in_rc', "");
+      formData.append('Heat_four_pipe_tc_name', "");
+      formData.append('Heat_four_pipe_sc_name', "");
       formData.append('Heat_four_pipe_pressure_in_tc', "");
       formData.append('Heat_four_pipe_pressure_in_sc', "");
       formData.append('Heat_four_pipe_pressure_in_rc', "");
@@ -952,7 +975,7 @@ class ShowApz extends React.Component {
     }
     else{
       formData.append('HeatResource', this.state.heatResource);
-      formData.append('HeatTransPressure', this.state.heatTransPressure);
+      formData.append('HeatSecondResource', this.state.heatSecondResource);
       formData.append('HeatLoadContractNum', this.state.heatLoadContractNum);
       // formData.append('HeatMainInContract', this.state.heatMainInContract);
       // formData.append('HeatVenInContract', this.state.heatVenInContract);
@@ -966,9 +989,12 @@ class ShowApz extends React.Component {
       formData.append('ConnectionPoint', this.state.connectionPoint);
       formData.append('Addition', this.state.addition);
       formData.append('Transporter', this.state.heatTransporter);
+      formData.append('Two_pipe_tc_name', this.state.twoPipeTcName);
       formData.append('Two_pipe_pressure_in_tc', this.state.twoPipePressureInTc);
       formData.append('Two_pipe_pressure_in_sc', this.state.twoPipePressureInSc);
       formData.append('Two_pipe_pressure_in_rc', this.state.twoPipePressureInRc);
+      formData.append('Heat_four_pipe_tc_name', this.state.fourHeatPipeTcName);
+      formData.append('Heat_four_pipe_sc_name', this.state.fourHeatPipeScName);
       formData.append('Heat_four_pipe_pressure_in_tc', this.state.fourHeatPipePressureInTc);
       formData.append('Heat_four_pipe_pressure_in_sc', this.state.fourHeatPipePressureInSc);
       formData.append('Heat_four_pipe_pressure_in_rc', this.state.fourHeatPipePressureInRc);
@@ -1010,7 +1036,6 @@ class ShowApz extends React.Component {
         this.setState({responseFile: data.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
         data.connection_point ? this.setState({connectionPoint: data.connection_point}) : this.setState({connectionPoint: ""});
         data.resource ? this.setState({heatResource: data.resource}) : this.setState({heatResource: ""});
-        data.trans_pressure ? this.setState({heatTransPressure: data.trans_pressure}) : this.setState({heatTransPressure: ""});
         data.load_contract_num ? this.setState({heatLoadContractNum: data.load_contract_num}) : this.setState({heatLoadContractNum: ""});
         data.main_in_contract ? this.setState({heatMainInContract: data.main_in_contract}) : this.setState({heatMainInContract: ""});
         data.ven_in_contract ? this.setState({heatVenInContract: data.ven_in_contract}) : this.setState({heatVenInContract: ""});
@@ -1018,9 +1043,12 @@ class ShowApz extends React.Component {
         data.water_in_contract_max ? this.setState({heatWaterMaxInContract: data.water_in_contract_max}) : this.setState({heatWaterMaxInContract: ""});
         data.addition ? this.setState({addition: data.addition}) : this.setState({addition: ""});
         data.transporter ? this.setState({heatTransporter: data.transporter}) : this.setState({heatTransporter: "2-трубной схеме"}); 
+        data.two_pipe_tc_name ? this.setState({twoPipeTcName: data.two_pipe_tc_name}) : this.setState({twoPipeTcName: ""});
         data.two_pipe_pressure_in_tc ? this.setState({twoPipePressureInTc: data.two_pipe_pressure_in_tc}) : this.setState({twoPipePressureInTc: ""});
         data.two_pipe_pressure_in_sc ? this.setState({twoPipePressureInSc: data.two_pipe_pressure_in_sc}) : this.setState({twoPipePressureInSc: ""});
         data.two_pipe_pressure_in_rc ? this.setState({twoPipePressureInRc: data.two_pipe_pressure_in_rc}) : this.setState({twoPipePressureInRc: ""});
+        data.heat_four_pipe_tc_name ? this.setState({ fourHeatPipeTcName: data.heat_four_pipe_tc_name}) : this.setState({ fourHeatPipeTcName: ""});
+        data.heat_four_pipe_sc_name ? this.setState({ fourHeatPipeScName: data.heat_four_pipe_sc_name}) : this.setState({ fourHeatPipeScName: ""});
         data.heat_four_pipe_pressure_in_tc ? this.setState({ fourHeatPipePressureInTc: data.heat_four_pipe_pressure_in_tc}) : this.setState({ fourHeatPipePressureInTc: ""});
         data.heat_four_pipe_pressure_in_sc ? this.setState({ fourHeatPipePressureInSc: data.heat_four_pipe_pressure_in_sc}) : this.setState({ fourHeatPipePressureInSc: ""});
         data.heat_four_pipe_pressure_in_rc ? this.setState({ fourHeatPipePressureInRc: data.heat_four_pipe_pressure_in_rc}) : this.setState({ fourHeatPipePressureInRc: ""});
@@ -1424,14 +1452,11 @@ printData()
                 <div className="form-group">
                   <label>Теплоснабжение осуществляется от источников</label>
                   <input type="text" className="form-control" placeholder="" value={this.state.heatResource} onChange={this.onHeatResourceChange} />
+                  <input type="text" className="form-control" placeholder="" value={this.state.heatSecondResource} onChange={this.onHeatSecondResourceChange} />
                 </div>
                 <div className="form-group">
                   <label>Точка подключения</label>
                   <input type="text" className="form-control" placeholder="" value={this.state.connectionPoint} onChange={this.onConnectionPointChange} />
-                </div>
-                <div className="form-group">
-                  <label>Давление теплоносителя в тепловой камере {this.state.connectionPoint}</label>
-                  <input type="text" className="form-control" placeholder="" value={this.state.heatTransPressure} onChange={this.onHeatTransPressureChange} />
                 </div>
                 <div className="form-group">
                   <label>Температурный график</label>
@@ -1472,6 +1497,8 @@ printData()
                   <div className="form-group">
                     <label>Давление теплоносителя в ТК:</label>
                     <input type="text" className="form-control" placeholder="" value={this.state.twoPipePressureInTc} onChange={this.onTwoPipePressureInTcChange} />
+                    <label>Название ТК:</label>
+                    <input type="text" className="form-control" placeholder="" value={this.state.twoPipeTcName} onChange={this.onTwoPipeTcNameChange} />
                     <label>В подающем водоводе:</label>
                     <input type="number" step="any" className="form-control" placeholder="" value={this.state.twoPipePressureInSc} onChange={this.onTwoPipePressureInScChange} />
                     <label>В обратном водоводе:</label>
@@ -1484,6 +1511,8 @@ printData()
                       <div className="col-sm-6">
                         <label>Давление теплоносителя в ТК (отопление):</label>
                         <input type="text" className="form-control" placeholder="" value={this.state.fourHeatPipePressureInTc} onChange={this.onFourHeatPipePressureInTcChange} />
+                        <label>Название ТК:</label>
+                        <input type="text" className="form-control" placeholder="" value={this.state.fourHeatPipeTcName} onChange={this.onFourHeatPipeTcNameChange} />
                         <label>В подающем водоводе:</label>
                         <input type="number" step="any" className="form-control" placeholder="" value={this.state.fourHeatPipePressureInSc} onChange={this.onFourHeatPipePressureInScChange} />
                         <label>В обратном водоводе:</label>
@@ -1492,6 +1521,8 @@ printData()
                       <div className="col-sm-6">
                         <label>Давление теплоносителя в ТК (ГВС):</label>
                         <input type="text" className="form-control" placeholder="" value={this.state.fourWaterPipePressureInTc} onChange={this.onFourWaterPipePressureInTcChange} />
+                        <label>Название ТК:</label>
+                        <input type="text" className="form-control" placeholder="" value={this.state.fourHeatPipeScName} onChange={this.onFourHeatPipeScNameChange} />
                         <label>В подающем водоводе:</label>
                         <input type="number" step="any" className="form-control" placeholder="" value={this.state.fourWaterPipePressureInSc} onChange={this.onFourWaterPipePressureInScChange} />
                         <label>В обратном водоводе:</label>
@@ -1654,10 +1685,6 @@ printData()
                     <td>Точка подключения</td> 
                     <td>{this.state.connectionPoint}</td>
                   </tr> 
-                  <tr>
-                    <td>Давление теплоносителя в тепловой камере {this.state.connectionPoint}</td>
-                    <td>{this.state.heatTransPressure}</td>
-                  </tr>
                   <tr>
                     <td>Тепловые нагрузки по договору</td>
                     <td>{this.state.heatLoadContractNum}</td>

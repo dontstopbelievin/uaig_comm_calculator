@@ -1758,10 +1758,6 @@ class ShowApz extends React.Component {
                                   <td>{apz.commission.apz_heat_response.connection_point}</td>
                                 </tr>
                                 <tr>
-                                  <td><b>Давление теплоносителя</b></td>
-                                  <td>{apz.commission.apz_heat_response.trans_pressure}</td>
-                                </tr>
-                                <tr>
                                   <td><b>Тепловые нагрузки по договору</b></td>
                                   <td>{apz.commission.apz_heat_response.load_contract_num}</td>
                                 </tr>
@@ -2298,22 +2294,28 @@ class AddHeatBlock extends React.Component {
         </p>
 
         <div className="row" style={{background: '#efefef', margin: '0 0 20px', padding: '20px 0 10px'}}>
-          <div className="col-md-4">
+          <div className="col-md-6">
             <div className="form-group">
               <label htmlFor="HeatMain">Отопление<br />(Гкал/ч)</label>
               <input type="number" step="0.1" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatMain]'} placeholder="" />
             </div>
           </div>
-          <div className="col-md-4">
+          <div className="col-md-6">
             <div className="form-group">
               <label htmlFor="HeatVentilation">Вентиляция<br />(Гкал/ч)</label>
               <input type="number" step="0.1" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatVentilation]'} placeholder="" />
             </div>
           </div>
-          <div className="col-md-4">
+          <div className="col-md-6">
             <div className="form-group">
-              <label htmlFor="HeatWater">Горячее водоснабжение<br />(Гкал/ч)</label>
-              <input type="number" step="0.1" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatWater]'} id="HeatWater" placeholder="" />
+              <label htmlFor="HeatWater">Горячее водоснабжение<br />(ср/ч)</label>
+              <input type="number" step="0.1" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatWater]'} placeholder="" />
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="form-group">
+              <label htmlFor="HeatWaterMax">Горячее водоснабжение<br />(макс/ч)</label>
+              <input type="number" step="0.1" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatWaterMax]'} placeholder="" />
             </div>
           </div>
         </div>
