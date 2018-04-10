@@ -1517,7 +1517,15 @@ class ShowApz extends React.Component {
     var apz = this.state.apz;
 
     if (apz.length === 0) {
-      return false;
+      return (
+        <div>
+          {!this.state.loaderHidden &&
+            <div style={{textAlign: 'center'}}>
+              <Loader type="Oval" color="#46B3F2" height="200" width="200" />
+            </div>
+          }
+        </div>
+      );
     }
 
     return (

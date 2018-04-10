@@ -60,6 +60,7 @@ typings/
 .env
 
 /.idea
+/.idea/*
 
 # Cache files for Sublime Text
 *.tmlanguage.cache
