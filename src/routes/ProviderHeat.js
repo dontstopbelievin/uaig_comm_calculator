@@ -253,7 +253,8 @@ class ShowApz extends React.Component {
       isHead: (roles.indexOf('HeadHeat') != -1),
       isDirector: (roles.indexOf('DirectorHeat') != -1),
       heads_responses: [],
-      head_accepted: true
+      head_accepted: true,
+      headComment: null,
     };
 
     this.onHeatResourceChange = this.onHeatResourceChange.bind(this);
@@ -294,6 +295,7 @@ class ShowApz extends React.Component {
     this.onTechnicalConditionsTermsChange = this.onTechnicalConditionsTermsChange.bind(this);
     this.onConnectionSchemeChange = this.onConnectionSchemeChange.bind(this);
     this.onReconcileConnectionsWithChange = this.onReconcileConnectionsWithChange.bind(this);
+    this.onHeadCommentChange = this.onHeadCommentChange.bind(this);
   }
 
   onHeatResourceChange(e) {
@@ -482,6 +484,10 @@ class ShowApz extends React.Component {
 
   onReconcileConnectionsWithChange(e) {
     this.setState({ reconcileConnectionsWith: e.target.value });
+  }
+
+  onHeadCommentChange(e) {
+    this.setState({ headComment: e.target.value });
   }
 
   onFileChange(e) {
@@ -1122,6 +1128,11 @@ class ShowApz extends React.Component {
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
 
+    if (!comment) {
+      alert('Заполните поле "Комментарий"');
+      return false;
+    }
+
     var formData = new FormData();
     formData.append('status', status);
     formData.append('comment', comment);
@@ -1130,8 +1141,10 @@ class ShowApz extends React.Component {
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function () {
       if (xhr.status === 200) {
-        alert('Ответ успешно отправлен');
+        var data = JSON.parse(xhr.responseText);
+        alert('Комментарий успешно добавлен');
         this.setState({head_accepted: true});
+        this.setState({heads_responses: data.head_responses});
       }
       else if(xhr.status === 401){
         sessionStorage.clear();
@@ -1413,6 +1426,34 @@ printData()
         </div>
 
         <div className="col-sm-12">
+          {(!this.state.isHead && !this.state.isDirector) && this.state.heads_responses.length > 0 &&
+            <div style={{marginBottom: '50px'}}>
+              <h5 className="block-title-2 mt-4 mb-3">Комментарии:</h5>
+
+              <table className="table table-bordered table-striped">
+                <tbody>
+                  <tr>
+                    <th>ФИО</th>
+                    <th>Комментарий</th>
+                    <th>Дата</th>
+                  </tr>
+                  {this.state.heads_responses.map(function(item, index) {
+                    return(
+                      <tr key={index}>
+                        <td width="40%">
+                          {item.user.name} 
+                        </td>
+                        <td width="40%">{item.comments}</td>
+                        <td>{this.toDate(item.created_at)}</td>
+                      </tr>
+                      );
+                    }.bind(this))
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+
           <div className="row" style={{margin: '16px 0'}}>
             {(this.state.isPerformer === true || this.state.responseId != 0) &&
               <div className="col-sm-6">
@@ -1764,20 +1805,22 @@ printData()
 
               {this.state.heads_responses.length > 0 &&
                 <div>
-                  <h5 className="block-title-2 mt-4 mb-3">Одобрили:</h5>
+                  <h5 className="block-title-2 mt-4 mb-3">Комментарии:</h5>
 
                   <table className="table table-bordered table-striped">
                     <tbody>
                       <tr>
                         <th>ФИО</th>
+                        <th>Комментарий</th>
                         <th>Дата</th>
                       </tr>
                       {this.state.heads_responses.map(function(item, index) {
                         return(
                           <tr key={index}>
-                            <td width="60%">
+                            <td width="40%">
                               {item.user.name} 
                             </td>
+                            <td width="40%">{item.comments}</td>
                             <td>{this.toDate(item.created_at)}</td>
                           </tr>
                           );
@@ -1788,11 +1831,12 @@ printData()
                 </div>
               }
 
-              {!this.state.head_accepted &&
+              {this.state.isHead &&
                 <div className={this.state.showButtons ? '' : 'invisible'}>
                   <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                    <button className="btn btn-raised btn-success" onClick={this.sendHeadResponse.bind(this, apz.id, true, "")}>
-                      Одобрить
+                    <textarea style={{marginBottom: '10px'}} placeholder="Комментарий" rows="7" cols="50" className="form-control" value={this.state.headComment} onChange={this.onHeadCommentChange}></textarea>
+                    <button className="btn btn-raised btn-success" onClick={this.sendHeadResponse.bind(this, apz.id, true, this.state.headComment)}>
+                      Отправить
                     </button>
                   </div>
                 </div>
