@@ -368,8 +368,8 @@ class AddApz extends React.Component {
                 $('#tab7-form')[0].reset();
                 $('#tab8-form')[0].reset();
                 $('#tabIcon').removeClass();
-                this.props.history.replace('/citizen/status/active');
                 alert("Заявка успешно подана");
+                this.props.history.replace('/citizen');
               }.bind(this),
               fail: function (jqXHR) {
                 alert("Ошибка " + jqXHR.status + ': ' + jqXHR.statusText);
@@ -390,13 +390,16 @@ class AddApz extends React.Component {
           statusCode: {
             400: function () {
               alert("При сохранении заявки произошла ошибка!");
+              this.setState({loaderHidden: true});
             }
           },
           complete: function (jqXHR) {
           }
         });
       } else { console.log('session expired'); }
-    } else { alert('Сохранены не все вкладки'); }
+    } else { alert('Сохранены не все вкладки'); 
+    this.setState({loaderHidden: true});
+  }
   }
 
   //правила вкладки Объект/Газоснабжение
@@ -881,7 +884,7 @@ class AddApz extends React.Component {
                   </div>
                 </div>
                 <div>
-                  <div className="form-group">
+                <div className="form-group">
                       <label htmlFor="PhoneCapacity">Сканированный файл оплаты</label>
                       <input type="file" required name="paymentPhotoFile" className="form-control" onChange={this.onPaymentPhotoFileChange}/>
                       <span className="help-block">документ в формате pdf, doc, docx</span>
@@ -1772,6 +1775,18 @@ class ShowApz extends React.Component {
                                   <td>{apz.commission.apz_heat_response.load_contract_num}</td>
                                 </tr>
                                 <tr>
+                                  <td><b>Отопление (Гкал/ч)</b></td>
+                                  <td>{apz.commission.apz_heat_response.main_in_contract}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Вентиляция (Гкал/ч)</b></td>
+                                  <td>{apz.commission.apz_heat_response.ven_in_contract}</td>
+                                </tr>
+                                <tr>
+                                  <td><b>Горячее водоснабжение (Гкал/ч)</b></td>
+                                  <td>{apz.commission.apz_heat_response.water_in_contract}</td>
+                                </tr>
+                                <tr>
                                   <td><b>Дополнительное</b></td>
                                   <td>{apz.commission.apz_heat_response.addition}</td>
                                 </tr>
@@ -1811,35 +1826,15 @@ class ShowApz extends React.Component {
                                       <tbody>
                                         <tr>
                                           <td style={{width: '50%'}}><b>Отопление (Гкал/ч)</b></td>
-                                          <td>{item.main}</td>
-                                        </tr>
-                                        <tr>
-                                          <td><b>Вентиляция (Гкал/ч)</b></td>
-                                          <td>{item.ven}</td>
-                                        </tr>
-                                        <tr>
-                                          <td><b>Горячее водоснабжение (ср/ч)</b></td>
-                                          <td>{item.water}</td>
-                                        </tr>
-                                        <tr>
-                                          <td><b>Горячее водоснабжение (макс/ч)</b></td>
-                                          <td>{item.water_max}</td>
-                                        </tr>
-                                        <tr>
-                                          <td><b>Отопление по договору (Гкал/ч)</b></td>
                                           <td>{item.main_in_contract}</td>
                                         </tr>
                                         <tr>
-                                          <td><b>Вентиляция по договору (Гкал/ч)</b></td>
+                                          <td><b>Вентиляция (Гкал/ч)</b></td>
                                           <td>{item.ven_in_contract}</td>
                                         </tr>
                                         <tr>
-                                          <td><b>Горячее водоснабжение по договору (ср/ч)</b></td>
+                                          <td><b>Горячее водоснаб.(Гкал/ч)</b></td>
                                           <td>{item.water_in_contract}</td>
-                                        </tr>
-                                        <tr>
-                                          <td><b>Горячее водоснабжение по договору (макс/ч)</b></td>
-                                          <td>{item.water_in_contract_max}</td>
                                         </tr>
                                       </tbody>
                                     </table>

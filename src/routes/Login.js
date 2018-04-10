@@ -22,7 +22,8 @@ export default class Login extends Component {
       loaderHidden: true,
       storageAlias: "PKCS12",
       openECP: false,
-      closeecp: true
+      closeecp: true,
+      inviseBtn: true
     }
 
     this.onUsernameChange = this.onUsernameChange.bind(this);
@@ -88,7 +89,7 @@ export default class Login extends Component {
     } 
     else {
       this.setState({loaderHidden: false});
-      
+      this.setState({inviseBtn: !this.state.inviseBtn});
       var xhr = new XMLHttpRequest();
       xhr.open("post", window.url + "api/token", true);
       //Send the proper header information along with the request
@@ -96,6 +97,7 @@ export default class Login extends Component {
       xhr.onload = function(e) {
         if (xhr.status === 200) {
           this.setState({loaderHidden: true});
+          this.setState({inviseBtn: this.state.inviseBtn});
           console.log("loggedIn");
           //console.log(e.target.response);
           var roles = [JSON.parse(e.target.response).role1];
@@ -128,6 +130,7 @@ export default class Login extends Component {
         } 
         else if(xhr.status === 400) {
           this.setState({loaderHidden: true});
+          this.setState({inviseBtn: this.state.inviseBtn});
           alert("Вы ввели неверный логин и/или пароль.");
         }
       }.bind(this);
@@ -147,14 +150,14 @@ export default class Login extends Component {
   }
 
   btnLogin() {
+    this.setState({loaderHidden: false});
+    this.setState({inviseBtn: !this.state.inviseBtn});
     let password = $('#inpPassword').val();
     let path = $('#storagePath').val();
     let keyType = "AUTH";
     if (path !== null && path !== "" && this.state.storageAlias !== null && this.state.storageAlias !== "") {
       if (password !== null && password !== "") {
         this.getKeys(this.state.storageAlias, path, password, keyType, "loadKeysBack");
-        this.setState({loaderHidden: true});
-
         //console.log(this.state.resultIIN);
       } else {
         alert("Введите пароль к хранилищу");
@@ -322,6 +325,7 @@ export default class Login extends Component {
           success: function (response) {
                  this.setState({openECP: !this.state.openECP});
                  this.setState({closeecp: !this.state.closeecp});
+                 this.setState({loaderHidden: true});
              // var commonName = response.commonName;
              // var commonNameValues = commonName.split("?");
              // you will get response from your php page (what you echo or print)  
@@ -371,11 +375,14 @@ export default class Login extends Component {
           alert(result['errorCode']);
           console.log('ошибка');
       }
+
+
     }
   }
 
   loadKeysBack(result) {
     if (result.errorCode === "WRONG_PASSWORD") {
+      this.setState({loaderHidden: true});
       return alert('Неправильный пароль!');
     }
 
@@ -384,6 +391,7 @@ export default class Login extends Component {
       let arr = result.result.split('|');
       alias = arr[3];
     } else {
+      this.setState({loaderHidden: true});
       alert('Неверный ключ')
     }
     this.getTokenXml(alias);
@@ -495,8 +503,16 @@ export default class Login extends Component {
                             <label className="control-label">Пароль от ЭЦП
                               <input className="form-control" id="inpPassword" type="password" />
                             </label>
+                            {this.state.inviseBtn &&
                             <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
+                            }
                           </div>
+                        </div>
+                      }
+
+                      {!this.state.loaderHidden &&
+                        <div style={{margin: '0 auto', display: 'table'}}>
+                          <Loader type="Ball-Triangle" color="#46B3F2" height="100" width="100" />
                         </div>
                       }
 
