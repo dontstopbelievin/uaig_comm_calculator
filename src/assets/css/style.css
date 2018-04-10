@@ -970,4 +970,10 @@ table{
     padding-bottom: 15px;
     list-style: none;
   }
+  .noteWater{
+    text-align: justify;
+  }
+  .noteHead{
+    text-decoration: underline;
+  }
 

@@ -453,15 +453,9 @@ export default class Register extends React.Component {
                     <p>&nbsp;</p>
                     {this.state.closeecp &&
                       <div>
-                        <div className="isCompany">
-                          <label>
-                            <input type="radio" name="userType" onClick={(e) => this.setState({isCompany: false})} /> Физическое лицо
-                          </label>
-                          <label>
-                            <input type="radio" name="userType" onClick={(e) => this.setState({isCompany: true})} /> Юридическое лицо
-                          </label>
-                        </div>
+                        
                         <div className="form-group">
+
                           <label className="control-label">Путь к ЭЦП
                             <input className="form-control" type="text" id="storagePath" readOnly />
                           </label>
@@ -478,6 +472,14 @@ export default class Register extends React.Component {
                     }
                     {this.state.openECP && 
                       <form>
+                      <div className="isCompany">
+                          <label>
+                            <input type="radio" name="userType" onClick={(e) => this.setState({isCompany: false})} /> Физическое лицо
+                          </label>
+                          <label>
+                            <input type="radio" name="userType" onClick={(e) => this.setState({isCompany: true})} /> Юридическое лицо
+                          </label>
+                        </div>
                         <div className="form-group">
                           <label htmlFor="UserName" className="control-label">ИИН/БИН:</label>
                           <input type="text" className="form-control" value={this.state.bin ? this.state.bin : this.state.iin} id="userName" required disabled />

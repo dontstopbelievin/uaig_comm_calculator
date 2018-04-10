@@ -755,7 +755,17 @@ class AddApz extends React.Component {
                   </div>
                 </div>
                 <div>
-                  <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
+                  <div className="form-group">
+                    <h6 className="noteHead">ПРИМЕЧАНИЕ:</h6>
+                    <ul className="noteWater">
+                      <li>1. В части заполнения исходных данных представить копии следующих документов:<br/>- Для физических лиц - копии удостоверения личности, для юридических лиц - копия бизнес-идентификационного номера (БИН);<br/>-  Копии правоустанавливающих документов (Акт на право частной собственности на земельный участок, основание его выдачи - (постановление Акимата или копия договора купли-продажи, или договор дарения и т.д.), сведения о собственнике;</li>
+                      <br/>
+                      <li>2. В части "Водоснабжение" и "Водоотведение" данные подтвердить расчетов с указанием требуемых расходов на водопотребление, пожаротушение и водоотведение, выполненных согласно требованиям СНиП <strong>c указанием количества вводов водопровода.</strong></li>
+                      <br/>
+                      <li>3. Ситуационная схема или топографическая съемка с указанием границ земельного участка в соответствии с актами на выбор земельного участка, отражающая существующее положение объекта и коммуникаций на момент запроса технических условий, подтвержданная УАиГ города Алматы.</li>
+                    </ul>
+                    <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
+                  </div>
                 </div>
                 </form>
                 <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
@@ -801,11 +811,6 @@ class AddApz extends React.Component {
                     <div className="form-group">
                       <label htmlFor="HeatTech">Технологические нужды(пар) (Т/ч)</label>
                       <input type="number" step="0.1" className="form-control" name="HeatTech" placeholder="" />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="PhoneCapacity">Сканированный файл оплаты</label>
-                      <input type="file" required name="paymentPhotoFile" className="form-control" onChange={this.onPaymentPhotoFileChange}/>
-                      <span className="help-block">документ в формате pdf, doc, docx</span>
                     </div>
                   </div>
                   <div className="col-md-6">
@@ -876,6 +881,11 @@ class AddApz extends React.Component {
                   </div>
                 </div>
                 <div>
+                  <div className="form-group">
+                      <label htmlFor="PhoneCapacity">Сканированный файл оплаты</label>
+                      <input type="file" required name="paymentPhotoFile" className="form-control" onChange={this.onPaymentPhotoFileChange}/>
+                      <span className="help-block">документ в формате pdf, doc, docx</span>
+                    </div>
                   <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                 </div>
                 </form>
