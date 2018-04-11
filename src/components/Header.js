@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../languages/header.json';
+import Loader from 'react-loader-spinner';
 //import $ from 'jquery';
 
 let e = new LocalizedStrings({ru,kk});
@@ -19,15 +20,18 @@ export default class Header extends Component {
 
     this.state = {
       rolename: "",
-      showBottomNavbar: false
+      showBottomNavbar: false,
+        loaderHidden: true
     }
 
     this.checkToken = this.checkToken.bind(this);
     this.logout = this.logout.bind(this);
     this.toggleBottomNavbar = this.toggleBottomNavbar.bind(this);
+    // this.loaderHidden = this.loaderHidden.bind(this);
   }
 
   logout() {
+    this.setState({ loaderHidden: false });
     var token = sessionStorage.getItem('tokenInfo');
     console.log(token);
     var xhr = new XMLHttpRequest();
@@ -35,6 +39,7 @@ export default class Header extends Component {
     //Send the proper header information along with the request
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
     xhr.onload = function () {
       if (xhr.status === 200) {
         sessionStorage.clear();
@@ -45,6 +50,8 @@ export default class Header extends Component {
         sessionStorage.clear();
         this.props.history.replace("/");
       }
+
+      this.setState({ loaderHidden: true });
     }.bind(this);
     xhr.send();
   }
@@ -112,7 +119,14 @@ export default class Header extends Component {
     }
 
     return (
-      <div> 
+      <div>
+          {!this.state.loaderHidden &&
+          <div className="bigLoaderDiv">
+            <div className="loaderDiv" style={{textAlign: 'center'}}>
+              <Loader type="Oval" color="#46B3F2" height="200" width="200" />
+            </div>
+          </div>
+          }
         <div className="header">
         <div className="container logo">
           <div className="row">
@@ -301,7 +315,6 @@ class LoginBtn extends Component {
 class LogoutBtn extends Component {
   constructor() {
     super();
-
     this.onLogout = this.onLogout.bind(this);
     // this.gotoCabinet = this.gotoCabinet.bind(this);
   }
@@ -320,6 +333,7 @@ class LogoutBtn extends Component {
   render() {
     return(
       <div className="row userInfo">
+        <div>
         <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
           <li className="nav-item dropdown">
             <button className="btn btn-outline-secondary btn-white" href="#" id="cabinetDropdownMenuLink" data-toggle="dropdown">
@@ -348,10 +362,10 @@ class LogoutBtn extends Component {
                     }
                     else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Heat'){
                       return <HeatProviderMenu />;
-                    } 
+                    }
                     else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Phone'){
                       return <PhoneProviderMenu />;
-                    } 
+                    }
                     else{
                       return <WaterProviderMenu />;
                     }
@@ -368,6 +382,7 @@ class LogoutBtn extends Component {
             </ul>
           </li>
         </ul>
+      </div>
       </div>
     )
   }
