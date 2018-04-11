@@ -245,16 +245,16 @@ class ShowApz extends React.Component {
       thermalEnergyMeters: "На вводе для каждой категории абонентов установить прибор учета тепловой энергии, оборудованный модемной связью. Системы отопления и горячего водоснабжения каждой квартиры оборудовать индивидуальными приборами учета расхода теплоты и горячей воды с возможностью дистанционного снятия показаний. Проект на установку системы учета, схему организации учета, место установки приборов учета согласовать со Службой контроля приборов учета тепловой энергии ТОО «АлТС» (тел.: 341-07-77, вн. 2140).",
       heatSupplySystem: "Открытая",
       heatSupplySystemNote: "- Предусмотреть догрев ГВС в межотопительный период \n\n- Предусмотреть тепловую изоляцию разводящих трубопроводов и стояков системы горячего водоснабжения. При присоединении распределительной гребенки индивидуальных потребителей к стояку общедомовой системы горячего водоснабжения предусмотреть установку обратного клапана",
-      connectionScheme: "по зависимой схеме",
-      connectionSchemeNote: "В случае применения в системе отопления трубопроводов из полимерных материалов – проектирование вести с учетом требований п. 7.1.3 СНиП РК 4.02-42-2006 «Отопление, вентиляция и кондиционирование»",
-      afterControlUnitInstallation: "По завершении монтажа узла управления выполнить пуско-наладочные работы по автоматизации теплового пункта.",
+      connectionScheme: "по зависимой схеме\nпо независимой схеме",
+      connectionSchemeNote: "В случае применения в системе отопления трубопроводов из полимерных материалов – проектирование вести с учетом требований п. 7.1.3 СНиП РК 4.02-42-2006 «Отопление, вентиляция и кондиционирование». По завершении монтажа узла управления выполнить пуско-наладочные работы по автоматизации теплового пункта.",
       negotiation: "После предварительного согласования с ЦЭР ТОО «АлТС» проектную документацию (чертежи марки ОВ, ТС, сводный план инженерных сетей) согласовать с Техническим отделом ТОО «АлТС» (тел.: 378-07-00, вн. 1023). \n\nСогласованный проект на бумажном и электронном носителях предоставить в ТОО «АлТС».",
       technicalConditionsTerms: "нормативный период проектирования и строительства, предусмотренный в проектно-сметной документации.",
       isPerformer: (roles.indexOf('PerformerHeat') != -1),
       isHead: (roles.indexOf('HeadHeat') != -1),
       isDirector: (roles.indexOf('DirectorHeat') != -1),
       heads_responses: [],
-      head_accepted: true
+      head_accepted: true,
+      headComment: null,
     };
 
     this.onHeatResourceChange = this.onHeatResourceChange.bind(this);
@@ -291,9 +291,11 @@ class ShowApz extends React.Component {
     this.onThermalEnergyMetersChange = this.onThermalEnergyMetersChange.bind(this);
     this.onHeatSupplySystemNoteChange = this.onHeatSupplySystemNoteChange.bind(this);
     this.onConnectionSchemeNoteChange = this.onConnectionSchemeNoteChange.bind(this);
-    this.onAfterControlUnitInstallationChange = this.onAfterControlUnitInstallationChange.bind(this);
     this.onNegotiationChange = this.onNegotiationChange.bind(this);
     this.onTechnicalConditionsTermsChange = this.onTechnicalConditionsTermsChange.bind(this);
+    this.onConnectionSchemeChange = this.onConnectionSchemeChange.bind(this);
+    this.onReconcileConnectionsWithChange = this.onReconcileConnectionsWithChange.bind(this);
+    this.onHeadCommentChange = this.onHeadCommentChange.bind(this);
   }
 
   onHeatResourceChange(e) {
@@ -464,16 +466,12 @@ class ShowApz extends React.Component {
     this.setState({ heatSupplySystemNote: e.target.value });
   }
 
-  onConnectionSchemeChange(scheme) {
-    this.setState({ connectionScheme: scheme });
+  onConnectionSchemeChange(e) {
+    this.setState({ connectionScheme: e.target.value });
   }
 
   onConnectionSchemeNoteChange(e) {
     this.setState({ connectionSchemeNote: e.target.value });
-  }
-
-  onAfterControlUnitInstallationChange(e) {
-    this.setState({ afterControlUnitInstallation: e.target.value });
   }
 
   onNegotiationChange(e) {
@@ -482,6 +480,14 @@ class ShowApz extends React.Component {
 
   onTechnicalConditionsTermsChange(e) {
     this.setState({ technicalConditionsTerms: e.target.value });
+  }
+
+  onReconcileConnectionsWithChange(e) {
+    this.setState({ reconcileConnectionsWith: e.target.value });
+  }
+
+  onHeadCommentChange(e) {
+    this.setState({ headComment: e.target.value });
   }
 
   onFileChange(e) {
@@ -560,7 +566,6 @@ class ShowApz extends React.Component {
           data.commission.apz_heat_response.heat_supply_system_note ? this.setState({heatSupplySystemNote: data.commission.apz_heat_response.heat_supply_system_note}) : this.setState({heatSupplySystemNote: ""});
           data.commission.apz_heat_response.connection_scheme ? this.setState({connectionScheme: data.commission.apz_heat_response.connection_scheme}) : this.setState({connectionScheme: ""});
           data.commission.apz_heat_response.connection_scheme_note ? this.setState({connectionSchemeNote: data.commission.apz_heat_response.connection_scheme_note}) : this.setState({connectionSchemeNote: ""});
-          data.commission.apz_heat_response.after_control_unit_installation ? this.setState({afterControlUnitInstallation: data.commission.apz_heat_response.after_control_unit_installation}) : this.setState({afterControlUnitInstallation: ""});
           data.commission.apz_heat_response.negotiation ? this.setState({negotiation: data.commission.apz_heat_response.negotiation}) : this.setState({negotiation: ""});
           data.commission.apz_heat_response.technical_conditions_terms ? this.setState({technicalConditionsTerms: data.commission.apz_heat_response.technical_conditions_terms}) : this.setState({technicalConditionsTerms: ""});
           this.setState({docNumber: data.commission.apz_heat_response.doc_number});
@@ -925,11 +930,6 @@ class ShowApz extends React.Component {
     var token = sessionStorage.getItem('tokenInfo');
     var file = this.state.file;
 
-    if (!file) {
-      alert('Не выбран файл');
-      return false;
-    }
-
     var formData = new FormData();
     formData.append('file', file);
     formData.append('Response', status);
@@ -968,7 +968,6 @@ class ShowApz extends React.Component {
       formData.append('Heat_supply_system_note', "");
       formData.append('Connection_scheme', "");
       formData.append('Connection_scheme_note', "");
-      formData.append('After_control_unit_installation', "");
       formData.append('Negotiation', "");
       formData.append('Technical_conditions_terms', "");
       formData.append('Water_in_contract_max', "");
@@ -1013,7 +1012,6 @@ class ShowApz extends React.Component {
       formData.append('Heat_supply_system_note', this.state.heatSupplySystemNote);
       formData.append('Connection_scheme', this.state.connectionScheme);
       formData.append('Connection_scheme_note', this.state.connectionSchemeNote);
-      formData.append('After_control_unit_installation', this.state.afterControlUnitInstallation);
       formData.append('Negotiation', this.state.negotiation);
       formData.append('Technical_conditions_terms', this.state.technicalConditionsTerms);
       formData.append('Water_in_contract_max', this.state.heatWaterMaxInContract);
@@ -1033,7 +1031,7 @@ class ShowApz extends React.Component {
         this.setState({response: data.response});
         this.setState({accept: data.response});
         data.response_text ? this.setState({description: data.response_text}) : this.setState({description: ""});
-        this.setState({responseFile: data.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+        data.files ? this.setState({responseFile: data.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]}) : this.setState({responseFile: null});
         data.connection_point ? this.setState({connectionPoint: data.connection_point}) : this.setState({connectionPoint: ""});
         data.resource ? this.setState({heatResource: data.resource}) : this.setState({heatResource: ""});
         data.load_contract_num ? this.setState({heatLoadContractNum: data.load_contract_num}) : this.setState({heatLoadContractNum: ""});
@@ -1067,7 +1065,6 @@ class ShowApz extends React.Component {
         data.heat_supply_system_note ? this.setState({heatSupplySystemNote: data.heat_supply_system_note}) : this.setState({heatSupplySystemNote: ""});
         data.connection_scheme ? this.setState({connectionScheme: data.connection_scheme}) : this.setState({connectionScheme: ""});
         data.connection_scheme_note ? this.setState({connectionSchemeNote: data.connection_scheme_note}) : this.setState({connectionSchemeNote: ""});
-        data.after_control_unit_installation ? this.setState({afterControlUnitInstallation: data.after_control_unit_installation}) : this.setState({afterControlUnitInstallation: ""});
         data.negotiation ? this.setState({negotiation: data.negotiation}) : this.setState({negotiation: ""});
         data.technical_conditions_terms ? this.setState({technicalConditionsTerms: data.technical_conditions_terms}) : this.setState({technicalConditionsTerms: ""});
         this.setState({docNumber: data.doc_number});
@@ -1131,6 +1128,11 @@ class ShowApz extends React.Component {
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
 
+    if (!comment) {
+      alert('Заполните поле "Комментарий"');
+      return false;
+    }
+
     var formData = new FormData();
     formData.append('status', status);
     formData.append('comment', comment);
@@ -1139,8 +1141,10 @@ class ShowApz extends React.Component {
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function () {
       if (xhr.status === 200) {
-        alert('Ответ успешно отправлен');
+        var data = JSON.parse(xhr.responseText);
+        alert('Комментарий успешно добавлен');
         this.setState({head_accepted: true});
+        this.setState({heads_responses: data.head_responses});
       }
       else if(xhr.status === 401){
         sessionStorage.clear();
@@ -1422,6 +1426,34 @@ printData()
         </div>
 
         <div className="col-sm-12">
+          {(!this.state.isHead && !this.state.isDirector) && this.state.heads_responses.length > 0 &&
+            <div style={{marginBottom: '50px'}}>
+              <h5 className="block-title-2 mt-4 mb-3">Комментарии:</h5>
+
+              <table className="table table-bordered table-striped">
+                <tbody>
+                  <tr>
+                    <th>ФИО</th>
+                    <th>Комментарий</th>
+                    <th>Дата</th>
+                  </tr>
+                  {this.state.heads_responses.map(function(item, index) {
+                    return(
+                      <tr key={index}>
+                        <td width="40%">
+                          {item.user.name} 
+                        </td>
+                        <td width="40%">{item.comments}</td>
+                        <td>{this.toDate(item.created_at)}</td>
+                      </tr>
+                      );
+                    }.bind(this))
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+
           <div className="row" style={{margin: '16px 0'}}>
             {(this.state.isPerformer === true || this.state.responseId != 0) &&
               <div className="col-sm-6">
@@ -1464,7 +1496,11 @@ printData()
                 </div>
                 <div className="form-group">
                   <label>Дополнительные условия и место подключения согласовать с</label>
-                  <input type="text" className="form-control" readOnly="readonly" placeholder="" value={this.state.reconcileConnectionsWith} />
+                  <select className="form-control" value={this.state.reconcileConnectionsWith} onChange={this.onReconcileConnectionsWithChange}>
+                    <option>ЦЭР ТОО «АлТС» (тел. 274-04-47).</option>
+                    <option>СВЭР ТОО «АлТС» (тел. 252-83-70).</option>
+                    <option>ЮЭР ТОО «АлТС» (тел. 382-54-32).</option>
+                  </select>
                 </div>
                 <div className="form-group">
                   <label>Условия подключения:</label>
@@ -1559,21 +1595,10 @@ printData()
               </div>
               <div className="col-sm-4">
                 <label style={{display: 'block'}}>Схема подключения:</label>
-                <input type="radio" value="" 
-                        checked={this.state.connectionScheme === "по зависимой схеме"} 
-                        onChange={this.onConnectionSchemeChange.bind(this, "по зависимой схеме")} />
-                <label style={{marginRight: '10px'}}>по зависимой схеме</label><br />
-                <input type="radio" value="" 
-                        checked={this.state.connectionScheme === "по независимой схеме"} 
-                        onChange={this.onConnectionSchemeChange.bind(this, "по независимой схеме")} />
-                <label>по независимой схеме</label><br /> <br />
+                <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" value={this.state.connectionScheme} onChange={this.onConnectionSchemeChange}></textarea>
                 <div className="form-group">
                   <label>Примечание к схеме подключения:</label>
                   <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.connectionSchemeNote} onChange={this.onConnectionSchemeNoteChange} />
-                </div>
-                <div className="form-group">
-                  <label>По завершении монтажа узла управления:</label>
-                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.afterControlUnitInstallation} onChange={this.onAfterControlUnitInstallationChange} />
                 </div>
                 <div className="form-group">
                   <label>Согласование:</label>
@@ -1780,20 +1805,22 @@ printData()
 
               {this.state.heads_responses.length > 0 &&
                 <div>
-                  <h5 className="block-title-2 mt-4 mb-3">Одобрили:</h5>
+                  <h5 className="block-title-2 mt-4 mb-3">Комментарии:</h5>
 
                   <table className="table table-bordered table-striped">
                     <tbody>
                       <tr>
                         <th>ФИО</th>
+                        <th>Комментарий</th>
                         <th>Дата</th>
                       </tr>
                       {this.state.heads_responses.map(function(item, index) {
                         return(
                           <tr key={index}>
-                            <td width="60%">
+                            <td width="40%">
                               {item.user.name} 
                             </td>
+                            <td width="40%">{item.comments}</td>
                             <td>{this.toDate(item.created_at)}</td>
                           </tr>
                           );
@@ -1804,11 +1831,12 @@ printData()
                 </div>
               }
 
-              {!this.state.head_accepted &&
+              {this.state.isHead &&
                 <div className={this.state.showButtons ? '' : 'invisible'}>
                   <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                    <button className="btn btn-raised btn-success" onClick={this.sendHeadResponse.bind(this, apz.id, true, "")}>
-                      Одобрить
+                    <textarea style={{marginBottom: '10px'}} placeholder="Комментарий" rows="7" cols="50" className="form-control" value={this.state.headComment} onChange={this.onHeadCommentChange}></textarea>
+                    <button className="btn btn-raised btn-success" onClick={this.sendHeadResponse.bind(this, apz.id, true, this.state.headComment)}>
+                      Отправить
                     </button>
                   </div>
                 </div>

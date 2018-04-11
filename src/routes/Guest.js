@@ -59,6 +59,8 @@ export default class Guest extends React.Component {
   }
 
   render() {
+    var roles = JSON.parse(sessionStorage.getItem('userRoles'));
+
     return (
       <div>
         {/*<div className="slide">
@@ -173,8 +175,11 @@ export default class Guest extends React.Component {
               <h5>Инструкции</h5>
               <div className="news manual">
               <ul>
+                {roles != null && roles[0] === 'Provider' &&
+                  <li><a target="_blank" href="/docs/manual_provider.pdf">Инструкция специалиста коммунальной службы по выдаче технических условий</a></li>
+                }
+
                 <li><a target="_blank" href="/docs/manual_user.pdf">Инструкция пользователя по созданию заявления на АПЗ</a></li>
-                <li><a target="_blank" href="/docs/manual_provider.pdf">Инструкция провайдера по выдаче технических условий</a></li>              
               </ul> 
               </div>
               <h5>Новости</h5>

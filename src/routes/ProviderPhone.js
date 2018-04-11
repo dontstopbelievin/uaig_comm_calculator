@@ -207,6 +207,7 @@ class ShowApz extends React.Component {
       personalIdFile: false,
       confirmedTaskFile: false,
       titleDocumentFile: false,
+      paymentPhotoFile: false,
       showMapText: 'Показать карту',
       accept: true,
       callSaveFromSend: false,
@@ -297,6 +298,7 @@ class ShowApz extends React.Component {
         this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
         this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
+        this.setState({paymentPhotoFile: data.files.filter(function(obj) { return obj.category_id === 20 })[0]});
 
         if (data.commission.apz_phone_response) {
           this.setState({description: data.commission.apz_phone_response.response_text});
@@ -933,6 +935,12 @@ printData()
                 <tr className="shukichi">
                   <td><b>Правоустанавл. документ</b></td>
                   <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>Скачать</a></td>
+                </tr>
+              }
+              {this.state.paymentPhotoFile &&
+                <tr className="shukichi">
+                  <td><b>Сканированный файл оплаты</b></td>
+                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.paymentPhotoFile.id)}>Скачать</a></td>
                 </tr>
               }
             </tbody>

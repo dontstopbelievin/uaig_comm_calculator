@@ -397,7 +397,7 @@ class AddApz extends React.Component {
           }
         });
       } else { console.log('session expired'); }
-    } else { alert('Сохранены не все вкладки'); 
+    } else { alert('Сохранены не все вкладки');
     this.setState({loaderHidden: true});
   }
   }
@@ -871,6 +871,12 @@ class AddApz extends React.Component {
                       <label htmlFor="PhoneCapacity">Телефонная емкость</label>
                       <input type="text" className="form-control" name="PhoneCapacity" placeholder="" />
                     </div>
+
+                  <div className="form-group">
+                    <label htmlFor="PhoneCapacity">Сканированный файл оплаты</label>
+                    <input type="file" required name="paymentPhotoFile" className="form-control" onChange={this.onPaymentPhotoFileChange}/>
+                    <span className="help-block">документ в формате pdf, doc, docx</span>
+                  </div>
                   </div>
                   <div className="col-md-6">
                     <div className="form-group">
@@ -884,11 +890,6 @@ class AddApz extends React.Component {
                   </div>
                 </div>
                 <div>
-                <div className="form-group">
-                      <label htmlFor="PhoneCapacity">Сканированный файл оплаты</label>
-                      <input type="file" required name="paymentPhotoFile" className="form-control" onChange={this.onPaymentPhotoFileChange}/>
-                      <span className="help-block">документ в формате pdf, doc, docx</span>
-                    </div>
                   <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                 </div>
                 </form>
@@ -1516,7 +1517,15 @@ class ShowApz extends React.Component {
     var apz = this.state.apz;
 
     if (apz.length === 0) {
-      return false;
+      return (
+        <div>
+          {!this.state.loaderHidden &&
+            <div style={{textAlign: 'center'}}>
+              <Loader type="Oval" color="#46B3F2" height="200" width="200" />
+            </div>
+          }
+        </div>
+      );
     }
 
     return (
@@ -1821,7 +1830,7 @@ class ShowApz extends React.Component {
                                     {apz.commission.apz_heat_response.blocks.length > 1 &&
                                       <h5>Здание №{index + 1}</h5>
                                     }
-                                    
+
                                     <table className="table table-bordered table-striped">
                                       <tbody>
                                         <tr>
