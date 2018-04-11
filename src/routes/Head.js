@@ -1104,13 +1104,13 @@ class ShowApz extends React.Component {
             </div>
 
             <div className="col-sm-6">
-              {Object.keys(apz.commission).length > 0 || this.state.showButtons ?
+              {apz.commission && (Object.keys(apz.commission).length > 0) || this.state.showButtons ?
                 <h5 className="block-title-2 mt-3 mb-3">Решение</h5>
                 :
                 ''
               }
 
-              {Object.keys(apz.commission).length > 0 &&
+              {apz.commission && (Object.keys(apz.commission).length > 0) &&
                 <table className="table table-bordered table-striped">
                   <tbody>
                     {apz.commission.apz_water_response &&

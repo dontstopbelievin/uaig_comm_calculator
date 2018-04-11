@@ -219,7 +219,8 @@ class ShowApz extends React.Component {
       isHead: (roles.indexOf('HeadPhone') != -1),
       isDirector: (roles.indexOf('DirectorPhone') != -1),
       heads_responses: [],
-      head_accepted: true
+      head_accepted: true,
+      headComment: null
     };
 
     this.onResponseServiceNumChange = this.onResponseServiceNumChange.bind(this);
@@ -231,6 +232,7 @@ class ShowApz extends React.Component {
     this.onFileChange = this.onFileChange.bind(this);
     this.saveResponseForm = this.saveResponseForm.bind(this);
     this.sendPhoneResponse = this.sendPhoneResponse.bind(this);
+    this.onHeadCommentChange = this.onHeadCommentChange.bind(this);
   }
 
   onResponseServiceNumChange(e) {
@@ -255,6 +257,10 @@ class ShowApz extends React.Component {
 
   onDescriptionChange(e) {
     this.setState({ description: e.target.value });
+  }
+
+  onHeadCommentChange(e) {
+    this.setState({ headComment: e.target.value });
   }
 
   onFileChange(e) {
@@ -737,12 +743,19 @@ class ShowApz extends React.Component {
     formData.append('status', status);
     formData.append('comment', comment);
 
+    if (!comment) {
+      alert('Заполните поле "Комментарий"');
+      return false;
+    }
+
     xhr.open("post", window.url + "api/apz/provider/headphone/" + apzId + '/response', true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function () {
       if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
         alert('Ответ успешно отправлен');
         this.setState({head_accepted: true});
+        this.setState({heads_responses: data.head_responses});
       }
       else if(xhr.status === 401){
         sessionStorage.clear();
@@ -1029,11 +1042,17 @@ printData()
                 <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
               </div>
               
-              {!this.state.xmlFile && !this.state.showSignButtons &&
+              {!this.state.xmlFile &&
                 <div className="form-group">
                   <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
                     Сохранить
                   </button>
+
+                  {this.state.responseFile &&
+                    <button type="button" className="btn btn-secondary" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>
+                      Предварительный просмотр
+                    </button>
+                  }
                 </div>
               }
             </form>
@@ -1075,42 +1094,6 @@ printData()
                   }
                 </tbody>
               </table>
-
-              {this.state.heads_responses.length > 0 &&
-                <div>
-                  <h5 className="block-title-2 mt-4 mb-3">Одобрили:</h5>
-
-                  <table className="table table-bordered table-striped">
-                    <tbody>
-                      <tr>
-                        <th>ФИО</th>
-                        <th>Дата</th>
-                      </tr>
-                      {this.state.heads_responses.map(function(item, index) {
-                        return(
-                          <tr key={index}>
-                            <td width="60%">
-                              {item.user.name} 
-                            </td>
-                            <td>{this.toDate(item.created_at)}</td>
-                          </tr>
-                          );
-                        }.bind(this))
-                      }
-                    </tbody>
-                  </table>
-                </div>
-              }
-
-              {!this.state.head_accepted &&
-                <div className={this.state.showButtons ? '' : 'invisible'}>
-                  <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                    <button className="btn btn-raised btn-success" onClick={this.sendHeadResponse.bind(this, apz.id, true, "")}>
-                      Одобрить
-                    </button>
-                  </div>
-                </div>
-              }
 
               {this.state.isDirector &&
                 <div>
@@ -1215,6 +1198,47 @@ printData()
               </tbody>
             </table>
           </div>
+        </div>
+
+        <div className="col-sm-12">
+          {this.state.heads_responses.length > 0 &&
+            <div>
+              <h5 className="block-title-2 mt-4 mb-3">Комментарии:</h5>
+
+              <table className="table table-bordered table-striped">
+                <tbody>
+                  <tr>
+                    <th>ФИО</th>
+                    <th>Комментарий</th>
+                    <th>Дата</th>
+                  </tr>
+                  {this.state.heads_responses.map(function(item, index) {
+                    return(
+                      <tr key={index}>
+                        <td width="40%">
+                          {item.user.name} 
+                        </td>
+                        <td width="40%">{item.comments}</td>
+                        <td>{this.toDate(item.created_at)}</td>
+                      </tr>
+                      );
+                    }.bind(this))
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+
+          {this.state.isHead &&
+            <div className={this.state.showButtons ? '' : 'invisible'}>
+              <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                <textarea style={{marginBottom: '10px'}} placeholder="Комментарий" rows="7" cols="50" className="form-control" value={this.state.headComment} onChange={this.onHeadCommentChange}></textarea>
+                <button className="btn btn-raised btn-success" onClick={this.sendHeadResponse.bind(this, apz.id, true, this.state.headComment)}>
+                  Отправить
+                </button>
+              </div>
+            </div>
+          }
         </div>
 
         <div className="col-sm-12">

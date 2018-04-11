@@ -781,7 +781,7 @@ class ShowApz extends React.Component {
         </button>
 
         <hr />
-        <Link className="btn btn-outline-secondary pull-right" to={'/providerelectro/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+        <Link className="btn btn-outline-secondary pull-right" to={'/apz_department/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
       </div>
     )
   }

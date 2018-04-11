@@ -576,7 +576,7 @@ class ShowApz extends React.Component {
           this.setState({xmlFile: data.commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 16})[0]});
         }
 
-        if (data.commission.apz_heat_response && data.commission.apz_heat_response.blocks) {
+        if (data.commission.apz_heat_response && data.commission.apz_heat_response.blocks && data.commission.apz_heat_response.blocks.length > 0) {
           var response_blocks = data.commission.apz_heat_response.blocks;
           
           for (var i = 0; i < response_blocks.length; i++) {
@@ -1625,11 +1625,17 @@ printData()
                   <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
                 </div>
 
-                {!this.state.xmlFile && !this.state.showSignButtons &&
+                {!this.state.xmlFile &&
                   <div className="form-group">
                     <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
                       Сохранить
                     </button>
+
+                    {this.state.responseFile &&
+                      <button type="button" className="btn btn-secondary" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>
+                        Предварительный просмотр
+                      </button>
+                    }
                   </div>
                 }
               </div>
