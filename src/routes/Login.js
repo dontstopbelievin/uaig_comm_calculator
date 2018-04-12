@@ -23,7 +23,8 @@ export default class Login extends Component {
       storageAlias: "PKCS12",
       openECP: false,
       closeecp: true,
-      inviseBtn: true
+      inviseBtn: true,
+        aboutNCALayer: false
     }
 
     this.onUsernameChange = this.onUsernameChange.bind(this);
@@ -52,7 +53,7 @@ export default class Login extends Component {
   }
 
   showAlert() {
-    $('#alertModal').modal('show');
+   this.setState({aboutNCALayer: true});
   }
 
   //user login function
@@ -490,10 +491,23 @@ export default class Login extends Component {
                       </form>
                     </div>
                     <div id="menu2" className="tab-pane fade">
-                      <p>&nbsp;</p>
+                        {this.state.aboutNCALayer &&
+                        <div className="modal-body">
+                            <h5 className="modal-title">Информация</h5>
+                            У вас не установлен/запущен NCALayer. <br/>Для авторизации/регистрации установите NCALayer
+                            на сайте НУЦ РК. <br/>
+                            Для установки пройдите по ссылке:&nbsp;
+                            <a onClick={() => document.getElementById("alertModalClose").click()}
+                               href="http://pki.gov.kz/index.php/ru/ncalayer" target="_blank">
+                                http://pki.gov.kz/index.php/ru/ncalayer</a>
+                        </div>
+                        }
                       {this.state.closeecp &&
                         <div>
                           <div className="form-group">
+                              <p style={{margin: '0px'}}>
+                                  &nbsp;
+                              </p>
                             <label className="control-label">Путь к ЭЦП
                               <input className="form-control" type="text" id="storagePath" readOnly />
                             </label>
@@ -506,6 +520,7 @@ export default class Login extends Component {
                             {this.state.inviseBtn &&
                             <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
                             }
+
                           </div>
                         </div>
                       }
@@ -548,26 +563,6 @@ export default class Login extends Component {
                   </div>
                 </div>    
               </div>
-          </div>
-        </div>
-        <div className="modal fade" id="alertModal" tabIndex="-1" role="dialog" aria-hidden="true">
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Информация</h5>
-                <button type="button" id="alertModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                У вас не установлен NCALayer. <br />Для авторизации/регистрации установите NCALayer на сайте НУЦ РК. <br /> 
-                Для установки пройдите по ссылке: 
-                <a onClick={() => document.getElementById("alertModalClose").click()} href="http://pki.gov.kz/index.php/ru/ncalayer" target="_blank"> http://pki.gov.kz/index.php/ru/ncalayer</a> 
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-              </div>
-            </div>
           </div>
         </div>
       </div>
