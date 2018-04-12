@@ -183,7 +183,7 @@ export default class Guest extends React.Component {
               </ul> 
               </div>
               <h5>Новости</h5>
-              <div className="news manual">
+              <div className="news manual newsform">
                  <ul>
                 <li><a target="_blank" href="/docs/kazakhstan_reformasy.pptx">О состоянии работ по улучшению позиции Казахстана в рейтинге «Doing Business»Всемирного банка по индикатору «Получение разрешения на строительство»Министерство по инвестициям и развитию Республики Казахстан</a></li>
               </ul>
