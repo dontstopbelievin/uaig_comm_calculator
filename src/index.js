@@ -69,14 +69,12 @@ export default class Main extends React.Component {
   componentWillMount() {
     this.setLang();
 
-    // window.url = 'http://uaig/';
-    // window.clientSecret = 'ISOzCLPBZCRLPz7V7bS9p7ysuaJUQIPC6N6COoH6'; // Nurseit
 
     window.url = 'http://api.uaig.kz:8880/';
     window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
 
-    // window.url = 'http://uaig/';
-    // window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // SERVER
+     //window.url = 'http://uaig/';
+     //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // SERVER
   }
 
   componentDidMount() {
@@ -99,6 +97,7 @@ export default class Main extends React.Component {
               <Route exact path="/" render={(props) => (<Guest {...props} />)} />
               <Route path="/map" render={(props) => (<MapView {...props} />)} />
               <Route path="/map2d" render={(props) => (<Map2dView {...props} />)} />
+              <Route path="/editPersonalData" render={(props) => (<EditData {...props} />)} />
               <Route path="/photos" render={(props) => (<Photos {...props} />)} />
               <Route path="/login" render={(props) => (<Login {...props} />)} />
               <Route path="/register" render={(props) => (<Register {...props} />)} />
