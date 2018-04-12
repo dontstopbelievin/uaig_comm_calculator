@@ -37,6 +37,7 @@ import Stats from './routes/Stats';
 import Footer from './components/Footer';
 import News from './routes/News';
 import NewsPanel from './routes/NewsPanel';
+import EditData from './routes/EditPersonalData'
 import Npm from './routes/Npm';
 import public_services from './routes/public_services';
 import permission_and_covoting from './routes/permission_and_covoting';
