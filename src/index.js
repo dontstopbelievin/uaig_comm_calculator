@@ -38,6 +38,7 @@ import Footer from './components/Footer';
 import News from './routes/News';
 import NewsPanel from './routes/NewsPanel';
 import EditData from './routes/EditPersonalData'
+import EditPassword from './routes/EditPassword'
 import Npm from './routes/Npm';
 import public_services from './routes/public_services';
 import permission_and_covoting from './routes/permission_and_covoting';
@@ -98,6 +99,7 @@ export default class Main extends React.Component {
               <Route path="/map" render={(props) => (<MapView {...props} />)} />
               <Route path="/map2d" render={(props) => (<Map2dView {...props} />)} />
               <Route path="/editPersonalData" render={(props) => (<EditData {...props} />)} />
+              <Route path="/editPassword" render={(props) => (<EditPassword {...props} />)} />
               <Route path="/photos" render={(props) => (<Photos {...props} />)} />
               <Route path="/login" render={(props) => (<Login {...props} />)} />
               <Route path="/register" render={(props) => (<Register {...props} />)} />

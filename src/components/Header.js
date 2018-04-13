@@ -323,6 +323,7 @@ class LogoutBtn extends Component {
     this.props.logout();
   }
 
+
   // gotoCabinet() {
   //   if(sessionStorage.getItem('tokenInfo')){
   //     var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];;
@@ -377,7 +378,7 @@ class LogoutBtn extends Component {
                   default: return null;
                 }
               })()}
-              <button className="dropdown-item">Изменить пароль</button>
+              <NavLink to={"/editPassword"} replace className="dropdown-item" activeClassName="active">Изменить пароль</NavLink>
               <button onClick={this.onLogout} className="dropdown-item" href="#">Выйти</button>
             </ul>
           </li>

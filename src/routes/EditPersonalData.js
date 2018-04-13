@@ -3,9 +3,7 @@ import { NavLink } from 'react-router-dom';
 import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../languages/header.json';
 import $ from 'jquery';
-import { Route, Link,  Switch, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
-import CKEditor from "react-ckeditor-component";
 
 
 let e = new LocalizedStrings({ru,kk});
