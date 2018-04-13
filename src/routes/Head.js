@@ -1353,7 +1353,7 @@ class ShowApz extends React.Component {
               </div>
             }
 
-            {this.state.heatResponseFile &&
+            {apz.commission && apz.commission.apz_heat_response &&
               <div className="modal fade" id="heat_provier_modal" tabIndex="-1" role="dialog" aria-hidden="true">
                 <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
                   <div className="modal-content">
@@ -1380,6 +1380,22 @@ class ShowApz extends React.Component {
                               <td>{apz.commission.apz_heat_response.load_contract_num}</td>
                             </tr>
                             <tr>
+                              <td><b>Отопление по договору</b></td>
+                              <td>{apz.commission.apz_heat_response.main_in_contract}</td>
+                            </tr>
+                            <tr>
+                              <td><b>Вентиляция по договору</b></td>
+                              <td>{apz.commission.apz_heat_response.ven_in_contract}</td>
+                            </tr>
+                            <tr>
+                              <td><b>Горячее водоснабжение по договору (ср/ч)</b></td>
+                              <td>{apz.commission.apz_heat_response.water_in_contract}</td>
+                            </tr>
+                            <tr>
+                              <td><b>Горячее водоснабжение по договору (макс/ч)</b></td>
+                              <td>{apz.commission.apz_heat_response.water_in_contract_max}</td>
+                            </tr>
+                            <tr>
                               <td><b>Дополнительное</b></td>
                               <td>{apz.commission.apz_heat_response.addition}</td>
                             </tr>
@@ -1387,10 +1403,14 @@ class ShowApz extends React.Component {
                               <td><b>Номер документа</b></td>
                               <td>{apz.commission.apz_heat_response.doc_number}</td> 
                             </tr>
-                            <tr>
-                              <td><b>Загруженный ТУ</b>:</td> 
-                              <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.heatResponseFile.id)}>Скачать</a></td>
-                            </tr>
+
+                            {this.state.heatResponseFile &&
+                              <tr>
+                                <td><b>Загруженный ТУ</b>:</td> 
+                                <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.heatResponseFile.id)}>Скачать</a></td>
+                              </tr>
+                            }
+                            
                             <tr>
                               <td><b>Сформированный ТУ</b></td>  
                               <td><a className="text-info pointer" onClick={this.printHeatTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
@@ -1432,22 +1452,6 @@ class ShowApz extends React.Component {
                                     <tr>
                                       <td><b>Горячее водоснабжение (макс/ч)</b></td>
                                       <td>{item.water_max}</td>
-                                    </tr>
-                                    <tr>
-                                      <td><b>Отопление по договору (Гкал/ч)</b></td>
-                                      <td>{item.main_in_contract}</td>
-                                    </tr>
-                                    <tr>
-                                      <td><b>Вентиляция по договору (Гкал/ч)</b></td>
-                                      <td>{item.ven_in_contract}</td>
-                                    </tr>
-                                    <tr>
-                                      <td><b>Горячее водоснабжение по договору (ср/ч)</b></td>
-                                      <td>{item.water_in_contract}</td>
-                                    </tr>
-                                    <tr>
-                                      <td><b>Горячее водоснабжение по договору (макс/ч)</b></td>
-                                      <td>{item.water_in_contract_max}</td>
                                     </tr>
                                   </tbody>
                                 </table>

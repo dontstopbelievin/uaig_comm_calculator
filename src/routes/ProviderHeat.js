@@ -240,14 +240,14 @@ class ShowApz extends React.Component {
       connectionTerms: "– Подключение выполнить по технологии присоединения к предызолированным трубопроводам. \n\n– Размещение зданий и сооружений Вашего объекта предусмотреть на расстоянии с учетом соблюдения охранной зоны тепловых сетей 2dy_____ мм, проложенных __________ Вашего объекта. В противном случае выполнить их вынос из-под пятна застройки с переключением существующих потребителей. Проект выноса тепловых сетей согласовать с ТОО «АлТС»",
       heatingNetworksDesign: "– Тепловые сети запроектировать с применением предварительно изолированных трубопроводов с устройством системы оперативного дистанционного контроля. Способ прокладки тепловых сетей определить проектом с учетом требований МСН 4.02-02-2004 «Тепловые сети». \n\n– После выполнения работ комплект исполнительной документации на бумажном носителе и в электронном исполнении, зарегистрированный в КГУ «Управление архитектуры и градостроительства г. Алматы», передать в ТОО «АлТС».",
       finalHeatLoads: "Окончательные тепловые нагрузки уточнить проектом и согласовать с Оперативно-диспетчерским управлением ТОО «АлТС» (тел.: 378-07-00, вн.1007). Договор на оказание услуг по передаче и распределению тепловой энергии будет заключен на согласованную уточненную тепловую нагрузку.\n\nВ соответствии с п. 12.1 СНиП РК 4.02-42-2006 «Отопление, вентиляция и кондиционирование» в системе вентиляции при обосновании предусмотреть устройства утилизации теплоты вентиляционных выбросов (рекуперация, рециркуляция вытяжного воздуха) с учетом пунктов 12.2, 12.5 СНиП РК 4.02-42-2006 «Отопление, вентиляция и кондиционирование».",
-      heatNetworksRelaying: "– В связи с увеличением циркуляционного расхода выполнить перекладку тепловых сетей от ТК ___ до ТК ___ с увеличением диаметра с 2Dу___ мм на 2Dу___ мм. Реконструируемые тепловые сети в установленном порядке передать на баланс ТОО «АлТС». \n\n– Выполнить поверочный расчет диаметров трубопроводов внутриплощадочных тепловых сетей с учетом дополнительно подключаемой нагрузки. В случае необходимости – выполнить их замену.",
+      heatNetworksRelaying: "– В связи с увеличением циркуляционного расхода выполнить перекладку тепловых сетей от ТК ___ до ТК ___ с увеличением диаметра с 2Dу___ мм на 2Dу___ мм. Реконструируемые тепловые сети в установленном порядке передать на баланс ТОО «АлТС». \n\n- Выполнить поверочный расчет диаметров трубопроводов внутриплощадочных тепловых сетей с учетом дополнительно подключаемой нагрузки. В случае необходимости – выполнить их замену. \n\n– Выполнить поверочный расчет диаметров трубопроводов внутриплощадочных тепловых сетей с учетом дополнительно подключаемой нагрузки. В случае необходимости – выполнить их замену.",
       condensateReturn: "Возврат конденсата не предусмотрен.",
       thermalEnergyMeters: "На вводе для каждой категории абонентов установить прибор учета тепловой энергии, оборудованный модемной связью. Системы отопления и горячего водоснабжения каждой квартиры оборудовать индивидуальными приборами учета расхода теплоты и горячей воды с возможностью дистанционного снятия показаний. Проект на установку системы учета, схему организации учета, место установки приборов учета согласовать со Службой контроля приборов учета тепловой энергии ТОО «АлТС» (тел.: 341-07-77, вн. 2140).",
       heatSupplySystem: "Открытая",
       heatSupplySystemNote: "- Предусмотреть догрев ГВС в межотопительный период \n\n- Предусмотреть тепловую изоляцию разводящих трубопроводов и стояков системы горячего водоснабжения. При присоединении распределительной гребенки индивидуальных потребителей к стояку общедомовой системы горячего водоснабжения предусмотреть установку обратного клапана",
-      connectionScheme: "по зависимой схеме\nпо независимой схеме",
+      connectionScheme: "а) узел управления с автоматическим регулированием теплопотребления по зависимой схеме.\nб) узел управления с автоматическим регулированием теплопотребления по независимой схеме.",
       connectionSchemeNote: "В случае применения в системе отопления трубопроводов из полимерных материалов – проектирование вести с учетом требований п. 7.1.3 СНиП РК 4.02-42-2006 «Отопление, вентиляция и кондиционирование». По завершении монтажа узла управления выполнить пуско-наладочные работы по автоматизации теплового пункта.",
-      negotiation: "После предварительного согласования с ЦЭР ТОО «АлТС» проектную документацию (чертежи марки ОВ, ТС, сводный план инженерных сетей) согласовать с Техническим отделом ТОО «АлТС» (тел.: 378-07-00, вн. 1023). \n\nСогласованный проект на бумажном и электронном носителях предоставить в ТОО «АлТС».",
+      negotiation: "После предварительного согласования с ЦЭР/СВЭР/ЮЭР ТОО «АлТС» проектную документацию (чертежи марки ОВ, ТС, сводный план инженерных сетей) согласовать с Техническим отделом ТОО «АлТС» (тел.: 378-07-00, вн. 1023). \n\nСогласованный проект на бумажном и электронном носителях предоставить в ТОО «АлТС».",
       technicalConditionsTerms: "нормативный период проектирования и строительства, предусмотренный в проектно-сметной документации.",
       isPerformer: (roles.indexOf('PerformerHeat') != -1),
       isHead: (roles.indexOf('HeadHeat') != -1),
@@ -338,32 +338,20 @@ class ShowApz extends React.Component {
     this.setState({ heatBlocks: blocks });
   }
 
-  onHeatMainInContractChange(key, e) {
-    var blocks = this.state.heatBlocks;
-    blocks[key]["main_in_contract"] = e.target.value;
-
-    this.setState({ heatBlocks: blocks });
+  onHeatMainInContractChange(e) {
+    this.setState({ heatMainInContract: e.target.value });
   }
 
-  onHeatVenInContractChange(key, e) {
-    var blocks = this.state.heatBlocks;
-    blocks[key]["ven_in_contract"] = e.target.value;
-
-    this.setState({ heatBlocks: blocks });
+  onHeatVenInContractChange(e) {
+    this.setState({ heatVenInContract: e.target.value });
   }
 
-  onHeatWaterInContractChange(key, e) {
-    var blocks = this.state.heatBlocks;
-    blocks[key]["water_in_contract"] = e.target.value;
-
-    this.setState({ heatBlocks: blocks });
+  onHeatWaterInContractChange(e) {
+    this.setState({ heatWaterInContract: e.target.value });
   }
 
-  onHeatWaterMaxInContractChange(key, e) {
-    var blocks = this.state.heatBlocks;
-    blocks[key]["water_max_in_contract"] = e.target.value;
-
-    this.setState({ heatBlocks: blocks });
+  onHeatWaterMaxInContractChange(e) {
+    this.setState({ heatWaterMaxInContract: e.target.value });
   }
 
   onConnectionPointChange(e) {
@@ -536,10 +524,10 @@ class ShowApz extends React.Component {
           data.commission.apz_heat_response.connection_point ? this.setState({connectionPoint: data.commission.apz_heat_response.connection_point}) : this.setState({connectionPoint: ""});
           data.commission.apz_heat_response.resource ? this.setState({heatResource: data.commission.apz_heat_response.resource}) : this.setState({heatResource: ""});
           data.commission.apz_heat_response.load_contract_num ? this.setState({heatLoadContractNum: data.commission.apz_heat_response.load_contract_num}) : this.setState({heatLoadContractNum: ""});
-          // data.commission.apz_heat_response.main_in_contract ? this.setState({heatMainInContract: data.commission.apz_heat_response.main_in_contract}) : this.setState({heatMainInContract: ""});
-          // data.commission.apz_heat_response.ven_in_contract ? this.setState({heatVenInContract: data.commission.apz_heat_response.ven_in_contract}) : this.setState({heatVenInContract: ""});
-          // data.commission.apz_heat_response.water_in_contract ? this.setState({heatWaterInContract: data.commission.apz_heat_response.water_in_contract}) : this.setState({heatWaterInContract: ""});
-          // data.commission.apz_heat_response.water_in_contract_max ? this.setState({heatWaterMaxInContract: data.commission.apz_heat_response.water_in_contract_max}) : this.setState({heatWaterMaxInContract: ""});
+          data.commission.apz_heat_response.main_in_contract ? this.setState({heatMainInContract: data.commission.apz_heat_response.main_in_contract}) : this.setState({heatMainInContract: ""});
+          data.commission.apz_heat_response.ven_in_contract ? this.setState({heatVenInContract: data.commission.apz_heat_response.ven_in_contract}) : this.setState({heatVenInContract: ""});
+          data.commission.apz_heat_response.water_in_contract ? this.setState({heatWaterInContract: data.commission.apz_heat_response.water_in_contract}) : this.setState({heatWaterInContract: ""});
+          data.commission.apz_heat_response.water_in_contract_max ? this.setState({heatWaterMaxInContract: data.commission.apz_heat_response.water_in_contract_max}) : this.setState({heatWaterMaxInContract: ""});
           data.commission.apz_heat_response.addition ? this.setState({addition: data.commission.apz_heat_response.addition}) : this.setState({addition: ""});
           data.commission.apz_heat_response.transporter ? this.setState({heatTransporter: data.commission.apz_heat_response.transporter}) : this.setState({heatTransporter: "2-трубной схеме"}); 
           data.commission.apz_heat_response.two_pipe_pressure_in_tc ? this.setState({twoPipeTcName: data.commission.apz_heat_response.two_pipe_tc_name}) : this.setState({twoPipeTcName: ""});
@@ -587,11 +575,7 @@ class ShowApz extends React.Component {
               main: response_blocks[i].main,
               ven: response_blocks[i].ven,
               water: response_blocks[i].water,
-              waterMax: response_blocks[i].water_max,
-              main_in_contract: response_blocks[i].main_in_contract,
-              ven_in_contract: response_blocks[i].ven_in_contract,
-              water_in_contract: response_blocks[i].water_in_contract,
-              water_max_in_contract: response_blocks[i].water_in_contract_max
+              waterMax: response_blocks[i].water_max
             };
 
             this.setState({heatBlocks: blocks});
@@ -976,14 +960,10 @@ class ShowApz extends React.Component {
       formData.append('HeatResource', this.state.heatResource);
       formData.append('HeatSecondResource', this.state.heatSecondResource);
       formData.append('HeatLoadContractNum', this.state.heatLoadContractNum);
-      // formData.append('HeatMainInContract', this.state.heatMainInContract);
-      // formData.append('HeatVenInContract', this.state.heatVenInContract);
-      // formData.append('HeatWaterInContract', this.state.heatWaterInContract);
-
-      // for (var i = 0; i < this.state.heatBlocks.length; i++) {
-      //   formData.append('heatBlocks[' + i + ']', JSON.stringify(this.state.heatBlocks[i]));
-      // }
-
+      formData.append('HeatMainInContract', this.state.heatMainInContract);
+      formData.append('HeatVenInContract', this.state.heatVenInContract);
+      formData.append('HeatWaterInContract', this.state.heatWaterInContract);
+      formData.append('HeatWaterMaxInContract', this.state.heatWaterMaxInContract);
       formData.append('heatBlocks', JSON.stringify(this.state.heatBlocks));
       formData.append('ConnectionPoint', this.state.connectionPoint);
       formData.append('Addition', this.state.addition);
@@ -1014,7 +994,6 @@ class ShowApz extends React.Component {
       formData.append('Connection_scheme_note', this.state.connectionSchemeNote);
       formData.append('Negotiation', this.state.negotiation);
       formData.append('Technical_conditions_terms', this.state.technicalConditionsTerms);
-      formData.append('Water_in_contract_max', this.state.heatWaterMaxInContract);
     }
     formData.append('DocNumber', this.state.docNumber);
     formData.append('Name', "");
@@ -1255,8 +1234,6 @@ printData()
     if(date === null) {
       return date;
     }
-    
-  
 
     var jDate = new Date(date);
     var curr_date = jDate.getDate();
@@ -1594,6 +1571,27 @@ printData()
                 </div>
               </div>
               <div className="col-sm-4">
+
+                <div className="form-group">
+                  <label htmlFor="HeatMain">Отопление по договору<br />(Гкал/ч)</label>
+                  <input type="number" step="0.1" className="form-control" value={this.state.heatMainInContract} onChange={this.onHeatMainInContractChange} />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="HeatVentilation">Вентиляция по договору<br />(Гкал/ч)</label>
+                  <input type="number" step="0.1" className="form-control" value={this.state.heatVenInContract} onChange={this.onHeatVenInContractChange} />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="HeatWater">Горячее водоснабжение по договору (макс/ч)</label>
+                  <input type="number" step="0.1" className="form-control" value={this.state.heatWaterMaxInContract} onChange={this.onHeatWaterMaxInContractChange} />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="HeatWater">Горячее водоснабжение по договору (ср/ч)</label>
+                  <input type="number" step="0.1" className="form-control" value={this.state.heatWaterInContract} onChange={this.onHeatWaterInContractChange} />
+                </div>
+
                 <label style={{display: 'block'}}>Схема подключения:</label>
                 <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" value={this.state.connectionScheme} onChange={this.onConnectionSchemeChange}></textarea>
                 <div className="form-group">
@@ -1624,20 +1622,6 @@ printData()
                   <label htmlFor="upload_file">Прикрепить файл</label>
                   <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
                 </div>
-
-                {!this.state.xmlFile &&
-                  <div className="form-group">
-                    <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
-                      Сохранить
-                    </button>
-
-                    {this.state.responseFile &&
-                      <button type="button" className="btn btn-secondary" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>
-                        Предварительный просмотр
-                      </button>
-                    }
-                  </div>
-                }
               </div>
 
               {this.state.heatBlocks.length > 0 &&
@@ -1670,34 +1654,25 @@ printData()
                               <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].water} onChange={this.onHeatWaterChange.bind(this, index)} />
                             </div>
                           </div>
-
-                          <div className="col-md-3">
-                            <div className="form-group">
-                              <label htmlFor="HeatMain">Отопление по договору<br />(Гкал/ч)</label>
-                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].main_in_contract} onChange={this.onHeatMainInContractChange.bind(this, index)} />
-                            </div>
-                          </div>
-                          <div className="col-md-3">
-                            <div className="form-group">
-                              <label htmlFor="HeatVentilation">Вентиляция по договору<br />(Гкал/ч)</label>
-                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].ven_in_contract} onChange={this.onHeatVenInContractChange.bind(this, index)} />
-                            </div>
-                          </div>
-                          <div className="col-md-3">
-                            <div className="form-group">
-                              <label htmlFor="HeatWater">Горячее водоснабжение по договору (макс/ч)</label>
-                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].water_max_in_contract} onChange={this.onHeatWaterMaxInContractChange.bind(this, index)} />
-                            </div>
-                          </div>
-                          <div className="col-md-3">
-                            <div className="form-group">
-                              <label htmlFor="HeatWater">Горячее водоснабжение по договору (ср/ч)</label>
-                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].water_in_contract} onChange={this.onHeatWaterInContractChange.bind(this, index)} />
-                            </div>
-                          </div>
                         </div>
                       );
                     }.bind(this))}
+                  </div>
+                </div>
+              }
+
+              {!this.state.xmlFile &&
+                <div className="col-sm-12">
+                  <div className="form-group">
+                    <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
+                      Сохранить
+                    </button>
+
+                    {this.state.responseFile &&
+                      <button type="button" className="btn btn-secondary" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>
+                        Предварительный просмотр
+                      </button>
+                    }
                   </div>
                 </div>
               }
@@ -1779,27 +1754,6 @@ printData()
                             <tr>
                               <td>Горячее водоснаб. (макс/ч)</td>
                               <td>{item.water_max}</td>
-                            </tr>
-                          </tbody>
-                        </table>
-
-                        <table className="table table-bordered table-striped">
-                          <tbody>
-                            <tr>
-                              <td style={{width: '40%'}}>Отопление по договору (Гкал/ч)</td>
-                              <td>{item.main_in_contract}</td>
-                            </tr>
-                            <tr>
-                              <td>Вентиляция по договору (Гкал/ч)</td>
-                              <td>{item.ven_in_contract}</td>
-                            </tr>
-                            <tr>
-                              <td>Горячее водоснабжение по договору (ср/ч)</td>
-                              <td>{item.water_in_contract}</td>
-                            </tr>
-                            <tr>
-                              <td>Горячее водоснабжение по договору (макс/ч)</td>
-                              <td>{item.water_in_contract_max}</td>
                             </tr>
                           </tbody>
                         </table>

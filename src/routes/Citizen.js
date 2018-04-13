@@ -1835,15 +1835,15 @@ class ShowApz extends React.Component {
                                       <tbody>
                                         <tr>
                                           <td style={{width: '50%'}}><b>Отопление (Гкал/ч)</b></td>
-                                          <td>{item.main_in_contract}</td>
+                                          <td>{item.main}</td>
                                         </tr>
                                         <tr>
                                           <td><b>Вентиляция (Гкал/ч)</b></td>
-                                          <td>{item.ven_in_contract}</td>
+                                          <td>{item.ven}</td>
                                         </tr>
                                         <tr>
                                           <td><b>Горячее водоснаб.(Гкал/ч)</b></td>
-                                          <td>{item.water_in_contract}</td>
+                                          <td>{item.water}</td>
                                         </tr>
                                       </tbody>
                                     </table>
