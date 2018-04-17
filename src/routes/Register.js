@@ -425,15 +425,15 @@ export default class Register extends React.Component {
                       </div>
                       <div className="form-group">
                         <label>E-mail:</label>
-                        <input type="email" className="form-control" required value={this.state.email} onChange={(e) => this.setState({email: e.target.value})} />
+                        <input type="email" className="form-control no-bg" required value={this.state.email} onChange={(e) => this.setState({email: e.target.value})} />
                       </div>
                       <div className="form-group">
                         <label>Пароль:</label>
-                        <input type="password" className="form-control" required value={this.state.pwd} onChange={(e) => this.setState({pwd: e.target.value})} />
+                        <input type="password" className="form-control no-bg" required value={this.state.pwd} onChange={(e) => this.setState({pwd: e.target.value})} />
                       </div>
                       <div className="form-group">
                         <label>Подтвердите Пароль:</label>
-                        <input type="password" className="form-control" required value={this.state.confirmPwd} onChange={(e) => this.setState({confirmPwd: e.target.value})} />
+                        <input type="password" className="form-control no-bg" required value={this.state.confirmPwd} onChange={(e) => this.setState({confirmPwd: e.target.value})} />
                       </div>
                       <div className="modal-footer">
                         <button type="button" className="btn btn-primary" onClick={this.register.bind(this)}>Регистрация</button>

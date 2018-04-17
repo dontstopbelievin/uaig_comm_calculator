@@ -10,7 +10,7 @@ import Loader from 'react-loader-spinner';
 export default class Citizen extends React.Component {
   render() {
     return (
-      <div className="content container citizen-apz-list-page">
+      <div className="content container body-content citizen-apz-list-page">
         <div className="card">
           <div className="card-header">
               <h4 className="mb-0 mt-2">Архитектурно-планировочное задание</h4>

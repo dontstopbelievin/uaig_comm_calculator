@@ -92,7 +92,7 @@ export default class Login extends Component {
         if (xhr.status === 200) {
           this.setState({loaderHidden: true});
           console.log("loggedIn");
-          //console.log(e.target.response);
+          console.log(e.target.response);
           var roles = [JSON.parse(e.target.response).role1];
           if(JSON.parse(e.target.response).role2)
             roles.push(JSON.parse(e.target.response).role2);
@@ -446,7 +446,7 @@ export default class Login extends Component {
                         </div>
                         <div className="form-group">
                           <label className="control-label">Пароль:</label>
-                          <input type="password" className="form-control" value={this.state.pwd} onChange={this.onPwdChange} required />
+                          <input type="password" className="form-control no-bg" value={this.state.pwd} onChange={this.onPwdChange} required />
                         </div>
                         <div className="modal-footer">
                           {!this.state.loaderHidden &&
@@ -480,7 +480,7 @@ export default class Login extends Component {
                         <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
                       </div>
 
-                      <form id="loginForm" onSubmit={this.login}>
+                      <form id="loginForm2" onSubmit={this.login}>
                         <div className="form-group">
                           <label className="control-label">ИИН/БИН:</label>
                           <input type="text" className="form-control" value={this.state.username} readOnly required />
