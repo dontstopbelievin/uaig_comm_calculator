@@ -1835,15 +1835,15 @@ class ShowApz extends React.Component {
                                       <tbody>
                                         <tr>
                                           <td style={{width: '50%'}}><b>Отопление (Гкал/ч)</b></td>
-                                          <td>{item.main}</td>
+                                          <td>{item.main_in_contract}</td>
                                         </tr>
                                         <tr>
                                           <td><b>Вентиляция (Гкал/ч)</b></td>
-                                          <td>{item.ven}</td>
+                                          <td>{item.ven_in_contract}</td>
                                         </tr>
                                         <tr>
                                           <td><b>Горячее водоснаб.(Гкал/ч)</b></td>
-                                          <td>{item.water}</td>
+                                          <td>{item.water_in_contract}</td>
                                         </tr>
                                       </tbody>
                                     </table>
@@ -2405,44 +2405,104 @@ class ShowStatusBar extends React.Component {
         <div className="row statusBar">
           {/*<div id="infoDiv">Нажмите на участок или объект, чтобы получить информацию</div>*/}
           {/*<div id="viewDiv"></div>*/}
-          <div className="progressBar">
-            <div className={this.getStatusForArch(this.props.apz.status, this.props.apz.RegionDate, this.props.apz.RegionResponse)}>
-              <span className="label">1</span>
-              <span className="title">Районный архитектор</span>
-            </div>
-            <span className="bar"></span>
-            <div className="box">
-              <div className={this.getStatusForProvider(this.props.apz.Status, this.props.apz.ApzWaterStatus)}>
-                <span className="label">2</span>
-                <span className="title">Поставщик (вода) </span>
-              </div>
-              <span className="bar"></span>
-              <div className={this.getStatusForProvider(this.props.apz.Status, this.props.apz.ApzGasStatus)}>
-                <span className="label">2</span>
-                <span className="title">Поставщик (газ)</span>
-              </div>
-              <span className="bar"></span>
-              <div className={this.getStatusForProvider(this.props.apz.Status, this.props.apz.ApzHeatStatus)}>
-                <span className="label">2</span>
-                <span className="title">Поставщик (тепло)</span>
-              </div>
-              <span className="bar"></span>
-              <div className={this.getStatusForProvider(this.props.apz.Status, this.props.apz.ApzElectricityStatus)}>
-                <span className="label">2</span>
-                <span className="title">Поставщик (электр)</span>
-              </div>
-              <span className="bar"></span>
-              <div className={this.getStatusForProvider(this.props.apz.Status, this.props.apz.ApzPhoneStatus)}>
-                <span className="label">2</span>
-                <span className="title">Поставщик (телефон)</span>
-              </div>
-            </div>
-            <span className="bar"></span>
-            <div className={this.getStatusForHeadArch(this.props.apz.Status, this.props.apz.HeadDate, this.props.apz.HeadResponse)}>
-              <span className="label">3</span>
-              <span className="title">Главный архитектор</span>
-            </div>
+          <div className="progressBar container">
+            <ul className="timeline">
+              <li>
+                <div className="timestamp">
+                  <span>
+                    <p>Районный архитектор</p>
+                    <div className="status">
+                      <p>Одобрено</p>
+                    </div>
+                  </span>
+                </div>
+              </li>
+              <li>
+                <div className="timestamp">
+                  <span>
+                    <p>Инженер</p>
+                    <div className="status">
+                      <p>Одобрено</p>
+                    </div>
+                  </span>
+                </div>
+              </li>
+              <li>
+                <div className="timestamp">
+                  <span>
+                    <p>Коммунальные службы</p>
+                    <div className="status">
+                      <div className="komStatus">
+                                <ul>
+                                    <li className="li complete">
+                                        <div className="timestamp">
+                                          <img src="./images/success.png" alt="success"/>
+                                          <span className="author">Алматы Су</span>
+                                        </div>
+                                    </li>
+                                    <li className=" li complete">
+                                        <div className="timestamp">
+                                          <img src="./images/success.png" alt="success"/>
+                                          <span className="author">Алматы Телеком</span>
+                                        </div>
+                                    </li>
+                                    <li className="li complete">
+                                        <div className="timestamp">
+                                          <img src="./images/error.png" alt="error"/>
+                                          <span className="author">Алатау Жарык Компаниясы</span>
+                                        </div>
+                                    </li>
+                                    <li className="li complete">
+                                        <div className="timestamp">
+                                          <img src="./images/success.png" alt="success"/>
+                                          <span className="author">КазТрансГаз</span>
+                                        </div>
+                                    </li>
+                                    <li className="li complete">
+                                        <div className="timestamp">
+                                          <img src="./images/success.png" alt="success"/>
+                                          <span className="author">Тепловые сети Алматы</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                      </div>
+                    </div>
+                  </span>
+                </div>
+              </li>
+              <li>
+                <div className="timestamp">
+                  <span>
+                    <p>Инженер</p>
+                    <div className="status">
+                      <p>Одобрено</p>
+                    </div>
+                  </span>
+                </div>
+              </li>
+              <li>
+                <div className="timestamp">
+                  <span>
+                    <p>Отдел АПЗ</p>
+                    <div className="status">
+                      <p>Одобрено</p>
+                    </div>
+                  </span>
+                </div>
+              </li>
+              <li>
+                <div className="timestamp">
+                  <span>
+                    <p>Главный архитектор</p>
+                    <div className="status">
+                      <p>Одобрено</p>
+                    </div>
+                  </span>
+                </div>
+              </li>
+            </ul>
           </div>
+          <br />
           <div className="row actionDate">
             <div className="col-2" style={{padding: '0'}}></div>
             <div className="col-8" style={{padding: '0', fontSize: '0.9em'}}>
