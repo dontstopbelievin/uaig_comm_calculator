@@ -49,13 +49,15 @@ import Engineer from './routes/Engineer.js';
 import Apz from './routes/Apz.js';
 import DoingBusiness from './routes/DoingBusiness.js';
 import ApzDepartment from './routes/ApzDepartment.js';
-import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.min.js';
+import PopperJs from 'popper.js';
 // import tether from 'tether';
 // global.Tether = tether;
 //import 'bootstrap/dist/css/bootstrap.min.css';
 
 window.jQuery = require('jquery');
-window.Popper = require('popper.js').default;
+// window.Popper = require('popper.js').default;
 
 //require('bootstrap-material-design');
 //require('./assets/css/style.css');

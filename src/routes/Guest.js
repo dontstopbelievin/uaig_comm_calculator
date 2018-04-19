@@ -95,7 +95,7 @@ export default class Guest extends React.Component {
                           Выдача справки по определению адреса объектов недвижимости
                         </p>
                       </div>
-                      <div className="card-footer">
+                      <div>
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
                         {this.state.tokenExists && <NavLink to={"/"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
@@ -114,7 +114,7 @@ export default class Guest extends React.Component {
                           Выдача архитектурно-планировочного задания
                         </p>
                       </div>
-                      <div className="card-footer">
+                      <div>
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
                         {this.state.tokenExists && this.state.rolename === 'Admin' && <NavLink to={"/admin"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/citizen"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
@@ -139,7 +139,7 @@ export default class Guest extends React.Component {
                           Выдача решения на фотоотчет
                         </p>
                       </div>
-                      <div className="card-footer">
+                      <div>
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
                         {this.state.tokenExists && <NavLink to={"/"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
@@ -159,7 +159,7 @@ export default class Guest extends React.Component {
                           Выдача решения о строительстве культовых зданий (сооружений), определении их месторасположения
                         </p>
                       </div>
-                      <div className="card-footer">
+                      <div>
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
                         {this.state.tokenExists && <NavLink to={"/"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
@@ -177,7 +177,7 @@ export default class Guest extends React.Component {
                           Выдача решения о перепрофилировании (изменении функционального назначения) зданий (сооружений) в культовые здания (сооружения)
                         </p>
                       </div>
-                      <div className="card-footer">
+                      <div>
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
                         {this.state.tokenExists && <NavLink to={"/"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
@@ -195,7 +195,7 @@ export default class Guest extends React.Component {
                           Предоставление земельного участка для строительства объекта в черте населенного пункта
                         </p>
                       </div>
-                      <div className="card-footer">
+                      <div>
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
                         {this.state.tokenExists && <NavLink to={"/"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
@@ -417,10 +417,10 @@ class AlertModal extends React.Component {
           <ModalHeader toggle={this.toggle}>Информация</ModalHeader>
           <ModalBody>
             Вам надо 
-            <NavLink to={"/login"} tag={RRNavLink} className="navLink" replace onClick={() => document.getElementById("alertModalClose").click()}>
+            <NavLink to={"/login"} tag={RRNavLink} className="navLink" replace>
               войти
             </NavLink> в систему или 
-            <NavLink to={"/register"} tag={RRNavLink} className="navLink" replace onClick={() => document.getElementById("alertModalClose").click()}>
+            <NavLink to={"/register"} tag={RRNavLink} className="navLink" replace>
               зарегистрироваться
             </NavLink>
           </ModalBody>

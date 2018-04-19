@@ -154,7 +154,7 @@ export default class Header extends React.Component {
                 </div> 
                 <div className="col-md-12 text-center site-logo">
                   <img className="image-fluid" width="90" src="./images/logo.png" alt="Управление Архитектуры и Градостроительства города Алматы" />
-                  <h4 className="text-white font-weight-bold ">Управление<br /> Архитектуры и Градостроительства<br /> города Алматы</h4>
+                  <h4 className="text-white font-weight-bold ">{e.title}</h4>
                 </div>   
               </div>
             </div>
@@ -377,7 +377,7 @@ class CitizenMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/citizen"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
+        <NavLink to={"/citizen"} tag={RRNavLink} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
         <NavLink to={"/sketch"} replace className="dropdown-item" activeClassName="active">Заявления эскизного проекта</NavLink>
         <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Мои файлы</NavLink>

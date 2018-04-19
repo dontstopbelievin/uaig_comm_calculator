@@ -418,7 +418,7 @@ export default class Login extends Component {
     // console.log(window.checkToken);
     //console.log("rendering the LoginComponent");
     return (
-      <div>
+      <div className="container">
         <div id="loginModal" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div className="modal-dialog" role="document">
               <div className="modal-content">

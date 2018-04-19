@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "bootstrap": "^4.0.0-alpha.6",
+    "bootstrap": "^4.0.0",
     "bootstrap-material-design": "^4.0.0-beta.4",
     "esri-loader": "^1.5.0",
     "esri-loader-react": "^2.0.3",
@@ -12,7 +12,7 @@
     "jquery": "^3.2.1",
     "jquery-serializejson": "^2.8.1",
     "jquery-validation": "^1.17.0",
-    "popper.js": "^1.12.7",
+    "popper.js": "^1.14.3",
     "react": "^16.3.1",
     "react-addons-css-transition-group": "^15.6.2",
     "react-addons-transition-group": "^15.6.2",

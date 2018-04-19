@@ -118,7 +118,8 @@ input[type=text]:focus {
 }
 
 .map{
-    margin-top: 8px;
+	color: darkblue;
+    margin-top: 7px;
 }
 
 .map a:hover{
