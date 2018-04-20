@@ -7,14 +7,13 @@
   background: url(/images/header.png) left 30% repeat #fff;
   color: #fff;
 }
-.header:before {
+/*.header:before {
   content: "";
   position:absolute;
   width: 100%;
   height: 115px;
-  background: rgba(0,0,0,0.5);
-  
-}
+  background: rgba(0,0,0,0.5);  
+}*/
 
 .news {
   padding-bottom: 500px;
@@ -163,8 +162,6 @@
   padding: 10px 0;
 }
 
-
-
 /*.navbar {
     margin-bottom: 30px;
 }*/
@@ -219,7 +216,7 @@ thead {
 .slide {
   width: 100%;
   height: 600px;
-  background: url('http://almaty.uaig.kz/wp-content/uploads/2017/08/cropped-1.jpg') top center no-repeat;
+  /*background: url('http://almaty.uaig.kz/wp-content/uploads/2017/08/cropped-1.jpg') top center no-repeat;*/
   background-size: cover;
   text-align: center;
   color: #fff;
@@ -614,64 +611,6 @@ ul.header li a {
   line-height: 50px;
 }
 
-/* Dropdown styles*/
-
-/* Set the parent <li>’s CSS position property to ‘relative’. */
-ul.main-dd-menu {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  text-align: center;
-  background: lightgreen;
-  padding: 5px;
-}
-
-ul.main-dd-menu li {
-  display: block;
-  position: relative;
-  float: left;
-}
-
-/* The CSS to hide the sub menus. */
-li ul.submenu { display: none; }
-
-ul.submenu {
-  padding: 5px;
-  z-index: 1;
-  background: lightcyan;
-}
-
-/* Displays the dropdown menu on hover. */
-li:hover > ul {
-  display: block;
-  position: absolute;
-}
-
-/* Displays submenu dropdown menu to the right of the dropdown menu.*/
-ul ul {
-  left: 100%;
-  top: 0;
-}
-
-li:hover li { float: none; }
-
-ul.main-dd-menu li ul li { border-top: 0; }
-
-/* Displays second level dropdown menus to the right of the first level dropdown menu. */
-ul ul ul {
-  left: 100%;
-  top: 0;
-}
-
-ul:before,
-ul:after {
-  content: " "; /* 1 */
-  display: table; /* 2 */
-}
-
-ul:after { clear: both; }
-/* END Dropdown styles*/
-
 .pull-right {
   float: right;
 }
@@ -700,7 +639,7 @@ ul:after { clear: both; }
   border: #FBC846;
   color: white;
 }
-/* Dropdown styles END*/
+/* Button colors. END*/
 
 img {
   max-width: 100%;

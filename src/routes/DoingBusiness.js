@@ -36,19 +36,18 @@ export default class VideoTutorials extends React.Component {
   render() {
     return (
         <div>
-          <div className="container navigational_price">
-            <NavLink to="/" replace className="">{e.hometwo}</NavLink> / DOING BUSINESS
-          </div>
-          <div className="content container video_tutorials-plan-page">
+          <div className="container no-padding">
+            <div className="container doingBusiness">
+              <NavLink to="/" exact replace>{e.hometwo}</NavLink> / DOING BUSINESS
+            </div>
             <div className="card">
-              <div className="card-header">
-              <h4 className="mb-0">Doing Business</h4></div>
+              <h4 className="mb-0" style={{textAlign: 'center'}}>Doing Business</h4>
               <div className="card-body">
                 <Document
                   file="/docs/doingBusiness.pdf"
                   onLoadSuccess={this.onDocumentLoad}
                 >
-                <Page width="1100" pageNumber={this.state.pageNumber} />
+                <Page width={1100} pageNumber={this.state.pageNumber} />
                 </Document>
                 <p>Страница {this.state.pageNumber} из {this.state.numPages}</p>
                 <p>

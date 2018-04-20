@@ -52,14 +52,22 @@ import Engineer from './routes/Engineer.js';
 import Apz from './routes/Apz.js';
 import DoingBusiness from './routes/DoingBusiness.js';
 import ApzDepartment from './routes/ApzDepartment.js';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.min.js';
+import PopperJs from 'popper.js';
+// import tether from 'tether';
+// global.Tether = tether;
+//import 'bootstrap/dist/css/bootstrap.min.css';
 
 window.jQuery = require('jquery');
-window.Popper = require('popper.js').default;
+// window.Popper = require('popper.js').default;
 
-require('bootstrap-material-design');
-require('./assets/css/style.css');
+//require('bootstrap-material-design');
+//require('./assets/css/style.css');
+//require('bootstrap/dist/css/bootstrap.min.css');
 require('glyphicons-only-bootstrap/css/bootstrap.min.css');
-
+require('./assets/css/common.css');
+require('./assets/css/animate.css');
 
 export default class Main extends React.Component {
 
@@ -69,13 +77,14 @@ export default class Main extends React.Component {
 
   componentWillMount() {
     this.setLang();
+    //window.url = 'http://api.uaig.kz:8880/';
+    //window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
+    window.url = 'http://uaig/';
+    // window.clientSecret = 'aKZx57t6JytyTDgeqr5l5cRt4OSvGTRWz6M0lN5O'; // Bagdat
+    window.clientSecret = 'g7UsmtbTasm7acpv3aJwU1frnIB9kksHqUjkBt9b'; // Baha
 
-
-    // window.url = 'http://api.uaig.kz:8880/';
-    // window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
-
-     window.url = 'http://uaig/';
-     window.clientSecret = 'ISOzCLPBZCRLPz7V7bS9p7ysuaJUQIPC6N6COoH6'; // SERVER
+    //window.url = 'http://uaig/';
+    //window.clientSecret = 'ISOzCLPBZCRLPz7V7bS9p7ysuaJUQIPC6N6COoH6'; // SERVER
   }
 
   componentDidMount() {
@@ -92,7 +101,7 @@ export default class Main extends React.Component {
     //console.log(this.props);
     return (
         <HashRouter>
-          <div style={{minHeight: '100vh', position: 'relative'}}>
+          <div>
             <Route render={(props) => (<Header {...props} />)} />
             <Switch>
               <Route exact path="/" render={(props) => (<Guest {...props} />)} />

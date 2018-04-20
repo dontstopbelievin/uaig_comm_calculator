@@ -24,7 +24,7 @@ export default class Login extends Component {
       openECP: false,
       closeecp: true,
       inviseBtn: true,
-        aboutNCALayer: false
+      aboutNCALayer: false
     }
 
     this.onUsernameChange = this.onUsernameChange.bind(this);
@@ -102,7 +102,7 @@ export default class Login extends Component {
           this.setState({loaderHidden: true});
           this.setState({inviseBtn: this.state.inviseBtn});
           console.log("loggedIn");
-          //console.log(e.target.response);
+          console.log(e.target.response);
           var roles = [JSON.parse(e.target.response).role1];
           if(JSON.parse(e.target.response).role2)
             roles.push(JSON.parse(e.target.response).role2);
@@ -362,6 +362,7 @@ export default class Login extends Component {
           }.bind(this),
           error: function(jqXHR, textStatus, errorThrown) {
              console.log(textStatus, errorThrown);
+             this.setState({loaderHidden: true});
           }
       });
 
@@ -447,31 +448,100 @@ export default class Login extends Component {
     // console.log(window.checkToken);
     //console.log("rendering the LoginComponent");
     return (
-      <div>
+      <div className="container">
         <div id="loginModal" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div className="modal-dialog" role="document">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <Link to="/">
-                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </Link>
-                  <h4 className="modal-title" id="myModalLabel">Вход в систему</h4>
-                </div>
-                <div className="modal-body">
-                  <ul className="nav nav-tabs">
-                    <li className="nav-item"><a className="nav-link active" data-toggle="tab" href="#menu1">Вход без ЭЦП</a></li>
-                    <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu2">Вход с ЭЦП</a></li>
-                  </ul>
+            <div className="modal-content">
+              <div className="modal-header">
+                <Link to="/">
+                  <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </Link>
+                <h4 className="modal-title" id="myModalLabel">Вход в систему</h4>
+              </div>
+              <div className="modal-body">
+                <ul className="nav nav-tabs">
+                  <li className="nav-item"><a className="nav-link active" data-toggle="tab" href="#menu1">Вход без ЭЦП</a></li>
+                  <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu2">Вход с ЭЦП</a></li>
+                </ul>
 
-                  <div className="tab-content">
-                    <div id="menu1" className="tab-pane fade active show">
-                      <p>&nbsp;</p>
+                <div className="tab-content">
+                  <div id="menu1" className="tab-pane fade active show">
+                    <p>&nbsp;</p>
+                    <form id="loginForm" onSubmit={this.login}>
+                      <div className="form-group">
+                        <label className="control-label">ИИН/БИН:</label>
+                        <input type="text" className="form-control" id="userName" value={this.state.username} onChange={this.onUsernameChange} required />
+                      </div>
+                      <div className="form-group">
+                        <label className="control-label">Пароль:</label>
+                        <input type="password" className="form-control no-bg" value={this.state.pwd} onChange={this.onPwdChange} required />
+                      </div>
+                      <div className="modal-footer">
+                        {!this.state.loaderHidden &&
+                          <div style={{margin: '0 auto'}}>
+                            <Loader type="Ball-Triangle" color="#46B3F2" height="70" width="70" />
+                          </div>
+                        }
+                        {this.state.loaderHidden &&
+                          <div>
+                            <button type="submit" className="btn btn-primary">Войти</button>
+                            <Link to="/" style={{marginRight:'5px'}}>
+                              <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
+                            </Link>
+                          </div>
+                        }
+                      </div>
+                    </form>
+                  </div>
+                  <div id="menu2" className="tab-pane fade">
+                    {this.state.aboutNCALayer &&
+                      <div className="modal-body">
+                        <h5 className="modal-title">Информация</h5>
+                        У вас не установлен/запущен NCALayer. <br/>Для авторизации/регистрации установите NCALayer
+                        на сайте НУЦ РК. <br/>
+                        Для установки пройдите по ссылке:&nbsp;
+                        <a onClick={() => document.getElementById("alertModalClose").click()}
+                           href="http://pki.gov.kz/index.php/ru/ncalayer" target="_blank">
+                          http://pki.gov.kz/index.php/ru/ncalayer
+                        </a>
+                      </div>
+                    }
+                    {this.state.closeecp &&
+                      <div>
+                        <div className="form-group">
+                            <p style={{margin: '0px'}}>
+                                &nbsp;
+                            </p>
+                          <label className="control-label">Путь к ЭЦП
+                            <input className="form-control" type="text" id="storagePath" readOnly />
+                          </label>
+                          <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button> 
+                        </div>
+                        <div className="form-group">
+                          <label className="control-label">Пароль от ЭЦП
+                            <input className="form-control" id="inpPassword" type="password" />
+                          </label>
+                          {this.state.inviseBtn &&
+                          <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
+                          }
+
+                        </div>
+                      </div>
+                    }
+
+                    {!this.state.loaderHidden &&
+                      <div style={{margin: '0 auto', display: 'table'}}>
+                        <Loader type="Ball-Triangle" color="#46B3F2" height="100" width="100" />
+                      </div>
+                    }
+
+                    {this.state.openECP && 
                       <form id="loginForm" onSubmit={this.login}>
                         <div className="form-group">
                           <label className="control-label">ИИН/БИН:</label>
-                          <input type="text" className="form-control" id="userName" value={this.state.username} onChange={this.onUsernameChange} required />
+                          <input type="text" className="form-control" value={this.state.username} readOnly required />
                         </div>
                         <div className="form-group">
                           <label className="control-label">Пароль:</label>
@@ -480,7 +550,7 @@ export default class Login extends Component {
                         <div className="modal-footer">
                           {!this.state.loaderHidden &&
                             <div style={{margin: '0 auto'}}>
-                              <Loader type="Ball-Triangle" color="#46B3F2" height="70" width="70" />
+                              <Loader type="Ball-Triangle" color="#57BAB1" height="70" width="70" />
                             </div>
                           }
                           {this.state.loaderHidden &&
@@ -493,80 +563,11 @@ export default class Login extends Component {
                           }
                         </div>
                       </form>
-                    </div>
-                    <div id="menu2" className="tab-pane fade">
-                        {this.state.aboutNCALayer &&
-                        <div className="modal-body">
-                            <h5 className="modal-title">Информация</h5>
-                            У вас не установлен/запущен NCALayer. <br/>Для авторизации/регистрации установите NCALayer
-                            на сайте НУЦ РК. <br/>
-                            Для установки пройдите по ссылке:&nbsp;
-                            <a onClick={() => document.getElementById("alertModalClose").click()}
-                               href="http://pki.gov.kz/index.php/ru/ncalayer" target="_blank">
-                                http://pki.gov.kz/index.php/ru/ncalayer</a>
-                        </div>
-                        }
-                      {this.state.closeecp &&
-                        <div>
-                          <div className="form-group">
-                              <p style={{margin: '0px'}}>
-                                  &nbsp;
-                              </p>
-                            <label className="control-label">Путь к ЭЦП
-                              <input className="form-control" type="text" id="storagePath" readOnly />
-                            </label>
-                            <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button> 
-                          </div>
-                          <div className="form-group">
-                            <label className="control-label">Пароль от ЭЦП
-                              <input className="form-control" id="inpPassword" type="password" />
-                            </label>
-                            {this.state.inviseBtn &&
-                            <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
-                            }
-
-                          </div>
-                        </div>
-                      }
-
-                      {!this.state.loaderHidden &&
-                        <div style={{margin: '0 auto', display: 'table'}}>
-                          <Loader type="Ball-Triangle" color="#46B3F2" height="100" width="100" />
-                        </div>
-                      }
-
-                      {this.state.openECP && 
-                        <form id="loginForm" onSubmit={this.login}>
-                          <div className="form-group">
-                            <label className="control-label">ИИН/БИН:</label>
-                            <input type="text" className="form-control" value={this.state.username} readOnly required />
-                          </div>
-                          <div className="form-group">
-                            <label className="control-label">Пароль:</label>
-                            <input type="password" className="form-control" value={this.state.pwd} onChange={this.onPwdChange} required />
-                          </div>
-                          <div className="modal-footer">
-                            {!this.state.loaderHidden &&
-                              <div style={{margin: '0 auto'}}>
-                                <Loader type="Ball-Triangle" color="#57BAB1" height="70" width="70" />
-                              </div>
-                            }
-                            {this.state.loaderHidden &&
-                              <div>
-                                <button type="submit" className="btn btn-primary">Войти</button>
-                                <Link to="/" style={{marginRight:'5px'}}>
-                                  <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
-                                </Link>
-                              </div>
-                            }
-                          </div>
-                        </form>
-                      }
-                    
-                    </div>
+                    }
                   </div>
-                </div>    
-              </div>
+                </div>
+              </div>    
+            </div>
           </div>
         </div>
       </div>
