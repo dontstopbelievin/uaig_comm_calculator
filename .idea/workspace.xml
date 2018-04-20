@@ -443,7 +443,7 @@
       <workItem from="1523262660004" duration="2938000" />
       <workItem from="1523431113703" duration="8685000" />
       <workItem from="1524111173916" duration="642000" />
-      <workItem from="1524125388802" duration="1045000" />
+      <workItem from="1524125388802" duration="1154000" />
     </task>
     <task id="LOCAL-00001" summary="примечание в водоснабжение">
       <created>1523262792475</created>
@@ -473,11 +473,18 @@
       <option name="project" value="LOCAL" />
       <updated>1524125699627</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="статус бар">
+      <created>1524204728352</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1524204728352</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="78661000" />
+    <option name="totallyTimeSpent" value="78770000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1358" y="-8" width="1382" height="784" extended-state="6" />
