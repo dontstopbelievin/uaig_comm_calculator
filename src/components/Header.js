@@ -191,7 +191,7 @@ export default class Header extends React.Component {
               </Nav>
             </Collapse>
           </Navbar>*/}
-          <NavBar />
+          <NavBar pathName={this.props.location.pathname} />
         </div>
       </div>
     )
