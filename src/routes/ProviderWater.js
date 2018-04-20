@@ -203,6 +203,13 @@ class ShowApz extends React.Component {
       fireFightingWaterOut: "",
       connectionPoint: "",
       recomendation: "",
+      estimatedWaterFlowRate: "0.76",
+      existingWaterConsumption: "0.76",
+      sewageEstimatedWaterFlowRate: "0.76",
+      sewageExistingWaterConsumption: "0.76",
+      waterPressure: "",
+      waterCustomerDuties: "",
+      sewageCustomerDuties: "",
       docNumber: "",
       description: '',
       responseId: 0,
@@ -239,6 +246,13 @@ class ShowApz extends React.Component {
     this.saveResponseForm = this.saveResponseForm.bind(this);
     this.sendWaterResponse = this.sendWaterResponse.bind(this);
     this.onHeadCommentChange = this.onHeadCommentChange.bind(this);
+    this.onEstimatedWaterFlowRateChange = this.onEstimatedWaterFlowRateChange.bind(this);
+    this.onExistingWaterConsumptionChange = this.onExistingWaterConsumptionChange.bind(this);
+    this.onSewageEstimatedWaterFlowRateChange = this.onSewageEstimatedWaterFlowRateChange.bind(this);
+    this.onSewageExistingWaterConsumptionChange = this.onSewageExistingWaterConsumptionChange.bind(this);
+    this.onWaterPressureChange = this.onWaterPressureChange.bind(this);
+    this.onWaterCustomerDutiesChange = this.onWaterCustomerDutiesChange.bind(this);
+    this.onSewageCustomerDutiesChange = this.onSewageCustomerDutiesChange.bind(this);
   }
 
   onGenWaterReqChange(e) {
@@ -279,6 +293,34 @@ class ShowApz extends React.Component {
 
   onHeadCommentChange(e) {
     this.setState({ headComment: e.target.value });
+  }
+
+  onEstimatedWaterFlowRateChange(e) {
+    this.setState({ estimatedWaterFlowRate: e.target.value });
+  }
+
+  onExistingWaterConsumptionChange(e) {
+    this.setState({ existingWaterConsumption: e.target.value });
+  }
+
+  onSewageEstimatedWaterFlowRateChange(e) {
+    this.setState({ sewageEstimatedWaterFlowRate: e.target.value });
+  }
+
+  onSewageExistingWaterConsumptionChange(e) {
+    this.setState({ sewageExistingWaterConsumption: e.target.value });
+  }
+
+  onWaterPressureChange(e) {
+    this.setState({ waterPressure: e.target.value });
+  }
+
+  onWaterCustomerDutiesChange(e) {
+    this.setState({ waterCustomerDuties: e.target.value });
+  }
+
+  onSewageCustomerDutiesChange(e) {
+    this.setState({ sewageCustomerDuties: e.target.value });
   }
 
   onFileChange(e) {
@@ -333,8 +375,15 @@ class ShowApz extends React.Component {
           this.setState({fireFightingWaterIn: data.commission.apz_water_response.fire_fighting_water_in});
           this.setState({fireFightingWaterOut: data.commission.apz_water_response.fire_fighting_water_out});
           this.setState({recomendation: data.commission.apz_water_response.recommendation});
+          this.setState({estimatedWaterFlowRate: data.commission.apz_water_response.estimated_water_flow_rate});
+          this.setState({existingWaterConsumption: data.commission.apz_water_response.existing_water_consumption});
+          this.setState({sewageEstimatedWaterFlowRate: data.commission.apz_water_response.sewage_estimated_water_flow_rate});
+          this.setState({sewageExistingWaterConsumption: data.commission.apz_water_response.sewage_existing_water_consumption});
+          this.setState({waterPressure: data.commission.apz_water_response.water_pressure});
+          this.setState({waterCustomerDuties: data.commission.apz_water_response.water_customer_duties});
+          this.setState({sewageCustomerDuties: data.commission.apz_water_response.sewage_customer_duties});
           this.setState({docNumber: data.commission.apz_water_response.doc_number});
-          this.setState({responseId: data.commission.apz_water_response.id})
+          this.setState({responseId: data.commission.apz_water_response.id});
           this.setState({response: data.commission.apz_water_response.response});
           if(data.commission.apz_water_response.id !== -1){
             this.setState({accept: data.commission.apz_water_response.response});
@@ -678,6 +727,13 @@ class ShowApz extends React.Component {
       formData.append('FireFightingWaterOut', 0);
       formData.append('ConnectionPoint', "");
       formData.append('Recomendation', "");
+      formData.append('EstimatedWaterFlowRate', "");
+      formData.append('ExistingWaterConsumption', "");
+      formData.append('SewageEstimatedWaterFlowRate', "");
+      formData.append('SewageExistingWaterConsumption', "");
+      formData.append('WaterPressure', "");
+      formData.append('WaterCustomerDuties', "");
+      formData.append('SewageCustomerDuties', "");
     }
     else{
       formData.append('GenWaterReq', this.state.genWaterReq);
@@ -687,6 +743,13 @@ class ShowApz extends React.Component {
       formData.append('FireFightingWaterOut', this.state.fireFightingWaterOut);
       formData.append('ConnectionPoint', this.state.connectionPoint);
       formData.append('Recomendation', this.state.recomendation);
+      formData.append('EstimatedWaterFlowRate', this.state.estimatedWaterFlowRate);
+      formData.append('ExistingWaterConsumption', this.state.existingWaterConsumption);
+      formData.append('SewageEstimatedWaterFlowRate', this.state.sewageEstimatedWaterFlowRate);
+      formData.append('SewageExistingWaterConsumption', this.state.sewageExistingWaterConsumption);
+      formData.append('WaterPressure', this.state.waterPressure);
+      formData.append('WaterCustomerDuties', this.state.waterCustomerDuties);
+      formData.append('SewageCustomerDuties', this.state.sewageCustomerDuties);
     }
     formData.append('DocNumber', this.state.docNumber);
 
@@ -709,6 +772,13 @@ class ShowApz extends React.Component {
         this.setState({fireFightingWaterIn: data.fire_fighting_water_in});
         this.setState({fireFightingWaterOut: data.fire_fighting_water_out});
         this.setState({recomendation: data.recommendation});
+        this.setState({estimatedWaterFlowRate: data.estimated_water_flow_rate});
+        this.setState({existingWaterConsumption: data.existing_water_consumption});
+        this.setState({sewageEstimatedWaterFlowRate: data.sewage_estimated_water_flow_rate});
+        this.setState({sewageExistingWaterConsumption: data.sewage_existing_water_consumption});
+        this.setState({waterPressure: data.water_pressure});
+        this.setState({waterCustomerDuties: data.water_customer_duties});
+        this.setState({sewageCustomerDuties: data.sewage_customer_duties});
         if(this.state.callSaveFromSend){
           this.setState({callSaveFromSend: false});
           this.sendWaterResponse(apzId, status, comment);
@@ -1190,8 +1260,37 @@ class ShowApz extends React.Component {
                     <label>Производственные нужды (м<sup>3</sup>/сутки)</label>
                     <input type="number" step="any" className="form-control" placeholder="" value={this.state.prodWater} onChange={this.onProdWaterChange} />
                   </div>
+                  <div className="form-group">
+                    <label>Расчетный расход воды (Водопотребление)</label>
+                    <input type="number" step="any" className="form-control" placeholder="" value={this.state.estimatedWaterFlowRate} onChange={this.onEstimatedWaterFlowRateChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Существующий расход воды (Водопотребление)</label>
+                    <input type="number" step="any" className="form-control" placeholder="" value={this.state.existingWaterConsumption} onChange={this.onExistingWaterConsumptionChange} />
+                  </div>
+
+                  {this.state.apz.object_type != "ИЖС" &&
+                    <div>
+                      <div className="form-group">
+                        <label>Давление в сети городского водопровода в точке подключения</label>
+                        <input type="number" step="any" className="form-control" placeholder="" value={this.state.waterPressure} onChange={this.onWaterPressureChange} />
+                      </div>
+                      <div className="form-group">
+                        <label>Для подключения к городским сетям и сооружениям водопотребление Заказчик обязан:</label>
+                        <textarea rows="5" className="form-control" value={this.state.waterCustomerDuties} onChange={this.onWaterCustomerDutiesChange} placeholder="Описание"></textarea>
+                      </div>
+                    </div>
+                  }
                 </div>
                 <div className="col-sm-6">
+                  <div className="form-group">
+                    <label>Расчетный расход воды (Водоотведение)</label>
+                    <input type="number" step="any" className="form-control" placeholder="" value={this.state.sewageEstimatedWaterFlowRate} onChange={this.onSewageEstimatedWaterFlowRateChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Существующий расход воды (Водоотведение)</label>
+                    <input type="number" step="any" className="form-control" placeholder="" value={this.state.sewageExistingWaterConsumption} onChange={this.onSewageExistingWaterConsumptionChange} />
+                  </div>
                   <div className="form-group">
                     <label>Расходы пожаротушения внутренные (л/сек)</label>
                     <input type="number" step="any" className="form-control" value={this.state.fireFightingWaterIn} onChange={this.onFireFightingWaterInChange} />
@@ -1204,6 +1303,15 @@ class ShowApz extends React.Component {
                     <label>Рекомендация</label>
                     <textarea rows="5" className="form-control" value={this.state.recomendation} onChange={this.onRecomendationChange} placeholder="Описание"></textarea>
                   </div>
+
+                  {this.state.apz.object_type != "ИЖС" &&
+                    <div className="form-group">
+                      <label>Для присоединения к городским сетям и сооружениям водоотведения Заказчик обязан:</label>
+                      <textarea rows="5" className="form-control" value={this.state.sewageCustomerDuties} onChange={this.onSewageCustomerDutiesChange} placeholder="Описание"></textarea>
+                    </div>
+                  }
+                  
+
                   {(this.state.response === true && this.state.responseFile) &&
                     <div className="form-group">
                       <label style={{display: 'block'}}>Прикрепленный файл</label>
