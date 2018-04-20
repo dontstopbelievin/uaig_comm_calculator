@@ -10,7 +10,7 @@ import Loader from 'react-loader-spinner';
 export default class Citizen extends React.Component {
   render() {
     return (
-      <div className="content container citizen-apz-list-page">
+      <div className="content container body-content citizen-apz-list-page">
         <div className="card">
           <div className="card-header">
               <h4 className="mb-0 mt-2">Архитектурно-планировочное задание</h4>
@@ -198,7 +198,8 @@ class AddApz extends React.Component {
       showMap: false,
       hasCoordinates: false,
       loaderHidden: true,
-      blocks: [{num: 1}]
+      blocks: [{num: 1}],
+      companyList: []
     }
     
     this.tabSubmission = this.tabSubmission.bind(this);
@@ -209,6 +210,8 @@ class AddApz extends React.Component {
     this.hasCoordinates = this.hasCoordinates.bind(this);
     this.toggleMap = this.toggleMap.bind(this);
     this.deleteBlock = this.deleteBlock.bind(this);
+    this.companySearch = this.companySearch.bind(this);
+    this.onApplicantChange = this.onApplicantChange.bind(this);
   }
 
   onPersonalIdFileChange(e) {
@@ -225,6 +228,10 @@ class AddApz extends React.Component {
 
   onPaymentPhotoFileChange(e) {
     this.setState({ paymentPhotoFile: e.target.files[0] });
+  }
+
+  onApplicantChange(e) {
+    $('.customer_field').val(e.target.value);
   }
 
   hasCoordinates(value) {
@@ -317,6 +324,27 @@ class AddApz extends React.Component {
     this.setState({blocks: blocks});
 
     $('#heatBlock_' + (num - 1) + ' .block_delete').css('display', 'block');
+  }
+
+  companySearch() {
+    var token = sessionStorage.getItem('tokenInfo');
+    var bin = sessionStorage.getItem('userBin');
+    var xhr = new XMLHttpRequest();
+    xhr.open("post", window.url + "api/apz/citizen/company_search", true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        if (!xhr.responseText) {
+          alert('Поиск не дал результатов');
+          return false;
+        }
+
+        var data = JSON.parse(xhr.responseText);
+        this.setState({companyList: data.list});
+      }
+    }.bind(this)
+    xhr.send(JSON.stringify({bin: bin}));
   }
 
   requestSubmission(e) {
@@ -480,6 +508,8 @@ class AddApz extends React.Component {
   }
 
   render() {
+    var bin = sessionStorage.getItem('userBin');
+
     return (
       <div className="container" id="apzFormDiv">
         {this.state.loaderHidden &&
@@ -504,11 +534,34 @@ class AddApz extends React.Component {
                 <form id="tab0-form" data-tab="0" onSubmit={this.tabSubmission.bind(this)}>
                 <div className="row">
                   <div className="col-md-6">
-                    <div className="form-group">
-                      <label htmlFor="Applicant">Заявитель:</label>
-                      <input type="text" className="form-control" required name="Applicant" placeholder="ФИО / Наименование компании" />
-                      <span className="help-block"></span>
-                    </div>
+
+                    {bin ?
+                      <div className="form-group">
+                        <label htmlFor="Applicant">Заявитель:</label>
+                        <select id="companyList" onChange={this.onApplicantChange} defaultValue="" required name="Applicant" className="form-control mb-1">
+                          {this.state.companyList.length > 0 ?
+                            <option value="">--- Выберите компанию ---</option>
+                            :
+                            <option value="">--- Список пуст. Повторите поиск ---</option>
+                          }
+                          
+                          {this.state.companyList.map(function(company, index) {
+                            return(
+                              <option key={index}>{company.licensee}</option>
+                              );
+                            }.bind(this))
+                          }
+                        </select>
+                        <button type="button" onClick={this.companySearch} className="w-100 btn btn-outline-secondary btn-sm">Поиск лицензии</button>
+                      </div>
+                      :
+                      <div className="form-group">
+                        <label htmlFor="Applicant">Заявитель:</label>
+                        <input type="text" className="form-control" required name="Applicant" placeholder="ФИО / Наименование компании" />
+                        <span className="help-block"></span>
+                      </div>
+                    }
+                    
                     <div className="form-group">
                       <label htmlFor="PersonalIdFile">Уд.личности/Реквизиты</label>
                       <input type="file" required name="PersonalIdFile" className="form-control" onChange={this.onPersonalIdFileChange}/>
@@ -614,10 +667,18 @@ class AddApz extends React.Component {
                       <label htmlFor="ObjectName">Наименование объекта:</label>
                       <input type="text" required className="form-control" name="ObjectName" placeholder="наименование" />
                     </div>*/}
-                    <div className="form-group">
-                      <label htmlFor="Customer">Заказчик</label>
-                      <input type="text" required className="form-control" name="Customer" placeholder="ФИО / Наименование компании" />
-                    </div>
+
+                    {bin ?
+                      <div className="form-group">
+                        <label htmlFor="Customer">Заказчик</label>
+                        <input type="text" required readOnly="readonly" className="form-control customer_field" name="Customer" placeholder="ФИО / Наименование компании" />
+                      </div>
+                      :
+                      <div className="form-group">
+                        <label htmlFor="Customer">Заказчик</label>
+                        <input type="text" required className="form-control customer_field" name="Customer" placeholder="ФИО / Наименование компании" />
+                      </div>
+                    }
                     <div className="form-group">
                       <label htmlFor="CadastralNumber">Кадастровый номер:</label>
                       <input type="text" className="form-control" name="CadastralNumber" placeholder="" />
@@ -665,7 +726,7 @@ class AddApz extends React.Component {
                     </div>
                     <div className="form-group">
                       <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
-                      <input type="number" step="any" required className="form-control" onChange={this.ObjectArea.bind(this)} name="ElectricRequiredPower" placeholder="" />
+                      <input type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} name="ElectricRequiredPower" placeholder="" />
                     </div>
                   </div>
                   <div className="col-md-6">
@@ -727,11 +788,11 @@ class AddApz extends React.Component {
                   <div className="col-md-6">
                   <div className="form-group">
                     <label>Количество людей</label>
-                    <input type="number" step="0.1" required className="form-control" name="PeopleCount" onChange={this.PeopleCount.bind(this)} placeholder="" />
+                    <input type="number" step="0.1" className="form-control" name="PeopleCount" onChange={this.PeopleCount.bind(this)} placeholder="" />
                   </div>
                   <div className="form-group">
                     <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
-                    <input type="number" readOnly="readonly" className="form-control" name="WaterRequirement" placeholder="" />
+                    <input type="number" step="any" className="form-control" name="WaterRequirement" placeholder="" />
                   </div>
                   <div className="form-group">
                     <label htmlFor="WaterSewage">Канализация (м<sup>3</sup>/сутки)</label>
@@ -779,7 +840,7 @@ class AddApz extends React.Component {
                   <div className="col-md-6">
                   <div className="form-group">
                     <label htmlFor="SewageAmount">Общее количество сточных вод  (м<sup>3</sup>/сутки)</label>
-                    <input type="number" step="any" required className="form-control" name="SewageAmount" placeholder="" />
+                    <input type="number" step="any" className="form-control" name="SewageAmount" placeholder="" />
                   </div>
                   <div className="form-group">
                     <label htmlFor="SewageFeksal">Фекальных (м<sup>3</sup>/сутки)</label>
@@ -901,7 +962,7 @@ class AddApz extends React.Component {
                   <div className="col-md-6">
                     <div className="form-group">
                       <label htmlFor="GasGeneral">Общая потребность (м<sup>3</sup>/час)</label>
-                      <input type="number" step="any" required className="form-control" name="GasGeneral" placeholder="" />
+                      <input type="number" step="any" className="form-control" name="GasGeneral" placeholder="" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="GasCooking">На приготовление пищи (м<sup>3</sup>/час)</label>
@@ -909,7 +970,7 @@ class AddApz extends React.Component {
                     </div>
                     <div className="form-group">
                       <label htmlFor="GasHeat">Отопление (м<sup>3</sup>/час)</label>
-                      <input type="number" step="any" required className="form-control" name="GasHeat" placeholder="" />
+                      <input type="number" step="any" className="form-control" name="GasHeat" placeholder="" />
                     </div>
                   </div>
                   <div className="col-md-6">
