@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import PreloaderIcon, {ICON_TYPE} from 'react-preloader-icon';
 import $ from 'jquery';
 import Loader from 'react-loader-spinner';
+import '../assets/css/login.css';
 // import browseKeyStore from '../assets/js/crypto_object.js';
 
 export default class Register extends React.Component {
@@ -372,7 +373,8 @@ export default class Register extends React.Component {
   render() {
     //console.log("rendering the RegisterComponent");
     return (
-      <div>
+      <div className="bigBody">
+      <div className="container">
         <div className="" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div className="modal-dialog" role="document">
             <div id="loading">
@@ -564,6 +566,7 @@ export default class Register extends React.Component {
             </div>
           </div>
         </div>
+      </div>
       </div>
     )
   }

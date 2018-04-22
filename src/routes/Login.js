@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import $ from 'jquery';
+import '../assets/css/login.css';
 
 //var rw = null;
 
@@ -448,6 +449,7 @@ export default class Login extends Component {
     // console.log(window.checkToken);
     //console.log("rendering the LoginComponent");
     return (
+      <div className="bigBody">
       <div className="container">
         <div id="loginModal" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div className="modal-dialog" role="document">
@@ -570,6 +572,7 @@ export default class Login extends Component {
             </div>
           </div>
         </div>
+      </div>
       </div>
     )
   }
