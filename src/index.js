@@ -54,6 +54,7 @@ import Engineer from './routes/Engineer.js';
 import Apz from './routes/Apz.js';
 import DoingBusiness from './routes/DoingBusiness.js';
 import ApzDepartment from './routes/ApzDepartment.js';
+import BisunessBuilding from './routes/BisunessBuilding';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import PopperJs from 'popper.js';
@@ -155,6 +156,7 @@ export default class Main extends React.Component {
               <Route path="/apz" render={(props) => (<Apz {...props}/>)}/>
               <Route path="/doingBusiness" render={(props) => (<DoingBusiness {...props}/>)}/>
               <Route path="/apz_department" render={(props) => (<ApzDepartment {...props}/>)}/>
+              <Route path="/businessbuilding" render={(props) => (<BisunessBuilding {...props}/>)}/>
             </Switch>
             <Footer />
           </div>

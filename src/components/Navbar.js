@@ -46,6 +46,7 @@ export default class NavBar extends React.Component {
                 Государственные услуги
               </a>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a className="dropdown-item" href="/#/businessbuilding">Деловое страительство</a></li>
                 <li><a className="dropdown-item" href="#">Государственные символы</a></li>
                 <li><a className="dropdown-item" href="#">Государственные службы</a></li>
                 <li><a className="dropdown-item" href="#">Виды государственные услуг</a></li>
