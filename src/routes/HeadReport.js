@@ -6,7 +6,7 @@ export default class HeadReport extends React.Component {
 
   render() {
     return (
-      <div className="content container urban-apz-page">
+      <div className="content container body-content">
         <div className="card">
           <div className="card-header">
             <h4 className="mb-0 h4-inline">Архитектурно-планировочное задание / Отчет</h4>

@@ -5,7 +5,7 @@ export default class Polls extends React.Component {
 
     render() {
         return (
-            <div className="content container project-page">
+            <div className="content container project-page body-content">
                 <div className="card">
                     <div className="card-header"><h4 className="mb-0">Реконструкция пешеходных улиц</h4></div>
                     <div className="card-body">

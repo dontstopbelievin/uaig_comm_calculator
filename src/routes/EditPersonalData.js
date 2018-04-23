@@ -156,7 +156,7 @@ export default class editData extends React.Component{
 
     render() {
         return (
-            <div className="container">
+            <div className="container body-content">
 
 
 

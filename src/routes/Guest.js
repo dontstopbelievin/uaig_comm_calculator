@@ -1,12 +1,12 @@
 import React from 'react';
-import { NavLink as RRNavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import Slider from 'react-slick';
 import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../languages/guest.json';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import WOW from 'wowjs';
-import { NavLink, UncontrolledCarousel, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { UncontrolledCarousel, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 let e = new LocalizedStrings({ru,kk});
 
@@ -99,7 +99,7 @@ export default class Guest extends React.Component {
                       </div>
                       <div>
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                        {this.state.tokenExists && <NavLink to={"/"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
                       </div>
                     </div>
@@ -118,14 +118,14 @@ export default class Guest extends React.Component {
                       </div>
                       <div>
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                        {this.state.tokenExists && this.state.rolename === 'Admin' && <NavLink to={"/admin"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/citizen"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/urban"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Head' &&  <NavLink to={"/head"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Electricity' &&  <NavLink to={"/providerelectro"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Gas' &&  <NavLink to={"/providergas"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Heat' &&  <NavLink to={"/providerheat"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Water' &&  <NavLink to={"/providerwater"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Admin' && <NavLink to={"/admin"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/citizen"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/urban"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Head' &&  <NavLink to={"/head"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Electricity' &&  <NavLink to={"/providerelectro"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Gas' &&  <NavLink to={"/providergas"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Heat' &&  <NavLink to={"/providerheat"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Water' &&  <NavLink to={"/providerwater"} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
                       </div>   
                     </div>
@@ -143,7 +143,7 @@ export default class Guest extends React.Component {
                       </div>
                       <div>
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                        {this.state.tokenExists && <NavLink to={"/"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
                       </div>
                     </div>     
@@ -163,7 +163,7 @@ export default class Guest extends React.Component {
                       </div>
                       <div>
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                        {this.state.tokenExists && <NavLink to={"/"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
                       </div>
                     </div>
@@ -181,7 +181,7 @@ export default class Guest extends React.Component {
                       </div>
                       <div>
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                        {this.state.tokenExists && <NavLink to={"/"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
                       </div>
                     </div>
@@ -199,7 +199,7 @@ export default class Guest extends React.Component {
                       </div>
                       <div>
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                        {this.state.tokenExists && <NavLink to={"/"} tag={RRNavLink} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
                       </div>
                     </div>  
@@ -395,6 +395,8 @@ export default class Guest extends React.Component {
   }
 }
 
+
+// this Modal is for alert, if NCLayer is off
 class AlertModal extends React.Component {
   constructor(props) {
     super(props);
@@ -418,11 +420,11 @@ class AlertModal extends React.Component {
         <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
           <ModalHeader toggle={this.toggle}>Информация</ModalHeader>
           <ModalBody>
-            Вам надо 
-            <NavLink to={"/login"} tag={RRNavLink} className="navLink" replace>
+            Вам надо &nbsp; 
+            <NavLink to={"/login"} className="navLink" replace>
               войти
-            </NavLink> в систему или 
-            <NavLink to={"/register"} tag={RRNavLink} className="navLink" replace>
+            </NavLink> в систему или  &nbsp;
+            <NavLink to={"/register"} className="navLink" replace>
               зарегистрироваться
             </NavLink>
           </ModalBody>
