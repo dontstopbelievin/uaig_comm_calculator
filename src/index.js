@@ -79,7 +79,7 @@ export default class Main extends React.Component {
     this.setLang();
     window.url = 'http://api.uaig.kz:8880/';
     window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
-    window.url = 'http://uaig/';
+    //window.url = 'http://uaig/';
     // window.clientSecret = 'aKZx57t6JytyTDgeqr5l5cRt4OSvGTRWz6M0lN5O'; // Bagdat
     //window.clientSecret = 'g7UsmtbTasm7acpv3aJwU1frnIB9kksHqUjkBt9b'; // Baha
 
