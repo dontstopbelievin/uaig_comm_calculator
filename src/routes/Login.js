@@ -531,11 +531,7 @@ export default class Login extends Component {
                       </div>
                     }
 
-                    {!this.state.loaderHidden &&
-                      <div style={{margin: '0 auto', display: 'table'}}>
-                        <Loader type="Ball-Triangle" color="#46B3F2" height="100" width="100" />
-                      </div>
-                    }
+                    
 
                     {this.state.openECP && 
                       <form id="loginForm" onSubmit={this.login}>
@@ -548,11 +544,6 @@ export default class Login extends Component {
                           <input type="password" className="form-control" value={this.state.pwd} onChange={this.onPwdChange} required />
                         </div>
                         <div className="modal-footer">
-                          {!this.state.loaderHidden &&
-                            <div style={{margin: '0 auto'}}>
-                              <Loader type="Ball-Triangle" color="#57BAB1" height="70" width="70" />
-                            </div>
-                          }
                           {this.state.loaderHidden &&
                             <div>
                               <button type="submit" className="btn btn-primary">Войти</button>
@@ -567,6 +558,11 @@ export default class Login extends Component {
                                 </div>
                             </div>
 
+                          }
+                          {!this.state.loaderHidden &&
+                            <div style={{margin: '0 auto', display: 'table'}}>
+                              <Loader type="Ball-Triangle" color="#46B3F2" height="100" width="100" />
+                            </div>
                           }
                         </div>
 
