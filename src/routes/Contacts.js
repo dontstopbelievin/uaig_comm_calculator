@@ -21,7 +21,7 @@ export default class Contacts extends React.Component{
     render() {
         return(
     <div>
-        <div class="container navigational_price">
+        <div class="container navigational_price body-content">
           <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.contacts}
 
         </div>

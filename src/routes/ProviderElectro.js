@@ -8,7 +8,7 @@ import Loader from 'react-loader-spinner';
 export default class ProviderElectro extends React.Component {
   render() {
     return (
-      <div className="content container urban-apz-page">
+      <div className="content container body-content">
         <div className="card">
           <div className="card-header">
           <h4 className="mb-0">Архитектурно-планировочное задание</h4></div>

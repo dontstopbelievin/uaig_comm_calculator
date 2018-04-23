@@ -20,7 +20,7 @@ export default class Control extends React.Component{
 
     render() {
         return(
-          <div className="container navigational_price">
+          <div className="container navigational_price body-content">
             <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.control}
           </div>
         )

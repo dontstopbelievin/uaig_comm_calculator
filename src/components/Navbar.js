@@ -17,7 +17,7 @@ export default class NavBar extends React.Component {
   render() {
     return (
       <nav className="navbar navbar-expand-lg navbar-light">
-        <NavLink exact className="nav-link" activeClassName="active" to="/">ГЛАВНАЯ</NavLink>
+        <NavLink exact className="nav-link goHome" activeClassName="active" to="/" >ГЛАВНАЯ</NavLink>
         <button className="navbar-toggler" type="button" data-toggle="collapse" 
                 data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
                 aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +84,7 @@ export default class NavBar extends React.Component {
             </li>
               
             <li className="nav-item map">
-              Карта: <a className={this.giveActiveClass('/map')} href="/#/map">3D</a> | <a className={this.giveActiveClass('/map2d')} href="/#/map2d">2D</a>
+              <span>Карта:</span> <a className={this.giveActiveClass('/map')} href="/#/map">3D</a> | <a className={this.giveActiveClass('/map2d')} href="/#/map2d">2D</a>
             </li>
             <NavLink exact className="nav-link last-item" activeClassName="active" to="/doingBusiness">Doing business</NavLink>  
           </ul>

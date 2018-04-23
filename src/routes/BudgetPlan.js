@@ -96,7 +96,7 @@ export default class BudgetPlan extends React.Component {
   render() {
     return (
       <div>
-        <div className="content container budget-plan-page">
+        <div className="content container budget-plan-page body-content">
           <div className="card">
             <div className="card-header">
             <h4 className="mb-0">Бюджетное планирование</h4></div>

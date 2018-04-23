@@ -20,7 +20,7 @@ export default class timeOfReception extends React.Component{
 
     render() {
         return (
-            <div className="container">
+            <div className="container body-content">
 
                 <div className="container navigational_price">
                     <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.timeOfReception}
@@ -29,7 +29,7 @@ export default class timeOfReception extends React.Component{
                 <h2 className="captionline" colSpan="5">{e.captionline}</h2>
                 <hr/>
 
-                <table className="table table-striped table-own-style">
+                <table className="table table-striped table-own-style" style={{margin: '0'}}>
                     <thead>
                         <tr style={{backgroundColor: '#c8dce3'}}>
                             <th style={{width: '5%'}} className="th-own-style"></th>

@@ -104,7 +104,74 @@ input[type=text]:focus {
 .underline{
     text-decoration: underline;
 }
+.nav-link:hover, .section a:hover{
+    color: #E0B431!important;
+}
 
+.last-item{
+    margin-right: -10px!important;
+    margin-left: 10px!important;
+    margin-top: 4px!important;
+    color: #1a4482!important;
+    font-weight: bolder!important;
+}
+.goHome{
+    font-weight: bolder!important;
+    color:#1a4482!important;
+}
+/*.home{
+    margin-right: 10px;
+    padding-top: 10px;
+    padding: 10px;
+    font-size: 14px!important;
+}*/
+.home.active:hover{
+    text-decoration: none;
+    color: #fff!important;
+}
+.nav-item.regist button:hover{
+    color: #fff!important;
+}
+.opros{
+    border-bottom: 2px solid #E0B431;
+}
+.nav-item a {
+    font-weight: bolder!important;
+    text-transform:none;
+    font-size: 16px!important;
+    color:#1a4482!important;
+}
+.nav-item{
+    margin-top: 3px;
+    margin-left:10px;
+    font-size: 16px;
+}
+.dropdown-item{
+    min-height: 0px!important;
+    padding-top: 5px!important;
+    padding-bottom: 5px!important;
+    
+
+}
+a.dropdown-item{
+    font-size: 14px!important;
+    color:#1a4482!important;
+}
+
+nav{
+    border-radius: 3px;
+    box-shadow: 0 3px 6px #ccc;
+}
+.map{
+    color: #1a4482!important;
+    margin-top: 11px!important;
+}
+.map span{
+    font-weight: bolder;
+}
+.map a:hover{
+    text-decoration: none;
+}
 .section{
     z-index: 1;
     /*margin-top: -63px;*/
@@ -117,14 +184,7 @@ input[type=text]:focus {
     padding-left: 15px;
 }
 
-.map{
-	color: darkblue;
-    margin-top: 7px;
-}
 
-.map a:hover{
-    text-decoration: none;
-}
 
 .main-image{
     margin-top: 20px;
@@ -158,52 +218,7 @@ input[type=text]:focus {
     font-weight: bold;
 }*/
 
-.nav-link:hover, .section a:hover{
-    color: #E0B431!important;
-}
 
-.last-item{
-    margin-right: -10px;
-}
-
-.home{
-    margin-right: 10px;
-    padding-top: 10px;
-    padding: 10px;
-    font-size: 14px!important;
-}
-.home.active:hover{
-    text-decoration: none;
-    color: #fff!important;
-}
-.nav-item.regist button:hover{
-    color: #fff!important;
-}
-.opros{
-    border-bottom: 2px solid #E0B431;
-}
-
-.dropdown-submenu {
-    position: relative;
-}
-
-.dropdown-submenu .dropdown-menu {
-    top: 0;
-    left: 100%;
-    margin-top: -1px;
-}
-.test:hover{
-    text-decoration: none;
-}
-.test img{
-    width: 10px;
-    margin-left: 10px;
-}
-
-nav{
-    border-radius: 3px;
-    box-shadow: 0 3px 6px #ccc;
-}
 
 .home-page{
     padding-right: 35px;
@@ -441,9 +456,7 @@ nav{
 	display: inline;
 }
 
-.nav-link {
-	color: darkblue !important;
-}
+
 
 .btn-white {
 	color: white !important;
@@ -461,4 +474,8 @@ nav{
 
 .no-bg {
 	background: none !important;
+}
+
+.body-content{
+	background: white;
 }

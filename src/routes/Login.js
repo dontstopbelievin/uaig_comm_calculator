@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import $ from 'jquery';
+import '../assets/css/login.css';
 
 //var rw = null;
 
@@ -53,7 +54,7 @@ export default class Login extends Component {
   }
 
   showAlert() {
-   this.setState({aboutNCALayer: true});
+    this.setState({aboutNCALayer: true});
   }
 
   //user login function
@@ -191,7 +192,6 @@ export default class Login extends Component {
       else {
         console.log('Connection error');
         this.openDialog();
-        this.showAlert();
       }
       console.log('Code: ' + event.code + ' Reason: ' + event.reason);
     }.bind(this);
@@ -448,6 +448,7 @@ export default class Login extends Component {
     // console.log(window.checkToken);
     //console.log("rendering the LoginComponent");
     return (
+      <div className="bigBody">
       <div className="container">
         <div id="loginModal" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div className="modal-dialog" role="document">
@@ -524,9 +525,8 @@ export default class Login extends Component {
                             <input className="form-control" id="inpPassword" type="password" />
                           </label>
                           {this.state.inviseBtn &&
-                          <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
+                            <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
                           }
-
                         </div>
                       </div>
                     }
@@ -570,6 +570,7 @@ export default class Login extends Component {
             </div>
           </div>
         </div>
+      </div>
       </div>
     )
   }

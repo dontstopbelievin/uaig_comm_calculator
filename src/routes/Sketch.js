@@ -100,7 +100,7 @@ export default class Sketch extends React.Component {
     var declinedForms = this.state.declinedForms;
     var activeForms = this.state.activeForms;
     return (
-      <div className="content container">
+      <div className="content container body-content">
         <div className="row">
           <style dangerouslySetInnerHTML={{__html: `
             .apz-list {
@@ -126,7 +126,7 @@ export default class Sketch extends React.Component {
                 <h4 style={{textAlign: 'center'}}>Информация</h4>
             </div>
         </div>
-        <div className="row">
+        <div className="row container">
           <div className="col-md-3 apz-list card">
             <h4><span id="in-process">В Процессе</span>
             {
