@@ -491,6 +491,12 @@ export default class Login extends Component {
                             <Link to="/" style={{marginRight:'5px'}}>
                               <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
                             </Link>
+                              <div className="row">
+                                  <div className="col-md-2"></div>
+                                  <div className="col-md-10">
+                                      <Link to="/forgotPassword" >Forgot Password?</Link>
+                                  </div>
+                              </div>
                           </div>
                         }
                       </div>
@@ -550,14 +556,7 @@ export default class Login extends Component {
                               <Link to="/" style={{marginRight:'5px'}}>
                                 <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
                               </Link>
-                                <div className="row">
-                                    <div className="col-md-2"></div>
-                                    <div className="col-md-10">
-                                        <Link to="/forgotPassword" >Forgot Password?</Link>
-                                    </div>
-                                </div>
                             </div>
-
                           }
                           {!this.state.loaderHidden &&
                             <div style={{margin: '0 auto', display: 'table'}}>
