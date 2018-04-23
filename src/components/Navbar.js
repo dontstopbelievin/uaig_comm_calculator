@@ -49,10 +49,10 @@ export default class NavBar extends React.Component {
                 <li><a className="dropdown-item" href="#">Государственные символы</a></li>
                 <li><a className="dropdown-item" href="#">Государственные службы</a></li>
                 <li><a className="dropdown-item" href="#">Виды государственные услуг</a></li>
-                <li><a className="dropdown-item" href="#">Отчет за 2017год</a></li>
-                <li><a className="dropdown-item" href="#">Результаты заявления АПЗ</a></li>
+                <li><a className="dropdown-item" href="/#/reports">Отчет за 2017год</a></li>
+                <li><a className="dropdown-item" href="/#/stats">Результаты заявления АПЗ</a></li>
                 <li><a className="dropdown-item" href="#">Работа с населением</a></li>
-                <li><a className="dropdown-item" href="#">Бюджетное планирование</a></li>
+                <li><a className="dropdown-item" href="/#/BudgetPlan">Бюджетное планирование</a></li>
                 <li><a className="dropdown-item" href="#">Кадровое обеспечение</a></li>
                 <li><a className="dropdown-item" href="#">Предпринимательская поддержка</a></li> 
               </ul>
