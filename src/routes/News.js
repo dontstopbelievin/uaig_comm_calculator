@@ -23,17 +23,17 @@ export default class news extends React.Component{
   render() {
     return (
     <div> 
-        <div className="container navigational_price">
+        <div className="container navigational_price body-content">
             <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.news}
         </div>
-        <div className="container app monthlyreport">
+        <div className="container app monthlyreport body-content">
                 <p>{e.app}</p>
                 <h5>{e.app_header}</h5>
                 <h5>{e.app_header2}</h5>
 
                 <hr/>
 
-                <table className="table table-striped monthlyreport">
+                <table className="table table-striped monthlyreport" style={{margin: '0'}}>
                   <thead>
                     <td><strong>№</strong></td>
                     <td><strong>{e.monthlyreport_thead_1}</strong></td>

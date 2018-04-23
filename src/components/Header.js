@@ -251,7 +251,7 @@ class LogoutBtn extends Component {
                 }
               })()}
               <NavLink to={"/editPassword"} replace className="dropdown-item" activeClassName="active">Изменить пароль</NavLink>
-              <button onClick={this.onLogout} className="dropdown-item" href="#">Выйти</button>
+              <button onClick={this.onLogout} className="dropdown-item" style={{cursor: 'pointer'}}>Выйти</button>
             </ul>
           </li>
         </ul>

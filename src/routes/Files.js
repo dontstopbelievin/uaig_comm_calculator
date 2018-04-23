@@ -5,7 +5,7 @@ export default class Files extends React.Component {
   render() {
     //console.log("rendering the AdminComponent");
     return (
-      <div className="content container files-page">
+      <div className="content container files-page body-content">
         <div className="card">
           <div className="card-header"><h4 className="mb-0">Мои файлы</h4></div>
           <div className="card-body">

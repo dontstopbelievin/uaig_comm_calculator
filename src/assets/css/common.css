@@ -462,3 +462,7 @@ nav{
 .no-bg {
 	background: none !important;
 }
+
+.body-content{
+	background: white;
+}

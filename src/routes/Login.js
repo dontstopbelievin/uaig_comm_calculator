@@ -53,7 +53,7 @@ export default class Login extends Component {
   }
 
   showAlert() {
-   this.setState({aboutNCALayer: true});
+    this.setState({aboutNCALayer: true});
   }
 
   //user login function
@@ -191,7 +191,6 @@ export default class Login extends Component {
       else {
         console.log('Connection error');
         this.openDialog();
-        this.showAlert();
       }
       console.log('Code: ' + event.code + ' Reason: ' + event.reason);
     }.bind(this);
@@ -524,9 +523,8 @@ export default class Login extends Component {
                             <input className="form-control" id="inpPassword" type="password" />
                           </label>
                           {this.state.inviseBtn &&
-                          <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
+                            <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
                           }
-
                         </div>
                       </div>
                     }

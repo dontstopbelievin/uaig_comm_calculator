@@ -42,10 +42,10 @@ export default class VideoTutorials extends React.Component {
 
     return (
         <div>
-    <div className="container navigational_price">
+    <div className="container navigational_price body-content">
       <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.tutorials}
     </div>
-      <div className="content container video_tutorials-plan-page">
+      <div className="content container video_tutorials-plan-page body-content">
         <div className="card">
           <div className="card-header">
           <h4 className="mb-0">Пример работы</h4></div>

@@ -15,7 +15,7 @@ export default class CouncilMaterials extends React.Component {
     const { pageNumber, numPages } = this.state;
 
     return (
-      <div className="content container project-page">
+      <div className="content container project-page body-content">
         <div className="card">
           <div className="card-header"><h4 className="mb-0">Материалы градостроительного совета г.Алматы</h4></div>
           <div className="card-body">
