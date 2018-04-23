@@ -5,6 +5,7 @@ import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../languages/guest.json';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import "../assets/css/guest.css";
 import WOW from 'wowjs';
 import { UncontrolledCarousel, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
@@ -18,6 +19,8 @@ export default class Guest extends React.Component {
     this.state = {
       tokenExists: false,
       rolename: "",
+      ru: true,
+      kk: false,
       items: [
         {
           src: './images/slideshow/1.jpg',
@@ -37,6 +40,9 @@ export default class Guest extends React.Component {
       ]
     }
   }
+
+
+
 
   gotoLogin() {
     this.props.history.replace('/login');
@@ -81,6 +87,161 @@ export default class Guest extends React.Component {
             <div className="container home-page col-md-12 wow fadeInUp" data-wow-duration="1.5s">
               <div className="row">
                 <div className="col-md-12 col-xs-12 black-main text-center">
+                  <h4 >НОВОСТИ</h4>
+                  <span><img src="images/line.png" /></span>
+                  
+                  <div className="card-deck">
+                    <div className="card  mt-4 mb-4 wow fadeInLeft" data-wow-duration="1.5s">
+                      <div className="card-body">
+                        <h5 className="text-muted card-text">Календарь новостей</h5>
+                        <form>
+                          <select className="month_name">
+                            <option>Январь</option>
+                            <option>Февраль</option>
+                            <option selected>Март</option>
+                            <option>Апрель</option>
+                            <option>Май</option>
+                            <option>Июнь</option>
+                            <option>Июль</option>
+                            <option>Август</option>
+                            <option>Сентябрь</option>
+                            <option>Октябрь</option>
+                            <option>Ноябрь</option>
+                            <option>Декабрь</option>
+                          </select>
+                          <select className="year_name">
+                            <option>2015</option>
+                            <option>2016</option>
+                            <option>2017</option>
+                            <option selected>2018</option>                      
+                          </select>
+                        </form>
+                                            
+                        <div className="month">
+                          <ul className="weekdays">
+                            <li>Пн</li>
+                            <li>Вт</li>
+                            <li>Ср</li>
+                            <li>Чт</li>
+                            <li>Пт</li>
+                            <li>Сб</li>
+                            <li>Вс</li>
+                          </ul>
+                          <div className="week">            
+                            <ul className="days">
+                                <li><a className="text-muted" href="#">26</a></li>
+                                <li><a className="text-muted" href="#">27</a></li>
+                                <li><a className="text-muted" href="#">28</a></li>
+                                <li><a href="#">1</a></li>
+                                <li><a href="#">2</a></li>
+                                <li className="weekend"><a href="#">3</a></li>
+                                <li className="weekend"><a href="#">4</a></li>
+                            </ul>
+                            <ul className="days">
+                                <li><a href="#">5</a></li>
+                                <li><a href="#">6</a></li>
+                                <li><a href="#">7</a></li>
+                                <li><a href="#">8</a></li>
+                                <li><a href="#">9</a></li>
+                                <li className="weekend"><a href="#">10</a></li>
+                                <li className="weekend"><a href="#">11</a></li>
+                            </ul>
+                            <ul className="days">
+                                <li><a href="#">12</a></li>
+                                <li><a href="#">13</a></li>
+                                <li><a href="#">14</a></li>
+                                <li><a className="active" href="#">15</a></li>
+                                <li><a href="#">16</a></li>
+                                <li className="weekend"><a href="#">17</a></li>
+                                <li className="weekend"><a href="#">18</a></li>
+                            </ul>
+                            <ul className="days">
+                                <li><a href="#">19</a></li>
+                                <li><a href="#">20</a></li>
+                                <li><a href="#">21</a></li>
+                                <li><a href="#">22</a></li>
+                                <li><a href="#">23</a></li>
+                                <li className="weekend"><a href="#">24</a></li>
+                                <li className="weekend"><a href="#">25</a></li>
+                            </ul>
+                            <ul className="days">
+                                <li><a href="#">26</a></li>
+                                <li><a href="#">27</a></li>
+                                <li><a href="#">28</a></li>
+                                <li><a href="#">29</a></li>
+                                <li><a href="#">30</a></li>
+                                <li className="weekend"><a href="#">31</a></li>
+                                <li className="weekend"><a className="text-muted" href="#">1</a></li>
+                            </ul>
+                            </div>
+                          </div>     
+                        </div>
+                    </div>
+                      
+                    <div className="card mt-4 mb-4 wow fadeInUp" data-wow-duration="1.5s">
+                      <div className="list-group"> 
+                        <div href="#" className="list-group-item flex-column align-items-start ">
+                          <div className="d-flex w-100 left-content-between">
+                              <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
+                              <p className="news-date text-muted font-weight-light">15.01.2018</p>
+                          </div>
+                            
+                          <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
+                          <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                          <div className="dropdown-divider"></div>
+                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">Подробнее</small></a>
+                        </div>
+                          
+                        <div href="#" className="list-group-item  flex-column align-items-start ">
+                          <div className="d-flex w-100 left-content-between">
+                              <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
+                              <p className="news-date text-muted font-weight-light">15.01.2018</p>
+                          </div>
+                            
+                          <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
+                          <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                          <div className="dropdown-divider"></div>
+                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">Подробнее</small></a>
+                        </div>
+                      </div>
+                    </div>
+                      
+                    <div className="card mt-4 mb-4 wow fadeInRight" data-wow-duration="1.5s">
+                      <div className="list-group">
+                          
+                        <div href="#" className="list-group-item flex-column align-items-start ">
+                          <div className="d-flex w-100 left-content-between">
+                              <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
+                              <p className="news-date text-muted font-weight-light">15.01.2018</p>
+                          </div>
+                            
+                          <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
+                          <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                          <div className="dropdown-divider"></div>
+                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">Подробнее</small></a>
+                        </div>
+                          
+                        <div href="#" className="list-group-item  flex-column align-items-start ">
+                          <div className="d-flex w-100 left-content-between">
+                              <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
+                              <p className="news-date text-muted font-weight-light">15.01.2018</p>
+                          </div>
+                            
+                          <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
+                          <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                          <div className="dropdown-divider"></div>
+                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">Подробнее</small></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="container home-page col-md-12 wow fadeInUp" data-wow-duration="1.5s">
+              <div className="row">
+                <div className="col-md-12 col-xs-12 black-main text-center">
                   <h4 >ГОСУДАРСТВЕННЫЕ УСЛУГИ</h4>
                   <span><img src="images/line.png" /></span>
                     
@@ -97,7 +258,7 @@ export default class Guest extends React.Component {
                           Выдача справки по определению адреса объектов недвижимости
                         </p>
                       </div>
-                      <div>
+                      <div className="card-button">
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
                         {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
@@ -116,7 +277,7 @@ export default class Guest extends React.Component {
                           Выдача архитектурно-планировочного задания
                         </p>
                       </div>
-                      <div>
+                      <div className="card-button">
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
                         {this.state.tokenExists && this.state.rolename === 'Admin' && <NavLink to={"/admin"} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/citizen"} replace className="btn btn-primary">Подать заявку</NavLink>}
@@ -141,7 +302,7 @@ export default class Guest extends React.Component {
                           Выдача решения на фотоотчет
                         </p>
                       </div>
-                      <div>
+                      <div className="card-button">
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
                         {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
@@ -161,7 +322,7 @@ export default class Guest extends React.Component {
                           Выдача решения о строительстве культовых зданий (сооружений), определении их месторасположения
                         </p>
                       </div>
-                      <div>
+                      <div className="card-button">
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
                         {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
@@ -179,7 +340,7 @@ export default class Guest extends React.Component {
                           Выдача решения о перепрофилировании (изменении функционального назначения) зданий (сооружений) в культовые здания (сооружения)
                         </p>
                       </div>
-                      <div>
+                      <div className="card-button">
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
                         {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
@@ -197,7 +358,7 @@ export default class Guest extends React.Component {
                           Предоставление земельного участка для строительства объекта в черте населенного пункта
                         </p>
                       </div>
-                      <div>
+                      <div className="card-button">
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
                         {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
@@ -208,141 +369,7 @@ export default class Guest extends React.Component {
               </div>
             </div>
                 
-            <div className="container home-page col-md-12 wow fadeInUp" data-wow-duration="1.5s">
-              <div className="row">
-                <div className="col-md-12 col-xs-12 black-main text-center">
-                  <h4 >НОВОСТИ</h4>
-                  <span><img src="images/line.png" /></span>
-                  
-                  <div className="card-deck">
-                    <div className="card  mt-4 mb-4 wow fadeInLeft" data-wow-duration="1.5s">
-                      <div className="card-body">
-                        <h5 className="text-muted card-text">Календарь новостей</h5>
-                        <div className="month">
-                          <ul className="weekdays">
-                            <li>Пн</li>
-                            <li>Вт</li>
-                            <li>Ср</li>
-                            <li>Чт</li>
-                            <li>Пт</li>
-                            <li>Сб</li>
-                            <li>Вс</li>
-                          </ul>
-                          <div className="week"> 
-                            <ul className="days">
-                              <li><a className="text-muted" href="#">26</a></li>
-                              <li><a className="text-muted" href="#">27</a></li>
-                              <li><a className="text-muted" href="#">28</a></li>
-                              <li><a href="#">1</a></li>
-                              <li><a href="#">2</a></li>
-                              <li className="weekend"><a href="#">3</a></li>
-                              <li className="weekend"><a href="#">4</a></li>
-                            </ul>
-                            <ul className="days">
-                              <li><a href="#">5</a></li>
-                              <li><a href="#">6</a></li>
-                              <li><a href="#">7</a></li>
-                              <li><a href="#">8</a></li>
-                              <li><a href="#">9</a></li>
-                              <li className="weekend"><a href="#">10</a></li>
-                              <li className="weekend"><a href="#">11</a></li>
-                            </ul>
-                            <ul className="days">
-                              <li><a href="#">12</a></li>
-                              <li><a href="#">13</a></li>
-                              <li><a href="#">14</a></li>
-                              <li><a className="active" href="#">15</a></li>
-                              <li><a href="#">16</a></li>
-                              <li className="weekend"><a href="#">17</a></li>
-                              <li className="weekend"><a href="#">18</a></li>
-                            </ul>
-                            <ul className="days">
-                              <li><a href="#">19</a></li>
-                              <li><a href="#">20</a></li>
-                              <li><a href="#">21</a></li>
-                              <li><a href="#">22</a></li>
-                              <li><a href="#">23</a></li>
-                              <li className="weekend"><a href="#">24</a></li>
-                              <li className="weekend"><a href="#">25</a></li>
-                            </ul>
-                            <ul className="days">
-                              <li><a href="#">26</a></li>
-                              <li><a href="#">27</a></li>
-                              <li><a href="#">28</a></li>
-                              <li><a href="#">29</a></li>
-                              <li><a href="#">30</a></li>
-                              <li className="weekend"><a href="#">31</a></li>
-                              <li className="weekend"><a className="text-muted" href="#">1</a></li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                      <input type="date" className="form-control calender no-bg" id="date" name="date" placeholder="Дата" required />
-                      <a className="nav-link float-right" href="#">
-                        <button className="btn btn-outline-warning my-2 my-sm-0" type="submit"><span className="font-weight-bold">Выбрать</span></button>
-                      </a>
-                    </div>
-                      
-                    <div className="card mt-4 mb-4 wow fadeInUp" data-wow-duration="1.5s">
-                      <div className="list-group"> 
-                        <div href="#" className="list-group-item flex-column align-items-start ">
-                          <div className="d-flex w-100 left-content-between">
-                              <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                              <p className="text-muted font-weight-light">15.01.2018</p>
-                          </div>
-                            
-                          <h6 className="text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                          <p className="text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
-                          <div className="dropdown-divider"></div>
-                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">Подробнее</small></a>
-                        </div>
-                          
-                        <div href="#" className="list-group-item  flex-column align-items-start ">
-                          <div className="d-flex w-100 left-content-between">
-                              <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                              <p className="text-muted font-weight-light">15.01.2018</p>
-                          </div>
-                            
-                          <h6 className="text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                          <p className="text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
-                          <div className="dropdown-divider"></div>
-                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">Подробнее</small></a>
-                        </div>
-                      </div>
-                    </div>
-                      
-                    <div className="card mt-4 mb-4 wow fadeInRight" data-wow-duration="1.5s">
-                      <div className="list-group">
-                          
-                        <div href="#" className="list-group-item flex-column align-items-start ">
-                          <div className="d-flex w-100 left-content-between">
-                              <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                              <p className="text-muted font-weight-light">15.01.2018</p>
-                          </div>
-                            
-                          <h6 className="text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                          <p className="text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
-                          <div className="dropdown-divider"></div>
-                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">Подробнее</small></a>
-                        </div>
-                          
-                        <div href="#" className="list-group-item  flex-column align-items-start ">
-                          <div className="d-flex w-100 left-content-between">
-                              <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                              <p className="text-muted font-weight-light">15.01.2018</p>
-                          </div>
-                            
-                          <h6 className="text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                          <p className="text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
-                          <div className="dropdown-divider"></div>
-                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">Подробнее</small></a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            
                    
             <div className="container home-page col-md-12 wow fadeInUp" data-wow-duration="1.5s">
               <div className="row">
@@ -382,6 +409,10 @@ export default class Guest extends React.Component {
                         <a href="http://www.akorda.kz/ru/events/akorda_news/press_conferences/statya-glavy-gosudarstva-vzglyad-v-budushchee-modernizaciya-obshchestvennogo-soznaniya" target="_blank"><img src="./images/strategy/modernization_ru.png" /></a>
                         <a href="https://almaty.gov.kz/page.php?page_id=3239&lang=1" target="_blank"><img src="./images/strategy/almaty2020.png" /></a>
                         <a href="http://egov.kz/cms/ru" target="_blank"><img src="./images/strategy/egov.png" /></a>
+                        <a href="https://www.almaty.gov.kz/page.php?page_id=3447&lang=1&article_id=39871" target="_blank"><img src="/images/strategy/prom_revolution_4_ru.jpg" /></a>
+                        
+                        
+                         
                       </div>
                     </div>
                   </div>
@@ -416,7 +447,7 @@ class AlertModal extends React.Component {
   render() {
     return (
       <div>
-        <Button outline color="primary" onClick={this.toggle}>Подать заявку</Button>
+        <Button className="btn btn-danger bg-danger text-white font-weight-bold" style={{textTransform:'none'}} onClick={this.toggle}>Подать заявку</Button>
         <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
           <ModalHeader toggle={this.toggle}>Информация</ModalHeader>
           <ModalBody>

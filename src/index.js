@@ -55,6 +55,7 @@ import Apz from './routes/Apz.js';
 import DoingBusiness from './routes/DoingBusiness.js';
 import ApzDepartment from './routes/ApzDepartment.js';
 import BisunessBuilding from './routes/BisunessBuilding';
+import InfoAboutDepartment from './routes/InfoAboutDepartment.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import PopperJs from 'popper.js';
@@ -82,7 +83,7 @@ export default class Main extends React.Component {
     this.setLang();
 
 
-    window.url = 'http://api.uaig.kz:8880/';
+    window.url = 'https://api.uaig.kz:8843/';
     window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
 
      //window.url = 'http://uaig/';
@@ -157,6 +158,7 @@ export default class Main extends React.Component {
               <Route path="/doingBusiness" render={(props) => (<DoingBusiness {...props}/>)}/>
               <Route path="/apz_department" render={(props) => (<ApzDepartment {...props}/>)}/>
               <Route path="/businessbuilding" render={(props) => (<BisunessBuilding {...props}/>)}/>
+              <Route path="/infoaboutdepartment" render={(props) => (<InfoAboutDepartment {...props}/>)}/>
             </Switch>
             <Footer />
           </div>

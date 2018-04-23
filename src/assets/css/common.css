@@ -21,27 +21,31 @@ body{
 }
 
 .header{
+    position: relative;
     background-image: url(/images/header-bg.jpg);
     background-size:100%;
     width: 100%;  
+    height: 60vh;
     background-position:  center top;
     background-repeat: no-repeat;
     background-size: cover;
-    position: relative;
-    height: 90vh;
+    background-attachment: fixed;
 /*    box-shadow: 0 3px 6px #333;*/
     /*z-index: -1;*/
 }
-
 .row{
     padding-top: 20px;
 }
 
 .site-logo{
-    margin-top: 12px;
+    position: relative;
+    margin-top: 5%;
 }
-
+.site-logo img{
+    width: 75px;
+}
 .site-logo h4{
+    text-align: center;
     font-size: 25px;
     margin-top: 30px;
 }
@@ -68,11 +72,23 @@ body{
     .site-logo h4{
         font-size:18px;
     }
+    .site-logo img{
+        width: 60px;
+    }
 }
-
 .lang a:hover{
-    color: #E0B431!important;
+    color: #ffc107!important;
     text-decoration: none;
+}
+.regist{
+    padding-left: 15px!important;
+}
+.regist .LoginBtn{
+    font-weight: 600!important;
+    font-size: 14px!important;
+    border: 2px solid #fff!important;
+    padding-top: 5px!important;
+    padding-bottom: 5px!important;
 }
 /*
 .search{
@@ -89,9 +105,20 @@ body{
 }
 
 .mainSearch {
-	border: 2px solid white;
+    height: 35px!important;
+	font-weight: 600!important;
+    font-size: 14px!important;
+    border: 2px solid #fff!important;
+    padding-top: 5px!important;
+    padding-bottom: 5px!important;
 }
-
+.search input[type=text]{
+    background: none;
+    border: 2px solid white;
+    border-radius: 4px;
+    color: #fff;
+    height: 40px;
+}
 input[type=text]:focus {
     border: 2px solid #4BABDC;
     transition: 0.5s;
@@ -148,6 +175,7 @@ input[type=text]:focus {
 }
 .dropdown-item{
     min-height: 0px!important;
+    height: 29px!important;
     padding-top: 5px!important;
     padding-bottom: 5px!important;
     
@@ -174,9 +202,7 @@ nav{
 }
 .section{
     z-index: 1;
-    /*margin-top: -63px;*/
 }
-
 .section .body{
     background: #fff;
     box-shadow: 0 3px 5px #ccc;
@@ -237,8 +263,8 @@ nav{
     border: solid 1px #efefef;
     margin-top: 15px;
     box-sizing: border-box;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: 8px;
+    margin-right: 8px;
 }
 .card-color-1{
     background: #5CC4CA;
@@ -271,7 +297,7 @@ nav{
     margin-top: 30px;
 }
 
-.news-icon{
+/*.news-icon{
     width: 23px;
     height: 23px;
     margin-right: 10px;
@@ -342,7 +368,7 @@ nav{
     color:firebrick!important;
 }
 
- Add media queries for smaller screens 
+ /*Add media queries for smaller screens */
 @media screen and (max-width:720px) {
     .weekdays li, .days li {width: 13.1%;}
 }
@@ -361,7 +387,7 @@ nav{
     color: #1abc9c;
     font-weight: bold;
     margin-top: 20px;
-}
+}*/
 
 .card-footer{
     height: 65px;
@@ -407,9 +433,11 @@ nav{
 .email a{
     color: #fff!important;
 }
+
 .address p{
     color: #fff;
     font-weight: 500;
+    margin-bottom: 0;
 }
 
 /*added by Baha starting from here*/

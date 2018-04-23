@@ -128,14 +128,14 @@ export default class Header extends React.Component {
             </div>
           </div>
         }
-        <div className="header">
+        <div className="header" data-url={this.props.location.pathname}>
           <div className="container">
             <div className="row">
               <div className="col-md-12 header-bg">
                 <div className="row">
                   <div className="search col-md-8 text-left">
                     <form>
-                      <div className="form-group ">
+                      <div className="form-group search">
                         <input className="col-md-4 mainSearch" type="text" placeholder="Поиск по сайту" /><br />
                         <b className=" text-white">Например: <a href="#" className="underline text-white">Выдача АПЗ</a></b>
                       </div>
@@ -155,19 +155,19 @@ export default class Header extends React.Component {
                       <button className="btn btn-outline-light my-2 my-sm-0" type="submit"><span>РЕГИСТРАЦИЯ</span></button>
                     </a>*/}
                   </div>
-                  <div className="col-md-1 text-right font-weight-bold lang my-2">
+                  <div className="col-md-1 text-right font-weight-bold lang">
                     {localStorage.getItem('lang') === 'kk' ?
-                      (<span>ҚАЗ</span>) :
-                      (<a style={{cursor: 'pointer', color: 'crimson'}} onClick={this.updateLanguage.bind(this, 'kk')}>ҚАЗ</a>)
-                    }<br />
+                      (<span>Қаз</span>) :
+                      (<a style={{cursor: 'pointer', color: '#ffc107'}} onClick={this.updateLanguage.bind(this, 'kk')}>Қаз</a>)
+                    }&nbsp;&nbsp;
                     {localStorage.getItem('lang') === 'ru' ?
-                      (<span>РУС</span>) :
-                      (<a style={{cursor: 'pointer', color: 'crimson'}} onClick={this.updateLanguage.bind(this, 'ru')}>РУС</a>)
+                      (<span>Рус</span>) :
+                      (<a style={{cursor: 'pointer', color: '#ffc107'}} onClick={this.updateLanguage.bind(this, 'ru')}>Рус</a>)
                     }
                   </div> 
-                  <div className="col-md-12 text-center site-logo">
-                    <img className="image-fluid" width="90" src="./images/logo.png" alt="Управление Архитектуры и Градостроительства города Алматы" />
-                    <h4 className="text-white font-weight-bold ">{e.title}</h4>
+                  <div className="col-md-12 text-center site-logo" data-url={this.props.location.pathname}>
+                    <img className="image-fluid" style={{width: '90'}} src="./images/logo.png" alt="Управление Архитектуры и Градостроительства города Алматы" />
+                    <h4 className=" text-white font-weight-bold ">{e.title}</h4>
                   </div>   
                 </div>
               </div>
@@ -186,9 +186,9 @@ class LoginBtn extends React.Component {
 
   render() {
     return(
-      <div className="row" style={{paddingTop: '0'}}>
-        <NavLink to={"/login"} className="btn btn-white" replace>{e.login}</NavLink>&nbsp;
-        <NavLink to={"/register"} className="btn btn-white" replace>{e.register}</NavLink>
+      <div className="row regist" style={{paddingTop: '0'}}>
+        <NavLink to={"/login"} className="btn btn-white LoginBtn" replace >{e.login}</NavLink>&nbsp;
+        <NavLink to={"/register"} className="btn btn-white LoginBtn" replace>{e.register}</NavLink>
       </div>
     )
   }
