@@ -16,7 +16,7 @@ export default class NavBar extends React.Component {
 
   render() {
     return (
-      <nav className="navbar navbar-expand-lg navbar-light">
+      <nav className="navbar navbar-expand-lg navbar-light" data-url={this.props.pathName}>
         <NavLink exact className="nav-link goHome" activeClassName="active" to="/" >ГЛАВНАЯ</NavLink>
         <button className="navbar-toggler" type="button" data-toggle="collapse" 
                 data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
@@ -32,7 +32,7 @@ export default class NavBar extends React.Component {
                 Об Управлении
               </a>
               <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a className="dropdown-item" href="#">Сведения о Руководстве</a>
+                <a className="dropdown-item" href="/#/infoaboutdepartment">Сведения о Руководстве</a>
                 <a className="dropdown-item" href="#">Информация о государственном органе</a>
                 <a className="dropdown-item" href="#">Деятельность исполнительного органа</a>
                 <a className="dropdown-item" href="/#/timeOfReception">График приёма граждан</a>
@@ -47,7 +47,7 @@ export default class NavBar extends React.Component {
               </a>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li><a className="dropdown-item" href="#">Государственные символы</a></li>
-                <li><a className="dropdown-item" href="#">Государственные службы</a></li>
+                <li><a className="dropdown-item" href="#">Государственная служба</a></li>
                 <li><a className="dropdown-item" href="#">Виды государственные услуг</a></li>
                 <li><a className="dropdown-item" href="#">Отчет за 2017год</a></li>
                 <li><a className="dropdown-item" href="#">Результаты заявления АПЗ</a></li>

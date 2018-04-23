@@ -1,0 +1,140 @@
+.card-image img{
+	margin-top: 30px!important;
+}
+.card-image{
+	padding: 0!important;
+	height: 192px!important;
+}
+.card-image .image-border{
+	height: 162px!important;
+}
+.card-button{
+	padding-top: 12px!important;
+	padding-bottom: 12px!important;
+	border-top: 1px solid #ccc;
+}
+.card-text{
+	font-size: 16px!important;
+	font-family: sans-serif;
+}
+.news-date{
+	font-family: "Roboto",sans-serif;
+	font-weight: 700!important;
+	line-height: 19.5px;
+	font-size: 13px!important;
+
+}
+.news-title{
+	font-family:"Roboto Medium";
+	font-size: 16px!important;
+}
+.news-text{
+	font-size: 13px;
+	font-family: "Roboto";
+	font-weight: 500!important;
+	line-height: 19.5px;
+	color: #707070;
+}
+.news-icon{
+    width: 23px;
+    height: 23px;
+    margin-right: 10px!important;
+}
+.news .list-group p{
+    font-size: 13px;
+    color: #707070;
+    font-weight:500;
+}
+.view-more{
+	font-size: 13px;
+	line-height: 19.2px;
+	margin-right: 0px!important;
+}
+.view-more:hover {
+    color: #1abc9c!important;
+}
+.list-group-item{
+    border: none!important;
+}
+.comment .view-more:hover{
+    color: #1abc9c!important;
+    text-decoration: none;
+}
+.comment{
+    margin-top: 0px;
+}
+
+.weekdays {
+    margin: 0;
+    padding: 10px 0;
+    background-color: #ddd;
+}
+
+.weekdays li {
+    display: inline-block;
+    width: 13%;
+    color: #666;
+    text-align: center;
+}
+.month{
+    margin-top: 20px;
+}
+.week{
+    height: 140px;
+    background: #eee;
+}
+.days {
+    padding: 10px 0;
+    background: #eee;
+    margin: 0;
+}
+
+.days li {
+    float: left;
+    list-style-type: none;
+    display: inline-block;
+    width: 14.2%;
+    text-align: center;
+    margin-bottom: 5px;
+    font-size:12px;
+    color: #777;
+}
+
+.days li .active {
+    padding: 5px;
+    border-radius: 30px;
+    box-shadow: 0 3px 6px #444;
+    background: #1abc9c;
+    color: white !important
+}
+.weekend a{
+    color:firebrick!important;
+}
+
+ Add media queries for smaller screens 
+@media screen and (max-width:720px) {
+    .weekdays li, .days li {width: 13.1%;}
+}
+
+@media screen and (max-width: 420px) {
+    .weekdays li{width: 12%;} 
+    .days li {width: 13.2%;}
+    .days li .active {padding: 2px;}
+}
+
+@media screen and (max-width: 290px) {
+    .weekdays li, .days li {width: 12.2%;}
+}
+
+.calender{
+    color: #1abc9c;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+/*nav[data-url="/"] {margin-top:160px!important;}*/
+
+.header[data-url="/"] 
+{
+	height: 90vh!important;
+}
