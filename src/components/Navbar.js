@@ -87,7 +87,7 @@ export default class NavBar extends React.Component {
             <li className="nav-item map">
               <span>Карта:</span> <a className={this.giveActiveClass('/map')} href="/#/map">3D</a> | <a className={this.giveActiveClass('/map2d')} href="/#/map2d">2D</a>
             </li>
-            <NavLink exact className="nav-link last-item" activeClassName="active" to="/doingBusiness">Doing business</NavLink>  
+            <li><a className="nav-link last-item" target="_blank" href="/docs/doingBusiness.pdf">Doing business</a></li>
           </ul>
         </div>
       </nav>
