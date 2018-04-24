@@ -30,7 +30,7 @@ export default class Footer extends React.Component {
 		            <div className="container">
 		                <div className="row">
 		                    <div className="copyright col-md-7">
-		                        <p className="mt-2 mb-2 text-white font-weight-bold">© 2017 - КГУ "Управление Архитектуры и Градостроительства города Алматы"</p>
+		                        <p className="mt-2 mb-2 text-white font-weight-bold">© 2017 - {e.kgu} "{e.title}"</p>
 		                    </div>
 		                    
 		                    <div className="social col-md-5 text-right">
@@ -44,7 +44,7 @@ export default class Footer extends React.Component {
 		                        <a><img src="./images/email.png" alt="contact" /><b>u.aig@almaty.gov.kz</b></a>
 		                    </div>
 		                    <div className="address col-md-9">
-		                        <p><img src="./images/maps.png" alt="map" />Алматы г., Аблайхана улица, 91эт. 7</p>
+		                        <p><img src="./images/maps.png" alt="map" />{e.adress}</p>
 		                    </div>
 		                    <div className="col-md-2 text-right">
 		                    	<span id="_zero_70316">
@@ -54,7 +54,7 @@ export default class Footer extends React.Component {
 								</span>
 		                    </div>
 		                    <div className="contact col-md-8 text-left font-weight-bold">
-		                        <p className="text-white"><img src="./images/phone-call.png" />Единый контакт <b className="underline">+7 (727) 279-58-24</b></p>
+		                        <p className="text-white"><img src="./images/phone-call.png" />{e.singlecontact} <b className="underline">+7 (727) 279-58-24</b></p>
 		                    </div>
 		                </div>
 		            </div>

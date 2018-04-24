@@ -84,7 +84,10 @@
     "outcomes":"Итоги",
     "reconstructionofpedestrianstreets":"Реконструкция пешеходных улиц 2018",
     "designcode":"Дизайн код",
-    "materialsofthetownplanningcouncil":"Материалы градостроительного совета"
+    "materialsofthetownplanningcouncil":"Материалы градостроительного совета",
+    "kgu": "КГУ",
+    "adress": "Алматы г., Аблайхана улица, 91эт. 7",
+    "singlecontact": "Единый контакт"
   },
   "kk": {
     "title": "Алматы қаласы Сәулет және Қала Құрылысы Басқармасы",
@@ -170,6 +173,9 @@
     "outcomes":"Нәтижелері",
     "reconstructionofpedestrianstreets":"2018 ж. Жүргінші көшелерін қайта құру",
     "designcode":"Дизайн коды",
-    "materialsofthetownplanningcouncil":"Қала құрылысы кеңесі материалдары"
+    "materialsofthetownplanningcouncil":"Қала құрылысы кеңесі материалдары",
+    "kgu": "КММ",
+    "adress": "Алматы қ., Аблайхана көшесі, 91қб. 7",
+    "singlecontact": "Бір байланыс"
     }
 }

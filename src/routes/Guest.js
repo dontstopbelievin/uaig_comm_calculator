@@ -93,21 +93,21 @@ export default class Guest extends React.Component {
                   <div className="card-deck">
                     <div className="card  mt-4 mb-4 wow fadeInLeft" data-wow-duration="1.5s">
                       <div className="card-body">
-                        <h5 className="text-muted card-text">Календарь новостей</h5>
+                        <h5 className="text-muted card-text">{e.newscalendar}</h5>
                         <form>
                           <select className="month_name">
-                            <option>Январь</option>
-                            <option>Февраль</option>
-                            <option selected>Март</option>
-                            <option>Апрель</option>
-                            <option>Май</option>
-                            <option>Июнь</option>
-                            <option>Июль</option>
-                            <option>Август</option>
-                            <option>Сентябрь</option>
-                            <option>Октябрь</option>
-                            <option>Ноябрь</option>
-                            <option>Декабрь</option>
+                            <option>{e.january}</option>
+                            <option>{e.february}</option>
+                            <option selected>{e.march}</option>
+                            <option>{e.april}</option>
+                            <option>{e.may}</option>
+                            <option>{e.june}</option>
+                            <option>{e.jule}</option>
+                            <option>{e.august}</option>
+                            <option>{e.september}</option>
+                            <option>{e.octember}</option>
+                            <option>{e.november}</option>
+                            <option>{e.december}</option>
                           </select>
                           <select className="year_name">
                             <option>2015</option>
@@ -119,13 +119,13 @@ export default class Guest extends React.Component {
                                             
                         <div className="month">
                           <ul className="weekdays">
-                            <li>Пн</li>
-                            <li>Вт</li>
-                            <li>Ср</li>
-                            <li>Чт</li>
-                            <li>Пт</li>
-                            <li>Сб</li>
-                            <li>Вс</li>
+                            <li>{e.pn}</li>
+                            <li>{e.vt}</li>
+                            <li>{e.st}</li>
+                            <li>{e.cht}</li>
+                            <li>{e.pts}</li>
+                            <li>{e.sub}</li>
+                            <li>{e.vsk}</li>
                           </ul>
                           <div className="week">            
                             <ul className="days">
@@ -189,7 +189,7 @@ export default class Guest extends React.Component {
                           <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
                           <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
                           <div className="dropdown-divider"></div>
-                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">Подробнее</small></a>
+                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
                         </div>
                           
                         <div href="#" className="list-group-item  flex-column align-items-start ">
@@ -201,7 +201,7 @@ export default class Guest extends React.Component {
                           <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
                           <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
                           <div className="dropdown-divider"></div>
-                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">Подробнее</small></a>
+                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
                         </div>
                       </div>
                     </div>
@@ -218,7 +218,7 @@ export default class Guest extends React.Component {
                           <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
                           <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
                           <div className="dropdown-divider"></div>
-                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">Подробнее</small></a>
+                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
                         </div>
                           
                         <div href="#" className="list-group-item  flex-column align-items-start ">
@@ -230,7 +230,7 @@ export default class Guest extends React.Component {
                           <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
                           <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
                           <div className="dropdown-divider"></div>
-                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">Подробнее</small></a>
+                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
                         </div>
                       </div>
                     </div>
@@ -381,10 +381,10 @@ export default class Guest extends React.Component {
                     <div className="card mt-4 mb-4">
                         <div className="card-body">
                             <div className="card-text">
-                                <h6 className="text-muted">Уважаемый пользователь!</h6>
-                                <p>Сервис «Вопрос – ответ» предназначен для подачи вопроса в режиме онлайн. Для этого Вам необходимо заполнить форму и определить категорию вопроса. Если Вы не знаете, к какой категории отнести вопрос, определите его в категории «Разное».</p>
+                                <h6 className="text-muted">{e.dearuser}</h6>
+                                <p>{e.messageforuser}</p>
                                 <div className="dropdown-divider"></div>
-                                <span><a className="text-warning font-weight-bold view-more" href="#">Смотреть все</a></span>
+                                <span><a className="text-warning font-weight-bold view-more" href="#">{e.viewall}</a></span>
                             </div>
                         </div>
                     </div>  
@@ -449,18 +449,18 @@ class AlertModal extends React.Component {
       <div>
         <Button className="btn btn-danger bg-danger text-white font-weight-bold" style={{textTransform:'none'}} onClick={this.toggle}>{e.apply}</Button>
         <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-          <ModalHeader toggle={this.toggle}>Информация</ModalHeader>
+          <ModalHeader toggle={this.toggle}>{e.info}</ModalHeader>
           <ModalBody>
-            Вам надо &nbsp; 
+              {e.youneed} &nbsp;
             <NavLink to={"/login"} className="navLink" replace>
-              войти
-            </NavLink> в систему или  &nbsp;
+                {e.login}
+            </NavLink> {e.or}  &nbsp;
             <NavLink to={"/register"} className="navLink" replace>
-              зарегистрироваться
-            </NavLink>
+                {e.logup}
+            </NavLink> {e.needkz}
           </ModalBody>
           <ModalFooter>
-            <Button color="secondary" onClick={this.toggle}>Закрыть</Button>
+            <Button color="secondary" onClick={this.toggle}>{e.close}</Button>
           </ModalFooter>
         </Modal>
       </div>
