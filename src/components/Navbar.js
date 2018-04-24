@@ -1,10 +1,14 @@
 import React from 'react';
 import {NavLink} from 'react-router-dom';
+import {ru, kk} from '../languages/header.json';
+import LocalizedStrings from 'react-localization';
 //import '../assets/css/navbar.css';
+let e = new LocalizedStrings({ru,kk});
 
 export default class NavBar extends React.Component {
   constructor(props) {
     super(props);
+      (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
 
     this.giveActiveClass = this.giveActiveClass.bind(this);
   }
@@ -16,8 +20,8 @@ export default class NavBar extends React.Component {
 
   render() {
     return (
-      <nav className="navbar navbar-expand-lg navbar-light" data-url={this.props.pathName}>
-        <NavLink exact className="nav-link goHome" activeClassName="active" to="/" >ГЛАВНАЯ</NavLink>
+      <nav className="navbar navbar-expand-lg navbar-light">
+        <NavLink exact className="nav-link goHome" activeClassName="active" to="/" >{e.home}</NavLink>
         <button className="navbar-toggler" type="button" data-toggle="collapse" 
                 data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
                 aria-expanded="false" aria-label="Toggle navigation">
@@ -29,58 +33,58 @@ export default class NavBar extends React.Component {
             <li className="nav-item dropdown">
               <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Об Управлении
+                  {e.aboutmanagement}
               </a>
               <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a className="dropdown-item" href="/#/infoaboutdepartment">Сведения о Руководстве</a>
-                <a className="dropdown-item" href="#">Информация о государственном органе</a>
-                <a className="dropdown-item" href="#">Деятельность исполнительного органа</a>
-                <a className="dropdown-item" href="/#/timeOfReception">График приёма граждан</a>
-                <a className="dropdown-item" href="/#/tutorials">Пример работы</a> 
+                <a className="dropdown-item" href="#">{e.informationabouttheman}</a>
+                <a className="dropdown-item" href="#">{e.infabthestatebody}</a>
+                <a className="dropdown-item" href="#">{e.activritirsoftheexecutivebody}</a>
+                <a className="dropdown-item" href="/#/timeOfReception">{e.scheduleofreceptionofcitizens}</a>
+                <a className="dropdown-item" href="/#/tutorials">{e.exampleofwork}</a>
               </div>
             </li>
             
             <li className="nav-item dropdown">
               <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Государственные услуги
+                  {e.stateservices}
               </a>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a className="dropdown-item" href="/#/businessbuilding">Деловое страительство</a></li>
-                <li><a className="dropdown-item" href="#">Государственные символы</a></li>
-                <li><a className="dropdown-item" href="#">Государственная служба</a></li>
-                <li><a className="dropdown-item" href="#">Виды государственные услуг</a></li>
-                <li><a className="dropdown-item" href="/#/reports">Отчет за 2017год</a></li>
-                <li><a className="dropdown-item" href="/#/stats">Результаты заявления АПЗ</a></li>
-                <li><a className="dropdown-item" href="#">Работа с населением</a></li>
-                <li><a className="dropdown-item" href="/#/BudgetPlan">Бюджетное планирование</a></li>
-                <li><a className="dropdown-item" href="#">Кадровое обеспечение</a></li>
-                <li><a className="dropdown-item" href="#">Предпринимательская поддержка</a></li> 
+                <li><a className="dropdown-item" href="/#/businessbuilding">{e.businessbuilding}</a></li>
+                <li><a className="dropdown-item" href="#">{e.statesymbols}</a></li>
+                <li><a className="dropdown-item" href="#">{e.govornmentservices}</a></li>
+                <li><a className="dropdown-item" href="#">{e.typesofpublicservices}</a></li>
+                <li><a className="dropdown-item" href="/#/reports">{e.reportfor}</a></li>
+                <li><a className="dropdown-item" href="/#/stats">{e.resultoftheapz}</a></li>
+                <li><a className="dropdown-item" href="#">{e.workwiththepopulation}</a></li>
+                <li><a className="dropdown-item" href="/#/BudgetPlan">{e.budget_plan}</a></li>
+                <li><a className="dropdown-item" href="#">{e.staffing}</a></li>
+                <li><a className="dropdown-item" href="#">{e.entrepreneurialsupport}</a></li>
               </ul>
             </li>
 
             <li className="nav-item dropdown">
               <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Государственные закупки
+                  {e.stateprocurement}
               </a>
               <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a className="dropdown-item" href="#">Планы закупок</a>
-                <a className="dropdown-item" href="#">Условия участия в госзакупках</a>
-                <a className="dropdown-item" href="#">Открытые конкурсы</a>
-                <a className="dropdown-item" href="#">Итоги</a>
+                <a className="dropdown-item" href="#">{e.purchaseplans}</a>
+                <a className="dropdown-item" href="#">{e.termsofparticipationinpublicprocurement}</a>
+                <a className="dropdown-item" href="#">{e.opencompetitions}</a>
+                <a className="dropdown-item" href="#">{e.outcomes}</a>
               </div>
             </li>
 
             <li className="nav-item dropdown">
               <a className="nav-link dropdown-toggle opros" href="#" id="navbarDropdown" role="button" 
                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Опрос
+                  {e.interview}
               </a>
               <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a className="dropdown-item" href="/#/polls">Реконструкция пешеходных улиц 2018</a>
-                <a className="dropdown-item" href="/#/designCode">Дизайн код</a>
-                <a className="dropdown-item" href="/#/councilMaterials">Материалы градостроительного совета</a>
+                <a className="dropdown-item" href="/#/polls">{e.reconstructionofpedestrianstreets}</a>
+                <a className="dropdown-item" href="/#/designCode">{e.designcode}</a>
+                <a className="dropdown-item" href="/#/councilMaterials">{e.materialsofthetownplanningcouncil}</a>
               </div>
             </li>
               

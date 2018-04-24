@@ -87,7 +87,7 @@ export default class Guest extends React.Component {
             <div className="container home-page col-md-12 wow fadeInUp" data-wow-duration="1.5s">
               <div className="row">
                 <div className="col-md-12 col-xs-12 black-main text-center">
-                  <h4 >НОВОСТИ</h4>
+                  <h4 >{e.news}</h4>
                   <span><img src="images/line.png" /></span>
                   
                   <div className="card-deck">
@@ -242,7 +242,7 @@ export default class Guest extends React.Component {
             <div className="container home-page col-md-12 wow fadeInUp" data-wow-duration="1.5s">
               <div className="row">
                 <div className="col-md-12 col-xs-12 black-main text-center">
-                  <h4 >ГОСУДАРСТВЕННЫЕ УСЛУГИ</h4>
+                  <h4 >{e.public_services}</h4>
                   <span><img src="images/line.png" /></span>
                     
                   <div className="card-deck wow fadeInUp" data-wow-duration="1.5s">   
@@ -255,12 +255,12 @@ export default class Guest extends React.Component {
                       </div>
                       <div className="card-body">
                         <p className="card-text">
-                          Выдача справки по определению адреса объектов недвижимости
+                            {e.firstblock}
                         </p>
                       </div>
                       <div className="card-button">
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                        {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">{e.apply}</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
                       </div>
                     </div>
@@ -274,19 +274,19 @@ export default class Guest extends React.Component {
                           
                       <div className="card-body">
                         <p className="card-text">
-                          Выдача архитектурно-планировочного задания
+                            {e.secondblock}
                         </p>
                       </div>
                       <div className="card-button">
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                        {this.state.tokenExists && this.state.rolename === 'Admin' && <NavLink to={"/admin"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/citizen"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/urban"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Head' &&  <NavLink to={"/head"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Electricity' &&  <NavLink to={"/providerelectro"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Gas' &&  <NavLink to={"/providergas"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Heat' &&  <NavLink to={"/providerheat"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Water' &&  <NavLink to={"/providerwater"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Admin' && <NavLink to={"/admin"} replace className="btn btn-primary">{e.apply}</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/citizen"} replace className="btn btn-primary">{e.apply}</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/urban"} replace className="btn btn-primary">{e.apply}</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Head' &&  <NavLink to={"/head"} replace className="btn btn-primary">{e.apply}</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Electricity' &&  <NavLink to={"/providerelectro"} replace className="btn btn-primary">{e.apply}</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Gas' &&  <NavLink to={"/providergas"} replace className="btn btn-primary">{e.apply}</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Heat' &&  <NavLink to={"/providerheat"} replace className="btn btn-primary">{e.apply}</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Water' &&  <NavLink to={"/providerwater"} replace className="btn btn-primary">{e.apply}</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
                       </div>   
                     </div>
@@ -299,12 +299,12 @@ export default class Guest extends React.Component {
                       </div>
                       <div className="card-body">
                         <p className="card-text">
-                          Выдача решения на фотоотчет
+                            {e.thirdblock}
                         </p>
                       </div>
                       <div className="card-button">
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                        {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">{e.apply}</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
                       </div>
                     </div>     
@@ -319,12 +319,12 @@ export default class Guest extends React.Component {
                       </div>
                       <div className="card-body">
                         <p className="card-text">
-                          Выдача решения о строительстве культовых зданий (сооружений), определении их месторасположения
+                            {e.fourthblock}
                         </p>
                       </div>
                       <div className="card-button">
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                        {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">{e.apply}</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
                       </div>
                     </div>
@@ -337,12 +337,12 @@ export default class Guest extends React.Component {
                       </div>
                       <div className="card-body">
                         <p className="card-text">
-                          Выдача решения о перепрофилировании (изменении функционального назначения) зданий (сооружений) в культовые здания (сооружения)
+                            {e.fifthblock}
                         </p>
                       </div>
                       <div className="card-button">
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                        {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">{e.apply}</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
                       </div>
                     </div>
@@ -355,12 +355,12 @@ export default class Guest extends React.Component {
                       </div>
                       <div className="card-body">
                         <p className="card-text">
-                          Предоставление земельного участка для строительства объекта в черте населенного пункта
+                            {e.sixthblock}
                         </p>
                       </div>
                       <div className="card-button">
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                        {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">{e.apply}</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
                       </div>
                     </div>  
@@ -374,7 +374,7 @@ export default class Guest extends React.Component {
             <div className="container home-page col-md-12 wow fadeInUp" data-wow-duration="1.5s">
               <div className="row">
                 <div className="col-md-12 col-xs-12 black-main text-center">
-                  <h4>ВОПРОСЫ-ОТВЕТЫ</h4>
+                  <h4>{e.questionsanswers}</h4>
                   <span><img src="./images/line.png" /></span>
                   
                   <div className="card-deck comment">
@@ -447,7 +447,7 @@ class AlertModal extends React.Component {
   render() {
     return (
       <div>
-        <Button className="btn btn-danger bg-danger text-white font-weight-bold" style={{textTransform:'none'}} onClick={this.toggle}>Подать заявку</Button>
+        <Button className="btn btn-danger bg-danger text-white font-weight-bold" style={{textTransform:'none'}} onClick={this.toggle}>{e.apply}</Button>
         <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
           <ModalHeader toggle={this.toggle}>Информация</ModalHeader>
           <ModalBody>
