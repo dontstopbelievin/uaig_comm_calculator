@@ -4,7 +4,7 @@ export default class Stats extends React.Component {
   
   render() {
     return (
-      <div className="content container project-page">
+      <div className="content container project-page body-content">
         <div className="card">
           <div className="card-header"><h4 className="mb-0">Статистика выданных АПЗ в текущий период времени</h4></div>
           <div className="card-body">

@@ -56,6 +56,11 @@ import DoingBusiness from './routes/DoingBusiness.js';
 import ApzDepartment from './routes/ApzDepartment.js';
 import BisunessBuilding from './routes/BisunessBuilding';
 import InfoAboutDepartment from './routes/InfoAboutDepartment.js';
+import PublicServices from './routes/PublicServices.js';
+import Population from './routes/Population.js';
+import Staff from './routes/Staff.js';
+import EntrepreneurSupport from './routes/EntrepreneurSupport.js';
+import ExecutiveAgency from './routes/ExecutiveAgency.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import PopperJs from 'popper.js';
@@ -159,6 +164,11 @@ export default class Main extends React.Component {
               <Route path="/apz_department" render={(props) => (<ApzDepartment {...props}/>)}/>
               <Route path="/businessbuilding" render={(props) => (<BisunessBuilding {...props}/>)}/>
               <Route path="/infoaboutdepartment" render={(props) => (<InfoAboutDepartment {...props}/>)}/>
+              <Route path="/publicservices" render={(props) => (<PublicServices {...props}/>)}/>
+              <Route path="/population" render={(props) => (<Population {...props}/>)}/>
+              <Route path="/Staff" render={(props) => (<Staff {...props}/>)}/>
+              <Route path="/EntrepreneurSupport" render={(props) => (<EntrepreneurSupport {...props}/>)}/>
+              <Route path="/ExecutiveAgency" render={(props) => (<ExecutiveAgency {...props}/>)}/>
             </Switch>
             <Footer />
           </div>
