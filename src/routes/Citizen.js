@@ -123,7 +123,7 @@ class AllApzs extends React.Component {
               <div className="col-sm-8">
                 <Link className="btn btn-outline-primary mb-3" to="/citizen/add">Создать заявление</Link>
               </div>
-              <div className="col-sm-4">
+              <div className="col-sm-4 statusActive">
                 <ul className="nav nav-tabs mb-2 pull-right">
                   <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/active" replace>Активные</NavLink></li>
                   <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/accepted" replace>Принятые</NavLink></li>

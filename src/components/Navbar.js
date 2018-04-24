@@ -36,9 +36,9 @@ export default class NavBar extends React.Component {
                   {e.aboutmanagement}
               </a>
               <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a className="dropdown-item" href="#">{e.informationabouttheman}</a>
+                <a className="dropdown-item" href="/#/InfoAboutDepartment">{e.informationabouttheman}</a>
                 <a className="dropdown-item" href="#">{e.infabthestatebody}</a>
-                <a className="dropdown-item" href="#">{e.activritirsoftheexecutivebody}</a>
+                <a className="dropdown-item" href="/#/ExecutiveAgency">{e.activritirsoftheexecutivebody}</a>
                 <a className="dropdown-item" href="/#/timeOfReception">{e.scheduleofreceptionofcitizens}</a>
                 <a className="dropdown-item" href="/#/tutorials">{e.exampleofwork}</a>
               </div>
@@ -51,15 +51,15 @@ export default class NavBar extends React.Component {
               </a>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li><a className="dropdown-item" href="/#/businessbuilding">{e.businessbuilding}</a></li>
-                <li><a className="dropdown-item" href="#">{e.statesymbols}</a></li>
-                <li><a className="dropdown-item" href="#">{e.govornmentservices}</a></li>
-                <li><a className="dropdown-item" href="#">{e.typesofpublicservices}</a></li>
+                <li><a className="dropdown-item" href="http://www.akorda.kz/ru/state_symbols/about_state_symbols" target="_blank">{e.statesymbols}</a></li>
+                <li><a className="dropdown-item" href="/#/publicservices">{e.govornmentservices}</a></li>
+                <li><a className="dropdown-item" href="https://www.almaty.gov.kz/page.php?page_id=3147&lang=1#id_34784" target="_blank">{e.typesofpublicservices}</a></li>
                 <li><a className="dropdown-item" href="/#/reports">{e.reportfor}</a></li>
                 <li><a className="dropdown-item" href="/#/stats">{e.resultoftheapz}</a></li>
-                <li><a className="dropdown-item" href="#">{e.workwiththepopulation}</a></li>
+                <li><a className="dropdown-item" href="/#/population">{e.workwiththepopulation}</a></li>
                 <li><a className="dropdown-item" href="/#/BudgetPlan">{e.budget_plan}</a></li>
-                <li><a className="dropdown-item" href="#">{e.staffing}</a></li>
-                <li><a className="dropdown-item" href="#">{e.entrepreneurialsupport}</a></li>
+                <li><a className="dropdown-item" href="/#/Staff">{e.staffing}</a></li>
+                <li><a className="dropdown-item" href="/#/EntrepreneurSupport">{e.entrepreneurialsupport}</a></li>
               </ul>
             </li>
 
@@ -69,10 +69,9 @@ export default class NavBar extends React.Component {
                   {e.stateprocurement}
               </a>
               <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a className="dropdown-item" href="#">{e.purchaseplans}</a>
-                <a className="dropdown-item" href="#">{e.termsofparticipationinpublicprocurement}</a>
-                <a className="dropdown-item" href="#">{e.opencompetitions}</a>
-                <a className="dropdown-item" href="#">{e.outcomes}</a>
+                <a className="dropdown-item" href="http://www.adilet.gov.kz/ru/taxonomy/term/881" target="_blank">{e.purchaseplans}</a>
+                <a className="dropdown-item" href="https://v3bl.goszakup.gov.kz/ru/reports/plans_report_admin" target="_blank">{e.termsofparticipationinpublicprocurement}</a>
+                <a className="dropdown-item" href="https://www.goszakup.gov.kz/ru/search/announce?filter[method][]=3&filter[method][]=2&filter[method][]=7&filter[method][]=6&filter[method][]=50&filter[method][]=52&filter[method][]=22"  target="_blank">{e.opencompetitions}</a>
               </div>
             </li>
 

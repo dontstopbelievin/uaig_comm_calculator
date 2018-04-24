@@ -80,10 +80,19 @@ body{
     color: #ffc107!important;
     text-decoration: none;
 }
+.statusActive {
+    padding-left: 0!important;
+}
+.statusActive .nav-link{
+    padding-left: 5px!important;
+    padding-right: 5px!important;
+}
 .regist{
-    padding-left: 15px!important;
+    padding-left: 0px!important;
+    float: right!important;
 }
 .regist .LoginBtn{
+    margin-left: 10px!important;
     font-weight: 600!important;
     font-size: 14px!important;
     border: 2px solid #fff!important;
@@ -506,4 +515,16 @@ nav{
 
 .body-content{
 	background: white;
+}
+.PersonalCabinet{
+    font-weight: 600!important;
+    font-size: 14px!important;
+    border: 2px solid #fff!important;
+    padding-top: 5px!important;
+    padding-bottom: 5px!important;
+    margin-left: 0px!important;
+}
+.PersonalCabinetDropdown{
+    text-align: left!important;
+    margin-left: 0!important;
 }

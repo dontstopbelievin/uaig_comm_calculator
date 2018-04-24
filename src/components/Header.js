@@ -128,12 +128,12 @@ export default class Header extends React.Component {
             </div>
           </div>
         }
-        <div className="header">
+        <div className="header" data-url={this.props.location.pathname}>
           <div className="container">
             <div className="row">
               <div className="col-md-12 header-bg">
                 <div className="row">
-                  <div className="search col-md-8 text-left">
+                  <div className="search col-md-7 text-left">
                     <form>
                       <div className="form-group ">
                         <input className="col-md-4 mainSearch" type="text" placeholder={e.searchbysite} /><br />
@@ -141,7 +141,7 @@ export default class Header extends React.Component {
                       </div>
                     </form>
                   </div>
-                  <div className="col-md-3 text-right ml-0">
+                  <div className="col-md-4 ml-0 regist">
                     {/*<a className="float-left nav-link" href="#">
                       <button className="btn btn-outline-light  my-2 my-sm-0" type="submit"><span>ВХОД</span></button>
                       <Button color="primary" on>ВХОД</Button>
@@ -155,14 +155,14 @@ export default class Header extends React.Component {
                       <button className="btn btn-outline-light my-2 my-sm-0" type="submit"><span>РЕГИСТРАЦИЯ</span></button>
                     </a>*/}
                   </div>
-                  <div className="col-md-1 text-right font-weight-bold lang my-2">
+                  <div className="col-md-1 font-weight-bold lang">
                     {localStorage.getItem('lang') === 'kk' ?
-                      (<span>ҚАЗ</span>) :
-                      (<a style={{cursor: 'pointer', color: 'crimson'}} onClick={this.updateLanguage.bind(this, 'kk')}>ҚАЗ</a>)
-                    }<br />
+                      (<span>Қаз</span>) :
+                      (<a style={{cursor: 'pointer', color: '#ffc107'}} onClick={this.updateLanguage.bind(this, 'kk')}>Қаз</a>)
+                    } &nbsp;
                     {localStorage.getItem('lang') === 'ru' ?
-                      (<span>РУС</span>) :
-                      (<a style={{cursor: 'pointer', color: 'crimson'}} onClick={this.updateLanguage.bind(this, 'ru')}>РУС</a>)
+                      (<span>Рус</span>) :
+                      (<a style={{cursor: 'pointer', color: '#ffc107'}} onClick={this.updateLanguage.bind(this, 'ru')}>Рус</a>)
                     }
                   </div> 
                   <div className="col-md-12 text-center site-logo">
@@ -187,8 +187,8 @@ class LoginBtn extends React.Component {
   render() {
     return(
       <div className="row" style={{paddingTop: '0'}}>
-        <NavLink to={"/login"} className="btn btn-white" replace>{e.login}</NavLink>&nbsp;
-        <NavLink to={"/register"} className="btn btn-white" replace>{e.register}</NavLink>
+        <NavLink to={"/login"} className="btn btn-white LoginBtn" replace>{e.login}</NavLink>&nbsp;
+        <NavLink to={"/register"} className="btn btn-white LoginBtn" replace>{e.register}</NavLink>
       </div>
     )
   }
@@ -207,9 +207,9 @@ class LogoutBtn extends Component {
   render() {
     return(
       <div>
-        <ul className="mr-auto mt-2 mt-lg-0">
-          <li className="nav-item dropdown">
-            <button className="btn btn-outline-secondary btn-white" href="#" id="cabinetDropdownMenuLink" data-toggle="dropdown">
+        <ul className="col-md-4 mr-auto mt-2 mt-lg-0">
+          <li className="nav-item dropdown PersonalCabinetDropdown">
+            <button className="btn btn-outline-secondary btn-white PersonalCabinet" href="#" id="cabinetDropdownMenuLink" data-toggle="dropdown">
               <span>{sessionStorage.getItem('userName')} <i className="glyphicon glyphicon-menu-hamburger"></i></span>
             </button>
             <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="cabinetDropdownMenuLink">

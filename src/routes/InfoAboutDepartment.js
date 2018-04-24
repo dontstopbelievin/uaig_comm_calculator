@@ -4,7 +4,6 @@ import Slider from 'react-slick';
 import LocalizedStrings from 'react-localization';
 import "../assets/css/InfoAboutDepartment.css";
 import {ru, kk} from '../languages/guest.json';
-import { NavLink, UncontrolledCarousel, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 let e = new LocalizedStrings({ru,kk});
 
@@ -19,40 +18,7 @@ export default class Guest extends React.Component {
     }
   }
 
-
-
-
-  gotoLogin() {
-    this.props.history.replace('/login');
-  }
-
-  componentWillMount() {
-    //console.log("GuestComponent will mount");
-  }
-
-  componentDidMount() {
-    //console.log("GuestComponent did mount");
-    
-    if(sessionStorage.getItem('tokenInfo')){
-      this.setState({ tokenExists: true });
-      var roleName = JSON.parse(sessionStorage.getItem('userRoles'))[0];
-      if(roleName === 'Urban' || roleName === 'Provider'){
-        roleName = JSON.parse(sessionStorage.getItem('userRoles'))[1];
-        this.setState({ rolename: roleName });
-      }
-      else{
-        this.setState({ rolename: roleName });
-      }
-    }
-  }
-
-  componentWillUnmount() {
-    //console.log("GuestComponent will unmount");
-  }
-
   render() {
-    var roles = JSON.parse(sessionStorage.getItem('userRoles'));
-
     return (
       <div className="section">
         <div className="container">
@@ -105,45 +71,5 @@ export default class Guest extends React.Component {
         </div>
       </div>
     )
-  }
-}
-
-class AlertModal extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      modal: false
-    };
-
-    this.toggle = this.toggle.bind(this);
-  }
-
-  toggle() {
-    this.setState({
-      modal: !this.state.modal
-    });
-  }
-
-  render() {
-    return (
-      <div>
-        <Button className="btn btn-danger bg-danger text-white font-weight-bold" style={{textTransform:'none'}} onClick={this.toggle}>Подать заявку</Button>
-        <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-          <ModalHeader toggle={this.toggle}>Информация</ModalHeader>
-          <ModalBody>
-            Вам надо 
-            <NavLink to={"/login"} tag={RRNavLink} className="navLink" replace>
-              войти
-            </NavLink> в систему или 
-            <NavLink to={"/register"} tag={RRNavLink} className="navLink" replace>
-              зарегистрироваться
-            </NavLink>
-          </ModalBody>
-          <ModalFooter>
-            <Button color="secondary" onClick={this.toggle}>Закрыть</Button>
-          </ModalFooter>
-        </Modal>
-      </div>
-    );
   }
 }

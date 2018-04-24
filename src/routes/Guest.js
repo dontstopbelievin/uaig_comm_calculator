@@ -279,14 +279,16 @@ export default class Guest extends React.Component {
                       </div>
                       <div className="card-button">
                         {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                        {this.state.tokenExists && this.state.rolename === 'Admin' && <NavLink to={"/admin"} replace className="btn btn-primary">{e.apply}</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/citizen"} replace className="btn btn-primary">{e.apply}</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/urban"} replace className="btn btn-primary">{e.apply}</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Head' &&  <NavLink to={"/head"} replace className="btn btn-primary">{e.apply}</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Electricity' &&  <NavLink to={"/providerelectro"} replace className="btn btn-primary">{e.apply}</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Gas' &&  <NavLink to={"/providergas"} replace className="btn btn-primary">{e.apply}</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Heat' &&  <NavLink to={"/providerheat"} replace className="btn btn-primary">{e.apply}</NavLink>}
-                        {this.state.tokenExists && this.state.rolename === 'Water' &&  <NavLink to={"/providerwater"} replace className="btn btn-primary">{e.apply}</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Admin' && <NavLink to={"/admin"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/citizen"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/urban"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Head' &&  <NavLink to={"/head"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Electricity' &&  <NavLink to={"/providerelectro"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Gas' &&  <NavLink to={"/providergas"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Heat' &&  <NavLink to={"/providerheat"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Water' &&  <NavLink to={"/providerwater"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'ApzDepartment' &&  <NavLink to={"/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                        {this.state.tokenExists && this.state.rolename === 'Engineer' &&  <NavLink to={"/engineer"} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {!this.state.tokenExists && <AlertModal />}
                       </div>   
                     </div>
@@ -409,10 +411,8 @@ export default class Guest extends React.Component {
                         <a href="http://www.akorda.kz/ru/events/akorda_news/press_conferences/statya-glavy-gosudarstva-vzglyad-v-budushchee-modernizaciya-obshchestvennogo-soznaniya" target="_blank"><img src="./images/strategy/modernization_ru.png" /></a>
                         <a href="https://almaty.gov.kz/page.php?page_id=3239&lang=1" target="_blank"><img src="./images/strategy/almaty2020.png" /></a>
                         <a href="http://egov.kz/cms/ru" target="_blank"><img src="./images/strategy/egov.png" /></a>
-                        <a href="https://www.almaty.gov.kz/page.php?page_id=3447&lang=1&article_id=39871" target="_blank"><img src="/images/strategy/prom_revolution_4_ru.jpg" /></a>
-                        
-                        
-                         
+                        {localStorage.getItem('lang') === 'ru' && <a href="https://www.almaty.gov.kz/page.php?page_id=3447&lang=1&article_id=39871" target="_blank"><img src="/images/strategy/prom_revolution_4_ru.jpg" /></a>}
+                        {localStorage.getItem('lang') === 'kk' && <a href="https://www.almaty.gov.kz/page.php?page_id=3498&lang=3" target="_blank"><img src="/images/strategy/prom_revolution_4_kz.jpg" /></a>}  
                       </div>
                     </div>
                   </div>
