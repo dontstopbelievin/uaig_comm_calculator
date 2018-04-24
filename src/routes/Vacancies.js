@@ -21,7 +21,7 @@ export default class vacancies extends React.Component{
     render() {
         return(
             <div className="container navigational_price body-content">
-                <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.vacancies}
+                <NavLink to="/" replace className="">{e.hometwo}</NavLink> / <NavLink to="/Staff"className="">{e.staffing}</NavLink> / {e.vacancies}
                 <div container pageBusinessbuilding>
                     <ul className="content businessul">
                         <li>

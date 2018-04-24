@@ -44,6 +44,7 @@ import ResetForm from './routes/ResetForm'
 import Npm from './routes/Npm';
 import public_services from './routes/public_services';
 import permission_and_covoting from './routes/permission_and_covoting';
+import Vacancies from './routes/Vacancies';
 //import legalpurchase from './routes/Legalpurchase';
 import Counteraction from './routes/Counteraction';
 import Contacts from './routes/Contacts';
@@ -169,6 +170,7 @@ export default class Main extends React.Component {
               <Route path="/Staff" render={(props) => (<Staff {...props}/>)}/>
               <Route path="/EntrepreneurSupport" render={(props) => (<EntrepreneurSupport {...props}/>)}/>
               <Route path="/ExecutiveAgency" render={(props) => (<ExecutiveAgency {...props}/>)}/>
+              <Route path="/vacancies" render={(props) => (<Vacancies {...props}/>)}/>
             </Switch>
             <Footer />
           </div>

@@ -25,7 +25,7 @@ export default class Staff extends React.Component{
                 <div className="container pagePublicServices">
                     <ul className="PublicServicesul">
                         <li><a target="_blank" href="http://economy.gov.kz/ru/kategorii/normativno-pravovye-akty-reguliruyushchie-poryadok-postupleniya-grazhdan-na">1) Нормативные правовые акты, регулирующие порядок поступления граждан на государственную службу.</a></li>
-                        <li><a target="_blank" href="http://kyzmet.gov.kz/ru/kategorii/konkursy-na-vakantnye-dolzhnosti">2) Сведения о вакантных должностях в государственном органе.</a></li>
+                        <li><a href="/#/vacancies">2) Сведения о вакантных должностях в государственном органе.</a></li>
                         <li><a target="_blank" href="http://www.kremzk.gov.kz/rus/menu2/kadr_politika/konsult/">3) Лица, уполномоченные консультировать по вопросам замещения вакантных должностей.</a></li>
                     </ul>
                 </div>
