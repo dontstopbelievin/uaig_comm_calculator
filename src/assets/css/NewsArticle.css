@@ -1,0 +1,28 @@
+@charset "utf-8";
+
+
+.card{
+    box-shadow: none;
+}
+.card-deck{
+	padding-bottom: 0px!important;
+}
+.newsArticle{
+	padding-bottom: 50px;
+}
+ p{
+    font-weight: 500!important;
+    line-height: 25px;
+    font-size: 16px!important;
+}
+.list-group-item:hover{
+    box-shadow: none;
+    transition: all 0.3s ease-in-out;
+    border-radius: 5px;
+}
+
+blockquote  p {
+    border-left: #0a6ebd 5px solid;
+    margin-left: 10%;
+    padding-left: 10px;
+}

@@ -37,6 +37,8 @@ import Stats from './routes/Stats';
 import Footer from './components/Footer';
 import News from './routes/News';
 import NewsPanel from './routes/NewsPanel';
+import NewsAll from './routes/NewsAll';
+import NewsArticle from './routes/NewsArticle';
 import EditData from './routes/EditPersonalData'
 import EditPassword from './routes/EditPassword'
 import ForgotPassword from './routes/ForgotPassword'
@@ -171,6 +173,8 @@ export default class Main extends React.Component {
               <Route path="/EntrepreneurSupport" render={(props) => (<EntrepreneurSupport {...props}/>)}/>
               <Route path="/ExecutiveAgency" render={(props) => (<ExecutiveAgency {...props}/>)}/>
               <Route path="/vacancies" render={(props) => (<Vacancies {...props}/>)}/>
+              <Route path="/newsAll" render={(props) => (<NewsAll {...props}/>)}/>
+              <Route path="/newsArticle/:id" render={(props) => (<NewsArticle {...props}/>)}/>
             </Switch>
             <Footer />
           </div>

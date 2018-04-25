@@ -21,6 +21,10 @@ export default class Guest extends React.Component {
       rolename: "",
       ru: true,
       kk: false,
+      first: [],
+      second: [],
+      third: [],
+      forth: [],
       items: [
         {
           src: './images/slideshow/1.jpg',
@@ -39,6 +43,8 @@ export default class Guest extends React.Component {
         }
       ]
     }
+
+    this.getNews = this.getNews.bind(this);
   }
 
 
@@ -68,11 +74,44 @@ export default class Guest extends React.Component {
         this.setState({ rolename: roleName });
       }
     }
+
+    this.getNews();
   }
 
   componentWillUnmount() {
     //console.log("GuestComponent will unmount");
   }
+
+  getNews () {
+        var link = 'api/news/lastFresh'
+        var xhr = new XMLHttpRequest();
+        xhr.open("get", window.url + link, true);
+        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            var data = JSON.parse(xhr.responseText);
+            console.log(data.news);
+             var array = data.news.map(function(article,index){
+                var array = {};
+
+              array[index] = article;
+              return array;
+
+            })
+
+
+            this.setState({first: array[0][0]});
+            this.setState({second: array[1][1]});
+            this.setState({third: array[2][2]});
+            this.setState({forth: array[3][3]});
+              console.log(this.state.news);
+          } else {
+            alert("Записи новостей не удалось найти в базе данных!");
+          }
+        }.bind(this);
+        xhr.send();
+
+    }
 
   render() {
     var roles = JSON.parse(sessionStorage.getItem('userRoles'));
@@ -179,30 +218,35 @@ export default class Guest extends React.Component {
                     </div>
                       
                     <div className="card mt-4 mb-4 wow fadeInUp" data-wow-duration="1.5s">
-                      <div className="list-group"> 
+                      <div className="list-group">
+
+
                         <div href="#" className="list-group-item flex-column align-items-start ">
                           <div className="d-flex w-100 left-content-between">
                               <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                              <p className="news-date text-muted font-weight-light">15.01.2018</p>
+                              <p className="news-date text-muted font-weight-light">{this.state.first.created_at}</p>
                           </div>
                             
-                          <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                          <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                          <h6 className="news-title text-left text-muted mb-1">{this.state.first.title}</h6>
+                          <p className="news-text text-left mt-2 mb-1">{this.state.first.description}</p>
                           <div className="dropdown-divider"></div>
-                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
+                          <a href={'/#/NewsArticle/' + this.state.first.id}><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
                         </div>
+
                           
                         <div href="#" className="list-group-item  flex-column align-items-start ">
                           <div className="d-flex w-100 left-content-between">
                               <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                              <p className="news-date text-muted font-weight-light">15.01.2018</p>
+                              <p className="news-date text-muted font-weight-light">{this.state.second.created_at}</p>
                           </div>
                             
-                          <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                          <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                          <h6 className="news-title text-left text-muted mb-1">{this.state.second.title}</h6>
+                          <p className="news-text text-left mt-2 mb-1">{this.state.second.description} </p>
                           <div className="dropdown-divider"></div>
-                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
+                          <a href={'/#/NewsArticle/' + this.state.second.id}><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
                         </div>
+
+
                       </div>
                     </div>
                       
@@ -212,29 +256,33 @@ export default class Guest extends React.Component {
                         <div href="#" className="list-group-item flex-column align-items-start ">
                           <div className="d-flex w-100 left-content-between">
                               <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                              <p className="news-date text-muted font-weight-light">15.01.2018</p>
+                              <p className="news-date text-muted font-weight-light">{this.state.third.created_at}</p>
                           </div>
                             
-                          <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                          <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                          <h6 className="news-title text-left text-muted mb-1">{this.state.third.title}</h6>
+                          <p className="news-text text-left mt-2 mb-1">{this.state.third.description} </p>
                           <div className="dropdown-divider"></div>
-                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
+                          <a href={'/#/NewsArticle/' + this.state.third.id}><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
                         </div>
                           
                         <div href="#" className="list-group-item  flex-column align-items-start ">
                           <div className="d-flex w-100 left-content-between">
                               <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                              <p className="news-date text-muted font-weight-light">15.01.2018</p>
+                              <p className="news-date text-muted font-weight-light">{this.state.forth.created_at}</p>
                           </div>
                             
-                          <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                          <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                          <h6 className="news-title text-left text-muted mb-1">{this.state.forth.title}</h6>
+                          <p className="news-text text-left mt-2 mb-1">{this.state.forth.description}</p>
                           <div className="dropdown-divider"></div>
-                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
+                          <a href={'/#/NewsArticle/' + this.state.forth.id}><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
                         </div>
                       </div>
                     </div>
+
                   </div>
+                  <a className="allnews" aria-hidden="true" href="/#/NewsAll">
+                      Все новости <span className="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+                  </a>
                 </div>
               </div>
             </div>
