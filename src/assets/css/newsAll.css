@@ -1,0 +1,26 @@
+
+
+.new{
+    height: auto;
+    margin-bottom: 50px;
+}
+.black-main{
+	margin-top: 50px;
+}
+.card-deck{
+	border: none!important;
+}
+.card{
+    box-shadow: none;
+}
+.list-group{
+	box-shadow: 1px 0.5px 6px #ccc;
+}
+.list-group-item:hover{
+    box-shadow: 0 0.5px 10px #E0B431;
+    transition: all 0.3s ease-in-out;
+    border-radius: 5px;
+}
+.list-group-item p{
+    font-size: 14px!important;
+}

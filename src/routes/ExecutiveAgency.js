@@ -6,7 +6,7 @@ import {ru, kk} from '../languages/header.json';
 
 let e = new LocalizedStrings({ru,kk});
 
-export default class ExecutiveAgency extends React.Component{
+export default class executiveagency extends React.Component{
 
     constructor() {
         super();
@@ -21,9 +21,9 @@ export default class ExecutiveAgency extends React.Component{
     render() {
         return(
             <div className="container navigational_price body-content">
-                <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.ExecutiveAgency}
-                <div className="container pagePublicServices">
-                    <ul className="PublicServicesul">
+                <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.executiveagency}
+                <div className="container menupage">
+                    <ul className="menuUl">
                         <li><a target="_blank" href="https://almaty.gov.kz/page.php?page_id=3239&lang=1">1) Программа развития территории(Алматы-2020).</a></li>
                         <li><a target="_blank" href="http://egov.kz/cms/ru/articles/program_kz">2) Государственные отраслевые программы.</a></li>
                         <li><a target="_blank" href="http://economy.gov.kz/ru/kategorii/itogi-socialno-ekonomicheskogo-razvitiya-regionov?theme_version=standart">3) Итоги социально-экономического развития региона по отраслям.</a></li>

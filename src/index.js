@@ -56,11 +56,13 @@ import DoingBusiness from './routes/DoingBusiness.js';
 import ApzDepartment from './routes/ApzDepartment.js';
 import BisunessBuilding from './routes/BisunessBuilding';
 import InfoAboutDepartment from './routes/InfoAboutDepartment.js';
-import PublicServices from './routes/PublicServices.js';
+import GovermentServices from './routes/GovermentServices.js';
 import Population from './routes/Population.js';
-import Staff from './routes/Staff.js';
+import Staffing from './routes/Staffing.js';
 import EntrepreneurSupport from './routes/EntrepreneurSupport.js';
 import ExecutiveAgency from './routes/ExecutiveAgency.js';
+import NewsAll from './routes/NewsAll';
+import NewsArticle from './routes/NewsArticle';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import PopperJs from 'popper.js';
@@ -164,11 +166,13 @@ export default class Main extends React.Component {
               <Route path="/apz_department" render={(props) => (<ApzDepartment {...props}/>)}/>
               <Route path="/businessbuilding" render={(props) => (<BisunessBuilding {...props}/>)}/>
               <Route path="/infoaboutdepartment" render={(props) => (<InfoAboutDepartment {...props}/>)}/>
-              <Route path="/publicservices" render={(props) => (<PublicServices {...props}/>)}/>
+              <Route path="/govermentservices" render={(props) => (<GovermentServices {...props}/>)}/>
               <Route path="/population" render={(props) => (<Population {...props}/>)}/>
-              <Route path="/Staff" render={(props) => (<Staff {...props}/>)}/>
-              <Route path="/EntrepreneurSupport" render={(props) => (<EntrepreneurSupport {...props}/>)}/>
-              <Route path="/ExecutiveAgency" render={(props) => (<ExecutiveAgency {...props}/>)}/>
+              <Route path="/staffing" render={(props) => (<Staffing {...props}/>)}/>
+              <Route path="/entrepreneurialsupport" render={(props) => (<EntrepreneurSupport {...props}/>)}/>
+              <Route path="/executiveagency" render={(props) => (<ExecutiveAgency {...props}/>)}/>
+              <Route path="/newsAll" render={(props) => (<NewsAll {...props}/>)}/>
+              <Route path="/newsArticle" render={(props) => (<NewsArticle {...props}/>)}/>
             </Switch>
             <Footer />
           </div>

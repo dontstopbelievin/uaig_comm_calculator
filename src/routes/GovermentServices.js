@@ -6,7 +6,7 @@ import {ru, kk} from '../languages/header.json';
 
 let e = new LocalizedStrings({ru,kk});
 
-export default class PublicServices extends React.Component{
+export default class govermentservices extends React.Component{
 
     constructor() {
         super();
@@ -21,9 +21,9 @@ export default class PublicServices extends React.Component{
     render() {
         return(
             <div className="container navigational_price body-content">
-                <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.PublicServices}
-                <div className="container pagePublicServices">
-                    <ul className="PublicServicesul">
+                <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.govermentservices}
+                <div className="container menupage">
+                    <ul className="menuUl">
                         <li><a target="_blank" href="http://www.akorda.kz/ru/addresses">1) Ежегодные послания Президента РК.</a></li>
                         <li><a target="_blank" href="http://www.adilet.gov.kz/ru/taxonomy/term/3022">2) Планы мероприятий по реализации ежегодных посланий Главы государства.</a></li>
                         <li><a target="_blank" href="http://kyzmet.gov.kz/ru/pages/informaciya-o-hode-realizacii-plana-meropriyatiy-po-realizacii-ezhegodnogo-poslaniya-glavy">3) Информация о ходе реализации Плана мероприятий по реализации ежегодного послания Главы государства.</a></li>

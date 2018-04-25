@@ -6,7 +6,7 @@ import {ru, kk} from '../languages/header.json';
 
 let e = new LocalizedStrings({ru,kk});
 
-export default class EntrepreneurSupport extends React.Component{
+export default class entrepreneurialsupport extends React.Component{
 
     constructor() {
         super();
@@ -21,9 +21,9 @@ export default class EntrepreneurSupport extends React.Component{
     render() {
         return(
             <div className="container navigational_price body-content">
-                <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.EntrepreneurSupport}
-                <div className="container pagePublicServices">
-                    <ul className="PublicServicesul">
+                <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.entrepreneurialsupport}
+                <div className="container menupage">
+                    <ul className="menuUl">
                         <li><a target="_blank" href="https://business.gov.kz/ru/aspiring-entrepreneurs/">1) Помощь начинающему предпринимателю.</a></li>
                         <li><a target="_blank" href="https://damu.kz/programmi/programmy-dlya-nachinayushchikh-predprinimateley/detail.php?ELEMENT_ID=4654">2) Информация о субсидировании малого и среднего бизнеса .</a></li>
                         <li><a target="_blank" href="http://aral.gov.kz/ru/business/consultation_on_questions_of_business/">3) Консультирование по вопросам предпринимательства.</a></li>

@@ -67,11 +67,10 @@
     "interview": "Опрос",
     "informationabouttheman":"Сведение о руководстве",
     "infabthestatebody": "Информация о государственном органе",
-    "activritirsoftheexecutivebody": "Деятельность исполнительного органа",
     "scheduleofreceptionofcitizens": "График приема граждан",
     "exampleofwork": "Пример работы",
     "statesymbols":"Государственные символы",
-    "govornmentservices": "Государственные службы",
+    "govermentservices": "Государственная служба",
     "typesofpublicservices": "Виды государственных услуг",
     "reportfor": "Отчет за 2017 год",
     "resultoftheapz": "Статистика выданных АПЗ ",
@@ -87,11 +86,8 @@
     "kgu": "КГУ",
     "adress": "Алматы г., Аблайхана улица, 91эт. 7",
     "singlecontact": "Единый контакт",
-    "PublicServices": "Государственна служба",
     "population": "Работа с населением",
-    "Staff": "Кадровое обеспечение",
-    "EntrepreneurSupport": "Предпринимательская поддержка",
-    "ExecutiveAgency": "Деятельность исполнительного органа"
+    "executiveagency": "Деятельность исполнительного органа"
   },
   "kk": {
     "title": "Алматы қаласы Сәулет және Қала Құрылысы Басқармасы",
@@ -160,16 +156,15 @@
     "interview": "Сауалнама",
     "informationabouttheman":"Басқару туралы ақпарат",
     "infabthestatebody": "Мемлекеттік орган туралы ақпарат",
-    "activritirsoftheexecutivebody": "Атқарушы органның қызметі",
     "scheduleofreceptionofcitizens": "Азаматтарды қабылдау кестесі",
     "exampleofwork": "Жұмыс кестесі",
     "statesymbols":"Мемлекеттік рәміздер",
-    "govornmentservices": "Мемлекеттік қызметтер",
+    "govornmentservices": "Мемлекеттік қызмет",
     "typesofpublicservices": "Мемлекеттік қызметтер түрлері",
     "reportfor": "2017 жылға арналған есеп",
     "resultoftheapz": "СЖТ мәлімдемесінің нәтижелері",
     "workwiththepopulation": "Халықпен жұмыс",
-    "staffing": "Қызметкерлер",
+    "staffing": "Кадрлық қамтамасыз ету",
     "entrepreneurialsupport": "Кәсіпкерлікті қолдау",
     "purchaseplans": "Мемлекеттік сатып алудың тәртібі  ",
     "termsofparticipationinpublicprocurement": "Мемлекеттік сатып алудың жылдық жоспары",
@@ -180,10 +175,7 @@
     "kgu": "КММ",
     "adress": "Алматы қ., Аблайхана көшесі, 91қб. 7",
     "singlecontact": "Бір байланыс",
-    "PublicServices": "Мемлекеттік қызмет",
     "population": "Халықпен қатынасу",
-    "Staff":"Кадрлық қамтамасыз ету",
-    "EntrepreneurSupport":"Кәсіпкерлікті қолдау",
-    "ExecutiveAgency": "Атқарушы органның қызметі"
+    "executiveagency": "Атқарушы органның қызметі"
     }
 }

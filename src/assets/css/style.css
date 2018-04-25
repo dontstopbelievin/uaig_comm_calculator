@@ -984,14 +984,14 @@ table{
 .newsform{
   height: inherit;
 }
-.pageBusinessbuilding, .pagePublicServices {
+.pageBusinessbuilding, .menupage {
   height: auto;
 }
-.businessul, .PublicServicesul{
+.businessul, .menupage{
   margin-top: 50px;
   margin-bottom: 50px;
   font-size: 17px;
 }
-.businessul li, .PublicServices li{
+.businessul li, .menuUl li{
   margin-top: 10px;
 }

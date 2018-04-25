@@ -38,7 +38,7 @@ export default class NavBar extends React.Component {
               <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                 <a className="dropdown-item" href="/#/InfoAboutDepartment">{e.informationabouttheman}</a>
                 <a className="dropdown-item" href="#">{e.infabthestatebody}</a>
-                <a className="dropdown-item" href="/#/ExecutiveAgency">{e.activritirsoftheexecutivebody}</a>
+                <a className="dropdown-item" href="/#/executiveagency">{e.executiveagency}</a>
                 <a className="dropdown-item" href="/#/timeOfReception">{e.scheduleofreceptionofcitizens}</a>
                 <a className="dropdown-item" href="/#/tutorials">{e.exampleofwork}</a>
               </div>
@@ -52,14 +52,14 @@ export default class NavBar extends React.Component {
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li><a className="dropdown-item" href="/#/businessbuilding">{e.businessbuilding}</a></li>
                 <li><a className="dropdown-item" href="http://www.akorda.kz/ru/state_symbols/about_state_symbols" target="_blank">{e.statesymbols}</a></li>
-                <li><a className="dropdown-item" href="/#/publicservices">{e.govornmentservices}</a></li>
+                <li><a className="dropdown-item" href="/#/GovermentServices">{e.govermentservices}</a></li>
                 <li><a className="dropdown-item" href="https://www.almaty.gov.kz/page.php?page_id=3147&lang=1#id_34784" target="_blank">{e.typesofpublicservices}</a></li>
                 <li><a className="dropdown-item" href="/#/reports">{e.reportfor}</a></li>
                 <li><a className="dropdown-item" href="/#/stats">{e.resultoftheapz}</a></li>
                 <li><a className="dropdown-item" href="/#/population">{e.workwiththepopulation}</a></li>
                 <li><a className="dropdown-item" href="/#/BudgetPlan">{e.budget_plan}</a></li>
-                <li><a className="dropdown-item" href="/#/Staff">{e.staffing}</a></li>
-                <li><a className="dropdown-item" href="/#/EntrepreneurSupport">{e.entrepreneurialsupport}</a></li>
+                <li><a className="dropdown-item" href="/#/staffing">{e.staffing}</a></li>
+                <li><a className="dropdown-item" href="/#/entrepreneurialsupport">{e.entrepreneurialsupport}</a></li>
               </ul>
             </li>
 

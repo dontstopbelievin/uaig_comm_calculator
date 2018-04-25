@@ -174,6 +174,7 @@ export default class Guest extends React.Component {
                                 <li className="weekend"><a className="text-muted" href="#">1</a></li>
                             </ul>
                             </div>
+                            
                           </div>     
                         </div>
                     </div>
@@ -189,7 +190,7 @@ export default class Guest extends React.Component {
                           <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
                           <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
                           <div className="dropdown-divider"></div>
-                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
+                          <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
                         </div>
                           
                         <div href="#" className="list-group-item  flex-column align-items-start ">
@@ -201,7 +202,7 @@ export default class Guest extends React.Component {
                           <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
                           <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
                           <div className="dropdown-divider"></div>
-                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
+                          <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
                         </div>
                       </div>
                     </div>
@@ -218,7 +219,7 @@ export default class Guest extends React.Component {
                           <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
                           <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
                           <div className="dropdown-divider"></div>
-                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
+                          <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
                         </div>
                           
                         <div href="#" className="list-group-item  flex-column align-items-start ">
@@ -230,11 +231,14 @@ export default class Guest extends React.Component {
                           <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
                           <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
                           <div className="dropdown-divider"></div>
-                          <a href="#"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
+                          <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
                         </div>
                       </div>
                     </div>
                   </div>
+                  <a className="allnews" aria-hidden="true" href="/#/NewsAll">
+                      Все новости <span className="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+                  </a>
                 </div>
               </div>
             </div>
