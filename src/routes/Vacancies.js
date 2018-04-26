@@ -31,7 +31,7 @@ export default class vacancies extends React.Component{
                         <article>
                                 {localStorage.getItem('lang') === 'ru' &&
                                 <a target="_blank" href="/docs/zhalpykonkursbasmamanru.pdf">
-                                    1) Департамент архитектуры и градостроительства города Алматы объявляет конкурс на вакантный административный корпус «Б». (Общий специалист)
+                                    1) Управление архитектуры и градостроительства города Алматы объявляет конкурс на вакантный административный корпус «Б». (Общий специалист)
                                 </a>
                                 }
                                 {localStorage.getItem('lang') === 'kk' &&
@@ -49,7 +49,7 @@ export default class vacancies extends React.Component{
                                 <article>
                                     {localStorage.getItem('lang') === 'ru' &&
                                     <a target="_blank" href="/docs/zhalpykonkursbasmamanapz_2inzhru.pdf">
-                                        2) Департамент архитектуры и градостроительства города Алматы объявляет конкурс на вакантную административную государственную должность «Б». (Общий специалист по соревнованиям APS-2)
+                                        2) Управление архитектуры и градостроительства города Алматы объявляет конкурс на вакантную административную государственную должность «Б». (Общий специалист по соревнованиям APS-2)
                                     </a>
                                     }
                                     {localStorage.getItem('lang') === 'kk' &&
@@ -66,7 +66,7 @@ export default class vacancies extends React.Component{
                                 <article>
                                     {localStorage.getItem('lang') === 'ru' &&
                                     <a target="_blank" href="/docs/zhalpykonkursbasmamanbostandykru.pdf">
-                                        3) Департамент архитектуры и градостроительства города Алматы объявляет конкурс на вакантный административный корпус «Б». (Общий специалист по конкуренции, Свобода Свободы)
+                                        3) Управление архитектуры и градостроительства города Алматы объявляет конкурс на вакантный административный корпус «Б». (Общий специалист по конкуренции, Свобода Свободы)
                                     </a>
                                     }
                                     {localStorage.getItem('lang') === 'kk' &&
