@@ -140,7 +140,6 @@ export default class Guest extends React.Component {
                       <div className="card-body">
                         <h5 className="calenderTitle text-muted card-text">{e.newscalendar}</h5>
                         <form>
-<<<<<<< HEAD
                           <select className="month_name">
                             <option value="01">{e.january}</option>
                             <option value="02">{e.february}</option>
