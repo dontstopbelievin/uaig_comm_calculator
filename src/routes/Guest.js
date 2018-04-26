@@ -135,24 +135,24 @@ export default class Guest extends React.Component {
                         <h5 className="text-muted card-text">{e.newscalendar}</h5>
                         <form>
                           <select className="month_name">
-                            <option>{e.january}</option>
-                            <option>{e.february}</option>
-                            <option selected>{e.march}</option>
-                            <option>{e.april}</option>
-                            <option>{e.may}</option>
-                            <option>{e.june}</option>
-                            <option>{e.jule}</option>
-                            <option>{e.august}</option>
-                            <option>{e.september}</option>
-                            <option>{e.octember}</option>
-                            <option>{e.november}</option>
-                            <option>{e.december}</option>
+                            <option value="01">{e.january}</option>
+                            <option value="02">{e.february}</option>
+                            <option value="03" selected>{e.march}</option>
+                            <option value="04">{e.april}</option>
+                            <option value="05">{e.may}</option>
+                            <option value="06">{e.june}</option>
+                            <option value="07">{e.jule}</option>
+                            <option value="08">{e.august}</option>
+                            <option value="09">{e.september}</option>
+                            <option value="010">{e.octember}</option>
+                            <option value="011">{e.november}</option>
+                            <option value="012">{e.december}</option>
                           </select>
                           <select className="year_name">
-                            <option>2015</option>
-                            <option>2016</option>
-                            <option>2017</option>
-                            <option selected>2018</option>                      
+                            <option value="2015">2015</option>
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018" selected>2018</option>
                           </select>
                         </form>
                                             

@@ -2,7 +2,6 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../languages/header.json';
-import Parser from 'html-react-parser';
 import '../assets/css/NewsArticle.css';
 import WOW from 'wowjs';
 import $ from 'jquery';
