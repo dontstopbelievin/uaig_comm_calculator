@@ -37,6 +37,7 @@ export default class newsArticle extends React.Component{
           if (xhr.status === 200) {
             var data = JSON.parse(xhr.responseText);
             console.log(data.article);
+            data.article.created_at = data.article.created_at.substr(0,10);
             this.setState({article: data.article});
           } else {
             alert("Записи новостей не удалось найти в базе данных!");

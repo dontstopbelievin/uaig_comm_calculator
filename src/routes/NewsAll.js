@@ -38,6 +38,12 @@ export default class newsAll extends React.Component{
           if (xhr.status === 200) {
             var data = JSON.parse(xhr.responseText);
             console.log(data.news);
+            var x = data.news.length;
+
+            for (var i = 0; i < x ; i ++ ){
+                data.news[i].created_at = data.news[i].created_at.substr(0,10);
+            }
+
             this.setState({news: data.news});
           } else {
             alert("Записи новостей не удалось найти в базе данных!");

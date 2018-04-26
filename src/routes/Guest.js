@@ -91,6 +91,12 @@ export default class Guest extends React.Component {
           if (xhr.status === 200) {
             var data = JSON.parse(xhr.responseText);
             console.log(data.news);
+            var x = data.news.length;
+
+            for (var i = 0; i < x ; i ++ ){
+                data.news[i].created_at = data.news[i].created_at.substr(0,10);
+            }
+
              var array = data.news.map(function(article,index){
                 var array = {};
 
