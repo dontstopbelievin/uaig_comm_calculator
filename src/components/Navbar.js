@@ -58,7 +58,7 @@ export default class NavBar extends React.Component {
                 <li><a className="dropdown-item" href="/#/stats">{e.resultoftheapz}</a></li>
                 <li><a className="dropdown-item" href="/#/population">{e.workwiththepopulation}</a></li>
                 <li><a className="dropdown-item" href="/#/BudgetPlan">{e.budget_plan}</a></li>
-                <li><a className="dropdown-item" href="/#/staffing">{e.staffing}</a></li>
+                <li><a className="dropdown-item" href="/#/staff">{e.staff}</a></li>
                 <li><a className="dropdown-item" href="/#/entrepreneurialsupport">{e.entrepreneurialsupport}</a></li>
               </ul>
             </li>
@@ -82,7 +82,7 @@ export default class NavBar extends React.Component {
               </a>
               <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                 <a className="dropdown-item" href="/#/polls">{e.reconstructionofpedestrianstreets}</a>
-                <a className="dropdown-item" href="/#/designCode">{e.designcode}</a>
+                <a target="_blank" className="dropdown-item" href="/docs/designCode.pdf">{e.designcode}</a>
                 <a className="dropdown-item" href="/#/councilMaterials">{e.materialsofthetownplanningcouncil}</a>
               </div>
             </li>

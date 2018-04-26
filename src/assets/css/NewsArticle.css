@@ -20,3 +20,9 @@
     transition: all 0.3s ease-in-out;
     border-radius: 5px;
 }
+
+blockquote  p {
+    border-left: #0a6ebd 5px solid;
+    margin-left: 10%;
+    padding-left: 10px;
+}

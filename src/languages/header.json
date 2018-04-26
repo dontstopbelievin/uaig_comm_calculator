@@ -75,7 +75,7 @@
     "reportfor": "Отчет за 2017 год",
     "resultoftheapz": "Статистика выданных АПЗ ",
     "workwiththepopulation": "Работа с населением",
-    "staffing": "Кадровое обеспечение",
+    "staff": "Кадровое обеспечение",
     "entrepreneurialsupport": "Предпринимательская поддержка",
     "purchaseplans": "Порядок проведения ГЗ",
     "termsofparticipationinpublicprocurement": "Годовой план ГЗ",
@@ -84,7 +84,7 @@
     "designcode":"Дизайн код",
     "materialsofthetownplanningcouncil":"Материалы градостроительного совета",
     "kgu": "КГУ",
-    "adress": "Алматы г., Аблайхана улица, 91эт. 7",
+    "adress": "Алматы г., Абылайхана улица, 91эт. 7",
     "singlecontact": "Единый контакт",
     "population": "Работа с населением",
     "executiveagency": "Деятельность исполнительного органа"
@@ -164,7 +164,7 @@
     "reportfor": "2017 жылға арналған есеп",
     "resultoftheapz": "СЖТ мәлімдемесінің нәтижелері",
     "workwiththepopulation": "Халықпен жұмыс",
-    "staffing": "Кадрлық қамтамасыз ету",
+    "staff": "Кадрлық қамтамасыз ету",
     "entrepreneurialsupport": "Кәсіпкерлікті қолдау",
     "purchaseplans": "Мемлекеттік сатып алудың тәртібі  ",
     "termsofparticipationinpublicprocurement": "Мемлекеттік сатып алудың жылдық жоспары",
@@ -173,8 +173,9 @@
     "designcode":"Дизайн коды",
     "materialsofthetownplanningcouncil":"Қала құрылысы кеңесі материалдары",
     "kgu": "КММ",
-    "adress": "Алматы қ., Аблайхана көшесі, 91қб. 7",
-    "singlecontact": "Бір байланыс",
+    "adress": "Алматы қ., Абылайхана көшесі, 91қб. 7",
+    "singlecontact": "Байланыс номері",
+    "PublicServices": "Мемлекеттік қызмет",
     "population": "Халықпен қатынасу",
     "executiveagency": "Атқарушы органның қызметі"
     }

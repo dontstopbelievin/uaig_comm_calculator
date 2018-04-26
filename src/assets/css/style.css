@@ -995,3 +995,9 @@ table{
 .businessul li, .menuUl li{
   margin-top: 10px;
 }
+    .list-group-item i{
+      float: left;
+    }
+    .list-group-item div{
+      float: left;
+    }

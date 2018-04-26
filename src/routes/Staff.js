@@ -6,7 +6,7 @@ import {ru, kk} from '../languages/header.json';
 
 let e = new LocalizedStrings({ru,kk});
 
-export default class staffing extends React.Component{
+export default class staff extends React.Component{
 
     constructor() {
         super();
@@ -21,11 +21,11 @@ export default class staffing extends React.Component{
     render() {
         return(
             <div className="container navigational_price body-content">
-                <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.staffing}
+                <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.staff}
                 <div className="container menupage">
                     <ul className="menuUl">
                         <li><a target="_blank" href="http://economy.gov.kz/ru/kategorii/normativno-pravovye-akty-reguliruyushchie-poryadok-postupleniya-grazhdan-na">1) Нормативные правовые акты, регулирующие порядок поступления граждан на государственную службу.</a></li>
-                        <li><a target="_blank" href="http://kyzmet.gov.kz/ru/kategorii/konkursy-na-vakantnye-dolzhnosti">2) Сведения о вакантных должностях в государственном органе.</a></li>
+                        <li><a href="/#/vacancies">2) Сведения о вакантных должностях в государственном органе.</a></li>
                         <li><a target="_blank" href="http://www.kremzk.gov.kz/rus/menu2/kadr_politika/konsult/">3) Лица, уполномоченные консультировать по вопросам замещения вакантных должностей.</a></li>
                     </ul>
                 </div>

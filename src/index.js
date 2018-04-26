@@ -37,6 +37,8 @@ import Stats from './routes/Stats';
 import Footer from './components/Footer';
 import News from './routes/News';
 import NewsPanel from './routes/NewsPanel';
+import NewsAll from './routes/NewsAll';
+import NewsArticle from './routes/NewsArticle';
 import EditData from './routes/EditPersonalData'
 import EditPassword from './routes/EditPassword'
 import ForgotPassword from './routes/ForgotPassword'
@@ -44,6 +46,7 @@ import ResetForm from './routes/ResetForm'
 import Npm from './routes/Npm';
 import public_services from './routes/public_services';
 import permission_and_covoting from './routes/permission_and_covoting';
+import Vacancies from './routes/Vacancies';
 //import legalpurchase from './routes/Legalpurchase';
 import Counteraction from './routes/Counteraction';
 import Contacts from './routes/Contacts';
@@ -58,11 +61,9 @@ import BisunessBuilding from './routes/BisunessBuilding';
 import InfoAboutDepartment from './routes/InfoAboutDepartment.js';
 import GovermentServices from './routes/GovermentServices.js';
 import Population from './routes/Population.js';
-import Staffing from './routes/Staffing.js';
+import Staff from './routes/Staff.js';
 import EntrepreneurSupport from './routes/EntrepreneurSupport.js';
 import ExecutiveAgency from './routes/ExecutiveAgency.js';
-import NewsAll from './routes/NewsAll';
-import NewsArticle from './routes/NewsArticle';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import PopperJs from 'popper.js';
@@ -93,8 +94,8 @@ export default class Main extends React.Component {
     window.url = 'https://api.uaig.kz:8843/';
     window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
 
-     //window.url = 'http://uaig/';
-     //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
+     // window.url = 'http://uaig/';
+     // window.clientSecret = 'ISOzCLPBZCRLPz7V7bS9p7ysuaJUQIPC6N6COoH6'; // dimash
   }
 
   componentDidMount() {
@@ -168,11 +169,12 @@ export default class Main extends React.Component {
               <Route path="/infoaboutdepartment" render={(props) => (<InfoAboutDepartment {...props}/>)}/>
               <Route path="/govermentservices" render={(props) => (<GovermentServices {...props}/>)}/>
               <Route path="/population" render={(props) => (<Population {...props}/>)}/>
-              <Route path="/staffing" render={(props) => (<Staffing {...props}/>)}/>
+              <Route path="/staff" render={(props) => (<Staff {...props}/>)}/>
               <Route path="/entrepreneurialsupport" render={(props) => (<EntrepreneurSupport {...props}/>)}/>
               <Route path="/executiveagency" render={(props) => (<ExecutiveAgency {...props}/>)}/>
               <Route path="/newsAll" render={(props) => (<NewsAll {...props}/>)}/>
               <Route path="/newsArticle" render={(props) => (<NewsArticle {...props}/>)}/>
+              <Route path="/vacancies" render={(props) => (<Vacancies {...props}/>)}/>
             </Switch>
             <Footer />
           </div>

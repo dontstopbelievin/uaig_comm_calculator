@@ -21,6 +21,10 @@ export default class Guest extends React.Component {
       rolename: "",
       ru: true,
       kk: false,
+      first: [],
+      second: [],
+      third: [],
+      forth: [],
       items: [
         {
           src: './images/slideshow/1.jpg',
@@ -39,6 +43,8 @@ export default class Guest extends React.Component {
         }
       ]
     }
+
+    this.getNews = this.getNews.bind(this);
   }
 
 
@@ -68,11 +74,50 @@ export default class Guest extends React.Component {
         this.setState({ rolename: roleName });
       }
     }
+
+    this.getNews();
   }
 
   componentWillUnmount() {
     //console.log("GuestComponent will unmount");
   }
+
+  getNews () {
+        var link = 'api/news/lastFresh'
+        var xhr = new XMLHttpRequest();
+        xhr.open("get", window.url + link, true);
+        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            var data = JSON.parse(xhr.responseText);
+            console.log(data.news);
+            var x = data.news.length;
+
+            for (var i = 0; i < x ; i ++ ){
+                data.news[i].created_at = data.news[i].created_at.substr(0,10);
+            }
+
+             var array = data.news.map(function(article,index){
+                var array = {};
+
+              array[index] = article;
+              return array;
+
+            });
+
+
+            this.setState({first: array[0][0]});
+            this.setState({second: array[1][1]});
+            this.setState({third: array[2][2]});
+            this.setState({forth: array[3][3]});
+              console.log(this.state.news);
+          } else {
+            alert("Записи новостей не удалось найти в базе данных!");
+          }
+        }.bind(this);
+        xhr.send();
+
+    }
 
   render() {
     var roles = JSON.parse(sessionStorage.getItem('userRoles'));
@@ -96,114 +141,120 @@ export default class Guest extends React.Component {
                         <h5 className="text-muted card-text">{e.newscalendar}</h5>
                         <form>
                           <select className="month_name">
-                            <option>{e.january}</option>
-                            <option>{e.february}</option>
-                            <option selected>{e.march}</option>
-                            <option>{e.april}</option>
-                            <option>{e.may}</option>
-                            <option>{e.june}</option>
-                            <option>{e.jule}</option>
-                            <option>{e.august}</option>
-                            <option>{e.september}</option>
-                            <option>{e.octember}</option>
-                            <option>{e.november}</option>
-                            <option>{e.december}</option>
+                            <option value="01">{e.january}</option>
+                            <option value="02">{e.february}</option>
+                            <option value="03" selected>{e.march}</option>
+                            <option value="04">{e.april}</option>
+                            <option value="05">{e.may}</option>
+                            <option value="06">{e.june}</option>
+                            <option value="07">{e.jule}</option>
+                            <option value="08">{e.august}</option>
+                            <option value="09">{e.september}</option>
+                            <option value="010">{e.octember}</option>
+                            <option value="011">{e.november}</option>
+                            <option value="012">{e.december}</option>
                           </select>
                           <select className="year_name">
-                            <option>2015</option>
-                            <option>2016</option>
-                            <option>2017</option>
-                            <option selected>2018</option>                      
+                            <option value="2015">2015</option>
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018" selected>2018</option>
                           </select>
                         </form>
-                                            
-                        <div className="month">
-                          <ul className="weekdays">
-                            <li>{e.pn}</li>
-                            <li>{e.vt}</li>
-                            <li>{e.st}</li>
-                            <li>{e.cht}</li>
-                            <li>{e.pts}</li>
-                            <li>{e.sub}</li>
-                            <li>{e.vsk}</li>
-                          </ul>
-                          <div className="week">            
-                            <ul className="days">
-                                <li><a className="text-muted" href="#">26</a></li>
-                                <li><a className="text-muted" href="#">27</a></li>
-                                <li><a className="text-muted" href="#">28</a></li>
-                                <li><a href="#">1</a></li>
-                                <li><a href="#">2</a></li>
-                                <li className="weekend"><a href="#">3</a></li>
-                                <li className="weekend"><a href="#">4</a></li>
-                            </ul>
-                            <ul className="days">
-                                <li><a href="#">5</a></li>
-                                <li><a href="#">6</a></li>
-                                <li><a href="#">7</a></li>
-                                <li><a href="#">8</a></li>
-                                <li><a href="#">9</a></li>
-                                <li className="weekend"><a href="#">10</a></li>
-                                <li className="weekend"><a href="#">11</a></li>
-                            </ul>
-                            <ul className="days">
-                                <li><a href="#">12</a></li>
-                                <li><a href="#">13</a></li>
-                                <li><a href="#">14</a></li>
-                                <li><a className="active" href="#">15</a></li>
-                                <li><a href="#">16</a></li>
-                                <li className="weekend"><a href="#">17</a></li>
-                                <li className="weekend"><a href="#">18</a></li>
-                            </ul>
-                            <ul className="days">
-                                <li><a href="#">19</a></li>
-                                <li><a href="#">20</a></li>
-                                <li><a href="#">21</a></li>
-                                <li><a href="#">22</a></li>
-                                <li><a href="#">23</a></li>
-                                <li className="weekend"><a href="#">24</a></li>
-                                <li className="weekend"><a href="#">25</a></li>
-                            </ul>
-                            <ul className="days">
-                                <li><a href="#">26</a></li>
-                                <li><a href="#">27</a></li>
-                                <li><a href="#">28</a></li>
-                                <li><a href="#">29</a></li>
-                                <li><a href="#">30</a></li>
-                                <li className="weekend"><a href="#">31</a></li>
-                                <li className="weekend"><a className="text-muted" href="#">1</a></li>
-                            </ul>
-                            </div>
-                            
-                          </div>     
+
+                          <div className="week table-responsive">
+                            <table>
+                              <tbody>
+                                <tr className="weekdays month">
+                                  <td>{e.pn}</td>
+                                  <td>{e.vt}</td>
+                                  <td>{e.st}</td>
+                                  <td>{e.cht}</td>
+                                  <td>{e.pts}</td>
+                                  <td>{e.sub}</td>
+                                  <td>{e.vsk}</td>
+                                </tr>
+                                <tr className="days">
+                                  <td className="col-md-1"><a href="#">26</a></td>
+                                  <td className="col-md-1"><a href="#">27</a></td>
+                                  <td className="col-md-1"><a href="#">28</a></td>
+                                  <td className="col-md-1"><a href="#">1</a></td>
+                                  <td className="col-md-1"><a href="#">2</a></td>
+                                  <td className="weekend col-md-1"><a href="#">3</a></td>
+                                  <td className="weekend col-md-1"><a href="#">4</a></td>
+                                </tr>
+                                <tr className="days">
+                                  <td><a href="#">5</a></td>
+                                  <td><a href="#">6</a></td>
+                                  <td><a href="#">7</a></td>
+                                  <td><a href="#">8</a></td>
+                                  <td><a href="#">9</a></td>
+                                  <td className="weekend"><a href="#">10</a></td>
+                                  <td className="weekend"><a href="#">11</a></td>
+                                </tr>
+                                <tr className="days">
+                                  <td><a href="#">12</a></td>
+                                  <td><a href="#">13</a></td>
+                                  <td><a href="#">14</a></td>
+                                  <td><a href="#">15</a></td>
+                                  <td><a href="#">16</a></td>
+                                  <td className="weekend"><a href="#">17</a></td>
+                                  <td className="weekend"><a href="#">18</a></td>
+                                </tr>
+                                <tr className="days">
+                                  <td><a href="#">19</a></td>
+                                  <td><a href="#">20</a></td>
+                                  <td><a href="#">21</a></td>
+                                  <td><a href="#">22</a></td>
+                                  <td><a href="#">23</a></td>
+                                  <td className="weekend"><a href="#">24</a></td>
+                                  <td className="weekend"><a href="#">25</a></td>
+                                </tr>
+                                <tr className="days">
+                                  <td><a href="#">26</a></td>
+                                  <td><a href="#">27</a></td>
+                                  <td><a href="#">28</a></td>
+                                  <td><a href="#">29</a></td>
+                                  <td><a href="#">30</a></td>
+                                  <td className="weekend"><a href="#">31</a></td>
+                                  <td className="weekend"><a href="#">1</a></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
                         </div>
                     </div>
                       
                     <div className="card mt-4 mb-4 wow fadeInUp" data-wow-duration="1.5s">
-                      <div className="list-group"> 
+                      <div className="list-group">
+
+
                         <div href="#" className="list-group-item flex-column align-items-start ">
                           <div className="d-flex w-100 left-content-between">
                               <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                              <p className="news-date text-muted font-weight-light">15.01.2018</p>
+                              <p className="news-date text-muted font-weight-light">{this.state.first.created_at}</p>
                           </div>
                             
-                          <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                          <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                          <h6 className="news-title text-left text-muted mb-1">{this.state.first.title}</h6>
+                          <p className="news-text text-left mt-2 mb-1">{this.state.first.description}</p>
                           <div className="dropdown-divider"></div>
-                          <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
+                          <a href={'/#/NewsArticle/' + this.state.first.id}><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
                         </div>
+
                           
                         <div href="#" className="list-group-item  flex-column align-items-start ">
                           <div className="d-flex w-100 left-content-between">
                               <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                              <p className="news-date text-muted font-weight-light">15.01.2018</p>
+                              <p className="news-date text-muted font-weight-light">{this.state.second.created_at}</p>
                           </div>
                             
-                          <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                          <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                          <h6 className="news-title text-left text-muted mb-1">{this.state.second.title}</h6>
+                          <p className="news-text text-left mt-2 mb-1">{this.state.second.description} </p>
                           <div className="dropdown-divider"></div>
-                          <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
+                          <a href={'/#/NewsArticle/' + this.state.second.id}><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
                         </div>
+
+
                       </div>
                     </div>
                       
@@ -213,28 +264,29 @@ export default class Guest extends React.Component {
                         <div href="#" className="list-group-item flex-column align-items-start ">
                           <div className="d-flex w-100 left-content-between">
                               <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                              <p className="news-date text-muted font-weight-light">15.01.2018</p>
+                              <p className="news-date text-muted font-weight-light">{this.state.third.created_at}</p>
                           </div>
                             
-                          <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                          <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                          <h6 className="news-title text-left text-muted mb-1">{this.state.third.title}</h6>
+                          <p className="news-text text-left mt-2 mb-1">{this.state.third.description} </p>
                           <div className="dropdown-divider"></div>
-                          <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
+                          <a href={'/#/NewsArticle/' + this.state.third.id}><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
                         </div>
                           
                         <div href="#" className="list-group-item  flex-column align-items-start ">
                           <div className="d-flex w-100 left-content-between">
                               <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                              <p className="news-date text-muted font-weight-light">15.01.2018</p>
+                              <p className="news-date text-muted font-weight-light">{this.state.forth.created_at}</p>
                           </div>
                             
-                          <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                          <p className="news-text text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                          <h6 className="news-title text-left text-muted mb-1">{this.state.forth.title}</h6>
+                          <p className="news-text text-left mt-2 mb-1">{this.state.forth.description}</p>
                           <div className="dropdown-divider"></div>
-                          <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
+                          <a href={'/#/NewsArticle/' + this.state.forth.id}><small className="float-right text-warning view-more font-weight-bold">{e.moreinfo}</small></a>
                         </div>
                       </div>
                     </div>
+
                   </div>
                   <a className="allnews" aria-hidden="true" href="/#/NewsAll">
                       Все новости <span className="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
