@@ -41,6 +41,7 @@ export default class NavBar extends React.Component {
                 <a className="dropdown-item" href="/#/ExecutiveAgency">{e.activritirsoftheexecutivebody}</a>
                 <a className="dropdown-item" href="/#/timeOfReception">{e.scheduleofreceptionofcitizens}</a>
                 <a className="dropdown-item" href="/#/tutorials">{e.exampleofwork}</a>
+                  <a className="dropdown-item" href="/#/newsAll">{e.allnews}</a>
               </div>
             </li>
             

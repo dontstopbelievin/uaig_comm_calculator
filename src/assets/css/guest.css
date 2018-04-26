@@ -29,6 +29,12 @@
 	font-size: 16px!important;
 }
 .news-text{
+    overflow: hidden;
+    display: block;
+    outline: none;
+    text-overflow: ellipsis;
+    height: 47px;
+    line-height: 25px;
 	font-size: 13px;
 	font-family: "Roboto";
 	font-weight: 500!important;
@@ -46,7 +52,7 @@
     font-weight:500;
 }
 .view-more{
-	font-size: 13px;
+	font-size: 14px;
 	line-height: 19.2px;
 	margin-right: 0px!important;
 }
@@ -63,16 +69,36 @@
 .comment{
     margin-top: 0px;
 }
-
+.month_name, .year_name{
+    margin-top: 10px;
+    height: 30px;
+    width: 90px;
+    background: #eee;
+    border: none;
+    color: #1a4482;
+    padding-left: 5px;
+}
+.dearUser{
+    color: #1a4482;
+    font-weight: bolder;
+    font-size: 18px!important;
+}
 .weekdays {
     margin: 0;
     padding: 10px 0;
     background-color: #ddd;
+    margin-bottom: -20px;
 }
 
 .weekdays li {
     display: inline-block;
     width: 13%;
+    color: #666;
+    text-align: center;
+}
+.weekdays th {
+    display: inline-block;
+    width: 15%;
     color: #666;
     text-align: center;
 }
@@ -88,26 +114,25 @@
     background: #eee;
     margin: 0;
 }
-
-.days li {
-    float: left;
-    list-style-type: none;
-    display: inline-block;
-    width: 14.2%;
+.days a{
+    /*float: left;
+    list-style-type: none;*/
+    /*display: inline-block;*/
+    /*width: 14.2%!important;*/
     text-align: center;
     margin-bottom: 5px;
     font-size:12px;
     color: #777;
 }
 
-.days li .active {
+/*.days li .active {
     padding: 5px;
     border-radius: 30px;
     box-shadow: 0 3px 6px #444;
     background: #1abc9c;
     color: white !important
-}
-.weekend a{
+}*/
+.weekend{
     color:firebrick!important;
 }
 
@@ -131,6 +156,10 @@
     font-weight: bold;
     margin-top: 20px;
 }
+.calenderTitle{
+    font-size: 20px!important;
+    font-weight: bolder;
+}
 
 /*nav[data-url="/"] {margin-top:160px!important;}*/
 
@@ -138,3 +167,90 @@
 {
 	height: 90vh!important;
 }
+.week table{
+    margin-top: 0px;
+}
+.month_name, .year_name{
+    margin-top: 10px;
+    height: 30px;
+    width: 90px;
+    background: #eee;
+    border: none;
+    color: #1a4482;
+    padding-left: 5px;
+}
+.dearUser{
+    color: #1a4482;
+    font-weight: bolder;
+    font-size: 18px!important;
+}
+.weekdays {
+    margin: 0;
+    padding: 10px 0;
+    background-color: #ddd;
+    margin-bottom: -20px;
+}
+
+.weekdays li {
+    display: inline-block;
+    width: 13%;
+    color: #666;
+    text-align: center;
+}
+.weekdays th {
+    display: inline-block;
+    width: 15%;
+    color: #666;
+    text-align: center;
+}
+.month{
+    margin-top: 20px;
+}
+.week{
+    height: 140px;
+    background: #eee;
+}
+.days {
+    padding: 10px 0;
+    background: #eee;
+    margin: 0;
+}
+.days a{
+    /*float: left;
+    list-style-type: none;*/
+    /*display: inline-block;*/
+    /*width: 14.2%!important;*/
+    text-align: center;
+    margin-bottom: 5px;
+    font-size:12px;
+    color: #777;
+}
+.weekend{
+    color:firebrick!important;
+}
+
+Add media queries for smaller screens
+@media screen and (max-width:720px) {
+    .weekdays td, .days td {width: 13.1%;}
+}
+
+@media screen and (max-width: 420px) {
+    .weekdays td{width: 12%;}
+    .days td {width: 13.2%;}
+    .days td .active {padding: 2px;}
+}
+
+@media screen and (max-width: 290px) {
+    .weekdays td, .days td {width: 12.2%;}
+}
+
+.calender{
+    color: #1abc9c;
+    font-weight: bold;
+    margin-top: 20px;
+}
+.calenderTitle{
+    font-size: 20px!important;
+    font-weight: bolder;
+}
+

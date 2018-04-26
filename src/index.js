@@ -39,6 +39,7 @@ import News from './routes/News';
 import NewsPanel from './routes/NewsPanel';
 import NewsAll from './routes/NewsAll';
 import NewsArticle from './routes/NewsArticle';
+import NewsByDay from './routes/NewsByDay';
 import EditData from './routes/EditPersonalData'
 import EditPassword from './routes/EditPassword'
 import ForgotPassword from './routes/ForgotPassword'
@@ -59,7 +60,6 @@ import DoingBusiness from './routes/DoingBusiness.js';
 import ApzDepartment from './routes/ApzDepartment.js';
 import BisunessBuilding from './routes/BisunessBuilding';
 import InfoAboutDepartment from './routes/InfoAboutDepartment.js';
-import PublicServices from './routes/PublicServices.js';
 import Population from './routes/Population.js';
 import Staff from './routes/Staff.js';
 import EntrepreneurSupport from './routes/EntrepreneurSupport.js';
@@ -167,7 +167,6 @@ export default class Main extends React.Component {
               <Route path="/apz_department" render={(props) => (<ApzDepartment {...props}/>)}/>
               <Route path="/businessbuilding" render={(props) => (<BisunessBuilding {...props}/>)}/>
               <Route path="/infoaboutdepartment" render={(props) => (<InfoAboutDepartment {...props}/>)}/>
-              <Route path="/publicservices" render={(props) => (<PublicServices {...props}/>)}/>
               <Route path="/population" render={(props) => (<Population {...props}/>)}/>
               <Route path="/Staff" render={(props) => (<Staff {...props}/>)}/>
               <Route path="/EntrepreneurSupport" render={(props) => (<EntrepreneurSupport {...props}/>)}/>
@@ -175,6 +174,7 @@ export default class Main extends React.Component {
               <Route path="/vacancies" render={(props) => (<Vacancies {...props}/>)}/>
               <Route path="/newsAll" render={(props) => (<NewsAll {...props}/>)}/>
               <Route path="/newsArticle/:id" render={(props) => (<NewsArticle {...props}/>)}/>
+              <Route path="/dayNews/:date" render={(props) => (<NewsByDay {...props}/>)}/>
             </Switch>
             <Footer />
           </div>

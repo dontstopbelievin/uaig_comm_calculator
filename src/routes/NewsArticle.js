@@ -88,7 +88,6 @@ export default class newsArticle extends React.Component{
                 <br/>
                 <br/>
             </div>
-
         )
     }
 }

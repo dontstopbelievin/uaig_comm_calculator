@@ -7,6 +7,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../assets/css/guest.css";
 import WOW from 'wowjs';
+import Calendar from 'react-calendar';
 import { UncontrolledCarousel, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 let e = new LocalizedStrings({ru,kk});
@@ -21,6 +22,7 @@ export default class Guest extends React.Component {
       rolename: "",
       ru: true,
       kk: false,
+      date: new Date(),
       first: [],
       second: [],
       third: [],
@@ -45,6 +47,7 @@ export default class Guest extends React.Component {
     }
 
     this.getNews = this.getNews.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
 
@@ -82,6 +85,38 @@ export default class Guest extends React.Component {
     //console.log("GuestComponent will unmount");
   }
 
+  // onChange = date => this.setState({ date })
+
+    onChange (date) {
+      this.setState({ date });
+      var day = date.getDate();
+      var month = date.getMonth() + 1;
+      var year = date.getFullYear();
+      var date = '';
+        day = String(day);
+        month = String(month);
+        year = String(year);
+      if (day.length == 1){ day = '0' + day;}
+      if (month.length == 1){ month = '0' + month;}
+        date = year+'-'+month+'-'+day;
+
+      var link = 'api/news/dayNews/'+date;
+        var xhr = new XMLHttpRequest();
+        xhr.open("get", window.url + link, true);
+        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+        xhr.onload = function() {
+          var data = JSON.parse(xhr.responseText);
+          if (data.news.length != 0) {
+            this.props.history.replace('/dayNews/'+date);
+          } else {
+            alert("Нет новостей на этот день!");
+          }
+        }.bind(this);
+        xhr.send();
+
+
+    }
+
   getNews () {
         var link = 'api/news/lastFresh'
         var xhr = new XMLHttpRequest();
@@ -103,7 +138,7 @@ export default class Guest extends React.Component {
               array[index] = article;
               return array;
 
-            })
+            });
 
 
             this.setState({first: array[0][0]});
@@ -139,87 +174,13 @@ export default class Guest extends React.Component {
                     <div className="card  mt-4 mb-4 wow fadeInLeft" data-wow-duration="1.5s">
                       <div className="card-body">
                         <h5 className="text-muted card-text">{e.newscalendar}</h5>
-                        <form>
-                          <select className="month_name">
-                            <option value="01">{e.january}</option>
-                            <option value="02">{e.february}</option>
-                            <option value="03" selected>{e.march}</option>
-                            <option value="04">{e.april}</option>
-                            <option value="05">{e.may}</option>
-                            <option value="06">{e.june}</option>
-                            <option value="07">{e.jule}</option>
-                            <option value="08">{e.august}</option>
-                            <option value="09">{e.september}</option>
-                            <option value="010">{e.octember}</option>
-                            <option value="011">{e.november}</option>
-                            <option value="012">{e.december}</option>
-                          </select>
-                          <select className="year_name">
-                            <option value="2015">2015</option>
-                            <option value="2016">2016</option>
-                            <option value="2017">2017</option>
-                            <option value="2018" selected>2018</option>
-                          </select>
-                        </form>
-                                            
-                        <div className="month">
-                          <ul className="weekdays">
-                            <li>{e.pn}</li>
-                            <li>{e.vt}</li>
-                            <li>{e.st}</li>
-                            <li>{e.cht}</li>
-                            <li>{e.pts}</li>
-                            <li>{e.sub}</li>
-                            <li>{e.vsk}</li>
-                          </ul>
-                          <div className="week">            
-                            <ul className="days">
-                                <li><a className="text-muted" href="#">26</a></li>
-                                <li><a className="text-muted" href="#">27</a></li>
-                                <li><a className="text-muted" href="#">28</a></li>
-                                <li><a href="#">1</a></li>
-                                <li><a href="#">2</a></li>
-                                <li className="weekend"><a href="#">3</a></li>
-                                <li className="weekend"><a href="#">4</a></li>
-                            </ul>
-                            <ul className="days">
-                                <li><a href="#">5</a></li>
-                                <li><a href="#">6</a></li>
-                                <li><a href="#">7</a></li>
-                                <li><a href="#">8</a></li>
-                                <li><a href="#">9</a></li>
-                                <li className="weekend"><a href="#">10</a></li>
-                                <li className="weekend"><a href="#">11</a></li>
-                            </ul>
-                            <ul className="days">
-                                <li><a href="#">12</a></li>
-                                <li><a href="#">13</a></li>
-                                <li><a href="#">14</a></li>
-                                <li><a className="active" href="#">15</a></li>
-                                <li><a href="#">16</a></li>
-                                <li className="weekend"><a href="#">17</a></li>
-                                <li className="weekend"><a href="#">18</a></li>
-                            </ul>
-                            <ul className="days">
-                                <li><a href="#">19</a></li>
-                                <li><a href="#">20</a></li>
-                                <li><a href="#">21</a></li>
-                                <li><a href="#">22</a></li>
-                                <li><a href="#">23</a></li>
-                                <li className="weekend"><a href="#">24</a></li>
-                                <li className="weekend"><a href="#">25</a></li>
-                            </ul>
-                            <ul className="days">
-                                <li><a href="#">26</a></li>
-                                <li><a href="#">27</a></li>
-                                <li><a href="#">28</a></li>
-                                <li><a href="#">29</a></li>
-                                <li><a href="#">30</a></li>
-                                <li className="weekend"><a href="#">31</a></li>
-                                <li className="weekend"><a className="text-muted" href="#">1</a></li>
-                            </ul>
-                            </div>
-                          </div>     
+
+                          <div>
+                            <Calendar
+                              onChange={this.onChange}
+                              value={this.state.date}
+                            />
+                          </div>
                         </div>
                     </div>
                       
