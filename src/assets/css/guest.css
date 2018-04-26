@@ -33,7 +33,7 @@
     display: block;
     outline: none;
     text-overflow: ellipsis;
-    height: 47px;
+    height: 49px;
     line-height: 25px;
 	font-size: 13px;
 	font-family: "Roboto";
@@ -138,17 +138,17 @@
 
  Add media queries for smaller screens 
 @media screen and (max-width:720px) {
-    .weekdays li, .days li {width: 13.1%;}
+    .weekdays td, .days td {width: 13.1%;}
 }
 
 @media screen and (max-width: 420px) {
-    .weekdays li{width: 12%;} 
-    .days li {width: 13.2%;}
-    .days li .active {padding: 2px;}
+    .weekdays td{width: 12%;}
+    .days td {width: 13.2%;}
+    .days td .active {padding: 2px;}
 }
 
 @media screen and (max-width: 290px) {
-    .weekdays li, .days li {width: 12.2%;}
+    .weekdays td, .days td {width: 12.2%;}
 }
 
 .calender{
@@ -229,28 +229,4 @@
     color:firebrick!important;
 }
 
-Add media queries for smaller screens
-@media screen and (max-width:720px) {
-    .weekdays td, .days td {width: 13.1%;}
-}
-
-@media screen and (max-width: 420px) {
-    .weekdays td{width: 12%;}
-    .days td {width: 13.2%;}
-    .days td .active {padding: 2px;}
-}
-
-@media screen and (max-width: 290px) {
-    .weekdays td, .days td {width: 12.2%;}
-}
-
-.calender{
-    color: #1abc9c;
-    font-weight: bold;
-    margin-top: 20px;
-}
-.calenderTitle{
-    font-size: 20px!important;
-    font-weight: bolder;
-}
 

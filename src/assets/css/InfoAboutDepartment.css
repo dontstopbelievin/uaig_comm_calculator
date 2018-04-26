@@ -1,11 +1,12 @@
 .body-box{
     padding-bottom: 50px;
+    font-family: "Roboto";
 }
 .title{
     text-align: center;
-    margin-top: 30px;
+    margin-top: 5px;
     font-size: 25px;
-    margin-bottom: 30px;
+    margin-bottom: 5px;
 }
 .DepartmentBoss{
 	text-align: center;
@@ -14,15 +15,25 @@
 }
 .picBoss{
     border:solid 1px #ccc;
-    height: 250px;
+    height: 150px;
     border-radius: 30px;
     float: left;
 }
 .infoBoss{
-	height: 250px;
+	height: 150px;
 	border: 1px solid #ccc;
 	float: right;
 }
 .title-2{
     margin-top: 30px;
+    text-align: center;
+}
+.text p{
+    text-align: justify;
+}
+.text li{
+    text-align: justify;
+}
+.text{
+    margin: 0 auto;
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink as RRNavLink } from 'react-router-dom';
 import Slider from 'react-slick';
 import LocalizedStrings from 'react-localization';
+import { NavLink } from 'react-router-dom';
 import "../assets/css/InfoAboutDepartment.css";
 import {ru, kk} from '../languages/guest.json';
 
@@ -22,18 +23,21 @@ export default class Guest extends React.Component {
     return (
       <div className="section">
         <div className="container">
-          <div className="row body" style={{paddingRight: '15px'}}> 
-            <div className="body-box">
-                    <h3 className="title col-md-12">Об Управлении Архитектуры и Градостроительства г.Алматы</h3>
+          <div className="row body" style={{paddingRight: '15px'}}>
+              <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.news}
+            <div className="body-box content">
+                    <h3 className="title col-md-12 captionline">Об Управлении Архитектуры и Градостроительства г.Алматы</h3>
+                <hr/>
                     <div className="DepartmentBoss col-md-12">
                         <div className="picBoss col-md-4"></div>
                         <div className="infoBoss col-md-7"></div>
                     </div>
                     
                     <div className="col-md-12">
-                    
+                        <br/>
                         <h5 className="title-2 col-md-12">Основные направления</h5>
                         <div className="text col-md-11">
+
                         <p>1. Отдел экономики и финансов (далее - «Отдел») является структурным подразделением Управления культуры города Алматы.<br/>
                         В своей деятельности Отдел руководствуется Конституцией, законами Республики Казахстан, актами Президента Республики Казахстан и Правительства страны, решениями, распоряжениями акима города Алматы, постановлениями акимата города Алматы, настоящим Положением и инструкциями, установленными акиматом города.<br/><br/>
 

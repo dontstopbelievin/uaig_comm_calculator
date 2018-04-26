@@ -48,6 +48,7 @@ import Npm from './routes/Npm';
 import public_services from './routes/public_services';
 import permission_and_covoting from './routes/permission_and_covoting';
 import Vacancies from './routes/Vacancies';
+import GovermentServices from './routes/GovermentServices';
 //import legalpurchase from './routes/Legalpurchase';
 import Counteraction from './routes/Counteraction';
 import Contacts from './routes/Contacts';

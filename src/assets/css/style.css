@@ -762,6 +762,10 @@ img {
 .video_tutorials-plan-page .video_block .row {
   align-items: center;
 }
+.container{
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+}
 
 .mish .container{
   width: 100%;
@@ -858,6 +862,7 @@ table{
 }
 .captionline{
   background-color: white;
+  padding-bottom: 20px;
 }
 .h4-inline {
   display: inline;
