@@ -167,13 +167,14 @@ export default class Main extends React.Component {
               <Route path="/apz_department" render={(props) => (<ApzDepartment {...props}/>)}/>
               <Route path="/businessbuilding" render={(props) => (<BisunessBuilding {...props}/>)}/>
               <Route path="/infoaboutdepartment" render={(props) => (<InfoAboutDepartment {...props}/>)}/>
+              <Route path="/govermentservices" render={(props) => (<GovermentServices {...props}/>)}/>
               <Route path="/population" render={(props) => (<Population {...props}/>)}/>
-              <Route path="/Staff" render={(props) => (<Staff {...props}/>)}/>
-              <Route path="/EntrepreneurSupport" render={(props) => (<EntrepreneurSupport {...props}/>)}/>
-              <Route path="/ExecutiveAgency" render={(props) => (<ExecutiveAgency {...props}/>)}/>
-              <Route path="/vacancies" render={(props) => (<Vacancies {...props}/>)}/>
+              <Route path="/staff" render={(props) => (<Staff {...props}/>)}/>
+              <Route path="/entrepreneurialsupport" render={(props) => (<EntrepreneurSupport {...props}/>)}/>
+              <Route path="/executiveagency" render={(props) => (<ExecutiveAgency {...props}/>)}/>
               <Route path="/newsAll" render={(props) => (<NewsAll {...props}/>)}/>
               <Route path="/newsArticle/:id" render={(props) => (<NewsArticle {...props}/>)}/>
+              <Route path="/vacancies" render={(props) => (<Vacancies {...props}/>)}/>
               <Route path="/dayNews/:date" render={(props) => (<NewsByDay {...props}/>)}/>
             </Switch>
             <Footer />

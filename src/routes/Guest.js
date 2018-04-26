@@ -398,7 +398,7 @@ export default class Guest extends React.Component {
                     <div className="card mt-4 mb-4">
                         <div className="card-body">
                             <div className="card-text">
-                                <h6 className="text-muted">{e.dearuser}</h6>
+                                <h6 className="dearUser text-muted">{e.dearuser}</h6>
                                 <p>{e.messageforuser}</p>
                                 <div className="dropdown-divider"></div>
                                 <span><a className="text-warning font-weight-bold view-more" href="#">{e.viewall}</a></span>
