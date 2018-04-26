@@ -82,7 +82,7 @@ export default class NavBar extends React.Component {
               </a>
               <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                 <a className="dropdown-item" href="/#/polls">{e.reconstructionofpedestrianstreets}</a>
-                <a className="dropdown-item" href="/#/designCode">{e.designcode}</a>
+                <a target="_blank" className="dropdown-item" href="/docs/designCode.pdf">{e.designcode}</a>
                 <a className="dropdown-item" href="/#/councilMaterials">{e.materialsofthetownplanningcouncil}</a>
               </div>
             </li>

@@ -24,7 +24,7 @@ export default class Guest extends React.Component {
         <div className="container">
           <div className="row body" style={{paddingRight: '15px'}}> 
             <div className="body-box">
-                    <h3 className="title col-md-12">Об Управлении Архитектуры и Градостройтельства г.Алматы</h3>
+                    <h3 className="title col-md-12">Об Управлении Архитектуры и Градостроительства г.Алматы</h3>
                     <div className="DepartmentBoss col-md-12">
                         <div className="picBoss col-md-4"></div>
                         <div className="infoBoss col-md-7"></div>
