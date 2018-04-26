@@ -66,10 +66,8 @@ export default class newsAll extends React.Component{
                                 <div className="card mt-8 mb-8 wow fadeInLeft" data-wow-duration="1.5s">
 
                                     <div className="list-group">
-
                                         {this.state.news.map(function(article) {
                                             var link = '/#/NewsArticle/' + article.id;
-
                                             return(
 
                                         <div href="#" className="list-group-item flex-column align-items-start  wow fadeInDown"  data-wow-duration="1.5s">
@@ -88,7 +86,6 @@ export default class newsAll extends React.Component{
 
                                           }.bind(this))
                                         }
-                                        
                                     </div>
                                     
                                 </div>

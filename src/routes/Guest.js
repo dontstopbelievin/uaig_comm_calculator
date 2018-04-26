@@ -138,8 +138,9 @@ export default class Guest extends React.Component {
                   <div className="card-deck">
                     <div className="card  mt-4 mb-4 wow fadeInLeft" data-wow-duration="1.5s">
                       <div className="card-body">
-                        <h5 className="text-muted card-text">{e.newscalendar}</h5>
+                        <h5 className="calenderTitle text-muted card-text">{e.newscalendar}</h5>
                         <form>
+<<<<<<< HEAD
                           <select className="month_name">
                             <option value="01">{e.january}</option>
                             <option value="02">{e.february}</option>
@@ -161,7 +162,6 @@ export default class Guest extends React.Component {
                             <option value="2018" selected>2018</option>
                           </select>
                         </form>
-
                           <div className="week table-responsive">
                             <table>
                               <tbody>
@@ -439,7 +439,7 @@ export default class Guest extends React.Component {
                     <div className="card mt-4 mb-4">
                         <div className="card-body">
                             <div className="card-text">
-                                <h6 className="text-muted">{e.dearuser}</h6>
+                                <h6 className="dearUser text-muted">{e.dearuser}</h6>
                                 <p>{e.messageforuser}</p>
                                 <div className="dropdown-divider"></div>
                                 <span><a className="text-warning font-weight-bold view-more" href="#">{e.viewall}</a></span>
