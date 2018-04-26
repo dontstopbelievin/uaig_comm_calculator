@@ -93,9 +93,9 @@ export default class Guest extends React.Component {
                   <div className="card-deck">
                     <div className="card  mt-4 mb-4 wow fadeInLeft" data-wow-duration="1.5s">
                       <div className="card-body">
-                        <h5 className="text-muted card-text">{e.newscalendar}</h5>
+                        <h5 className="calenderTitle text-muted card-text">{e.newscalendar}</h5>
                         <form>
-                          <select className="month_name">
+                          <select className="month_name" >
                             <option>{e.january}</option>
                             <option>{e.february}</option>
                             <option selected>{e.march}</option>
@@ -128,52 +128,57 @@ export default class Guest extends React.Component {
                             <li>{e.vsk}</li>
                           </ul>
                           <div className="week">            
-                            <ul className="days">
-                                <li><a className="text-muted" href="#">26</a></li>
-                                <li><a className="text-muted" href="#">27</a></li>
-                                <li><a className="text-muted" href="#">28</a></li>
-                                <li><a href="#">1</a></li>
-                                <li><a href="#">2</a></li>
-                                <li className="weekend"><a href="#">3</a></li>
-                                <li className="weekend"><a href="#">4</a></li>
-                            </ul>
-                            <ul className="days">
-                                <li><a href="#">5</a></li>
-                                <li><a href="#">6</a></li>
-                                <li><a href="#">7</a></li>
-                                <li><a href="#">8</a></li>
-                                <li><a href="#">9</a></li>
-                                <li className="weekend"><a href="#">10</a></li>
-                                <li className="weekend"><a href="#">11</a></li>
-                            </ul>
-                            <ul className="days">
-                                <li><a href="#">12</a></li>
-                                <li><a href="#">13</a></li>
-                                <li><a href="#">14</a></li>
-                                <li><a className="active" href="#">15</a></li>
-                                <li><a href="#">16</a></li>
-                                <li className="weekend"><a href="#">17</a></li>
-                                <li className="weekend"><a href="#">18</a></li>
-                            </ul>
-                            <ul className="days">
-                                <li><a href="#">19</a></li>
-                                <li><a href="#">20</a></li>
-                                <li><a href="#">21</a></li>
-                                <li><a href="#">22</a></li>
-                                <li><a href="#">23</a></li>
-                                <li className="weekend"><a href="#">24</a></li>
-                                <li className="weekend"><a href="#">25</a></li>
-                            </ul>
-                            <ul className="days">
-                                <li><a href="#">26</a></li>
-                                <li><a href="#">27</a></li>
-                                <li><a href="#">28</a></li>
-                                <li><a href="#">29</a></li>
-                                <li><a href="#">30</a></li>
-                                <li className="weekend"><a href="#">31</a></li>
-                                <li className="weekend"><a className="text-muted" href="#">1</a></li>
-                            </ul>
-                            </div>
+                            <table>
+                              <tbody>
+                                <tr className="days">
+                                  <td className="col-md-1"><a href="#">26</a></td>
+                                  <td className="col-md-1"><a href="#">27</a></td>
+                                  <td className="col-md-1"><a href="#">28</a></td>
+                                  <td className="col-md-1"><a href="#">1</a></td>
+                                  <td className="col-md-1"><a href="#">2</a></td>
+                                  <td className="weekend col-md-1">3</td>
+                                  <td className="weekend col-md-1">4</td>
+                                </tr>
+                                <tr className="days">
+                                  <td>5</td>
+                                  <td>6</td>
+                                  <td>7</td>
+                                  <td>8</td>
+                                  <td>9</td>
+                                  <td className="weekend">10</td>
+                                  <td className="weekend">11</td>
+                                </tr>
+                                <tr className="days">
+                                  <td>12</td>
+                                  <td>13</td>
+                                  <td>14</td>
+                                  <td>15</td>
+                                  <td>16</td>
+                                  <td className="weekend">17</td>
+                                  <td className="weekend">18</td>
+                                </tr>
+                                <tr className="days">
+                                  <td>19</td>
+                                  <td>20</td>
+                                  <td>21</td>
+                                  <td>22</td>
+                                  <td>23</td>
+                                  <td className="weekend">24</td>
+                                  <td className="weekend">25</td>
+                                </tr>
+                                <tr className="days">
+                                  <td>26</td>
+                                  <td>27</td>
+                                  <td>28</td>
+                                  <td>29</td>
+                                  <td>30</td>
+                                  <td className="weekend">31</td>
+                                  <td className="weekend">1</td>
+                                </tr>
+
+                              </tbody>
+                            </table>  
+                          </div>
                             
                           </div>     
                         </div>
@@ -387,7 +392,7 @@ export default class Guest extends React.Component {
                     <div className="card mt-4 mb-4">
                         <div className="card-body">
                             <div className="card-text">
-                                <h6 className="text-muted">{e.dearuser}</h6>
+                                <h6 className="dearUser text-muted">{e.dearuser}</h6>
                                 <p>{e.messageforuser}</p>
                                 <div className="dropdown-divider"></div>
                                 <span><a className="text-warning font-weight-bold view-more" href="#">{e.viewall}</a></span>

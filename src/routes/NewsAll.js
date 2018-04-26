@@ -39,52 +39,52 @@ export default class newsAll extends React.Component{
                                         <div href="#" className="list-group-item flex-column align-items-start ">
                                             <div className="d-flex w-100 left-content-between">
                                                 <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                                                <p className="text-muted font-weight-light">15.01.2018</p>
+                                                <p className="news-date text-muted font-weight-light">15.01.2018</p>
                                             </div>
                                           
-                                            <h6 className="text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                                            <p className="text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом.Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                                            <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
+                                            <p className="news-text  text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом.Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
                                             <div className="dropdown-divider"></div>
                                             <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">Читать далее</small></a>
                                         </div>
 
 
                                         
-                                      <div href="#" className="list-group-item flex-column align-items-start ">
+                                        <div href="#" className="list-group-item flex-column align-items-start ">
                                             <div className="d-flex w-100 left-content-between">
                                                 <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                                                <p className="text-muted font-weight-light">15.01.2018</p>
+                                                <p className="news-date text-muted font-weight-light">15.01.2018</p>
                                             </div>
-
-                                            <h6 className="text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                                            <p className="text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом.Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                                          
+                                            <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
+                                            <p className="news-text  text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом.Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
                                             <div className="dropdown-divider"></div>
                                             <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">Читать далее</small></a>
-                                      </div>
+                                        </div>
                                         
-                                      <div href="#" className="list-group-item flex-column align-items-start ">
+                                        <div href="#" className="list-group-item flex-column align-items-start ">
                                             <div className="d-flex w-100 left-content-between">
                                                 <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                                                <p className="text-muted font-weight-light">15.01.2018</p>
+                                                <p className="news-date text-muted font-weight-light">15.01.2018</p>
                                             </div>
-
-                                            <h6 className="text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                                            <p className="text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом.Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                                          
+                                            <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
+                                            <p className="news-text  text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом.Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
                                             <div className="dropdown-divider"></div>
                                             <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">Читать далее</small></a>
-                                      </div>
+                                        </div>
                                         
-                                      <div href="#" className="list-group-item  flex-column align-items-start ">
+                                        <div href="#" className="list-group-item flex-column align-items-start ">
                                             <div className="d-flex w-100 left-content-between">
                                                 <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                                                <p className="text-muted font-weight-light">15.01.2018</p>
+                                                <p className="news-date text-muted font-weight-light">15.01.2018</p>
                                             </div>
-
-                                            <h6 className="text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                                            <p className="text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом.Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                                          
+                                            <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
+                                            <p className="news-text  text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом.Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
                                             <div className="dropdown-divider"></div>
                                             <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">Читать далее</small></a>
-                                      </div>
+                                        </div>
                                         
                                     </div>
                                     
@@ -94,53 +94,53 @@ export default class newsAll extends React.Component{
 
                                     <div className="list-group">
                                         
-                                          <div href="#" className="list-group-item flex-column align-items-start ">
-                                                <div className="d-flex w-100 left-content-between">
-                                                    <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                                                    <p className="text-muted font-weight-light">15.01.2018</p>
-                                                </div>
-
-                                                <h6 className="text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                                                <p className="text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом.Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
-                                                <div className="dropdown-divider"></div>
-                                                <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">Читать далее</small></a>
-                                          </div>
+                                        <div href="#" className="list-group-item flex-column align-items-start ">
+                                            <div className="d-flex w-100 left-content-between">
+                                                <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
+                                                <p className="news-date text-muted font-weight-light">15.01.2018</p>
+                                            </div>
+                                          
+                                            <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
+                                            <p className="news-text  text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом.Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                                            <div className="dropdown-divider"></div>
+                                            <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">Читать далее</small></a>
+                                        </div>
                                         
-                                          <div href="#" className="list-group-item  flex-column align-items-start ">
-                                                <div className="d-flex w-100 left-content-between">
-                                                    <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                                                    <p className="text-muted font-weight-light">15.01.2018</p>
-                                                </div>
-
-                                                <h6 className="text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                                                <p className="text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом. Дисковый затвор - вид запорной арматуры, который является запирающим элементом.</p>
-                                                <div className="dropdown-divider"></div>
-                                                <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">Читать далее</small></a>
-                                          </div>
+                                        <div href="#" className="list-group-item flex-column align-items-start ">
+                                            <div className="d-flex w-100 left-content-between">
+                                                <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
+                                                <p className="news-date text-muted font-weight-light">15.01.2018</p>
+                                            </div>
+                                          
+                                            <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
+                                            <p className="news-text  text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом.Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                                            <div className="dropdown-divider"></div>
+                                            <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">Читать далее</small></a>
+                                        </div>
                                       
-                                          <div href="#" className="list-group-item flex-column align-items-start ">
-                                                <div className="d-flex w-100 left-content-between">
-                                                    <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                                                    <p className="text-muted font-weight-light">15.01.2018</p>
-                                                </div>
-
-                                                <h6 className="text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                                                <p className="text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом.Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
-                                                <div className="dropdown-divider"></div>
-                                                <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">Читать далее</small></a>
-                                          </div>
+                                        <div href="#" className="list-group-item flex-column align-items-start ">
+                                            <div className="d-flex w-100 left-content-between">
+                                                <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
+                                                <p className="news-date text-muted font-weight-light">15.01.2018</p>
+                                            </div>
+                                          
+                                            <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
+                                            <p className="news-text  text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом.Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                                            <div className="dropdown-divider"></div>
+                                            <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">Читать далее</small></a>
+                                        </div>
                                         
-                                          <div href="#" className="list-group-item flex-column align-items-start ">
-                                                <div className="d-flex w-100 left-content-between">
-                                                    <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                                                    <p className="text-muted font-weight-light">15.01.2018</p>
-                                                </div>
-
-                                                <h6 className="text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
-                                                <p className="text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом.Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
-                                                <div className="dropdown-divider"></div>
-                                                <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">Читать далее</small></a>
-                                          </div>
+                                        <div href="#" className="list-group-item flex-column align-items-start ">
+                                            <div className="d-flex w-100 left-content-between">
+                                                <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
+                                                <p className="news-date text-muted font-weight-light">15.01.2018</p>
+                                            </div>
+                                          
+                                            <h6 className="news-title text-left text-muted mb-1">Преимущества и недостатки дисков</h6>
+                                            <p className="news-text  text-left mt-2 mb-1">Дисковый затвор - вид запорной арматуры, который является запирающим элементом.Дисковый затвор - вид запорной арматуры, который является запирающим элементом. </p>
+                                            <div className="dropdown-divider"></div>
+                                            <a href="/#/NewsArticle"><small className="float-right text-warning view-more font-weight-bold">Читать далее</small></a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
