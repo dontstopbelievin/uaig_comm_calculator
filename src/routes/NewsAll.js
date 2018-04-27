@@ -62,7 +62,7 @@ export default class newsAll extends React.Component{
                             <span><img src="/images/line.png" /></span>
                             
                             
-                            <div className="card-deck news">
+                            <div className="card-deck news col-md-12">
                                 <div className="card mt-8 mb-8 wow fadeInLeft" data-wow-duration="1.5s">
 
                                     <div className="list-group">
@@ -73,11 +73,11 @@ export default class newsAll extends React.Component{
                                         <div href="#" className="list-group-item flex-column align-items-start  wow fadeInDown"  data-wow-duration="1.5s">
                                             <div className="d-flex w-100 left-content-between">
                                                 <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                                                <p className="text-muted font-weight-light">{article.created_at}</p>
+                                                <p className="news-date text-muted font-weight-light">{article.created_at}</p>
                                             </div>
                                           
-                                            <h6 className="text-left text-muted mb-1">{article.title}</h6>
-                                            <p className="text-left mt-2 mb-1">{article.description}</p>
+                                            <h6 className="news-title text-left text-muted mb-1">{article.title}</h6>
+                                            <p className="news-text text-left mt-2 mb-1">{article.description}</p>
                                             <div className="dropdown-divider"></div>
                                             <a href={link}><small className="float-right text-warning view-more font-weight-bold">Читать далее</small></a>
                                         </div>

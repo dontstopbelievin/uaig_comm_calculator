@@ -22,8 +22,8 @@ export default class population extends React.Component{
         return(
             <div className="container navigational_price body-content">
                 <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.population}
-                <div className="container pagePublicServices">
-                    <ul className="PublicServicesul">
+                <div className="container menupage">
+                    <ul className="menuUl">
                         <li><a target="_blank" href="http://kyzmet.gov.kz/ru/kategorii/informaciya-o-postupivshih-obrashcheniyah-fizicheskih-i-yuridicheskih-lic">1) Информация о поступивших обращениях физических и юридических лиц.</a></li>
                         <li><a target="_blank" href="http://kyzmet.gov.kz/ru/pages/zakon-respubliki-kazahstan-o-poryadke-rassmotreniya-obrashcheniy-fizicheskih-i-yuridicheskih-0">2) О порядке рассмотрения обращений физических и юридических лиц.</a></li>
                         <li><a target="_blank" href="#">3) Данные об опросах населения, обобщение и анализ запросов на получение информации, ответы на часто задаваемые вопросы, интернет-приемная и др.</a></li>
