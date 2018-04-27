@@ -65,6 +65,8 @@ import Population from './routes/Population.js';
 import Staff from './routes/Staff.js';
 import EntrepreneurSupport from './routes/EntrepreneurSupport.js';
 import ExecutiveAgency from './routes/ExecutiveAgency.js';
+import TypeOfPublicService from './routes/TypeOfPublicService.js';
+import StateSymbols from './routes/StateSymbols.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import PopperJs from 'popper.js';
@@ -177,6 +179,8 @@ export default class Main extends React.Component {
               <Route path="/newsArticle/:id" render={(props) => (<NewsArticle {...props}/>)}/>
               <Route path="/vacancies" render={(props) => (<Vacancies {...props}/>)}/>
               <Route path="/dayNews/:date" render={(props) => (<NewsByDay {...props}/>)}/>
+              <Route path="/typeofpublicservice" render={(props) => (<TypeOfPublicService {...props}/>)}/>
+              <Route path="/statesymbols" render={(props) => (<StateSymbols {...props}/>)}/>
             </Switch>
             <Footer />
           </div>

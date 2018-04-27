@@ -50,16 +50,16 @@ export default class NavBar extends React.Component {
                   {e.stateservices}
               </a>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><NavLink className="dropdown-item" to="/businessbuilding" activeClassName="active">{e.businessbuilding}</NavLink></li>
-                <li><a className="dropdown-item" href="http://www.akorda.kz/ru/state_symbols/about_state_symbols" target="_blank">{e.statesymbols}</a></li>
-                <li><NavLink className="dropdown-item" to="/GovermentServices" activeClassName="active">{e.govermentservices}</NavLink></li>
-                <li><a className="dropdown-item" href="https://www.almaty.gov.kz/page.php?page_id=3147&lang=1#id_34784" target="_blank">{e.typesofpublicservices}</a></li>
-                <li><NavLink className="dropdown-item" to="/reports" activeClassName="active">{e.reportfor}</NavLink></li>
-                <li><NavLink className="dropdown-item" to="/stats" activeClassName="active">{e.resultoftheapz}</NavLink></li>
-                <li><NavLink className="dropdown-item" to="/population" activeClassName="active">{e.workwiththepopulation}</NavLink></li>
-                <li><NavLink className="dropdown-item" to="/BudgetPlan" activeClassName="active">{e.budget_plan}</NavLink></li>
-                <li><NavLink className="dropdown-item" to="/staff" activeClassName="active">{e.staff}</NavLink></li>
-                <li><NavLink className="dropdown-item" to="/entrepreneurialsupport" activeClassName="active">{e.entrepreneurialsupport}</NavLink></li>
+                <li><a className="dropdown-item" href="/#/businessbuilding">{e.businessbuilding}</a></li>
+                <li><a className="dropdown-item" href="/#/StateSymbols">{e.statesymbols}</a></li>
+                <li><a className="dropdown-item" href="/#/GovermentServices">{e.govermentservices}</a></li>
+                <li><a className="dropdown-item" href="/#/TypeOfPublicService">{e.typeofpublicservice}</a></li>
+                <li><a className="dropdown-item" href="/#/reports">{e.reportfor}</a></li>
+                <li><a className="dropdown-item" href="/#/stats">{e.resultoftheapz}</a></li>
+                <li><a className="dropdown-item" href="/#/population">{e.workwiththepopulation}</a></li>
+                <li><a className="dropdown-item" href="/#/BudgetPlan">{e.budget_plan}</a></li>
+                <li><a className="dropdown-item" href="/#/Staff">{e.staff}</a></li>
+                <li><a className="dropdown-item" href="/#/entrepreneurialsupport">{e.entrepreneurialsupport}</a></li>
               </ul>
             </li>
 
