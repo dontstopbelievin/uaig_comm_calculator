@@ -171,6 +171,7 @@ class ShowApz extends React.Component {
       confirmedTaskFile: false,
       titleDocumentFile: false,
       returnedState: false,
+      needSign: false,
       response: true,
       storageAlias: "PKCS12",
       xmlFile: false
@@ -203,6 +204,7 @@ class ShowApz extends React.Component {
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
         this.setState({showButtons: false});
         this.setState({returnedState: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null })[0]});
+        this.setState({needSign: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
 
         if (data.status_id === 3) { 
           this.setState({showButtons: true}); 
@@ -667,10 +669,45 @@ class ShowApz extends React.Component {
                   </div>
                   :
                   <div>
-                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>Одобрить</button>
-                    <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
-                      Отклонить
-                    </button>
+                    {!this.state.needSign ?
+                      <div>
+                        <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>Одобрить</button>
+                        <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
+                          Отклонить
+                        </button>
+                      </div>
+                      :
+                      <div>
+                        {!this.state.xmlFile ?
+                          <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                            <div className="row form-group">
+                              <div className="col-sm-7">
+                                <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
+                              </div>
+
+                              <div className="col-sm-5 p-0">
+                                <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
+                              </div>
+                            </div>
+
+                            <div className="form-group">
+                              <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                            </div>
+
+                            <div className="form-group">
+                              <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                              <button type="button" className="btn btn-secondary" data-toggle="modal" data-target="#accDecApzForm">Отклонить</button>
+                            </div>
+                          </div>
+                          :
+                          <div>
+                            <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>
+                              Отправить
+                            </button>
+                          </div>
+                        }
+                      </div>
+                    }
                   </div>
                 }
 
