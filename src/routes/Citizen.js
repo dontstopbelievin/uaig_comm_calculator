@@ -871,11 +871,11 @@ class AddApz extends React.Component {
                   <div className="col-md-6">
                     <div className="form-group">
                       <label htmlFor="HeatGeneral">Общая тепловая нагрузка (Гкал/ч)<br /><br /></label>
-                      <input type="number" step="0.1" className="form-control" name="HeatGeneral" placeholder="" />
+                      <input type="number" step="any" className="form-control" name="HeatGeneral" placeholder="" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="HeatTech">Технологические нужды(пар) (Т/ч)</label>
-                      <input type="number" step="0.1" className="form-control" name="HeatTech" placeholder="" />
+                      <input type="number" step="any" className="form-control" name="HeatTech" placeholder="" />
                     </div>
                   </div>
                   <div className="col-md-6">
@@ -2373,25 +2373,25 @@ class AddHeatBlock extends React.Component {
           <div className="col-md-6">
             <div className="form-group">
               <label htmlFor="HeatMain">Отопление<br />(Гкал/ч)</label>
-              <input type="number" step="0.1" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatMain]'} placeholder="" />
+              <input type="number" step="any" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatMain]'} placeholder="" />
             </div>
           </div>
           <div className="col-md-6">
             <div className="form-group">
               <label htmlFor="HeatVentilation">Вентиляция<br />(Гкал/ч)</label>
-              <input type="number" step="0.1" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatVentilation]'} placeholder="" />
+              <input type="number" step="any" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatVentilation]'} placeholder="" />
             </div>
           </div>
           <div className="col-md-6">
             <div className="form-group">
               <label htmlFor="HeatWater">Горячее водоснабжение<br />(ср/ч)</label>
-              <input type="number" step="0.1" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatWater]'} placeholder="" />
+              <input type="number" step="any" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatWater]'} placeholder="" />
             </div>
           </div>
           <div className="col-md-6">
             <div className="form-group">
               <label htmlFor="HeatWaterMax">Горячее водоснабжение<br />(макс/ч)</label>
-              <input type="number" step="0.1" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatWaterMax]'} placeholder="" />
+              <input type="number" step="any" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatWaterMax]'} placeholder="" />
             </div>
           </div>
         </div>
