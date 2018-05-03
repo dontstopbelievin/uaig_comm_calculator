@@ -60,6 +60,7 @@ export default class Login extends Component {
   //user login function
   login(e) {
     e.preventDefault();
+
     //console.log("login function started");
     var tokenKey = "tokenInfo";
     var userIdKey = "userId";
@@ -113,8 +114,8 @@ export default class Login extends Component {
           sessionStorage.setItem(tokenKey, JSON.parse(e.target.response).access_token);
           sessionStorage.setItem(userIdKey, JSON.parse(e.target.response).id);
           sessionStorage.setItem(userNameKey, JSON.parse(e.target.response).name);
-          sessionStorage.setItem(userIinKey, JSON.parse(e.target.response).iin);
-          sessionStorage.setItem(userBinKey, JSON.parse(e.target.response).bin);
+          sessionStorage.setItem(userIinKey, JSON.parse(e.target.response).iin ? JSON.parse(e.target.response).iin : '');
+          sessionStorage.setItem(userBinKey, JSON.parse(e.target.response).bin ? JSON.parse(e.target.response).bin : '');
           sessionStorage.setItem(userRoleKey, JSON.stringify(roles));
           sessionStorage.setItem(logStatusKey, true);
           if(roles[0] === 'Urban'){
