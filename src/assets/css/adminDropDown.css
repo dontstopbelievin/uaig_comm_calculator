@@ -1,0 +1,84 @@
+.dropdown-submenu {
+  position: relative;
+    text-align: left;
+}
+
+.dropdown-submenu li, .dropdown-menu > li > a, .dropdown-menu1 > li > a, .dropdown-menu2 > li > a {
+    cursor: pointer;
+    padding: 5px 10px 0px 15px;
+    display: block;
+}
+
+
+
+.dropdown-submenu > .dropdown-menu1 {
+    top:0px;
+    left: 100%;
+    color: black;
+    /*z-index: 1;*/
+    display: none;
+    position: absolute!important;
+    height: 0px!important;
+    width: 0px!important;
+    /*overflow: hidden!important;*/
+    background: rgba(255,255,255, .8);
+    box-sizing: border-box;
+    padding-right: 0px;
+}
+
+.dropdown-submenu > a:hover {
+    background: rgba(30, 126, 52, 1)!important;
+    color: white!important;
+    display: block;
+    width: 100%;
+    height: 100%;
+    transition: all 0.5s ease-in-out;
+}
+
+.dropdown-submenu:hover > .dropdown-menu1 {
+    width: auto!important;
+    height: auto!important;
+    overflow: visible;
+    display: block;
+    padding: 0px!important;
+    border: solid 1px rgba(30, 126, 52, 1);
+}
+
+.dropdown-submenu:hover > .dropdown-menu1:hover > li {
+    position: relative;
+
+}
+
+.dropdown-submenu:hover > .dropdown-menu1 > .submenu {
+    display: none!important;
+    top: 0px!important;
+    left: 100%!important;
+}
+
+
+
+.dropdown-submenu:hover > .dropdown-menu1:hover > .submenu{
+    display: block!important;
+    overflow: visible;
+}
+
+.rd-level .dropdown-menu2 {
+    position: absolute!important;
+    display: none!important;
+    /*z-index: 9999;*/
+    height: 0px!important;
+    width: auto!important;
+    top: 0!important;
+    left: 100%!important;
+    background: rgba(255,255,255, .8);
+    padding: 0px!important;
+}
+
+.rd-level:hover > .dropdown-menu2 {
+    height: auto!important;
+    display: block!important;
+    border: solid 1px rgba(30, 126, 52, 1);
+    transition: all 0.7s ease-in-out;
+}
+/*_______________________________________________________________*/
+
