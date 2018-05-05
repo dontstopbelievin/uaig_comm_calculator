@@ -680,6 +680,10 @@ img {
   background-color: #f8f9fa;
 }
 
+.sketch-page .file_block, .sketch-page .file_block div {
+  float: none;
+}
+
 .sketch-page .file_block div {
   border: 1px solid #e0e0e0;
   padding: 10px;

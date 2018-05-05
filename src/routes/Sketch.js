@@ -1,235 +1,508 @@
 import React from 'react';
+import EsriLoaderReact from 'esri-loader-react';
 import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
+import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
+import Loader from 'react-loader-spinner';
 
 export default class Sketch extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      acceptedForms: [],
-      declinedForms: [],
-      activeForms: [],
-      showDetails: false,
-      Applicant: "",
-      Address: "",
-      Phone: "",
-      Customer: "",
-      Designer: "",
-      ProjectName: "",
-      ProjectAddress: "",
-      SketchDate: ""
-    }
-
-    this.getAcceptedForms = this.getAcceptedForms.bind(this);
-    this.getDeclinedForms = this.getDeclinedForms.bind(this);
-    this.getActiveForms = this.getActiveForms.bind(this);
-  }
-
-  getActiveForms() {
-    $.ajax({
-      type: 'GET',
-      url: window.url + 'api/Sketch/active',
-      contentType: 'application/json; charset=utf-8',
-      beforeSend: function (xhr) {
-        xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
-      },
-      success: function (data) {
-        this.setState({ activeForms: data });
-      }.bind(this)
-    });
-  }
-
-  getAcceptedForms() {
-    $.ajax({
-      type: 'GET',
-      url: window.url + 'api/Sketch/accepted',
-      contentType: 'application/json; charset=utf-8',
-      beforeSend: function (xhr) {
-        xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
-      },
-      success: function (data) {
-        this.setState({ acceptedForms: data });
-      }.bind(this)
-    });
-  }
-
-  getDeclinedForms() {
-    $.ajax({
-      type: 'GET',
-      url: window.url + 'api/Sketch/declined',
-      contentType: 'application/json; charset=utf-8',
-      beforeSend: function (xhr) {
-        xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
-      },
-      success: function (data) {
-        this.setState({ declinedForms: data });
-      }.bind(this)
-    });
-  }
-
-  details(e) {
-    this.setState({ showDetails: true });
-    this.setState({ Applicant: e.Applicant });
-    this.setState({ Address: e.Address });
-    this.setState({ Phone: e.Phone });
-    this.setState({ Customer: e.Customer });
-    this.setState({ Designer: e.Designer });
-    this.setState({ ProjectName: e.ProjectName });
-    this.setState({ ProjectAddress: e.ProjectAddress });
-    this.setState(function(){
-      var jDate = new Date(e.SketchDate);
-      var curr_date = jDate.getDate();
-      var curr_month = jDate.getMonth() + 1;
-      var curr_year = jDate.getFullYear();
-      var formated_date = curr_date + "-" + curr_month + "-" + curr_year;
-      return { SketchDate: formated_date }
-    });
-  }
-
-  componentDidMount() {
-    this.getAcceptedForms();
-    this.getDeclinedForms();
-    this.getActiveForms();
-  }
-
   render() {
-    var acceptedForms = this.state.acceptedForms;
-    var declinedForms = this.state.declinedForms;
-    var activeForms = this.state.activeForms;
     return (
-      <div className="content container body-content">
-        <div className="row">
-          <style dangerouslySetInnerHTML={{__html: `
-            .apz-list {
-              padding: 15px 20px;
-            }
-            .apz-list h4 {
-              display: block !important;
-            }
-            .apz-list h4 li {
-                list-style-type: none;
-                margin: 10px 0 0 15px;
-                font-size: 16px;
-                font-weight: bold;
-            }
-          `}} />
-            <div className="col-md-3">
-                <h4 style={{textAlign: 'center'}}>Список заявлений</h4>
-            </div>
-            <div className="col-md-6">
-                <h4 style={{textAlign: 'center'}}>Карта</h4>
-            </div>
-            <div className="col-md-3">
-                <h4 style={{textAlign: 'center'}}>Информация</h4>
-            </div>
-        </div>
-        <div className="row container">
-          <div className="col-md-3 apz-list card">
-            <h4><span id="in-process">В Процессе</span>
-            {
-              activeForms.map(function(acvForm, i){
-                return(
-                  <li key={i} onClick={this.details.bind(this, acvForm)}>
-                    {acvForm.ProjectName}
-                  </li>
-                )
-              }.bind(this))
-            }
-            </h4>
-            <h4><span id="accepted">Принятые</span>
-            {
-              acceptedForms.map(function(accForm, i){
-                return(
-                  <li key={i} onClick={this.details.bind(this, accForm)}>
-                    {accForm.ProjectName}
-                  </li>
-                  )
-              }.bind(this))
-            }
-            </h4>
-            <h4><span id="declined">Отказ</span>
-            {
-              declinedForms.map(function(decForm, i){
-                return(
-                  <li key={i} onClick={this.details.bind(this, decForm)}>
-                    {decForm.ProjectName}
-                  </li>
-                )
-              }.bind(this))
-            }
-            </h4>
+      <div className="content container body-content citizen-sketch-list-page">
+        <div className="card">
+          <div className="card-header">
+              <h4 className="mb-0 mt-2">Эскизный проект</h4>
           </div>
-          <div className="col-md-6 apz-additional card">
-            <div id="citizenMapPause" className="col-md-12 well" style={{paddingTop:'10px', height:'500px', width:'100%'}}>
-                Карта со слоями
-            </div>
-          </div>
-          <div className="col-md-3 apz-detailed card">
-            <div className={this.state.showDetails ? 'row' : 'invisible'}>
-                <div className="col-6"><b>Заявитель</b>:</div> <div className="col-6">{this.state.Applicant}</div>
-                <div className="col-6"><b>Адрес</b>:</div> <div className="col-6">{this.state.Address}</div>
-                <div className="col-6"><b>Телефон</b>:</div> <div className="col-6">{this.state.Phone}</div>
-                <div className="col-6"><b>Заказчик</b>:</div> <div className="col-6">{this.state.Customer}</div>
-                <div className="col-6"><b>Разработчик</b>:</div> <div className="col-6">{this.state.Designer}</div>
-                <div className="col-6"><b>Название проекта</b>:</div> <div className="col-6">{this.state.ProjectName}</div>
-                <div className="col-6"><b>Адрес проекта</b>:</div> <div className="col-6">{this.state.ProjectAddress}</div>
-                <div className="col-6"><b>Дата заявления</b>:</div> <div className="col-6">{this.state.SketchDate}</div>
-              </div>
+          
+          <div className="card-body">
+            <Switch>
+              <Route path="/sketch/status/:status" component={AllSketch} />
+              <Route path="/sketch/add" component={AddSketch} />
+              <Route path="/sketch/:id" component={ShowSketch} />
+              <Redirect from="/sketch" to="/sketch/status/active" />
+            </Switch>
           </div>
         </div>
-        <SketchForm />
+        
       </div>
     )
   }
 }
 
-// class ShowHide extends React.Component {
-//   constructor() {
-//     super();
-//     this.state = {
-//       childVisible: false
-//     }
-//   }
+class AllSketch extends React.Component {
+  constructor(props) {
+    super(props);
 
-//   onClick() {
-//     this.setState({childVisible: !this.state.childVisible});
-//   }
+    this.state = {
+      sketches: [],
+      loaderHidden: false
+    };
 
-//   render() {
-//     return (
-//       <div className="row">
-//         <div className="col-3">
-//           <button className="btn btn-outline-secondary" onClick={() => this.onClick()}>
-//             Создать заявление
-//           </button>
-//         </div>
-//         {
-//           this.state.childVisible
-//             ? <SketchForm />
-//             : <div className="col-9"></div>
-//         }
-//       </div>
-//     )
-//   }
-// }
+  }
 
-class SketchForm extends React.Component {
+  componentDidMount() {
+    this.getSketches();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(this.props.match.params.status !== nextProps.match.params.status) {
+      this.getSketches(nextProps.match.params.status);
+    }
+  }
+
+  getSketches(status = null) {
+    if (!status) {
+      status = this.props.match.params.status;
+    }
+
+    this.setState({ loaderHidden: false });
+
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/sketch/citizen", true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        
+        switch (status) {
+          case 'active':
+            var sketches = data.filter(function(obj) { return obj.status_id !== 1 && obj.status_id !== 2; });
+            break;
+
+          case 'accepted':
+            sketches = data.filter(function(obj) { return obj.status_id === 2; });
+            break;
+
+          case 'declined':
+            sketches = data.filter(function(obj) { return obj.status_id === 1; });
+            break;
+
+          default:
+            sketches = data;
+            break;
+        }
+        
+        this.setState({sketches: sketches});
+      } else if (xhr.status === 401) {
+        sessionStorage.clear();
+        alert("Время сессии истекло. Пожалуйста войдите заново!");
+        this.props.history.replace("/login");
+      }
+
+      this.setState({ loaderHidden: true });
+    }.bind(this)
+    xhr.send();
+  }
+
+  toDate(date) {
+    if(date === null) {
+      return date;
+    }
+
+    var jDate = new Date(date);
+    var curr_date = jDate.getDate() < 10 ? "0" + jDate.getDate() : jDate.getDate();
+    var curr_month = (jDate.getMonth() + 1) < 10 ? "0" + (jDate.getMonth() + 1) : jDate.getMonth() + 1;
+    var curr_year = jDate.getFullYear();
+    var curr_hour = jDate.getHours() < 10 ? "0" + jDate.getHours() : jDate.getHours();
+    var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
+    var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
+    
+    return formated_date;
+  }
+
+  render() {
+    return (
+      <div>
+        {this.state.loaderHidden &&
+          <div>  
+            <div className="row">
+              <div className="col-sm-8">
+                <Link className="btn btn-outline-primary mb-3" to="/sketch/add">Создать заявление</Link>
+              </div>
+              <div className="col-sm-4 statusActive">
+                <ul className="nav nav-tabs mb-2 pull-right">
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/sketch/status/active" replace>Активные</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/sketch/status/accepted" replace>Принятые</NavLink></li>
+                  <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/sketch/status/declined" replace>Отказанные</NavLink></li>
+                </ul>
+              </div>
+            </div>
+
+            <table className="table">
+              <thead>
+                <tr>
+                  <th style={{width: '23%'}}>Название</th>
+                  <th style={{width: '23%'}}>Заявитель</th>
+                  <th style={{width: '20%'}}>Адрес</th>
+                  <th style={{width: '20%'}}>Дата заявления</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.sketches.map(function(sketch, index) {
+                  return(
+                    <tr key={index}>
+                      <td>{sketch.project_name} </td>
+                      <td>{sketch.applicant}</td>
+                      <td>{sketch.project_address}</td>
+                      <td>{this.toDate(sketch.created_at)}</td>
+                      <td>
+                        <Link className="btn btn-outline-info" to={'/sketch/' + sketch.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                      </td>
+                    </tr>
+                    );
+                  }.bind(this))
+                }
+
+                {this.state.sketches.length === 0 &&
+                  <tr>
+                    <td colSpan="3">Пусто</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+
+        {!this.state.loaderHidden &&
+          <div style={{textAlign: 'center'}}>
+            <Loader type="Oval" color="#46B3F2" height="200" width="200" />
+          </div>
+        }
+      </div>
+    )
+  }
+}
+
+class ShowSketch extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      sketch: [],
+      showMap: false,
+      showMapText: 'Показать карту',
+      loaderHidden: false
+    };
+  }
+
+  componentWillMount() {
+    this.getSketchInfo();
+  }
+
+  getSketchInfo() {
+    var id = this.props.match.params.id;
+    var token = sessionStorage.getItem('tokenInfo');
+
+    this.setState({ loaderHidden: false });
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/sketch/citizen/detail/" + id, true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var sketch = JSON.parse(xhr.responseText);
+        this.setState({sketch: sketch});
+        this.setState({loaderHidden: true});
+      } else if (xhr.status === 401) {
+        sessionStorage.clear();
+        alert("Время сессии истекло. Пожалуйста войдите заново!");
+        this.props.history.replace("/login");
+      }
+    }.bind(this)
+    xhr.send();
+  }
+
+  toggleMap(value) {
+    this.setState({
+      showMap: value
+    })
+
+    if (value) {
+      this.setState({
+        showMapText: 'Скрыть карту'
+      })
+    } else {
+      this.setState({
+        showMapText: 'Показать карту'
+      })
+    }
+  }
+
+  downloadFile(id) {
+    var token = sessionStorage.getItem('tokenInfo');
+    var url = window.url + 'api/file/download/' + id;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", url, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+          var base64ToArrayBuffer = (function () {
+        
+            return function (base64) {
+              var binaryString =  window.atob(base64);
+              var binaryLen = binaryString.length;
+              var bytes = new Uint8Array(binaryLen);
+              
+              for (var i = 0; i < binaryLen; i++) {
+                var ascii = binaryString.charCodeAt(i);
+                bytes[i] = ascii;
+              }
+              
+              return bytes; 
+            }
+            
+          }());
+
+          var saveByteArray = (function () {
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+            a.style = "display: none";
+            
+            return function (data, name) {
+              var blob = new Blob(data, {type: "octet/stream"}),
+                  url = window.URL.createObjectURL(blob);
+              a.href = url;
+              a.download = name;
+              a.click();
+              window.URL.revokeObjectURL(url);
+            };
+
+          }());
+
+          saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
+        } else {
+          alert('Не удалось скачать файл');
+        }
+      }
+    xhr.send();
+  }
+
+  toDate(date) {
+    if(date === null) {
+      return date;
+    }
+    
+    var jDate = new Date(date);
+    var curr_date = jDate.getDate();
+    var curr_month = jDate.getMonth() + 1;
+    var curr_year = jDate.getFullYear();
+    var curr_hour = jDate.getHours();
+    var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
+    var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
+    
+    return formated_date;
+  }
+  
+  render() {
+    var sketch = this.state.sketch;
+
+    if (sketch.length === 0) {
+      return (
+        <div>
+          {!this.state.loaderHidden &&
+            <div style={{textAlign: 'center'}}>
+              <Loader type="Oval" color="#46B3F2" height="200" width="200" />
+            </div>
+          }
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        {this.state.loaderHidden &&
+          <div>
+            <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
+            
+            <table className="table table-bordered table-striped">
+              <tbody>
+                <tr>
+                  <td style={{width: '22%'}}><b>ИД заявки</b></td>
+                  <td>{sketch.id}</td>
+                </tr>
+                <tr>
+                  <td><b>Заявитель</b></td>
+                  <td>{sketch.applicant}</td>
+                </tr>
+                <tr>
+                  <td><b>Телефон</b></td>
+                  <td>{sketch.phone}</td>
+                </tr>
+                <tr>
+                  <td><b>Заказчик</b></td>
+                  <td>{sketch.customer}</td>
+                </tr>
+                <tr>
+                  <td><b>Проектировщик №ГСЛ, категория</b></td>
+                  <td>{sketch.designer}</td>
+                </tr>
+                <tr>
+                  <td><b>Название проекта</b></td>
+                  <td>{sketch.project_name}</td>
+                </tr>
+                <tr>
+                  <td><b>Адрес проектируемого объекта</b></td>
+                  <td>{sketch.project_address}</td>
+                </tr>
+                <tr>
+                  <td><b>Дата заявления</b></td>
+                  <td>{sketch.created_at && this.toDate(sketch.created_at)}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            {sketch.files.length > 0 &&
+              <table className="table table-bordered table-striped">
+                <tbody>
+                  {sketch.files.map(function(file, index) {
+                    return(
+                      <tr key={index}>
+                        <td style={{width: '22%'}}>{file.category.name_ru} </td>
+                        <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, file.id)}>Скачать</a></td>
+                      </tr>
+                      );
+                    }.bind(this))
+                  }
+                </tbody>
+              </table>
+            }
+
+            {this.state.showMap && <ShowMap />} 
+
+            <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
+              {this.state.showMapText}
+            </button>
+
+            <div className="col-sm-12">
+              <hr />
+              <Link className="btn btn-outline-secondary pull-right" to={'/sketch'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+            </div>
+          </div>
+        }
+          
+        {!this.state.loaderHidden &&
+          <div style={{textAlign: 'center'}}>
+            <Loader type="Oval" color="#46B3F2" height="200" width="200" />
+          </div>
+        }
+      </div>
+    )
+  }
+}
+
+class ShowMap extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.toggleMap = this.toggleMap.bind(this);
+  }
+
+  toggleMap(value) {
+    this.props.mapFunction(value)
+  }
+
+  render() {
+    const options = {
+      url: 'https://js.arcgis.com/4.6/'
+    };
+
+    return (
+      <div>
+        <h5 className="block-title-2 mt-5 mb-3">Карта</h5>
+        <div id="coordinates" style={{display: 'none'}}></div>
+        <div className="col-md-12 viewDiv"> 
+          <EsriLoaderReact options={options} 
+            modulesToLoad={[
+              'esri/views/MapView',
+              
+              'esri/widgets/LayerList',
+
+              'esri/WebScene',
+              'esri/layers/FeatureLayer',
+              'esri/layers/TileLayer',
+              'esri/widgets/Search',
+              'esri/WebMap',
+              'esri/geometry/support/webMercatorUtils',
+              'dojo/dom',
+              'esri/Graphic',
+              'dojo/domReady!'
+            ]}    
+            
+            onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap, webMercatorUtils, dom, Graphic], containerNode}) => {
+              var map = new WebMap({
+                basemap: "streets",
+                portalItem: {
+                  id: "caa580cafc1449dd9aa4fd8eafd3a14d"
+                }
+              });
+              
+              var view = new MapView({
+                container: containerNode,
+                map: map,
+                center: [76.886, 43.250], 
+                scale: 10000
+              });
+
+              var searchWidget = new Search({
+                view: view,
+                sources: [{
+                  featureLayer: new FeatureLayer({
+                    url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+                    popupTemplate: { // autocasts as new PopupTemplate()
+                      title: "Кадастровый номер: {cadastral_number} </br> Назначение: {function} <br/> Вид собственности: {ownership}"
+                    }
+                  }),
+                  searchFields: ["cadastral_number"],
+                  displayField: "cadastral_number",
+                  exactMatch: false,
+                  outFields: ["cadastral_number", "function", "ownership"],
+                  name: "Зарегистрированные государственные акты",
+                  placeholder: "Кадастровый поиск"
+                }]
+              });
+    
+              view.when( function(callback){
+                var layerList = new LayerList({
+                  view: view
+                });
+
+                // Add the search widget to the top right corner of the view
+                view.ui.add(searchWidget, {
+                  position: "top-right"
+                });
+
+                // Add widget to the bottom right corner of the view
+                view.ui.add(layerList, "bottom-right");
+
+              }, function(error) {
+                console.log('MapView promise rejected! Message: ', error);
+              });
+            }}
+          /> 
+        </div>
+      </div>
+    )
+  }
+}
+
+class AddSketch extends React.Component {
   constructor() {
     super();
 
     this.state = {
-      checkboxes: ['1': false, '2': false, '3': false, '4': false],
-      visible: false
+      checkboxes: ['1': false, '2': false, '3': false, '4': false]
     }
 
     this.onCheckboxChange = this.onCheckboxChange.bind(this);
-  }
-
-  onClick() {
-    this.setState({visible: !this.state.visible});
+    this.resetForm = this.resetForm.bind(this);
   }
 
   onCheckboxChange(e) {
@@ -246,6 +519,18 @@ class SketchForm extends React.Component {
 
     this.setState(stateCopy);
   };
+
+  resetForm() {
+    document.getElementById("sketch-form").reset();
+
+    $('#sketch-form input[type="checkbox"]').map(function(index, item){
+      var parent = $(item).parent();
+
+      parent.removeClass('active');
+      $('.buttons', parent).remove();
+      $('.file_block', parent).remove();
+    });
+  }
   
   sendForm(e) {
     e.preventDefault();
@@ -254,147 +539,134 @@ class SketchForm extends React.Component {
 
     $.ajax({
       type: 'POST',
-      url: window.url + 'api/Sketch/Create',
+      url: window.url + 'api/sketch/citizen/create',
       contentType: 'application/json; charset=utf-8',
       beforeSend: function (xhr) {
         xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
       },
       data: JSON.stringify(formData),
       success: function (data) {
+        this.resetForm();
         alert("Заявка отправлена");
-      }
+      }.bind(this)
     });
   };
 
   render() {
     return (
       <div>
-        <br />
-        <button className="btn btn-outline-secondary" onClick={() => this.onClick()}>
-          Создать заявку
-        </button>
-        {(this.state.visible) ?
-        <div className="content container sketch-page pt-3">
-          <form onSubmit={this.sendForm.bind(this)} id="sketch-form">
-            <div className="row">
+        <div className="content container sketch-page mb-0">
+          <form onSubmit={this.sendForm.bind(this)} id="sketch-form" className="mb-0">
+            <div className="row pt-0">
               <div className="col-sm-8">
-                <div className="card">
-                  <div className="card-header"><h4 className="mb-0">Заявление эскизного проекта</h4></div>
-                  <div className="card-body">
-                    <div className="row">
-                      <div className="col-6">
-                        <div className="form-group">
-                          <label htmlFor="Applicant">Наименование заявителя:</label>
-                          <input type="text" className="form-control" required name="Applicant" placeholder="Наименование" />
-                          <small className="form-text text-muted help-block">Ф.И.О. (при его наличии) физического лица или наименование юридического лица</small>
-                        </div>
-                      </div>
-                      <div className="col-6">
-                        <div className="form-group">
-                          <label htmlFor="Customer">Заказчик</label>
-                          <input type="text" className="form-control" name="Customer" placeholder="Заказчик" />
-                        </div>
-                      </div>
+                <div className="row pt-0">
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="Applicant">Наименование заявителя:</label>
+                      <input type="text" className="form-control" required name="applicant" placeholder="Наименование" />
+                      <small className="form-text text-muted help-block">Ф.И.О. (при его наличии) физического лица или наименование юридического лица</small>
                     </div>
-                    <div className="row">
-                      <div className="col-6">
-                        <div className="form-group">
-                          <label htmlFor="Address">Адрес:</label>
-                          <input type="text" className="form-control" required id="PhotoRepAddressForm" name="Address" placeholder="Адрес" />
-                        </div>
-                      </div>
-                      <div className="col-6">
-                        <div className="form-group">
-                          <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
-                          <input type="text" className="form-control" name="Designer" />
-                        </div>
-                      </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="Customer">Заказчик</label>
+                      <input type="text" className="form-control" name="customer" placeholder="Заказчик" />
                     </div>
-                    <div className="row">
-                      <div className="col-6">
-                        <div className="form-group">
-                          <label htmlFor="Phone">Телефон</label>
-                          <input type="tel" className="form-control" required id="PhotoRepPhone" name="Phone" placeholder="Телефон" />
-                        </div>
-                      </div>
-                      <div className="col-6">
-                        <div className="form-group">
-                          <label htmlFor="ProjectName">Наименование проектируемого объекта</label>
-                          <input type="text" className="form-control" id="ProjectName" name="ProjectName" />
-                        </div>
-                      </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="Address">Адрес:</label>
+                      <input type="text" className="form-control" required id="PhotoRepAddressForm" name="address" placeholder="Адрес" />
                     </div>
-                    <div className="row">
-                      <div className="col-6">
-                        <div className="form-group">
-                          <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
-                          <input type="text" className="form-control" name="ProjectAddress" />
-                        </div>
-                      </div>
-                      <div className="col-6">
-                        <div className="form-group">
-                          <label>Дата</label>
-                          <input type="date" name="SketchDate" className="form-control" required />
-                          <small className="form-text text-muted help-block">до</small>
-                        </div>
-                      </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
+                      <input type="text" className="form-control" name="designer" />
                     </div>
-                    <div className="row">
-                      <div className="mx-auto">
-                        <button type="button" className="btn btn-outline-secondary" style={{marginRight: '2px'}}>Отмена</button>
-                        <button type="submit" className="btn btn-outline-success">Отправить заявку</button>
-                      </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="Phone">Телефон</label>
+                      <input type="tel" className="form-control" required id="PhotoRepPhone" name="phone" placeholder="Телефон" />
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="ProjectName">Наименование проектируемого объекта</label>
+                      <input type="text" className="form-control" id="ProjectName" name="project_name" />
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
+                      <input type="text" className="form-control" name="project_address" />
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label>Дата</label>
+                      <input type="date" name="sketch_date" className="form-control" required />
+                      <small className="form-text text-muted help-block">до</small>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="col-sm-4">
-                <div className="card">
-                  <div className="card-body">
-                    <div className="row">
-                      <div className="col-12">
-                        <p>Прилагается:</p>
+                <div className="row pt-0">
+                  <div className="col-12">
+                    <p>Прилагается:</p>
 
-                        <div className="list-group">
-                          <label>
-                            <div className="list-group-item list-group-item-action">
-                              <input data-type="1" onClick={this.onCheckboxChange} type="checkbox" value="" />   Эскиз (эскизный проект)
-                              <div className="file_block"></div>
-                              {this.state.checkboxes[1] === true ? <FilesForm category = '1' type = '1' /> : ''}
-                            </div>
-                          </label>
-                          <label>
-                            <div className="list-group-item list-group-item-action">
-                              <input data-type="2" onClick={this.onCheckboxChange} type="checkbox" value="" />   Архитектурно-планировочное задание (копия)
-                              <div className="file_block"></div>
-                              {this.state.checkboxes[2] === true ? <FilesForm category = '2' type = '2' /> : ''}
-                            </div>
-                          </label>
-                          <label>
-                            <div className="list-group-item list-group-item-action">
-                              <input data-type="3" onClick={this.onCheckboxChange} type="checkbox" value="" />   Удостверение личности (копия)
-                              <div className="file_block"></div>
-                              {this.state.checkboxes[3] === true ? <FilesForm category = '3' type = '3' /> : ''}
-                            </div>
-                          </label>
-                          <label>
-                            <div className="list-group-item list-group-item-action">
-                              <input data-type="4" onClick={this.onCheckboxChange} type="checkbox" value="" />   Удостверение личности поверенного (копия)
-                              <div className="file_block"></div>
-                              {this.state.checkboxes[4] === true ? <FilesForm category = '3' type = '4' /> : ''}
-                            </div>
-                          </label>
-                          <label>
-                            <div className="list-group-item list-group-item-action">
-                              <input data-type="5" onClick={this.onCheckboxChange} type="checkbox" value="" />   Доверенность (копия)
-                              <div className="file_block"></div>
-                              {this.state.checkboxes[5] === true ? <FilesForm category = '4' type = '5' /> : ''}
-                            </div>
-                          </label>
+                    <div className="list-group">
+                      <label>
+                        <div className="list-group-item list-group-item-action">
+                          <input data-type="1" onClick={this.onCheckboxChange} type="checkbox" value="" />   Эскиз (эскизный проект)
+                          <div className="file_block"></div>
+                          {this.state.checkboxes[1] === true ? <FilesForm category = '1' type = '1' /> : ''}
                         </div>
-                      </div>
+                      </label>
+                      <label>
+                        <div className="list-group-item list-group-item-action">
+                          <input data-type="2" onClick={this.onCheckboxChange} type="checkbox" value="" />   Архитектурно-планировочное задание (копия)
+                          <div className="file_block"></div>
+                          {this.state.checkboxes[2] === true ? <FilesForm category = '2' type = '2' /> : ''}
+                        </div>
+                      </label>
+                      <label>
+                        <div className="list-group-item list-group-item-action">
+                          <input data-type="3" onClick={this.onCheckboxChange} type="checkbox" value="" />   Удостверение личности (копия)
+                          <div className="file_block"></div>
+                          {this.state.checkboxes[3] === true ? <FilesForm category = '3' type = '3' /> : ''}
+                        </div>
+                      </label>
+                      <label>
+                        <div className="list-group-item list-group-item-action">
+                          <input data-type="4" onClick={this.onCheckboxChange} type="checkbox" value="" />   Удостверение личности поверенного (копия)
+                          <div className="file_block"></div>
+                          {this.state.checkboxes[4] === true ? <FilesForm category = '3' type = '4' /> : ''}
+                        </div>
+                      </label>
+                      <label>
+                        <div className="list-group-item list-group-item-action">
+                          <input data-type="5" onClick={this.onCheckboxChange} type="checkbox" value="" />   Доверенность (копия)
+                          <div className="file_block"></div>
+                          {this.state.checkboxes[5] === true ? <FilesForm category = '4' type = '5' /> : ''}
+                        </div>
+                      </label>
                     </div>
                   </div>
+                </div>
+              </div>
+
+              <div className="col-sm-12">
+                <div className="mx-auto d-table">
+                  <button type="submit" className="btn btn-outline-success">Отправить заявку</button>
                 </div>
               </div>
             </div>
@@ -407,7 +679,11 @@ class SketchForm extends React.Component {
             {this.state.checkboxes[5] === true ? <FileModal category = '4' type = '5' /> : ''}
           </div>
         </div>
-      : ''}
+
+        <div className="col-sm-12">
+          <hr />
+          <Link className="btn btn-outline-secondary pull-right" to={'/sketch/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+        </div>
       </div>
     )
   }
@@ -423,7 +699,7 @@ class FilesForm extends React.Component {
 
   uploadFile(e) {
     var file = e.target.files[0];
-    var name = file.name;
+    var name = file.name.replace(/\.[^/.]+$/, "");
     var category = this.props.category;
     var type = this.props.type;
     var row = $(e.target).closest('.list-group-item');
@@ -442,7 +718,7 @@ class FilesForm extends React.Component {
 
     $.ajax({
       type: 'POST',
-      url: window.url + 'api/File/Upload',
+      url: window.url + 'api/file/upload',
       contentType: false,
       beforeSend: function (xhr) {
         xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
@@ -450,7 +726,7 @@ class FilesForm extends React.Component {
       processData: false,
       data: formData,
       success: function (data) {
-        var html = '<div id="file_' + type + '">' + data.Name + '<input type="hidden" name="Files[]" value="' + data.Id + '"><a href="#" onClick="document.getElementById(\'file_' + type + '\').remove(); return false;">&times;</a></div>';
+        var html = '<div id="file_' + type + '">' + data.name + '<input type="hidden" name="file_list[]" value="' + data.id + '"><a href="#" onClick="document.getElementById(\'file_' + type + '\').remove(); return false;">&times;</a></div>';
         fileBlock.html(html);
         alert("Файл успешно загружен");
       }
@@ -493,13 +769,12 @@ class FileModal extends React.Component {
   getFiles() {
     $.ajax({
       type: 'GET',
-      url: window.url + 'api/File/category/' + this.props.category,
+      url: window.url + 'api/file/category/' + this.props.category,
       contentType: 'application/json; charset=utf-8',
       beforeSend: function (xhr) {
         xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
       },
       success: function (data) {
-        console.log(data);
         this.setState({ files: data });
       }.bind(this)
     });
@@ -510,7 +785,7 @@ class FileModal extends React.Component {
     var id = row.attr('data-id');
     var fileName = $('td:first', row).html();
     var fileBlock = $('.file_block', $('input[data-type=' + this.props.type + ']').parent());
-    var html = '<div id="file_' + this.props.type + '">' + fileName + '<input type="hidden" name="Files[]" value="' + id + '"><a href="#" onClick="document.getElementById(\'file_' + this.props.type + '\').remove(); return false;">&times;</a></div>';
+    var html = '<div id="file_' + this.props.type + '">' + fileName + '<input type="hidden" name="file_list[]" value="' + id + '"><a href="#" onClick="document.getElementById(\'file_' + this.props.type + '\').remove(); return false;">&times;</a></div>';
     fileBlock.html(html);
     $('#selectFileModal' + this.props.type).modal('hide');
   }
@@ -538,9 +813,9 @@ class FileModal extends React.Component {
                   <tbody>
                     {this.state.files.map(function(file, index){
                         return(
-                          <tr key={index} data-id={file.Id}>
-                            <td>{file.Name}</td>
-                            <td>{file.Extension}</td>
+                          <tr key={index} data-id={file.id}>
+                            <td>{file.name}</td>
+                            <td>{file.extension}</td>
                             <td><button onClick={this.selectFile} className="btn btn-success">Выбрать</button></td>
                           </tr>
                         );
