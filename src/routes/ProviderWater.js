@@ -367,27 +367,29 @@ class ShowApz extends React.Component {
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
 
         if (data.commission && data.commission.apz_water_response) {
-          this.setState({description: data.commission.apz_water_response.response_text});
-          this.setState({connectionPoint: data.commission.apz_water_response.connection_point});
-          this.setState({genWaterReq: data.commission.apz_water_response.gen_water_req});
-          this.setState({drinkingWater: data.commission.apz_water_response.drinking_water});
-          this.setState({prodWater: data.commission.apz_water_response.prod_water});
-          this.setState({fireFightingWaterIn: data.commission.apz_water_response.fire_fighting_water_in});
-          this.setState({fireFightingWaterOut: data.commission.apz_water_response.fire_fighting_water_out});
-          this.setState({recomendation: data.commission.apz_water_response.recommendation});
-          this.setState({estimatedWaterFlowRate: data.commission.apz_water_response.estimated_water_flow_rate});
-          this.setState({existingWaterConsumption: data.commission.apz_water_response.existing_water_consumption});
-          this.setState({sewageEstimatedWaterFlowRate: data.commission.apz_water_response.sewage_estimated_water_flow_rate});
-          this.setState({sewageExistingWaterConsumption: data.commission.apz_water_response.sewage_existing_water_consumption});
-          this.setState({waterPressure: data.commission.apz_water_response.water_pressure});
-          this.setState({waterCustomerDuties: data.commission.apz_water_response.water_customer_duties});
-          this.setState({sewageCustomerDuties: data.commission.apz_water_response.sewage_customer_duties});
-          this.setState({docNumber: data.commission.apz_water_response.doc_number});
-          this.setState({responseId: data.commission.apz_water_response.id});
-          this.setState({response: data.commission.apz_water_response.response});
+          data.commission.apz_water_response.response_text ? this.setState({description: data.commission.apz_water_response.response_text}) : this.setState({description: "" });
+          data.commission.apz_water_response.connection_point ? this.setState({connectionPoint: data.commission.apz_water_response.connection_point}) : this.setState({connectionPoint: "" });
+          data.commission.apz_water_response.gen_water_req ? this.setState({genWaterReq: data.commission.apz_water_response.gen_water_req}) : this.setState({genWaterReq: "" });
+          data.commission.apz_water_response.drinking_water ? this.setState({drinkingWater: data.commission.apz_water_response.drinking_water}) : this.setState({drinkingWater: "" });
+          data.commission.apz_water_response.prod_water ? this.setState({prodWater: data.commission.apz_water_response.prod_water}) : this.setState({prodWater: "" });
+          data.commission.apz_water_response.fire_fighting_water_in ? this.setState({fireFightingWaterIn: data.commission.apz_water_response.fire_fighting_water_in}) : this.setState({fireFightingWaterIn: "" });
+          data.commission.apz_water_response.fire_fighting_water_out ? this.setState({fireFightingWaterOut: data.commission.apz_water_response.fire_fighting_water_out}) : this.setState({fireFightingWaterOut: "" });
+          data.commission.apz_water_response.recommendation ? this.setState({recomendation: data.commission.apz_water_response.recommendation}) : this.setState({recomendation: "" });
+          data.commission.apz_water_response.estimated_water_flow_rate ? this.setState({estimatedWaterFlowRate: data.commission.apz_water_response.estimated_water_flow_rate}) : this.setState({estimatedWaterFlowRate: "" });
+          data.commission.apz_water_response.existing_water_consumption ? this.setState({existingWaterConsumption: data.commission.apz_water_response.existing_water_consumption}) : this.setState({existingWaterConsumption: "" });
+          data.commission.apz_water_response.sewage_estimated_water_flow_rate ? this.setState({sewageEstimatedWaterFlowRate: data.commission.apz_water_response.sewage_estimated_water_flow_rate}) : this.setState({sewageEstimatedWaterFlowRate: "" });
+          data.commission.apz_water_response.sewage_existing_water_consumption ? this.setState({sewageExistingWaterConsumption: data.commission.apz_water_response.sewage_existing_water_consumption}) : this.setState({sewageExistingWaterConsumption: "" });
+          data.commission.apz_water_response.water_pressure ? this.setState({waterPressure: data.commission.apz_water_response.water_pressure}) : this.setState({waterPressure: "" });
+          data.commission.apz_water_response.water_customer_duties ? this.setState({waterCustomerDuties: data.commission.apz_water_response.water_customer_duties}) : this.setState({waterCustomerDuties: "" });
+          data.commission.apz_water_response.sewage_customer_duties ? this.setState({sewageCustomerDuties: data.commission.apz_water_response.sewage_customer_duties}) : this.setState({sewageCustomerDuties: "" });
+          data.commission.apz_water_response.doc_number ? this.setState({docNumber: data.commission.apz_water_response.doc_number}) : this.setState({docNumber: "" });
+          data.commission.apz_water_response.id ? this.setState({responseId: data.commission.apz_water_response.id}) : this.setState({responseId: "" });
+          data.commission.apz_water_response.response ? this.setState({response: data.commission.apz_water_response.response}) : this.setState({response: "" });
+          
           if(data.commission.apz_water_response.id !== -1){
             this.setState({accept: data.commission.apz_water_response.response});
           }
+          
           this.setState({responseFile: data.commission.apz_water_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12})[0]});
           this.setState({xmlFile: data.commission.apz_water_response.files.filter(function(obj) { return obj.category_id === 13})[0]});
         }
@@ -603,6 +605,8 @@ class ShowApz extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           this.setState({ isSigned: true });
+        } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
+          alert(JSON.parse(xhr.responseText).message);
         } else {
           alert("Не удалось подписать файл");
         }
@@ -710,11 +714,6 @@ class ShowApz extends React.Component {
     var token = sessionStorage.getItem('tokenInfo');
     var file = this.state.file;
 
-    if (!file) {
-      alert('Не выбран файл');
-      return false;
-    }
-
     var formData = new FormData();
     formData.append('file', file);
     formData.append('Response', status);
@@ -761,35 +760,34 @@ class ShowApz extends React.Component {
         var data = JSON.parse(xhr.responseText);
         //console.log(data);
         this.setState({responseId: data.id});
-        this.setState({response: data.response});
-        this.setState({accept: data.response});
-        this.setState({description: data.response_text});
-        this.setState({responseFile: data.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-        this.setState({connectionPoint: data.connection_point});
-        this.setState({genWaterReq: data.gen_water_req});
-        this.setState({drinkingWater: data.drinking_water});
-        this.setState({prodWater: data.prod_water});
-        this.setState({fireFightingWaterIn: data.fire_fighting_water_in});
-        this.setState({fireFightingWaterOut: data.fire_fighting_water_out});
-        this.setState({recomendation: data.recommendation});
-        this.setState({estimatedWaterFlowRate: data.estimated_water_flow_rate});
-        this.setState({existingWaterConsumption: data.existing_water_consumption});
-        this.setState({sewageEstimatedWaterFlowRate: data.sewage_estimated_water_flow_rate});
-        this.setState({sewageExistingWaterConsumption: data.sewage_existing_water_consumption});
-        this.setState({waterPressure: data.water_pressure});
-        this.setState({waterCustomerDuties: data.water_customer_duties});
-        this.setState({sewageCustomerDuties: data.sewage_customer_duties});
-        if(this.state.callSaveFromSend){
+        data.response ? this.setState({response: data.response}) : this.setState({response: ""});
+        data.response ? this.setState({accept: data.response}) : this.setState({accept: ""});
+        data.response_text ? this.setState({description: data.response_text}) : this.setState({description: ""});
+        data.files ? this.setState({responseFile: data.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]}) : this.setState({responseFile: null });
+        data.connection_point ? this.setState({connectionPoint: data.connection_point}) : this.setState({connectionPoint: ""});
+        data.gen_water_req ? this.setState({genWaterReq: data.gen_water_req}) : this.setState({genWaterReq: ""});
+        data.drinking_water ? this.setState({drinkingWater: data.drinking_water}) : this.setState({drinkingWater: ""});
+        data.prod_water ? this.setState({prodWater: data.prod_water}) : this.setState({prodWater: ""});
+        data.fire_fighting_water_in ? this.setState({fireFightingWaterIn: data.fire_fighting_water_in}) : this.setState({fireFightingWaterIn: ""});
+        data.fire_fighting_water_out ? this.setState({fireFightingWaterOut: data.fire_fighting_water_out}) : this.setState({fireFightingWaterOut: ""});
+        data.recommendation ? this.setState({recomendation: data.recommendation}) : this.setState({recomendation: ""});
+        data.estimated_water_flow_rate ? this.setState({estimatedWaterFlowRate: data.estimated_water_flow_rate}) : this.setState({estimatedWaterFlowRate: ""});
+        data.existing_water_consumption ? this.setState({existingWaterConsumption: data.existing_water_consumption}) : this.setState({existingWaterConsumption: ""});
+        data.sewage_estimated_water_flow_rate ? this.setState({sewageEstimatedWaterFlowRate: data.sewage_estimated_water_flow_rate}) : this.setState({sewageEstimatedWaterFlowRate: ""});
+        data.sewage_existing_water_consumption ? this.setState({sewageExistingWaterConsumption: data.sewage_existing_water_consumption}) : this.setState({sewageExistingWaterConsumption: ""});
+        data.water_pressure ? this.setState({waterPressure: data.water_pressure}) : this.setState({waterPressure: ""});
+        data.water_customer_duties ? this.setState({waterCustomerDuties: data.water_customer_duties}) : this.setState({waterCustomerDuties: ""});
+        data.sewage_customer_duties ? this.setState({sewageCustomerDuties: data.sewage_customer_duties}) : this.setState({sewageCustomerDuties: ""});
+        
+        if (this.state.callSaveFromSend) {
           this.setState({callSaveFromSend: false});
           this.sendWaterResponse(apzId, status, comment);
-        }
-        else{
+        } else {
           alert("Ответ сохранен!");
 
           this.setState({showSignButtons: true});
         }
-      }
-      else if(xhr.status === 401){
+      } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
@@ -824,11 +822,12 @@ class ShowApz extends React.Component {
             this.setState({ showButtons: false });
             this.setState({ waterStatus: 0 });
           }
-        }
-        else if(xhr.status === 401){
+        } else if (xhr.status === 401) {
           sessionStorage.clear();
           alert("Время сессии истекло. Пожалуйста войдите заново!");
           this.props.history.replace("/login");
+        } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
+          alert(JSON.parse(xhr.responseText).message);
         }
       }.bind(this);
       xhr.send();
@@ -856,11 +855,12 @@ class ShowApz extends React.Component {
         alert('Ответ успешно отправлен');
         this.setState({head_accepted: true});
         this.setState({heads_responses: data.head_responses});
-      }
-      else if(xhr.status === 401){
+      } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
+      } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
+        alert(JSON.parse(xhr.responseText).message);
       }
     }.bind(this);
     xhr.send(formData);

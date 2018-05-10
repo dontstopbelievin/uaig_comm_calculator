@@ -807,6 +807,8 @@ class ShowApz extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           this.setState({ isSigned: true });
+        } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
+          alert(JSON.parse(xhr.responseText).message);
         } else {
           alert("Не удалось подписать файл");
         }
@@ -1090,13 +1092,14 @@ class ShowApz extends React.Component {
           else if(data.response === 0) {
             alert("Заявление отклонено!");
             this.setState({ showButtons: false });
-            this.setState({ heatStatus: 0 })
+            this.setState({ heatStatus: 0 });
           }
-        }
-        else if(xhr.status === 401){
+        } else if (xhr.status === 401) {
           sessionStorage.clear();
           alert("Время сессии истекло. Пожалуйста войдите заново!");
           this.props.history.replace("/login");
+        } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
+          alert(JSON.parse(xhr.responseText).message);
         }
       }.bind(this);
       xhr.send();
@@ -1124,11 +1127,12 @@ class ShowApz extends React.Component {
         alert('Комментарий успешно добавлен');
         this.setState({head_accepted: true});
         this.setState({heads_responses: data.head_responses});
-      }
-      else if(xhr.status === 401){
+      } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
+      } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
+        alert(JSON.parse(xhr.responseText).message);
       }
     }.bind(this);
     xhr.send(formData);

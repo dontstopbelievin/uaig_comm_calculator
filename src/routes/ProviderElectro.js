@@ -311,18 +311,20 @@ class ShowApz extends React.Component {
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
 
         if (data.commission.apz_electricity_response) {
-          this.setState({description: data.commission.apz_electricity_response.response_text});
-          this.setState({connectionPoint: data.commission.apz_electricity_response.connection_point});
-          this.setState({elecReqPower: data.commission.apz_electricity_response.req_power});
-          this.setState({elecPhase: data.commission.apz_electricity_response.phase});
-          this.setState({elecSafeCategory: data.commission.apz_electricity_response.safe_category});
-          this.setState({recomendation: data.commission.apz_electricity_response.recommendation});
-          this.setState({docNumber: data.commission.apz_electricity_response.doc_number});
-          this.setState({responseId: data.commission.apz_electricity_response.id})
-          this.setState({response: data.commission.apz_electricity_response.response});
+          data.commission.apz_electricity_response.response_text ? this.setState({description: data.commission.apz_electricity_response.response_text}) : this.setState({description: ""});
+          data.commission.apz_electricity_response.connection_point ? this.setState({connectionPoint: data.commission.apz_electricity_response.connection_point}) : this.setState({connectionPoint: ""});
+          data.commission.apz_electricity_response.req_power ? this.setState({elecReqPower: data.commission.apz_electricity_response.req_power}) : this.setState({elecReqPower: ""});
+          data.commission.apz_electricity_response.phase ? this.setState({elecPhase: data.commission.apz_electricity_response.phase}) : this.setState({elecPhase: ""});
+          data.commission.apz_electricity_response.safe_category ? this.setState({elecSafeCategory: data.commission.apz_electricity_response.safe_category}) : this.setState({elecSafeCategory: ""});
+          data.commission.apz_electricity_response.recommendation ? this.setState({recomendation: data.commission.apz_electricity_response.recommendation}) : this.setState({recomendation: ""});
+          data.commission.apz_electricity_response.doc_number ? this.setState({docNumber: data.commission.apz_electricity_response.doc_number}) : this.setState({docNumber: ""});
+          data.commission.apz_electricity_response.id ? this.setState({responseId: data.commission.apz_electricity_response.id}) : this.setState({responseId: ""});
+          data.commission.apz_electricity_response.response ? this.setState({response: data.commission.apz_electricity_response.response}) : this.setState({response: ""});
+          
           if(data.commission.apz_electricity_response.id !== -1){
             this.setState({accept: data.commission.apz_electricity_response.response});
           }
+          
           this.setState({responseFile: data.commission.apz_electricity_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12})[0]});
           this.setState({xmlFile: data.commission.apz_electricity_response.files.filter(function(obj) { return obj.category_id === 15})[0]});
         }
@@ -538,6 +540,8 @@ class ShowApz extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           this.setState({ isSigned: true });
+        } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
+          alert(JSON.parse(xhr.responseText).message);
         } else {
           alert("Не удалось подписать файл");
         }
@@ -645,11 +649,6 @@ class ShowApz extends React.Component {
     var token = sessionStorage.getItem('tokenInfo');
     var file = this.state.file;
 
-    if (!file) {
-      alert('Не выбран файл');
-      return false;
-    }
-
     var formData = new FormData();
     formData.append('file', file);
     formData.append('Response', status);
@@ -678,26 +677,25 @@ class ShowApz extends React.Component {
         var data = JSON.parse(xhr.responseText);
         //console.log(data);
         this.setState({responseId: data.id});
-        this.setState({response: data.response});
-        this.setState({accept: data.response});
-        this.setState({responseFile: data.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-        this.setState({description: data.response_text});
-        this.setState({connectionPoint: data.connection_point});
-        this.setState({elecReqPower: data.req_power});
-        this.setState({elecPhase: data.phase});
-        this.setState({elecSafeCategory: data.safe_category});
-        this.setState({recomendation: data.recommendation});
-        if(this.state.callSaveFromSend){
+        data.response ? this.setState({response: data.response}) : this.setState({response: ""});
+        data.response ? this.setState({accept: data.response}) : this.setState({accept: ""});
+        data.files ? this.setState({responseFile: data.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]}) : this.setState({responseFile: null});
+        data.response_text ? this.setState({description: data.response_text}) : this.setState({description: ""});
+        data.connection_point ? this.setState({connectionPoint: data.connection_point}) : this.setState({connectionPoint: ""});
+        data.req_power ? this.setState({elecReqPower: data.req_power}) : this.setState({elecReqPower: ""});
+        data.phase ? this.setState({elecPhase: data.phase}) : this.setState({elecPhase: ""});
+        data.safe_category ? this.setState({elecSafeCategory: data.safe_category}) : this.setState({elecSafeCategory: ""});
+        data.recommendation ? this.setState({recomendation: data.recommendation}) : this.setState({recomendation: ""});
+        
+        if (this.state.callSaveFromSend) {
           this.setState({callSaveFromSend: false});
           this.sendElectroResponse(apzId, status, comment);
-        }
-        else{
+        } else {
           alert("Ответ сохранен!");
 
           this.setState({showSignButtons: true})
         }
-      }
-      else if(xhr.status === 401){
+      } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
@@ -732,11 +730,12 @@ class ShowApz extends React.Component {
             this.setState({ showButtons: false });
             this.setState({ elecStatus: 0 });
           }
-        }
-        else if(xhr.status === 401){
+        } else if (xhr.status === 401) {
           sessionStorage.clear();
           alert("Время сессии истекло. Пожалуйста войдите заново!");
           this.props.history.replace("/login");
+        } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
+          alert(JSON.parse(xhr.responseText).message);
         }
       }.bind(this);
       xhr.send();
@@ -764,11 +763,12 @@ class ShowApz extends React.Component {
         alert('Ответ успешно отправлен');
         this.setState({head_accepted: true});
         this.setState({heads_responses: data.head_responses});
-      }
-      else if(xhr.status === 401){
+      } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
+      } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
+        alert(JSON.parse(xhr.responseText).message);
       }
     }.bind(this);
     xhr.send(formData);

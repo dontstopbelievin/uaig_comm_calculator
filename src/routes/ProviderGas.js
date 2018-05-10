@@ -305,17 +305,19 @@ class ShowApz extends React.Component {
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
 
         if (data.commission.apz_gas_response) {
-          this.setState({description: data.commission.apz_gas_response.response_text});
-          this.setState({connectionPoint: data.commission.apz_gas_response.connection_point});
-          this.setState({gasPipeDiameter: data.commission.apz_gas_response.gas_pipe_diameter});
-          this.setState({assumedCapacity: data.commission.apz_gas_response.assumed_capacity});
-          this.setState({reconsideration: data.commission.apz_gas_response.reconsideration});
-          this.setState({docNumber: data.commission.apz_gas_response.doc_number});
-          this.setState({responseId: data.commission.apz_gas_response.id})
-          this.setState({response: data.commission.apz_gas_response.response});
+          data.commission.apz_gas_response.response_text ? this.setState({description: data.commission.apz_gas_response.response_text}) : this.setState({description: ""});
+          data.commission.apz_gas_response.connection_point ? this.setState({connectionPoint: data.commission.apz_gas_response.connection_point}) : this.setState({connectionPoint: ""});
+          data.commission.apz_gas_response.gas_pipe_diameter ? this.setState({gasPipeDiameter: data.commission.apz_gas_response.gas_pipe_diameter}) : this.setState({gasPipeDiameter: ""});
+          data.commission.apz_gas_response.assumed_capacity ? this.setState({assumedCapacity: data.commission.apz_gas_response.assumed_capacity}) : this.setState({assumedCapacity: ""});
+          data.commission.apz_gas_response.reconsideration ? this.setState({reconsideration: data.commission.apz_gas_response.reconsideration}) : this.setState({reconsideration: ""});
+          data.commission.apz_gas_response.doc_number ? this.setState({docNumber: data.commission.apz_gas_response.doc_number}) : this.setState({docNumber: ""});
+          data.commission.apz_gas_response.id ? this.setState({responseId: data.commission.apz_gas_response.id}) : this.setState({responseId: ""});
+          data.commission.apz_gas_response.response ? this.setState({response: data.commission.apz_gas_response.response}) : this.setState({response: ""});
+          
           if(data.commission.apz_gas_response.id !== -1){
             this.setState({accept: data.commission.apz_gas_response.response});
           }
+
           this.setState({responseFile: data.commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12})[0]});
           this.setState({xmlFile: data.commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 14})[0]});
         }
@@ -531,6 +533,8 @@ class ShowApz extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           this.setState({ isSigned: true });
+        } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
+          alert(JSON.parse(xhr.responseText).message);
         } else {
           alert("Не удалось подписать файл");
         }
@@ -638,11 +642,6 @@ class ShowApz extends React.Component {
     var token = sessionStorage.getItem('tokenInfo');
     var file = this.state.file;
 
-    if (!file) {
-      alert('Не выбран файл');
-      return false;
-    }
-
     var formData = new FormData();
     formData.append('file', file);
     formData.append('Response', status);
@@ -669,24 +668,23 @@ class ShowApz extends React.Component {
         var data = JSON.parse(xhr.responseText);
         //console.log(data);
         this.setState({responseId: data.id});
-        this.setState({response: data.response});
-        this.setState({description: data.response_text});
-        this.setState({responseFile: data.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-        this.setState({connectionPoint: data.connection_point});
-        this.setState({gasPipeDiameter: data.gas_pipe_diameter});
-        this.setState({assumedCapacity: data.assumed_capacity});
-        this.setState({reconsideration: data.reconsideration});
-        if(this.state.callSaveFromSend){
+        data.response ? this.setState({response: data.response}) : this.setState({response: ""});
+        data.response_text ? this.setState({description: data.response_text}) : this.setState({description: ""});
+        data.files ? this.setState({responseFile: data.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]}) : this.setState({responseFile: null});
+        data.connection_point ? this.setState({connectionPoint: data.connection_point}) : this.setState({connectionPoint: ""});
+        data.gas_pipe_diameter ? this.setState({gasPipeDiameter: data.gas_pipe_diameter}) : this.setState({gasPipeDiameter: ""});
+        data.assumed_capacity ? this.setState({assumedCapacity: data.assumed_capacity}) : this.setState({assumedCapacity: ""});
+        data.reconsideration ? this.setState({reconsideration: data.reconsideration}) : this.setState({reconsideration: ""});
+        
+        if (this.state.callSaveFromSend) {
           this.setState({callSaveFromSend: false});
           this.sendGasResponse(apzId, status, comment);
-        }
-        else{
+        } else {
           alert("Ответ сохранен!");
 
           this.setState({showSignButtons: true})
         }
-      }
-      else if(xhr.status === 401){
+      } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
@@ -721,11 +719,12 @@ class ShowApz extends React.Component {
             this.setState({ showButtons: false });
             this.setState({ gasStatus: 0 });
           }
-        }
-        else if(xhr.status === 401){
+        } else if (xhr.status === 401) {
           sessionStorage.clear();
           alert("Время сессии истекло. Пожалуйста войдите заново!");
           this.props.history.replace("/login");
+        } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
+          alert(JSON.parse(xhr.responseText).message);
         }
       }.bind(this);
       xhr.send();
@@ -753,11 +752,12 @@ class ShowApz extends React.Component {
         alert('Ответ успешно отправлен');
         this.setState({head_accepted: true});
         this.setState({heads_responses: data.head_responses});
-      }
-      else if(xhr.status === 401){
+      } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
+      } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
+        alert(JSON.parse(xhr.responseText).message);
       }
     }.bind(this);
     xhr.send(formData);
