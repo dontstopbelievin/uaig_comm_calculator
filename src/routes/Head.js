@@ -481,6 +481,8 @@ class ShowApz extends React.Component {
         if (xhr.status === 200) {
           this.setState({ isSigned: true });
           this.setState({ showSendButton: true });
+        } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
+          alert(JSON.parse(xhr.responseText).message);
         } else {
           alert("Не удалось подписать файл");
         }
@@ -657,11 +659,12 @@ class ShowApz extends React.Component {
 
         this.setState({ showButtons: false });
         this.setState({ showSendButton: false });
-      }
-      else if(xhr.status === 401){
+      } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
+      } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
+        alert(JSON.parse(xhr.responseText).message);
       }
     }.bind(this);
     xhr.send(formData);

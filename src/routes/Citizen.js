@@ -420,15 +420,24 @@ class AddApz extends React.Component {
             400: function () {
               alert("При сохранении заявки произошла ошибка!");
               this.setState({loaderHidden: true});
-            }
+            },
+            403: function (data) {
+              if (data.responseJSON.message) {
+                alert(data.responseJSON.message);
+              } else {
+                alert("При сохранении заявки произошла ошибка!");
+              }
+
+              this.setState({loaderHidden: true});
+            }.bind(this)
           },
           complete: function (jqXHR) {
           }
         });
       } else { console.log('session expired'); }
     } else { alert('Сохранены не все вкладки');
-    this.setState({loaderHidden: true});
-  }
+      this.setState({loaderHidden: true});
+    }
   }
 
   //правила вкладки Объект/Газоснабжение

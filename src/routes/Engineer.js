@@ -755,6 +755,8 @@ class ShowApz extends React.Component {
       if (xhr.status === 200) {
         alert('Заявка успешно отправлена');
         this.getApzInfo();
+      } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
+        alert(JSON.parse(xhr.responseText).message);
       } else {
         alert('Не удалось отправить заявку');
       }
@@ -777,7 +779,7 @@ class ShowApz extends React.Component {
       if (xhr.status === 200) {
         //var data = JSON.parse(xhr.responseText);
 
-        if(status === true) {
+        if (status === true) {
           alert("Заявление принято!");
           this.setState({ showButtons: false });
         } else {
@@ -786,11 +788,12 @@ class ShowApz extends React.Component {
         }
 
         this.setState({ showCommission: false });
-      }
-      else if(xhr.status === 401){
+      } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
+      } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
+        alert(JSON.parse(xhr.responseText).message);
       }
     }.bind(this);
     xhr.send(formData);
