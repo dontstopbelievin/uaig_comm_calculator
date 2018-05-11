@@ -216,6 +216,10 @@ class ShowApz extends React.Component {
 
         this.setState({loaderHidden: true});
         this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 20})[0]});
+
+        if (this.state.xmlFile) {
+          this.setState({needSign: true });
+        }
       } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
@@ -513,12 +517,13 @@ class ShowApz extends React.Component {
     }
   }
 
-  acceptDeclineApzForm(apzId, status, comment) {
+  acceptDeclineApzForm(apzId, status, comment, direct) {
     var token = sessionStorage.getItem('tokenInfo');
 
     var registerData = {
       response: status,
-      message: comment
+      message: comment,
+      direct: direct.length > 0 ? direct : 'engineer'
     };
     
     var data = JSON.stringify(registerData);
@@ -547,6 +552,10 @@ class ShowApz extends React.Component {
       }
     }.bind(this);
     xhr.send(data); 
+  }
+
+  sendToApz() {
+    this.setState({needSign: true });
   }
 
   toggleMap(value) {
@@ -673,7 +682,8 @@ class ShowApz extends React.Component {
                   <div>
                     {!this.state.needSign ?
                       <div>
-                        <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>Одобрить</button>
+                        <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>Отправить инженеру</button>
+                        <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>В отдел АПЗ</button>
                         <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
                           Отклонить
                         </button>
@@ -703,7 +713,7 @@ class ShowApz extends React.Component {
                           </div>
                           :
                           <div>
-                            <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>
+                            <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", "apz")}>
                               Отправить
                             </button>
                           </div>
