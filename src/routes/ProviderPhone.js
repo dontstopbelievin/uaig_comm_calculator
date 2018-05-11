@@ -1201,6 +1201,12 @@ printData()
         </div>
 
         <div className="col-sm-12">
+          {apz.commission && apz.commission.comment &&
+            <div className="alert alert-info mt-3">
+              {apz.commission.comment}
+            </div>
+          }
+          
           {this.state.heads_responses.length > 0 &&
             <div>
               <h5 className="block-title-2 mt-4 mb-3">Комментарии:</h5>

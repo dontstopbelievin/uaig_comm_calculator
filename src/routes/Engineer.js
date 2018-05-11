@@ -197,10 +197,12 @@ class ShowApz extends React.Component {
       titleDocumentFile: false,
       showMapText: 'Показать карту',
       response: null,
+      comment: null
     };
 
     this.onDocNumberChange = this.onDocNumberChange.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
+    this.onCommentChange = this.onCommentChange.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
     this.checkTerm = this.checkTerm.bind(this);
   }
@@ -211,6 +213,10 @@ class ShowApz extends React.Component {
 
   onDescriptionChange(e) {
     this.setState({ description: e.target.value });
+  }
+
+  onCommentChange(e) {
+    this.setState({ comment: e.target.value });
   }
 
   onFileChange(e) {
@@ -745,6 +751,8 @@ class ShowApz extends React.Component {
       alert('Не выбраны провайдеры');
       return false;
     }
+    
+    data["comment"]= this.state.comment;
 
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
@@ -1019,9 +1027,9 @@ class ShowApz extends React.Component {
 
               {!apz.commission &&
                 <div className="col-sm-12">
-                  <button className="btn btn-raised btn-info" onClick={this.createCommission.bind(this, apz.id)} style={{margin: '20px auto 10px'}}>
-                    Создать комиссию
-                  </button>
+                  <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                    <textarea style={{marginBottom: '10px'}} placeholder="Комментарий" rows="7" cols="50" className="form-control" defaultValue={this.state.comment} onChange={this.onCommentChange}></textarea>
+                  </div>
                 </div>
               }
             </div>
@@ -1029,6 +1037,12 @@ class ShowApz extends React.Component {
 
           <div className={this.state.showButtons ? '' : 'invisible'}>
             <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px', display: 'table'}}>
+              {!apz.commission &&  
+                <button className="btn btn-raised btn-info" onClick={this.createCommission.bind(this, apz.id)} style={{marginRight: '5px'}}>
+                  Создать комиссию
+                </button>
+              }
+              
               <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} 
                       onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>
                 Одобрить
@@ -1485,42 +1499,44 @@ class ShowApz extends React.Component {
                       </tbody>
                     </table>
 
-                    <table className="table table-bordered table-striped" style={{textAlign: 'left'}}>
-                      <tbody>
-                        <tr>
-                          <td style={{width: '70%'}}>Общее количество сточных вод (м<sup>3</sup>/сутки)</td>
-                          <td>{apz.apz_sewage.amount}</td>
-                        </tr>
-                        <tr>
-                          <td>Общее количество сточных вод (м<sup>3</sup>/час макс)</td>
-                          <td>{apz.apz_sewage.amount_hour}</td>
-                        </tr>
-                        <tr>
-                          <td>Фекальных (м<sup>3</sup>/сутки)</td>
-                          <td>{apz.apz_sewage.feksal}</td>
-                        </tr>
-                        <tr>
-                          <td>Фекальных (м<sup>3</sup>/час макс)</td>
-                          <td>{apz.apz_sewage.feksal_hour}</td>
-                        </tr>
-                        <tr>
-                          <td>Производственно-загрязненных (м<sup>3</sup>/сутки)</td>
-                          <td>{apz.apz_sewage.production}</td>
-                        </tr>
-                        <tr>
-                          <td>Производственно-загрязненных (м<sup>3</sup>/час макс)</td>
-                          <td>{apz.apz_sewage.production_hour}</td>
-                        </tr>
-                        <tr>
-                          <td>Условно-чистых сбрасываемых на городскую сеть (м<sup>3</sup>/сутки)</td>
-                          <td>{apz.apz_sewage.to_city}</td>
-                        </tr>
-                        <tr>
-                          <td>Условно-чистых сбрасываемых на городскую сеть (м<sup>3</sup>/час макс)</td>
-                          <td>{apz.apz_sewage.to_city_hour}</td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    {apz.apz_sewage &&
+                      <table className="table table-bordered table-striped" style={{textAlign: 'left'}}>
+                        <tbody>
+                          <tr>
+                            <td style={{width: '70%'}}>Общее количество сточных вод (м<sup>3</sup>/сутки)</td>
+                            <td>{apz.apz_sewage.amount}</td>
+                          </tr>
+                          <tr>
+                            <td>Общее количество сточных вод (м<sup>3</sup>/час макс)</td>
+                            <td>{apz.apz_sewage.amount_hour}</td>
+                          </tr>
+                          <tr>
+                            <td>Фекальных (м<sup>3</sup>/сутки)</td>
+                            <td>{apz.apz_sewage.feksal}</td>
+                          </tr>
+                          <tr>
+                            <td>Фекальных (м<sup>3</sup>/час макс)</td>
+                            <td>{apz.apz_sewage.feksal_hour}</td>
+                          </tr>
+                          <tr>
+                            <td>Производственно-загрязненных (м<sup>3</sup>/сутки)</td>
+                            <td>{apz.apz_sewage.production}</td>
+                          </tr>
+                          <tr>
+                            <td>Производственно-загрязненных (м<sup>3</sup>/час макс)</td>
+                            <td>{apz.apz_sewage.production_hour}</td>
+                          </tr>
+                          <tr>
+                            <td>Условно-чистых сбрасываемых на городскую сеть (м<sup>3</sup>/сутки)</td>
+                            <td>{apz.apz_sewage.to_city}</td>
+                          </tr>
+                          <tr>
+                            <td>Условно-чистых сбрасываемых на городскую сеть (м<sup>3</sup>/час макс)</td>
+                            <td>{apz.apz_sewage.to_city_hour}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    }
                   </div>
                   <div className="modal-footer">
                     <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
