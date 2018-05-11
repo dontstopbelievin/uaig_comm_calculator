@@ -76,6 +76,23 @@ export default class vacancies extends React.Component{
                                     }
                                 </article>
                             </li>
+                            <li>
+                                <aside>
+                                    <p>5.05.2018</p>
+                                </aside>
+                                <article>
+                                    {localStorage.getItem('lang') === 'ru' &&
+                                    <a target="_blank" href="/docs/10mayrus.pdf">
+                                        3) Список кандидатов на занатия вакантных административных государственных должностей корпуса «Б» допущенных к собеседованию которое будет проводиться 10 мая 2018 года в 10.00ч. (Абылай хана 91 каб. 707)
+                                    </a>
+                                    }
+                                    {localStorage.getItem('lang') === 'kk' &&
+                                    <a target="_blank" href="/docs/10maykaz.pdf">
+                                        3) 2018 жылғы 10 мамыр күні сағат 10:00 де өтетін (Абылай хан даңғылы 91, 707 бөлме ) «Б» корпусынының бос лауазымдарына орналасу үшін  әңгімелесуге жіберілген кандидаттардың тізімі
+                                    </a>
+                                    }
+                                </article>
+                            </li>
                     </ul>
                 </div>
             </div>
