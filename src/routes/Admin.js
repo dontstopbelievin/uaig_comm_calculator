@@ -156,38 +156,6 @@ export default class Admin extends React.Component {
     xhr.send(dd);
   }
 
-  // удалить роль у пользователя
-  removeRoleFromUser(userId, roleId, roleLevel) {
-    var token = sessionStorage.getItem('tokenInfo');
-    //console.log(userId);
-    //console.log(roleId);
-    var data = {userid: userId, roleid: roleId};
-    var dd = JSON.stringify(data);
-
-    var usersArray = this.state.users;
-    var userPos = usersArray.map(function(x) {return x.UserId; }).indexOf(userId);
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("delete", window.url + "api/admin/role/remove", true);
-    //Send the proper header information along with the request
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        if(roleLevel > 1){
-          usersArray[userPos].RoleNames.length = 0;
-        }
-        else{
-          var rolePos = usersArray[userPos].RoleNames.map(function(x) {return x.RoleId;}).indexOf(roleId);
-          //console.log(rolePos);
-          usersArray[userPos].RoleNames.splice(rolePos,1);
-        }
-        this.setState({users: usersArray});
-        console.log('role(s) was(were) removed')
-      }
-    }.bind(this);
-    xhr.send(dd);
-  }
 
 
   componentWillMount() {
