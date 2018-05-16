@@ -77,11 +77,7 @@ class AllNews extends React.Component {
     }
   }
 
-  getNews(status = null) {
-    if (!status) {
-      status = this.props.match.params.status;
-    }
-    
+  getNews() {
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + "api/newsPanel", true);
@@ -199,14 +195,25 @@ class AddNews extends React.Component {
         
 
     this.state = {
+      selectedOptions : '1',
+      heading: '',
       title : '',
       desc : '',
       content: '',
       loaderHidden: false
-    }
-    
+    };
+
+    this.handleOptionChange = this.handleOptionChange.bind(this);
 
   }
+
+    handleOptionChange (e) {
+        this.setState({
+            selectedOptions: e.target.value
+          });
+        console.log(e.target.value);
+    }
+
 
 
     requestSubmission(e){
@@ -215,6 +222,7 @@ class AddNews extends React.Component {
             news.title = this.state.title;
             news.description = this.state.desc;
             news.text = this.state.content;
+            news.heading_id = parseInt(this.state.selectedOptions);
         
 
         
@@ -274,6 +282,27 @@ class AddNews extends React.Component {
                 <div className="col-md-8">
                     <form id="insert_form" name="form_aritcle">
                         <div className="form-group">
+                            <label>Выберите рубрику новостей</label>
+                        <div className="form-group">
+                            <label>
+                                <input value="1" type="radio" name="heading" checked={this.state.selectedOptions === '1'} onChange={this.handleOptionChange} />
+                                &nbsp;Новости управления
+                            </label>
+                        </div>
+                        <div className="form-group">
+                            <label>
+                                <input value="2" type="radio" name="heading" checked={this.state.selectedOptions === '2'}    onChange={this.handleOptionChange}  />
+                                &nbsp;СМИ о нас
+                            </label>
+                        </div>
+                        <div className="form-group">
+                            <label>
+                                <input value="3" type="radio" name="heading"  checked={this.state.selectedOptions === '3'}   onChange={this.handleOptionChange}  />
+                                &nbsp;Кадры решают все
+                            </label>
+                        </div>
+                        </div>
+                        <div className="form-group">
                             <label htmlFor="title">Название</label>
                             <input type="text" name="title" maxlength="150"  id="title" pleaceholder="Title" className="form-control" required onChange={(e) => this.setState({title: e.target.value})} />
                         </div>
@@ -318,19 +347,28 @@ class updateNews extends React.Component {
         
 
     this.state = {
+      selectedOptions : '1',
+      heading: '',
       id : '',
       title : '',
       desc : '',
       content: false,
       loaderHidden: false
-    }
+    };
     
-
+    this.handleOptionChange = this.handleOptionChange.bind(this);
   }
 
   componentDidMount() {
     this.getArticle();
   }
+
+  handleOptionChange (e) {
+        this.setState({
+            selectedOptions: e.target.value
+          });
+        console.log(e.target.value);
+    }
 
   getArticle() {
     var id = this.props.match.params.id;
@@ -347,6 +385,7 @@ class updateNews extends React.Component {
         this.setState({title: article.article.title});
         this.setState({desc: article.article.description});
         this.setState({content: article.article.text});
+        this.setState({selectedOptions: article.article.heading_id});
         console.log(this.state.id);
         console.log(this.state.content);
 
@@ -366,6 +405,7 @@ class updateNews extends React.Component {
             news.title = this.state.title;
             news.description = this.state.desc;
             news.text = this.state.content;
+            news.heading_id = parseInt(this.state.selectedOptions);
         
 
         
@@ -425,6 +465,27 @@ class updateNews extends React.Component {
                 <br/>
                 <div className="col-md-8">
                     <form id="insert_form" name="form_aritcle">
+                        <div className="form-group">
+                            <label>Выберите рубрику новостей</label>
+                        <div className="form-group">
+                            <label>
+                                <input value="1" type="radio" name="heading" checked={this.state.selectedOptions === '1'} onChange={this.handleOptionChange} />
+                                &nbsp;Новости управления
+                            </label>
+                        </div>
+                        <div className="form-group">
+                            <label>
+                                <input value="2" type="radio" name="heading" checked={this.state.selectedOptions == '2'}    onChange={this.handleOptionChange}  />
+                                &nbsp;СМИ о нас
+                            </label>
+                        </div>
+                        <div className="form-group">
+                            <label>
+                                <input value="3" type="radio" name="heading"  checked={this.state.selectedOptions == '3'}   onChange={this.handleOptionChange}  />
+                                &nbsp;Кадры решают все
+                            </label>
+                        </div>
+                        </div>
                         <div className="form-group">
                             <label htmlFor="title">Название</label>
                             <input type="text" name="title" maxlength="150"  id="title" pleaceholder="Title" className="form-control" required onChange={(e) => this.setState({title: e.target.value})} value={this.state.title} />

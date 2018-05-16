@@ -1010,3 +1010,22 @@ table{
     .list-group-item div{
       float: left;
     }
+.engapz{
+  width: 100%;
+  height: 100%;
+  margin:0 auto;
+  color: black;
+  font-size: 12px;
+  display: block;
+}
+.engapz:hover{
+  text-decoration: none;
+  color: black;
+  background-color: #9fcdff;
+}
+.cursor{
+  cursor: pointer;
+}
+.cursor:hover{
+  background-color: #d3e8ef;
+}

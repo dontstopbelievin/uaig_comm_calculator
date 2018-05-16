@@ -115,6 +115,10 @@ class AllApzs extends React.Component {
     return formated_date;
   }
 
+  toApz(id, e) {
+    this.props.history.push('/engineer/' + id);
+  }
+
   render() {
     return (
       <div>
@@ -129,39 +133,51 @@ class AllApzs extends React.Component {
             <table className="table">
               <thead>
                 <tr>
-                  <th style={{width: '23%'}}>Название</th>
-                  <th style={{width: '23%'}}>Заявитель</th>
-                  <th style={{width: '20%'}}>Адрес</th>
-                  <th style={{width: '20%'}}>Дата заявления</th>
-                  <th style={{width: '14%'}}>Срок</th>
-                  <th></th>
+                  <th style={{width: '16%'}}>Название</th>
+                  <th style={{width: '16%'}}>Заявитель</th>
+                  <th style={{width: '16%'}}>Адрес</th>
+                  <th style={{width: '16%'}}>Районный архитектор</th>
+                  <th style={{width: '16%'}}>Дата заявления</th>
+                  <th style={{width: '16%'}}>Срок</th>
+                  {/*<th></th>*/}
                 </tr>
               </thead>
-              <tbody>
+
+              <tbody className="tbody">
                 {this.state.apzs.map(function(apz, index) {
                   return(
-                    <tr key={index}>
-                      <td>
-                        {apz.project_name} 
-
-                        {apz.object_type &&
-                          <span className="ml-1">({apz.object_type})</span>
-                        }
-                      </td>
-                      <td>{apz.applicant}</td>
-                      <td>{apz.project_address}</td>
-                      <td>{this.toDate(apz.created_at)}</td>
-                      <td>{apz.object_term}</td>
-                      <td>
-                        <Link className="btn btn-outline-info" to={'/engineer/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
-                      </td>
-                    </tr>
+                      <tr key={index} className="cursor" onClick={this.toApz.bind(this, apz.id)}>
+                          <td style={{width: '16%'}}>
+                                  {apz.object_type &&
+                                    <span className="ml-1">({apz.object_type})</span>
+                                  }
+                          </td>
+                          <td style={{width: '16%'}}>
+                              {apz.applicant}
+                          </td>
+                          <td style={{width: '16%'}}>
+                            {apz.project_address}
+                          </td>
+                          <td style={{width: '16%'}}>
+                            {apz.urban}
+                          </td>
+                          <td style={{width: '16%'}}>
+                              {this.toDate(apz.created_at)}
+                          </td>
+                          <td style={{width: '16%'}}>
+                              {apz.object_term}
+                          </td>
+                          {/*<td>*/}
+                            {/*<Link className="btn btn-outline-info" to={'/engineer/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>*/}
+                          {/*</td>*/}
+                      </tr>
                     );
                   }.bind(this))
                 }
               </tbody>
             </table>
           </div>
+
         }
 
         {!this.state.loaderHidden &&
