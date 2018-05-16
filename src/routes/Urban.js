@@ -200,7 +200,7 @@ class ShowApz extends React.Component {
       var name;
 
       for(name in window.CKEDITOR.instances) {
-          window.CKEDITOR.instances[name].destroy(true);
+        window.CKEDITOR.instances[name].destroy(true);
       }
     }
 

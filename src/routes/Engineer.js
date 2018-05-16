@@ -133,11 +133,13 @@ class AllApzs extends React.Component {
             <table className="table">
               <thead>
                 <tr>
-                  <th style={{width: '16%'}}>Название</th>
+                  <th style={{width: '5%'}}>ИД</th>
+                  <th style={{width: '16%'}}>Дата</th>
+                  <th style={{width: '5%'}}>Тип</th>
                   <th style={{width: '16%'}}>Заявитель</th>
                   <th style={{width: '16%'}}>Адрес</th>
-                  <th style={{width: '16%'}}>Районный архитектор</th>
-                  <th style={{width: '16%'}}>Дата заявления</th>
+                  <th style={{width: '16%'}}>Район</th>
+                  
                   <th style={{width: '16%'}}>Срок</th>
                   {/*<th></th>*/}
                 </tr>
@@ -146,38 +148,40 @@ class AllApzs extends React.Component {
               <tbody className="tbody">
                 {this.state.apzs.map(function(apz, index) {
                   return(
-                      <tr key={index} className="cursor" onClick={this.toApz.bind(this, apz.id)}>
-                          <td style={{width: '16%'}}>
-                                  {apz.object_type &&
-                                    <span className="ml-1">({apz.object_type})</span>
-                                  }
-                          </td>
-                          <td style={{width: '16%'}}>
-                              {apz.applicant}
-                          </td>
-                          <td style={{width: '16%'}}>
-                            {apz.project_address}
-                          </td>
-                          <td style={{width: '16%'}}>
-                            {apz.urban}
-                          </td>
-                          <td style={{width: '16%'}}>
-                              {this.toDate(apz.created_at)}
-                          </td>
-                          <td style={{width: '16%'}}>
-                              {apz.object_term}
-                          </td>
-                          {/*<td>*/}
-                            {/*<Link className="btn btn-outline-info" to={'/engineer/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>*/}
-                          {/*</td>*/}
-                      </tr>
-                    );
+                    <tr style={{background: !apz.commission ? '#e1e7ef' : ''}} key={index} className="cursor" onClick={this.toApz.bind(this, apz.id)}>
+                      <td>
+                        {apz.id}
+                      </td>
+                      <td>
+                        {this.toDate(apz.created_at)}
+                      </td>
+                      <td>
+                        {apz.object_type &&
+                          <span className="ml-1">({apz.object_type})</span>
+                        }
+                      </td>
+                      <td>
+                        {apz.applicant}
+                      </td>
+                      <td>
+                        {apz.project_address}
+                      </td>
+                      <td>
+                        {apz.region}
+                      </td>
+                      <td>
+                        {apz.object_term}
+                      </td>
+                      {/*<td>*/}
+                        {/*<Link className="btn btn-outline-info" to={'/engineer/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>*/}
+                      {/*</td>*/}
+                    </tr>
+                  );
                   }.bind(this))
                 }
               </tbody>
             </table>
           </div>
-
         }
 
         {!this.state.loaderHidden &&
@@ -788,13 +792,14 @@ class ShowApz extends React.Component {
     xhr.send(JSON.stringify(data));
   }
 
-  acceptDeclineApzForm(apzId, status, comment) {
+  acceptDeclineApzForm(apzId, status, comment, direct) {
     var token = sessionStorage.getItem('tokenInfo');
     var file = this.state.file;
 
     var formData = new FormData();
     formData.append('response', status);
     formData.append('message', comment);
+    formData.append('direct', direct.length > 0 ? direct : 'region');
 
     var xhr = new XMLHttpRequest();
     xhr.open("post", window.url + "api/apz/engineer/status/" + apzId, true);
@@ -1007,14 +1012,6 @@ class ShowApz extends React.Component {
                     </tr>
                     <tr>
                       <td>
-                        <input className="form-control" type="checkbox" name="commission_users[]" value="Heat" />
-                      </td>
-                      <td>Теплоснабжение</td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>
                         <input className="form-control" type="checkbox" name="commission_users[]" value="Electricity" />
                       </td>
                       <td>Электроснабжение</td>
@@ -1026,6 +1023,14 @@ class ShowApz extends React.Component {
                         <input className="form-control" type="checkbox" name="commission_users[]" value="Gas" />
                       </td>
                       <td>Газоснабжение</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input className="form-control" type="checkbox" name="commission_users[]" value="Heat" />
+                      </td>
+                      <td>Теплоснабжение</td>
                       <td></td>
                       <td></td>
                     </tr>
@@ -1060,8 +1065,13 @@ class ShowApz extends React.Component {
               }
               
               <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} 
+                      onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", 'apz')}>
+                В отдел АПЗ
+              </button>
+
+              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} 
                       onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>
-                Одобрить
+                Отправить архитектору
               </button>
                 
               <button className="btn btn-raised btn-danger" onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.description)}>
