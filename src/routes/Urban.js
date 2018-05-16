@@ -3,6 +3,7 @@ import React from 'react';
 import EsriLoaderReact from 'esri-loader-react';
 import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
+import CKEditor from "react-ckeditor-component";
 
 export default class Urban extends React.Component {
   render() {
@@ -162,6 +163,7 @@ class ShowApz extends React.Component {
 
     this.state = {
       apz: [],
+      templates: [],
       showMap: false,
       showButtons: true,
       description: '',
@@ -181,10 +183,27 @@ class ShowApz extends React.Component {
   }
 
   onDescriptionChange(e) {
-    this.setState({ description: e.target.value });
+    var content = e.editor.getData();
+    this.setState({ description: content });
+  }
+
+  onTemplateListChange(e) {
+    var template = this.state.templates.find(template => template.id == e.target.value);
+    var instance = window.CKEDITOR.instances[Object.keys(window.CKEDITOR.instances)[0]];
+
+    this.setState({ description: template.text });
+    instance.setData(template.text);
   }
 
   componentWillMount() {
+    if (window.CKEDITOR && window.CKEDITOR.instances) {
+      var name;
+
+      for(name in window.CKEDITOR.instances) {
+          window.CKEDITOR.instances[name].destroy(true);
+      }
+    }
+
     this.getApzInfo();
   }
 
@@ -198,15 +217,17 @@ class ShowApz extends React.Component {
     xhr.onload = function() {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-        this.setState({apz: data});
-        this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
-        this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
-        this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
+        var apz = data.apz;
+        this.setState({templates: data.templates});
+        this.setState({apz: apz});
+        this.setState({personalIdFile: apz.files.filter(function(obj) { return obj.category_id === 3 })[0]});
+        this.setState({confirmedTaskFile: apz.files.filter(function(obj) { return obj.category_id === 9 })[0]});
+        this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
         this.setState({showButtons: false});
-        this.setState({returnedState: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null })[0]});
-        this.setState({needSign: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
+        this.setState({returnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null })[0]});
+        this.setState({needSign: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
 
-        if (data.status_id === 3) { 
+        if (apz.status_id === 3) { 
           this.setState({showButtons: true}); 
         }
 
@@ -215,7 +236,7 @@ class ShowApz extends React.Component {
         }
 
         this.setState({loaderHidden: true});
-        this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 20})[0]});
+        this.setState({xmlFile: apz.files.filter(function(obj) { return obj.category_id === 20})[0]});
 
         if (this.state.xmlFile) {
           this.setState({needSign: true });
@@ -724,7 +745,7 @@ class ShowApz extends React.Component {
                 }
 
                 <div className="modal fade" id="accDecApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                  <div className="modal-dialog" role="document">
+                  <div className="modal-dialog modal-lg" role="document">
                     <div className="modal-content">
                       <div className="modal-header">
                         <h5 className="modal-title">Причина отклонения</h5>
@@ -733,8 +754,28 @@ class ShowApz extends React.Component {
                         </button>
                       </div>
                       <div className="modal-body">
+                        {this.state.templates.length > 0 &&
+                          <div className="form-group">
+                            <select className="form-control" defaultValue="" id="templateList" onChange={this.onTemplateListChange.bind(this)}>
+                              <option value="" disabled>Выберите шаблон</option>
+                              {this.state.templates.map(function(template, index) {
+                                return(
+                                  <option key={index} value={template.id}>{template.title}</option>
+                                  );
+                                }.bind(this))
+                              }
+                            </select>
+                          </div>
+                        }
+                        
                         <div className="form-group">
-                          <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
+                          <CKEditor 
+                            activeClass="p10" 
+                            content={this.state.description} 
+                            events={{
+                              "change": this.onDescriptionChange
+                            }}
+                           />
                         </div>
                       </div>
                       <div className="modal-footer">

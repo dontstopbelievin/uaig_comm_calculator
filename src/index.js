@@ -40,6 +40,7 @@ import NewsPanel from './routes/NewsPanel';
 import NewsAll from './routes/NewsAll';
 import NewsArticle from './routes/NewsArticle';
 import NewsByDay from './routes/NewsByDay';
+import AnswerTemplate from './routes/AnswerTemplate';
 import EditData from './routes/EditPersonalData'
 import EditPassword from './routes/EditPassword'
 import ForgotPassword from './routes/ForgotPassword'
@@ -97,8 +98,8 @@ export default class Main extends React.Component {
     window.url = 'https://api.uaig.kz:8843/';
     window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
 
-     //window.url = 'http://uaig/';
-     //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
+    // window.url = 'http://uaig/';
+    // window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // dimash
   }
 
   componentDidMount() {
@@ -155,6 +156,7 @@ export default class Main extends React.Component {
               <Route path="/tutorials" render={(props) => (<VideoTutorials {...props} />)} />
               <Route path="/news" render={(props) => (<News {...props}/>)}/>
               <Route path="/newsPanel" render={(props) => (<NewsPanel {...props}/>)}/>
+              <Route path="/answertemplate" render={(props) => (<AnswerTemplate {...props}/>)}/>
               <Route path="/public_services" render={(props) => (<public_services {...props}/>)}/>
               <Route path="/permission_and_covoting" render={(props) => (<permission_and_covoting {...props}/>)}/>
               <Route path="/npm" render={(props) => (<Npm {...props}/>)}/>
