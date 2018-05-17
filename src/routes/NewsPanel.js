@@ -301,6 +301,7 @@ class AddNews extends React.Component {
                                 &nbsp;Кадры решают все
                             </label>
                         </div>
+
                         </div>
                         <div className="form-group">
                             <label htmlFor="title">Название</label>
@@ -469,7 +470,7 @@ class updateNews extends React.Component {
                             <label>Выберите рубрику новостей</label>
                         <div className="form-group">
                             <label>
-                                <input value="1" type="radio" name="heading" checked={this.state.selectedOptions === '1'} onChange={this.handleOptionChange} />
+                                <input value="1" type="radio" name="heading" checked={this.state.selectedOptions == '1'} onChange={this.handleOptionChange} />
                                 &nbsp;Новости управления
                             </label>
                         </div>
