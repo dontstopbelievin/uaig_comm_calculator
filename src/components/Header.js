@@ -266,6 +266,7 @@ class AdminMenu extends Component {
       <div>
         <NavLink to={"/admin"} replace className="dropdown-item" activeClassName="active">Пользователи</NavLink>
         <NavLink to={"/newsPanel"} replace className="dropdown-item" activeClassName="active">Добавить новости</NavLink>
+        <NavLink to={"/addPages"} replace className="dropdown-item" activeClassName="active">Добавить страницу</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
         <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
