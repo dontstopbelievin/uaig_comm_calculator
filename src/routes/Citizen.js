@@ -1735,6 +1735,12 @@ class ShowApz extends React.Component {
               </tbody>
             </table>
 
+            {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />} 
+
+            <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
+              {this.state.showMapText}
+            </button>
+
             {(apz.status_id === 1 || apz.status_id === 2) &&
               <div>
                 <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
@@ -2191,14 +2197,23 @@ class ShowApz extends React.Component {
               </div>
             }
 
-            {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />} 
+            {apz.state_history.length > 0 &&
+              <div>
+                <h5 className="block-title-2 mb-3 mt-3">Логи</h5>
+                <div className="border px-3 py-2">
+                  {apz.state_history.map(function(state, index) {
+                    return(
+                      <div key={index}>
+                        <p className="mb-0">{state.created_at}&emsp;{state.state.name}</p>
+                      </div>
+                    );
+                  }.bind(this))}
+                </div>
+              </div>
+            }
 
-            <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
-              {this.state.showMapText}
-            </button>
-
-            <h5 className="block-title-2 mt-5 mb-3">Статус</h5>
-            <ShowStatusBar apz={this.state.apz} />
+            {/*<h5 className="block-title-2 mt-5 mb-3">Статус</h5>
+            <ShowStatusBar apz={this.state.apz} />*/}
 
             <div className="col-sm-12">
               <hr />

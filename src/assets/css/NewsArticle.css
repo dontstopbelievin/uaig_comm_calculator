@@ -10,11 +10,11 @@
 .newsArticle{
 	padding-bottom: 50px;
 }
- p{
+/* p{
     font-weight: 500!important;
     line-height: 25px;
     font-size: 16px!important;
-}
+}*/
 .list-group-item:hover{
     box-shadow: none;
     transition: all 0.3s ease-in-out;

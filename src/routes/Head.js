@@ -1659,6 +1659,21 @@ class ShowApz extends React.Component {
               </div>
             }
 
+            {apz.state_history.length > 0 &&
+              <div className="col-sm-12">
+                <h5 className="block-title-2 mb-3 mt-3">Логи</h5>
+                <div className="border px-3 py-2">
+                  {apz.state_history.map(function(state, index) {
+                    return(
+                      <div key={index}>
+                        <p className="mb-0">{state.created_at}&emsp;{state.state.name}</p>
+                      </div>
+                    );
+                  }.bind(this))}
+                </div>
+              </div>
+            }
+
             <div className="col-sm-12">
               <hr />
               <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>

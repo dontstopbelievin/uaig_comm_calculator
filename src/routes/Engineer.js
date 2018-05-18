@@ -913,6 +913,14 @@ class ShowApz extends React.Component {
         </div>
 
         <div className="col-sm-12">
+          {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
+
+          <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
+            {this.state.showMapText}
+          </button>
+        </div>
+
+        <div className="col-sm-12">
           {this.state.showCommission &&
             <div>
               <h5 className="block-title-2 mt-3 mb-3">Решение</h5>
@@ -1029,12 +1037,15 @@ class ShowApz extends React.Component {
             </div>
           </div>
 
-          <div className="col-sm-12">
-            {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
-
-            <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
-              {this.state.showMapText}
-            </button>
+          <h5 className="block-title-2 mb-3">Логи</h5>
+          <div className="border px-3 py-2">
+            {apz.state_history.map(function(state, index) {
+              return(
+                <div key={index}>
+                  <p className="mb-0">{state.created_at}&emsp;{state.state.name}</p>
+                </div>
+              );
+            }.bind(this))}
           </div>
 
           {this.state.waterResponseFile &&
