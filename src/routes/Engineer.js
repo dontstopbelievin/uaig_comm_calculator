@@ -224,7 +224,6 @@ class ShowApz extends React.Component {
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onCommentChange = this.onCommentChange.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
-    this.checkTerm = this.checkTerm.bind(this);
   }
 
   onDocNumberChange(e) {
@@ -708,62 +707,6 @@ class ShowApz extends React.Component {
     return formated_date;
   }
 
-  checkTerm(dateTime) {
-    var nowDate = new Date();
-    var currentDay = nowDate.getDate();
-    var currentMonth = nowDate.getMonth()+1;
-    var currentYear = nowDate.getFullYear();
-    var oldDate = [];
-    oldDate[0] = dateTime.slice(0,4);
-    oldDate[1] = dateTime.slice(5,7);
-    oldDate[2] = dateTime.slice(8,10);
-    var oldTime = [];
-    oldTime[0] = dateTime.slice(11,13);
-    oldTime[1] = dateTime.slice(14,16);
-    oldTime[2] = dateTime.slice(17,19);
-
-    oldDate[0] = parseInt(oldDate[0], 10);
-    oldDate[1] = parseInt(oldDate[1], 10);
-    oldDate[2] = parseInt(oldDate[2], 10);
-
-    if (oldDate[0] == currentYear && oldDate[1] == currentMonth){
-      var term = currentDay - oldDate[2];
-      switch(term){
-        case 0:
-          term = "5 дней";
-          break;
-        case 1:
-          term = "4 дня";
-          break;
-        case 2:
-          term = "3 дня";
-          break;
-        case 3:
-          term = "2 дня";
-          break;
-        case 4:
-          term = "1 день";
-          break;
-        case 5:
-          term = "Срок до 16:00";
-          break;
-        default:
-          term = "Просрочено";
-      }
-
-      return term;
-    }else if(oldDate[0] != currentYear){
-      var term = "Просрочено уже больше года";
-      return term;
-    }else if(oldDate[1] != currentMonth){
-      var term = "Просрочено уже как месяц";
-      return term;
-    }
-
-
-
-  }
-
   createCommission(id) {
     var data = $('.commission_users_table input').serializeJSON();
 
@@ -979,7 +922,7 @@ class ShowApz extends React.Component {
                   <tr>
                     <th></th>
                     <th>Название провайдера</th>
-                    <th>Кол. дней осталось</th>
+                    <th>Оставшееся время</th>
                     <th>Статус</th>
                   </tr>
                 </thead>
@@ -993,7 +936,13 @@ class ShowApz extends React.Component {
                           <td>
                             <a className="text-info pointer" data-toggle="modal" data-target={'#' + item.role.name.toLowerCase() + '_provider_modal'}>{item.role.description}</a>
                           </td>
-                          <td>{this.checkTerm(item.created_at) }</td>
+                          <td>
+                            {item.days > 0 ?
+                              item.days + ' д.'
+                              :
+                              item.days === 0 ? 'Последний день (до 16:00)' : 'Просрочено' 
+                            }
+                          </td>
                           <td>{item.status.name}</td>
                         </tr>
                         );

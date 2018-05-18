@@ -4,6 +4,7 @@ import EsriLoaderReact from 'esri-loader-react';
 import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import CKEditor from "react-ckeditor-component";
+import $ from 'jquery';
 
 export default class Urban extends React.Component {
   render() {
@@ -546,7 +547,12 @@ class ShowApz extends React.Component {
       message: comment,
       direct: direct.length > 0 ? direct : 'engineer'
     };
-    
+
+    if (!status && !comment) {
+      alert('Заполните причину отказа');
+      return false;
+    }
+
     var data = JSON.stringify(registerData);
 
     var xhr = new XMLHttpRequest();
@@ -570,6 +576,10 @@ class ShowApz extends React.Component {
         this.props.history.replace("/login");
       } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
         alert(JSON.parse(xhr.responseText).message);
+      }
+
+      if (!status) {
+        $('#accDecApzForm').modal('hide');
       }
     }.bind(this);
     xhr.send(data); 
@@ -757,7 +767,7 @@ class ShowApz extends React.Component {
                         {this.state.templates.length > 0 &&
                           <div className="form-group">
                             <select className="form-control" defaultValue="" id="templateList" onChange={this.onTemplateListChange.bind(this)}>
-                              <option value="" disabled>Выберите шаблон</option>
+                              <option value="">Выберите шаблон</option>
                               {this.state.templates.map(function(template, index) {
                                 return(
                                   <option key={index} value={template.id}>{template.title}</option>
@@ -779,7 +789,7 @@ class ShowApz extends React.Component {
                         </div>
                       </div>
                       <div className="modal-footer">
-                        <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.description)}>Отправить</button>
+                        <button type="button" className="btn btn-primary" onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.description)}>Отправить</button>
                         <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                       </div>
                     </div>
