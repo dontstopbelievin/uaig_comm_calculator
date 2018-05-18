@@ -1026,6 +1026,18 @@ table{
 .cursor{
   cursor: pointer;
 }
+
 .cursor:hover{
   background-color: #d3e8ef;
+}
+
+.busy{
+    margin-top: 20px;
+    text-align: justify;
+    margin-left: 20px;
+    border: solid 1px black;
+    padding: 20px;
+}
+.busy p{
+    margin:0px;
 }
