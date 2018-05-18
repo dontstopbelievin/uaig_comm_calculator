@@ -114,6 +114,7 @@ class AllNews extends React.Component {
             }
 
             this.setState({news: news});
+            this.setState({loaderHidden: true});
           } else {
             alert("Записи новостей не удалось найти в базе данных!");
           }
@@ -127,6 +128,7 @@ class AllNews extends React.Component {
   render() {
     return (
       <div>
+        {this.state.loaderHidden &&
           <div>
             <div className="row">
 
@@ -134,36 +136,41 @@ class AllNews extends React.Component {
                 <ul className="nav nav-tabs mb-2 pull-right">
                   <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link"  to="/newsAll/status/1" replace>Новости управления</NavLink></li>
                   <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link"  to="/newsAll/status/2" replace>СМИ о нас</NavLink></li>
-                  <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link"  to="/newsAll/status/3" replace>Кадр решает все</NavLink></li>
+                  <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link"  to="/newsAll/status/3" replace>Кадры решают все</NavLink></li>
                 </ul>
               </div>
             </div>
+                {this.state.news.map(function (article) {
+                  var link = '/#/NewsArticle/' + article.id;
+                  return (
+                    <div className="row">
+                      <div className="col-md-1"></div>
+                      <div href="#" className="list-group-item col-md-10 flex-column align-items-start  wow fadeInDown"
+                           data-wow-duration="1.5s">
+                        <div className="d-flex w-100 left-content-between">
+                          <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода"/>
+                          <p className="news-date text-muted font-weight-light">{article.created_at}</p>
+                        </div>
 
-
-                {this.state.news.map(function(article) {
-                    var link = '/#/NewsArticle/' + article.id;
-                    return(
-                <div className="row">
-                    <div className="col-md-1"></div>
-                <div href="#" className="list-group-item col-md-10 flex-column align-items-start  wow fadeInDown"  data-wow-duration="1.5s">
-                    <div className="d-flex w-100 left-content-between">
-                        <img className="news-icon" src="./images/clock-icon.png" alt="Время выхода" />
-                        <p className="news-date text-muted font-weight-light">{article.created_at}</p>
+                        <h6 className="news-title text-left text-muted mb-1">{article.title}</h6>
+                        <p className="news-text text-left mt-2 mb-1">{article.description}</p>
+                        <div className="dropdown-divider"></div>
+                        <a href={link}>
+                          <small className="float-right text-warning view-more font-weight-bold">Читать далее</small>
+                        </a>
+                      </div>
                     </div>
+                  );
 
-                    <h6 className="news-title text-left text-muted mb-1">{article.title}</h6>
-                    <p className="news-text text-left mt-2 mb-1">{article.description}</p>
-                    <div className="dropdown-divider"></div>
-                    <a href={link}><small className="float-right text-warning view-more font-weight-bold">Читать далее</small></a>
-                </div>
-                </div>
-                    );
-
-                  }.bind(this))
+                }.bind(this))
                 }
-
           </div>
-
+        }
+        {!this.state.loaderHidden &&
+          <div style={{textAlign: 'center'}}>
+            <Loader type="Oval" color="#46B3F2" height="100" width="100" />
+          </div>
+        }
       </div>
     )
   }

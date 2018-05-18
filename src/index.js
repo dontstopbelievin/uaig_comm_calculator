@@ -71,6 +71,7 @@ import StateSymbols from './routes/StateSymbols.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import PopperJs from 'popper.js';
+import AddPages from "./routes/AddPages";
 // import tether from 'tether';
 // global.Tether = tether;
 //import 'bootstrap/dist/css/bootstrap.min.css';
@@ -94,11 +95,12 @@ export default class Main extends React.Component {
   componentWillMount() {
     this.setLang();
 
+
     window.url = 'https://api.uaig.kz:8843/';
     window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
 
-    // window.url = 'http://uaig/';
-    // window.clientSecret = 'ISOzCLPBZCRLPz7V7bS9p7ysuaJUQIPC6N6COoH6'; // dimash
+     //window.url = 'http://uaig/';
+     //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
   }
 
   componentDidMount() {
@@ -156,6 +158,7 @@ export default class Main extends React.Component {
               <Route path="/news" render={(props) => (<News {...props}/>)}/>
               <Route path="/newsPanel" render={(props) => (<NewsPanel {...props}/>)}/>
               <Route path="/answertemplate" render={(props) => (<AnswerTemplate {...props}/>)}/>
+              <Route path="/addPages" render={(props) => (<AddPages {...props}/>)}/>
               <Route path="/public_services" render={(props) => (<public_services {...props}/>)}/>
               <Route path="/permission_and_covoting" render={(props) => (<permission_and_covoting {...props}/>)}/>
               <Route path="/npm" render={(props) => (<Npm {...props}/>)}/>
