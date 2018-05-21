@@ -30,9 +30,12 @@ class AllApzs extends React.Component {
   constructor(props) {
     super(props);
 
+    var roles = JSON.parse(sessionStorage.getItem('userRoles'));
+
     this.state = {
       apzs: [],
-      loaderHidden: false
+      loaderHidden: false,
+      isPerformer: (roles.indexOf('PerformerWater') != -1),
     };
 
   }
@@ -74,6 +77,10 @@ class AllApzs extends React.Component {
         var data = JSON.parse(xhr.responseText);
         
         switch (status) {
+          case 'awaiting':
+            var apzs = data.awaiting;
+            break;
+
           case 'active':
             var apzs = data.in_process;
             break;
@@ -122,6 +129,11 @@ class AllApzs extends React.Component {
           <div>
             <ul className="nav nav-tabs mb-2 pull-right">
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerwater/status/active" replace>Активные</NavLink></li>
+              
+              {this.state.isPerformer &&
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerwater/status/awaiting" replace>В ожидании</NavLink></li>
+              }
+              
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerwater/status/accepted" replace>Принятые</NavLink></li>
               <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerwater/status/declined" replace>Отказанные</NavLink></li>
             </ul>
@@ -1091,7 +1103,7 @@ class ShowApz extends React.Component {
           </table>
         </div>
 
-        <div className="col-sm-6">
+        <div className={apz.apz_sewage ? 'col-sm-6' : 'col-sm-12'}>
           <h5 className="block-title-2 mt-3 mb-3">Детали водоснабжения</h5>
 
           <table className="table table-bordered table-striped" style={{textAlign: 'left'}} id="detail_table">
@@ -1145,46 +1157,48 @@ class ShowApz extends React.Component {
           <button className="btn btn-raised btn-success" onClick={this.printData}>Печать</button>
         </div>
 
-        <div className="col-sm-6">
-          <h5 className="block-title-2 mt-3 mb-3">Детали водоотведения</h5>
+        {apz.apz_sewage &&
+          <div className="col-sm-6">
+            <h5 className="block-title-2 mt-3 mb-3">Детали водоотведения</h5>
 
-          <table className="table table-bordered table-striped" style={{textAlign: 'left'}}>
-            <tbody>
-              <tr>
-                <td>Общее количество сточных вод (м<sup>3</sup>/сутки)</td>
-                <td>{apz.apz_sewage.amount}</td>
-              </tr>
-              <tr>
-                <td>Общее количество сточных вод (м<sup>3</sup>/час макс)</td>
-                <td>{apz.apz_sewage.amount_hour}</td>
-              </tr>
-              <tr>
-                <td>Фекальных (м<sup>3</sup>/сутки)</td>
-                <td>{apz.apz_sewage.feksal}</td>
-              </tr>
-              <tr>
-                <td>Фекальных (м<sup>3</sup>/час макс)</td>
-                <td>{apz.apz_sewage.feksal_hour}</td>
-              </tr>
-              <tr>
-                <td>Производственно-загрязненных (м<sup>3</sup>/сутки)</td>
-                <td>{apz.apz_sewage.production}</td>
-              </tr>
-              <tr>
-                <td>Производственно-загрязненных (м<sup>3</sup>/час макс)</td>
-                <td>{apz.apz_sewage.production_hour}</td>
-              </tr>
-              <tr>
-                <td>Условно-чистых сбрасываемых на городскую сеть (м<sup>3</sup>/сутки)</td>
-                <td>{apz.apz_sewage.to_city}</td>
-              </tr>
-              <tr>
-                <td>Условно-чистых сбрасываемых на городскую сеть (м<sup>3</sup>/час макс)</td>
-                <td>{apz.apz_sewage.to_city_hour}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+            <table className="table table-bordered table-striped" style={{textAlign: 'left'}}>
+              <tbody>
+                <tr>
+                  <td>Общее количество сточных вод (м<sup>3</sup>/сутки)</td>
+                  <td>{apz.apz_sewage.amount}</td>
+                </tr>
+                <tr>
+                  <td>Общее количество сточных вод (м<sup>3</sup>/час макс)</td>
+                  <td>{apz.apz_sewage.amount_hour}</td>
+                </tr>
+                <tr>
+                  <td>Фекальных (м<sup>3</sup>/сутки)</td>
+                  <td>{apz.apz_sewage.feksal}</td>
+                </tr>
+                <tr>
+                  <td>Фекальных (м<sup>3</sup>/час макс)</td>
+                  <td>{apz.apz_sewage.feksal_hour}</td>
+                </tr>
+                <tr>
+                  <td>Производственно-загрязненных (м<sup>3</sup>/сутки)</td>
+                  <td>{apz.apz_sewage.production}</td>
+                </tr>
+                <tr>
+                  <td>Производственно-загрязненных (м<sup>3</sup>/час макс)</td>
+                  <td>{apz.apz_sewage.production_hour}</td>
+                </tr>
+                <tr>
+                  <td>Условно-чистых сбрасываемых на городскую сеть (м<sup>3</sup>/сутки)</td>
+                  <td>{apz.apz_sewage.to_city}</td>
+                </tr>
+                <tr>
+                  <td>Условно-чистых сбрасываемых на городскую сеть (м<sup>3</sup>/час макс)</td>
+                  <td>{apz.apz_sewage.to_city_hour}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        }
 
         <div className="col-sm-12">
           {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}

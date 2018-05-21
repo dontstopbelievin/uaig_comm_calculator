@@ -29,9 +29,12 @@ class AllApzs extends React.Component {
   constructor(props) {
     super(props);
 
+    var roles = JSON.parse(sessionStorage.getItem('userRoles'));
+
     this.state = {
       apzs: [],
-      loaderHidden: false
+      loaderHidden: false,
+      isPerformer: (roles.indexOf('PerformerPhone') != -1),
     };
 
   }
@@ -73,6 +76,10 @@ class AllApzs extends React.Component {
         var data = JSON.parse(xhr.responseText);
         
         switch (status) {
+          case 'awaiting':
+            var apzs = data.awaiting;
+            break;
+
           case 'active':
             var apzs = data.in_process;
             break;
@@ -121,6 +128,11 @@ class AllApzs extends React.Component {
           <div>
             <ul className="nav nav-tabs mb-2 pull-right">
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerphone/status/active" replace>Активные</NavLink></li>
+              
+              {this.state.isPerformer &&
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerphone/status/awaiting" replace>В ожидании</NavLink></li>
+              }
+
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerphone/status/accepted" replace>Принятые</NavLink></li>
               <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/providerphone/status/declined" replace>Отказанные</NavLink></li>
             </ul>

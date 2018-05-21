@@ -32,6 +32,7 @@ class AllApzs extends React.Component {
 
     this.state = {
       activeApzs: [],
+      awaitingApzs: [],
       acceptedApzs: [],
       declinedApzs: [],
       loaderHidden: false
@@ -56,6 +57,7 @@ class AllApzs extends React.Component {
         var data = JSON.parse(xhr.responseText);
 
         this.setState({ activeApzs: data.in_process });
+        this.setState({ awaitingApzs: data.awaiting });
         this.setState({ acceptedApzs: data.accepted });
         this.setState({ declinedApzs: data.declined });
         this.setState({ loaderHidden: true });
@@ -85,6 +87,8 @@ class AllApzs extends React.Component {
     
     if (this.props.match.params.status === 'active') {
       apzs = this.state.activeApzs;
+    } else if (this.props.match.params.status === 'awaiting') {
+      apzs = this.state.awaitingApzs;
     } else if (this.props.match.params.status === 'accepted') {
       apzs = this.state.acceptedApzs;
     } else {
@@ -97,6 +101,7 @@ class AllApzs extends React.Component {
           <div>
             <ul className="nav nav-tabs mb-2 pull-right">
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/urban/status/active" replace>Активные</NavLink></li>
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/urban/status/awaiting" replace>В ожидании</NavLink></li>
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/urban/status/accepted" replace>Принятые</NavLink></li>
               <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/urban/status/declined" replace>Отказанные</NavLink></li>
             </ul>
