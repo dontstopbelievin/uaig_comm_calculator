@@ -72,6 +72,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import PopperJs from 'popper.js';
 import AddPages from "./routes/AddPages";
+import Page from "./routes/Page";
 // import tether from 'tether';
 // global.Tether = tether;
 //import 'bootstrap/dist/css/bootstrap.min.css';
@@ -185,6 +186,7 @@ export default class Main extends React.Component {
               <Route path="/dayNews/:date" render={(props) => (<NewsByDay {...props}/>)}/>
               <Route path="/typeofpublicservice" render={(props) => (<TypeOfPublicService {...props}/>)}/>
               <Route path="/statesymbols" render={(props) => (<StateSymbols {...props}/>)}/>
+              <Route path="/page/:id" render={(props) => (<Page {...props}/>)}/>
             </Switch>
             <Footer />
           </div>
