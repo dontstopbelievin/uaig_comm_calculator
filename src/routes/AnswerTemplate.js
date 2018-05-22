@@ -5,6 +5,8 @@ import {ru, kk} from '../languages/header.json';
 import $ from 'jquery';
 import { Route, Link,  Switch, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 export default class AnswerTemplate extends React.Component{
   render() {
@@ -165,8 +167,8 @@ class AddTemplate extends React.Component {
     xhr.send(formData);
   }
 
-  onTextChange(e){
-    this.setState({text: e.target.value});
+  onTextChange(value){
+    this.setState({text: value});
   }
 
   render() {
@@ -192,7 +194,7 @@ class AddTemplate extends React.Component {
           </div>
           <div className="form-group">
             <label htmlFor="text">Текст</label>
-            <textarea className="form-control" cols="30" rows="10" onChange={this.onTextChange} value={this.state.text}></textarea>
+            <ReactQuill value={this.state.text} onChange={this.onTextChange} />
           </div>
           <input type="submit" className="btn btn-outline-success" value="Отправить" />
         </form>
@@ -269,8 +271,8 @@ class ShowTemplate extends React.Component {
     xhr.send(formData);
   }
 
-  onTextChange(e){
-    this.setState({text: e.target.value});
+  onTextChange(value){
+    this.setState({text: value});
   }
   
   render() {
@@ -297,8 +299,8 @@ class ShowTemplate extends React.Component {
                 </div>
               </div>
               <div className="form-group">
-                  <label htmlFor="text">Текст</label>
-                  <textarea className="form-control" cols="30" rows="10" onChange={this.onTextChange} value={this.state.text}></textarea>
+                <label htmlFor="text">Текст</label>
+                <ReactQuill value={this.state.text} onChange={this.onTextChange} />
               </div>
               <input type="submit" className="btn btn-outline-success" value="Сохранить" />
             </form>

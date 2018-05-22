@@ -4,6 +4,8 @@ import EsriLoaderReact from 'esri-loader-react';
 import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import $ from 'jquery';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 export default class Urban extends React.Component {
   render() {
@@ -187,8 +189,8 @@ class ShowApz extends React.Component {
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
   }
 
-  onDescriptionChange(e) {
-    this.setState({ description: e.target.value });
+  onDescriptionChange(value) {
+    this.setState({ description: value });
   }
 
   onTemplateListChange(e) {
@@ -778,7 +780,7 @@ class ShowApz extends React.Component {
                         }
                         
                         <div className="form-group">
-                          <textarea className="form-control" cols="30" rows="10" onChange={this.onDescriptionChange} value={this.state.description}></textarea>
+                          <ReactQuill value={this.state.description} onChange={this.onDescriptionChange} />
                         </div>
                       </div>
                       <div className="modal-footer">
