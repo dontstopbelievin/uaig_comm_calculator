@@ -196,6 +196,7 @@ class AddApz extends React.Component {
       confirmedTaskFile: null,
       titleDocumentFile: null,
       paymentPhotoFile: null,
+      survey: null,
       showMap: false,
       hasCoordinates: false,
       loaderHidden: true,
@@ -208,6 +209,7 @@ class AddApz extends React.Component {
     this.onConfirmedTaskFileChange = this.onConfirmedTaskFileChange.bind(this);
     this.onTitleDocumentFileChange = this.onTitleDocumentFileChange.bind(this);
     this.onPaymentPhotoFileChange = this.onPaymentPhotoFileChange.bind(this);
+    this.onSurveyChange = this.onSurveyChange.bind(this);
     this.hasCoordinates = this.hasCoordinates.bind(this);
     this.toggleMap = this.toggleMap.bind(this);
     this.deleteBlock = this.deleteBlock.bind(this);
@@ -225,6 +227,10 @@ class AddApz extends React.Component {
 
   onTitleDocumentFileChange(e) {
     this.setState({ titleDocumentFile: e.target.files[0] });
+  }
+
+  onSurveyChange(e) {
+    this.setState({ survey: e.target.files[0] });
   }
 
   onPaymentPhotoFileChange(e) {
@@ -376,6 +382,7 @@ class AddApz extends React.Component {
             formData.append('ConfirmedTaskFile', this.state.confirmedTaskFile);
             formData.append('TitleDocumentFile', this.state.titleDocumentFile);
             formData.append('PaymentPhotoFile', this.state.paymentPhotoFile);
+            formData.append('Survey', this.state.survey);
             $.ajax({
               type: 'POST',
               url: window.url + 'api/apz/citizen/upload/' + data.id ,
@@ -796,36 +803,40 @@ class AddApz extends React.Component {
                 <form id="tab3-form" data-tab="3" onSubmit={this.tabSubmission.bind(this)}>
                 <div className="row">
                   <div className="col-md-6">
-                  <div className="form-group">
-                    <label>Количество людей</label>
-                    <input type="number" step="0.1" className="form-control" name="PeopleCount" onChange={this.PeopleCount.bind(this)} placeholder="" />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
-                    <input type="number" step="any" className="form-control" name="WaterRequirement" placeholder="" />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="WaterSewage">Канализация (м<sup>3</sup>/сутки)</label>
-                    <input type="number" readOnly="readonly" className="form-control" name="WaterSewage" />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="WaterProduction">На производственные нужды (м<sup>3</sup>/сутки)</label>
-                    <input type="number" step="any" className="form-control" name="WaterProduction" placeholder="" />
-                  </div>
+                    <div className="form-group">
+                      <label>Количество людей</label>
+                      <input type="number" step="0.1" className="form-control" name="PeopleCount" onChange={this.PeopleCount.bind(this)} placeholder="" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
+                      <input type="number" step="any" className="form-control" name="WaterRequirement" placeholder="" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="WaterFireFighting">Потребные расходы наружного пожаротушения (л/сек)</label>
+                      <input type="number" min="10" defaultValue="10" className="form-control" name="WaterFireFighting" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="WaterProduction">На производственные нужды (м<sup>3</sup>/сутки)</label>
+                      <input type="number" step="any" className="form-control" name="WaterProduction" placeholder="" />
+                    </div>
                   </div>
                   <div className="col-md-6">
-                  <div className="form-group">
-                    <label htmlFor="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
-                    <input type="number" step="any" className="form-control" name="WaterDrinking" placeholder="" />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="WaterFireFighting">Потребные расходы наружного пожаротушения (л/сек)</label>
-                    <input type="number" min="10" defaultValue="10" className="form-control" name="WaterFireFighting" />
-                  </div>
-                  <div className="form-group">
-                    <label>Потребные расходы внутреннего пожаротушения (л/сек)</label>
-                    <input type="number" className="form-control" />
-                  </div>
+                    <div className="form-group">
+                      <label htmlFor="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
+                      <input type="number" step="any" className="form-control" name="WaterDrinking" placeholder="" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="WaterSewage">Канализация (м<sup>3</sup>/сутки)</label>
+                      <input type="number" readOnly="readonly" className="form-control" name="WaterSewage" />
+                    </div>
+                    <div className="form-group">
+                      <label>Потребные расходы внутреннего пожаротушения (л/сек)</label>
+                      <input type="number" className="form-control" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="Survey">Топографическая съемка</label>
+                      <input type="file" name="Survey" className="form-control" onChange={this.onSurveyChange} />
+                    </div>
                   </div>
                 </div>
                 <div>

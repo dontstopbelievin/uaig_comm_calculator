@@ -230,6 +230,7 @@ class ShowApz extends React.Component {
       personalIdFile: false,
       confirmedTaskFile: false,
       titleDocumentFile: false,
+      surveyFile: false,
       showMapText: 'Показать карту',
       accept: true,
       callSaveFromSend: false,
@@ -308,10 +309,12 @@ class ShowApz extends React.Component {
   }
 
   onEstimatedWaterFlowRateChange(e) {
+    this.setState({ genWaterReq: (e.target.value ? parseFloat(e.target.value) : 0) + parseFloat(this.state.existingWaterConsumption) });
     this.setState({ estimatedWaterFlowRate: e.target.value });
   }
 
   onExistingWaterConsumptionChange(e) {
+    this.setState({ genWaterReq: parseFloat(this.state.estimatedWaterFlowRate) + (e.target.value ? parseFloat(e.target.value) : 0) });
     this.setState({ existingWaterConsumption: e.target.value });
   }
 
@@ -377,6 +380,7 @@ class ShowApz extends React.Component {
         this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
         this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
+        this.setState({surveyFile: data.files.filter(function(obj) { return obj.category_id === 22 })[0]});
 
         if (data.commission && data.commission.apz_water_response) {
           data.commission.apz_water_response.response_text ? this.setState({description: data.commission.apz_water_response.response_text}) : this.setState({description: "" });
@@ -1099,6 +1103,13 @@ class ShowApz extends React.Component {
                   <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>Скачать</a></td>
                 </tr>
               }
+
+              {this.state.surveyFile &&
+                <tr className="shukichi">
+                  <td><b>Топографическая съемка</b></td>
+                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.surveyFile.id)}>Скачать</a></td>
+                </tr>
+              }
             </tbody>
           </table>
         </div>
@@ -1312,19 +1323,19 @@ class ShowApz extends React.Component {
                 </div>
                 <div className="col-sm-6">
                   <div className="form-group">
-                    <label>Расчетный расход воды (Водоотведение)</label>
+                    <label>Расчетный расход сточных вод</label>
                     <input type="number" step="any" className="form-control" placeholder="" value={this.state.sewageEstimatedWaterFlowRate} onChange={this.onSewageEstimatedWaterFlowRateChange} />
                   </div>
                   <div className="form-group">
-                    <label>Существующий расход воды (Водоотведение)</label>
+                    <label>Существующий расход сточных вод</label>
                     <input type="number" step="any" className="form-control" placeholder="" value={this.state.sewageExistingWaterConsumption} onChange={this.onSewageExistingWaterConsumptionChange} />
                   </div>
                   <div className="form-group">
-                    <label>Расходы пожаротушения внутренные (л/сек)</label>
+                    <label>Расходы внутреннего пожаротушения (л/сек)</label>
                     <input type="number" step="any" className="form-control" value={this.state.fireFightingWaterIn} onChange={this.onFireFightingWaterInChange} />
                   </div>
                   <div className="form-group">
-                    <label>Расходы пожаротушения внешные (л/сек)</label>
+                    <label>Расходы наружного пожаротушения (л/сек)</label>
                     <input type="number" step="any" className="form-control" value={this.state.fireFightingWaterOut} onChange={this.onFireFightingWaterOutChange} />
                   </div>
                   <div className="form-group">
