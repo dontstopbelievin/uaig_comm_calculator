@@ -3,7 +3,6 @@ import React from 'react';
 import EsriLoaderReact from 'esri-loader-react';
 import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
-import CKEditor from "react-ckeditor-component";
 import $ from 'jquery';
 
 export default class Urban extends React.Component {
@@ -189,27 +188,16 @@ class ShowApz extends React.Component {
   }
 
   onDescriptionChange(e) {
-    var content = e.editor.getData();
-    this.setState({ description: content });
+    this.setState({ description: e.target.value });
   }
 
   onTemplateListChange(e) {
     var template = this.state.templates.find(template => template.id == e.target.value);
-    var instance = window.CKEDITOR.instances[Object.keys(window.CKEDITOR.instances)[0]];
 
     this.setState({ description: template.text });
-    instance.setData(template.text);
   }
 
   componentWillMount() {
-    if (window.CKEDITOR && window.CKEDITOR.instances) {
-      var name;
-
-      for(name in window.CKEDITOR.instances) {
-        window.CKEDITOR.instances[name].destroy(true);
-      }
-    }
-
     this.getApzInfo();
   }
 
@@ -790,13 +778,7 @@ class ShowApz extends React.Component {
                         }
                         
                         <div className="form-group">
-                          <CKEditor 
-                            activeClass="p10" 
-                            content={this.state.description} 
-                            events={{
-                              "change": this.onDescriptionChange
-                            }}
-                           />
+                          <textarea className="form-control" cols="30" rows="10" onChange={this.onDescriptionChange} value={this.state.description}></textarea>
                         </div>
                       </div>
                       <div className="modal-footer">
