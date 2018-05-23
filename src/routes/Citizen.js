@@ -639,7 +639,7 @@ class AddApz extends React.Component {
                       <span className="help-block">документ в формате pdf, doc, docx</span>
                     </div>
                     <div className="form-group">
-                      <label htmlFor="TitleDocumentFile">Правоустанавливающий документ на земельный участок</label>
+                      <label htmlFor="TitleDocumentFile">Госакт и правоустанавливающий документ на земельный участок</label>
                       <input type="file" required name="TitleDocumentFile" className="form-control" onChange={this.onTitleDocumentFileChange} />
                       <span className="help-block">документ в формате pdf, doc, docx</span>
                     </div>
@@ -1050,6 +1050,11 @@ class ShowApz extends React.Component {
       electroResponseFile: null,
       heatResponseFile: null,
       gasResponseFile: null,
+      waterCustomTcFile: null,
+      phoneCustomTcFile: null,
+      electroCustomTcFile: null,
+      heatCustomTcFile: null,
+      gasCustomTcFile: null,
       personalIdFile: false,
       confirmedTaskFile: false,
       titleDocumentFile: false,
@@ -1088,22 +1093,27 @@ class ShowApz extends React.Component {
           if (commission) {
             if (commission.apz_water_response && commission.apz_water_response.files) {
               this.setState({waterResponseFile: commission.apz_water_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+              this.setState({waterCustomTcFile: commission.apz_water_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
             }
             
             if (commission.apz_electricity_response && commission.apz_electricity_response.files) {
               this.setState({electroResponseFile: commission.apz_electricity_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+              this.setState({electroCustomTcFile: commission.apz_electricity_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
             }
 
             if (commission.apz_phone_response && commission.apz_phone_response.files) {
               this.setState({phoneResponseFile: commission.apz_phone_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+              this.setState({phoneCustomTcFile: commission.apz_phone_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
             }
 
             if (commission.apz_heat_response && commission.apz_heat_response.files) {
               this.setState({heatResponseFile: commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+              this.setState({heatCustomTcFile: commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
             }
 
             if (commission.apz_gas_response && commission.apz_gas_response.files) {
               this.setState({gasResponseFile: commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+              this.setState({gasCustomTcFile: commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
             }
           }
 
@@ -1798,7 +1808,7 @@ class ShowApz extends React.Component {
                             <td style={{width: '22%'}}>
                               <b>Водоснабжение</b>
                             </td> 
-                            <td><a className="text-info pointer" data-toggle="modal" data-target="#water_provier_modal">Просмотр</a></td>
+                            <td><a className="text-info pointer" data-toggle="modal" data-target="#water_provider_modal">Просмотр</a></td>
                           </tr>
                         }
                         
@@ -1807,7 +1817,7 @@ class ShowApz extends React.Component {
                             <td>
                               <b>Теплоснабжение</b>
                             </td> 
-                            <td><a className="text-info pointer" data-toggle="modal" data-target="#heat_provier_modal">Просмотр</a></td>
+                            <td><a className="text-info pointer" data-toggle="modal" data-target="#heat_provider_modal">Просмотр</a></td>
                           </tr>
                         }
                       
@@ -1816,7 +1826,7 @@ class ShowApz extends React.Component {
                             <td>
                               <b>Электроснабжение</b>
                             </td> 
-                            <td><a className="text-info pointer" data-toggle="modal" data-target="#electro_provier_modal">Просмотр</a></td>
+                            <td><a className="text-info pointer" data-toggle="modal" data-target="#electricity_provider_modal">Просмотр</a></td>
                           </tr>
                         }
                       
@@ -1825,7 +1835,7 @@ class ShowApz extends React.Component {
                             <td>
                               <b>Газоснабжение</b>
                             </td> 
-                            <td><a className="text-info pointer" data-toggle="modal" data-target="#gas_provier_modal">Просмотр</a></td>
+                            <td><a className="text-info pointer" data-toggle="modal" data-target="#gas_provider_modal">Просмотр</a></td>
                           </tr>
                         }
 
@@ -1834,14 +1844,14 @@ class ShowApz extends React.Component {
                             <td>
                               <b>Телефонизация</b>
                             </td> 
-                            <td><a className="text-info pointer" data-toggle="modal" data-target="#phone_provier_modal">Просмотр</a></td>
+                            <td><a className="text-info pointer" data-toggle="modal" data-target="#phone_provider_modal">Просмотр</a></td>
                           </tr>
                         }
                       </tbody>
                     </table>
 
-                    {apz.commission.apz_water_response &&
-                      <div className="modal fade" id="water_provier_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                    {apz.commission &&  apz.commission.apz_water_response &&
+                      <div className="modal fade" id="water_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">
                         <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
                           <div className="modal-content">
                             <div className="modal-header">
@@ -1852,7 +1862,16 @@ class ShowApz extends React.Component {
                             </div>
                             <div className="modal-body">
                               <table className="table table-bordered table-striped">
-                                {apz.commission.apz_water_response.response ?
+                                {this.state.waterCustomTcFile && apz.commission.apz_water_response.response &&
+                                  <tbody>
+                                    <tr>
+                                      <td style={{width: '50%'}}><b>Техническое условие</b></td>
+                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.waterCustomTcFile.id)}>Скачать</a></td>
+                                    </tr>
+                                  </tbody>
+                                }
+
+                                {!this.state.waterCustomTcFile && apz.commission.apz_water_response.response &&
                                   <tbody>
                                     <tr>
                                       <td style={{width: '50%'}}><b>Общая потребность (м<sup>3</sup>/сутки)</b></td>
@@ -1886,16 +1905,22 @@ class ShowApz extends React.Component {
                                       <td><b>Номер документа</b></td>
                                       <td>{apz.commission.apz_water_response.doc_number}</td>
                                     </tr>
-                                    <tr>
-                                      <td><b>Загруженный ТУ</b></td>  
-                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.waterResponseFile.id)}>Скачать</a></td>
-                                    </tr>
+                                    
+                                    {this.state.waterResponseFile &&
+                                      <tr>
+                                        <td><b>Загруженный ТУ</b></td>  
+                                        <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.waterResponseFile.id)}>Скачать</a></td>
+                                      </tr>
+                                    }
+
                                     <tr>
                                       <td><b>Сформированный ТУ</b></td>  
                                       <td><a className="text-info pointer" onClick={this.printWaterTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
                                     </tr>
                                   </tbody>
-                                  :
+                                }
+
+                                {!apz.commission.apz_water_response.response && this.state.waterResponseFile &&
                                   <tbody>
                                     <tr>
                                       <td style={{width: '50%'}}><b>МО Вода</b></td>  
@@ -1913,8 +1938,8 @@ class ShowApz extends React.Component {
                       </div>
                     }
 
-                    {apz.commission.apz_heat_response &&
-                      <div className="modal fade" id="heat_provier_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                    {apz.commission && apz.commission.apz_heat_response &&
+                      <div className="modal fade" id="heat_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">
                         <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
                           <div className="modal-content">
                             <div className="modal-header">
@@ -1925,7 +1950,16 @@ class ShowApz extends React.Component {
                             </div>
                             <div className="modal-body">
                               <table className="table table-bordered table-striped">
-                                {apz.commission.apz_heat_response.response ?
+                                {this.state.heatCustomTcFile && apz.commission.apz_heat_response.response &&
+                                  <tbody>
+                                    <tr>
+                                      <td style={{width: '50%'}}><b>Техническое условие</b></td>
+                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.heatCustomTcFile.id)}>Скачать</a></td>
+                                    </tr>
+                                  </tbody>
+                                }
+
+                                {!this.state.heatCustomTcFile && apz.commission.apz_heat_response.response &&
                                   <tbody>
                                     <tr> 
                                       <td style={{width: '50%'}}><b>Источник теплоснабжения</b></td>
@@ -1940,16 +1974,20 @@ class ShowApz extends React.Component {
                                       <td>{apz.commission.apz_heat_response.load_contract_num}</td>
                                     </tr>
                                     <tr>
-                                      <td><b>Отопление (Гкал/ч)</b></td>
+                                      <td><b>Отопление по договору</b></td>
                                       <td>{apz.commission.apz_heat_response.main_in_contract}</td>
                                     </tr>
                                     <tr>
-                                      <td><b>Вентиляция (Гкал/ч)</b></td>
+                                      <td><b>Вентиляция по договору</b></td>
                                       <td>{apz.commission.apz_heat_response.ven_in_contract}</td>
                                     </tr>
                                     <tr>
-                                      <td><b>Горячее водоснабжение (Гкал/ч)</b></td>
+                                      <td><b>Горячее водоснабжение по договору (ср/ч)</b></td>
                                       <td>{apz.commission.apz_heat_response.water_in_contract}</td>
+                                    </tr>
+                                    <tr>
+                                      <td><b>Горячее водоснабжение по договору (макс/ч)</b></td>
+                                      <td>{apz.commission.apz_heat_response.water_in_contract_max}</td>
                                     </tr>
                                     <tr>
                                       <td><b>Дополнительное</b></td>
@@ -1959,16 +1997,22 @@ class ShowApz extends React.Component {
                                       <td><b>Номер документа</b></td>
                                       <td>{apz.commission.apz_heat_response.doc_number}</td> 
                                     </tr>
-                                    <tr>
-                                      <td><b>Загруженный ТУ</b>:</td> 
-                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.heatResponseFile.id)}>Скачать</a></td>
-                                    </tr>
+
+                                    {this.state.heatResponseFile &&
+                                      <tr>
+                                        <td><b>Загруженный ТУ</b>:</td> 
+                                        <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.heatResponseFile.id)}>Скачать</a></td>
+                                      </tr>
+                                    }
+                                    
                                     <tr>
                                       <td><b>Сформированный ТУ</b></td>  
                                       <td><a className="text-info pointer" onClick={this.printHeatTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
                                     </tr>
                                   </tbody>
-                                  :
+                                }
+
+                                {!apz.commission.apz_heat_response.response && this.state.heatResponseFile &&
                                   <tbody>
                                     <tr>
                                       <td style={{width: '50%'}}><b>МО Тепло</b></td>  
@@ -1978,7 +2022,7 @@ class ShowApz extends React.Component {
                                 }
                               </table>
 
-                              {(apz.commission.apz_heat_response.response === 1 && apz.commission.apz_heat_response.blocks.length > 0) &&
+                              {!this.state.heatCustomTcFile && apz.commission.apz_heat_response.response && apz.commission.apz_heat_response.blocks &&
                                 <div>
                                   {apz.commission.apz_heat_response.blocks.map(function(item, index) {
                                     return(
@@ -1986,20 +2030,24 @@ class ShowApz extends React.Component {
                                         {apz.commission.apz_heat_response.blocks.length > 1 &&
                                           <h5>Здание №{index + 1}</h5>
                                         }
-
+                                        
                                         <table className="table table-bordered table-striped">
                                           <tbody>
                                             <tr>
                                               <td style={{width: '50%'}}><b>Отопление (Гкал/ч)</b></td>
-                                              <td>{item.main_in_contract}</td>
+                                              <td>{item.main}</td>
                                             </tr>
                                             <tr>
                                               <td><b>Вентиляция (Гкал/ч)</b></td>
-                                              <td>{item.ven_in_contract}</td>
+                                              <td>{item.ven}</td>
                                             </tr>
                                             <tr>
-                                              <td><b>Горячее водоснаб.(Гкал/ч)</b></td>
-                                              <td>{item.water_in_contract}</td>
+                                              <td><b>Горячее водоснабжение (ср/ч)</b></td>
+                                              <td>{item.water}</td>
+                                            </tr>
+                                            <tr>
+                                              <td><b>Горячее водоснабжение (макс/ч)</b></td>
+                                              <td>{item.water_max}</td>
                                             </tr>
                                           </tbody>
                                         </table>
@@ -2017,8 +2065,8 @@ class ShowApz extends React.Component {
                       </div>
                     }
 
-                    {apz.commission.apz_electricity_response &&
-                      <div className="modal fade" id="electro_provier_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                    {apz.commission && apz.commission.apz_electricity_response &&
+                      <div className="modal fade" id="electricity_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">
                         <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
                           <div className="modal-content">
                             <div className="modal-header">
@@ -2029,7 +2077,16 @@ class ShowApz extends React.Component {
                             </div>
                             <div className="modal-body">
                               <table className="table table-bordered table-striped">
-                                {apz.commission.apz_electricity_response.response ?
+                                {this.state.electroCustomTcFile && apz.commission.apz_electricity_response.response &&
+                                  <tbody>
+                                    <tr>
+                                      <td style={{width: '50%'}}><b>Техническое условие</b></td>
+                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.electroCustomTcFile.id)}>Скачать</a></td>
+                                    </tr>
+                                  </tbody>
+                                }
+
+                                {!this.state.electroCustomTcFile && apz.commission.apz_electricity_response.response &&
                                   <tbody>
                                     <tr>
                                       <td style={{width: '50%'}}><b>Требуемая мощность (кВт)</b></td>
@@ -2055,16 +2112,22 @@ class ShowApz extends React.Component {
                                       <td><b>Номер документа</b></td>
                                       <td>{apz.commission.apz_electricity_response.doc_number}</td> 
                                     </tr>
-                                    <tr>
-                                      <td><b>Загруженный ТУ</b>:</td> 
-                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.electroResponseFile.id)}>Скачать</a></td>
-                                    </tr>
+
+                                    {this.state.electroResponseFile &&
+                                      <tr>
+                                        <td><b>Загруженный ТУ</b>:</td> 
+                                        <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.electroResponseFile.id)}>Скачать</a></td>
+                                      </tr>
+                                    }
+                                    
                                     <tr>
                                       <td><b>Сформированный ТУ</b></td>  
                                       <td><a className="text-info pointer" onClick={this.printElectroTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
                                     </tr>
                                   </tbody>
-                                  :
+                                }
+                                
+                                {!apz.commission.apz_electricity_response.response && this.state.electroResponseFile &&
                                   <tbody>
                                     <tr>
                                       <td style={{width: '50%'}}><b>МО Электро</b></td>  
@@ -2082,8 +2145,8 @@ class ShowApz extends React.Component {
                       </div>
                     }
 
-                    {apz.commission.apz_gas_response &&
-                      <div className="modal fade" id="gas_provier_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                    {apz.commission && apz.commission.apz_gas_response &&
+                      <div className="modal fade" id="gas_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">
                         <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
                           <div className="modal-content">
                             <div className="modal-header">
@@ -2094,7 +2157,16 @@ class ShowApz extends React.Component {
                             </div>
                             <div className="modal-body">
                               <table className="table table-bordered table-striped">
-                                {apz.commission.apz_gas_response.response ?
+                                {this.state.gasCustomTcFile && apz.commission.apz_gas_response.response &&
+                                  <tbody>
+                                    <tr>
+                                      <td style={{width: '50%'}}><b>Техническое условие</b></td>
+                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.gasCustomTcFile.id)}>Скачать</a></td>
+                                    </tr>
+                                  </tbody>
+                                }
+
+                                {!this.state.gasCustomTcFile && apz.commission.apz_gas_response.response &&
                                   <tbody>
                                     <tr>
                                       <td style={{width: '50%'}}><b>Точка подключения</b></td>
@@ -2116,16 +2188,22 @@ class ShowApz extends React.Component {
                                       <td><b>Номер документа</b></td>
                                       <td>{apz.commission.apz_gas_response.doc_number}</td>
                                     </tr>
-                                    <tr>
-                                      <td><b>Загруженный ТУ</b></td> 
-                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.gasResponseFile.id)}>Скачать</a></td>
-                                    </tr>
+
+                                    {this.state.gasResponseFile &&
+                                      <tr>
+                                        <td><b>Загруженный ТУ</b></td> 
+                                        <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.gasResponseFile.id)}>Скачать</a></td>
+                                      </tr>
+                                    }
+                                    
                                     <tr>
                                       <td><b>Сформированный ТУ</b></td>  
                                       <td><a className="text-info pointer" onClick={this.printGasTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
                                     </tr>
                                   </tbody>
-                                  :
+                                }
+
+                                {!apz.commission.apz_gas_response.response && this.state.gasResponseFile &&
                                   <tbody>
                                     <tr>
                                       <td style={{width: '50%'}}><b>МО Газ</b></td>  
@@ -2143,8 +2221,8 @@ class ShowApz extends React.Component {
                       </div>
                     }
 
-                    {apz.commission.apz_phone_response &&
-                      <div className="modal fade" id="phone_provier_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                    {apz.commission && apz.commission.apz_phone_response &&
+                      <div className="modal fade" id="phone_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">
                         <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
                           <div className="modal-content">
                             <div className="modal-header">
@@ -2155,7 +2233,16 @@ class ShowApz extends React.Component {
                             </div>
                             <div className="modal-body">
                               <table className="table table-bordered table-striped">
-                                {apz.commission.apz_phone_response.response ?
+                                {this.state.phoneCustomTcFile && apz.commission.apz_phone_response.response &&
+                                  <tbody>
+                                    <tr>
+                                      <td style={{width: '50%'}}><b>Техническое условие</b></td>
+                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.phoneCustomTcFile.id)}>Скачать</a></td>
+                                    </tr>
+                                  </tbody>
+                                }
+
+                                {!this.state.phoneCustomTcFile && apz.commission.apz_phone_response.response &&
                                   <tbody>
                                     <tr>
                                       <td style={{width: '50%'}}><b>Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</b></td>
@@ -2177,16 +2264,22 @@ class ShowApz extends React.Component {
                                       <td><b>Номер документа</b></td>
                                       <td>{apz.commission.apz_phone_response.doc_number}</td>
                                     </tr>
-                                    <tr>
-                                      <td><b>Загруженный ТУ</b></td>
-                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.phoneResponseFile.id)}>Скачать</a></td>
-                                    </tr>
+
+                                    {this.state.phoneResponseFile &&
+                                      <tr>
+                                        <td><b>Загруженный ТУ</b></td>
+                                        <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.phoneResponseFile.id)}>Скачать</a></td>
+                                      </tr>
+                                    }
+                                    
                                     <tr>
                                       <td><b>Сформированный ТУ</b></td>
                                       <td><a className="text-info pointer" onClick={this.printPhoneTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
                                     </tr>
                                   </tbody>
-                                  :
+                                }
+
+                                {!apz.commission.apz_phone_response.response && this.state.phoneResponseFile &&
                                   <tbody>
                                     <tr>
                                       <td style={{width: '50%'}}><b>МО Газ</b></td>

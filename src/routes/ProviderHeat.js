@@ -228,7 +228,7 @@ class ShowApz extends React.Component {
       confirmedTaskFile: false,
       titleDocumentFile: false,
       showMapText: 'Показать карту',
-      accept: true,
+      accept: 'accept',
       callSaveFromSend: false,
       heatStatus: 2,
       storageAlias: "PKCS12",
@@ -266,7 +266,8 @@ class ShowApz extends React.Component {
       isDirector: (roles.indexOf('DirectorHeat') != -1),
       heads_responses: [],
       head_accepted: true,
-      headComment: null,
+      headComment: "",
+      customTcFile: null
     };
 
     this.onHeatResourceChange = this.onHeatResourceChange.bind(this);
@@ -281,6 +282,7 @@ class ShowApz extends React.Component {
     this.onDocNumberChange = this.onDocNumberChange.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
+    this.onCustomTcFileChange = this.onCustomTcFileChange.bind(this);
     this.saveResponseForm = this.saveResponseForm.bind(this);
     this.sendHeatResponse = this.sendHeatResponse.bind(this);
     this.onTwoPipeTcNameChange = this.onTwoPipeTcNameChange.bind(this);
@@ -499,6 +501,10 @@ class ShowApz extends React.Component {
     this.setState({ file: e.target.files[0] });
   }
 
+  onCustomTcFileChange(e) {
+    this.setState({ customTcFile: e.target.files[0] });
+  }
+
   // this function to show one of the forms Accept/Decline
   toggleAcceptDecline(value) {
     this.setState({accept: value});
@@ -576,9 +582,10 @@ class ShowApz extends React.Component {
           this.setState({docNumber: data.commission.apz_heat_response.doc_number});
           this.setState({responseId: data.commission.apz_heat_response.id});
           this.setState({response: data.commission.apz_heat_response.response});
-          this.setState({accept: data.commission.apz_heat_response.response});
           this.setState({responseFile: data.commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12})[0]});
           this.setState({xmlFile: data.commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 16})[0]});
+          this.setState({customTcFile: data.commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 23})[0]});
+          this.setState({accept: this.state.customTcFile ? 'answer' : data.commission.apz_heat_response.response ? 'accept' : 'decline'});
         }
 
         if (data.commission.apz_heat_response && data.commission.apz_heat_response.blocks && data.commission.apz_heat_response.blocks.length > 0) {
@@ -932,9 +939,11 @@ class ShowApz extends React.Component {
   saveResponseForm(apzId, status, comment){
     var token = sessionStorage.getItem('tokenInfo');
     var file = this.state.file;
+    var customTcFile = this.state.customTcFile;
 
     var formData = new FormData();
     formData.append('file', file);
+    formData.append('customTcFile', customTcFile);
     formData.append('Response', status);
     formData.append('Message', comment);
     if(status === 0){
@@ -1027,7 +1036,8 @@ class ShowApz extends React.Component {
         //console.log(data);
         this.setState({responseId: data.id});
         this.setState({response: data.response});
-        this.setState({accept: data.response});
+        data.files ? this.setState({customTcFile: data.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: null});;
+        this.setState({accept: this.state.customTcFile ? 'answer' : data.response ? 'accept' : 'decline'});
         data.response_text ? this.setState({description: data.response_text}) : this.setState({description: ""});
         data.files ? this.setState({responseFile: data.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]}) : this.setState({responseFile: null});
         data.connection_point ? this.setState({connectionPoint: data.connection_point}) : this.setState({connectionPoint: ""});
@@ -1468,25 +1478,28 @@ printData()
 
           <div className="row" style={{margin: '16px 0'}}>
             {(this.state.isPerformer === true || this.state.responseId != 0) &&
-              <div className="col-sm-6">
-                <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ</h5> 
+              <div className="col-sm-6 pl-0">
+                <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ:</h5> 
               </div>
             }
             <div className="col-sm-6">
               {this.state.showButtons && !this.state.isSigned && this.state.isPerformer &&
                 <div className="btn-group" style={{float: 'right', margin: '0'}}>
-                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, true)}>
-                    Одобрить
+                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, 'accept')}>
+                    Создать ТУ
                   </button>
-                  <button className="btn btn-raised btn-danger" onClick={this.toggleAcceptDecline.bind(this, false)}>
-                    Отклонить
+                  <button className="btn btn-raised btn-secondary" style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, 'answer')}>
+                    Ответ
+                  </button>
+                  <button className="btn btn-raised btn-danger" onClick={this.toggleAcceptDecline.bind(this, 'decline')}>
+                    Создать МО
                   </button>
                 </div>
               }
             </div>
           </div>
 
-          {(this.state.accept === true || this.state.accept === 1) && this.state.heatStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
+          {this.state.accept === 'accept' && this.state.heatStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
             <div className="row" style={{border: 'solid 3px #46A149', padding: '15px 5px', margin: '0'}}>
               <div className="col-sm-4">
                 <div className="form-group">
@@ -1699,7 +1712,7 @@ printData()
               {!this.state.xmlFile &&
                 <div className="col-sm-12">
                   <div className="form-group">
-                    <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
+                    <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, "accept", "")}>
                       Сохранить
                     </button>
 
@@ -1714,7 +1727,7 @@ printData()
             </div>
           }
 
-          {(this.state.accept === 1 || this.state.accept === true) && this.state.responseId != 0 && (this.state.heatStatus === 1 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
+          {this.state.accept === 'accept' && this.state.responseId != 0 && (this.state.heatStatus === 1 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
             <div>
               <table className="table table-bordered table-striped">
                 <tbody>
@@ -1797,90 +1810,126 @@ printData()
                   }.bind(this))}
                 </div>
               }
+            </div>
+          }
 
-              {this.state.heads_responses.length > 0 &&
-                <div>
-                  <h5 className="block-title-2 mt-4 mb-3">Комментарии:</h5>
-
-                  <table className="table table-bordered table-striped">
-                    <tbody>
-                      <tr>
-                        <th>ФИО</th>
-                        <th>Комментарий</th>
-                        <th>Дата</th>
-                      </tr>
-                      {this.state.heads_responses.map(function(item, index) {
-                        return(
-                          <tr key={index}>
-                            <td width="40%">
-                              {item.user.name} 
-                            </td>
-                            <td width="40%">{item.comments}</td>
-                            <td>{this.toDate(item.created_at)}</td>
-                          </tr>
-                          );
-                        }.bind(this))
-                      }
-                    </tbody>
-                  </table>
-                </div>
-              }
-
-              {this.state.isHead &&
-                <div className={this.state.showButtons ? '' : 'invisible'}>
-                  <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                    <textarea style={{marginBottom: '10px'}} placeholder="Комментарий" rows="7" cols="50" className="form-control" value={this.state.headComment} onChange={this.onHeadCommentChange}></textarea>
-                    <button className="btn btn-raised btn-success" onClick={this.sendHeadResponse.bind(this, apz.id, true, this.state.headComment)}>
-                      Отправить
-                    </button>
-                  </div>
-                </div>
-              }
-
-              {this.state.isDirector &&
-                <div>
-                  {!this.state.xmlFile && !this.state.isSigned &&
-                    <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                      <div className="row form-group">
-                        <div className="col-sm-7">
-                          <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
-                        </div>
-
-                        <div className="col-sm-5 p-0">
-                          <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
-                        </div>
-                      </div>
-
-                      <div className="form-group">
-                        <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
-                      </div>
-
-                      <div className="form-group">
-                        <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
-                      </div>
-                    </div>
+          {this.state.accept === 'answer' && this.state.heatStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
+            <div style={{border: 'solid 3px #46A149', padding: '15px'}}>
+              <div className="form-group">
+                <label htmlFor="custom_tc_file">
+                  Прикрепить файл
+                  
+                  {this.state.customTcFile &&
+                    <span style={{paddingLeft: '5px'}}>
+                      (текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.customTcFile.id)}>{this.state.customTcFile.name}</a>)
+                    </span>
                   }
+                </label>
+                <input type="file" id="custom_tc_file" className="form-control" onChange={this.onCustomTcFileChange} />
+              </div>
 
-                  {this.state.heatStatus === 2 && this.state.isSigned &&
-                    <div className="form-group">
-                      <button type="button" className="btn btn-primary" onClick={this.sendHeatResponse.bind(this, apz.id, true, "")}>
-                        Отправить
-                      </button>
-                    </div>
-                  }
+              {!this.state.xmlFile &&
+                <div className="form-group">
+                  <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, "answer", "")}>
+                    Сохранить
+                  </button>
                 </div>
               }
             </div>
           }
 
-          {(this.state.accept === false || this.state.accept === 0) && this.state.heatStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
+          {this.state.accept === 'answer' && this.state.responseId != 0 && (this.state.heatStatus === 1 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
+            <table className="table table-bordered table-striped">
+              <tbody>
+                <tr>
+                  <td style={{width: '20%'}}>Технические условия</td> 
+                  <td><a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.customTcFile.id)}>Скачать</a></td>
+                </tr>
+              </tbody>
+            </table>
+          }
+
+          {this.state.heads_responses.length > 0 &&
+            <div>
+              <h5 className="block-title-2 mt-4 mb-3">Комментарии:</h5>
+
+              <table className="table table-bordered table-striped">
+                <tbody>
+                  <tr>
+                    <th>ФИО</th>
+                    <th>Комментарий</th>
+                    <th>Дата</th>
+                  </tr>
+                  {this.state.heads_responses.map(function(item, index) {
+                    return(
+                      <tr key={index}>
+                        <td width="40%">
+                          {item.user.name} 
+                        </td>
+                        <td width="40%">{item.comments}</td>
+                        <td>{this.toDate(item.created_at)}</td>
+                      </tr>
+                      );
+                    }.bind(this))
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+
+          {this.state.isHead &&
+            <div className={this.state.showButtons ? '' : 'invisible'}>
+              <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                <textarea style={{marginBottom: '10px'}} placeholder="Комментарий" rows="7" cols="50" className="form-control" value={this.state.headComment} onChange={this.onHeadCommentChange}></textarea>
+                <button className="btn btn-raised btn-success" onClick={this.sendHeadResponse.bind(this, apz.id, true, this.state.headComment)}>
+                  Отправить
+                </button>
+              </div>
+            </div>
+          }
+
+          {this.state.isDirector &&
+            <div>
+              {!this.state.xmlFile && !this.state.isSigned &&
+                <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                  <div className="row form-group">
+                    <div className="col-sm-7">
+                      <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
+                    </div>
+
+                    <div className="col-sm-5 p-0">
+                      <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                  </div>
+
+                  <div className="form-group">
+                    <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                  </div>
+                </div>
+              }
+
+              {this.state.heatStatus === 2 && this.state.isSigned &&
+                <div className="form-group">
+                  <button type="button" className="btn btn-primary" onClick={this.sendHeatResponse.bind(this, apz.id, true, "")}>
+                    Отправить
+                  </button>
+                </div>
+              }
+            </div>
+          }
+
+          {this.state.accept === 'decline' && this.state.heatStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
             <form style={{border: 'solid 3px #F55549', padding: '5px'}}>
               <div className="form-group">
                 <label>Номер документа</label>
                 <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
               </div>
               <div className="form-group">
-               <label>Причина отклонения</label>
+                <label>Причина отклонения</label>
                 <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
               </div>
               {(this.state.response === false || this.state.response === 0) && this.state.responseFile &&
@@ -1904,7 +1953,7 @@ printData()
             </form>
           }
 
-          {(this.state.accept === 0 || this.state.accept === false) && this.state.responseId != 0 && (this.state.heatStatus === 0 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
+          {this.state.accept === 'decline' && this.state.responseId != 0 && (this.state.heatStatus === 0 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
             <div>
               <table className="table table-bordered table-striped">
                 <tbody>

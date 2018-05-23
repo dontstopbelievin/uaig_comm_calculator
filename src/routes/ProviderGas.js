@@ -220,7 +220,7 @@ class ShowApz extends React.Component {
       confirmedTaskFile: false,
       titleDocumentFile: false,
       showMapText: 'Показать карту',
-      accept: true,
+      accept: 'accept',
       callSaveFromSend: false,
       gasStatus: 2,
       storageAlias: "PKCS12",
@@ -231,7 +231,8 @@ class ShowApz extends React.Component {
       isDirector: (roles.indexOf('DirectorGas') != -1),
       heads_responses: [],
       head_accepted: true,
-      headComment: null
+      headComment: "",
+      customTcFile: null
     };
 
     this.onConnectionPointChange = this.onConnectionPointChange.bind(this);
@@ -244,6 +245,7 @@ class ShowApz extends React.Component {
     this.saveResponseForm = this.saveResponseForm.bind(this);
     this.sendGasResponse = this.sendGasResponse.bind(this);
     this.onHeadCommentChange = this.onHeadCommentChange.bind(this);
+    this.onCustomTcFileChange = this.onCustomTcFileChange.bind(this);
   }
 
   onConnectionPointChange(e) {
@@ -276,6 +278,10 @@ class ShowApz extends React.Component {
 
   onFileChange(e) {
     this.setState({ file: e.target.files[0] });
+  }
+
+  onCustomTcFileChange(e) {
+    this.setState({ customTcFile: e.target.files[0] });
   }
 
   // this function to show one of the forms Accept/Decline
@@ -325,9 +331,10 @@ class ShowApz extends React.Component {
           data.commission.apz_gas_response.doc_number ? this.setState({docNumber: data.commission.apz_gas_response.doc_number}) : this.setState({docNumber: ""});
           data.commission.apz_gas_response.id ? this.setState({responseId: data.commission.apz_gas_response.id}) : this.setState({responseId: ""});
           data.commission.apz_gas_response.response ? this.setState({response: data.commission.apz_gas_response.response}) : this.setState({response: ""});
-          
+          data.commission.apz_gas_response.files ? this.setState({customTcFile: data.commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: null});;
+
           if(data.commission.apz_gas_response.id !== -1){
-            this.setState({accept: data.commission.apz_gas_response.response});
+            this.setState({accept: this.state.customTcFile ? 'answer' : data.commission.apz_gas_response.response ? 'accept' : 'decline'});
           }
 
           this.setState({responseFile: data.commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12})[0]});
@@ -653,9 +660,11 @@ class ShowApz extends React.Component {
   saveResponseForm(apzId, status, comment){
     var token = sessionStorage.getItem('tokenInfo');
     var file = this.state.file;
+    var customTcFile = this.state.customTcFile;
 
     var formData = new FormData();
     formData.append('file', file);
+    formData.append('customTcFile', customTcFile);
     formData.append('Response', status);
     formData.append('Message', comment);
     if(status === false){
@@ -682,6 +691,7 @@ class ShowApz extends React.Component {
         this.setState({responseId: data.id});
         data.response ? this.setState({response: data.response}) : this.setState({response: ""});
         data.response_text ? this.setState({description: data.response_text}) : this.setState({description: ""});
+        data.files ? this.setState({customTcFile: data.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: null});;
         data.files ? this.setState({responseFile: data.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]}) : this.setState({responseFile: null});
         data.connection_point ? this.setState({connectionPoint: data.connection_point}) : this.setState({connectionPoint: ""});
         data.gas_pipe_diameter ? this.setState({gasPipeDiameter: data.gas_pipe_diameter}) : this.setState({gasPipeDiameter: ""});
@@ -1008,10 +1018,13 @@ printData()
             <div className="col-sm-6">
               {this.state.showButtons && !this.state.isSigned && this.state.isPerformer &&
                 <div className="btn-group" style={{float: 'right', margin: '0'}}>
-                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, true)}>
+                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, 'accept')}>
                     <i className="glyphicon glyphicon-ok"></i>
                   </button>
-                  <button className="btn btn-raised btn-danger" onClick={this.toggleAcceptDecline.bind(this, false)}>
+                  <button className="btn btn-raised btn-secondary" style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, 'answer')}>
+                    <i className="glyphicon glyphicon-paperclip"></i>
+                  </button>
+                  <button className="btn btn-raised btn-danger" onClick={this.toggleAcceptDecline.bind(this, 'decline')}>
                     <i className="glyphicon glyphicon-remove"></i>
                   </button>
                 </div>
@@ -1019,7 +1032,7 @@ printData()
             </div>
           </div>
 
-          {(this.state.accept === true || this.state.accept === 1) && this.state.gasStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
+          {this.state.accept === "accept" && this.state.gasStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
             <form style={{border: 'solid 3px #46A149', padding: '5px'}}>
               <div className="form-group">
                 <label htmlFor="connectionPoint">Точка подключения</label>
@@ -1056,7 +1069,7 @@ printData()
               
               {!this.state.xmlFile &&
                 <div className="form-group">
-                  <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
+                  <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, 'accept', "")}>
                     Сохранить
                   </button>
 
@@ -1070,7 +1083,7 @@ printData()
             </form>
           }
 
-          {(this.state.accept === 1 || this.state.accept === true) && this.state.responseId != 0 && (this.state.gasStatus === 1 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
+          {this.state.accept === "accept" && this.state.responseId != 0 && (this.state.gasStatus === 1 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
             <div>
               <table className="table table-bordered table-striped">
                 <tbody>
@@ -1106,44 +1119,80 @@ printData()
                   }
                 </tbody>
               </table>
+            </div>
+          }
 
-              {this.state.isDirector &&
-                <div>
-                  {!this.state.xmlFile && !this.state.isSigned &&
-                    <div>
-                      <div className="row form-group">
-                        <div className="col-sm-7">
-                          <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
-                        </div>
-
-                        <div className="col-sm-5 p-0">
-                          <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
-                        </div>
-                      </div>
-
-                      <div className="form-group">
-                        <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
-                      </div>
-
-                      <div className="form-group">
-                        <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
-                      </div>
-                    </div>
+          {this.state.accept === 'answer' && this.state.gasStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
+            <div style={{border: 'solid 3px #46A149', padding: '15px'}}>
+              <div className="form-group">
+                <label htmlFor="custom_tc_file">
+                  Прикрепить файл
+                  
+                  {this.state.customTcFile &&
+                    <span style={{paddingLeft: '5px'}}>
+                      (текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.customTcFile.id)}>{this.state.customTcFile.name}</a>)
+                    </span>
                   }
+                </label>
+                <input type="file" id="custom_tc_file" className="form-control" onChange={this.onCustomTcFileChange} />
+              </div>
 
-                  {this.state.gasStatus === 2 && this.state.isSigned &&
-                    <div className="form-group">
-                      <button type="button" className="btn btn-primary" onClick={this.sendGasResponse.bind(this, apz.id, true, "")}>
-                        Отправить
-                      </button>
-                    </div>
-                  }
+              {!this.state.xmlFile &&
+                <div className="form-group">
+                  <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, 'answer', "")}>
+                    Сохранить
+                  </button>
                 </div>
               }
             </div>
           }
 
-          {(this.state.accept === false || this.state.accept === 0) && this.state.gasStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
+          {this.state.accept === 'answer' && this.state.responseId != 0 && (this.state.gasStatus === 1 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
+            <table className="table table-bordered table-striped">
+              <tbody>
+                <tr>
+                  <td>Технические условия</td> 
+                  <td><a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.customTcFile.id)}>Скачать</a></td>
+                </tr>
+              </tbody>
+            </table>
+          }
+
+          {this.state.isDirector &&
+            <div>
+              {!this.state.xmlFile && !this.state.isSigned &&
+                <div>
+                  <div className="row form-group">
+                    <div className="col-sm-7">
+                      <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
+                    </div>
+
+                    <div className="col-sm-5 p-0">
+                      <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                  </div>
+
+                  <div className="form-group">
+                    <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                  </div>
+                </div>
+              }
+
+              {this.state.gasStatus === 2 && this.state.isSigned &&
+                <div className="form-group">
+                  <button type="button" className="btn btn-primary" onClick={this.sendGasResponse.bind(this, apz.id, true, "")}>
+                    Отправить
+                  </button>
+                </div>
+              }
+            </div>
+          }
+
+          {this.state.accept === "decline" && this.state.gasStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
             <form style={{border: 'solid 3px #F55549', padding: '5px'}}>
               <div className="form-group">
                 <label>Номер документа</label>
@@ -1173,7 +1222,7 @@ printData()
             </form>
           }
 
-          {(this.state.accept === 0 || this.state.accept === false) && this.state.responseId != 0 && (this.state.gasStatus === 0 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
+          {this.state.accept === "decline" && this.state.responseId != 0 && (this.state.gasStatus === 0 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
             <div>
               <table className="table table-bordered table-striped">
                 <tbody>
