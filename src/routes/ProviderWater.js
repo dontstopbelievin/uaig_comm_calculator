@@ -5,6 +5,8 @@ import EsriLoaderReact from 'esri-loader-react';
 import $ from 'jquery';
 import { Route, NavLink, Link, Switch, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 export default class ProviderWater extends React.Component {
   render() {
@@ -244,7 +246,15 @@ class ShowApz extends React.Component {
       heads_responses: [],
       head_accepted: true,
       headComment: "",
-      customTcFile: null
+      customTcFile: null,
+      tcTextWater: "",
+      tcTextWaterRequirements: "",
+      tcTextWaterGeneral: "",
+      tcTextSewage: "",
+      tcTextSewageRequirements: "",
+      tcTextSewageGeneral: "",
+      waterTab: true,
+      sewageTab: false
     };
 
     this.onGenWaterReqChange = this.onGenWaterReqChange.bind(this);
@@ -268,6 +278,13 @@ class ShowApz extends React.Component {
     this.onWaterCustomerDutiesChange = this.onWaterCustomerDutiesChange.bind(this);
     this.onSewageCustomerDutiesChange = this.onSewageCustomerDutiesChange.bind(this);
     this.onCustomTcFileChange = this.onCustomTcFileChange.bind(this);
+    this.onTcTextWaterChange = this.onTcTextWaterChange.bind(this);
+    this.onTcTextWaterRequirementsChange = this.onTcTextWaterRequirementsChange.bind(this);
+    this.onTcTextWaterGeneralChange = this.onTcTextWaterGeneralChange.bind(this);
+    this.onTcTextSewageChange = this.onTcTextSewageChange.bind(this);
+    this.onTcTextSewageRequirementsChange = this.onTcTextSewageRequirementsChange.bind(this);
+    this.onTcTextSewageGeneralChange = this.onTcTextSewageGeneralChange.bind(this);
+    this.toggleFormTabs = this.toggleFormTabs.bind(this);
   }
 
   onGenWaterReqChange(e) {
@@ -348,6 +365,46 @@ class ShowApz extends React.Component {
     this.setState({ customTcFile: e.target.files[0] });
   }
 
+  onTcTextWaterChange(value) {
+    this.setState({ tcTextWater: value });
+  }
+
+  onTcTextWaterRequirementsChange(value) {
+    this.setState({ tcTextWaterRequirements: value });
+  }
+
+  onTcTextWaterGeneralChange(value) {
+    this.setState({ tcTextWaterGeneral: value });
+  }
+
+  onTcTextSewageChange(value) {
+    this.setState({ tcTextSewage: value });
+  }
+
+  onTcTextSewageRequirementsChange(value) {
+    this.setState({ tcTextSewageRequirements: value });
+  }
+
+  onTcTextSewageGeneralChange(value) {
+    this.setState({ tcTextSewageGeneral: value });
+  }
+
+  toggleFormTabs(tab) {
+    if (tab === 'water') {
+      this.setState({ waterTab: true });
+      this.setState({ sewageTab: false });
+      
+      $('.water_tab').removeClass('active').addClass('active');
+      $('.sewage_tab').removeClass('active');
+    } else {
+      this.setState({ waterTab: false });
+      this.setState({ sewageTab: true });
+      
+      $('.sewage_tab').removeClass('active').addClass('active');
+      $('.water_tab').removeClass('active');
+    }
+  }
+
   // this function to show one of the forms Accept/Decline
   toggleAcceptDecline(value) {
     this.setState({accept: value});
@@ -387,6 +444,12 @@ class ShowApz extends React.Component {
         this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
         this.setState({surveyFile: data.files.filter(function(obj) { return obj.category_id === 22 })[0]});
+        this.setState({tcTextWater: data.tc_text_water});
+        this.setState({tcTextWaterRequirements: data.tc_text_water_requirements});
+        this.setState({tcTextWaterGeneral: data.tc_text_water_general});
+        this.setState({tcTextSewage: data.tc_text_sewage});
+        this.setState({tcTextSewageRequirements: data.tc_text_sewage_requirements});
+        this.setState({tcTextSewageGeneral: data.tc_text_sewage_general});
 
         if (data.commission && data.commission.apz_water_response) {
           data.commission.apz_water_response.response_text ? this.setState({description: data.commission.apz_water_response.response_text}) : this.setState({description: "" });
@@ -774,6 +837,12 @@ class ShowApz extends React.Component {
       formData.append('WaterPressure', this.state.waterPressure);
       formData.append('WaterCustomerDuties', this.state.waterCustomerDuties);
       formData.append('SewageCustomerDuties', this.state.sewageCustomerDuties);
+      formData.append('TcTextWater', this.state.tcTextWater);
+      formData.append('TcTextWaterRequirements', this.state.tcTextWaterRequirements);
+      formData.append('TcTextWaterGeneral', this.state.tcTextWaterGeneral);
+      formData.append('TcTextSewage', this.state.tcTextSewage);
+      formData.append('TcTextSewageRequirements', this.state.tcTextSewageRequirements);
+      formData.append('TcTextSewageGeneral', this.state.tcTextSewageGeneral);
     }
     formData.append('DocNumber', this.state.docNumber);
 
@@ -1362,7 +1431,6 @@ class ShowApz extends React.Component {
                       <textarea rows="5" className="form-control" value={this.state.sewageCustomerDuties} onChange={this.onSewageCustomerDutiesChange} placeholder="Описание"></textarea>
                     </div>
                   }
-                  
 
                   {(this.state.response === true && this.state.responseFile) &&
                     <div className="form-group">
@@ -1376,6 +1444,50 @@ class ShowApz extends React.Component {
                     <label htmlFor="upload_file">Прикрепить файл</label>
                     <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
                   </div>
+                </div>
+                <div className="col-sm-12">
+                  <ul className="nav nav-tabs mb-3">
+                    <li className="nav-item">
+                      <a className="water_tab nav-link pointer active" onClick={this.toggleFormTabs.bind(this, 'water')}>Водопотребление</a>
+                    </li>
+                    <li className="nav-item">
+                      <a className="sewage_tab nav-link pointer" onClick={this.toggleFormTabs.bind(this, 'sewage')}>Водоотведение</a>
+                    </li>
+                  </ul>
+
+                  {this.state.waterTab &&
+                    <div>
+                      <div className="form-group">
+                        <label><b>1. Водопотребление</b></label>
+                        <ReactQuill value={this.state.tcTextWater} onChange={this.onTcTextWaterChange} />
+                      </div>
+                      <div className="form-group">
+                        <label><b>2. Другие требования</b></label>
+                        <ReactQuill value={this.state.tcTextWaterRequirements} onChange={this.onTcTextWaterRequirementsChange} />
+                      </div>
+                      <div className="form-group">
+                        <label><b>3. Общие положения</b></label>
+                        <ReactQuill value={this.state.tcTextWaterGeneral} onChange={this.onTcTextWaterGeneralChange} />
+                      </div>
+                    </div>
+                  }
+                  
+                  {this.state.sewageTab &&
+                    <div>
+                      <div className="form-group">
+                        <label><b>1. Водопотребление</b></label>
+                        <ReactQuill value={this.state.tcTextSewage} onChange={this.onTcTextSewageChange} />
+                      </div>
+                      <div className="form-group">
+                        <label><b>2. Другие требования</b></label>
+                        <ReactQuill value={this.state.tcTextSewageRequirements} onChange={this.onTcTextSewageRequirementsChange} />
+                      </div>
+                      <div className="form-group">
+                        <label><b>3. Общие положения</b></label>
+                        <ReactQuill value={this.state.tcTextSewageGeneral} onChange={this.onTcTextSewageGeneralChange} />
+                      </div>
+                    </div>
+                  }
 
                   {!this.state.xmlFile &&
                     <div className="form-group">
