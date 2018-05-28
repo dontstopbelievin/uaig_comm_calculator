@@ -75,6 +75,10 @@ class AllApzs extends React.Component {
             var apzs = data.filter(function(obj) { return obj.status_id !== 1 && obj.status_id !== 2; });
             break;
 
+          case 'draft':
+            apzs = data.filter(function(obj) { return obj.status_id === 8; });
+            break;
+
           case 'accepted':
             apzs = data.filter(function(obj) { return obj.status_id === 2; });
             break;
@@ -122,12 +126,13 @@ class AllApzs extends React.Component {
         {this.state.loaderHidden &&
           <div>  
             <div className="row">
-              <div className="col-sm-8">
+              <div className="col-sm-7">
                 <Link className="btn btn-outline-primary mb-3" to="/citizen/add">Создать заявление</Link>
               </div>
-              <div className="col-sm-4 statusActive">
+              <div className="col-sm-5 statusActive">
                 <ul className="nav nav-tabs mb-2 pull-right">
                   <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/active" replace>Активные</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/draft" replace>Черновики</NavLink></li>
                   <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/accepted" replace>Принятые</NavLink></li>
                   <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/declined" replace>Отказанные</NavLink></li>
                 </ul>
@@ -161,7 +166,7 @@ class AllApzs extends React.Component {
                       <td>{this.toDate(apz.created_at)}</td>
                       <td>{apz.object_term}</td>
                       <td>
-                        <Link className="btn btn-outline-info" to={'/citizen/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link className="btn btn-outline-info" to={'/citizen/' + (apz.status_id === 8 ? 'edit/' : '') + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
                     </tr>
                     );
@@ -170,7 +175,7 @@ class AllApzs extends React.Component {
 
                 {this.state.apzs.length === 0 &&
                   <tr>
-                    <td colSpan="3">Пусто</td>
+                    <td colSpan="5">Пусто</td>
                   </tr>
                 }
               </tbody>
@@ -254,7 +259,7 @@ class AddApz extends React.Component {
       companyList: [],
     }
     
-    this.tabSubmission = this.tabSubmission.bind(this);
+    this.saveApz = this.saveApz.bind(this);
     this.onPersonalIdFileChange = this.onPersonalIdFileChange.bind(this);
     this.onConfirmedTaskFileChange = this.onConfirmedTaskFileChange.bind(this);
     this.onTitleDocumentFileChange = this.onTitleDocumentFileChange.bind(this);
@@ -267,6 +272,7 @@ class AddApz extends React.Component {
     this.onApplicantChange = this.onApplicantChange.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
     this.onBlockChange = this.onBlockChange.bind(this);
+    this.downloadFile = this.downloadFile.bind(this);
   }
 
   onPersonalIdFileChange(e) {
@@ -305,6 +311,8 @@ class AddApz extends React.Component {
   }
 
   getApzInfo() {
+    this.setState({loaderHidden: false});
+    
     var id = this.props.match.params.id;
     var token = sessionStorage.getItem('tokenInfo');
 
@@ -323,8 +331,13 @@ class AddApz extends React.Component {
         this.setState({projectName: apz.project_name ? apz.project_name : '' });
         this.setState({projectAddress: apz.project_address ? apz.project_address : '' });
         this.setState({projectAddressCoordinates: apz.project_address_coordinates ? apz.project_address_coordinates : '' });
-        //this.setState({confirmedTaskFile: apz.app});
-        //this.setState({titleDocumentFile: apz.app});
+
+        this.setState({personalIdFile: apz.files.filter(function(obj) { return obj.category_id === 3 })[0]});
+        this.setState({confirmedTaskFile: apz.files.filter(function(obj) { return obj.category_id === 9 })[0]});
+        this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
+        this.setState({paymentPhotoFile: apz.files.filter(function(obj) { return obj.category_id === 20 })[0]});
+        this.setState({survey: apz.files.filter(function(obj) { return obj.category_id === 22 })[0]});
+
         this.setState({objectType: apz.object_type ? apz.object_type : '' });
         this.setState({customer: apz.customer ? apz.customer : '' });
         this.setState({cadastralNumber: apz.cadastral_number ? apz.cadastral_number : '' });
@@ -333,55 +346,72 @@ class AddApz extends React.Component {
         this.setState({objectArea: apz.object_area ? apz.object_area : '' });
         this.setState({objectRooms: apz.object_rooms ? apz.object_rooms : '' });
 
-        if (apz.apzElectricity) {
-          this.setState({electricAllowedPower: apz.apzElectricity.allowed_power ? apz.apzElectricity.allowed_power : '' });
-          this.setState({electricRequiredPower: apz.apzElectricity.required_power ? apz.apzElectricity.required_power : '' });
-          this.setState({electricityPhase: apz.apzElectricity.phase ? apz.apzElectricity.phase : '' });
-          this.setState({electricSafetyCategory: apz.apzElectricity.safety_category ? apz.apzElectricity.safety_category : '' });
+        if (apz.apz_electricity) {
+          this.setState({electricAllowedPower: apz.apz_electricity.allowed_power ? apz.apz_electricity.allowed_power : '' });
+          this.setState({electricRequiredPower: apz.apz_electricity.required_power ? apz.apz_electricity.required_power : '' });
+          this.setState({electricityPhase: apz.apz_electricity.phase ? apz.apz_electricity.phase : '' });
+          this.setState({electricSafetyCategory: apz.apz_electricity.safety_category ? apz.apz_electricity.safety_category : '' });
         }
         
-        if (apz.apzWater) {
-          this.setState({peopleCount: apz.apzWater.people_count ? apz.apzWater.people_count : '' });
-          this.setState({waterRequirement: apz.apzWater.requirement ? apz.apzWater.requirement : '' });
-          this.setState({waterSewage: apz.apzWater.sewage ? apz.apzWater.sewage : '' });
-          this.setState({waterProduction: apz.apzWater.production ? apz.apzWater.production : '' });
-          this.setState({waterDrinking: apz.apzWater.drinking ? apz.apzWater.drinking : '' });
-          this.setState({waterFireFighting: apz.apzWater.fire_fighting ? apz.apzWater.fire_fighting : '' });
-          this.setState({waterFireFightingIn: apz.apzWater.fire_fighting_in ? apz.apzWater.fire_fighting_in : '' });
+        if (apz.apz_water) {
+          this.setState({peopleCount: apz.apz_water.people_count ? apz.apz_water.people_count : '' });
+          this.setState({waterRequirement: apz.apz_water.requirement ? apz.apz_water.requirement : '' });
+          this.setState({waterSewage: apz.apz_water.sewage ? apz.apz_water.sewage : '' });
+          this.setState({waterProduction: apz.apz_water.production ? apz.apz_water.production : '' });
+          this.setState({waterDrinking: apz.apz_water.drinking ? apz.apz_water.drinking : '' });
+          this.setState({waterFireFighting: apz.apz_water.fire_fighting ? apz.apz_water.fire_fighting : '' });
+          this.setState({waterFireFightingIn: apz.apz_water.fire_fighting_in ? apz.apz_water.fire_fighting_in : '' });
         }
 
-        if (apz.apzSewage) {
-          this.setState({sewageAmount: apz.apzSewage.amount ? apz.apzSewage.amount : '' });
-          this.setState({sewageFeksal: apz.apzSewage.feksal ? apz.apzSewage.feksal : '' });
-          this.setState({sewageProduction: apz.apzSewage.production ? apz.apzSewage.production : '' });
-          this.setState({sewageToCity: apz.apzSewage.to_city ? apz.apzSewage.to_city : '' });
-          this.setState({sewageClientWishes: apz.apzSewage.client_wishes ? apz.apzSewage.client_wishes : '' });
+        if (apz.apz_sewage) {
+          this.setState({sewageAmount: apz.apz_sewage.amount ? apz.apz_sewage.amount : '' });
+          this.setState({sewageFeksal: apz.apz_sewage.feksal ? apz.apz_sewage.feksal : '' });
+          this.setState({sewageProduction: apz.apz_sewage.production ? apz.apz_sewage.production : '' });
+          this.setState({sewageToCity: apz.apz_sewage.to_city ? apz.apz_sewage.to_city : '' });
+          this.setState({sewageClientWishes: apz.apz_sewage.client_wishes ? apz.apz_sewage.client_wishes : '' });
         }
 
-        if (apz.apzHeat) {
-          this.setState({heatGeneral: apz.apzHeat.general ? apz.apzHeat.general : '' });
-          this.setState({heatTech: apz.apzHeat.tech ? apz.apzHeat.tech : '' });
-          this.setState({heatDistribution: apz.apzHeat.distribution ? apz.apzHeat.distribution : '' });
-          this.setState({heatSaving: apz.apzHeat.saving ? apz.apzHeat.saving : '' });
+        if (apz.apz_heat) {
+          this.setState({heatGeneral: apz.apz_heat.general ? apz.apz_heat.general : '' });
+          this.setState({heatTech: apz.apz_heat.tech ? apz.apz_heat.tech : '' });
+          this.setState({heatDistribution: apz.apz_heat.distribution ? apz.apz_heat.distribution : '' });
+          this.setState({heatSaving: apz.apz_heat.saving ? apz.apz_heat.saving : '' });
+
+          if (apz.apz_heat.blocks) {
+            for (var i = 0; i < apz.apz_heat.blocks.length; i++) {
+              var blocks = this.state.blocks;
+              
+              blocks[i] = {
+                num: i+1,
+                heatMain: apz.apz_heat.blocks[i].main,
+                heatVentilation: apz.apz_heat.blocks[i].ventilation,
+                heatWater: apz.apz_heat.blocks[i].water,
+                heatWaterMax: apz.apz_heat.blocks[i].water_max
+              };
+
+              this.setState({blocks: blocks});
+            }
+          }
         }
 
-        if (apz.apzPhone) {
-          this.setState({phoneServiceNum: apz.apzPhone.service_num ? apz.apzPhone.service_num : '' });
-          this.setState({phoneCapacity: apz.apzPhone.capacity ? apz.apzPhone.capacity : '' });
-          //this.setState({paymentPhotoFile: apz.apzPhone.app});
-          this.setState({phoneSewage: apz.apzPhone.sewage ? apz.apzPhone.sewage : '' });
-          this.setState({phoneClientWishes: apz.apzPhone.client_wishes ? apz.apzPhone.client_wishes : '' });
+        if (apz.apz_phone) {
+          this.setState({phoneServiceNum: apz.apz_phone.service_num ? apz.apz_phone.service_num : '' });
+          this.setState({phoneCapacity: apz.apz_phone.capacity ? apz.apz_phone.capacity : '' });
+          this.setState({phoneSewage: apz.apz_phone.sewage ? apz.apz_phone.sewage : '' });
+          this.setState({phoneClientWishes: apz.apz_phone.client_wishes ? apz.apz_phone.client_wishes : '' });
         }
 
-        if (apz.apzGas) {
-          this.setState({gasGeneral: apz.apzGas.general ? apz.apzGas.general : '' });
-          this.setState({gasCooking: apz.apzGas.cooking ? apz.apzGas.cooking : '' });
-          this.setState({gasHeat: apz.apzGas.heat ? apz.apzGas.heat : '' });
-          this.setState({gasVentilation: apz.apzGas.ventilation ? apz.apzGas.ventilation : '' });
-          this.setState({gasConditioner: apz.apzGas.conditioner ? apz.apzGas.conditioner : '' });
-          this.setState({gasWater: apz.apzGas.water ? apz.apzGas.water : '' });
+        if (apz.apz_gas) {
+          this.setState({gasGeneral: apz.apz_gas.general ? apz.apz_gas.general : '' });
+          this.setState({gasCooking: apz.apz_gas.cooking ? apz.apz_gas.cooking : '' });
+          this.setState({gasHeat: apz.apz_gas.heat ? apz.apz_gas.heat : '' });
+          this.setState({gasVentilation: apz.apz_gas.ventilation ? apz.apz_gas.ventilation : '' });
+          this.setState({gasConditioner: apz.apz_gas.conditioner ? apz.apz_gas.conditioner : '' });
+          this.setState({gasWater: apz.apz_gas.water ? apz.apz_gas.water : '' });
         }
       }
+
+      this.setState({loaderHidden: true});
     }.bind(this)
     xhr.send();
   }
@@ -410,13 +440,41 @@ class AddApz extends React.Component {
     }
   }
 
-  tabSubmission(elem) { 
+  saveApz(publish, elem) {
     elem.preventDefault();
-    var id = document.querySelector('#'+elem.target.id).dataset.tab;
+
+    if (publish) {
+      var requiredFields = {
+        applicant: 'Заявитель',
+        personalIdFile: 'Уд.личности/Реквизиты',
+        projectName: 'Наименование проектируемого объекта',
+        projectAddress: 'Адрес проектируемого объекта',
+        confirmedTaskFile: 'Утвержденное задание на проектирование',
+        titleDocumentFile: 'Госакт и правоустанавливающий документ на земельный участок',
+        objectType: 'Тип объекта',
+        customer: 'Заказчик'
+      };
+
+      var errors = 0;
+
+      Object.keys(requiredFields).forEach(function(key){
+        if (!this.state[key]) {
+          alert('Заполните поле "' + requiredFields[key] + '"');
+          errors++;
+          return false;
+        }
+      }.bind(this));
+
+      if (errors > 0) {
+        return false;
+      }
+    }
+
     var apzId = this.props.match.params.id;
     var link = apzId > 0 ? ("api/apz/citizen/save/" + apzId) : "api/apz/citizen/save";
     var formData = new FormData();
-    
+    formData.append('publish', publish ? true : false);
+
     Object.keys(this.state).forEach(function(k){
       if (k === 'blocks') {
         Object.keys(this.state[k]).forEach(function(i){
@@ -430,67 +488,33 @@ class AddApz extends React.Component {
       }
     }.bind(this));
 
+    this.setState({loaderHidden: false});
+
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
     xhr.open("post", window.url + link, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function() {
-      if (xhr.status === 200) {
-        return false;
-        var data = JSON.parse(xhr.responseText);
-        $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-ok');
-        $('#tab'+id+'-link').next().trigger('click');
+      this.setState({loaderHidden: true});
 
-        if (!apzId) {
-          this.props.history.push('/citizen/edit/' + data.id);
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+
+        if (publish) {
+          alert("Заявка успешно подана");
+          this.props.history.replace('/citizen');
+        } else {
+          alert('Заявка успешно сохранена');
+
+          if (!apzId) {
+            this.props.history.push('/citizen/edit/' + data.id);
+          }
         }
+      } else {
+        alert("При сохранении заявки произошла ошибка!");
       }
     }.bind(this);
     xhr.send(formData);
-    return  false;
-    
-    if ($('#tab'+id+'-form').valid()) 
-    {
-
-      //проверка полей на валидность в Газоснабжении
-      if(document.getElementsByName('GasGeneral')[0] !== 'undefined')
-      {
-        var a = parseFloat( "0" + document.getElementsByName('GasCooking')[0].value);
-        var b = parseFloat( "0" + document.getElementsByName('GasHeat')[0].value);
-        var c = parseFloat( "0" + document.getElementsByName('GasVentilation')[0].value);
-        var d = parseFloat( "0" + document.getElementsByName('GasConditioner')[0].value);
-        var e = parseFloat( "0" + document.getElementsByName('GasWater')[0].value);
-        var GasSum = a + b + c + d + e;
-
-        if($('a#tab8-link').attr('aria-expanded') === 'true') 
-        {
-          if(parseFloat(document.getElementsByName('GasGeneral')[0].value !== GasSum)) 
-          {
-            console.log(document.getElementsByName('GasGeneral')[0].value+" - "+GasSum);
-            alert('Сумма всех полей должна быть равна полю Общая потребность');
-          } 
-          else 
-          {
-            $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-ok');
-            $('#tab'+id+'-link').next().trigger('click');
-          }
-        }
-        else 
-        {
-          $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-ok');
-          $('#tab'+id+'-link').next().trigger('click');
-        }
-      }
-      else 
-      {
-        $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-ok');
-        $('#tab'+id+'-link').next().trigger('click');
-      }
-    } 
-    else 
-    {
-      $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-remove');
-    }
   }
 
   addBlock() {
@@ -732,6 +756,58 @@ class AddApz extends React.Component {
     //document.getElementsByName('WaterSewage')[0].value = document.getElementsByName('WaterRequirement')[0].value;
   }
 
+  downloadFile(id) {
+    var token = sessionStorage.getItem('tokenInfo');
+    var url = window.url + 'api/file/download/' + id;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", url, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+          var base64ToArrayBuffer = (function () {
+        
+            return function (base64) {
+              var binaryString = window.atob(base64);
+              var binaryLen = binaryString.length;
+              var bytes = new Uint8Array(binaryLen);
+              
+              for (var i = 0; i < binaryLen; i++) {
+                var ascii = binaryString.charCodeAt(i);
+                bytes[i] = ascii;
+              }
+              
+              return bytes; 
+            }
+            
+          }());
+
+          var saveByteArray = (function () {
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+            a.style = "display: none";
+            
+            return function (data, name) {
+              var blob = new Blob(data, {type: "octet/stream"}),
+                  url = window.URL.createObjectURL(blob);
+              a.href = url;
+              a.download = name;
+              a.click();
+              setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+            };
+
+          }());
+
+          saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
+        } else {
+          alert('Не удалось скачать файл');
+        }
+      }
+    xhr.send();
+  }
+
   render() {
     var bin = sessionStorage.getItem('userBin');
 
@@ -756,7 +832,7 @@ class AddApz extends React.Component {
             <div className="col-8">
               <div className="tab-content" id="v-pills-tabContent">
               <div className="tab-pane fade show active" id="tab0" role="tabpanel" aria-labelledby="tab0-link">
-                <form id="tab0-form" data-tab="0" onSubmit={this.tabSubmission.bind(this)}>
+                <form id="tab0-form" data-tab="0" onSubmit={this.saveApz.bind(this, false)}>
                 <div className="row">
                   <div className="col-md-6">
 
@@ -788,8 +864,14 @@ class AddApz extends React.Component {
                     }
                     
                     <div className="form-group">
-                      <label htmlFor="PersonalIdFile">Уд.личности/Реквизиты</label>
-                      <input type="file" required name="PersonalIdFile" className="form-control" onChange={this.onPersonalIdFileChange}/>
+                      <label htmlFor="PersonalIdFile">
+                        Уд.личности/Реквизиты
+                        
+                        {this.state.personalIdFile &&
+                          <small className="form-text text-muted help-block">(текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id)}>{this.state.personalIdFile.name}</a>)</small>
+                        }
+                      </label>
+                      <input type="file" name="PersonalIdFile" className="form-control" onChange={this.onPersonalIdFileChange}/>
                       <span className="help-block">документ в формате pdf, doc, docx</span>
                     </div>
                     <div className="form-group">
@@ -842,13 +924,25 @@ class AddApz extends React.Component {
                       </div>
                     </div>
                     <div className="form-group">
-                      <label htmlFor="ConfirmedTaskFile">Утвержденное задание на проектирование</label>
-                      <input type="file" required name="ConfirmedTaskFile" className="form-control" onChange={this.onConfirmedTaskFileChange} />
+                      <label htmlFor="ConfirmedTaskFile">
+                        Утвержденное задание на проектирование
+
+                        {this.state.confirmedTaskFile &&
+                          <small className="form-text text-muted help-block">(текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.confirmedTaskFile.id)}>{this.state.confirmedTaskFile.name}</a>)</small>
+                        }
+                      </label>
+                      <input type="file" name="ConfirmedTaskFile" className="form-control" onChange={this.onConfirmedTaskFileChange} />
                       <span className="help-block">документ в формате pdf, doc, docx</span>
                     </div>
                     <div className="form-group">
-                      <label htmlFor="TitleDocumentFile">Госакт и правоустанавливающий документ на земельный участок</label>
-                      <input type="file" required name="TitleDocumentFile" className="form-control" onChange={this.onTitleDocumentFileChange} />
+                      <label htmlFor="TitleDocumentFile">
+                        Госакт и правоустанавливающий документ на земельный участок
+
+                        {this.state.titleDocumentFile &&
+                          <small className="form-text text-muted help-block">(текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>{this.state.titleDocumentFile.name}</a>)</small>
+                        }
+                      </label>
+                      <input type="file" name="TitleDocumentFile" className="form-control" onChange={this.onTitleDocumentFileChange} />
                       <span className="help-block">документ в формате pdf, doc, docx</span>
                     </div>
                     {/*<div className="form-group">
@@ -868,10 +962,10 @@ class AddApz extends React.Component {
                   </div>
                 }
 
-                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
               <div className="tab-pane fade" id="tab1" role="tabpanel" aria-labelledby="tab1-link">
-                <form id="tab1-form" data-tab="1" onSubmit={this.tabSubmission.bind(this)}>
+                <form id="tab1-form" data-tab="1" onSubmit={this.saveApz.bind(this, false)}>
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group">
@@ -939,10 +1033,10 @@ class AddApz extends React.Component {
                   <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                 </div>
                 </form>
-                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
               <div className="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-link">
-                <form id="tab2-form" data-tab="2" onSubmit={this.tabSubmission.bind(this)}>
+                <form id="tab2-form" data-tab="2" onSubmit={this.saveApz.bind(this, false)}>
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group">
@@ -1005,15 +1099,15 @@ class AddApz extends React.Component {
                   <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                 </div>
                 </form>
-                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
               <div className="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-link">
-                <form id="tab3-form" data-tab="3" onSubmit={this.tabSubmission.bind(this)}>
+                <form id="tab3-form" data-tab="3" onSubmit={this.saveApz.bind(this, false)}>
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group">
                       <label>Количество людей</label>
-                      <input type="number" step="0.1" className="form-control" name="PeopleCount" onChange={this.PeopleCount.bind(this)} value={this.state.peopleCount} placeholder="" />
+                      <input type="number" step="any" className="form-control" name="PeopleCount" onChange={this.PeopleCount.bind(this)} value={this.state.peopleCount} placeholder="" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
@@ -1021,7 +1115,7 @@ class AddApz extends React.Component {
                     </div>
                     <div className="form-group">
                       <label htmlFor="WaterFireFighting">Потребные расходы наружного пожаротушения (л/сек)</label>
-                      <input type="number" onChange={this.onInputChange} value={this.state.waterFireFighting} min="10" defaultValue="10" className="form-control" name="WaterFireFighting" />
+                      <input type="number" onChange={this.onInputChange} value={this.state.waterFireFighting} min="10" className="form-control" name="WaterFireFighting" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="WaterProduction">На производственные нужды (м<sup>3</sup>/сутки)</label>
@@ -1042,7 +1136,13 @@ class AddApz extends React.Component {
                       <input type="number" className="form-control" onChange={this.onInputChange} value={this.state.waterFireFightingIn}/>
                     </div>
                     <div className="form-group">
-                      <label htmlFor="Survey">Топографическая съемка</label>
+                      <label htmlFor="Survey">
+                        Топографическая съемка
+
+                        {this.state.survey &&
+                          <small className="form-text text-muted help-block">(текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.survey.id)}>{this.state.survey.name}</a>)</small>
+                        }
+                      </label>
                       <input type="file" name="Survey" className="form-control" onChange={this.onSurveyChange} />
                     </div>
                   </div>
@@ -1061,10 +1161,10 @@ class AddApz extends React.Component {
                   </div>
                 </div>
                 </form>
-                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
               <div className="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-link">
-                <form id="tab4-form" data-tab="4" onSubmit={this.tabSubmission.bind(this)}>
+                <form id="tab4-form" data-tab="4" onSubmit={this.saveApz.bind(this, false)}>
                 <div className="row">
                   <div className="col-md-6">
                   <div className="form-group">
@@ -1091,10 +1191,10 @@ class AddApz extends React.Component {
                   <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                 </div>
                 </form>
-                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
               <div className="tab-pane fade" id="tab5" role="tabpanel" aria-labelledby="tab5-link">
-                <form id="tab5-form" data-tab="5" onSubmit={this.tabSubmission.bind(this)}>
+                <form id="tab5-form" data-tab="5" onSubmit={this.saveApz.bind(this, false)}>
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group">
@@ -1120,7 +1220,7 @@ class AddApz extends React.Component {
                 <div className="block_list">
                   {this.state.blocks.map(function(item, index) {
                     return(
-                      <div id={'heatBlock_' + item.num} className="row" key={index}><AddHeatBlock deleteBlock={this.deleteBlock} num={item.num} onBlockChange={this.onBlockChange} /></div>
+                      <div id={'heatBlock_' + item.num} className="row" key={index}><AddHeatBlock item={item} deleteBlock={this.deleteBlock} num={item.num} onBlockChange={this.onBlockChange} /></div>
                     );
                   }.bind(this))}
                 </div>
@@ -1131,10 +1231,10 @@ class AddApz extends React.Component {
                   <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                 </div>
                 </form>
-                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
               <div className="tab-pane fade" id="tab6" role="tabpanel" aria-labelledby="tab6-link">
-                <form id="tab6-form" data-tab="6" onSubmit={this.tabSubmission.bind(this)}>
+                <form id="tab6-form" data-tab="6" onSubmit={this.saveApz.bind(this, false)}>
                 <div className="row">
                   <div className="col-md-12">
                   <div className="form-group">
@@ -1147,10 +1247,10 @@ class AddApz extends React.Component {
                   <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                 </div>
                 </form>
-                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
               <div className="tab-pane fade" id="tab7" role="tabpanel" aria-labelledby="tab7-link">
-                <form id="tab7-form" data-tab="7" onSubmit={this.tabSubmission.bind(this)}>
+                <form id="tab7-form" data-tab="7" onSubmit={this.saveApz.bind(this, false)}>
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group">
@@ -1162,7 +1262,13 @@ class AddApz extends React.Component {
                       <input type="text" onChange={this.onInputChange} value={this.state.phoneCapacity} className="form-control" name="phoneCapacity" placeholder="" />
                     </div>
                     <div className="form-group">
-                      <label htmlFor="PhoneCapacity">Сканированный файл оплаты</label>
+                      <label htmlFor="PhoneCapacity">
+                        Сканированный файл оплаты
+
+                        {this.state.paymentPhotoFile &&
+                          <small className="form-text text-muted help-block">(текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.paymentPhotoFile.id)}>{this.state.paymentPhotoFile.name}</a>)</small>
+                        }
+                      </label>
                       <input type="file" name="paymentPhotoFile" className="form-control" onChange={this.onPaymentPhotoFileChange}/>
                       <span className="help-block">документ в формате pdf, doc, docx</span>
                     </div>
@@ -1182,10 +1288,10 @@ class AddApz extends React.Component {
                   <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                 </div>
                 </form>
-                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
               <div className="tab-pane fade" id="tab8" role="tabpanel" aria-labelledby="tab8-link">
-                <form id="tab8-form" data-tab="8" onSubmit={this.tabSubmission.bind(this)}>
+                <form id="tab8-form" data-tab="8" onSubmit={this.saveApz.bind(this, false)}>
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group">
@@ -1220,7 +1326,7 @@ class AddApz extends React.Component {
                   <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                 </div>
                 </form>
-                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
               </div>
             </div>
@@ -2782,25 +2888,25 @@ class AddHeatBlock extends React.Component {
           <div className="col-md-6">
             <div className="form-group">
               <label htmlFor="HeatMain">Отопление<br />(Гкал/ч)</label>
-              <input type="number" step="any" className="form-control" onChange={this.onBlockChange.bind(this)} name="heatMain" placeholder="" />
+              <input type="number" step="any" className="form-control" value={this.props.item.heatMain} onChange={this.onBlockChange.bind(this)} name="heatMain" placeholder="" />
             </div>
           </div>
           <div className="col-md-6">
             <div className="form-group">
               <label htmlFor="HeatVentilation">Вентиляция<br />(Гкал/ч)</label>
-              <input type="number" step="any" className="form-control" onChange={this.onBlockChange.bind(this)} name="heatVentilation" placeholder="" />
+              <input type="number" step="any" className="form-control" value={this.props.item.heatVentilation} onChange={this.onBlockChange.bind(this)} name="heatVentilation" placeholder="" />
             </div>
           </div>
           <div className="col-md-6">
             <div className="form-group">
               <label htmlFor="HeatWater">Горячее водоснабжение<br />(ср/ч)</label>
-              <input type="number" step="any" className="form-control" onChange={this.onBlockChange.bind(this)} name="heatWater" placeholder="" />
+              <input type="number" step="any" className="form-control" value={this.props.item.heatWater} onChange={this.onBlockChange.bind(this)} name="heatWater" placeholder="" />
             </div>
           </div>
           <div className="col-md-6">
             <div className="form-group">
               <label htmlFor="HeatWaterMax">Горячее водоснабжение<br />(макс/ч)</label>
-              <input type="number" step="any" className="form-control" onChange={this.onBlockChange.bind(this)} name="heatWaterMax" placeholder="" />
+              <input type="number" step="any" className="form-control" value={this.props.item.heatWaterMax} onChange={this.onBlockChange.bind(this)} name="heatWaterMax" placeholder="" />
             </div>
           </div>
         </div>
