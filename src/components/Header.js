@@ -28,6 +28,7 @@ export default class Header extends React.Component {
     this.checkToken = this.checkToken.bind(this);
     this.logout = this.logout.bind(this);
     this.toggleBottomNavbar = this.toggleBottomNavbar.bind(this);
+    this.handler = this.handler.bind(this);
     // this.loaderHidden = this.loaderHidden.bind(this);
   }
 
@@ -56,6 +57,8 @@ export default class Header extends React.Component {
     }.bind(this);
     xhr.send();
   }
+
+
 
   updateLanguage(name){
     localStorage.setItem('lang', name);
@@ -102,6 +105,19 @@ export default class Header extends React.Component {
     //console.log("Header did mount");
   }
 
+  handler () {
+    if(this.state.loaderHidden){
+        this.setState({
+        loaderHidden: false
+      })
+    }else{
+        this.setState({
+        loaderHidden: true
+      })
+    }
+  }
+
+
   componentWillUnmount() {
     //console.log("Header will unmount");
   }
@@ -147,9 +163,9 @@ export default class Header extends React.Component {
                       <Button color="primary" on>ВХОД</Button>
                     </a>*/}
                     {sessionStorage.getItem('logStatus') ? (
-                      <LogoutBtn logout={this.logout} history={this.props.history} />
+                      <LogoutBtn logout={this.logout}  history={this.props.history} />
                     ) : (
-                      <LoginBtn />
+                      <LoginBtn handler={this.handler} />
                     )}
                     {/*<a className="nav-link" href="#">
                       <button className="btn btn-outline-light my-2 my-sm-0" type="submit"><span>РЕГИСТРАЦИЯ</span></button>
@@ -174,7 +190,9 @@ export default class Header extends React.Component {
             </div>
           </div>
           <div className="container nav-bar" style={{background: '#F8F9FA'}}>
-            <NavBar pathName={this.props.location.pathname} />
+            {this.state.loaderHidden &&
+              <NavBar pathName={this.props.location.pathname} />
+            }
           </div>
         </div>
       </div>
@@ -203,6 +221,7 @@ class LogoutBtn extends Component {
   onLogout() {
     this.props.logout();
   }
+
 
   render() {
     return(
@@ -249,6 +268,7 @@ class LogoutBtn extends Component {
                   case 'ApzDepartment': return <ApzDepartmentMenu />;
                   default: return null;
                 }
+
               })()}
               <NavLink to={"/editPassword"} replace className="dropdown-item" activeClassName="active">Изменить пароль</NavLink>
               <button onClick={this.onLogout} className="dropdown-item" style={{cursor: 'pointer'}}>Выйти</button>
@@ -265,8 +285,9 @@ class AdminMenu extends Component {
     return (
       <div>
         <NavLink to={"/admin"} replace className="dropdown-item" activeClassName="active">Пользователи</NavLink>
-        <NavLink to={"/newsPanel"} replace className="dropdown-item" activeClassName="active">Добавить новости</NavLink>
+        <NavLink to={"/newsPanel"} replace className="dropdown-item" activeClassName="active">Добавить новость</NavLink>
         <NavLink to={"/addPages"} replace className="dropdown-item" activeClassName="active">Добавить страницу</NavLink>
+        <NavLink to={"/menuEdit"} replace className="dropdown-item" activeClassName="active">Пункты меню</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
         <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>

@@ -22,17 +22,20 @@ export default class Page extends React.Component{
     }
 
   }
-
+  componentWillReceiveProps(nextProps) {
+    if(this.props.match.params.id !== nextProps.match.params.id) {
+      this.getPage(nextProps.match.params.id);
+    }
+  }
   componentDidMount() {
      new WOW.WOW({
         live: false
     }).init();
-    this.getPage();
-    console.log('hello');
+    this.getPage(this.props.match.params.id);
   }
 
-  getPage () {
-    var link = '/api/getPage/show/' + this.props.match.params.id;
+  getPage (id) {
+    var link = '/api/getPage/show/' + id;
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + link, true);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
@@ -62,13 +65,18 @@ export default class Page extends React.Component{
                 </div>
               <br/>
             </div>
+            <hr/>
             <div className="col-md-12 text-center">
-                <a className="allnews" href="/#/"> Вернуться ко всем новостям</a>
+                <a className="allnews" href="/#/" onClick={this.props.history.goBack}>Вернуться</a>
             </div>
           </div>
           }
           {!this.state.loaderHidden &&
-              <Loader/>
+            <div className={'row col-md-12'}>
+              <div className={'col-md-5'}></div>
+              <Loader type="Oval" color="#46B3F2" height="200" width="200"/>
+              <div className={'col-md-4'}></div>
+            </div>
           }
         </div>
         <br/>

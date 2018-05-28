@@ -9,16 +9,87 @@ export default class NavBar extends React.Component {
   constructor(props) {
     super(props);
       (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
-
+    this.state = {
+      categories: [],
+      menuItems: [],
+      loaderHidden: false
+    };
     this.giveActiveClass = this.giveActiveClass.bind(this);
+  }
+  componentDidMount () {
+    this.getCategories();
+    this.getMenuItem();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.getCategories();
+    this.getMenuItem();
   }
 
   giveActiveClass(path) {
     if(path === this.props.pathName)
       return 'active';
   }
+  getCategories () {
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/menu/categories", true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        this.setState({categories: data.menu_category});
+        this.setState({ loaderHidden: true });
+      }else if(xhr.status === 500){
+        alert('Не получилось найти в базе данных категории!');
+        this.props.history.goBack();
+      } else if (xhr.status === 401) {
+        sessionStorage.clear();
+        alert("Время сессии истекло. Пожалуйста войдите заново!");
+        this.props.history.replace("/login");
+      }
+    }.bind(this);
+    xhr.send();
+  }
+  getMenuItem (){
+    var session = JSON.parse(sessionStorage.getItem('userRoles'));
+    var userRoleName;
+    if ( session === null ) {
+      userRoleName = 'Temporary';
+    }else{
+      if ( session[2] ) {
+        userRoleName = session[2];
+      } else if ( session[1] ) {
+        userRoleName = session[1];
+      } else if ( session[0] ) {
+        userRoleName = session[0];
+      }
+    }
+
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/menu/items/" + userRoleName, true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+
+        this.setState({menuItems: data.items });
+        this.setState({ loaderHidden: true });
+        console.log(this.state.menuItems);
+      }else if(xhr.status === 500){
+        alert('Не получилось найти в базе данных категории!');
+      }
+    }.bind(this);
+    xhr.send();
+
+  }
 
   render() {
+    var menuItems = this.state.menuItems;
+    var lang = localStorage.getItem('lang');
     return (
       <nav className="navbar navbar-expand-lg navbar-light">
         <NavLink exact className="nav-link goHome" activeClassName="active" to="/" >{e.home}</NavLink>
@@ -30,63 +101,61 @@ export default class NavBar extends React.Component {
 
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav mr-auto">
-            <li className="nav-item dropdown">
-              <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  {e.aboutmanagement}
-              </a>
-              <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <NavLink className="dropdown-item" to="/InfoAboutDepartment" activeClassName="active">{e.informationabouttheman}</NavLink>
-                <a className="dropdown-item" href="#">{e.infabthestatebody}</a>
-                <NavLink className="dropdown-item" to="/executiveagency" activeClassName="active">{e.executiveagency}</NavLink>
-                <NavLink className="dropdown-item" to="/timeOfReception"  activeClassName="active">{e.scheduleofreceptionofcitizens}</NavLink>
-                <NavLink className="dropdown-item" to="/tutorials" activeClassName="active">{e.exampleofwork}</NavLink>
-              </div>
-            </li>
+
+            {this.state.categories.map(function (category, index) {
+              return(
+                <li className="nav-item dropdown" key={index}>
+                  <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {lang === 'kk' &&
+                      category.name_kk
+                    }
+                    {lang === 'ru' &&
+                      category.name_ru
+                    }
+                  </a>
+                  <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                  {menuItems.map(function (item, i) {
+                    if(item.id_menu === category.id ) {
+                      if(item.type === 1){
+                        return(
+                          <NavLink className="dropdown-item" to={'/page/' + item.id_page}
+                                   activeClassName="active">
+                            {lang === 'kk' &&
+                              item.title_kk
+                            }
+                            {lang === 'ru' &&
+                              item.title_ru
+                            }
+
+                           </NavLink>
+                        )
+                      }else if(item.type === 2){
+                        return(
+                          <a target={'_blank'} className="dropdown-item" href={item.link}>
+                            {lang === 'kk' &&
+                              item.title_kk
+                            }
+                            {lang === 'ru' &&
+                              item.title_ru
+                            }
+                          </a>
+                        )
+                      }
+                    }
+                  })
+                  }
+                  </div>
+                </li>
+              )
+            })
+
+            }
+
             
-            <li className="nav-item dropdown">
-              <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  {e.stateservices}
-              </a>
-              <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a className="dropdown-item" href="/#/businessbuilding">{e.businessbuilding}</a></li>
-                <li><a className="dropdown-item" href="/#/StateSymbols">{e.statesymbols}</a></li>
-                <li><a className="dropdown-item" href="/#/GovermentServices">{e.govermentservices}</a></li>
-                <li><a className="dropdown-item" href="/#/TypeOfPublicService">{e.typeofpublicservice}</a></li>
-                <li><a className="dropdown-item" href="/#/reports">{e.reportfor}</a></li>
-                <li><a className="dropdown-item" href="/#/stats">{e.resultoftheapz}</a></li>
-                <li><a className="dropdown-item" href="/#/population">{e.workwiththepopulation}</a></li>
-                <li><a className="dropdown-item" href="/#/BudgetPlan">{e.budget_plan}</a></li>
-                <li><a className="dropdown-item" href="/#/Staff">{e.staff}</a></li>
-                <li><a className="dropdown-item" href="/#/entrepreneurialsupport">{e.entrepreneurialsupport}</a></li>
-              </ul>
-            </li>
 
-            <li className="nav-item dropdown">
-              <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  {e.stateprocurement}
-              </a>
-              <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a className="dropdown-item" href="http://www.adilet.gov.kz/ru/taxonomy/term/881" target="_blank">{e.purchaseplans}</a>
-                <a className="dropdown-item" href="https://v3bl.goszakup.gov.kz/ru/reports/plans_report_admin" target="_blank">{e.termsofparticipationinpublicprocurement}</a>
-                <a className="dropdown-item" href="https://www.goszakup.gov.kz/ru/search/announce?filter[method][]=3&filter[method][]=2&filter[method][]=7&filter[method][]=6&filter[method][]=50&filter[method][]=52&filter[method][]=22"  target="_blank">{e.opencompetitions}</a>
-              </div>
-            </li>
-
-            <li className="nav-item dropdown">
-              <a className="nav-link dropdown-toggle opros" href="#" id="navbarDropdown" role="button" 
-                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  {e.interview}
-              </a>
-              <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <NavLink className="dropdown-item" to="/polls" activeClassName="active">{e.reconstructionofpedestrianstreets}</NavLink>
-                <a target="_blank" className="dropdown-item" href="/docs/designCode.pdf">{e.designcode}</a>
-                <NavLink className="dropdown-item" to="/councilMaterials" activeClassName="active">{e.materialsofthetownplanningcouncil}</NavLink>
-              </div>
-            </li>
-              
+              {/*#######################################################################################################
+              ##########################################################################################################*/}
             <li className="nav-item map">
               <span>Карта:</span> <a className={this.giveActiveClass('/map')} href="/#/map">3D</a> | <a className={this.giveActiveClass('/map2d')} href="/#/map2d">2D</a>
             </li>

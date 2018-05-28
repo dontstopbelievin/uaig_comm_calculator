@@ -5,7 +5,8 @@ import {ru, kk} from '../languages/header.json';
 import $ from 'jquery';
 import { Route, Link,  Switch, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
-import CKEditor from "react-ckeditor-component";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 
 let e = new LocalizedStrings({ru,kk});
@@ -156,7 +157,8 @@ class AllPages extends React.Component {
 
                       <td>
                         <Link className="btn btn-outline-info col-md-8" to={'/addPages/update/' + page.id}>Изменить</Link>
-                        <button className="btn btn-outline-danger col-md-8" data-link={'/addPages/delete/' + page.id} onClick={this.delete_article.bind(this)}>Удалить</button>
+                        <button className="btn btn-outline-danger col-md-8" data-link={'/addPages/delete/' + page.id}
+                                onClick={this.delete_article.bind(this)}>Удалить</button>
                       </td>
                     </tr>
                     );
@@ -188,8 +190,6 @@ class AllPages extends React.Component {
 class AddPage extends React.Component {
     constructor(props) {
     super(props);
-    this.updateContent = this.updateContent.bind(this);
-    this.onChange = this.onChange.bind(this);
 
 
     this.state = {
@@ -198,181 +198,97 @@ class AddPage extends React.Component {
       value: '',
       desc : '',
       content: '',
-      roles: [],
-      role: '',
       loaderHidden: false
     };
+    this.onTextChange = this.onTextChange.bind(this);
   }
 
   componentWillMount () {
-        this.getRoles();
   }
-    getRoles() {
-        //console.log("entered getRoles function");
-        var token = sessionStorage.getItem('tokenInfo');
-        var xhr = new XMLHttpRequest();
-        xhr.open("get", window.url + "api/userTable/getRoles", true);
-        //Send the proper header information along with the request
-        xhr.setRequestHeader("Authorization", "Bearer " + token);
-        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-        xhr.onload = function () {
-          if (xhr.status === 200) {
-            var data = JSON.parse(xhr.responseText);
-            var roles = data.roles;
 
-            this.setState({ roles: roles });
-              console.log(this.state.roles);
-          }
-        }.bind(this);
-        xhr.send();
-      }
-    requestSubmission(e){
-        e.preventDefault();
-        var page = new Object();
-            page.title = this.state.title;
-            page.description = this.state.desc;
-            page.content = this.state.content;
-            page.roleId = this.state.value;
-            console.log(page);
-      if (sessionStorage.getItem('tokenInfo')) {
-        $.ajax({
-          type: 'POST',
-          url: window.url + 'api/addPages/insert',
-          contentType: 'application/json; charset=utf-8',
-          beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
-          },
-          data: JSON.stringify(page),
-          success: function (data) {
-              console.log(data);
-            alert(data.message);
-              this.props.history.replace('/addPages/all');
-          }.bind(this),
-          fail: function (jqXHR) {
-            alert("Ошибка " + jqXHR.status + ': ' + jqXHR.statusText);
-          },
-          complete: function (jqXHR) {
-          }
-        });
-      } else { console.log('session expired'); }
-    }
-    updateContent(newContent) {
-        this.setState({
-            content: newContent
-        })
-    }
-    onChangeSelect (event) {
-        var newValue = event.nativeEvent.target.value;
-        this.setState({value: parseInt(newValue)});
-    }
-    onChange(evt){
-      console.log("onChange fired with event info: ", evt);
-      var newContent = evt.editor.getData();
-      this.setState({
-        content: newContent
+  requestSubmission(e){
+      e.preventDefault();
+      var page = new Object();
+          page.title = this.state.title;
+          page.description = this.state.desc;
+          page.content = this.state.content;
+          console.log(page);
+    if (sessionStorage.getItem('tokenInfo')) {
+      $.ajax({
+        type: 'POST',
+        url: window.url + 'api/addPages/insert',
+        contentType: 'application/json; charset=utf-8',
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
+        },
+        data: JSON.stringify(page),
+        success: function (data) {
+            console.log(data);
+          alert(data.message);
+            this.props.history.replace('/addPages/all');
+        }.bind(this),
+        fail: function (jqXHR) {
+          alert("Ошибка " + jqXHR.status + ': ' + jqXHR.statusText);
+        },
+        complete: function (jqXHR) {
+        }
       });
-    }
-    onBlur(evt){
-      console.log("onBlur event called with event info: ", evt);
-    }
-    afterPaste(evt){
-      console.log("afterPaste event called with event info: ", evt);
-    }
+    } else { console.log('session expired'); }
+  }
 
-    render() {
-        return(
-            <div className="container">
-                <h4>Форма новой статичной страницы</h4>
-                <br/>
-                <div className="col-md-10">
-                    <form id="insert_form" name="form_aritcle">
-                        <div className="form-group">
-                            <label htmlFor="title">Название</label>
-                            <input type="text" name="title" maxlength="150"  id="title" pleaceholder="Title" className="form-control" required onChange={(e) => this.setState({title: e.target.value})} />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="description">Описание</label>
-                            <input type="text" name="description" maxlength="150" id="description" pleaceholder="Description" className="form-control" required onChange={(e) => this.setState({desc: e.target.value})} />
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="role" className="col-sm-12 control-label">Доступно для роли:</label>
-                          <div className="col-sm-2">
-                            <select className="form-control" id="role" required onChange={this.onChangeSelect.bind(this)}>
-                                <option>Добавить</option>
-                              {this.state.roles.length !== 0 &&
-                                this.state.roles.map(function(role, index){
-                                  return(
-                                      <option key={index} value={index + 1}>{role.name} </option>
-                                  )
-                                })
-                              }
-                            </select>
-                          </div>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="text">Содержание страницы</label>
-                            <CKEditor
-                              activeClass="p10"
-                              content={this.state.content}
-                              events={{
-                                "blur": this.onBlur,
-                                "afterPaste": this.afterPaste,
-                                "change": this.onChange
-                              }}
-                             />
-                        </div>
-                        <input type="submit" className="btn btn-outline-success" value="Отправить статью" onClick={this.requestSubmission.bind(this)} />
-                        <input type="reset" className="btn btn-outline-warning" value="Очистить" />
-                    </form>
-                    <div>
-                        <hr />
-                        <Link className="btn btn-outline-secondary pull-right" id="back" to={'/addPages/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
-                    </div>
-                </div>
-            </div>
-        )
-    }
+  onTextChange(value){
+    this.setState({content: value});
+  }
+
+  render() {
+      return(
+          <div className="container">
+              <h4>Форма новой статичной страницы</h4>
+              <br/>
+              <div className="col-md-10">
+                  <form id="insert_form" name="form_aritcle">
+                      <div className="form-group">
+                          <label htmlFor="title">Название</label>
+                          <input type="text" name="title" maxlength="150"  id="title" pleaceholder="Title" className="form-control" required onChange={(e) => this.setState({title: e.target.value})} />
+                      </div>
+                      <div className="form-group">
+                          <label htmlFor="description">Описание</label>
+                          <input type="text" name="description" maxlength="150" id="description" pleaceholder="Description" className="form-control" required onChange={(e) => this.setState({desc: e.target.value})} />
+                      </div>
+                      <div className="form-group">
+                          <label htmlFor="text">Содержание страницы</label>
+
+                          <ReactQuill value={this.state.content} onChange={this.onTextChange} />
+                      </div>
+                      <input type="submit" className="btn btn-outline-success" value="Отправить статью" onClick={this.requestSubmission.bind(this)} />
+                      <input type="reset" className="btn btn-outline-warning" value="Очистить" />
+                  </form>
+                  <div>
+                      <hr />
+                      <Link className="btn btn-outline-secondary pull-right" id="back" to={'/addPages/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+                  </div>
+              </div>
+          </div>
+      )
+  }
 }
 
 class UpdatePage extends React.Component {
     constructor(props) {
     super(props);
-    this.updateContent = this.updateContent.bind(this);
-    this.onChange = this.onChange.bind(this);
-
+    this.onTextChange = this.onTextChange.bind(this);
     this.state = {
       id : '',
       title : '',
       desc : '',
       value: '',
-      roles: [],
       content: false,
       loaderHidden: false
     };
   }
   componentDidMount() {
     this.getPage();
-    this.getRoles();
   }
-  getRoles() {
-        //console.log("entered getRoles function");
-        var token = sessionStorage.getItem('tokenInfo');
-        var xhr = new XMLHttpRequest();
-        xhr.open("get", window.url + "api/userTable/getRoles", true);
-        //Send the proper header information along with the request
-        xhr.setRequestHeader("Authorization", "Bearer " + token);
-        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-        xhr.onload = function () {
-          if (xhr.status === 200) {
-            var data = JSON.parse(xhr.responseText);
-            var roles = data.roles;
-
-            this.setState({ roles: roles });
-              console.log(this.state.roles);
-          }
-        }.bind(this);
-        xhr.send();
-      }
   getPage() {
     var id = this.props.match.params.id;
     var token = sessionStorage.getItem('tokenInfo');
@@ -388,7 +304,6 @@ class UpdatePage extends React.Component {
         this.setState({title: article.page.title});
         this.setState({desc: article.page.description});
         this.setState({content: article.page.content});
-        this.setState({value: article.page.role_id});
 
       } else if (xhr.status === 401) {
         sessionStorage.clear();
@@ -406,7 +321,6 @@ class UpdatePage extends React.Component {
             page.title = this.state.title;
             page.description = this.state.desc;
             page.content = this.state.content;
-            page.roleId = this.state.value;
       if (sessionStorage.getItem('tokenInfo')) {
         $.ajax({
           type: 'POST',
@@ -428,32 +342,12 @@ class UpdatePage extends React.Component {
         });
       } else { console.log('session expired'); }
     }
-  onChangeSelect (event) {
-    var newValue = event.nativeEvent.target.value;
-    this.setState({value: parseInt(newValue)});
-  }
 
-  updateContent(newContent) {
-      this.setState({
-          content: newContent
-      });
-  }
-  onChange(evt){
-    console.log("onChange fired with event info: ", evt);
-    var newContent = evt.editor.getData();
-    this.setState({
-      content: newContent
-    })
-  }
-  onBlur(evt){
-    console.log("onBlur event called with event info: ", evt);
-  }
-  afterPaste(evt){
-    console.log("afterPaste event called with event info: ", evt);
+  onTextChange(value){
+    this.setState({content: value});
   }
 
   render() {
-    var value = this.state.value;
     return(
       <div className="container">
         <h4>Форма исправления статичной страницы</h4>
@@ -468,35 +362,10 @@ class UpdatePage extends React.Component {
                 <label htmlFor="description">Описание</label>
                 <input type="text" name="description" maxLength="150" id="description" pleaceholder="Description" className="form-control" required onChange={(e) => this.setState({desc: e.target.value})} value={this.state.desc}  />
             </div>
-            <div className="form-group">
-              <label htmlFor="role" className="col-sm-12 control-label">Доступно для роли:</label>
-              <div className="col-sm-2">
-                <select className="form-control" id="role" required onChange={this.onChangeSelect.bind(this)}>
-                    <option>Добавить</option>
-                  {this.state.roles.length !== 0 &&
-                    this.state.roles.map(function(role, index){
-                      if( index + 1 == value ){
-                        return(<option key={index} selected value={index + 1}>{role.name} </option>)
-                      }else{
-                        return(<option key={index} value={index + 1}>{role.name} </option>)
-                      }
-                    })
-                  }
-                </select>
-              </div>
-            </div>
             <div className="form-group form3">
                 <label htmlFor="text">Содержание страницы</label>
                 {this.state.content &&
-                <CKEditor
-                  activeClass="p10"
-                  content={this.state.content}
-                  events={{
-                    "blur": this.onBlur,
-                    "afterPaste": this.afterPaste,
-                    "change": this.onChange
-                  }}
-                 />
+                  <ReactQuill value={this.state.content} onChange={this.onTextChange} />
                 }
             </div>
             <input type="submit" className="btn btn-outline-success" value="Отправить статью" onClick={this.requestSubmission.bind(this)} />
