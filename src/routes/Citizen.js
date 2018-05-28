@@ -21,6 +21,7 @@ export default class Citizen extends React.Component {
             <Switch>
               <Route path="/citizen/status/:status" component={AllApzs} />
               <Route path="/citizen/add" component={AddApz} />
+              <Route path="/citizen/edit/:id" component={AddApz} />
               <Route path="/citizen/:id" component={ShowApz} />
               <Redirect from="/citizen" to="/citizen/status/active" />
             </Switch>
@@ -74,6 +75,10 @@ class AllApzs extends React.Component {
             var apzs = data.filter(function(obj) { return obj.status_id !== 1 && obj.status_id !== 2; });
             break;
 
+          case 'draft':
+            apzs = data.filter(function(obj) { return obj.status_id === 8; });
+            break;
+
           case 'accepted':
             apzs = data.filter(function(obj) { return obj.status_id === 2; });
             break;
@@ -121,12 +126,13 @@ class AllApzs extends React.Component {
         {this.state.loaderHidden &&
           <div>  
             <div className="row">
-              <div className="col-sm-8">
+              <div className="col-sm-7">
                 <Link className="btn btn-outline-primary mb-3" to="/citizen/add">Создать заявление</Link>
               </div>
-              <div className="col-sm-4 statusActive">
+              <div className="col-sm-5 statusActive">
                 <ul className="nav nav-tabs mb-2 pull-right">
                   <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/active" replace>Активные</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/draft" replace>Черновики</NavLink></li>
                   <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/accepted" replace>Принятые</NavLink></li>
                   <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/declined" replace>Отказанные</NavLink></li>
                 </ul>
@@ -160,7 +166,7 @@ class AllApzs extends React.Component {
                       <td>{this.toDate(apz.created_at)}</td>
                       <td>{apz.object_term}</td>
                       <td>
-                        <Link className="btn btn-outline-info" to={'/citizen/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link className="btn btn-outline-info" to={'/citizen/' + (apz.status_id === 8 ? 'edit/' : '') + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
                     </tr>
                     );
@@ -169,7 +175,7 @@ class AllApzs extends React.Component {
 
                 {this.state.apzs.length === 0 &&
                   <tr>
-                    <td colSpan="3">Пусто</td>
+                    <td colSpan="5">Пусто</td>
                   </tr>
                 }
               </tbody>
@@ -197,14 +203,63 @@ class AddApz extends React.Component {
       titleDocumentFile: null,
       paymentPhotoFile: null,
       survey: null,
+
+      applicant: '',
+      phone: '',
+      region: 'Наурызбай',
+      designer: '',
+      projectName: '',
+      projectAddress: '',
+      projectAddressCoordinates: '',
+      confirmedTaskFile: '',
+      titleDocumentFile: '',
+      objectType: 'ИЖС',
+      customer: '',
+      cadastralNumber: '',
+      objectTerm: '',
+      objectLevel: '',
+      objectArea: '',
+      objectRooms: '',
+      electricAllowedPower: '',
+      electricRequiredPower: '',
+      electricityPhase: 'Однофазная',
+      electricSafetyCategory: 3,
+      peopleCount: 0,
+      waterRequirement: '',
+      waterSewage: '',
+      waterProduction: '',
+      waterDrinking: '',
+      waterFireFighting: 10,
+      waterFireFightingIn: 10,
+      sewageAmount: '',
+      sewageFeksal: '',
+      sewageProduction: '',
+      sewageToCity: '',
+      heatGeneral: '',
+      heatTech: '',
+      heatDistribution: '',
+      heatSaving: '',
+      sewageClientWishes: '',
+      phoneServiceNum: '',
+      phoneCapacity: '',
+      paymentPhotoFile: '',
+      phoneSewage: '',
+      phoneClientWishes: '',
+      gasGeneral: '',
+      gasCooking: '',
+      gasHeat: '',
+      gasVentilation: '',
+      gasConditioner: '',
+      gasWater: '',
+
       showMap: false,
       hasCoordinates: false,
       loaderHidden: true,
-      blocks: [{num: 1}],
-      companyList: []
+      blocks: [{num: 1, heatMain: '', heatVentilation: '', heatWater: '', heatWaterMax: ''}],
+      companyList: [],
     }
     
-    this.tabSubmission = this.tabSubmission.bind(this);
+    this.saveApz = this.saveApz.bind(this);
     this.onPersonalIdFileChange = this.onPersonalIdFileChange.bind(this);
     this.onConfirmedTaskFileChange = this.onConfirmedTaskFileChange.bind(this);
     this.onTitleDocumentFileChange = this.onTitleDocumentFileChange.bind(this);
@@ -215,6 +270,9 @@ class AddApz extends React.Component {
     this.deleteBlock = this.deleteBlock.bind(this);
     this.companySearch = this.companySearch.bind(this);
     this.onApplicantChange = this.onApplicantChange.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
+    this.onBlockChange = this.onBlockChange.bind(this);
+    this.downloadFile = this.downloadFile.bind(this);
   }
 
   onPersonalIdFileChange(e) {
@@ -241,6 +299,123 @@ class AddApz extends React.Component {
     $('.customer_field').val(e.target.value);
   }
 
+  onInputChange(e) {
+    const { value, name } = e.target
+    this.setState({ [name] : value })
+  }
+
+  componentWillMount() {
+    if (this.props.match.params.id) {
+      this.getApzInfo();
+    }
+  }
+
+  getApzInfo() {
+    this.setState({loaderHidden: false});
+    
+    var id = this.props.match.params.id;
+    var token = sessionStorage.getItem('tokenInfo');
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/apz/citizen/detail/" + id, true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var apz = JSON.parse(xhr.responseText);
+        
+        this.setState({applicant: apz.applicant ? apz.applicant : '' });
+        this.setState({phone: apz.phone ? apz.phone : '' });
+        this.setState({region: apz.region ? apz.region : '' });
+        this.setState({designer: apz.designer ? apz.designer : '' });
+        this.setState({projectName: apz.project_name ? apz.project_name : '' });
+        this.setState({projectAddress: apz.project_address ? apz.project_address : '' });
+        this.setState({projectAddressCoordinates: apz.project_address_coordinates ? apz.project_address_coordinates : '' });
+
+        this.setState({personalIdFile: apz.files.filter(function(obj) { return obj.category_id === 3 })[0]});
+        this.setState({confirmedTaskFile: apz.files.filter(function(obj) { return obj.category_id === 9 })[0]});
+        this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
+        this.setState({paymentPhotoFile: apz.files.filter(function(obj) { return obj.category_id === 20 })[0]});
+        this.setState({survey: apz.files.filter(function(obj) { return obj.category_id === 22 })[0]});
+
+        this.setState({objectType: apz.object_type ? apz.object_type : '' });
+        this.setState({customer: apz.customer ? apz.customer : '' });
+        this.setState({cadastralNumber: apz.cadastral_number ? apz.cadastral_number : '' });
+        this.setState({objectTerm: apz.object_term ? apz.object_term : '' });
+        this.setState({objectLevel: apz.object_level ? apz.object_level : '' });
+        this.setState({objectArea: apz.object_area ? apz.object_area : '' });
+        this.setState({objectRooms: apz.object_rooms ? apz.object_rooms : '' });
+
+        if (apz.apz_electricity) {
+          this.setState({electricAllowedPower: apz.apz_electricity.allowed_power ? apz.apz_electricity.allowed_power : '' });
+          this.setState({electricRequiredPower: apz.apz_electricity.required_power ? apz.apz_electricity.required_power : '' });
+          this.setState({electricityPhase: apz.apz_electricity.phase ? apz.apz_electricity.phase : '' });
+          this.setState({electricSafetyCategory: apz.apz_electricity.safety_category ? apz.apz_electricity.safety_category : '' });
+        }
+        
+        if (apz.apz_water) {
+          this.setState({peopleCount: apz.apz_water.people_count ? apz.apz_water.people_count : '' });
+          this.setState({waterRequirement: apz.apz_water.requirement ? apz.apz_water.requirement : '' });
+          this.setState({waterSewage: apz.apz_water.sewage ? apz.apz_water.sewage : '' });
+          this.setState({waterProduction: apz.apz_water.production ? apz.apz_water.production : '' });
+          this.setState({waterDrinking: apz.apz_water.drinking ? apz.apz_water.drinking : '' });
+          this.setState({waterFireFighting: apz.apz_water.fire_fighting ? apz.apz_water.fire_fighting : '' });
+          this.setState({waterFireFightingIn: apz.apz_water.fire_fighting_in ? apz.apz_water.fire_fighting_in : '' });
+        }
+
+        if (apz.apz_sewage) {
+          this.setState({sewageAmount: apz.apz_sewage.amount ? apz.apz_sewage.amount : '' });
+          this.setState({sewageFeksal: apz.apz_sewage.feksal ? apz.apz_sewage.feksal : '' });
+          this.setState({sewageProduction: apz.apz_sewage.production ? apz.apz_sewage.production : '' });
+          this.setState({sewageToCity: apz.apz_sewage.to_city ? apz.apz_sewage.to_city : '' });
+          this.setState({sewageClientWishes: apz.apz_sewage.client_wishes ? apz.apz_sewage.client_wishes : '' });
+        }
+
+        if (apz.apz_heat) {
+          this.setState({heatGeneral: apz.apz_heat.general ? apz.apz_heat.general : '' });
+          this.setState({heatTech: apz.apz_heat.tech ? apz.apz_heat.tech : '' });
+          this.setState({heatDistribution: apz.apz_heat.distribution ? apz.apz_heat.distribution : '' });
+          this.setState({heatSaving: apz.apz_heat.saving ? apz.apz_heat.saving : '' });
+
+          if (apz.apz_heat.blocks) {
+            for (var i = 0; i < apz.apz_heat.blocks.length; i++) {
+              var blocks = this.state.blocks;
+              
+              blocks[i] = {
+                num: i+1,
+                heatMain: apz.apz_heat.blocks[i].main,
+                heatVentilation: apz.apz_heat.blocks[i].ventilation,
+                heatWater: apz.apz_heat.blocks[i].water,
+                heatWaterMax: apz.apz_heat.blocks[i].water_max
+              };
+
+              this.setState({blocks: blocks});
+            }
+          }
+        }
+
+        if (apz.apz_phone) {
+          this.setState({phoneServiceNum: apz.apz_phone.service_num ? apz.apz_phone.service_num : '' });
+          this.setState({phoneCapacity: apz.apz_phone.capacity ? apz.apz_phone.capacity : '' });
+          this.setState({phoneSewage: apz.apz_phone.sewage ? apz.apz_phone.sewage : '' });
+          this.setState({phoneClientWishes: apz.apz_phone.client_wishes ? apz.apz_phone.client_wishes : '' });
+        }
+
+        if (apz.apz_gas) {
+          this.setState({gasGeneral: apz.apz_gas.general ? apz.apz_gas.general : '' });
+          this.setState({gasCooking: apz.apz_gas.cooking ? apz.apz_gas.cooking : '' });
+          this.setState({gasHeat: apz.apz_gas.heat ? apz.apz_gas.heat : '' });
+          this.setState({gasVentilation: apz.apz_gas.ventilation ? apz.apz_gas.ventilation : '' });
+          this.setState({gasConditioner: apz.apz_gas.conditioner ? apz.apz_gas.conditioner : '' });
+          this.setState({gasWater: apz.apz_gas.water ? apz.apz_gas.water : '' });
+        }
+      }
+
+      this.setState({loaderHidden: true});
+    }.bind(this)
+    xhr.send();
+  }
+
   hasCoordinates(value) {
 
     if (value) {
@@ -265,58 +440,100 @@ class AddApz extends React.Component {
     }
   }
 
-  tabSubmission(elem) { 
+  saveApz(publish, elem) {
     elem.preventDefault();
-    var id = document.querySelector('#'+elem.target.id).dataset.tab;
-    
-    if ($('#tab'+id+'-form').valid()) 
-    {
 
-      //проверка полей на валидность в Газоснабжении
-      if(document.getElementsByName('GasGeneral')[0] !== 'undefined')
-      {
-        var a = parseFloat( "0" + document.getElementsByName('GasCooking')[0].value);
-        var b = parseFloat( "0" + document.getElementsByName('GasHeat')[0].value);
-        var c = parseFloat( "0" + document.getElementsByName('GasVentilation')[0].value); 
-        var d = parseFloat( "0" + document.getElementsByName('GasConditioner')[0].value);
-        var e = parseFloat( "0" + document.getElementsByName('GasWater')[0].value);
-        var GasSum = a + b + c + d + e;
+    if (publish) {
+      var requiredFields = {
+        applicant: 'Заявитель',
+        personalIdFile: 'Уд.личности/Реквизиты',
+        projectName: 'Наименование проектируемого объекта',
+        projectAddress: 'Адрес проектируемого объекта',
+        confirmedTaskFile: 'Утвержденное задание на проектирование',
+        titleDocumentFile: 'Госакт и правоустанавливающий документ на земельный участок',
+        objectType: 'Тип объекта',
+        customer: 'Заказчик'
+      };
 
-        if($('a#tab8-link').attr('aria-expanded') === 'true') 
-        {
-          if(parseFloat(document.getElementsByName('GasGeneral')[0].value !== GasSum)) 
-          {
-            console.log(document.getElementsByName('GasGeneral')[0].value+" - "+GasSum);
-            alert('Сумма всех полей должна быть равна полю Общая потребность');
-          } 
-          else 
-          {
-            $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-ok');
-            $('#tab'+id+'-link').next().trigger('click');
+      var errors = 0;
+
+      Object.keys(requiredFields).forEach(function(key){
+        if (!this.state[key]) {
+          alert('Заполните поле "' + requiredFields[key] + '"');
+          errors++;
+          return false;
+        }
+      }.bind(this));
+
+      if (errors > 0) {
+        return false;
+      }
+    }
+
+    var apzId = this.props.match.params.id;
+    var link = apzId > 0 ? ("api/apz/citizen/save/" + apzId) : "api/apz/citizen/save";
+    var formData = new FormData();
+    formData.append('publish', publish ? true : false);
+
+    Object.keys(this.state).forEach(function(k){
+      if (k === 'blocks') {
+        Object.keys(this.state[k]).forEach(function(i){
+          formData.append('blocks[' + i + '][heatMain]', this.state[k][i].heatMain);
+          formData.append('blocks[' + i + '][heatVentilation]', this.state[k][i].heatVentilation);
+          formData.append('blocks[' + i + '][heatWater]', this.state[k][i].heatWater);
+          formData.append('blocks[' + i + '][heatWaterMax]', this.state[k][i].heatWaterMax);
+        }.bind(this));
+      } else {
+        formData.append(k, this.state[k]);
+      }
+    }.bind(this));
+
+    this.setState({loaderHidden: false});
+
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("post", window.url + link, true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.onload = function() {
+      this.setState({loaderHidden: true});
+
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+
+        if (publish) {
+          alert("Заявка успешно подана");
+          this.props.history.replace('/citizen');
+        } else {
+          alert('Заявка успешно сохранена');
+
+          if (!apzId) {
+            this.props.history.push('/citizen/edit/' + data.id);
           }
         }
-        else 
-        {
-          $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-ok');
-          $('#tab'+id+'-link').next().trigger('click');
-        }
+      } else {
+        alert("При сохранении заявки произошла ошибка!");
       }
-      else 
-      {
-        $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-ok');
-        $('#tab'+id+'-link').next().trigger('click');
-      }
-    } 
-    else 
-    {
-      $('#tab'+id+'-link').children('#tabIcon').removeClass().addClass('glyphicon glyphicon-remove');
-    }
+    }.bind(this);
+    xhr.send(formData);
   }
 
   addBlock() {
     var num = parseInt($('.block_list .col-md-12:last .block_num').html()) + 1;
 
-    this.setState({blocks: this.state.blocks.concat([{num: num}])});
+    this.setState({blocks: this.state.blocks.concat([{num: num, heatMain: '', heatVentilation: '', heatWater: '', heatWaterMax: ''}])});
+  }
+
+  onBlockChange(e, num) {
+    var blocks = this.state.blocks;
+    var index = blocks.map(function(obj) { return obj.num; }).indexOf(num);
+
+    if (index === -1) {
+      return false;
+    }
+
+    const { value, name } = e.target
+    blocks[index][name] = value;
+    this.setState({blocks: blocks});
   }
 
   deleteBlock(num) {
@@ -354,130 +571,49 @@ class AddApz extends React.Component {
     xhr.send(JSON.stringify({bin: bin}));
   }
 
-  requestSubmission(e) {
-    this.setState({loaderHidden: false});
-    if ($('#tab0-link').children().hasClass('glyphicon-ok') && 
-        $('#tab1-link').children().hasClass('glyphicon-ok') && 
-        $('#tab2-link').children().hasClass('glyphicon-ok') && 
-        $('#tab3-link').children().hasClass('glyphicon-ok') && 
-        $('#tab4-link').children().hasClass('glyphicon-ok') && 
-        $('#tab5-link').children().hasClass('glyphicon-ok') && 
-        $('#tab6-link').children().hasClass('glyphicon-ok') && 
-        $('#tab7-link').children().hasClass('glyphicon-ok') && 
-        $('#tab8-link').children().hasClass('glyphicon-ok')) 
-    {
-      var apzData = $('#tab0-form, #tab1-form, #tab2-form, #tab3-form, #tab4-form, #tab5-form, #tab6-form, #tab7-form, #tab8-form').serializeJSON();
-      if (sessionStorage.getItem('tokenInfo')) {
-        $.ajax({
-          type: 'POST',
-          url: window.url + 'api/apz/citizen/create',
-          contentType: 'application/json; charset=utf-8',
-          beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
-          },
-          data: JSON.stringify(apzData),
-          success: function (data) {
-            var formData = new FormData();
-            formData.append('PersonalIdFile', this.state.personalIdFile);
-            formData.append('ConfirmedTaskFile', this.state.confirmedTaskFile);
-            formData.append('TitleDocumentFile', this.state.titleDocumentFile);
-            formData.append('PaymentPhotoFile', this.state.paymentPhotoFile);
-            formData.append('Survey', this.state.survey);
-            $.ajax({
-              type: 'POST',
-              url: window.url + 'api/apz/citizen/upload/' + data.id ,
-              contentType: false,
-              beforeSend: function (xhr) {
-                xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
-              },
-              data: formData,
-              processData: false,
-              success: function (data) {
-                // after form is submitted: calls the function from CitizenComponent to update the list 
-                $('#tab0-form')[0].reset();
-                $('#tab1-form')[0].reset();
-                $('#tab2-form')[0].reset();
-                $('#tab3-form')[0].reset();
-                $('#tab4-form')[0].reset();
-                $('#tab5-form')[0].reset();
-                $('#tab6-form')[0].reset();
-                $('#tab7-form')[0].reset();
-                $('#tab8-form')[0].reset();
-                $('#tabIcon').removeClass();
-                alert("Заявка успешно подана");
-                this.props.history.replace('/citizen');
-              }.bind(this),
-              fail: function (jqXHR) {
-                alert("Ошибка " + jqXHR.status + ': ' + jqXHR.statusText);
-              },
-              statusCode: {
-                400: function () {
-                  alert("При сохранении заявки произошла ошибка!");
-                }
-              },
-              complete: function (jqXHR) {
-              }
-            });
-            this.setState({loaderHidden: true});
-          }.bind(this),
-          fail: function (jqXHR) {
-            alert("Ошибка " + jqXHR.status + ': ' + jqXHR.statusText);
-          },
-          statusCode: {
-            400: function () {
-              alert("При сохранении заявки произошла ошибка!");
-              this.setState({loaderHidden: true});
-            },
-            403: function (data) {
-              if (data.responseJSON.message) {
-                alert(data.responseJSON.message);
-              } else {
-                alert("При сохранении заявки произошла ошибка!");
-              }
-
-              this.setState({loaderHidden: true});
-            }.bind(this)
-          },
-          complete: function (jqXHR) {
-          }
-        });
-      } else { console.log('session expired'); }
-    } else { alert('Сохранены не все вкладки');
-      this.setState({loaderHidden: true});
-    }
-  }
-
   //правила вкладки Объект/Газоснабжение
   ObjectType(e) {
     // document.getElementsByName('ObjectArea')[0].disabled = false;
   }
 
   ObjectArea(e) {
+    if(e.target.name === 'objectArea') {
+      this.setState({objectArea: e.target.value});
+    }
+
+    if(e.target.name === 'electricAllowedPower') {
+      this.setState({electricAllowedPower: e.target.value});
+    }
+
+    if(e.target.name === 'electricRequiredPower') {
+      this.setState({electricRequiredPower: e.target.value});
+    }
+
     //ИЖС if selected
     if(document.getElementById('ObjectType').value === 'ИЖС')
     {
-      if(document.getElementsByName('ObjectArea')[0].value !== '')
+      if(document.getElementsByName('objectArea')[0].value !== '')
       {
-        var ObjectArea = parseInt(document.getElementsByName('ObjectArea')[0].value, 3);
+        var ObjectArea = parseInt(document.getElementsByName('objectArea')[0].value, 3);
         switch (true) 
         {
           case (ObjectArea <= 100):
-            document.getElementsByName('GasGeneral')[0].max = 6;
+            document.getElementsByName('gasGeneral')[0].max = 6;
             break;
           case (ObjectArea >= 101) && (ObjectArea <= 500):
-            document.getElementsByName('GasGeneral')[0].max = 15;
+            document.getElementsByName('gasGeneral')[0].max = 15;
             break;
           default:
-            document.getElementsByName('GasGeneral')[0].removeAttribute("max");
+            document.getElementsByName('gasGeneral')[0].removeAttribute("max");
         }
       }
 
-      if(document.getElementsByName('ElectricAllowedPower')[0].value !== '')
+      if(document.getElementsByName('electricAllowedPower')[0].value !== '')
       {
         //console.log(1);
-        document.getElementsByName("ElectricRequiredPower")[0].required = false;
-        document.getElementsByName("ElectricityPhase")[0].required = false;
-        document.getElementsByName("ElectricSafetyCategory")[0].required = false;
+        document.getElementsByName("electricRequiredPower")[0].required = false;
+        document.getElementsByName("electricityPhase")[0].required = false;
+        document.getElementsByName("electricSafetyCategory")[0].required = false;
       }
 
       // if(document.getElementsByName('ElectricRequiredPower')[0].value !== '')
@@ -520,8 +656,63 @@ class AddApz extends React.Component {
 
   //правила вкладки Водоснабжение
   PeopleCount(e) {
-    document.getElementsByName('WaterRequirement')[0].value = parseFloat( "0.19" * document.getElementsByName('PeopleCount')[0].value);
-    document.getElementsByName('WaterSewage')[0].value = document.getElementsByName('WaterRequirement')[0].value;
+    this.setState({waterRequirement: parseFloat( "0.19" * e.target.value)});
+    this.setState({peopleCount: e.target.value});
+    this.setState({waterSewage: this.state.waterRequirement});
+    //document.getElementsByName('WaterRequirement')[0].value = parseFloat( "0.19" * document.getElementsByName('PeopleCount')[0].value);
+    //document.getElementsByName('WaterSewage')[0].value = document.getElementsByName('WaterRequirement')[0].value;
+  }
+
+  downloadFile(id) {
+    var token = sessionStorage.getItem('tokenInfo');
+    var url = window.url + 'api/file/download/' + id;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", url, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+          var base64ToArrayBuffer = (function () {
+        
+            return function (base64) {
+              var binaryString = window.atob(base64);
+              var binaryLen = binaryString.length;
+              var bytes = new Uint8Array(binaryLen);
+              
+              for (var i = 0; i < binaryLen; i++) {
+                var ascii = binaryString.charCodeAt(i);
+                bytes[i] = ascii;
+              }
+              
+              return bytes; 
+            }
+            
+          }());
+
+          var saveByteArray = (function () {
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+            a.style = "display: none";
+            
+            return function (data, name) {
+              var blob = new Blob(data, {type: "octet/stream"}),
+                  url = window.URL.createObjectURL(blob);
+              a.href = url;
+              a.download = name;
+              a.click();
+              setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+            };
+
+          }());
+
+          saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
+        } else {
+          alert('Не удалось скачать файл');
+        }
+      }
+    xhr.send();
   }
 
   render() {
@@ -548,14 +739,14 @@ class AddApz extends React.Component {
             <div className="col-8">
               <div className="tab-content" id="v-pills-tabContent">
               <div className="tab-pane fade show active" id="tab0" role="tabpanel" aria-labelledby="tab0-link">
-                <form id="tab0-form" data-tab="0" onSubmit={this.tabSubmission.bind(this)}>
+                <form id="tab0-form" data-tab="0" onSubmit={this.saveApz.bind(this, false)}>
                 <div className="row">
                   <div className="col-md-6">
 
                     {bin ?
                       <div className="form-group">
                         <label htmlFor="Applicant">Заявитель:</label>
-                        <select id="companyList" onChange={this.onApplicantChange} defaultValue="" required name="Applicant" className="form-control mb-1">
+                        <select id="companyList" onChange={this.onInputChange} value={this.state.applicant} required name="applicant" className="form-control mb-1">
                           {this.state.companyList.length > 0 ?
                             <option value="">--- Выберите компанию ---</option>
                             :
@@ -574,23 +765,29 @@ class AddApz extends React.Component {
                       :
                       <div className="form-group">
                         <label htmlFor="Applicant">Заявитель:</label>
-                        <input type="text" className="form-control" required name="Applicant" placeholder="ФИО / Наименование компании" />
+                        <input type="text" className="form-control" onChange={this.onInputChange} required name="applicant" value={this.state.applicant} placeholder="ФИО / Наименование компании" />
                         <span className="help-block"></span>
                       </div>
                     }
                     
                     <div className="form-group">
-                      <label htmlFor="PersonalIdFile">Уд.личности/Реквизиты</label>
-                      <input type="file" required name="PersonalIdFile" className="form-control" onChange={this.onPersonalIdFileChange}/>
+                      <label htmlFor="PersonalIdFile">
+                        Уд.личности/Реквизиты
+                        
+                        {this.state.personalIdFile &&
+                          <small className="form-text text-muted help-block">(текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id)}>{this.state.personalIdFile.name}</a>)</small>
+                        }
+                      </label>
+                      <input type="file" name="PersonalIdFile" className="form-control" onChange={this.onPersonalIdFileChange}/>
                       <span className="help-block">документ в формате pdf, doc, docx</span>
                     </div>
                     <div className="form-group">
                       <label htmlFor="Phone">Телефон</label>
-                      <input type="tel" className="form-control" name="Phone" placeholder="8 (7xx) xxx xx xx" />
+                      <input type="tel" className="form-control" onChange={this.onInputChange} value={this.state.phone} name="phone" placeholder="8 (7xx) xxx xx xx" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="Region">Район</label>
-                      <select className="form-control" name="Region">
+                      <select className="form-control" onChange={this.onInputChange} value={this.state.region} name="region">
                       <option>Наурызбай</option>
                       <option>Алатау</option>
                       <option>Алмалы</option>
@@ -607,20 +804,20 @@ class AddApz extends React.Component {
                     </div>*/}
                     <div className="form-group">
                       <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
-                      <input type="text" className="form-control" name="Designer" />
+                      <input type="text" className="form-control" onChange={this.onInputChange} value={this.state.designer} name="designer" />
                     </div>
                   </div>
                   <div className="col-md-6">
                     <div className="form-group">
                       <label htmlFor="ProjectName">Наименование проектируемого объекта</label>
-                      <input type="text" required className="form-control" id="ProjectName" name="ProjectName" />
+                      <input type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectName} id="ProjectName" name="projectName" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
                       <div className="row coordinates_block">
                         <div className="col-sm-7">
-                          <input type="text" required className="form-control" name="ProjectAddress" />
-                          <input type="hidden" id="ProjectAddressCoordinates" name="ProjectAddressCoordinates" />
+                          <input type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectAddress} name="projectAddress" />
+                          <input type="hidden" onChange={this.onInputChange} value={this.state.projectAddressCoordinates} id="ProjectAddressCoordinates" name="projectAddressCoordinates" />
                         </div>
                         <div className="col-sm-5 p-0">
                           <a className="btn btn-outline-secondary btn-sm" onClick={() => this.toggleMap(true)}>
@@ -634,13 +831,25 @@ class AddApz extends React.Component {
                       </div>
                     </div>
                     <div className="form-group">
-                      <label htmlFor="ConfirmedTaskFile">Утвержденное задание на проектирование</label>
-                      <input type="file" required name="ConfirmedTaskFile" className="form-control" onChange={this.onConfirmedTaskFileChange} />
+                      <label htmlFor="ConfirmedTaskFile">
+                        Утвержденное задание на проектирование
+
+                        {this.state.confirmedTaskFile &&
+                          <small className="form-text text-muted help-block">(текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.confirmedTaskFile.id)}>{this.state.confirmedTaskFile.name}</a>)</small>
+                        }
+                      </label>
+                      <input type="file" name="ConfirmedTaskFile" className="form-control" onChange={this.onConfirmedTaskFileChange} />
                       <span className="help-block">документ в формате pdf, doc, docx</span>
                     </div>
                     <div className="form-group">
-                      <label htmlFor="TitleDocumentFile">Госакт и правоустанавливающий документ на земельный участок</label>
-                      <input type="file" required name="TitleDocumentFile" className="form-control" onChange={this.onTitleDocumentFileChange} />
+                      <label htmlFor="TitleDocumentFile">
+                        Госакт и правоустанавливающий документ на земельный участок
+
+                        {this.state.titleDocumentFile &&
+                          <small className="form-text text-muted help-block">(текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>{this.state.titleDocumentFile.name}</a>)</small>
+                        }
+                      </label>
+                      <input type="file" name="TitleDocumentFile" className="form-control" onChange={this.onTitleDocumentFileChange} />
                       <span className="help-block">документ в формате pdf, doc, docx</span>
                     </div>
                     {/*<div className="form-group">
@@ -660,15 +869,15 @@ class AddApz extends React.Component {
                   </div>
                 }
 
-                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
               <div className="tab-pane fade" id="tab1" role="tabpanel" aria-labelledby="tab1-link">
-                <form id="tab1-form" data-tab="1" onSubmit={this.tabSubmission.bind(this)}>
+                <form id="tab1-form" data-tab="1" onSubmit={this.saveApz.bind(this, false)}>
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group">
                       <label htmlFor="ObjectType">Тип объекта</label>
-                      <select required className="form-control" name="ObjectType" id="ObjectType" onChange={this.ObjectType.bind(this)} defaultValue="null">
+                      <select required className="form-control" name="objectType" id="ObjectType" onChange={this.onInputChange} value={this.state.objectType}>
                         <option value="null" disabled>Выберите тип объекта</option>
                         <option>ИЖС</option>
                         <option>МЖК</option>
@@ -688,21 +897,21 @@ class AddApz extends React.Component {
                     {bin ?
                       <div className="form-group">
                         <label htmlFor="Customer">Заказчик</label>
-                        <input type="text" required readOnly="readonly" className="form-control customer_field" name="Customer" placeholder="ФИО / Наименование компании" />
+                        <input type="text" required readOnly="readonly" value={this.state.applicant} className="form-control customer_field" name="customer" placeholder="ФИО / Наименование компании" />
                       </div>
                       :
                       <div className="form-group">
                         <label htmlFor="Customer">Заказчик</label>
-                        <input type="text" required className="form-control customer_field" name="Customer" placeholder="ФИО / Наименование компании" />
+                        <input type="text" required onChange={this.onInputChange} value={this.state.customer} className="form-control customer_field" name="customer" placeholder="ФИО / Наименование компании" />
                       </div>
                     }
                     <div className="form-group">
                       <label htmlFor="CadastralNumber">Кадастровый номер:</label>
-                      <input type="text" className="form-control" name="CadastralNumber" placeholder="" />
+                      <input type="text" className="form-control" onChange={this.onInputChange} value={this.state.cadastralNumber} name="cadastralNumber" placeholder="" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="ObjectTerm">Срок строительства по нормам</label>
-                      <input type="text" name="ObjectTerm" className="form-control" id="ObjectTerm" placeholder="" />
+                      <input type="text" name="objectTerm" onChange={this.onInputChange} value={this.state.objectTerm} className="form-control" id="ObjectTerm" placeholder="" />
                     </div>
                     {/* <div className="form-group">
                       <label htmlFor="">Правоустанавливающие документы на объект (реконструкция)</label>
@@ -715,15 +924,15 @@ class AddApz extends React.Component {
                   <div className="col-md-6">
                   <div className="form-group">
                     <label htmlFor="ObjectLevel">Этажность</label>
-                    <input type="number" className="form-control" name="ObjectLevel" placeholder="" />
+                    <input type="number" className="form-control" onChange={this.onInputChange} value={this.state.objectLevel} name="objectLevel" placeholder="" />
                   </div>
                   <div className="form-group">
                     <label htmlFor="ObjectArea">Площадь здания (кв.м)</label>
-                    <input type="number" step="any" className="form-control" name="ObjectArea" onChange={this.ObjectArea.bind(this)} />
+                    <input type="number" step="any" className="form-control" name="objectArea" onChange={this.ObjectArea.bind(this)} value={this.state.objectArea} />
                   </div>
                   <div className="form-group">
                     <label htmlFor="ObjectRooms">Количество квартир (номеров, кабинетов)</label>
-                    <input type="number" className="form-control" name="OBjectRooms" />
+                    <input type="number" className="form-control" onChange={this.onInputChange} value={this.state.objectRooms} name="objectRooms" />
                   </div>
                   </div>
                 </div>
@@ -731,19 +940,19 @@ class AddApz extends React.Component {
                   <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                 </div>
                 </form>
-                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
               <div className="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-link">
-                <form id="tab2-form" data-tab="2" onSubmit={this.tabSubmission.bind(this)}>
+                <form id="tab2-form" data-tab="2" onSubmit={this.saveApz.bind(this, false)}>
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group">
                       <label htmlFor="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)</label>
-                      <input type="number" step="any" name="ElectricAllowedPower" onChange={this.ObjectArea.bind(this)} className="form-control" />
+                      <input type="number" step="any" name="electricAllowedPower" onChange={this.ObjectArea.bind(this)} value={this.state.electricAllowedPower} className="form-control" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
-                      <input type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} name="ElectricRequiredPower" placeholder="" />
+                      <input type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} value={this.state.electricRequiredPower} name="electricRequiredPower" placeholder="" />
                     </div>
                   </div>
                   <div className="col-md-6">
@@ -774,7 +983,7 @@ class AddApz extends React.Component {
                   </div>*/}
                     <div className="form-group">
                       <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
-                      <select className="form-control" name="ElectricityPhase">
+                      <select className="form-control" onChange={this.onInputChange} value={this.state.electricityPhase} name="electricityPhase">
                         <option>Однофазная</option>
                         <option>Двухфазная</option>
                         <option>Трехфазная</option>
@@ -785,7 +994,7 @@ class AddApz extends React.Component {
                     </div>
                     <div className="form-group">
                       <label htmlFor="ElectricSafetyCategory">Категория по надежности (кВт)</label>
-                      <select required className="form-control" name="ElectricSafetyCategory" defaultValue="3">
+                      <select required className="form-control" onChange={this.onInputChange} value={this.state.electricSafetyCategory} name="electricSafetyCategory">
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -797,44 +1006,50 @@ class AddApz extends React.Component {
                   <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                 </div>
                 </form>
-                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
               <div className="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-link">
-                <form id="tab3-form" data-tab="3" onSubmit={this.tabSubmission.bind(this)}>
+                <form id="tab3-form" data-tab="3" onSubmit={this.saveApz.bind(this, false)}>
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group">
                       <label>Количество людей</label>
-                      <input type="number" step="0.1" className="form-control" name="PeopleCount" onChange={this.PeopleCount.bind(this)} placeholder="" />
+                      <input type="number" step="any" className="form-control" name="PeopleCount" onChange={this.PeopleCount.bind(this)} value={this.state.peopleCount} placeholder="" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
-                      <input type="number" step="any" className="form-control" name="WaterRequirement" placeholder="" />
+                      <input type="number" step="any" className="form-control" onChange={this.onInputChange} value={this.state.waterRequirement} name="WaterRequirement" placeholder="" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="WaterFireFighting">Потребные расходы наружного пожаротушения (л/сек)</label>
-                      <input type="number" min="10" defaultValue="10" className="form-control" name="WaterFireFighting" />
+                      <input type="number" onChange={this.onInputChange} value={this.state.waterFireFighting} min="10" className="form-control" name="WaterFireFighting" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="WaterProduction">На производственные нужды (м<sup>3</sup>/сутки)</label>
-                      <input type="number" step="any" className="form-control" name="WaterProduction" placeholder="" />
+                      <input type="number" onChange={this.onInputChange} step="any" className="form-control" name="waterProduction" value={this.state.waterProduction} placeholder="" />
                     </div>
                   </div>
                   <div className="col-md-6">
                     <div className="form-group">
                       <label htmlFor="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
-                      <input type="number" step="any" className="form-control" name="WaterDrinking" placeholder="" />
+                      <input type="number" onChange={this.onInputChange} value={this.state.waterDrinking} step="any" className="form-control" name="WaterDrinking" placeholder="" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="WaterSewage">Канализация (м<sup>3</sup>/сутки)</label>
-                      <input type="number" readOnly="readonly" className="form-control" name="WaterSewage" />
+                      <input type="number" readOnly="readonly" className="form-control" onChange={this.onInputChange} value={this.state.waterSewage} name="WaterSewage" />
                     </div>
                     <div className="form-group">
                       <label>Потребные расходы внутреннего пожаротушения (л/сек)</label>
-                      <input type="number" className="form-control" />
+                      <input type="number" className="form-control" onChange={this.onInputChange} value={this.state.waterFireFightingIn}/>
                     </div>
                     <div className="form-group">
-                      <label htmlFor="Survey">Топографическая съемка</label>
+                      <label htmlFor="Survey">
+                        Топографическая съемка
+
+                        {this.state.survey &&
+                          <small className="form-text text-muted help-block">(текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.survey.id)}>{this.state.survey.name}</a>)</small>
+                        }
+                      </label>
                       <input type="file" name="Survey" className="form-control" onChange={this.onSurveyChange} />
                     </div>
                   </div>
@@ -853,29 +1068,29 @@ class AddApz extends React.Component {
                   </div>
                 </div>
                 </form>
-                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
               <div className="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-link">
-                <form id="tab4-form" data-tab="4" onSubmit={this.tabSubmission.bind(this)}>
+                <form id="tab4-form" data-tab="4" onSubmit={this.saveApz.bind(this, false)}>
                 <div className="row">
                   <div className="col-md-6">
                   <div className="form-group">
                     <label htmlFor="SewageAmount">Общее количество сточных вод  (м<sup>3</sup>/сутки)</label>
-                    <input type="number" step="any" className="form-control" name="SewageAmount" placeholder="" />
+                    <input type="number" onChange={this.onInputChange} value={this.state.sewageAmount} step="any" className="form-control" name="sewageAmount" placeholder="" />
                   </div>
                   <div className="form-group">
                     <label htmlFor="SewageFeksal">Фекальных (м<sup>3</sup>/сутки)</label>
-                    <input type="number" step="any" className="form-control" name="SewageFeksal" placeholder="" />
+                    <input type="number" onChange={this.onInputChange} value={this.state.sewageFeksal} step="any" className="form-control" name="sewageFeksal" placeholder="" />
                   </div>
                   </div>
                   <div className="col-md-6">
                   <div className="form-group">
                     <label htmlFor="SewageProduction">Производственно-загрязненных (м<sup>3</sup>/сутки)</label>
-                    <input type="number" step="any" className="form-control" name="SewageProduction" placeholder="" />
+                    <input type="number" onChange={this.onInputChange} value={this.state.sewageProduction} step="any" className="form-control" name="sewageProduction" placeholder="" />
                   </div>
                   <div className="form-group">
                     <label htmlFor="SewageToCity">Условно-чистых сбрасываемых на городскую канализацию (м<sup>3</sup>/сутки)</label>
-                    <input type="number" step="any" className="form-control" name="SewageToCity" />
+                    <input type="number" onChange={this.onInputChange} value={this.state.sewageToCity} step="any" className="form-control" name="sewageToCity" />
                   </div>
                   </div>
                 </div>
@@ -883,36 +1098,36 @@ class AddApz extends React.Component {
                   <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                 </div>
                 </form>
-                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
               <div className="tab-pane fade" id="tab5" role="tabpanel" aria-labelledby="tab5-link">
-                <form id="tab5-form" data-tab="5" onSubmit={this.tabSubmission.bind(this)}>
+                <form id="tab5-form" data-tab="5" onSubmit={this.saveApz.bind(this, false)}>
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group">
                       <label htmlFor="HeatGeneral">Общая тепловая нагрузка (Гкал/ч)<br /><br /></label>
-                      <input type="number" step="any" className="form-control" name="HeatGeneral" placeholder="" />
+                      <input type="number" onChange={this.onInputChange} value={this.state.heatGeneral} step="any" className="form-control" name="heatGeneral" placeholder="" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="HeatTech">Технологические нужды(пар) (Т/ч)</label>
-                      <input type="number" step="any" className="form-control" name="HeatTech" placeholder="" />
+                      <input type="number" onChange={this.onInputChange} value={this.state.heatTech} step="any" className="form-control" name="heatTech" placeholder="" />
                     </div>
                   </div>
                   <div className="col-md-6">
                     <div className="form-group">
                       <label htmlFor="HeatDistribution">Разделить нагрузку по жилью и по встроенным помещениям</label>
-                      <input type="text" className="form-control" name="HeatDistribution" />
+                      <input type="text" onChange={this.onInputChange} value={this.state.heatDistribution} className="form-control" name="heatDistribution" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="HeatSaving">Энергосберегающее мероприятие</label>
-                      <input type="text" className="form-control" name="HeatSaving" />
+                      <input type="text" onChange={this.onInputChange} value={this.state.heatSaving} className="form-control" name="heatSaving" />
                     </div>
                   </div>
                 </div>
                 <div className="block_list">
                   {this.state.blocks.map(function(item, index) {
                     return(
-                      <div id={'heatBlock_' + item.num} className="row" key={index}><AddHeatBlock deleteBlock={this.deleteBlock} num={item.num} /></div>
+                      <div id={'heatBlock_' + item.num} className="row" key={index}><AddHeatBlock item={item} deleteBlock={this.deleteBlock} num={item.num} onBlockChange={this.onBlockChange} /></div>
                     );
                   }.bind(this))}
                 </div>
@@ -923,15 +1138,15 @@ class AddApz extends React.Component {
                   <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                 </div>
                 </form>
-                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
               <div className="tab-pane fade" id="tab6" role="tabpanel" aria-labelledby="tab6-link">
-                <form id="tab6-form" data-tab="6" onSubmit={this.tabSubmission.bind(this)}>
+                <form id="tab6-form" data-tab="6" onSubmit={this.saveApz.bind(this, false)}>
                 <div className="row">
                   <div className="col-md-12">
                   <div className="form-group">
                     <label htmlFor="SewageClientWishes">Пожелание заказчика</label>
-                    <input type="text" className="form-control" name="SewageClientWishes" placeholder="" />
+                    <input type="text" onChange={this.onInputChange} value={this.state.sewageClientWishes} className="form-control" name="sewageClientWishes" placeholder="" />
                   </div>
                   </div>
                 </div>
@@ -939,35 +1154,40 @@ class AddApz extends React.Component {
                   <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                 </div>
                 </form>
-                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
               <div className="tab-pane fade" id="tab7" role="tabpanel" aria-labelledby="tab7-link">
-                <form id="tab7-form" data-tab="7" onSubmit={this.tabSubmission.bind(this)}>
+                <form id="tab7-form" data-tab="7" onSubmit={this.saveApz.bind(this, false)}>
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group">
                       <label htmlFor="PhoneServiceNum">Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</label>
-                      <input type="number" step="any" className="form-control" name="PhoneServiceNum" placeholder="" />
+                      <input type="number" onChange={this.onInputChange} value={this.state.phoneServiceNum} step="any" className="form-control" name="phoneServiceNum" placeholder="" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="PhoneCapacity">Телефонная емкость</label>
-                      <input type="text" className="form-control" name="PhoneCapacity" placeholder="" />
+                      <input type="text" onChange={this.onInputChange} value={this.state.phoneCapacity} className="form-control" name="phoneCapacity" placeholder="" />
                     </div>
+                    <div className="form-group">
+                      <label htmlFor="PhoneCapacity">
+                        Сканированный файл оплаты
 
-                  <div className="form-group">
-                    <label htmlFor="PhoneCapacity">Сканированный файл оплаты</label>
-                    <input type="file" name="paymentPhotoFile" className="form-control" onChange={this.onPaymentPhotoFileChange}/>
-                    <span className="help-block">документ в формате pdf, doc, docx</span>
-                  </div>
+                        {this.state.paymentPhotoFile &&
+                          <small className="form-text text-muted help-block">(текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.paymentPhotoFile.id)}>{this.state.paymentPhotoFile.name}</a>)</small>
+                        }
+                      </label>
+                      <input type="file" name="paymentPhotoFile" className="form-control" onChange={this.onPaymentPhotoFileChange}/>
+                      <span className="help-block">документ в формате pdf, doc, docx</span>
+                    </div>
                   </div>
                   <div className="col-md-6">
                     <div className="form-group">
                       <label htmlFor="PhoneSewage">Планируемая телефонная канализация</label>
-                      <input type="text" className="form-control" name="PhoneSewage" placeholder="" />
+                      <input type="text" onChange={this.onInputChange} value={this.state.phoneSewage} className="form-control" name="phoneSewage" placeholder="" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="PhoneClientWishes">Пожелания заказчика</label>
-                      <input type="text" className="form-control" name="PhoneClientWishes" placeholder="Тип оборудования, тип кабеля и др." />
+                      <input type="text" onChange={this.onInputChange} value={this.state.phoneClientWishes} className="form-control" name="phoneClientWishes" placeholder="Тип оборудования, тип кабеля и др." />
                     </div>
                   </div>
                 </div>
@@ -975,37 +1195,37 @@ class AddApz extends React.Component {
                   <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                 </div>
                 </form>
-                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
               <div className="tab-pane fade" id="tab8" role="tabpanel" aria-labelledby="tab8-link">
-                <form id="tab8-form" data-tab="8" onSubmit={this.tabSubmission.bind(this)}>
+                <form id="tab8-form" data-tab="8" onSubmit={this.saveApz.bind(this, false)}>
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group">
                       <label htmlFor="GasGeneral">Общая потребность (м<sup>3</sup>/час)</label>
-                      <input type="number" step="any" className="form-control" name="GasGeneral" placeholder="" />
+                      <input type="number" onChange={this.onInputChange} value={this.state.gasGeneral} step="any" className="form-control" name="gasGeneral" placeholder="" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="GasCooking">На приготовление пищи (м<sup>3</sup>/час)</label>
-                      <input type="number" step="any" className="form-control" name="GasCooking" placeholder="" />
+                      <input type="number" onChange={this.onInputChange} value={this.state.gasCooking} step="any" className="form-control" name="gasCooking" placeholder="" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="GasHeat">Отопление (м<sup>3</sup>/час)</label>
-                      <input type="number" step="any" className="form-control" name="GasHeat" placeholder="" />
+                      <input type="number" onChange={this.onInputChange} value={this.state.gasHeat} step="any" className="form-control" name="gasHeat" placeholder="" />
                     </div>
                   </div>
                   <div className="col-md-6">
                     <div className="form-group">
                       <label htmlFor="GasVentilation">Вентиляция (м<sup>3</sup>/час)</label>
-                      <input type="number" step="any" className="form-control" name="GasVentilation" placeholder="" />
+                      <input type="number" step="any" onChange={this.onInputChange} value={this.state.gasVentilation} className="form-control" name="gasVentilation" placeholder="" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="GasConditioner">Кондиционирование (м<sup>3</sup>/час)</label>
-                      <input type="number" step="any" className="form-control" name="GasConditioner" />
+                      <input type="number" step="any" onChange={this.onInputChange} value={this.state.gasConditioner} className="form-control" name="gasConditioner" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="GasWater">Горячее водоснабжение при газификации многоэтажных домов (м<sup>3</sup>/час)</label>
-                      <input type="number" step="any" className="form-control" name="GasWater" />
+                      <input type="number" step="any" onChange={this.onInputChange} value={this.state.gasWater} className="form-control" name="gasWater" />
                     </div>
                   </div>
                 </div>
@@ -1013,7 +1233,7 @@ class AddApz extends React.Component {
                   <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                 </div>
                 </form>
-                <button onClick={this.requestSubmission.bind(this)} className="btn btn-outline-success">Отправить заявку</button>
+                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
               </div>
               </div>
             </div>
@@ -2556,6 +2776,10 @@ class AddHeatBlock extends React.Component {
     $('.block_delete').css('display', 'none');
   }
 
+  onBlockChange(e) {
+    this.props.onBlockChange(e, this.props.num);
+  }
+
   render() {
     return (
       <div className="col-md-12">
@@ -2571,25 +2795,25 @@ class AddHeatBlock extends React.Component {
           <div className="col-md-6">
             <div className="form-group">
               <label htmlFor="HeatMain">Отопление<br />(Гкал/ч)</label>
-              <input type="number" step="any" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatMain]'} placeholder="" />
+              <input type="number" step="any" className="form-control" value={this.props.item.heatMain} onChange={this.onBlockChange.bind(this)} name="heatMain" placeholder="" />
             </div>
           </div>
           <div className="col-md-6">
             <div className="form-group">
               <label htmlFor="HeatVentilation">Вентиляция<br />(Гкал/ч)</label>
-              <input type="number" step="any" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatVentilation]'} placeholder="" />
+              <input type="number" step="any" className="form-control" value={this.props.item.heatVentilation} onChange={this.onBlockChange.bind(this)} name="heatVentilation" placeholder="" />
             </div>
           </div>
           <div className="col-md-6">
             <div className="form-group">
               <label htmlFor="HeatWater">Горячее водоснабжение<br />(ср/ч)</label>
-              <input type="number" step="any" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatWater]'} placeholder="" />
+              <input type="number" step="any" className="form-control" value={this.props.item.heatWater} onChange={this.onBlockChange.bind(this)} name="heatWater" placeholder="" />
             </div>
           </div>
           <div className="col-md-6">
             <div className="form-group">
               <label htmlFor="HeatWaterMax">Горячее водоснабжение<br />(макс/ч)</label>
-              <input type="number" step="any" className="form-control" name={'HeatBlocks[' + this.props.num + '][HeatWaterMax]'} placeholder="" />
+              <input type="number" step="any" className="form-control" value={this.props.item.heatWaterMax} onChange={this.onBlockChange.bind(this)} name="heatWaterMax" placeholder="" />
             </div>
           </div>
         </div>
