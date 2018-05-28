@@ -42,7 +42,6 @@ export default class NavBar extends React.Component {
         this.setState({categories: data.menu_category});
         this.setState({ loaderHidden: true });
       }else if(xhr.status === 500){
-        alert('Не получилось найти в базе данных категории!');
         this.props.history.goBack();
       } else if (xhr.status === 401) {
         sessionStorage.clear();
@@ -80,7 +79,7 @@ export default class NavBar extends React.Component {
         this.setState({ loaderHidden: true });
         console.log(this.state.menuItems);
       }else if(xhr.status === 500){
-        alert('Не получилось найти в базе данных категории!');
+
       }
     }.bind(this);
     xhr.send();
