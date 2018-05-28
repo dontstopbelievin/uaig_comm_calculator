@@ -56,11 +56,12 @@ export default class Login extends Component {
   showAlert() {
     this.setState({aboutNCALayer: true});
   }
-
+  componentDidMount () {
+  }
   //user login function
   login(e) {
     e.preventDefault();
-
+    this.props.handler;
     //console.log("login function started");
     var tokenKey = "tokenInfo";
     var userIdKey = "userId";
@@ -140,6 +141,7 @@ export default class Login extends Component {
           this.setState({inviseBtn: this.state.inviseBtn});
           alert("Вы ввели неверный логин и/или пароль.");
         }
+
       }.bind(this);
       xhr.send(params);
     }
@@ -437,9 +439,6 @@ export default class Login extends Component {
     this.webSocketFunction();
   }
 
-  componentDidMount() {
-    //console.log("LoginComponent did mount");
-  }
 
   componentWillUnmount() {
     //console.log("LoginComponent will unmount");
