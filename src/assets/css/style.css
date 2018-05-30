@@ -1041,3 +1041,29 @@ table{
 .busy p{
     margin:0px;
 }
+
+#apzFormDiv .file_block > div {
+  border: 1px solid;
+  padding: 2px 5px;
+  font-weight: 100;
+}
+
+#apzFormDiv .file_block > div a {
+  float: right;
+  margin: -1px 0;
+  color: #d8a82d;
+}
+
+#apzFormDiv .file_buttons label {
+  display: table-cell;
+  width: 1%;
+}
+
+.file_container {
+  background: #f7f7f7;
+  padding: 10px;
+}
+
+.file_container .text-muted {
+  font-weight: 100;
+}

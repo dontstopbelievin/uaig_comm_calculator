@@ -257,6 +257,7 @@ class AddApz extends React.Component {
       loaderHidden: true,
       blocks: [{num: 1, heatMain: '', heatVentilation: '', heatWater: '', heatWaterMax: ''}],
       companyList: [],
+      categoryFiles: [],
     }
     
     this.saveApz = this.saveApz.bind(this);
@@ -273,6 +274,9 @@ class AddApz extends React.Component {
     this.onInputChange = this.onInputChange.bind(this);
     this.onBlockChange = this.onBlockChange.bind(this);
     this.downloadFile = this.downloadFile.bind(this);
+    this.selectFromList = this.selectFromList.bind(this);
+    this.uploadFile = this.uploadFile.bind(this);
+    this.selectFile = this.selectFile.bind(this);
   }
 
   onPersonalIdFileChange(e) {
@@ -472,21 +476,30 @@ class AddApz extends React.Component {
 
     var apzId = this.props.match.params.id;
     var link = apzId > 0 ? ("api/apz/citizen/save/" + apzId) : "api/apz/citizen/save";
-    var formData = new FormData();
-    formData.append('publish', publish ? true : false);
 
-    Object.keys(this.state).forEach(function(k){
-      if (k === 'blocks') {
-        Object.keys(this.state[k]).forEach(function(i){
-          formData.append('blocks[' + i + '][heatMain]', this.state[k][i].heatMain);
-          formData.append('blocks[' + i + '][heatVentilation]', this.state[k][i].heatVentilation);
-          formData.append('blocks[' + i + '][heatWater]', this.state[k][i].heatWater);
-          formData.append('blocks[' + i + '][heatWaterMax]', this.state[k][i].heatWaterMax);
-        }.bind(this));
-      } else {
-        formData.append(k, this.state[k]);
-      }
+    var data = {
+      publish: publish ? true : false,
+    }
+
+    Object.keys(this.state).forEach(function(k) {
+      data[k] = this.state[k]
     }.bind(this));
+
+    // var formData = new FormData();
+    // formData.append('publish', publish ? true : false);
+
+    // Object.keys(this.state).forEach(function(k){
+    //   if (k === 'blocks') {
+    //     Object.keys(this.state[k]).forEach(function(i){
+    //       formData.append('blocks[' + i + '][heatMain]', this.state[k][i].heatMain);
+    //       formData.append('blocks[' + i + '][heatVentilation]', this.state[k][i].heatVentilation);
+    //       formData.append('blocks[' + i + '][heatWater]', this.state[k][i].heatWater);
+    //       formData.append('blocks[' + i + '][heatWaterMax]', this.state[k][i].heatWaterMax);
+    //     }.bind(this));
+    //   } else {
+    //     formData.append(k, this.state[k]);
+    //   }
+    // }.bind(this));
 
     this.setState({loaderHidden: false});
 
@@ -494,6 +507,7 @@ class AddApz extends React.Component {
     var xhr = new XMLHttpRequest();
     xhr.open("post", window.url + link, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function() {
       this.setState({loaderHidden: true});
 
@@ -514,7 +528,7 @@ class AddApz extends React.Component {
         alert("При сохранении заявки произошла ошибка!");
       }
     }.bind(this);
-    xhr.send(formData);
+    xhr.send(JSON.stringify(data));
   }
 
   addBlock() {
@@ -715,6 +729,127 @@ class AddApz extends React.Component {
     xhr.send();
   }
 
+  uploadFile(category, e) {
+    var file = e.target.files[0];
+    var name = file.name.replace(/\.[^/.]+$/, "");
+    var progressbar = $('.progress[data-category=' + category + ']');
+
+    if (!file || !category) {
+      alert('Не удалось загрузить файл');
+
+      return false;
+    }
+
+    var formData = new FormData();
+    formData.append('file', file);
+    formData.append('name', name);
+    formData.append('category', category);
+    progressbar.css('display', 'flex');
+    $.ajax({
+      type: 'POST',
+      url: window.url + 'api/file/upload',
+      contentType: false,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
+      },
+      processData: false,
+      data: formData,
+      xhr: function() {
+        var xhr = new window.XMLHttpRequest();
+
+        xhr.upload.addEventListener("progress", function(evt) {
+          if (evt.lengthComputable) {
+            var percentComplete = evt.loaded / evt.total;
+            percentComplete = parseInt(percentComplete * 100);
+            $('div', progressbar).css('width', percentComplete + '%');
+          }
+        }, false);
+
+        return xhr;
+      },
+      success: function (response) {
+        var data = {id: response.id, name: response.name};
+
+        setTimeout(function() {
+          progressbar.css('display', 'none');
+
+          switch (category) {
+            case 3:
+              this.setState({personalIdFile: data});
+              break;
+
+            case 9:
+              this.setState({confirmedTaskFile: data});
+              break;
+
+            case 10:
+              this.setState({titleDocumentFile: data});
+              break;
+
+            case 20:
+              this.setState({paymentPhotoFile: data});
+              break;
+
+            case 22:
+              this.setState({survey: data});
+              break;
+          }
+
+          alert("Файл успешно загружен");
+        }.bind(this), '1000')
+        
+      }.bind(this)
+    });
+  }
+
+  selectFromList(category, e) {
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/file/category/" + category, true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        this.setState({categoryFiles: data});
+
+        $('#selectFileModal').modal('show');
+      }
+    }.bind(this)
+    xhr.send();
+  }
+
+  selectFile(e) {
+    var fileName = e.target.dataset.name;
+    var id = e.target.dataset.id;
+    var category = e.target.dataset.category;
+    var data = {id: id, name: fileName};
+
+    switch (category) {
+      case '3':
+        this.setState({personalIdFile: data});
+        break;
+
+      case '9':
+        this.setState({confirmedTaskFile: data});
+        break;
+
+      case '10':
+        this.setState({titleDocumentFile: data});
+        break;
+
+      case '20':
+        this.setState({paymentPhotoFile: data});
+        break;
+
+      case '22':
+        this.setState({survey: data});
+        break;
+    }
+
+    $('#selectFileModal').modal('hide');
+  }
+
   render() {
     var bin = sessionStorage.getItem('userBin');
 
@@ -769,18 +904,7 @@ class AddApz extends React.Component {
                         <span className="help-block"></span>
                       </div>
                     }
-                    
-                    <div className="form-group">
-                      <label htmlFor="PersonalIdFile">
-                        Уд.личности/Реквизиты
-                        
-                        {this.state.personalIdFile &&
-                          <small className="form-text text-muted help-block">(текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id)}>{this.state.personalIdFile.name}</a>)</small>
-                        }
-                      </label>
-                      <input type="file" name="PersonalIdFile" className="form-control" onChange={this.onPersonalIdFileChange}/>
-                      <span className="help-block">документ в формате pdf, doc, docx</span>
-                    </div>
+
                     <div className="form-group">
                       <label htmlFor="Phone">Телефон</label>
                       <input type="tel" className="form-control" onChange={this.onInputChange} value={this.state.phone} name="phone" placeholder="8 (7xx) xxx xx xx" />
@@ -806,15 +930,13 @@ class AddApz extends React.Component {
                       <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
                       <input type="text" className="form-control" onChange={this.onInputChange} value={this.state.designer} name="designer" />
                     </div>
-                  </div>
-                  <div className="col-md-6">
                     <div className="form-group">
                       <label htmlFor="ProjectName">Наименование проектируемого объекта</label>
                       <input type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectName} id="ProjectName" name="projectName" />
                     </div>
                     <div className="form-group">
                       <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
-                      <div className="row coordinates_block">
+                      <div className="row coordinates_block pt-0">
                         <div className="col-sm-7">
                           <input type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectAddress} name="projectAddress" />
                           <input type="hidden" onChange={this.onInputChange} value={this.state.projectAddressCoordinates} id="ProjectAddressCoordinates" name="projectAddressCoordinates" />
@@ -830,27 +952,80 @@ class AddApz extends React.Component {
                         </div>
                       </div>
                     </div>
+                  </div>
+                  <div className="col-md-6">
                     <div className="form-group">
-                      <label htmlFor="ConfirmedTaskFile">
-                        Утвержденное задание на проектирование
+                      <label>Уд.личности/Реквизиты</label>
+                      <div className="file_container">
+                        <div className="progress mb-2" data-category="3" style={{height: '20px', display: 'none'}}>
+                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
 
-                        {this.state.confirmedTaskFile &&
-                          <small className="form-text text-muted help-block">(текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.confirmedTaskFile.id)}>{this.state.confirmedTaskFile.name}</a>)</small>
+                        {this.state.personalIdFile &&
+                          <div className="file_block mb-2">
+                            <div>
+                              {this.state.personalIdFile.name}
+                              <a className="pointer" onClick={(e) => this.setState({personalIdFile: false}) }>×</a>
+                            </div>
+                          </div>
                         }
-                      </label>
-                      <input type="file" name="ConfirmedTaskFile" className="form-control" onChange={this.onConfirmedTaskFileChange} />
-                      <span className="help-block">документ в формате pdf, doc, docx</span>
+
+                        <div className="file_buttons btn-group btn-group-justified d-table mt-0">
+                          <label htmlFor="PersonalIdFile" className="btn btn-success" style={{marginRight: '2px'}}>Загрузить</label>
+                          <input type="file" id="PersonalIdFile" name="PersonalIdFile" className="form-control" onChange={this.uploadFile.bind(this, 3)} style={{display: 'none'}} />
+                          <label onClick={this.selectFromList.bind(this, 3)} className="btn btn-info">Выбрать из списка</label>
+                        </div>
+                        <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
+                      </div>
                     </div>
                     <div className="form-group">
-                      <label htmlFor="TitleDocumentFile">
-                        Госакт и правоустанавливающий документ на земельный участок
+                      <label>Утвержденное задание на проектирование</label>
+                      <div className="file_container">
+                        <div className="progress mb-2" data-category="9" style={{height: '20px', display: 'none'}}>
+                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                          
+                        {this.state.confirmedTaskFile &&
+                          <div className="file_block mb-2">
+                            <div>
+                              {this.state.confirmedTaskFile.name}
+                              <a className="pointer" onClick={(e) => this.setState({confirmedTaskFile: false}) }>×</a>
+                            </div>
+                          </div>
+                        }
+
+                        <div className="file_buttons btn-group btn-group-justified d-table mt-0">
+                          <label htmlFor="ConfirmedTaskFile" className="btn btn-success" style={{marginRight: '2px'}}>Загрузить</label>
+                          <input type="file" id="ConfirmedTaskFile" name="ConfirmedTaskFile" className="form-control" onChange={this.uploadFile.bind(this, 9)} style={{display: 'none'}} />
+                          <label onClick={this.selectFromList.bind(this, 9)} className="btn btn-info">Выбрать из списка</label>
+                        </div>
+                        <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
+                      </div>
+                      
+                    </div>
+                    <div className="form-group">
+                      <label>Госакт и правоустанавливающий документ на земельный участок</label>
+                      <div className="file_container">
+                        <div className="progress mb-2" data-category="10" style={{height: '20px', display: 'none'}}>
+                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
 
                         {this.state.titleDocumentFile &&
-                          <small className="form-text text-muted help-block">(текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>{this.state.titleDocumentFile.name}</a>)</small>
+                          <div className="file_block mb-2">
+                            <div>
+                              {this.state.titleDocumentFile.name}
+                              <a className="pointer" onClick={(e) => this.setState({titleDocumentFile: false}) }>×</a>
+                            </div>
+                          </div>
                         }
-                      </label>
-                      <input type="file" name="TitleDocumentFile" className="form-control" onChange={this.onTitleDocumentFileChange} />
-                      <span className="help-block">документ в формате pdf, doc, docx</span>
+
+                        <div className="file_buttons btn-group btn-group-justified d-table mt-0">
+                          <label htmlFor="TitleDocumentFile" className="btn btn-success" style={{marginRight: '2px'}}>Загрузить</label>
+                          <input type="file" id="TitleDocumentFile" name="TitleDocumentFile" className="form-control" onChange={this.uploadFile.bind(this, 10)} style={{display: 'none'}} />
+                          <label onClick={this.selectFromList.bind(this, 10)} className="btn btn-info">Выбрать из списка</label>
+                        </div>
+                        <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
+                      </div>
                     </div>
                     {/*<div className="form-group">
                       <label htmlFor="ApzDate">Дата</label>
@@ -1043,14 +1218,28 @@ class AddApz extends React.Component {
                       <input type="number" className="form-control" onChange={this.onInputChange} value={this.state.waterFireFightingIn}/>
                     </div>
                     <div className="form-group">
-                      <label htmlFor="Survey">
-                        Топографическая съемка
+                      <label>Топографическая съемка</label>
+                      <div className="file_container">
+                        <div className="progress mb-2" data-category="22" style={{height: '20px', display: 'none'}}>
+                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
 
                         {this.state.survey &&
-                          <small className="form-text text-muted help-block">(текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.survey.id)}>{this.state.survey.name}</a>)</small>
+                          <div className="file_block mb-2">
+                            <div>
+                              {this.state.survey.name}
+                              <a className="pointer" onClick={(e) => this.setState({survey: false}) }>×</a>
+                            </div>
+                          </div>
                         }
-                      </label>
-                      <input type="file" name="Survey" className="form-control" onChange={this.onSurveyChange} />
+
+                        <div className="file_buttons btn-group btn-group-justified d-table mt-0">
+                          <label htmlFor="Survey" className="btn btn-success" style={{marginRight: '2px'}}>Загрузить</label>
+                          <input type="file" id="Survey" name="Survey" className="form-control" onChange={this.uploadFile.bind(this, 22)} style={{display: 'none'}} />
+                          <label onClick={this.selectFromList.bind(this, 22)} className="btn btn-info">Выбрать из списка</label>
+                        </div>
+                        <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1169,15 +1358,28 @@ class AddApz extends React.Component {
                       <input type="text" onChange={this.onInputChange} value={this.state.phoneCapacity} className="form-control" name="phoneCapacity" placeholder="" />
                     </div>
                     <div className="form-group">
-                      <label htmlFor="PhoneCapacity">
-                        Сканированный файл оплаты
+                      <label>Сканированный файл оплаты</label>
+                      <div className="file_container">
+                        <div className="progress mb-2" data-category="20" style={{height: '20px', display: 'none'}}>
+                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
 
                         {this.state.paymentPhotoFile &&
-                          <small className="form-text text-muted help-block">(текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.paymentPhotoFile.id)}>{this.state.paymentPhotoFile.name}</a>)</small>
+                          <div className="file_block mb-2">
+                            <div>
+                              {this.state.paymentPhotoFile.name}
+                              <a className="pointer" onClick={(e) => this.setState({paymentPhotoFile: false}) }>×</a>
+                            </div>
+                          </div>
                         }
-                      </label>
-                      <input type="file" name="paymentPhotoFile" className="form-control" onChange={this.onPaymentPhotoFileChange}/>
-                      <span className="help-block">документ в формате pdf, doc, docx</span>
+
+                        <div className="file_buttons btn-group btn-group-justified d-table mt-0">
+                          <label htmlFor="paymentPhotoFile" className="btn btn-success" style={{marginRight: '2px'}}>Загрузить</label>
+                          <input type="file" id="paymentPhotoFile" name="paymentPhotoFile" className="form-control" onChange={this.uploadFile.bind(this, 20)} style={{display: 'none'}} />
+                          <label onClick={this.selectFromList.bind(this, 20)} className="btn btn-info">Выбрать из списка</label>
+                        </div>
+                        <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
+                      </div>
                     </div>
                   </div>
                   <div className="col-md-6">
@@ -1237,6 +1439,45 @@ class AddApz extends React.Component {
               </div>
               </div>
             </div>
+            </div>
+
+            <div className="modal fade" id="selectFileModal" tabIndex="-1" role="dialog" aria-hidden="true">
+              <div className="modal-dialog" role="document">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title">Выбрать файл</h5>
+                    <button type="button" id="selectFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div className="modal-body">
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th style={{width: '80%'}}>Название</th>
+                          <th style={{width: '10%'}}>Формат</th>
+                          <th style={{width: '10%'}}></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {this.state.categoryFiles.map(function(file, index){
+                            return(
+                              <tr key={index}>
+                                <td>{file.name}</td>
+                                <td>{file.extension}</td>
+                                <td><button onClick={this.selectFile} data-category={file.category_id} data-id={file.id} data-name={file.name} className="btn btn-success">Выбрать</button></td>
+                              </tr>
+                            );
+                          }.bind(this)
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         }
