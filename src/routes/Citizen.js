@@ -19,11 +19,11 @@ export default class Citizen extends React.Component {
           
           <div className="card-body">
             <Switch>
-              <Route path="/citizen/status/:status" component={AllApzs} />
+              <Route path="/citizen/status/:status/:page" component={AllApzs} />
               <Route path="/citizen/add" component={AddApz} />
               <Route path="/citizen/edit/:id" component={AddApz} />
-              <Route path="/citizen/:id" component={ShowApz} />
-              <Redirect from="/citizen" to="/citizen/status/active" />
+              <Route path="/citizen/show/:id" component={ShowApz} />
+              <Redirect from="/citizen" to="/citizen/status/active/1" />
             </Switch>
           </div>
         </div>
@@ -38,8 +38,9 @@ class AllApzs extends React.Component {
     super(props);
 
     this.state = {
-      apzs: [],
-      loaderHidden: false
+      loaderHidden: false,
+      response: null,
+      pageNumbers: []
     };
 
   }
@@ -49,50 +50,38 @@ class AllApzs extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(this.props.match.params.status !== nextProps.match.params.status) {
-      this.getApzs(nextProps.match.params.status);
-    }
+    this.getApzs(nextProps.match.params.status, nextProps.match.params.page);
   }
 
-  getApzs(status = null) {
+  getApzs(status = null, page = null) {
     if (!status) {
       status = this.props.match.params.status;
+    }
+
+    if (!page) {
+      page = this.props.match.params.page;
     }
 
     this.setState({ loaderHidden: false });
 
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/citizen", true);
+    xhr.open("get", window.url + "api/apz/citizen/all/" + status + '?page=' + page, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function() {
       if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
+        var response = JSON.parse(xhr.responseText);
+        var pageNumbers = [];
+        var start = (response.current_page - 4) > 0 ? (response.current_page - 4) : 1;
+        var end = (response.current_page + 4) < response.last_page ? (response.current_page + 4) : response.last_page;
         
-        switch (status) {
-          case 'active':
-            var apzs = data.filter(function(obj) { return obj.status_id !== 1 && obj.status_id !== 2; });
-            break;
-
-          case 'draft':
-            apzs = data.filter(function(obj) { return obj.status_id === 8; });
-            break;
-
-          case 'accepted':
-            apzs = data.filter(function(obj) { return obj.status_id === 2; });
-            break;
-
-          case 'declined':
-            apzs = data.filter(function(obj) { return obj.status_id === 1; });
-            break;
-
-          default:
-            apzs = data;
-            break;
+        for (start; start <= end; start++) {
+          pageNumbers.push(start);
         }
-        
-        this.setState({apzs: apzs});
+
+        this.setState({pageNumbers: pageNumbers});
+        this.setState({response: response});
       } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
@@ -121,6 +110,10 @@ class AllApzs extends React.Component {
   }
 
   render() {
+    var status = this.props.match.params.status;
+    var page = this.props.match.params.page;
+    var apzs = this.state.response ? this.state.response.data : [];
+
     return (
       <div>
         {this.state.loaderHidden &&
@@ -131,10 +124,10 @@ class AllApzs extends React.Component {
               </div>
               <div className="col-sm-5 statusActive">
                 <ul className="nav nav-tabs mb-2 pull-right">
-                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/active" replace>Активные</NavLink></li>
-                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/draft" replace>Черновики</NavLink></li>
-                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/accepted" replace>Принятые</NavLink></li>
-                  <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/citizen/status/declined" replace>Отказанные</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'active'} activeStyle={{color:"black"}} to="/citizen/status/active/1" replace>Активные</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'draft'} activeStyle={{color:"black"}} to="/citizen/status/draft/1" replace>Черновики</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'accepted'} activeStyle={{color:"black"}} to="/citizen/status/accepted/1" replace>Принятые</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'declined'} activeStyle={{color:"black"}} to="/citizen/status/declined/1" replace>Отказанные</NavLink></li>
                 </ul>
               </div>
             </div>
@@ -151,7 +144,7 @@ class AllApzs extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {this.state.apzs.map(function(apz, index) {
+                {apzs.map(function(apz, index) {
                   return(
                     <tr key={index}>
                       <td>
@@ -166,20 +159,42 @@ class AllApzs extends React.Component {
                       <td>{this.toDate(apz.created_at)}</td>
                       <td>{apz.object_term}</td>
                       <td>
-                        <Link className="btn btn-outline-info" to={'/citizen/' + (apz.status_id === 8 ? 'edit/' : '') + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link className="btn btn-outline-info" to={'/citizen/' + (apz.status_id === 8 ? 'edit/' : 'show/') + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
                     </tr>
                     );
                   }.bind(this))
                 }
 
-                {this.state.apzs.length === 0 &&
+                {apzs.length === 0 &&
                   <tr>
                     <td colSpan="5">Пусто</td>
                   </tr>
                 }
               </tbody>
             </table>
+
+            {this.state.response && this.state.response.last_page > 1 &&
+              <nav className="pagination_block">
+                <ul className="pagination justify-content-center">
+                  <li className="page-item">
+                    <Link className="page-link" to={'/citizen/status/' + status + '/1'}>В начало</Link>
+                  </li>
+
+                  {this.state.pageNumbers.map(function(num, index) {
+                    return(
+                      <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
+                        <Link className="page-link" to={'/citizen/status/' + status + '/' + num}>{num}</Link>
+                      </li>
+                      );
+                    }.bind(this))
+                  }
+                  <li className="page-item">
+                    <Link className="page-link" to={'/citizen/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
+                  </li>
+                </ul>
+              </nav>
+            }
           </div>
         }
 
@@ -756,8 +771,11 @@ class AddApz extends React.Component {
 
           alert("Файл успешно загружен");
         }.bind(this), '1000')
-        
-      }.bind(this)
+      }.bind(this),
+      error: function (response) {
+        progressbar.css('display', 'none');
+        alert("Не удалось загрузить файл");
+      }
     });
   }
 

@@ -14,9 +14,9 @@ export default class Head extends React.Component {
           <h4 className="mb-0">Архитектурно-планировочное задание</h4></div>
           <div className="card-body">
             <Switch>
-              <Route path="/head/status/:status" component={AllApzs} />
-              <Route path="/head/:id" component={ShowApz} />
-              <Redirect from="/head" to="/head/status/active" />
+              <Route path="/head/status/:status/:page" component={AllApzs} />
+              <Route path="/head/show/:id" component={ShowApz} />
+              <Redirect from="/head" to="/head/status/active/1" />
             </Switch>
           </div>
         </div>
@@ -30,10 +30,9 @@ class AllApzs extends React.Component {
     super(props);
 
     this.state = {
-      activeApzs: [],
-      acceptedApzs: [],
-      declinedApzs: [],
-      loaderHidden: false
+      loaderHidden: false,
+      response: null,
+      pageNumbers: []
     };
   }
 
@@ -41,21 +40,39 @@ class AllApzs extends React.Component {
     this.getApzs();
   }
 
-  getApzs() {
+  componentWillReceiveProps(nextProps) {
+    this.getApzs(nextProps.match.params.status, nextProps.match.params.page);
+  }
+
+  getApzs(status = null, page = null) {
+    if (!status) {
+      status = this.props.match.params.status;
+    }
+
+    if (!page) {
+      page = this.props.match.params.page;
+    }
+
     this.setState({ loaderHidden: false });
 
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/head", true);
+    xhr.open("get", window.url + "api/apz/head/all/" + status + '?page=' + page, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
       if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
+        var response = JSON.parse(xhr.responseText);
+        var pageNumbers = [];
+        var start = (response.current_page - 4) > 0 ? (response.current_page - 4) : 1;
+        var end = (response.current_page + 4) < response.last_page ? (response.current_page + 4) : response.last_page;
         
-        this.setState({ activeApzs: data.in_process });
-        this.setState({ acceptedApzs: data.accepted });
-        this.setState({ declinedApzs: data.declined });
+        for (start; start <= end; start++) {
+          pageNumbers.push(start);
+        }
+
+        this.setState({pageNumbers: pageNumbers});
+        this.setState({response: response});
       }
 
       this.setState({ loaderHidden: true });
@@ -80,24 +97,18 @@ class AllApzs extends React.Component {
   }
 
   render() {
-    var apzs = [];
-    
-    if (this.props.match.params.status === 'active') {
-      apzs = this.state.activeApzs;
-    } else if (this.props.match.params.status === 'accepted') {
-      apzs = this.state.acceptedApzs;
-    } else {
-      apzs = this.state.declinedApzs;
-    }
+    var status = this.props.match.params.status;
+    var page = this.props.match.params.page;
+    var apzs = this.state.response ? this.state.response.data : [];
 
     return (
       <div>
         {this.state.loaderHidden &&
           <div>
             <ul className="nav nav-tabs mb-2 pull-right">
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/head/status/active" replace>Активные</NavLink></li>
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/head/status/accepted" replace>Принятые</NavLink></li>
-              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/head/status/declined" replace>Отказанные</NavLink></li>
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/head/status/active/1" replace>Активные</NavLink></li>
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/head/status/accepted/1" replace>Принятые</NavLink></li>
+              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/head/status/declined/1" replace>Отказанные</NavLink></li>
             </ul>
 
             <table className="table">
@@ -127,7 +138,7 @@ class AllApzs extends React.Component {
                       <td>{this.toDate(apz.created_at)}</td>
                       <td>{apz.object_term}</td>
                       <td>
-                        <Link className="btn btn-outline-info" to={'/head/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link className="btn btn-outline-info" to={'/head/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
                     </tr>
                     );
@@ -135,6 +146,28 @@ class AllApzs extends React.Component {
                 }
               </tbody>
             </table>
+
+            {this.state.response && this.state.response.last_page > 1 &&
+              <nav className="pagination_block">
+                <ul className="pagination justify-content-center">
+                  <li className="page-item">
+                    <Link className="page-link" to={'/head/status/' + status + '/1'}>В начало</Link>
+                  </li>
+
+                  {this.state.pageNumbers.map(function(num, index) {
+                    return(
+                      <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
+                        <Link className="page-link" to={'/head/status/' + status + '/' + num}>{num}</Link>
+                      </li>
+                      );
+                    }.bind(this))
+                  }
+                  <li className="page-item">
+                    <Link className="page-link" to={'/head/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
+                  </li>
+                </ul>
+              </nav>
+            }
           </div>
         }
 

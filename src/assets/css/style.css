@@ -1059,11 +1059,24 @@ table{
   width: 1%;
 }
 
-.file_container {
+#apzFormDiv .file_container {
   background: #f7f7f7;
   padding: 10px;
 }
 
-.file_container .text-muted {
+#apzFormDiv .file_container .text-muted {
   font-weight: 100;
+}
+
+.pagination_block {
+  box-shadow: none;
+}
+
+.pagination_block .page-item:first-child .page-link, .pagination_block .page-item:last-child .page-link {
+  border-radius: 50rem;
+  padding: .5rem .75rem;
+}
+
+.pagination_block .page-link {
+  border: none;
 }

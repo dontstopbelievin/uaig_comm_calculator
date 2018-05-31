@@ -17,10 +17,10 @@ export default class AnswerTemplate extends React.Component{
           <h4 className="mb-0">Шаблоны отказов</h4></div>
           <div className="card-body">
             <Switch>
-              <Route path="/answertemplate/all" component={AllTemplates} />
+              <Route path="/answertemplate/all/:page" component={AllTemplates} />
               <Route path="/answertemplate/add" component={AddTemplate} />
-              <Route path="/answertemplate/:id" component={ShowTemplate} />
-              <Redirect from="/answertemplate" to="/answertemplate/all" />
+              <Route path="/answertemplate/show/:id" component={ShowTemplate} />
+              <Redirect from="/answertemplate" to="/answertemplate/all/1" />
             </Switch>
           </div>
         </div>
@@ -34,8 +34,9 @@ class AllTemplates extends React.Component {
     super(props);
 
     this.state = {
-      templates: [],
-      loaderHidden: false
+      loaderHidden: false,
+      response: null,
+      pageNumbers: []
     };
   }
 
@@ -43,21 +44,38 @@ class AllTemplates extends React.Component {
     this.getTemplates();
   }
 
-  getTemplates() {
+  componentWillReceiveProps(nextProps) {
+    this.getTemplates(nextProps.match.params.page);
+  }
+
+  getTemplates(page = null) {
+    if (!page) {
+      page = this.props.match.params.page;
+    }
+
     this.setState({ loaderHidden: false });
 
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/answer_template", true);
+    xhr.open("get", window.url + "api/apz/answer_template/all" + '?page=' + page, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
       if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
+        var response = JSON.parse(xhr.responseText);
+        var pageNumbers = [];
+        var start = (response.current_page - 4) > 0 ? (response.current_page - 4) : 1;
+        var end = (response.current_page + 4) < response.last_page ? (response.current_page + 4) : response.last_page;
+        
+        for (start; start <= end; start++) {
+          pageNumbers.push(start);
+        }
 
-        this.setState({ templates: data });
-        this.setState({ loaderHidden: true });
+        this.setState({pageNumbers: pageNumbers});
+        this.setState({response: response});
       }
+
+      this.setState({ loaderHidden: true });
     }.bind(this);
     xhr.send();
   }
@@ -82,6 +100,9 @@ class AllTemplates extends React.Component {
   }
 
   render() {
+    var page = this.props.match.params.page;
+    var templates = this.state.response ? this.state.response.data : [];
+
     return (
       <div>
         <Link className="btn btn-outline-primary mb-3" to="/answertemplate/add">Создать шаблон</Link>
@@ -97,7 +118,7 @@ class AllTemplates extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {this.state.templates.map(function(template, index) {
+                {templates.map(function(template, index) {
                   return(
                     <tr key={index}>
                       <td>{template.title} </td>
@@ -110,7 +131,7 @@ class AllTemplates extends React.Component {
                       </td>
                       <td>
                         <div className="btn-group btn-group-xs" style={{margin: '0'}} role="group">
-                          <Link className="btn btn-outline-info" to={'/answertemplate/' + template.id}><i className="glyphicon glyphicon-pencil mr-2"></i> Изменить</Link>
+                          <Link className="btn btn-outline-info" to={'/answertemplate/show/' + template.id}><i className="glyphicon glyphicon-pencil mr-2"></i> Изменить</Link>
                           <button className="btn btn-outline-danger" onClick={this.deleteTemplate.bind(this, template.id, template.title)}><i className="glyphicon glyphicon-trash mr-2"></i> Удалить</button>
                         </div>
                       </td>
@@ -120,6 +141,28 @@ class AllTemplates extends React.Component {
                 }
               </tbody>
             </table>
+
+            {this.state.response && this.state.response.last_page > 1 &&
+              <nav className="pagination_block">
+                <ul className="pagination justify-content-center">
+                  <li className="page-item">
+                    <Link className="page-link" to={'/answertemplate/all/1'}>В начало</Link>
+                  </li>
+
+                  {this.state.pageNumbers.map(function(num, index) {
+                    return(
+                      <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
+                        <Link className="page-link" to={'/answertemplate/all/' + num}>{num}</Link>
+                      </li>
+                      );
+                    }.bind(this))
+                  }
+                  <li className="page-item">
+                    <Link className="page-link" to={'/answertemplate/all/' + this.state.response.last_page}>В конец</Link>
+                  </li>
+                </ul>
+              </nav>
+            }
           </div>
         }
         
