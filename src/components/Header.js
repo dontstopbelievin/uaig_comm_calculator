@@ -235,6 +235,7 @@ class LogoutBtn extends Component {
               {(() => {
                 switch(JSON.parse(sessionStorage.getItem('userRoles'))[0]) {
                   case 'Admin': return <AdminMenu />;
+                  case 'Reporter': return <ReporterMenu />
                   case 'Urban':
                     if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Head') {
                       return <HeadMenu />
@@ -285,10 +286,20 @@ class AdminMenu extends Component {
     return (
       <div>
         <NavLink to={"/admin"} replace className="dropdown-item" activeClassName="active">Пользователи</NavLink>
-        <NavLink to={"/newsPanel"} replace className="dropdown-item" activeClassName="active">Добавить новость</NavLink>
         <NavLink to={"/addPages"} replace className="dropdown-item" activeClassName="active">Добавить страницу</NavLink>
         <NavLink to={"/menuEdit"} replace className="dropdown-item" activeClassName="active">Пункты меню</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
+        <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
+      </div>
+    )
+  }
+}
+
+class ReporterMenu extends Component {
+  render() {
+    return (
+      <div>
+        <NavLink to={"/newsPanel"} replace className="dropdown-item" activeClassName="active">Добавить новость</NavLink>
         <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
     )
