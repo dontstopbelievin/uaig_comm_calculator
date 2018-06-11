@@ -5,8 +5,7 @@ import {ru, kk} from '../languages/header.json';
 import $ from 'jquery';
 import { Route, Link,  Switch, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import CKEditor from "react-ckeditor-component";
 
 
 
@@ -202,7 +201,7 @@ class AddNews extends React.Component {
     };
 
     this.handleOptionChange = this.handleOptionChange.bind(this);
-    this.onTextChange = this.onTextChange.bind(this);
+    this.updateContent = this.updateContent.bind(this);
   }
 
     handleOptionChange (e) {
@@ -211,9 +210,28 @@ class AddNews extends React.Component {
           });
         console.log(e.target.value);
     }
-  onTextChange(value){
-    this.setState({content: value});
-  }
+
+    updateContent(newContent) {
+        this.setState({
+            content: newContent
+        })
+    }
+
+    onChange(evt){
+      console.log("onChange fired with event info: ", evt);
+      var newContent = evt.editor.getData();
+      this.setState({
+        content: newContent
+      })
+    }
+
+    onBlur(evt){
+      console.log("onBlur event called with event info: ", evt);
+    }
+
+    afterPaste(evt){
+      console.log("afterPaste event called with event info: ", evt);
+    }
 
 
 
@@ -293,7 +311,15 @@ class AddNews extends React.Component {
                         </div>
                         <div className="form-group">
                             <label htmlFor="text">Содержание статьи</label>
-                            <ReactQuill value={this.state.content} onChange={this.onTextChange} />
+                            <CKEditor
+                              activeClass="p10"
+                              content={this.state.content}
+                              events={{
+                                "blur": this.onBlur,
+                                "afterPaste": this.afterPaste,
+                                "change": this.onChange
+                              }}
+                             />
                         </div>
                         <input type="submit" className="btn btn-outline-success" value="Отправить статью" onClick={this.requestSubmission.bind(this)} />
                         <input type="reset" className="btn btn-outline-warning" value="Очистить" />
@@ -315,7 +341,7 @@ class AddNews extends React.Component {
 class updateNews extends React.Component {
     constructor(props) {
     super(props);
-    this.onTextChange = this.onTextChange.bind(this);
+    // this.onTextChange = this.onTextChange.bind(this);
 
     this.state = {
       selectedOptions : '1',
@@ -326,7 +352,7 @@ class updateNews extends React.Component {
       content: false,
       loaderHidden: false
     };
-    
+    this.updateContent = this.updateContent.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
   }
 
@@ -340,9 +366,27 @@ class updateNews extends React.Component {
           });
         console.log(e.target.value);
   }
-  onTextChange(value){
-    this.setState({text: value});
-  }
+  updateContent(newContent) {
+        this.setState({
+            content: newContent
+        })
+    }
+
+    onChange(evt){
+      console.log("onChange fired with event info: ", evt);
+      var newContent = evt.editor.getData();
+      this.setState({
+        content: newContent
+      })
+    }
+
+    onBlur(evt){
+      console.log("onBlur event called with event info: ", evt);
+    }
+
+    afterPaste(evt){
+      console.log("afterPaste event called with event info: ", evt);
+    }
   getArticle() {
     var id = this.props.match.params.id;
     var token = sessionStorage.getItem('tokenInfo');
@@ -448,8 +492,15 @@ class updateNews extends React.Component {
                         <div className="form-group form3">
                             <label htmlFor="text">Содержание статьи</label>
                             {this.state.content &&
-
-                              <ReactQuill value={this.state.content} onChange={this.onTextChange} />
+                              <CKEditor
+                                activeClass="p10"
+                                content={this.state.content}
+                                events={{
+                                  "blur": this.onBlur,
+                                  "afterPaste": this.afterPaste,
+                                  "change": this.onChange
+                                }}
+                               />
                             }
                         </div>
                         <input type="submit" className="btn btn-outline-success" value="Отправить статью" onClick={this.requestSubmission.bind(this)} />
