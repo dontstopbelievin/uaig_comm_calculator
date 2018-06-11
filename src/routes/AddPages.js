@@ -2,11 +2,22 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../languages/header.json';
-import $ from 'jquery';
+import {$, jQuery} from 'jquery';
 import { Route, Link,  Switch, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import CKEditor from "react-ckeditor-component";
+import ReactSummernote from 'react-summernote';
+import 'react-summernote/dist/react-summernote.css'; // import styles
+import 'react-summernote/lang/summernote-ru-RU'; // you can import any other locale
+
+// Import bootstrap(v3 or v4) dependencies
+// import 'bootstrap/js/modal';
+// import 'bootstrap/js/dropdown';
+// import 'bootstrap/js/tooltip';
+// import 'bootstrap/dist/css/bootstrap.css';
+
 
 
 let e = new LocalizedStrings({ru,kk});
@@ -23,6 +34,7 @@ export default class AddPages extends React.Component{
             tokenExists: false,
             rolename: ""
         }
+
     }
 
   render() {
@@ -201,10 +213,21 @@ class AddPage extends React.Component {
       loaderHidden: false
     };
     this.onTextChange = this.onTextChange.bind(this);
+    this.updateContent = this.updateContent.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
   componentWillMount () {
   }
+  updateContent(newContent) {
+        this.setState({
+            content: newContent
+        })
+  }
+  onChange(content) {
+    this.setState({content: content})
+  }
+
 
   requestSubmission(e){
       e.preventDefault();
@@ -257,8 +280,24 @@ class AddPage extends React.Component {
                       </div>
                       <div className="form-group">
                           <label htmlFor="text">Содержание страницы</label>
-
-                          <ReactQuill value={this.state.content} onChange={this.onTextChange} />
+                          <ReactSummernote
+                            value={this.state.content}
+                            options={{
+                              // lang: 'ru-RU',
+                              height: 350,
+                              dialogsInBody: true,
+                              toolbar: [
+                                ['style', ['style']],
+                                ['font', ['bold', 'underline', 'clear']],
+                                ['fontname', ['fontname']],
+                                ['para', ['ul', 'ol', 'paragraph']],
+                                ['table', ['table']],
+                                ['insert', ['link', 'picture', 'video']],
+                                ['view', ['fullscreen', 'codeview']]
+                              ]
+                            }}
+                            onChange={this.onChange}
+                          />
                       </div>
                       <input type="submit" className="btn btn-outline-success" value="Отправить статью" onClick={this.requestSubmission.bind(this)} />
                       <input type="reset" className="btn btn-outline-warning" value="Очистить" />
@@ -277,6 +316,8 @@ class UpdatePage extends React.Component {
     constructor(props) {
     super(props);
     this.onTextChange = this.onTextChange.bind(this);
+    this.updateContent = this.updateContent.bind(this);
+    this.onChange = this.onChange.bind(this);
     this.state = {
       id : '',
       title : '',
@@ -346,6 +387,17 @@ class UpdatePage extends React.Component {
   onTextChange(value){
     this.setState({content: value});
   }
+  updateContent(newContent) {
+        this.setState({
+            content: newContent
+        })
+  }
+
+  onChange(content) {
+    this.setState({content: content})
+  }
+
+
 
   render() {
     return(
@@ -365,7 +417,24 @@ class UpdatePage extends React.Component {
             <div className="form-group form3">
                 <label htmlFor="text">Содержание страницы</label>
                 {this.state.content &&
-                  <ReactQuill value={this.state.content} onChange={this.onTextChange} />
+                  <ReactSummernote
+                    value={this.state.content}
+                    options={{
+                      // lang: 'ru-RU',
+                      height: 350,
+                      dialogsInBody: true,
+                      toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['table', ['table']],
+                        ['insert', ['link', 'picture', 'video']],
+                        ['view', ['fullscreen', 'codeview']]
+                      ]
+                    }}
+                    onChange={this.onChange}
+                  />
                 }
             </div>
             <input type="submit" className="btn btn-outline-success" value="Отправить статью" onClick={this.requestSubmission.bind(this)} />

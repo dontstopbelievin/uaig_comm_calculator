@@ -127,6 +127,7 @@ export default class editData extends React.Component{
             if (xhr.status === 200) {
                 var data = JSON.parse(xhr.responseText);
                 data = data.userData;
+                console.log(data);
                 this.setState({company_name: data.company_name});
                 this.setState({email: data.email});
                 this.setState({first_name: data.first_name});
@@ -157,9 +158,6 @@ export default class editData extends React.Component{
     render() {
         return (
             <div className="container body-content">
-
-
-
                 <div className="content container">
                     <div className="card">
                         <div className="card-header">
