@@ -145,33 +145,19 @@ export default class Header extends React.Component {
           </div>
         }
         <div className="header" data-url={this.props.location.pathname}>
-          <div className="container">
-            <div className="row">
-              <div className="col-md-12 header-bg">
-                <div className="row">
-                  <div className="search col-md-7 text-left">
-                    <form>
-                      <div className="form-group ">
-                        <input className="col-md-4 mainSearch" type="text" placeholder={e.searchbysite} /><br />
-                        <b className=" text-white">{e.justlike}: <a href="#" className="underline text-white">{e.issuanceof}</a></b>
-                      </div>
-                    </form>
-                  </div>
-                  <div className="col-md-4 ml-0 regist">
-                    {/*<a className="float-left nav-link" href="#">
-                      <button className="btn btn-outline-light  my-2 my-sm-0" type="submit"><span>ВХОД</span></button>
-                      <Button color="primary" on>ВХОД</Button>
-                    </a>*/}
-                    {sessionStorage.getItem('logStatus') ? (
-                      <LogoutBtn logout={this.logout}  history={this.props.history} />
-                    ) : (
-                      <LoginBtn handler={this.handler} />
-                    )}
-                    {/*<a className="nav-link" href="#">
-                      <button className="btn btn-outline-light my-2 my-sm-0" type="submit"><span>РЕГИСТРАЦИЯ</span></button>
-                    </a>*/}
-                  </div>
-                  <div className="col-md-1 font-weight-bold lang">
+          <div className="header_top">
+            <div className="container">
+              <div className="row">
+                <div className="search col-md-7 text-left pl-0">
+                  <form>
+                    <div className="form-group ">
+                      <input className="col-md-4 mainSearch" type="text" placeholder={e.searchbysite} /><br />
+                      <span className=" text-white">{e.justlike}: <a href="#" className="underline text-white">{e.issuanceof}</a></span>
+                    </div>
+                  </form>
+                </div>
+                <div className="col-md-5 ml-0 regist pr-0">
+                  <div className="lang pull-right">
                     {localStorage.getItem('lang') === 'kk' ?
                       (<span>Қаз</span>) :
                       (<a style={{cursor: 'pointer', color: '#ffc107'}} onClick={this.updateLanguage.bind(this, 'kk')}>Қаз</a>)
@@ -180,16 +166,33 @@ export default class Header extends React.Component {
                       (<span>Рус</span>) :
                       (<a style={{cursor: 'pointer', color: '#ffc107'}} onClick={this.updateLanguage.bind(this, 'ru')}>Рус</a>)
                     }
-                  </div> 
-                  <div className="col-md-12 text-center site-logo">
-                    <img className="image-fluid" width="90" src="./images/logo.png" alt="Управление Архитектуры и Градостроительства города Алматы" />
-                    <h4 className="text-white font-weight-bold ">{e.title}</h4>
-                  </div>   
+                  </div>
+
+                  <div className="login_buttons pull-right clear">
+                    {/*<a className="float-left nav-link" href="#">
+                      <button className="btn btn-outline-light  my-2 my-sm-0" type="submit"><span>ВХОД</span></button>
+                      <Button color="primary" on>ВХОД</Button>
+                    </a>*/}
+                    {sessionStorage.getItem('logStatus') ? (
+                      <LogoutBtn logout={this.logout} history={this.props.history} />
+                    ) : (
+                      <LoginBtn handler={this.handler} />
+                    )}
+                    {/*<a className="nav-link" href="#">
+                      <button className="btn btn-outline-light my-2 my-sm-0" type="submit"><span>РЕГИСТРАЦИЯ</span></button>
+                    </a>*/}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="container nav-bar" style={{background: '#F8F9FA'}}>
+          <div className="container header_bottom">
+            <div className="text-center site-logo">
+              <img className="image-fluid" width="90" src="./images/logo.png" alt="Управление Архитектуры и Градостроительства города Алматы" />
+              <h4 className="text-white font-weight-bold ">{e.title}</h4>
+            </div>   
+          </div>
+          <div className="container nav-bar p-0" style={{background: '#F8F9FA'}}>
             {this.state.loaderHidden &&
               <NavBar pathName={this.props.location.pathname} />
             }
@@ -226,9 +229,9 @@ class LogoutBtn extends Component {
   render() {
     return(
       <div>
-        <ul className="col-md-4 mr-auto mt-2 mt-lg-0">
-          <li className="nav-item dropdown PersonalCabinetDropdown">
-            <button className="btn btn-outline-secondary btn-white PersonalCabinet" href="#" id="cabinetDropdownMenuLink" data-toggle="dropdown">
+        <ul>
+          <li className="nav-item dropdown personalCabinetDropdown">
+            <button className="btn btn-outline-secondary btn-white personalCabinet" href="#" id="cabinetDropdownMenuLink" data-toggle="dropdown">
               <span>{sessionStorage.getItem('userName')} <i className="glyphicon glyphicon-menu-hamburger"></i></span>
             </button>
             <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="cabinetDropdownMenuLink">
