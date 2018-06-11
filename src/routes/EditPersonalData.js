@@ -115,7 +115,7 @@ export default class editData extends React.Component{
 
 
 
-    componentWillMount(){
+    componentDidMount(){
         console.log(sessionStorage.getItem('userId'));
         var userId = sessionStorage.getItem('userId');
         var token = sessionStorage.getItem('tokenInfo');
@@ -133,7 +133,7 @@ export default class editData extends React.Component{
                 this.setState({last_name: data.last_name});
                 this.setState({middle_name: data.middle_name});
 
-                if (this.state.userData.bin != ''){
+                if (data.bin !== null){
                     this.setState({bin: data.bin});
                 }else{
                     this.setState({bin: false});
