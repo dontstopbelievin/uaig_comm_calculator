@@ -90,7 +90,7 @@ export default class NavBar extends React.Component {
     var menuItems = this.state.menuItems;
     var lang = localStorage.getItem('lang');
     return (
-      <nav className="navbar navbar-expand-lg navbar-light">
+      <nav className="main_nav_bar navbar navbar-expand-lg navbar-light">
         <NavLink exact className="nav-link goHome" activeClassName="active" to="/" >{e.home}</NavLink>
         <button className="navbar-toggler" type="button" data-toggle="collapse" 
                 data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 

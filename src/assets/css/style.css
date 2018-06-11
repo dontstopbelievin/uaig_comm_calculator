@@ -45,6 +45,7 @@
 }
 .dropdown-menu {
   right: auto !important;
+  border-radius: 0 !important;
 }
 
 .isCompany {
