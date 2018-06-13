@@ -1506,8 +1506,8 @@ class ShowApz extends React.Component {
 
                   {!this.state.xmlFile &&
                     <div className="form-group">
-                      <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, "accept", "")}>
-                        Сохранить
+                      <button type="button" className="btn btn-secondary" onClick={this.sendWaterResponse.bind(this, apz.id, true, "")}>
+                        Отправить
                       </button>
 
                       {this.state.responseFile &&

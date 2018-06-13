@@ -1049,6 +1049,7 @@ class ShowApz extends React.Component {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
         //console.log(data);
+        this.setState({apz: data.apz});
         this.setState({responseId: data.id});
         this.setState({response: data.response});
         data.files ? this.setState({customTcFile: data.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: null});;
@@ -1136,6 +1137,8 @@ class ShowApz extends React.Component {
             this.setState({ showButtons: false });
             this.setState({ heatStatus: 0 });
           }
+
+          window.location.reload();
         } else if (xhr.status === 401) {
           sessionStorage.clear();
           alert("Время сессии истекло. Пожалуйста войдите заново!");
@@ -1295,7 +1298,7 @@ printData()
   render() {
     var apz = this.state.apz;
 
-    if (apz.length === 0) {
+    if (!apz || apz.length === 0) {
       return false;
     }
 
@@ -1727,8 +1730,8 @@ printData()
               {!this.state.xmlFile &&
                 <div className="col-sm-12">
                   <div className="form-group">
-                    <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, "accept", "")}>
-                      Сохранить
+                    <button type="button" className="btn btn-secondary" onClick={this.sendHeatResponse.bind(this, apz.id, true, "")}>
+                      Отправить
                     </button>
 
                     {this.state.responseFile &&
