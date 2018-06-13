@@ -1049,7 +1049,6 @@ class ShowApz extends React.Component {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
         //console.log(data);
-        this.setState({apz: data.apz});
         this.setState({responseId: data.id});
         this.setState({response: data.response});
         data.files ? this.setState({customTcFile: data.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: null});;
