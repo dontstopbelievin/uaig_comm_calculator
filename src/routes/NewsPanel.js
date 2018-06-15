@@ -199,7 +199,7 @@ class AddNews extends React.Component {
       content: '',
       loaderHidden: false
     };
-
+    this.onChange = this.onChange.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
     this.updateContent = this.updateContent.bind(this);
   }
@@ -222,7 +222,7 @@ class AddNews extends React.Component {
       var newContent = evt.editor.getData();
       this.setState({
         content: newContent
-      })
+      });
     }
 
     onBlur(evt){
@@ -242,10 +242,6 @@ class AddNews extends React.Component {
             news.description = this.state.desc;
             news.text = this.state.content;
             news.heading_id = parseInt(this.state.selectedOptions);
-        
-
-        
-        
 
         console.log(news);
       if (sessionStorage.getItem('tokenInfo')) {
@@ -352,6 +348,8 @@ class updateNews extends React.Component {
       content: false,
       loaderHidden: false
     };
+
+    this.onChange = this.onChange.bind(this);
     this.updateContent = this.updateContent.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
   }
