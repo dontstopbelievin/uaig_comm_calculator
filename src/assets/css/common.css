@@ -36,7 +36,7 @@ body{
     background-attachment: fixed;
     transform: translateY(0%);
 /*    box-shadow: 0 3px 6px #333;*/
-    /*z-index: -1;*/
+    z-index: 1;
 }
 .row{
     padding-top: 20px;
