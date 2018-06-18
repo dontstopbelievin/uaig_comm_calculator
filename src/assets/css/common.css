@@ -34,6 +34,7 @@ body{
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
+    transform: translateY(0%);
 /*    box-shadow: 0 3px 6px #333;*/
     /*z-index: -1;*/
 }
