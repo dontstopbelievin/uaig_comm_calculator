@@ -99,11 +99,11 @@ export default class Main extends React.Component {
     this.setLang();
 
 
-    // window.url = 'https://api.uaig.kz:8843/';
-    // window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
+    window.url = 'https://api.uaig.kz:8843/';
+    window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
 
-    window.url = 'http://uaig/';
-    window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // dimash
+    // window.url = 'http://uaig/';
+    // window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // dimash
   }
 
   componentDidMount() {
