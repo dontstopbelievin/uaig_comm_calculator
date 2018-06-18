@@ -317,7 +317,7 @@ class ShowApz extends React.Component {
           }
         }
 
-        if (data.status_id === 4 && hasReponse.length == 0) {
+        if ((data.status_id === 4 || data.status_id === 5) && hasReponse.length == 0) {
           this.setState({showButtons: true});
         }
 
