@@ -66,38 +66,43 @@ class SearchResults extends React.Component {
       return '/page/' + item.id;
     }
 
-    switch(roles[0]) {
-      case 'Citizen':
-        return '/citizen/';
+    if (roles) {
+      switch(roles[0]) {
+        case 'Citizen':
+          return '/citizen/';
 
-      case 'Urban':
-        return '/urban/';
+        case 'Urban':
+          return '/urban/';
 
-      case 'Engineer':
-        return '/engineer/';
+        case 'Engineer':
+          return '/engineer/';
 
-      case 'Provider':
-        if (roles[1] === 'Electricity') {
-          return '/providerelectro/';
-        } else if(roles[1] === 'Gas') {
-          return '/providergas/';
-        } else if (roles[1] === 'Heat') {
-          return '/providerheat/';
-        } else if (roles[1] === 'Phone') {
-          return '/providerphone/';
-        } else {
-          return '/providerwater/';
-        }
+        case 'Provider':
+          if (roles[1] === 'Electricity') {
+            return '/providerelectro/';
+          } else if(roles[1] === 'Gas') {
+            return '/providergas/';
+          } else if (roles[1] === 'Heat') {
+            return '/providerheat/';
+          } else if (roles[1] === 'Phone') {
+            return '/providerphone/';
+          } else {
+            return '/providerwater/';
+          }
 
-      case 'ApzDepartment': 
-        return '/apz_department/';
+        case 'ApzDepartment': 
+          return '/apz_department/';
 
-      case 'Head': 
-        return '/head/';
+        case 'Head': 
+          return '/head/';
 
-      default: 
-        return '/';
+        default: 
+          return '/';
+      }
+    } else {
+      return '/login';
     }
+    
   }
 
   render() {
