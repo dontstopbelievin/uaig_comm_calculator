@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import LocalizedStrings from 'react-localization';
+import Autocomplete from 'react-autocomplete';
 import {ru, kk} from '../languages/header.json';
 import Loader from 'react-loader-spinner';
 import NavBar from './Navbar.js';
@@ -22,13 +23,15 @@ export default class Header extends React.Component {
     this.state = {
       rolename: "",
       showBottomNavbar: false,
-      loaderHidden: true
+      loaderHidden: true,
+      searchText: ""
     }
 
     this.checkToken = this.checkToken.bind(this);
     this.logout = this.logout.bind(this);
     this.toggleBottomNavbar = this.toggleBottomNavbar.bind(this);
     this.handler = this.handler.bind(this);
+    this.search = this.search.bind(this);
     // this.loaderHidden = this.loaderHidden.bind(this);
   }
 
@@ -58,7 +61,12 @@ export default class Header extends React.Component {
     xhr.send();
   }
 
+  search(e) {
+    e.preventDefault();
 
+    var query = document.getElementById('search_field');
+    this.props.history.push('/search/' + query.value);
+  }
 
   updateLanguage(name){
     localStorage.setItem('lang', name);
@@ -149,10 +157,28 @@ export default class Header extends React.Component {
             <div className="container">
               <div className="row">
                 <div className="search col-md-7 text-left pl-0">
-                  <form>
+                  <form onSubmit={this.search}>
                     <div className="form-group ">
-                      <input className="col-md-4 mainSearch" type="text" placeholder={e.searchbysite} /><br />
-                      <span className=" text-white">{e.justlike}: <a href="#" className="underline text-white">{e.issuanceof}</a></span>
+                      <Autocomplete
+                        getItemValue={(item) => item.label}
+                        shouldItemRender={(item, value) => item.label.toLowerCase().indexOf(value.toLowerCase()) > -1}
+                        items={[
+                          { key: 0, label: 'Выдача АПЗ' },
+                        ]}
+                        renderItem={(item, isHighlighted) =>
+                          <div key={item.key} style={{ fontWeight: 'bold', backgroundColor: '#fff', color: '#1a4482', padding: '2px 10px', borderRadius: '0', cursor: 'pointer'}}>
+                            {item.label}
+                          </div>
+                        }
+                        open={this.state.searchText.length > 2}
+                        value={this.state.searchText}
+                        onChange={(e) => this.setState({searchText: e.target.value})}
+                        onSelect={(val) => this.props.history.push('/search/' + val)}
+                        wrapperStyle={{ display: 'block' }}
+                        menuStyle={{ borderRadius: '0px', background: 'rgba(255, 255, 255, 0.9)', padding: '0', fontSize: '90%', position: 'fixed', overflow: 'auto', maxHeight: '50%' }}
+                        inputProps={{ className: "col-md-4 mainSearch", id: "search_field", placeholder: e.searchbysite}}
+                      />
+                      <span className=" text-white">{e.justlike}: <Link className="underline text-white" to={"/search/" + e.issuanceof}>{e.issuanceof}</Link></span>
                     </div>
                   </form>
                 </div>

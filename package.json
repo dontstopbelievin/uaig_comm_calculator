@@ -18,6 +18,7 @@
     "react": "^16.3.1",
     "react-addons-css-transition-group": "^15.6.2",
     "react-addons-transition-group": "^15.6.2",
+    "react-autocomplete": "^1.8.1",
     "react-calendar": "^2.14.0",
     "react-ckeditor-component": "^1.0.7",
     "react-dom": "^16.3.1",

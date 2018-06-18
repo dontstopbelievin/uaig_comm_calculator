@@ -1081,3 +1081,16 @@ table{
 .pagination_block .page-link {
   border: none;
 }
+
+.search_results .search_item {
+  margin-bottom: 30px;
+  border-bottom: 1px solid #f7f7f7;
+}
+
+.search_results .search_item h4 {
+  font-size: 16px;
+}
+
+.search_results .search_item h4 a {
+  color: #1a4482;
+}
