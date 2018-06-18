@@ -741,37 +741,14 @@ class ShowApz extends React.Component {
 
         {this.state.showButtons &&
           <div>
-            {!this.state.xmlFile && !this.state.isSigned ?
-              <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                <div className="row form-group">
-                  <div className="col-sm-7">
-                    <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
-                  </div>
-
-                  <div className="col-sm-5 p-0">
-                    <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
-                </div>
-
-                <div className="form-group">
-                  <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
-                  <button type="button" className="btn btn-secondary" data-toggle="modal" data-target="#declined_modal">Вернуть архитектору</button>
-                </div>
+            <div className={this.state.showButtons ? '' : 'invisible'}>
+              <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendForm.bind(this, apz.id, true, "")}>
+                  Одобрить
+                </button>
+                <button type="button" className="btn btn-secondary" data-toggle="modal" data-target="#declined_modal">Вернуть архитектору</button>
               </div>
-              :
-              <div className={this.state.showButtons ? '' : 'invisible'}>
-                <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                  <button className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "")}>
-                    Одобрить
-                  </button>
-                  <button type="button" className="btn btn-secondary" data-toggle="modal" data-target="#declined_modal">Вернуть архитектору</button>
-                </div>
-              </div>
-            }
+            </div>
 
             <div className="modal fade" id="declined_modal" tabIndex="-1" role="dialog" aria-hidden="true">
               <div className="modal-dialog" role="document">
