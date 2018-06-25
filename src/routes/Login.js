@@ -494,7 +494,7 @@ export default class Login extends Component {
                               <div className="row">
                                   <div className="col-md-2"></div>
                                   <div className="col-md-10">
-                                      <Link to="/forgotPassword" >Forgot Password?</Link>
+                                      <Link to="/forgotPassword" >Забыли пароль?</Link>
                                   </div>
                               </div>
                           </div>
