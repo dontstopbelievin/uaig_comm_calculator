@@ -140,6 +140,17 @@ export default class NavBar extends React.Component {
                             }
                           </a>
                         )
+                      }else if(item.type === 3){
+                        return(
+                          <a className="dropdown-item" href={item.link}>
+                            {lang === 'kk' &&
+                              item.title_kk
+                            }
+                            {lang === 'ru' &&
+                              item.title_ru
+                            }
+                          </a>
+                        )
                       }
                     }
                   })
