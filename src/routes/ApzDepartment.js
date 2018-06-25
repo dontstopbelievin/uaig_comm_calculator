@@ -4,6 +4,8 @@ import EsriLoaderReact from 'esri-loader-react';
 //import { NavLink } from 'react-router-dom';
 import { Route, NavLink, Link, Switch, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 export default class ApzDepartment extends React.Component {
   render() {
@@ -222,12 +224,65 @@ class ShowApz extends React.Component {
       elecStatus: 2,
       storageAlias: "PKCS12",
       xmlFile: false,
-      isSigned: false
+      isSigned: false,
+
+      basisForDevelopmentApz: 'Постановление акимата города (района) №_____ от __________ (число, месяц, год)',
+      buildingPresence: 'Краткое описание',
+      address: 'Город, район, микрорайон, аул, квартал',
+      geodeticStudy: 'Краткое описание',
+      engineeringGeologicalStudy: 'Краткое описание',
+      planningSystem: 'По проекту с учетом функционального назначения объекта',
+      functionalValueOfObject: 'Краткое описание',
+      floorSum: 'Краткое описание',
+      structuralScheme: 'По проекту',
+      engineeringSupport: 'Краткое описание',
+      energyEfficiencyClass: 'Нормативное с кратким описаниями',
+      spatialSolution: 'Увязать со смежными по участку объектами',
+      draftMasterPlan: 'В соответствии ПДП, вертикальных планировочных отметок прилегающих улиц, требованиям строительных нормативных документов РК',
+      verticalLayout: 'Увязать с высотными отметками ПДП прилегающей территории',
+      landscapingAndGardening: 'Нормативное с кратким описаниями',
+      parking: 'Нормативное с кратким описаниями',
+      useOfFertileSoilLayer: 'Краткое описание',
+      smallArchitecturalForms: 'Краткое описание',
+      lighting: 'Краткое описание',
+      stylisticsOfArchitecture: 'Сформировать архитектурный образ в соответствии с функциональными особенностями объекта',
+      natureCombination: 'В соответствии с местоположением объекта и градостроительным значением',
+      colorSolution: 'Согласно согласованному эскизному проекту',
+      advertisingAndInformationSolution: 'Предусмотреть рекламно-информационные установки согласно статьи 21 Закона Республики Казахстан «О языках Республики Казахстан»',
+      nightLighting: 'Краткое описание',
+      inputNodes: 'Предложить акцентирование входных узлов',
+      conditionsForLowMobileGroups: 'Предусмотреть мероприятия в соответствии с указаниями и требованиями строительных нормативных документов РК; предусмотреть доступ инвалидов к зданию, предусмотреть пандусы, специальные подъездные пути и устройства для проезда инвалидных колясок',
+      complianceNoiseConditions: 'Согласно СНиП РК',
+      plinth: 'Краткое описание',
+      facade: 'Краткое описание',
+      heatSupply: 'Согласно техническим условиям (№___ и даты выдачи ТУ)',
+      waterSupply: 'Согласно техническим условиям (№___ и даты выдачи ТУ)',
+      sewerage: 'Согласно техническим условиям (№___ и даты выдачи ТУ)',
+      powerSupply: 'Согласно техническим условиям (№___ и даты выдачи ТУ)',
+      gasSupply: 'Согласно техническим условиям (№___ и даты выдачи ТУ)',
+      phoneSupply: 'Технические условия не предусмотрены',
+      drainage: 'Технические условия не предусмотрены',
+      irrigationSystems: 'Технические условия не предусмотрены',
+      engineeringSurveysObligation: 'Приступать к освоению земельного участка разрешается после геодезического выноса и закрепления его границ в натуре (на местности) и ордера на производство земляных работ',
+      demolitionObligation: 'В случае необходимости краткое описание',
+      transferCommunicationsObligation: 'Согласно техническим условиям на перенос (вынос) либо на проведения мероприятия по защите сетей и сооружений',
+      conservationPlantObligation: 'Краткое описание',
+      temporaryFencingConstructionObligation: 'Краткое описание',
+      additionalRequirements: '1. При проектировании системы кондиционирования в здании (в том случае, когда проектом не предусмотрено централизованное холодоснабжение и кондиционирование) необходимо предусмотреть размещение наружных элементов локальных систем в соответствии с архитектурным решением фасадов здания. На фасадах проектируемого здания предусмотреть места (ниши, выступы, балконы и т.д.) для размещения наружных элементов локальных систем кондиционирования.<br />2. Приненить материалы по ресурсосбережению и современных энергосберегающих технологий.',
+      generalRequirements: '1. При разработке проекта (рабочего проекта) необходимо руководствоваться нормами действующего законодательства Республики Казахстан в сфере архитектурной, градостроительной и строительной деятельности.<br />2. Согласовать с главным архитектором города (района):<br />- Эскизный проект',
+      notes: ''
     };
 
     this.onFileChange = this.onFileChange.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.sendForm = this.sendForm.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
+  }
+
+  onInputChange(state, value) {
+    // const { value, name } = e.target
+    // this.setState({ [name] : value })
+    this.setState({ [state] : value })
   }
 
   onFileChange(e) {
@@ -265,6 +320,7 @@ class ShowApz extends React.Component {
         }
 
         this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 18})[0]});
+        this.setState({response: data.apz_department_response ? true : false });
       }
     }.bind(this)
     xhr.send();
@@ -561,7 +617,53 @@ class ShowApz extends React.Component {
     }
   }
 
+  saveForm(apzId, status, comment) {
+    var token = sessionStorage.getItem('tokenInfo');
+    var data = {};
+
+    Object.keys(this.state).forEach(function(k) {
+      data[k] = this.state[k]
+    }.bind(this));
+
+    data.response = status;
+    data.message = comment;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("post", window.url + "api/apz/apz_department/save/" + apzId, true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+
+        this.setState({ response: data.response });
+        this.sendForm(apzId, status, comment);
+
+        // if(this.state.callSaveFromSend){
+        //   this.setState({callSaveFromSend: false});
+        //   this.sendForm(apzId, status, comment);
+        // } else {
+        //   alert("Ответ сохранен!");
+        //   this.setState({ showSignButtons: true });
+        // }
+      }
+      else if(xhr.status === 401){
+        sessionStorage.clear();
+        alert("Время сессии истекло. Пожалуйста войдите заново!");
+        this.props.history.replace("/login");
+      }
+    }.bind(this);
+    xhr.send(JSON.stringify(data));
+  }
+
   sendForm(apzId, status, comment) {
+    if(this.state.response === null){
+      this.setState({callSaveFromSend: true});
+      this.saveForm(apzId, status, comment);
+      
+      return true;
+    }
+
     var token = sessionStorage.getItem('tokenInfo');
 
     var formData = new FormData();
@@ -741,35 +843,263 @@ class ShowApz extends React.Component {
 
         {this.state.showButtons &&
           <div>
-            <div className={this.state.showButtons ? '' : 'invisible'}>
-              <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendForm.bind(this, apz.id, true, "")}>
-                  Одобрить
-                </button>
-                <button type="button" className="btn btn-secondary" data-toggle="modal" data-target="#declined_modal">Вернуть архитектору</button>
+            <form className="apz_department_form">
+              <div>
+                <h5>1. Характеристика участка</h5>
+                <div className="form-group">
+                  <label>Основание для разработки архитектурно-планировочного задания (АПЗ)</label>
+                  <ReactQuill value={this.state.basisForDevelopmentApz} onChange={this.onInputChange.bind(this, 'basisForDevelopmentApz')} />
+                </div>
+                <div className="form-group">
+                  <label>Наличие застройки</label>
+                  <ReactQuill value={this.state.buildingPresence} onChange={this.onInputChange.bind(this, 'buildingPresence')} />
+                </div>
+                <div className="form-group">
+                  <label>Местонахождение участка</label>
+                  <ReactQuill value={this.state.address} onChange={this.onInputChange.bind(this, 'address')} />
+                </div>
+                <div className="form-group">
+                  <label>Геодезическая изученность</label>
+                  <ReactQuill value={this.state.geodeticStudy} onChange={this.onInputChange.bind(this, 'geodeticStudy')} />
+                </div>
+                <div className="form-group">
+                  <label>Инженерно-геологическая изученность</label>
+                  <ReactQuill value={this.state.engineeringGeologicalStudy} onChange={this.onInputChange.bind(this, 'engineeringGeologicalStudy')} />
+                </div>
+                <div className="form-group">
+                  <label>Планировочная система</label>
+                  <ReactQuill value={this.state.planningSystem} onChange={this.onInputChange.bind(this, 'planningSystem')} />
+                </div>
               </div>
-            </div>
 
-            <div className="modal fade" id="declined_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-              <div className="modal-dialog" role="document">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title">Вернуть архитектору</h5>
-                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div className="modal-body">
-                    <div className="form-group">
-                      <label>Причина отклонения</label>
-                      <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
+              <div>
+                <h5>2. Характеристика проектируемого объекта</h5>
+                <div className="form-group">
+                  <label>Функциональное значение объекта</label>
+                  <ReactQuill value={this.state.functionalValueOfObject} onChange={this.onInputChange.bind(this, 'functionalValueOfObject')} />
+                </div>
+                <div className="form-group">
+                  <label>Этажность</label>
+                  <ReactQuill value={this.state.floorSum} onChange={this.onInputChange.bind(this, 'floorSum')} />
+                </div>
+                <div className="form-group">
+                  <label>Конструктивная схема</label>
+                  <ReactQuill value={this.state.structuralScheme} onChange={this.onInputChange.bind(this, 'structuralScheme')} />
+                </div>
+                <div className="form-group">
+                  <label>Инженерное обеспечение</label>
+                  <ReactQuill value={this.state.engineeringSupport} onChange={this.onInputChange.bind(this, 'engineeringSupport')} />
+                </div>
+                <div className="form-group">
+                  <label>Класс энергоэффективности</label>
+                  <ReactQuill value={this.state.energyEfficiencyClass} onChange={this.onInputChange.bind(this, 'energyEfficiencyClass')} />
+                </div>
+              </div>
+
+              <div>
+                <h5>3. Градостроительные требования</h5>
+                <div className="form-group">
+                  <label>Объемно-пространственное решение</label>
+                  <ReactQuill value={this.state.spatialSolution} onChange={this.onInputChange.bind(this, 'spatialSolution')} />
+                </div>
+                <div className="form-group">
+                  <label>Проект генерального плана</label>
+                  <ReactQuill value={this.state.draftMasterPlan} onChange={this.onInputChange.bind(this, 'draftMasterPlan')} />
+                </div>
+                <div className="form-group">
+                  <label>Вертикальная планировка</label>
+                  <ReactQuill value={this.state.verticalLayout} onChange={this.onInputChange.bind(this, 'verticalLayout')} />
+                </div>
+                <div className="form-group">
+                  <label>Благоустройство и озеленение</label>
+                  <ReactQuill value={this.state.landscapingAndGardening} onChange={this.onInputChange.bind(this, 'landscapingAndGardening')} />
+                </div>
+                <div className="form-group">
+                  <label>Парковка автомобилей</label>
+                  <ReactQuill value={this.state.parking} onChange={this.onInputChange.bind(this, 'parking')} />
+                </div>
+                <div className="form-group">
+                  <label>Использование плодородного слоя почвы</label>
+                  <ReactQuill value={this.state.useOfFertileSoilLayer} onChange={this.onInputChange.bind(this, 'useOfFertileSoilLayer')} />
+                </div>
+                <div className="form-group">
+                  <label>Малые архитектурные формы</label>
+                  <ReactQuill value={this.state.smallArchitecturalForms} onChange={this.onInputChange.bind(this, 'smallArchitecturalForms')} />
+                </div>
+                <div className="form-group">
+                  <label>Освещение</label>
+                  <ReactQuill value={this.state.lighting} onChange={this.onInputChange.bind(this, 'lighting')} />
+                </div>
+              </div>
+
+              <div>
+                <h5>4. Архитектурные требования</h5>
+                <div className="form-group">
+                  <label>Стилистика архитектурного образа</label>
+                  <ReactQuill value={this.state.stylisticsOfArchitecture} onChange={this.onInputChange.bind(this, 'stylisticsOfArchitecture')} />
+                </div>
+                <div className="form-group">
+                  <label>Характер сочетания с окружающей застройкой</label>
+                  <ReactQuill value={this.state.natureCombination} onChange={this.onInputChange.bind(this, 'natureCombination')} />
+                </div>
+                <div className="form-group">
+                  <label>Цветовое решение</label>
+                  <ReactQuill value={this.state.colorSolution} onChange={this.onInputChange.bind(this, 'colorSolution')} />
+                </div>
+                <div className="form-group">
+                  <label>Рекламно-информационное решение</label>
+                  <ReactQuill value={this.state.advertisingAndInformationSolution} onChange={this.onInputChange.bind(this, 'advertisingAndInformationSolution')} />
+                </div>
+                <div className="form-group">
+                  <label>Ночное световое оформление</label>
+                  <ReactQuill value={this.state.nightLighting} onChange={this.onInputChange.bind(this, 'nightLighting')} />
+                </div>
+                <div className="form-group">
+                  <label>Входные узлы</label>
+                  <ReactQuill value={this.state.inputNodes} onChange={this.onInputChange.bind(this, 'inputNodes')} />
+                </div>
+                <div className="form-group">
+                  <label>Создание условий для жизнедеятельности маломобильных групп населения</label>
+                  <ReactQuill value={this.state.conditionsForLowMobileGroups} onChange={this.onInputChange.bind(this, 'conditionsForLowMobileGroups')} />
+                </div>
+                <div className="form-group">
+                  <label>Соблюдение условий по звукошумовым показателям</label>
+                  <ReactQuill value={this.state.complianceNoiseConditions} onChange={this.onInputChange.bind(this, 'complianceNoiseConditions')} />
+                </div>
+              </div>
+
+              <div>
+                <h5>5. Требования к наружной отделке</h5>
+                <div className="form-group">
+                  <label>Цоколь</label>
+                  <ReactQuill value={this.state.plinth} onChange={this.onInputChange.bind(this, 'plinth')} />
+                </div>
+                <div className="form-group">
+                  <label>Фасад. Ограждающие конструкций</label>
+                  <ReactQuill value={this.state.facade} onChange={this.onInputChange.bind(this, 'facade')} />
+                </div>
+              </div>
+
+              <div>
+                <h5>6. Требования к инженерным сетям</h5>
+                <div className="form-group">
+                  <label>Теплоснабжение</label>
+                  <ReactQuill value={this.state.heatSupply} onChange={this.onInputChange.bind(this, 'heatSupply')} />
+                </div>
+                <div className="form-group">
+                  <label>Водоснабжение</label>
+                  <ReactQuill value={this.state.waterSupply} onChange={this.onInputChange.bind(this, 'waterSupply')} />
+                </div>
+                <div className="form-group">
+                  <label>Канализация</label>
+                  <ReactQuill value={this.state.sewerage} onChange={this.onInputChange.bind(this, 'sewerage')} />
+                </div>
+                <div className="form-group">
+                  <label>Электроснабжение</label>
+                  <ReactQuill value={this.state.powerSupply} onChange={this.onInputChange.bind(this, 'powerSupply')} />
+                </div>
+                <div className="form-group">
+                  <label>Газоснабжение</label>
+                  <ReactQuill value={this.state.gasSupply} onChange={this.onInputChange.bind(this, 'gasSupply')} />
+                </div>
+                <div className="form-group">
+                  <label>Телекоммуникация и телерадиовещания</label>
+                  <ReactQuill value={this.state.phoneSupply} onChange={this.onInputChange.bind(this, 'phoneSupply')} />
+                </div>
+                <div className="form-group">
+                  <label>Дренаж (при необходимости) и ливневая канализация</label>
+                  <ReactQuill value={this.state.drainage} onChange={this.onInputChange.bind(this, 'drainage')} />
+                </div>
+                <div className="form-group">
+                  <label>Стационарные поливочные системы</label>
+                  <ReactQuill value={this.state.irrigationSystems} onChange={this.onInputChange.bind(this, 'irrigationSystems')} />
+                </div>
+              </div>
+
+              <div>
+                <h5>7. Обязательства, возлагаемые на застройщика</h5>
+                <div className="form-group">
+                  <label>По инженерным изысканиям</label>
+                  <ReactQuill value={this.state.engineeringSurveysObligation} onChange={this.onInputChange.bind(this, 'engineeringSurveysObligation')} />
+                </div>
+                <div className="form-group">
+                  <label>По сносу (переносу) существующих строений и сооружений</label>
+                  <ReactQuill value={this.state.demolitionObligation} onChange={this.onInputChange.bind(this, 'demolitionObligation')} />
+                </div>
+                <div className="form-group">
+                  <label>По переносу существующих подземных и надземных коммуникаций</label>
+                  <ReactQuill value={this.state.transferCommunicationsObligation} onChange={this.onInputChange.bind(this, 'transferCommunicationsObligation')} />
+                </div>
+                <div className="form-group">
+                  <label>По сохранению и/или пересадке зеленых насаждений</label>
+                  <ReactQuill value={this.state.conservationPlantObligation} onChange={this.onInputChange.bind(this, 'conservationPlantObligation')} />
+                </div>
+                <div className="form-group">
+                  <label>По строительству временного ограждения участка</label>
+                  <ReactQuill value={this.state.temporaryFencingConstructionObligation} onChange={this.onInputChange.bind(this, 'temporaryFencingConstructionObligation')} />
+                </div>
+              </div>
+
+              <div>
+                <h5>8. Дополнительные требования</h5>
+                <div className="form-group">
+                  <ReactQuill value={this.state.additionalRequirements} onChange={this.onInputChange.bind(this, 'additionalRequirements')} />
+                </div>
+              </div>
+
+              <div>
+                <h5>9. Общие требования</h5>
+                <div className="form-group">
+                  <ReactQuill value={this.state.generalRequirements} onChange={this.onInputChange.bind(this, 'generalRequirements')} />
+                </div>
+              </div>            
+
+              <div>
+                <h5>Примечания</h5>
+                <div className="form-group">
+                  <ReactQuill value={this.state.notes} onChange={this.onInputChange.bind(this, 'notes')} />
+                </div>
+              </div>
+
+              <div>
+                <h5>Номер документа</h5>
+                <div className="form-group">
+                  <input type="text" value={this.state.docNumber} className="form-control" onChange={(e) => this.setState({ docNumber: e.target.value })} />
+                </div>
+              </div>
+            </form>
+
+            <div>
+              <div className={this.state.showButtons ? '' : 'invisible'}>
+                <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.saveForm.bind(this, apz.id, true, "")}>
+                    Одобрить
+                  </button>
+                  <button type="button" className="btn btn-secondary" data-toggle="modal" data-target="#declined_modal">Вернуть архитектору</button>
+                </div>
+              </div>
+
+              <div className="modal fade" id="declined_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                <div className="modal-dialog" role="document">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title">Вернуть архитектору</h5>
+                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
                     </div>
-                  </div>
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.sendForm.bind(this, apz.id, false, this.state.description)}>
-                      Вернуть архитектору
-                    </button>
-                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    <div className="modal-body">
+                      <div className="form-group">
+                        <label>Причина отклонения</label>
+                        <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
+                      </div>
+                    </div>
+                    <div className="modal-footer">
+                      <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.sendForm.bind(this, apz.id, false, this.state.description)}>
+                        Вернуть архитектору
+                      </button>
+                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    </div>
                   </div>
                 </div>
               </div>
