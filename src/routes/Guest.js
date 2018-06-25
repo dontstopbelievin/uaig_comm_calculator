@@ -261,25 +261,6 @@ export default class Guest extends React.Component {
                   <span><img src="images/line.png" /></span>
                     
                   <div className="card-deck wow fadeInUp" data-wow-duration="1.5s">   
-                    <div className="card mt-4 mb-4 info-block"> 
-                      <div className="card-image card-color-1">
-                        <div className="image-border">
-                          <img src="./images/1.svg" alt="true" />
-                        </div>
-
-                      </div>
-                      <div className="card-body">
-                        <p className="card-text">
-                            {e.firstblock}
-                        </p>
-                      </div>
-                      <div className="card-button">
-                        {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                        {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">{e.apply}</NavLink>}
-                        {!this.state.tokenExists && <AlertModal />}
-                      </div>
-                    </div>
-                      
                     <div className="card  mt-4 mb-4 ">  
                       <div className="card-image card-color-2">
                         <div className="image-border">
@@ -307,7 +288,25 @@ export default class Guest extends React.Component {
                         {!this.state.tokenExists && <AlertModal />}
                       </div>   
                     </div>
-                      
+
+                    <div className="card mt-4 mb-4 info-block"> 
+                      <div className="card-image card-color-1">
+                        <div className="image-border">
+                          <img src="./images/7.svg" alt="true" />
+                        </div>
+
+                      </div>
+                      <div className="card-body">
+                        <p className="card-text">
+                            {e.homeSketchBlock}
+                        </p>
+                      </div>
+                      <div className="card-button">
+                        {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
+                        <NavLink to={"/sketch"} replace className="btn btn-primary">{e.apply}</NavLink>
+                      </div>
+                    </div>
+
                     <div className="card  mt-4 mb-4 ">
                       <div className="card-image card-color-3">
                         <div className="image-border">
@@ -328,6 +327,25 @@ export default class Guest extends React.Component {
                   </div>
                     
                   <div className="card-deck wow fadeInUp" data-wow-duration="1.5s">
+                    <div className="card mt-4 mb-4 info-block"> 
+                      <div className="card-image card-color-1">
+                        <div className="image-border">
+                          <img src="./images/1.svg" alt="true" />
+                        </div>
+
+                      </div>
+                      <div className="card-body">
+                        <p className="card-text">
+                            {e.firstblock}
+                        </p>
+                      </div>
+                      <div className="card-button">
+                        {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
+                        {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">{e.apply}</NavLink>}
+                        {!this.state.tokenExists && <AlertModal />}
+                      </div>
+                    </div>
+
                     <div className="card mt-4 mb-4 ">
                       <div className="card-image card-color-4">
                         <div className="image-border">

@@ -340,10 +340,10 @@ class UrbanMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/urban"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
+        <NavLink to={"/urban"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         <NavLink to={"/urbanreport"} replace className="dropdown-item" activeClassName="active">Фильтр</NavLink>
         <NavLink to={"/answertemplate"} replace className="dropdown-item" activeClassName="active">Шаблоны отказов</NavLink>
-        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
         <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
@@ -355,8 +355,8 @@ class ElectroProviderMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/providerelectro"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
-        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
+        <NavLink to={"/providerelectro"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
         <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
@@ -368,8 +368,8 @@ class GasProviderMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/providergas"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
-        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
+        <NavLink to={"/providergas"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
         <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
@@ -381,8 +381,8 @@ class HeatProviderMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/providerheat"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
-        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
+        <NavLink to={"/providerheat"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
         <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
@@ -394,8 +394,8 @@ class WaterProviderMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/providerwater"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
-        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
+        <NavLink to={"/providerwater"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
         <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
@@ -407,8 +407,8 @@ class PhoneProviderMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/providerphone"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
-        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
+        <NavLink to={"/providerphone"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
         <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
@@ -420,9 +420,9 @@ class HeadMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/head"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
+        <NavLink to={"/head"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         <NavLink to={"/headreport"} replace className="dropdown-item" activeClassName="active">Фильтр</NavLink>
-        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
         <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
@@ -434,9 +434,9 @@ class CitizenMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/citizen"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
-        <NavLink to={"/sketch"} replace className="dropdown-item" activeClassName="active">Заявления эскизного проекта</NavLink>
-        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
+        <NavLink to={"/citizen"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/sketch"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
+        <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Мои файлы</NavLink>
         <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
@@ -448,7 +448,7 @@ class PhotoReportMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/photoreportsManage"} replace className="dropdown-item" activeClassName="active">Фотоотчеты</NavLink>
+        <NavLink to={"/photoreportsManage"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
     )
@@ -470,7 +470,7 @@ class EngineerMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/engineer"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
+        <NavLink to={"/engineer"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
     )
@@ -492,7 +492,7 @@ class ApzDepartmentMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/apz_department"} replace className="dropdown-item" activeClassName="active">Заявления на АПЗ</NavLink>
+        <NavLink to={"/apz_department"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
     )
