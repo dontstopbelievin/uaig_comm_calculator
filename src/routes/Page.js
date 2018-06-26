@@ -49,9 +49,16 @@ export default class Page extends React.Component{
         console.log(data.page);
         this.setState({page: data.page});
         this.setState({loaderHidden: true});
+        var lang = localStorage.getItem('lang');
+        let str = '';
+        if (lang === 'kk')
+        {
+          str = this.state.page.content_kk;
+        }else if (lang === 'ru') {
+          str = this.state.page.content;
+        }
 
         var re = /&lt;/gi;
-        var str = this.state.page.content;
         var newstr = str.replace(re, '<');
         console.log(newstr);
         console.log('_______________');
@@ -64,7 +71,7 @@ export default class Page extends React.Component{
         console.log(str2);
 
         var d1 = document.getElementById('innerText');
-        d1.innerHTML = '<div>' + str2 + '</div>';
+        d1.innerHTML = '<div class="container-fluid">' + str2 + '</div>';
       } else {
         alert("Страница не найдена!");
         this.props.history.replace('/');
@@ -84,10 +91,11 @@ export default class Page extends React.Component{
           {this.state.loaderHidden &&
           <div className="col-md-12 text-center">
             <div className="list-group-item flex-column align-items-start ">
-                <div className="text-left mt-2 mb-1 innerText" id="innerText">
+                <div className="text-left container" id="innerText">
                 </div>
               <br/>
             </div>
+            <br /><br />
             <hr/>
             <div className="col-md-12 text-center">
                 <a className="allnews" href="/#/" onClick={this.props.history.goBack}>Вернуться</a>

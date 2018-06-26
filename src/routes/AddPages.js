@@ -210,11 +210,15 @@ class AddPage extends React.Component {
       value: '',
       desc : '',
       content: '',
+      content_kk: '',
       loaderHidden: false
     };
     this.onTextChange = this.onTextChange.bind(this);
+    this.onTextChangeKK = this.onTextChangeKK.bind(this);
     this.updateContent = this.updateContent.bind(this);
+    this.updateContentKK = this.updateContentKK.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onChangeKK = this.onChangeKK.bind(this);
   }
 
   componentWillMount () {
@@ -224,10 +228,17 @@ class AddPage extends React.Component {
             content: newContent
         })
   }
+  updateContentKK(newContent) {
+        this.setState({
+            content_kk: newContent
+        })
+  }
   onChange(content) {
     this.setState({content: content})
   }
-
+  onChangeKK(content) {
+    this.setState({content_kk: content})
+  }
 
   requestSubmission(e){
       e.preventDefault();
@@ -235,6 +246,7 @@ class AddPage extends React.Component {
           page.title = this.state.title;
           page.description = this.state.desc;
           page.content = this.state.content;
+          page.content_kk = this.state.content_kk;
           console.log(page);
     if (sessionStorage.getItem('tokenInfo')) {
       $.ajax({
@@ -262,13 +274,16 @@ class AddPage extends React.Component {
   onTextChange(value){
     this.setState({content: value});
   }
+  onTextChangeKK(value){
+    this.setState({content_kk: value});
+  }
 
   render() {
       return(
           <div className="container">
               <h4>Форма новой статичной страницы</h4>
               <br/>
-              <div className="col-md-10">
+              <div className="col-md-12">
                   <form id="insert_form" name="form_aritcle">
                       <div className="form-group">
                           <label htmlFor="title">Название</label>
@@ -279,7 +294,7 @@ class AddPage extends React.Component {
                           <input type="text" name="description" maxlength="150" id="description" pleaceholder="Description" className="form-control" required onChange={(e) => this.setState({desc: e.target.value})} />
                       </div>
                       <div className="form-group">
-                          <label htmlFor="text">Содержание страницы</label>
+                          <label htmlFor="text">Содержание страницы на русском</label>
                           <ReactSummernote
                             value={this.state.content}
                             options={{
@@ -297,6 +312,27 @@ class AddPage extends React.Component {
                               ]
                             }}
                             onChange={this.onChange}
+                          />
+                      </div>
+                      <div className="form-group">
+                          <label htmlFor="text">Содержание страницы на казахском</label>
+                          <ReactSummernote
+                            value={this.state.content_kk}
+                            options={{
+                              // lang: 'ru-RU',
+                              height: 350,
+                              dialogsInBody: true,
+                              toolbar: [
+                                ['style', ['style']],
+                                ['font', ['bold', 'underline', 'clear']],
+                                ['fontname', ['fontname']],
+                                ['para', ['ul', 'ol', 'paragraph']],
+                                ['table', ['table']],
+                                ['insert', ['link', 'picture', 'video']],
+                                ['view', ['fullscreen', 'codeview']]
+                              ]
+                            }}
+                            onChange={this.onChangeKK}
                           />
                       </div>
                       <input type="submit" className="btn btn-outline-success" value="Отправить статью" onClick={this.requestSubmission.bind(this)} />
@@ -318,12 +354,16 @@ class UpdatePage extends React.Component {
     this.onTextChange = this.onTextChange.bind(this);
     this.updateContent = this.updateContent.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onTextChangeKK = this.onTextChangeKK.bind(this);
+    this.updateContentKK = this.updateContentKK.bind(this);
+    this.onChangeKK = this.onChangeKK.bind(this);
     this.state = {
       id : '',
       title : '',
       desc : '',
       value: '',
       content: false,
+      content_kk: false,
       loaderHidden: false
     };
   }
@@ -345,6 +385,7 @@ class UpdatePage extends React.Component {
         this.setState({title: article.page.title});
         this.setState({desc: article.page.description});
         this.setState({content: article.page.content});
+        this.setState({content_kk: article.page.content_kk});
 
       } else if (xhr.status === 401) {
         sessionStorage.clear();
@@ -362,6 +403,7 @@ class UpdatePage extends React.Component {
             page.title = this.state.title;
             page.description = this.state.desc;
             page.content = this.state.content;
+            page.content_kk = this.state.content_kk;
       if (sessionStorage.getItem('tokenInfo')) {
         $.ajax({
           type: 'POST',
@@ -397,6 +439,18 @@ class UpdatePage extends React.Component {
     this.setState({content: content})
   }
 
+  onTextChangeKK(value){
+    this.setState({content_kk: value});
+  }
+  updateContentKK(newContent) {
+        this.setState({
+            content_kk: newContent
+        })
+  }
+
+  onChangeKK(content) {
+    this.setState({content_kk: content})
+  }
 
 
   render() {
@@ -404,7 +458,7 @@ class UpdatePage extends React.Component {
       <div className="container">
         <h4>Форма исправления статичной страницы</h4>
         <br/>
-        <div className="col-md-10">
+        <div className="col-md-12">
           <form id="insert_form" name="form_aritcle">
             <div className="form-group">
                 <label htmlFor="title">Название</label>
@@ -415,7 +469,7 @@ class UpdatePage extends React.Component {
                 <input type="text" name="description" maxLength="150" id="description" pleaceholder="Description" className="form-control" required onChange={(e) => this.setState({desc: e.target.value})} value={this.state.desc}  />
             </div>
             <div className="form-group form3">
-                <label htmlFor="text">Содержание страницы</label>
+                <label htmlFor="text">Содержание страницы на русском</label>
                 {this.state.content &&
                   <ReactSummernote
                     value={this.state.content}
@@ -434,6 +488,29 @@ class UpdatePage extends React.Component {
                       ]
                     }}
                     onChange={this.onChange}
+                  />
+                }
+            </div>
+            <div className="form-group form3">
+                <label htmlFor="text">Содержание страницы на казахском</label>
+                {this.state.content_kk &&
+                  <ReactSummernote
+                    value={this.state.content_kk}
+                    options={{
+                      // lang: 'ru-RU',
+                      height: 350,
+                      dialogsInBody: true,
+                      toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['table', ['table']],
+                        ['insert', ['link', 'picture', 'video']],
+                        ['view', ['fullscreen', 'codeview']]
+                      ]
+                    }}
+                    onChange={this.onChangeKK}
                   />
                 }
             </div>
