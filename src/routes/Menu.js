@@ -171,6 +171,9 @@ class AllItems extends React.Component {
                         {item.type === 2 &&
                           <a target="_blank" className="btn btn-outline-info col-md-12 btn-sm" href={item.link}> Перейти </a>
                         }
+                        {item.type === 3 &&
+                          <a className="btn btn-outline-warning col-md-12 btn-sm" href={item.link}> Перейти </a>
+                        }
                       </td>
                       <td className={'col-md-3'}>{item.created_at}</td>
 
@@ -221,6 +224,7 @@ class AddItem extends React.Component {
     roleId: '',
     type: '',
     link: '',
+    interlalLink: '',
     pages: [],
     pageId: '',
     loaderHidden: false
@@ -242,6 +246,9 @@ class AddItem extends React.Component {
   }
   handleCategorySelect (e) {
     this.setState({category: e.target.value});
+  }
+  handleInterlalLink (e) {
+      this.setState({interlalLink: e.target.value});
   }
   handlePageSelect (e) {
     this.setState({pageId: e.target.value});
@@ -334,7 +341,10 @@ class AddItem extends React.Component {
             item.id_page = parseInt(this.state.pageId);
           }else if (item.type === 2) {
             item.link = this.state.link;
+          }else if (item.type === 3) {
+            item.link = this.state.interlalLink;
           }
+          console.log(item);
     if (sessionStorage.getItem('tokenInfo')) {
       var xhr = new XMLHttpRequest();
       xhr.open("post", window.url + "api/menu/insert", true);
@@ -407,6 +417,7 @@ class AddItem extends React.Component {
                 <option>Выберите элемент</option>
                 <option value="1">Страница</option>
                 <option value="2">Ссылка</option>
+                <option value="3">Внутренняя ссылка</option>
               </select>
             </div>
             <div className={'form-group'}>
@@ -422,7 +433,16 @@ class AddItem extends React.Component {
                 }
               </select>
             </div>
-
+            {this.state.type === '3' &&
+            <div className={'form-group'}>
+              <label>Внутренняя ссылка</label>
+              <input type={'text'}
+                     name={'link'}
+                     className={'form-control'}
+                     onChange={this.handleInterlalLink.bind(this)}
+                     required={true} />
+            </div>
+            }
             {this.state.type === '2' &&
               <div className={'form-group'}>
                 <label>Ссылка</label>
@@ -484,6 +504,8 @@ class UpdateItem extends React.Component {
     roleId: '',
     type: '',
     link: '',
+    internalLink: '',
+    linkSec: '',
     pages: [],
     pageId: '',
     loaderHidden: false
@@ -508,6 +530,9 @@ class UpdateItem extends React.Component {
   }
   handleCategorySelect (e) {
     this.setState({category: e.target.value});
+  }
+  handleInternalLink (e) {
+      this.setState({internalLink: e.target.value});
   }
   handlePageSelect (e) {
     this.setState({pageId: e.target.value});
@@ -539,6 +564,8 @@ class UpdateItem extends React.Component {
             this.setState({pageId: data.item.id_page});
           }else if (data.item.type === 2) {
             this.setState({link: data.item.link});
+          }else if (data.item.type === 3) {
+            this.setState({internalLink: data.item.link});
           }
 
       } else if (xhr.status === 401) {
@@ -632,6 +659,8 @@ class UpdateItem extends React.Component {
             item.id_page = parseInt(this.state.pageId);
           }else if (item.type === 2) {
             item.link = this.state.link;
+          }else if (item.type === 3){
+            item.link = this.state.internalLink;
           }
     if (sessionStorage.getItem('tokenInfo')) {
       var xhr = new XMLHttpRequest();
@@ -707,6 +736,7 @@ class UpdateItem extends React.Component {
                 <option>Выберите элемент</option>
                 <option value="1">Страница</option>
                 <option value="2">Ссылка</option>
+                <option value="3">Внутренняя ссылка</option>
               </select>
             </div>
             <div className={'form-group'}>
@@ -722,7 +752,17 @@ class UpdateItem extends React.Component {
                 }
               </select>
             </div>
-
+            {this.state.type == '3' &&
+            <div className={'form-group'}>
+              <label>Внутреняя ссылка</label>
+              <input type={'text'}
+                     name={'link'}
+                     className={'form-control'}
+                     value={this.state.internalLink}
+                     onChange={this.handleInternalLink.bind(this)}
+                     required={true} />
+            </div>
+            }
             {this.state.type == '2' &&
               <div className={'form-group'}>
                 <label>Ссылка</label>

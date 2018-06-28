@@ -19,8 +19,8 @@ export default class Page extends React.Component{
         tokenExists: false,
         loaderHidden: false,
         page: []
-    }
-
+    };
+      this.insertItemIntoPage = this.insertItemIntoPage.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     if(this.props.match.params.id !== nextProps.match.params.id) {
@@ -31,6 +31,10 @@ export default class Page extends React.Component{
      new WOW.WOW({
         live: false
     }).init();
+
+  }
+
+  componentWillMount () {
     this.getPage(this.props.match.params.id);
   }
 
@@ -45,6 +49,29 @@ export default class Page extends React.Component{
         console.log(data.page);
         this.setState({page: data.page});
         this.setState({loaderHidden: true});
+        var lang = localStorage.getItem('lang');
+        let str = '';
+        if (lang === 'kk')
+        {
+          str = this.state.page.content_kk;
+        }else if (lang === 'ru') {
+          str = this.state.page.content;
+        }
+
+        var re = /&lt;/gi;
+        var newstr = str.replace(re, '<');
+        console.log(newstr);
+        console.log('_______________');
+        var me = /&gt;/gi;
+        var str1  = newstr.replace(me,'>');
+        console.log(str1);
+        console.log('_______________');
+        var te = /&quot;/gi;
+        var str2  = str1.replace(te,'"');
+        console.log(str2);
+
+        var d1 = document.getElementById('innerText');
+        d1.innerHTML = '<div class="container-fluid">' + str2 + '</div>';
       } else {
         alert("Страница не найдена!");
         this.props.history.replace('/');
@@ -53,18 +80,22 @@ export default class Page extends React.Component{
     xhr.send();
   }
 
+  insertItemIntoPage () {
+
+  }
+
   render() {
     return(
       <div className="container body-content newsArticle wow fadeInUp" data-wow-duration="1s">
         <div className="row col-md-12">
           {this.state.loaderHidden &&
           <div className="col-md-12 text-center">
-            <div href="#" className="list-group-item flex-column align-items-start ">
-                <div className="text-left mt-2 mb-1 innerText" id="innerText"
-                 dangerouslySetInnerHTML={{__html: this.state.page.content}}>
+            <div className="list-group-item flex-column align-items-start ">
+                <div className="text-left container" id="innerText">
                 </div>
               <br/>
             </div>
+            <br /><br />
             <hr/>
             <div className="col-md-12 text-center">
                 <a className="allnews" href="/#/" onClick={this.props.history.goBack}>Вернуться</a>
