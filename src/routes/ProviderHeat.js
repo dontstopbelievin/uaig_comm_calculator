@@ -1912,7 +1912,7 @@ printData()
 
           {this.state.isDirector &&
             <div>
-              {!this.state.xmlFile && !this.state.isSigned &&
+              {!this.state.xmlFile && !this.state.isSigned && apz.status_id === 5 &&
                 <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                   <div>Выберите хранилище</div>
                             
