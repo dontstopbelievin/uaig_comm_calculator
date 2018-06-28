@@ -1092,7 +1092,7 @@ printData()
                     Сохранить
                   </button>
 
-                  {this.state.responseFile &&
+                  {this.state.response &&
                     <button type="button" className="btn btn-secondary" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>
                       Предварительный просмотр
                     </button>
