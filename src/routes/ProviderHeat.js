@@ -698,7 +698,7 @@ class ShowApz extends React.Component {
               a.href = url;
               a.download = name;
               a.click();
-              setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+              setTimeout(function() {window.URL.revokeObjectURL(url);},1000);
             };
 
           }());
