@@ -561,6 +561,7 @@ class ShowApz extends React.Component {
           data.commission.apz_heat_response.response_text ? this.setState({description: data.commission.apz_heat_response.response_text}) : this.setState({description: ""});
           data.commission.apz_heat_response.connection_point ? this.setState({connectionPoint: data.commission.apz_heat_response.connection_point}) : this.setState({connectionPoint: ""});
           data.commission.apz_heat_response.resource ? this.setState({heatResource: data.commission.apz_heat_response.resource}) : this.setState({heatResource: ""});
+          data.commission.apz_heat_response.second_resource ? this.setState({heatSecondResource: data.commission.apz_heat_response.second_resource}) : this.setState({heatSecondResource: ""});
           data.commission.apz_heat_response.load_contract_num ? this.setState({heatLoadContractNum: data.commission.apz_heat_response.load_contract_num}) : this.setState({heatLoadContractNum: ""});
           data.commission.apz_heat_response.main_in_contract ? this.setState({heatMainInContract: data.commission.apz_heat_response.main_in_contract}) : this.setState({heatMainInContract: ""});
           data.commission.apz_heat_response.ven_in_contract ? this.setState({heatVenInContract: data.commission.apz_heat_response.ven_in_contract}) : this.setState({heatVenInContract: ""});
@@ -863,6 +864,10 @@ class ShowApz extends React.Component {
         alert(result['errorCode']);
       }
     }
+  }
+
+  chooseStorage(storage) {
+    this.browseKeyStore(storage, "P12", '', "chooseStoragePathBack");
   }
 
   chooseStoragePathBack(rw) {
@@ -1729,8 +1734,8 @@ printData()
               {!this.state.xmlFile &&
                 <div className="col-sm-12">
                   <div className="form-group">
-                    <button type="button" className="btn btn-secondary" onClick={this.sendHeatResponse.bind(this, apz.id, true, "")}>
-                      Отправить
+                    <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, "accept", "")}>
+                      Сохранить
                     </button>
 
                     {this.state.responseFile &&
@@ -1909,17 +1914,15 @@ printData()
             <div>
               {!this.state.xmlFile && !this.state.isSigned &&
                 <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                  <div className="row form-group">
-                    <div className="col-sm-7">
-                      <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
-                    </div>
-
-                    <div className="col-sm-5 p-0">
-                      <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
-                    </div>
+                  <div>Выберите хранилище</div>
+                            
+                  <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
+                    <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
+                    <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>eToken</button>
                   </div>
 
                   <div className="form-group">
+                    <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
                     <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
                   </div>
 

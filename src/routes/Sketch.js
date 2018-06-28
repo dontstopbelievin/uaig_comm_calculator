@@ -12,7 +12,7 @@ export default class Sketch extends React.Component {
       <div className="content container body-content citizen-sketch-list-page">
         <div className="card">
           <div className="card-header">
-              <h4 className="mb-0 mt-2">Эскизный проект</h4>
+            <h4 className="mb-0 mt-2">Эскизный проект</h4>
           </div>
           
           <div className="card-body">
@@ -627,6 +627,9 @@ class AddSketch extends React.Component {
                       <label>
                         <div className="list-group-item list-group-item-action">
                           <input data-type="1" onClick={this.onCheckboxChange} type="checkbox" value="" />   Эскиз (эскизный проект)
+                          <div className="progress mt-3" data-category="1" style={{height: '20px', display: 'none'}}>
+                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
                           <div className="file_block"></div>
                           {this.state.checkboxes[1] === true ? <FilesForm category = '1' type = '1' /> : ''}
                         </div>
@@ -634,6 +637,9 @@ class AddSketch extends React.Component {
                       <label>
                         <div className="list-group-item list-group-item-action">
                           <input data-type="2" onClick={this.onCheckboxChange} type="checkbox" value="" />   Архитектурно-планировочное задание (копия)
+                          <div className="progress mt-3" data-category="2" style={{height: '20px', display: 'none'}}>
+                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
                           <div className="file_block"></div>
                           {this.state.checkboxes[2] === true ? <FilesForm category = '2' type = '2' /> : ''}
                         </div>
@@ -641,22 +647,11 @@ class AddSketch extends React.Component {
                       <label>
                         <div className="list-group-item list-group-item-action">
                           <input data-type="3" onClick={this.onCheckboxChange} type="checkbox" value="" />   Удостверение личности (копия)
+                          <div className="progress mt-3" data-category="3" style={{height: '20px', display: 'none'}}>
+                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
                           <div className="file_block"></div>
                           {this.state.checkboxes[3] === true ? <FilesForm category = '3' type = '3' /> : ''}
-                        </div>
-                      </label>
-                      <label>
-                        <div className="list-group-item list-group-item-action">
-                          <input data-type="4" onClick={this.onCheckboxChange} type="checkbox" value="" />   Удостверение личности поверенного (копия)
-                          <div className="file_block"></div>
-                          {this.state.checkboxes[4] === true ? <FilesForm category = '3' type = '4' /> : ''}
-                        </div>
-                      </label>
-                      <label>
-                        <div className="list-group-item list-group-item-action">
-                          <input data-type="5" onClick={this.onCheckboxChange} type="checkbox" value="" />   Доверенность (копия)
-                          <div className="file_block"></div>
-                          {this.state.checkboxes[5] === true ? <FilesForm category = '4' type = '5' /> : ''}
                         </div>
                       </label>
                     </div>
@@ -701,6 +696,7 @@ class FilesForm extends React.Component {
     var file = e.target.files[0];
     var name = file.name.replace(/\.[^/.]+$/, "");
     var category = this.props.category;
+    var progressbar = $('.progress[data-category=' + category + ']');
     var type = this.props.type;
     var row = $(e.target).closest('.list-group-item');
     var fileBlock = $('.file_block', row);
@@ -715,7 +711,7 @@ class FilesForm extends React.Component {
     formData.append('file', file);
     formData.append('name', name);
     formData.append('category', category);
-
+    progressbar.css('display', 'flex');
     $.ajax({
       type: 'POST',
       url: window.url + 'api/file/upload',
@@ -725,10 +721,31 @@ class FilesForm extends React.Component {
       },
       processData: false,
       data: formData,
+      xhr: function() {
+        var xhr = new window.XMLHttpRequest();
+
+        xhr.upload.addEventListener("progress", function(evt) {
+          if (evt.lengthComputable) {
+            var percentComplete = evt.loaded / evt.total;
+            percentComplete = parseInt(percentComplete * 100);
+            $('div', progressbar).css('width', percentComplete + '%');
+          }
+        }, false);
+
+        return xhr;
+      },
       success: function (data) {
         var html = '<div id="file_' + type + '">' + data.name + '<input type="hidden" name="file_list[]" value="' + data.id + '"><a href="#" onClick="document.getElementById(\'file_' + type + '\').remove(); return false;">&times;</a></div>';
-        fileBlock.html(html);
-        alert("Файл успешно загружен");
+
+        setTimeout(function() {
+          progressbar.css('display', 'none');
+          fileBlock.html(html);
+          alert("Файл успешно загружен");
+        }, '1000');
+      },
+      error: function (response) {
+        progressbar.css('display', 'none');
+        alert("Не удалось загрузить файл");
       }
     });
   }
@@ -741,9 +758,9 @@ class FilesForm extends React.Component {
     return (
       <div className="row mt-3 buttons">
         <div className="mx-auto">
-          <label htmlFor={'upload_file' + this.props.type} className="btn btn-success active" style={{marginRight: '2px'}}>Загрузить</label>
+          <label htmlFor={'upload_file' + this.props.type} className="btn btn-success" style={{marginRight: '2px'}}>Загрузить</label>
           <input id={'upload_file' + this.props.type} onChange={this.uploadFile} type="file" style={{display: 'none'}} />
-          <button type="button" onClick={this.selectFromList} className="btn btn-info active">Выбрать из списка</button>
+          <button type="button" onClick={this.selectFromList} className="btn btn-info">Выбрать из списка</button>
         </div>
       </div>
     )

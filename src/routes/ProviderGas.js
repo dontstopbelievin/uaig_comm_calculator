@@ -586,6 +586,10 @@ class ShowApz extends React.Component {
     }
   }
 
+  chooseStorage(storage) {
+    this.browseKeyStore(storage, "P12", '', "chooseStoragePathBack");
+  }
+
   chooseStoragePathBack(rw) {
     if (rw.getErrorCode() === "NONE") {
       var storagePath = rw.getResult();
@@ -1084,8 +1088,8 @@ printData()
               
               {!this.state.xmlFile &&
                 <div className="form-group">
-                  <button type="button" className="btn btn-secondary" onClick={this.sendGasResponse.bind(this, apz.id, true, "")}>
-                    Отправить
+                  <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, "accept", "")}>
+                    Сохранить
                   </button>
 
                   {this.state.responseFile &&
@@ -1176,18 +1180,16 @@ printData()
           {this.state.isDirector &&
             <div>
               {!this.state.xmlFile && !this.state.isSigned &&
-                <div>
-                  <div className="row form-group">
-                    <div className="col-sm-7">
-                      <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
-                    </div>
-
-                    <div className="col-sm-5 p-0">
-                      <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
-                    </div>
+                <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                  <div>Выберите хранилище</div>
+                            
+                  <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
+                    <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
+                    <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>eToken</button>
                   </div>
 
                   <div className="form-group">
+                    <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
                     <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
                   </div>
 

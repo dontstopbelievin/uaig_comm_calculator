@@ -201,6 +201,7 @@ class ShowApz extends React.Component {
       apz: [],
       showMap: false,
       showButtons: false,
+      showSendButton: false,
       showSignButtons: false,
       showTechCon: false,
       file: null,
@@ -297,6 +298,10 @@ class ShowApz extends React.Component {
     this.getApzInfo();
   }
 
+  snakeToCamel(s){
+    return s.replace(/_\w/g, (m) => m[1].toUpperCase() );
+  }
+
   getApzInfo() {
     var id = this.props.match.params.id;
     var token = sessionStorage.getItem('tokenInfo');
@@ -314,13 +319,27 @@ class ShowApz extends React.Component {
         this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
         this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
+        this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 18})[0]});
+        this.setState({response: data.apz_department_response ? true : false });
 
         if (data.status_id === 6) { 
           this.setState({showButtons: true}); 
         }
 
-        this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 18})[0]});
-        this.setState({response: data.apz_department_response ? true : false });
+        if (this.state.xmlFile) {
+          this.setState({isSigned: true});
+        }
+
+        if (this.state.xmlFile && data.status_id === 6) {
+          this.setState({showSendButton: true});
+        }
+
+        Object.keys(data.apz_department_response).forEach(function(k) {
+          let key = this.snakeToCamel(k);
+          this.setState({ [key]: data.apz_department_response[k] });
+          console.log(key);
+          console.log(data.apz_department_response[k]);
+        }.bind(this));
       }
     }.bind(this)
     xhr.send();
@@ -513,6 +532,7 @@ class ShowApz extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           this.setState({ isSigned: true });
+          this.setState({ showSendButton: true });
         } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
           alert(JSON.parse(xhr.responseText).message);
         } else {
@@ -530,6 +550,10 @@ class ShowApz extends React.Component {
         alert(result['errorCode']);
       }
     }
+  }
+
+  chooseStorage(storage) {
+    this.browseKeyStore(storage, "P12", '', "chooseStoragePathBack");
   }
 
   chooseStoragePathBack(rw) {
@@ -637,15 +661,15 @@ class ShowApz extends React.Component {
         var data = JSON.parse(xhr.responseText);
 
         this.setState({ response: data.response });
-        this.sendForm(apzId, status, comment);
 
-        // if(this.state.callSaveFromSend){
-        //   this.setState({callSaveFromSend: false});
-        //   this.sendForm(apzId, status, comment);
-        // } else {
-        //   alert("Ответ сохранен!");
-        //   this.setState({ showSignButtons: true });
-        // }
+        if(this.state.callSaveFromSend){
+          this.setState({callSaveFromSend: false});
+          this.sendForm(apzId, status, comment);
+        } else {
+          alert("Ответ сохранен!");
+          this.setState({ showButtons: false });
+          this.setState({ showSignButtons: true });
+        }
       }
       else if(xhr.status === 401){
         sessionStorage.clear();
@@ -679,6 +703,7 @@ class ShowApz extends React.Component {
 
         alert("Заявление отправлено!");
         this.setState({ showButtons: false });
+        this.setState({ showSendButton: false });
       } else if(xhr.status === 401){
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
@@ -841,7 +866,7 @@ class ShowApz extends React.Component {
           {this.state.showMapText}
         </button>
 
-        {this.state.showButtons &&
+        {(this.state.showButtons || this.state.showSignButtons || this.state.showSendButton) &&
           <div>
             <form className="apz_department_form">
               <div>
@@ -1070,14 +1095,38 @@ class ShowApz extends React.Component {
             </form>
 
             <div>
-              <div className={this.state.showButtons ? '' : 'invisible'}>
+              {this.state.showSignButtons && !this.state.isSigned &&  
+                <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                  <div>Выберите хранилище</div>
+                            
+                  <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
+                    <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
+                    <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>eToken</button>
+                  </div>
+
+                  <div className="form-group">
+                    <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
+                    <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                  </div>
+
+                  <div className="form-group">
+                    <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                  </div>
+                </div>
+              }
+
+              {this.state.showButtons && !this.state.showSendButton &&
                 <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.saveForm.bind(this, apz.id, true, "")}>
-                    Одобрить
+                    Сохранить
                   </button>
                   <button type="button" className="btn btn-secondary" data-toggle="modal" data-target="#declined_modal">Вернуть архитектору</button>
                 </div>
-              </div>
+              }
+
+              {this.state.showSendButton &&
+                <button type="button" className="btn btn-primary" onClick={this.sendForm.bind(this, apz.id, true, "")}>Отправить</button>
+              }
 
               <div className="modal fade" id="declined_modal" tabIndex="-1" role="dialog" aria-hidden="true">
                 <div className="modal-dialog" role="document">
