@@ -1132,17 +1132,10 @@ class ShowApz extends React.Component {
 
           if(data.response === 1) {
             alert("Заявление принято!");
-            this.setState({ showButtons: false });
-            this.setState({ heatStatus: 1 });
-            this.setState({showTechCon: true});
           } 
           else if(data.response === 0) {
             alert("Заявление отклонено!");
-            this.setState({ showButtons: false });
-            this.setState({ heatStatus: 0 });
           }
-
-          window.location.reload();
         } else if (xhr.status === 401) {
           sessionStorage.clear();
           alert("Время сессии истекло. Пожалуйста войдите заново!");
@@ -1150,6 +1143,8 @@ class ShowApz extends React.Component {
         } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
           alert(JSON.parse(xhr.responseText).message);
         }
+
+        window.location.reload();
       }.bind(this);
       xhr.send();
     } 
@@ -1734,8 +1729,12 @@ printData()
               {!this.state.xmlFile &&
                 <div className="col-sm-12">
                   <div className="form-group">
-                    <button type="button" className="btn btn-secondary" onClick={this.sendHeatResponse.bind(this, apz.id, true, "")}>
-                      Отправить
+                    <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
+                      Сохранить
+                    </button>
+
+                    <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.sendHeatResponse.bind(this, apz.id, true, "")}>
+                      Отправить без ЭЦП
                     </button>
 
                     {this.state.response &&
@@ -1852,8 +1851,8 @@ printData()
 
               {!this.state.xmlFile &&
                 <div className="form-group">
-                  <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, "answer", "")}>
-                    Сохранить
+                  <button type="button" className="btn btn-secondary" onClick={this.sendHeatResponse.bind(this, apz.id, "answer", "")}>
+                    Отправить
                   </button>
                 </div>
               }
