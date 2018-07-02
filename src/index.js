@@ -26,6 +26,7 @@ import PhotoReportsManage from './routes/PhotoReportsManage';
 import Admin from './routes/Admin';
 import Files from './routes/Files';
 import Sketch from './routes/Sketch';
+import SketchApzDepartment from './routes/SketchApzDepartment';
 import Review from './routes/Review';
 import BudgetPlan from './routes/BudgetPlan';
 import VideoTutorials from './routes/VideoTutorials';
@@ -150,6 +151,7 @@ export default class Main extends React.Component {
               <Route path="/admin" render={(props) => (<Admin {...props} />)} />
               <Route path="/files" render={(props) => (<Files {...props} />)} />
               <Route path="/sketch" render={(props) => (<Sketch {...props} />)} />
+              <Route path="/panel/sketch/apz_department" render={(props) => (<SketchApzDepartment {...props} />)} />
               <Route path="/reviews" render={(props) => (<Review {...props} />)} />
               <Route path="/polls" render={(props) => (<Polls {...props} />)} />
               <Route path="/designCode" render={(props) => (<DesignCode {...props} />)} />

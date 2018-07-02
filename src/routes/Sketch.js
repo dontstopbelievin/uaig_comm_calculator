@@ -17,10 +17,10 @@ export default class Sketch extends React.Component {
           
           <div className="card-body">
             <Switch>
-              <Route path="/sketch/status/:status" component={AllSketch} />
+              <Route path="/sketch/status/:status/:page" component={AllSketch} />
               <Route path="/sketch/add" component={AddSketch} />
-              <Route path="/sketch/:id" component={ShowSketch} />
-              <Redirect from="/sketch" to="/sketch/status/active" />
+              <Route path="/sketch/show/:id" component={ShowSketch} />
+              <Redirect from="/sketch" to="/sketch/status/active/1" />
             </Switch>
           </div>
         </div>
@@ -46,46 +46,38 @@ class AllSketch extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(this.props.match.params.status !== nextProps.match.params.status) {
-      this.getSketches(nextProps.match.params.status);
-    }
+    this.getSketches(nextProps.match.params.status, nextProps.match.params.page);
   }
 
-  getSketches(status = null) {
+  getSketches(status = null, page = null) {
     if (!status) {
       status = this.props.match.params.status;
+    }
+
+    if (!page) {
+      page = this.props.match.params.page;
     }
 
     this.setState({ loaderHidden: false });
 
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/sketch/citizen", true);
+    xhr.open("get", window.url + "api/sketch/citizen/all/" + status + '?page=' + page, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function() {
       if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
+        var response = JSON.parse(xhr.responseText);
+        var pageNumbers = [];
+        var start = (response.current_page - 4) > 0 ? (response.current_page - 4) : 1;
+        var end = (response.current_page + 4) < response.last_page ? (response.current_page + 4) : response.last_page;
         
-        switch (status) {
-          case 'active':
-            var sketches = data.filter(function(obj) { return obj.status_id !== 1 && obj.status_id !== 2; });
-            break;
-
-          case 'accepted':
-            sketches = data.filter(function(obj) { return obj.status_id === 2; });
-            break;
-
-          case 'declined':
-            sketches = data.filter(function(obj) { return obj.status_id === 1; });
-            break;
-
-          default:
-            sketches = data;
-            break;
+        for (start; start <= end; start++) {
+          pageNumbers.push(start);
         }
-        
-        this.setState({sketches: sketches});
+
+        this.setState({pageNumbers: pageNumbers});
+        this.setState({response: response});
       } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
@@ -114,6 +106,10 @@ class AllSketch extends React.Component {
   }
 
   render() {
+    var status = this.props.match.params.status;
+    var page = this.props.match.params.page;
+    var sketches = this.state.response ? this.state.response.data : [];
+
     return (
       <div>
         {this.state.loaderHidden &&
@@ -124,9 +120,9 @@ class AllSketch extends React.Component {
               </div>
               <div className="col-sm-4 statusActive">
                 <ul className="nav nav-tabs mb-2 pull-right">
-                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/sketch/status/active" replace>Активные</NavLink></li>
-                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/sketch/status/accepted" replace>Принятые</NavLink></li>
-                  <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/sketch/status/declined" replace>Отказанные</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'active'} activeStyle={{color:"black"}} to="/sketch/status/active/1" replace>Активные</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'accepted'} activeStyle={{color:"black"}} to="/sketch/status/accepted/1" replace>Принятые</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'declined'} activeStyle={{color:"black"}} to="/sketch/status/declined/1" replace>Отказанные</NavLink></li>
                 </ul>
               </div>
             </div>
@@ -142,7 +138,7 @@ class AllSketch extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {this.state.sketches.map(function(sketch, index) {
+                {sketches.map(function(sketch, index) {
                   return(
                     <tr key={index}>
                       <td>{sketch.project_name} </td>
@@ -150,20 +146,42 @@ class AllSketch extends React.Component {
                       <td>{sketch.project_address}</td>
                       <td>{this.toDate(sketch.created_at)}</td>
                       <td>
-                        <Link className="btn btn-outline-info" to={'/sketch/' + sketch.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link className="btn btn-outline-info" to={'/sketch/show/' + sketch.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
                     </tr>
                     );
                   }.bind(this))
                 }
 
-                {this.state.sketches.length === 0 &&
+                {sketches.length === 0 &&
                   <tr>
-                    <td colSpan="3">Пусто</td>
+                    <td colSpan="5">Пусто</td>
                   </tr>
                 }
               </tbody>
             </table>
+
+            {this.state.response && this.state.response.last_page > 1 &&
+              <nav className="pagination_block">
+                <ul className="pagination justify-content-center">
+                  <li className="page-item">
+                    <Link className="page-link" to={'/sketch/status/' + status + '/1'}>В начало</Link>
+                  </li>
+
+                  {this.state.pageNumbers.map(function(num, index) {
+                    return(
+                      <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
+                        <Link className="page-link" to={'/sketch/status/' + status + '/' + num}>{num}</Link>
+                      </li>
+                      );
+                    }.bind(this))
+                  }
+                  <li className="page-item">
+                    <Link className="page-link" to={'/sketch/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
+                  </li>
+                </ul>
+              </nav>
+            }
           </div>
         }
 
@@ -185,7 +203,8 @@ class ShowSketch extends React.Component {
       sketch: [],
       showMap: false,
       showMapText: 'Показать карту',
-      loaderHidden: false
+      loaderHidden: false,
+      responseFile: false,
     };
   }
 
@@ -208,6 +227,10 @@ class ShowSketch extends React.Component {
         var sketch = JSON.parse(xhr.responseText);
         this.setState({sketch: sketch});
         this.setState({loaderHidden: true});
+
+        if (sketch.apz_department_response && sketch.apz_department_response.files) {
+          this.setState({responseFile: sketch.apz_department_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+        }
       } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
@@ -380,6 +403,30 @@ class ShowSketch extends React.Component {
             <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
               {this.state.showMapText}
             </button>
+
+            {(sketch.status_id === 1 || sketch.status_id === 2) &&
+              <div>
+                <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
+
+                {this.state.responseFile &&
+                  <table className="table table-bordered table-striped">
+                    <tbody>
+                      {sketch.status_id === 2 ?
+                        <tr>
+                          <td style={{width: '22%'}}><b>Решение на эскизный проект</b></td> 
+                          <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>Скачать</a></td>
+                        </tr>
+                        :
+                        <tr>
+                          <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
+                          <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>Скачать</a></td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                }
+              </div>
+            }
 
             <div className="col-sm-12">
               <hr />
