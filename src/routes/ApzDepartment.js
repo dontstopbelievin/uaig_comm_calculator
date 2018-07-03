@@ -121,7 +121,6 @@ class AllApzs extends React.Component {
                   <th style={{width: '23%'}}>Заявитель</th>
                   <th style={{width: '20%'}}>Адрес</th>
                   <th style={{width: '20%'}}>Дата заявления</th>
-                  <th style={{width: '14%'}}>Срок</th>
                   <th></th>
                 </tr>
               </thead>
@@ -139,7 +138,6 @@ class AllApzs extends React.Component {
                       <td>{apz.applicant}</td>
                       <td>{apz.project_address}</td>
                       <td>{this.toDate(apz.created_at)}</td>
-                      <td>{apz.object_term}</td>
                       <td>
                         <Link className="btn btn-outline-info" to={'/apz_department/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
