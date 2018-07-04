@@ -137,8 +137,6 @@ class AllApzs extends React.Component {
                   <th style={{width: '16%'}}>Заявитель</th>
                   <th style={{width: '16%'}}>Адрес</th>
                   <th style={{width: '16%'}}>Район</th>
-                  
-                  <th style={{width: '16%'}}>Срок</th>
                   {/*<th></th>*/}
                 </tr>
               </thead>
@@ -166,9 +164,6 @@ class AllApzs extends React.Component {
                       </td>
                       <td>
                         {apz.region}
-                      </td>
-                      <td>
-                        {apz.object_term}
                       </td>
                       {/*<td>*/}
                         {/*<Link className="btn btn-outline-info" to={'/engineer/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>*/}
@@ -975,10 +970,10 @@ class ShowApz extends React.Component {
                             <a className="text-info pointer" data-toggle="modal" data-target={'#' + item.role.name.toLowerCase() + '_provider_modal'}>{item.role.description}</a>
                           </td>
                           <td>
-                            {item.days > 0 ?
+                            {item.days > 1 ?
                               item.days + ' д.'
                               :
-                              item.days === 0 ? 'Последний день (до 16:00)' : 'Просрочено' 
+                              item.days === 1 ? 'Последний день (до 16:00)' : 'Просрочено' 
                             }
                           </td>
                           <td>{item.status.name}</td>

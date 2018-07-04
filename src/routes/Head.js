@@ -118,7 +118,6 @@ class AllApzs extends React.Component {
                   <th style={{width: '23%'}}>Заявитель</th>
                   <th style={{width: '20%'}}>Адрес</th>
                   <th style={{width: '20%'}}>Дата заявления</th>
-                  <th style={{width: '14%'}}>Срок</th>
                   <th></th>
                 </tr>
               </thead>
@@ -136,7 +135,6 @@ class AllApzs extends React.Component {
                       <td>{apz.applicant}</td>
                       <td>{apz.project_address}</td>
                       <td>{this.toDate(apz.created_at)}</td>
-                      <td>{apz.object_term}</td>
                       <td>
                         <Link className="btn btn-outline-info" to={'/head/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
@@ -541,6 +539,10 @@ class ShowApz extends React.Component {
         alert(result['errorCode']);
       }
     }
+  }
+
+  chooseStorage(storage) {
+    this.browseKeyStore(storage, "P12", '', "chooseStoragePathBack");
   }
 
   chooseStoragePathBack(rw) {
@@ -1207,13 +1209,38 @@ class ShowApz extends React.Component {
                 </table>
               }
 
+              {this.state.showSignButtons && !this.state.isSigned &&  
+                <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                  <div>Выберите хранилище</div>
+                            
+                  <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
+                    <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
+                    <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>eToken</button>
+                  </div>
+
+                  <div className="form-group">
+                    <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
+                    <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                  </div>
+
+                  <div className="form-group">
+                    <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                  </div>
+                </div>
+              }
+
               <div>
                 {this.state.showButtons &&
                   <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
-                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} 
-                            data-toggle="modal" data-target="#AcceptApzForm">
-                      Одобрить
-                    </button>
+                    { this.state.response ? 
+                      <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} data-toggle="modal" data-target="#AcceptApzForm">
+                        Одобрить
+                      </button>
+                      :
+                      <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled="disabled">
+                        Одобрить
+                      </button>
+                    }
 
                     <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#DeclineApzForm">
                       Вернуть архитектору
@@ -1246,7 +1273,7 @@ class ShowApz extends React.Component {
                             </div>
                           </div>
                           <div className="modal-footer">
-                            <button type="button" className="btn btn-primary" onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>Отправить</button>
+                            <button type="button" className="btn btn-primary" onClick={this.saveApzForm.bind(this, apz.id, true, "your form was accepted")}>Отправить</button>
                             <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                           </div>
                         </div>

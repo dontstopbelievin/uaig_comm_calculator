@@ -494,6 +494,7 @@ class ApzDepartmentMenu extends Component {
     return (
       <div>
         <NavLink to={"/apz_department"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/panel/sketch/apz_department"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
         <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
     )

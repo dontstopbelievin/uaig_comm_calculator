@@ -121,7 +121,6 @@ class AllApzs extends React.Component {
                   <th style={{width: '23%'}}>Заявитель</th>
                   <th style={{width: '20%'}}>Адрес</th>
                   <th style={{width: '20%'}}>Дата заявления</th>
-                  <th style={{width: '14%'}}>Срок</th>
                   <th></th>
                 </tr>
               </thead>
@@ -139,7 +138,6 @@ class AllApzs extends React.Component {
                       <td>{apz.applicant}</td>
                       <td>{apz.project_address}</td>
                       <td>{this.toDate(apz.created_at)}</td>
-                      <td>{apz.object_term}</td>
                       <td>
                         <Link className="btn btn-outline-info" to={'/apz_department/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
@@ -201,6 +199,7 @@ class ShowApz extends React.Component {
       apz: [],
       showMap: false,
       showButtons: false,
+      showSendButton: false,
       showSignButtons: false,
       showTechCon: false,
       file: null,
@@ -227,34 +226,34 @@ class ShowApz extends React.Component {
       isSigned: false,
 
       basisForDevelopmentApz: 'Постановление акимата города (района) №_____ от __________ (число, месяц, год)',
-      buildingPresence: 'Краткое описание',
+      buildingPresence: 'Строений нет',
       address: 'Город, район, микрорайон, аул, квартал',
-      geodeticStudy: 'Краткое описание',
-      engineeringGeologicalStudy: 'Краткое описание',
+      geodeticStudy: 'Предусмотреть в проекте',
+      engineeringGeologicalStudy: 'По фондовым материалам (топографическая съемка, масштаб, наличие корректировок)',
       planningSystem: 'По проекту с учетом функционального назначения объекта',
-      functionalValueOfObject: 'Краткое описание',
-      floorSum: 'Краткое описание',
+      functionalValueOfObject: 'Спортивно-развлекательный оздоровительный центр',
+      floorSum: 'По градостроительному регламенту',
       structuralScheme: 'По проекту',
-      engineeringSupport: 'Краткое описание',
-      energyEfficiencyClass: 'Нормативное с кратким описаниями',
+      engineeringSupport: 'Централизованное. Предусмотреть коридоры инженерных и внутриплощадочных сетей в пределах отводимого участка',
+      energyEfficiencyClass: 'Указать в проекте',
       spatialSolution: 'Увязать со смежными по участку объектами',
-      draftMasterPlan: 'В соответствии ПДП, вертикальных планировочных отметок прилегающих улиц, требованиям строительных нормативных документов РК',
+      draftMasterPlan: 'Учесть ограниченные территориальные параметры участка и перспективу развития транспортно-пешеходных коммуникаций. Следует распологать с отступом от красной линии согласно СН РК 3.01-01-2013.',
       verticalLayout: 'Увязать с высотными отметками ПДП прилегающей территории',
-      landscapingAndGardening: 'Нормативное с кратким описаниями',
-      parking: 'Нормативное с кратким описаниями',
-      useOfFertileSoilLayer: 'Краткое описание',
-      smallArchitecturalForms: 'Краткое описание',
-      lighting: 'Краткое описание',
+      landscapingAndGardening: 'В генплане указать нормативное описание',
+      parking: 'На своем земельном участке',
+      useOfFertileSoilLayer: 'На усмотрение собственника',
+      smallArchitecturalForms: 'Указать в проекте',
+      lighting: 'Указать в проекте',
       stylisticsOfArchitecture: 'Сформировать архитектурный образ в соответствии с функциональными особенностями объекта',
-      natureCombination: 'В соответствии с местоположением объекта и градостроительным значением',
-      colorSolution: 'Согласно согласованному эскизному проекту',
+      natureCombination: 'С целью улучшения архитектурного облика города сформировать архитектурный образ в соответствии с фасадами существующих объектов.',
+      colorSolution: 'Согласно эскизному проекту',
       advertisingAndInformationSolution: 'Предусмотреть рекламно-информационные установки согласно статьи 21 Закона Республики Казахстан «О языках Республики Казахстан»',
-      nightLighting: 'Краткое описание',
-      inputNodes: 'Предложить акцентирование входных узлов',
+      nightLighting: 'Указать в проекте',
+      inputNodes: 'Предложить акцентирование входных узлов. Предусматривать систему охраны входов (аудио-, видеодомофон, и т.д.) Оборудовать современными средствами дистанционного электронного контроля',
       conditionsForLowMobileGroups: 'Предусмотреть мероприятия в соответствии с указаниями и требованиями строительных нормативных документов РК; предусмотреть доступ инвалидов к зданию, предусмотреть пандусы, специальные подъездные пути и устройства для проезда инвалидных колясок',
       complianceNoiseConditions: 'Согласно СНиП РК',
-      plinth: 'Краткое описание',
-      facade: 'Краткое описание',
+      plinth: 'Указать в проекте',
+      facade: 'Указать в проекте',
       heatSupply: 'Согласно техническим условиям (№___ и даты выдачи ТУ)',
       waterSupply: 'Согласно техническим условиям (№___ и даты выдачи ТУ)',
       sewerage: 'Согласно техническим условиям (№___ и даты выдачи ТУ)',
@@ -266,11 +265,11 @@ class ShowApz extends React.Component {
       engineeringSurveysObligation: 'Приступать к освоению земельного участка разрешается после геодезического выноса и закрепления его границ в натуре (на местности) и ордера на производство земляных работ',
       demolitionObligation: 'В случае необходимости краткое описание',
       transferCommunicationsObligation: 'Согласно техническим условиям на перенос (вынос) либо на проведения мероприятия по защите сетей и сооружений',
-      conservationPlantObligation: 'Краткое описание',
-      temporaryFencingConstructionObligation: 'Краткое описание',
+      conservationPlantObligation: 'Указать в проекте',
+      temporaryFencingConstructionObligation: 'Указать в проекте',
       additionalRequirements: '1. При проектировании системы кондиционирования в здании (в том случае, когда проектом не предусмотрено централизованное холодоснабжение и кондиционирование) необходимо предусмотреть размещение наружных элементов локальных систем в соответствии с архитектурным решением фасадов здания. На фасадах проектируемого здания предусмотреть места (ниши, выступы, балконы и т.д.) для размещения наружных элементов локальных систем кондиционирования.<br />2. Приненить материалы по ресурсосбережению и современных энергосберегающих технологий.',
       generalRequirements: '1. При разработке проекта (рабочего проекта) необходимо руководствоваться нормами действующего законодательства Республики Казахстан в сфере архитектурной, градостроительной и строительной деятельности.<br />2. Согласовать с главным архитектором города (района):<br />- Эскизный проект',
-      notes: ''
+      notes: '1. АПЗ и ТУ действуют в течение всего срока нормативной продолжительности строительства, утвержденного в составе проектной (проектно-сметной) документации.<br />2. В случае возникновения обстоятельств, требующих пересмотра условий АПЗ, изменения в него могут быть внесены по согласованию с заказчиком.<br />3. Требования и условия, изложенные в АПЗ, обязательны для всех участников инвестиционного процесса независимо от форм собственности и источников финансирования. АПЗ по просьбе заказчика или местного органа архитектуры и градостроительства может быть предметом обсуждения градостроительного совета, архитектурной общественности, рассмотрено в независимой экспертизе.<br />4. Несогласие заказчика с требованиями, содержащимися в АПЗ, может быть обжаловано в судебном порядке.'
     };
 
     this.onFileChange = this.onFileChange.bind(this);
@@ -297,6 +296,10 @@ class ShowApz extends React.Component {
     this.getApzInfo();
   }
 
+  snakeToCamel(s){
+    return s.replace(/_\w/g, (m) => m[1].toUpperCase() );
+  }
+
   getApzInfo() {
     var id = this.props.match.params.id;
     var token = sessionStorage.getItem('tokenInfo');
@@ -314,13 +317,27 @@ class ShowApz extends React.Component {
         this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
         this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
+        this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 18})[0]});
+        this.setState({response: data.apz_department_response ? true : false });
 
         if (data.status_id === 6) { 
           this.setState({showButtons: true}); 
         }
 
-        this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 18})[0]});
-        this.setState({response: data.apz_department_response ? true : false });
+        if (this.state.xmlFile) {
+          this.setState({isSigned: true});
+        }
+
+        if (this.state.xmlFile && data.status_id === 6) {
+          this.setState({showSendButton: true});
+        }
+
+        if (data.apz_department_response) {
+          Object.keys(data.apz_department_response).forEach(function(k) {
+            let key = this.snakeToCamel(k);
+            this.setState({ [key]: data.apz_department_response[k] });
+          }.bind(this));
+        }
       }
     }.bind(this)
     xhr.send();
@@ -513,6 +530,7 @@ class ShowApz extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           this.setState({ isSigned: true });
+          this.setState({ showSendButton: true });
         } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
           alert(JSON.parse(xhr.responseText).message);
         } else {
@@ -530,6 +548,10 @@ class ShowApz extends React.Component {
         alert(result['errorCode']);
       }
     }
+  }
+
+  chooseStorage(storage) {
+    this.browseKeyStore(storage, "P12", '', "chooseStoragePathBack");
   }
 
   chooseStoragePathBack(rw) {
@@ -637,15 +659,15 @@ class ShowApz extends React.Component {
         var data = JSON.parse(xhr.responseText);
 
         this.setState({ response: data.response });
-        this.sendForm(apzId, status, comment);
 
-        // if(this.state.callSaveFromSend){
-        //   this.setState({callSaveFromSend: false});
-        //   this.sendForm(apzId, status, comment);
-        // } else {
-        //   alert("Ответ сохранен!");
-        //   this.setState({ showSignButtons: true });
-        // }
+        if(this.state.callSaveFromSend){
+          this.setState({callSaveFromSend: false});
+          this.sendForm(apzId, status, comment);
+        } else {
+          alert("Ответ сохранен!");
+          this.setState({ showButtons: false });
+          this.setState({ showSignButtons: true });
+        }
       }
       else if(xhr.status === 401){
         sessionStorage.clear();
@@ -679,6 +701,7 @@ class ShowApz extends React.Component {
 
         alert("Заявление отправлено!");
         this.setState({ showButtons: false });
+        this.setState({ showSendButton: false });
       } else if(xhr.status === 401){
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
@@ -841,7 +864,7 @@ class ShowApz extends React.Component {
           {this.state.showMapText}
         </button>
 
-        {this.state.showButtons &&
+        {(this.state.showButtons || this.state.showSignButtons || this.state.showSendButton) &&
           <div>
             <form className="apz_department_form">
               <div>
@@ -1070,14 +1093,38 @@ class ShowApz extends React.Component {
             </form>
 
             <div>
-              <div className={this.state.showButtons ? '' : 'invisible'}>
+              {this.state.showSignButtons && !this.state.isSigned &&  
+                <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                  <div>Выберите хранилище</div>
+                            
+                  <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
+                    <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
+                    <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>eToken</button>
+                  </div>
+
+                  <div className="form-group">
+                    <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
+                    <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                  </div>
+
+                  <div className="form-group">
+                    <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                  </div>
+                </div>
+              }
+
+              {this.state.showButtons && !this.state.showSendButton &&
                 <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.saveForm.bind(this, apz.id, true, "")}>
-                    Одобрить
+                    Сохранить
                   </button>
                   <button type="button" className="btn btn-secondary" data-toggle="modal" data-target="#declined_modal">Вернуть архитектору</button>
                 </div>
-              </div>
+              }
+
+              {this.state.showSendButton &&
+                <button type="button" className="btn btn-primary" onClick={this.sendForm.bind(this, apz.id, true, "")}>Отправить</button>
+              }
 
               <div className="modal fade" id="declined_modal" tabIndex="-1" role="dialog" aria-hidden="true">
                 <div className="modal-dialog" role="document">

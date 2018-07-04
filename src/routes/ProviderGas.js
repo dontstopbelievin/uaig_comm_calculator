@@ -137,7 +137,10 @@ class AllApzs extends React.Component {
                   <th style={{width: '23%'}}>Заявитель</th>
                   <th style={{width: '20%'}}>Адрес</th>
                   <th style={{width: '20%'}}>Дата заявления</th>
-                  <th style={{width: '14%'}}>Срок</th>
+                  
+                  {(status === 'active' || status === 'awaiting') &&
+                    <th style={{width: '14%'}}>Срок</th>
+                  }
                   <th></th>
                 </tr>
               </thead>
@@ -155,7 +158,16 @@ class AllApzs extends React.Component {
                       <td>{apz.applicant}</td>
                       <td>{apz.project_address}</td>
                       <td>{this.toDate(apz.created_at)}</td>
-                      <td>{apz.object_term}</td>
+                      
+                      {(status === 'active' || status === 'awaiting') &&
+                        <td>
+                          {apz.term > 1 ?
+                            apz.term + ' д.'
+                            :
+                            apz.term === 1 ? 'Последний день (до 16:00)' : 'Просрочено' 
+                          }
+                        </td>
+                      }
                       <td>
                         <Link className="btn btn-outline-info" to={'/providergas/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
@@ -418,7 +430,7 @@ class ShowApz extends React.Component {
               a.href = url;
               a.download = name;
               a.click();
-              setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+              setTimeout(function() {window.URL.revokeObjectURL(url);},1000);
             };
 
           }());
@@ -584,6 +596,10 @@ class ShowApz extends React.Component {
         alert(result['errorCode']);
       }
     }
+  }
+
+  chooseStorage(storage) {
+    this.browseKeyStore(storage, "P12", '', "chooseStoragePathBack");
   }
 
   chooseStoragePathBack(rw) {
@@ -1084,11 +1100,15 @@ printData()
               
               {!this.state.xmlFile &&
                 <div className="form-group">
-                  <button type="button" className="btn btn-secondary" onClick={this.sendGasResponse.bind(this, apz.id, true, "")}>
-                    Отправить
+                  <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, "accept", "")}>
+                    Сохранить
                   </button>
 
-                  {this.state.responseFile &&
+                  <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.sendGasResponse.bind(this, apz.id, true, "")}>
+                    Отправить без ЭЦП
+                  </button>
+
+                  {this.state.response &&
                     <button type="button" className="btn btn-secondary" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>
                       Предварительный просмотр
                     </button>
@@ -1154,8 +1174,8 @@ printData()
 
               {!this.state.xmlFile &&
                 <div className="form-group">
-                  <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, 'answer', "")}>
-                    Сохранить
+                  <button type="button" className="btn btn-secondary" onClick={this.sendGasResponse.bind(this, apz.id, true, "")}>
+                    Отправить
                   </button>
                 </div>
               }
@@ -1175,19 +1195,17 @@ printData()
 
           {this.state.isDirector &&
             <div>
-              {!this.state.xmlFile && !this.state.isSigned &&
-                <div>
-                  <div className="row form-group">
-                    <div className="col-sm-7">
-                      <input className="form-control" placeholder="Путь к ключу" type="text" id="storagePath" />
-                    </div>
-
-                    <div className="col-sm-5 p-0">
-                      <button className="btn btn-outline-secondary btn-sm" type="button" onClick={this.chooseFile.bind(this)}>Выбрать файл</button>
-                    </div>
+              {!this.state.xmlFile && !this.state.isSigned && apz.status_id === 5 &&
+                <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                  <div>Выберите хранилище</div>
+                            
+                  <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
+                    <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
+                    <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>eToken</button>
                   </div>
 
                   <div className="form-group">
+                    <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
                     <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
                   </div>
 
