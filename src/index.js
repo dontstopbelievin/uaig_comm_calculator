@@ -75,6 +75,7 @@ import AddPages from "./routes/AddPages";
 import Page from "./routes/Page";
 import Menu from "./routes/Menu";
 import Search from "./routes/Search";
+import UsersQuestions from "./routes/UsersQuestions";
 // import tether from 'tether';
 // global.Tether = tether;
 //import 'bootstrap/dist/css/bootstrap.min.css';
@@ -100,10 +101,11 @@ export default class Main extends React.Component {
 
 
     window.url = 'https://api.uaig.kz:8843/';
+    //window.url = 'http://192.168.0.231/';
     window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
 
-    // window.url = 'http://uaig/';
-    // window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // dimash
+     //window.url = 'http://uaig/';
+     //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
   }
 
   componentDidMount() {
@@ -190,7 +192,7 @@ export default class Main extends React.Component {
               <Route path="/statesymbols" render={(props) => (<StateSymbols {...props}/>)}/>
               <Route path="/page/:id" render={(props) => (<Page {...props}/>)}/>
               <Route path="/menuEdit" render={(props) => (<Menu {...props}/>)}/>
-              <Route path="/search/:query" render={(props) => (<Search {...props}/>)}/>
+              <Route path="/usersQuestions" render={(props) => (<UsersQuestions {...props}/>)}/>
             </Switch>
             <Footer />
           </div>

@@ -158,6 +158,8 @@ class AllNews extends React.Component {
                         <a href={link}>
                           <small className="float-right text-warning view-more font-weight-bold">Читать далее</small>
                         </a>
+                        <br />
+                        <hr />
                       </div>
                     </div>
                   );

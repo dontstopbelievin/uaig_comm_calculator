@@ -31,7 +31,7 @@ export default class newsPanel extends React.Component{
         
             
         
-            <div className="content container citizen-apz-list-page">
+          <div className="content container citizen-apz-list-page">
             <div className="card">
               <div className="card-header">
                   <h4 className="mb-0 mt-2">Добавления новостей</h4>
@@ -47,7 +47,7 @@ export default class newsPanel extends React.Component{
                     <Route path="/newsPanel/update/:id" component={updateNews} />
                     <Redirect from="/newsPanel" to="/newsPanel/all" />
                 </Switch>
-            </div>
+              </div>
         
             </div>
           </div>

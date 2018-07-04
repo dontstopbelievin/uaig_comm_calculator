@@ -320,6 +320,7 @@ class AdminMenu extends Component {
         <NavLink to={"/newsPanel"} replace className="dropdown-item" activeClassName="active">Добавить новость</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
         <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
+        <NavLink to={"/usersQuestions"} replace className="dropdown-item" activeClassName="active">Вопросы пользователей</NavLink>
       </div>
     )
   }
