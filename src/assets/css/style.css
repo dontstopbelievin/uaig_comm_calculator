@@ -1120,3 +1120,34 @@ table{
 .apz_department_form label {
   font-size: .875rem;
 }
+
+.provider_answer_top .btn {
+  box-shadow: none;
+}
+
+.provider_answer_top .btn-secondary {
+  border-bottom: none;
+}
+
+#root .provider_answer_top .btn:hover, 
+#root .provider_answer_top .btn:focus, 
+#root .provider_answer_top .btn:active, 
+#root .provider_answer_top .btn:active:focus {
+  box-shadow: none;
+}
+
+#root .provider_answer_top .btn-success:hover, 
+#root .provider_answer_top .btn-success:focus, 
+#root .provider_answer_top .btn-success:active, 
+#root .provider_answer_top .btn-success:active:focus {
+  border-color: #4caf50;
+  background: #4caf50;
+}
+
+#root .provider_answer_top .btn-danger:hover, 
+#root .provider_answer_top .btn-danger:focus, 
+#root .provider_answer_top .btn-danger:active, 
+#root .provider_answer_top .btn-danger:active:focus {
+  border-color: #f44336;
+  background: #f44336;
+}

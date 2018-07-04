@@ -1505,22 +1505,22 @@ printData()
             </div>
           }
 
-          <div className="row" style={{margin: '16px 0'}}>
+          <div className="row provider_answer_top" style={{margin: '16px 0 0'}}>
             {(this.state.isPerformer === true || this.state.responseId != 0) &&
               <div className="col-sm-6 pl-0">
-                <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ:</h5> 
+                <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ</h5> 
               </div>
             }
-            <div className="col-sm-6">
+            <div className="col-sm-6 pr-0">
               {this.state.showButtons && !this.state.isSigned && this.state.isPerformer &&
                 <div className="btn-group" style={{float: 'right', margin: '0'}}>
-                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, 'accept')}>
-                    Создать ТУ
+                  <button className={'btn btn-raised ' + (this.state.accept === 'accept' ? 'btn-success' : 'btn-secondary')} style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, 'accept')}>
+                    Одобрить
                   </button>
-                  <button className="btn btn-raised btn-secondary" style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, 'answer')}>
+                  <button className={'btn btn-raised ' + (this.state.accept === 'answer' ? 'btn-success' : 'btn-secondary')} style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, 'answer')}>
                     Ответ
                   </button>
-                  <button className="btn btn-raised btn-danger" onClick={this.toggleAcceptDecline.bind(this, 'decline')}>
+                  <button className={'btn btn-raised ' + (this.state.accept === 'decline' ? 'btn-danger' : 'btn-secondary')} onClick={this.toggleAcceptDecline.bind(this, 'decline')}>
                     Создать МО
                   </button>
                 </div>
@@ -1529,234 +1529,236 @@ printData()
           </div>
 
           {this.state.accept === 'accept' && this.state.heatStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
-            <div className="row" style={{border: 'solid 3px #46A149', padding: '15px 5px', margin: '0'}}>
-              <div className="col-sm-4">
-                <div className="form-group">
-                  <label>Номер документа</label>
-                  <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
-                </div>
-                <div className="form-group">
-                  <label>Теплоснабжение осуществляется от источников</label>
-                  <input type="text" className="form-control" placeholder="" value={this.state.heatResource} onChange={this.onHeatResourceChange} />
-                  <input type="text" className="form-control" placeholder="" value={this.state.heatSecondResource} onChange={this.onHeatSecondResourceChange} />
-                </div>
-                <div className="form-group">
-                  <label>Точка подключения</label>
-                  <input type="text" className="form-control" placeholder="" value={this.state.connectionPoint} onChange={this.onConnectionPointChange} />
-                </div>
-                <div className="form-group">
-                  <label>Температурный график</label>
-                  <input type="text" className="form-control" placeholder="" value={this.state.temperatureChart} onChange={this.onTemperatureChartChange} />
-                </div>
-                <div className="form-group">
-                  <label>Дополнительные условия и место подключения согласовать с</label>
-                  <select className="form-control" value={this.state.reconcileConnectionsWith} onChange={this.onReconcileConnectionsWithChange}>
-                    <option>ЦЭР ТОО «АлТС» (тел. 274-04-47).</option>
-                    <option>СВЭР ТОО «АлТС» (тел. 252-83-70).</option>
-                    <option>ЮЭР ТОО «АлТС» (тел. 382-54-32).</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Условия подключения:</label>
-                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.connectionTerms} onChange={this.onConnectionTermsChange} />
-                </div>
-                <div className="form-group">
-                  <label>Проектирование тепловых сетей:</label>
-                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.heatingNetworksDesign} onChange={this.onHeatingNetworksDesignChange} />
-                </div>
-                <div className="form-group">
-                  <label>Окончательные тепловые нагрузки:</label>
-                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.finalHeatLoads} onChange={this.onFinalHeatLoadsChange} />
-                </div> 
-              </div>
-              <div className="col-sm-4">
-                <div className="form-group">
-                  <label>Тепловые нагрузки (Гкал/ч) по договору</label>
-                  <input type="text" className="form-control" placeholder="Введите номер договора" value={this.state.heatLoadContractNum} onChange={this.onHeatLoadContractNumChange} />
-                </div>
-                <label>Транспортировка тепловой энергии осуществляется по:</label>
-                <input type="radio" name="twoPipe" value="" 
-                        checked={this.state.heatTransporter === "2-трубной схеме"} 
-                        onChange={this.onHeatTransporterChange.bind(this, "2-трубной схеме")} />
-                <label style={{marginRight: '10px'}}>2-трубной схеме</label>
-                <input type="radio" name="fourPipe" value="" 
-                        checked={this.state.heatTransporter === "4-трубной схеме"} 
-                        onChange={this.onHeatTransporterChange.bind(this, "4-трубной схеме")} />
-                <label>4-трубной схеме</label><br /> <br />
-                {this.state.heatTransporter === '2-трубной схеме' &&
+            <div className="provider_answer_body" style={{border: 'solid 1px #46A149', padding: '20px'}}>  
+              <div className="row pt-0">
+                <div className="col-sm-4">
                   <div className="form-group">
-                    <label>Давление теплоносителя в ТК:</label>
-                    <input type="text" className="form-control" placeholder="" value={this.state.twoPipePressureInTc} onChange={this.onTwoPipePressureInTcChange} />
-                    <label>Название ТК:</label>
-                    <input type="text" className="form-control" placeholder="" value={this.state.twoPipeTcName} onChange={this.onTwoPipeTcNameChange} />
-                    <label>В подающем водоводе:</label>
-                    <input type="number" step="any" className="form-control" placeholder="" value={this.state.twoPipePressureInSc} onChange={this.onTwoPipePressureInScChange} />
-                    <label>В обратном водоводе:</label>
-                    <input type="number" step="any" className="form-control" placeholder="" value={this.state.twoPipePressureInRc} onChange={this.onTwoPipePressureInRcChange} />
+                    <label>Номер документа</label>
+                    <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
                   </div>
-                }
-                {this.state.heatTransporter === '4-трубной схеме' &&
                   <div className="form-group">
-                    <div className="row">
-                      <div className="col-sm-6">
-                        <label>Давление теплоносителя в ТК (отопление):</label>
-                        <input type="text" className="form-control" placeholder="" value={this.state.fourHeatPipePressureInTc} onChange={this.onFourHeatPipePressureInTcChange} />
-                        <label>Название ТК:</label>
-                        <input type="text" className="form-control" placeholder="" value={this.state.fourHeatPipeTcName} onChange={this.onFourHeatPipeTcNameChange} />
-                        <label>В подающем водоводе:</label>
-                        <input type="number" step="any" className="form-control" placeholder="" value={this.state.fourHeatPipePressureInSc} onChange={this.onFourHeatPipePressureInScChange} />
-                        <label>В обратном водоводе:</label>
-                        <input type="number" step="any" className="form-control" placeholder="" value={this.state.fourHeatPipePressureInRc} onChange={this.onFourHeatPipePressureInRcChange} />
+                    <label>Теплоснабжение осуществляется от источников</label>
+                    <input type="text" className="form-control" placeholder="" value={this.state.heatResource} onChange={this.onHeatResourceChange} />
+                    <input type="text" className="form-control" placeholder="" value={this.state.heatSecondResource} onChange={this.onHeatSecondResourceChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Точка подключения</label>
+                    <input type="text" className="form-control" placeholder="" value={this.state.connectionPoint} onChange={this.onConnectionPointChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Температурный график</label>
+                    <input type="text" className="form-control" placeholder="" value={this.state.temperatureChart} onChange={this.onTemperatureChartChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Дополнительные условия и место подключения согласовать с</label>
+                    <select className="form-control" value={this.state.reconcileConnectionsWith} onChange={this.onReconcileConnectionsWithChange}>
+                      <option>ЦЭР ТОО «АлТС» (тел. 274-04-47).</option>
+                      <option>СВЭР ТОО «АлТС» (тел. 252-83-70).</option>
+                      <option>ЮЭР ТОО «АлТС» (тел. 382-54-32).</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Условия подключения:</label>
+                    <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.connectionTerms} onChange={this.onConnectionTermsChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Проектирование тепловых сетей:</label>
+                    <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.heatingNetworksDesign} onChange={this.onHeatingNetworksDesignChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Окончательные тепловые нагрузки:</label>
+                    <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.finalHeatLoads} onChange={this.onFinalHeatLoadsChange} />
+                  </div> 
+                </div>
+                <div className="col-sm-4">
+                  <div className="form-group">
+                    <label>Тепловые нагрузки (Гкал/ч) по договору</label>
+                    <input type="text" className="form-control" placeholder="Введите номер договора" value={this.state.heatLoadContractNum} onChange={this.onHeatLoadContractNumChange} />
+                  </div>
+                  <label>Транспортировка тепловой энергии осуществляется по:</label>
+                  <input type="radio" name="twoPipe" value="" 
+                          checked={this.state.heatTransporter === "2-трубной схеме"} 
+                          onChange={this.onHeatTransporterChange.bind(this, "2-трубной схеме")} />
+                  <label style={{marginRight: '10px'}}>2-трубной схеме</label>
+                  <input type="radio" name="fourPipe" value="" 
+                          checked={this.state.heatTransporter === "4-трубной схеме"} 
+                          onChange={this.onHeatTransporterChange.bind(this, "4-трубной схеме")} />
+                  <label>4-трубной схеме</label><br /> <br />
+                  {this.state.heatTransporter === '2-трубной схеме' &&
+                    <div className="form-group">
+                      <label>Давление теплоносителя в ТК:</label>
+                      <input type="text" className="form-control" placeholder="" value={this.state.twoPipePressureInTc} onChange={this.onTwoPipePressureInTcChange} />
+                      <label>Название ТК:</label>
+                      <input type="text" className="form-control" placeholder="" value={this.state.twoPipeTcName} onChange={this.onTwoPipeTcNameChange} />
+                      <label>В подающем водоводе:</label>
+                      <input type="number" step="any" className="form-control" placeholder="" value={this.state.twoPipePressureInSc} onChange={this.onTwoPipePressureInScChange} />
+                      <label>В обратном водоводе:</label>
+                      <input type="number" step="any" className="form-control" placeholder="" value={this.state.twoPipePressureInRc} onChange={this.onTwoPipePressureInRcChange} />
+                    </div>
+                  }
+                  {this.state.heatTransporter === '4-трубной схеме' &&
+                    <div className="form-group">
+                      <div className="row">
+                        <div className="col-sm-6">
+                          <label>Давление теплоносителя в ТК (отопление):</label>
+                          <input type="text" className="form-control" placeholder="" value={this.state.fourHeatPipePressureInTc} onChange={this.onFourHeatPipePressureInTcChange} />
+                          <label>Название ТК:</label>
+                          <input type="text" className="form-control" placeholder="" value={this.state.fourHeatPipeTcName} onChange={this.onFourHeatPipeTcNameChange} />
+                          <label>В подающем водоводе:</label>
+                          <input type="number" step="any" className="form-control" placeholder="" value={this.state.fourHeatPipePressureInSc} onChange={this.onFourHeatPipePressureInScChange} />
+                          <label>В обратном водоводе:</label>
+                          <input type="number" step="any" className="form-control" placeholder="" value={this.state.fourHeatPipePressureInRc} onChange={this.onFourHeatPipePressureInRcChange} />
+                        </div>
+                        <div className="col-sm-6">
+                          <label>Давление теплоносителя в ТК (ГВС):</label>
+                          <input type="text" className="form-control" placeholder="" value={this.state.fourWaterPipePressureInTc} onChange={this.onFourWaterPipePressureInTcChange} />
+                          <label>Название ТК:</label>
+                          <input type="text" className="form-control" placeholder="" value={this.state.fourHeatPipeScName} onChange={this.onFourHeatPipeScNameChange} />
+                          <label>В подающем водоводе:</label>
+                          <input type="number" step="any" className="form-control" placeholder="" value={this.state.fourWaterPipePressureInSc} onChange={this.onFourWaterPipePressureInScChange} />
+                          <label>В обратном водоводе:</label>
+                          <input type="number" step="any" className="form-control" placeholder="" value={this.state.fourWaterPipePressureInRc} onChange={this.onFourWaterPipePressureInRcChange} />
+                        </div>
                       </div>
-                      <div className="col-sm-6">
-                        <label>Давление теплоносителя в ТК (ГВС):</label>
-                        <input type="text" className="form-control" placeholder="" value={this.state.fourWaterPipePressureInTc} onChange={this.onFourWaterPipePressureInTcChange} />
-                        <label>Название ТК:</label>
-                        <input type="text" className="form-control" placeholder="" value={this.state.fourHeatPipeScName} onChange={this.onFourHeatPipeScNameChange} />
-                        <label>В подающем водоводе:</label>
-                        <input type="number" step="any" className="form-control" placeholder="" value={this.state.fourWaterPipePressureInSc} onChange={this.onFourWaterPipePressureInScChange} />
-                        <label>В обратном водоводе:</label>
-                        <input type="number" step="any" className="form-control" placeholder="" value={this.state.fourWaterPipePressureInRc} onChange={this.onFourWaterPipePressureInRcChange} />
-                      </div>
+                    </div>
+                  }
+                  <div className="form-group">
+                    <label>Возврат конденсата</label>
+                    <input type="text" className="form-control" placeholder="" onChange={this.onCondensateReturnChange} value={this.state.condensateReturn} />
+                  </div>
+                  <div className="form-group">
+                    <label>Приборы учета тепловой энергии:</label>
+                    <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.thermalEnergyMeters} onChange={this.onThermalEnergyMetersChange} />
+                  </div>
+                  <label style={{display: 'block'}}>Система теплоснабжения:</label>
+                  <input type="radio" value="" 
+                          checked={this.state.heatSupplySystem === "Открытая"} 
+                          onChange={this.onHeatSupplySystemChange.bind(this, "Открытая")} />
+                  <label style={{marginRight: '10px'}}>Открытая</label>
+                  <input type="radio" value="" 
+                          checked={this.state.heatSupplySystem === "Закрытая"} 
+                          onChange={this.onHeatSupplySystemChange.bind(this, "Закрытая")} />
+                  <label>Закрытая</label><br /> <br />
+                  <div className="form-group">
+                    <label>Примечание к системе теплоснабжения:</label>
+                    <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.heatSupplySystemNote} onChange={this.onHeatSupplySystemNoteChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Перекладка тепловых сетей:</label>
+                    <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.heatNetworksRelaying} onChange={this.onHeatNetworksRelayingChange} />
+                  </div>
+                </div>
+                <div className="col-sm-4">
+
+                  <div className="form-group">
+                    <label htmlFor="HeatMain">Отопление по договору<br />(Гкал/ч)</label>
+                    <input type="number" step="0.1" className="form-control" value={this.state.heatMainInContract} onChange={this.onHeatMainInContractChange} />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="HeatVentilation">Вентиляция по договору<br />(Гкал/ч)</label>
+                    <input type="number" step="0.1" className="form-control" value={this.state.heatVenInContract} onChange={this.onHeatVenInContractChange} />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="HeatWater">Горячее водоснабжение по договору (макс/ч)</label>
+                    <input type="number" step="0.1" className="form-control" value={this.state.heatWaterMaxInContract} onChange={this.onHeatWaterMaxInContractChange} />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="HeatWater">Горячее водоснабжение по договору (ср/ч)</label>
+                    <input type="number" step="0.1" className="form-control" value={this.state.heatWaterInContract} onChange={this.onHeatWaterInContractChange} />
+                  </div>
+
+                  <label style={{display: 'block'}}>Схема подключения:</label>
+                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" value={this.state.connectionScheme} onChange={this.onConnectionSchemeChange}></textarea>
+                  <div className="form-group">
+                    <label>Примечание к схеме подключения:</label>
+                    <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.connectionSchemeNote} onChange={this.onConnectionSchemeNoteChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Согласование:</label>
+                    <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.negotiation} onChange={this.onNegotiationChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Срок действия технических условий:</label>
+                    <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.technicalConditionsTerms} onChange={this.onTechnicalConditionsTermsChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Дополнительное</label>
+                    <textarea style={{border: 'solid 1px black'}} rows="5" className="form-control" value={this.state.addition} onChange={this.onAdditionChange} placeholder="Описание"></textarea>
+                  </div>
+                  {(this.state.response === true || this.state.response === 1) && this.state.responseFile &&
+                    <div className="form-group">
+                      <label style={{display: 'block'}}>Прикрепленный файл</label>
+                      <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
+                        Скачать 
+                      </a>
+                    </div>
+                  }
+                  <div className="form-group">
+                    <label htmlFor="upload_file">Прикрепить файл</label>
+                    <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                  </div>
+                </div>
+
+                {this.state.heatBlocks.length > 0 &&
+                  <div className="col-sm-12">
+                    <div className="block_list">
+                      {this.state.heatBlocks.map(function(item, index) {
+                        return(
+                          <div key={index} className="row" style={{background: '#efefef', margin: '0 0 20px', padding: '20px 0 10px'}}>
+                            <div className="col-md-3">
+                              <div className="form-group">
+                                <label htmlFor="HeatMain">Отопление<br />(Гкал/ч)</label>
+                                <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].main} onChange={this.onHeatMainChange.bind(this, index)} />
+                              </div>
+                            </div>
+                            <div className="col-md-3">
+                              <div className="form-group">
+                                <label htmlFor="HeatVentilation">Вентиляция<br />(Гкал/ч)</label>
+                                <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].ven} onChange={this.onHeatVenChange.bind(this, index)} />
+                              </div>
+                            </div>
+                            <div className="col-md-3">
+                              <div className="form-group">
+                                <label htmlFor="HeatWater">Горячее водоснабжение<br />(макс/ч)</label>
+                                <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].waterMax} onChange={this.onHeatWaterMaxChange.bind(this, index)} />
+                              </div>
+                            </div>
+                            <div className="col-md-3">
+                              <div className="form-group">
+                                <label htmlFor="HeatWater">Горячее водоснабжение<br />(ср/ч)</label>
+                                <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].water} onChange={this.onHeatWaterChange.bind(this, index)} />
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      }.bind(this))}
                     </div>
                   </div>
                 }
-                <div className="form-group">
-                  <label>Возврат конденсата</label>
-                  <input type="text" className="form-control" placeholder="" onChange={this.onCondensateReturnChange} value={this.state.condensateReturn} />
-                </div>
-                <div className="form-group">
-                  <label>Приборы учета тепловой энергии:</label>
-                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.thermalEnergyMeters} onChange={this.onThermalEnergyMetersChange} />
-                </div>
-                <label style={{display: 'block'}}>Система теплоснабжения:</label>
-                <input type="radio" value="" 
-                        checked={this.state.heatSupplySystem === "Открытая"} 
-                        onChange={this.onHeatSupplySystemChange.bind(this, "Открытая")} />
-                <label style={{marginRight: '10px'}}>Открытая</label>
-                <input type="radio" value="" 
-                        checked={this.state.heatSupplySystem === "Закрытая"} 
-                        onChange={this.onHeatSupplySystemChange.bind(this, "Закрытая")} />
-                <label>Закрытая</label><br /> <br />
-                <div className="form-group">
-                  <label>Примечание к системе теплоснабжения:</label>
-                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.heatSupplySystemNote} onChange={this.onHeatSupplySystemNoteChange} />
-                </div>
-                <div className="form-group">
-                  <label>Перекладка тепловых сетей:</label>
-                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.heatNetworksRelaying} onChange={this.onHeatNetworksRelayingChange} />
-                </div>
-              </div>
-              <div className="col-sm-4">
 
-                <div className="form-group">
-                  <label htmlFor="HeatMain">Отопление по договору<br />(Гкал/ч)</label>
-                  <input type="number" step="0.1" className="form-control" value={this.state.heatMainInContract} onChange={this.onHeatMainInContractChange} />
-                </div>
+                {!this.state.xmlFile &&
+                  <div className="col-sm-12">
+                    <div className="form-group">
+                      <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
+                        Сохранить
+                      </button>
 
-                <div className="form-group">
-                  <label htmlFor="HeatVentilation">Вентиляция по договору<br />(Гкал/ч)</label>
-                  <input type="number" step="0.1" className="form-control" value={this.state.heatVenInContract} onChange={this.onHeatVenInContractChange} />
-                </div>
+                      <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.sendHeatResponse.bind(this, apz.id, true, "")}>
+                        Отправить без ЭЦП
+                      </button>
 
-                <div className="form-group">
-                  <label htmlFor="HeatWater">Горячее водоснабжение по договору (макс/ч)</label>
-                  <input type="number" step="0.1" className="form-control" value={this.state.heatWaterMaxInContract} onChange={this.onHeatWaterMaxInContractChange} />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="HeatWater">Горячее водоснабжение по договору (ср/ч)</label>
-                  <input type="number" step="0.1" className="form-control" value={this.state.heatWaterInContract} onChange={this.onHeatWaterInContractChange} />
-                </div>
-
-                <label style={{display: 'block'}}>Схема подключения:</label>
-                <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" value={this.state.connectionScheme} onChange={this.onConnectionSchemeChange}></textarea>
-                <div className="form-group">
-                  <label>Примечание к схеме подключения:</label>
-                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.connectionSchemeNote} onChange={this.onConnectionSchemeNoteChange} />
-                </div>
-                <div className="form-group">
-                  <label>Согласование:</label>
-                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.negotiation} onChange={this.onNegotiationChange} />
-                </div>
-                <div className="form-group">
-                  <label>Срок действия технических условий:</label>
-                  <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.technicalConditionsTerms} onChange={this.onTechnicalConditionsTermsChange} />
-                </div>
-                <div className="form-group">
-                  <label>Дополнительное</label>
-                  <textarea style={{border: 'solid 1px black'}} rows="5" className="form-control" value={this.state.addition} onChange={this.onAdditionChange} placeholder="Описание"></textarea>
-                </div>
-                {(this.state.response === true || this.state.response === 1) && this.state.responseFile &&
-                  <div className="form-group">
-                    <label style={{display: 'block'}}>Прикрепленный файл</label>
-                    <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
-                      Скачать 
-                    </a>
+                      {this.state.response &&
+                        <button type="button" className="btn btn-secondary" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>
+                          Предварительный просмотр
+                        </button>
+                      }
+                    </div>
                   </div>
                 }
-                <div className="form-group">
-                  <label htmlFor="upload_file">Прикрепить файл</label>
-                  <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
-                </div>
               </div>
-
-              {this.state.heatBlocks.length > 0 &&
-                <div className="col-sm-12">
-                  <div className="block_list">
-                    {this.state.heatBlocks.map(function(item, index) {
-                      return(
-                        <div key={index} className="row" style={{background: '#efefef', margin: '0 0 20px', padding: '20px 0 10px'}}>
-                          <div className="col-md-3">
-                            <div className="form-group">
-                              <label htmlFor="HeatMain">Отопление<br />(Гкал/ч)</label>
-                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].main} onChange={this.onHeatMainChange.bind(this, index)} />
-                            </div>
-                          </div>
-                          <div className="col-md-3">
-                            <div className="form-group">
-                              <label htmlFor="HeatVentilation">Вентиляция<br />(Гкал/ч)</label>
-                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].ven} onChange={this.onHeatVenChange.bind(this, index)} />
-                            </div>
-                          </div>
-                          <div className="col-md-3">
-                            <div className="form-group">
-                              <label htmlFor="HeatWater">Горячее водоснабжение<br />(макс/ч)</label>
-                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].waterMax} onChange={this.onHeatWaterMaxChange.bind(this, index)} />
-                            </div>
-                          </div>
-                          <div className="col-md-3">
-                            <div className="form-group">
-                              <label htmlFor="HeatWater">Горячее водоснабжение<br />(ср/ч)</label>
-                              <input type="number" step="0.1" className="form-control" value={this.state.heatBlocks[index].water} onChange={this.onHeatWaterChange.bind(this, index)} />
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    }.bind(this))}
-                  </div>
-                </div>
-              }
-
-              {!this.state.xmlFile &&
-                <div className="col-sm-12">
-                  <div className="form-group">
-                    <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
-                      Сохранить
-                    </button>
-
-                    <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.sendHeatResponse.bind(this, apz.id, true, "")}>
-                      Отправить без ЭЦП
-                    </button>
-
-                    {this.state.response &&
-                      <button type="button" className="btn btn-secondary" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>
-                        Предварительный просмотр
-                      </button>
-                    }
-                  </div>
-                </div>
-              }
             </div>
           }
 
@@ -1847,7 +1849,7 @@ printData()
           }
 
           {this.state.accept === 'answer' && this.state.heatStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
-            <div style={{border: 'solid 3px #46A149', padding: '15px'}}>
+            <div className="provider_answer_body" style={{border: 'solid 1px #46A149', padding: '20px'}}>
               <div className="form-group">
                 <label htmlFor="custom_tc_file">
                   Прикрепить файл
@@ -1954,7 +1956,7 @@ printData()
           }
 
           {this.state.accept === 'decline' && this.state.heatStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
-            <form style={{border: 'solid 3px #F55549', padding: '5px'}}>
+            <form className="provider_answer_body" style={{border: 'solid 1px #f44336', padding: '20px'}}>
               <div className="form-group">
                 <label>Номер документа</label>
                 <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
@@ -2015,7 +2017,7 @@ printData()
             <table className="table table-bordered table-striped">
               <tbody>
                 <tr>
-                  <td><b>Сформированный ТУ</b></td>  
+                  <td style={{width: '40%'}}><b>Сформированный ТУ</b></td>  
                   <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
                 </tr>
               </tbody>

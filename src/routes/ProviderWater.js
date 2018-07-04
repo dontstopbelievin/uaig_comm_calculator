@@ -1364,23 +1364,23 @@ class ShowApz extends React.Component {
             </div>
           }
 
-          <div className="row" style={{margin: '16px 0'}}>
+          <div className="row provider_answer_top" style={{margin: '16px 0 0'}}>
             {(this.state.isPerformer === true || this.state.responseId != 0) &&
               <div className="col-sm-6">
                 <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ</h5> 
               </div>
             }
             
-            <div className="col-sm-6">
+            <div className="col-sm-6 pr-0">
               {this.state.showButtons && !this.state.isSigned && this.state.isPerformer &&
                 <div className="btn-group" style={{float: 'right', margin: '0'}}>
-                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, "accept")}>
+                  <button className={'btn btn-raised ' + (this.state.accept === 'accept' ? 'btn-success' : 'btn-secondary')} style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, "accept")}>
                     Одобрить
                   </button>
-                  <button className="btn btn-raised btn-secondary" style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, "answer")}>
+                  <button className={'btn btn-raised ' + (this.state.accept === 'answer' ? 'btn-success' : 'btn-secondary')} style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, "answer")}>
                     Ответ
                   </button>
-                  <button className="btn btn-raised btn-danger" onClick={this.toggleAcceptDecline.bind(this, "decline")}>
+                  <button className={'btn btn-raised ' + (this.state.accept === 'decline' ? 'btn-danger' : 'btn-secondary')} onClick={this.toggleAcceptDecline.bind(this, "decline")}>
                     Отклонить
                   </button>
                 </div>
@@ -1389,8 +1389,8 @@ class ShowApz extends React.Component {
           </div>
 
           {this.state.accept === "accept" && this.state.waterStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
-            <form style={{border: 'solid 3px #46A149', padding: '5px'}}>
-              <div className="row">
+            <form className="provider_answer_body" style={{border: 'solid 1px #46A149', padding: '20px'}}>
+              <div className="row pt-0">
                 <div className="col-sm-6">
                   <div className="form-group">
                     <label>Точка подключения</label>
@@ -1594,7 +1594,7 @@ class ShowApz extends React.Component {
           }
 
           {this.state.accept === 'answer' && this.state.waterStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
-            <div style={{border: 'solid 3px #46A149', padding: '15px'}}>
+            <div className="provider_answer_body" style={{border: 'solid 1px #46A149', padding: '20px'}}>
               <div className="form-group">
                 <label htmlFor="custom_tc_file">
                   Прикрепить файл
@@ -1701,7 +1701,7 @@ class ShowApz extends React.Component {
           }
           
           {this.state.accept === "decline" && this.state.waterStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
-            <form style={{border: 'solid 3px #F55549', padding: '5px'}}>
+            <form className="provider_answer_body" style={{border: 'solid 1px #f44336', padding: '20px'}}>
               <div className="form-group">
                 <label>Номер документа</label>
                 <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
@@ -1764,7 +1764,7 @@ class ShowApz extends React.Component {
             <table className="table table-bordered table-striped">
               <tbody>
                 <tr>
-                  <td><b>Сформированный ТУ</b></td>
+                  <td style={{width: '40%'}}><b>Сформированный ТУ</b></td>
                   <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
                 </tr>
               </tbody>

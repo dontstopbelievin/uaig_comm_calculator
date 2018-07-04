@@ -939,7 +939,7 @@ printData()
 
     return (
       <div className="row">
-        <div className="col-sm-4">
+        <div className="col-sm-6">
           <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
           
           <table className="table table-bordered table-striped"  id="printTable">
@@ -1013,7 +1013,7 @@ printData()
           </table>
         </div>
 
-        <div className="col-sm-4">
+        <div className="col-sm-6">
           <h5 className="block-title-2 mt-3 mb-3">Детали</h5>
 
           <table className="table table-bordered table-striped"  id="detail_table">
@@ -1039,24 +1039,24 @@ printData()
           <button className="btn btn-raised btn-success" onClick={this.printData}>Печать</button>
         </div>
 
-        <div className="col-sm-4">
-          <div className="row" style={{margin: '16px 0'}}>
+        <div className="col-sm-12">
+          <div className="row provider_answer_top" style={{margin: '16px 0 0'}}>
             {(this.state.isPerformer === true || this.state.responseId != 0) &&
               <div className="col-sm-6">
                 <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ</h5> 
               </div>
             }
-            <div className="col-sm-6">
+            <div className="col-sm-6 pr-0">
               {this.state.showButtons && !this.state.isSigned && this.state.isPerformer &&
                 <div className="btn-group" style={{float: 'right', margin: '0'}}>
-                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, 'accept')}>
-                    <i className="glyphicon glyphicon-ok"></i>
+                  <button className={'btn btn-raised ' + (this.state.accept === 'accept' ? 'btn-success' : 'btn-secondary')} style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, 'accept')}>
+                    Одобрить
                   </button>
-                  <button className="btn btn-raised btn-secondary" style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, 'answer')}>
-                    <i className="glyphicon glyphicon-paperclip"></i>
+                  <button className={'btn btn-raised ' + (this.state.accept === 'answer' ? 'btn-success' : 'btn-secondary')} style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, 'answer')}>
+                    Ответ
                   </button>
-                  <button className="btn btn-raised btn-danger" onClick={this.toggleAcceptDecline.bind(this, 'decline')}>
-                    <i className="glyphicon glyphicon-remove"></i>
+                  <button className={'btn btn-raised ' + (this.state.accept === 'decline' ? 'btn-danger' : 'btn-secondary')} onClick={this.toggleAcceptDecline.bind(this, 'decline')}>
+                    Отклонить
                   </button>
                 </div>
               }
@@ -1064,57 +1064,65 @@ printData()
           </div>
 
           {this.state.accept === 'accept' && this.state.phoneStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
-            <form style={{border: 'solid 3px #46A149', padding: '5px'}}>
-              <div className="form-group">
-                <label htmlFor="responseServiceNum">Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</label>
-                <input type="text" className="form-control" id="responseServiceNum" placeholder="" value={this.state.responseServiceNum} onChange={this.onResponseServiceNumChange} />
-              </div>
-              <div className="form-group">
-                <label htmlFor="responseCapacity">Телефонная емкость</label>
-                <input type="number" step="any" className="form-control" id="responseCapacity" placeholder="" value={this.state.responseCapacity} onChange={this.onResponseCapacityChange} />
-              </div>
-              <div className="form-group">
-                <label htmlFor="responseSewage">Планируемая телефонная канализация</label>
-                <input type="number" step="any" className="form-control" id="responseSewage" placeholder="" value={this.state.responseSewage} onChange={this.onResponseSewageChange} />
-              </div>
-              <div className="form-group">
-                <label htmlFor="responseClientWishes">Пожелания заказчика (тип оборудования, тип кабеля и др.)</label>
-                <textarea rows="5" id="responseClientWishes" className="form-control" value={this.state.responseClientWishes} onChange={this.onResponseClientWishesChange}></textarea>
-              </div>
-              <div className="form-group">
-                <label>Номер документа</label>
-                <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
-              </div>
-              {(this.state.response === true && this.state.responseFile) &&
-                <div className="form-group">
-                  <label style={{display: 'block'}}>Прикрепленный файл</label>
-                  <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
-                    Скачать 
-                  </a>
+            <form className="provider_answer_body" style={{border: 'solid 1px #46A149', padding: '20px'}}>
+              <div className="row pt-0">
+                <div className="col-sm-6">
+                  <div className="form-group">
+                    <label htmlFor="responseServiceNum">Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</label>
+                    <input type="number" step="any" className="form-control" id="responseServiceNum" placeholder="" value={this.state.responseServiceNum} onChange={this.onResponseServiceNumChange} />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="responseCapacity">Телефонная емкость</label>
+                    <input type="number" step="any" className="form-control" id="responseCapacity" placeholder="" value={this.state.responseCapacity} onChange={this.onResponseCapacityChange} />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="responseSewage">Планируемая телефонная канализация</label>
+                    <input type="number" step="any" className="form-control" id="responseSewage" placeholder="" value={this.state.responseSewage} onChange={this.onResponseSewageChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Номер документа</label>
+                    <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+                  </div>
                 </div>
-              }
-              <div className="form-group">
-                <label htmlFor="upload_file">Прикрепить файл</label>
-                <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
-              </div>
-              
-              {!this.state.xmlFile &&
-                <div className="form-group">
-                  <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, "accept", "")}>
-                    Сохранить
-                  </button>
+                <div className="col-sm-6">
+                  <div className="form-group">
+                    <label htmlFor="responseClientWishes">Пожелания заказчика (тип оборудования, тип кабеля и др.)</label>
+                    <textarea rows="5" id="responseClientWishes" className="form-control" value={this.state.responseClientWishes} onChange={this.onResponseClientWishesChange}></textarea>
+                  </div>
+                  
+                  {(this.state.response === true && this.state.responseFile) &&
+                    <div className="form-group">
+                      <label style={{display: 'block'}}>Прикрепленный файл</label>
+                      <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
+                        Скачать 
+                      </a>
+                    </div>
+                  }
+                  <div className="form-group">
+                    <label htmlFor="upload_file">Прикрепить файл</label>
+                    <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                  </div>
+                </div>
+                <div className="col-sm-12">
+                  {!this.state.xmlFile &&
+                    <div className="form-group">
+                      <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, "accept", "")}>
+                        Сохранить
+                      </button>
 
-                  <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.sendPhoneResponse.bind(this, apz.id, true, "")}>
-                    Отправить без ЭЦП
-                  </button>
+                      <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.sendPhoneResponse.bind(this, apz.id, true, "")}>
+                        Отправить без ЭЦП
+                      </button>
 
-                  {this.state.response &&
-                    <button type="button" className="btn btn-secondary" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>
-                      Предварительный просмотр
-                    </button>
+                      {this.state.response &&
+                        <button type="button" className="btn btn-secondary" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>
+                          Предварительный просмотр
+                        </button>
+                      }
+                    </div>
                   }
                 </div>
-              }
+              </div>
             </form>
           }
 
@@ -1158,7 +1166,7 @@ printData()
           }
 
           {this.state.accept === 'answer' && this.state.phoneStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
-            <div style={{border: 'solid 3px #46A149', padding: '15px'}}>
+            <div className="provider_answer_body" style={{border: 'solid 1px #46A149', padding: '20px'}}>
               <div className="form-group">
                 <label htmlFor="custom_tc_file">
                   Прикрепить файл
@@ -1226,7 +1234,7 @@ printData()
           }
 
           {this.state.accept === 'decline' && this.state.phoneStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
-            <form style={{border: 'solid 3px #F55549', padding: '5px'}}>
+            <form className="provider_answer_body" style={{border: 'solid 1px #f44336', padding: '20px'}}>
               <div className="form-group">
                 <label>Номер документа</label>
                 <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
@@ -1286,7 +1294,7 @@ printData()
             <table className="table table-bordered table-striped">
               <tbody>
                 <tr>
-                  <td><b>Сформированный ТУ</b></td>  
+                  <td style={{width: '40%'}}><b>Сформированный ТУ</b></td>  
                   <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
                 </tr>
               </tbody>
