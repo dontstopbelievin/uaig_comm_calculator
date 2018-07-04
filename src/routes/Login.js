@@ -95,7 +95,7 @@ export default class Login extends Component {
     } 
     else {
       this.setState({loaderHidden: false});
-      this.setState({inviseBtn: !this.state.inviseBtn});
+      this.setState({inviseBtn: false});
       var xhr = new XMLHttpRequest();
       xhr.open("post", window.url + "api/token", true);
       //Send the proper header information along with the request
@@ -103,7 +103,6 @@ export default class Login extends Component {
       xhr.onload = function(e) {
         if (xhr.status === 200) {
           this.setState({loaderHidden: true});
-          this.setState({inviseBtn: this.state.inviseBtn});
           console.log("loggedIn");
           console.log(e.target.response);
           var roles = [JSON.parse(e.target.response).role1];
@@ -138,7 +137,7 @@ export default class Login extends Component {
         } 
         else if(xhr.status === 400) {
           this.setState({loaderHidden: true});
-          this.setState({inviseBtn: this.state.inviseBtn});
+          this.setState({inviseBtn: true});
           alert("Вы ввели неверный логин и/или пароль.");
         }
 
@@ -160,7 +159,6 @@ export default class Login extends Component {
 
   btnLogin() {
     this.setState({loaderHidden: false});
-    this.setState({inviseBtn: !this.state.inviseBtn});
     let password = $('#inpPassword').val();
     let path = $('#storagePath').val();
     let keyType = "AUTH";
