@@ -167,7 +167,7 @@ export default class NavBar extends React.Component {
               {/*#######################################################################################################
               ##########################################################################################################*/}
             <li className="nav-item map">
-              <span>Карта:</span> <a className={this.giveActiveClass('/map')} href="/#/map">3D</a> | <a className={this.giveActiveClass('/map2d')} href="/#/map2d">2D</a>
+              <span>Карта:</span> <a className={this.giveActiveClass('/map')} target={'_blank'} href="http://3d.uaig.kz/">3D</a> | <a className={this.giveActiveClass('/map2d')} target={'_blank'} href="http://2d.uaig.kz/">2D</a>
             </li>
             <li><a className="nav-link last-item" target="_blank" href="/docs/doingBusiness.pdf">Doing business</a></li>
           </ul>
