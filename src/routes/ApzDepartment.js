@@ -751,6 +751,70 @@ class ShowApz extends React.Component {
     }
   }
 
+  printApz(apzId, project) {
+    var token = sessionStorage.getItem('tokenInfo');
+    if (token) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/print/apz/" + apzId, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          //test of IE
+          if (typeof window.navigator.msSaveBlob === "function") {
+            window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
+          } else {
+            var data = JSON.parse(xhr.responseText);
+            var today = new Date();
+            var curr_date = today.getDate();
+            var curr_month = today.getMonth() + 1;
+            var curr_year = today.getFullYear();
+            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+
+            var base64ToArrayBuffer = (function () {
+        
+              return function (base64) {
+                var binaryString =  window.atob(base64);
+                var binaryLen = binaryString.length;
+                var bytes = new Uint8Array(binaryLen);
+                
+                for (var i = 0; i < binaryLen; i++) {
+                  var ascii = binaryString.charCodeAt(i);
+                  bytes[i] = ascii;
+                }
+                
+                return bytes; 
+              }
+              
+            }());
+
+            var saveByteArray = (function () {
+              var a = document.createElement("a");
+              document.body.appendChild(a);
+              a.style = "display: none";
+              
+              return function (data, name) {
+                var blob = new Blob(data, {type: "octet/stream"}),
+                    url = window.URL.createObjectURL(blob);
+                a.href = url;
+                a.download = name;
+                a.click();
+                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+              };
+
+            }());
+
+            saveByteArray([base64ToArrayBuffer(data.file)], "апз-" + project + formated_date + ".pdf");
+          }
+        } else {
+          alert('Не удалось скачать файл');
+        }
+      }
+      xhr.send();
+    } else {
+      console.log('session expired');
+    }
+  }
+
   toggleMap(value) {
     this.setState({
       showMap: value
@@ -863,6 +927,20 @@ class ShowApz extends React.Component {
         <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
           {this.state.showMapText}
         </button>
+
+        {(apz.status_id === 7 && this.state.response) &&
+          <div>
+            <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
+            <table className="table table-bordered table-striped">
+              <tbody>
+                <tr>
+                  <td style={{width: '22%'}}><b>Сформированный АПЗ</b></td>
+                  <td><a className="text-info pointer" onClick={this.printApz.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        }
 
         {(this.state.showButtons || this.state.showSignButtons || this.state.showSendButton) &&
           <div>

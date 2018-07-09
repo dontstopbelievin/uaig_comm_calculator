@@ -2213,7 +2213,7 @@ class ShowApz extends React.Component {
                       }
 
                       <tr>
-                        <td><b>Сформированный АПЗ</b></td>
+                        <td style={{width: '22%'}}><b>Сформированный АПЗ</b></td>
                         <td><a className="text-info pointer" onClick={this.printApz.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
                       </tr>
                     </tbody>
