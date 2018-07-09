@@ -101,12 +101,11 @@ export default class Main extends React.Component {
     this.setLang();
 
 
-    //window.url = 'https://api.uaig.kz:8843/';
-    //window.url = 'http://192.168.0.231/';
-    //window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
+    window.url = 'https://api.uaig.kz:8843/';
+    window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
 
-     window.url = 'http://uaig/';
-     window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
+    // window.url = 'http://uaig/';
+    // window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // dimash
   }
 
   componentDidMount() {
@@ -195,6 +194,7 @@ export default class Main extends React.Component {
               <Route path="/page/:id" render={(props) => (<Page {...props}/>)}/>
               <Route path="/menuEdit" render={(props) => (<Menu {...props}/>)}/>
               <Route path="/usersQuestions" render={(props) => (<UsersQuestions {...props}/>)}/>
+              <Route path="/search/:query" render={(props) => (<Search {...props}/>)}/>
             </Switch>
             <Footer />
           </div>
