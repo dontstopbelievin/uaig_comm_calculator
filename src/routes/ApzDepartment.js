@@ -928,7 +928,7 @@ class ShowApz extends React.Component {
           {this.state.showMapText}
         </button>
 
-        {(apz.status_id === 7 && this.state.response) &&
+        {((apz.status_id === 7 || apz.status_id === 1 || apz.status_id === 2) && this.state.response) &&
           <div>
             <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
             <table className="table table-bordered table-striped">
