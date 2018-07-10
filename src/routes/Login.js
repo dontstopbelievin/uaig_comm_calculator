@@ -121,18 +121,18 @@ export default class Login extends Component {
           if(roles[0] === 'Urban'){
             var role = roles[1];
             switch(role){
-              case 'Region': this.props.history.push('/');
+              case 'Region': this.props.history.goBack();
               break;
 
-              case 'Head': this.props.history.push('/');
+              case 'Head': this.props.history.goBack();
               break;
 
-              default: this.props.history.push('/');
+              default: this.props.history.goBack();
               break;
             }
           }
           else{
-            this.props.history.push('/');
+            this.props.history.goBack();
           }
         } 
         else if(xhr.status === 400) {

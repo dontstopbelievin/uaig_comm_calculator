@@ -77,6 +77,7 @@ import Page from "./routes/Page";
 import Menu from "./routes/Menu";
 import Search from "./routes/Search";
 import UsersQuestions from "./routes/UsersQuestions";
+import AllQuestions from "./routes/AllQuestions";
 // import tether from 'tether';
 // global.Tether = tether;
 //import 'bootstrap/dist/css/bootstrap.min.css';
@@ -196,6 +197,7 @@ export default class Main extends React.Component {
               <Route path="/menuEdit" render={(props) => (<Menu {...props}/>)}/>
               <Route path="/usersQuestions" render={(props) => (<UsersQuestions {...props}/>)}/>
               <Route path="/search/:query" render={(props) => (<Search {...props}/>)}/>
+              <Route path="/allQuestions" render={(props) => (<AllQuestions {...props}/>)}/>
             </Switch>
             <Footer />
           </div>
