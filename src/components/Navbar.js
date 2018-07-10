@@ -3,6 +3,7 @@ import {NavLink} from 'react-router-dom';
 import {ru, kk} from '../languages/header.json';
 import LocalizedStrings from 'react-localization';
 //import '../assets/css/navbar.css';
+import Loader from 'react-loader-spinner';
 let e = new LocalizedStrings({ru,kk});
 
 export default class NavBar extends React.Component {
@@ -74,9 +75,7 @@ export default class NavBar extends React.Component {
     xhr.onload = function() {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-
         this.setState({menuItems: data.items });
-        this.setState({ loaderHidden: true });
         console.log(this.state.menuItems);
       }else if(xhr.status === 500){
 
@@ -99,7 +98,7 @@ export default class NavBar extends React.Component {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav mr-auto">
+          <ul className="navbar-nav d-flex justify-content-between col-md-12">
 
             {this.state.categories.map(function (category, index) {
               return(
@@ -162,14 +161,24 @@ export default class NavBar extends React.Component {
 
             }
 
+            {!this.state.loaderHidden &&
+              <li className={'text-center'} >
+                <Loader type="ThreeDots" color="#46B3F2" height="40" width="60"/>
+              </li>
+            }
             
 
               {/*#######################################################################################################
               ##########################################################################################################*/}
-            <li className="nav-item map">
-              <span>Карта:</span> <a className={this.giveActiveClass('/map')} target={'_blank'} href="http://3d.uaig.kz/">3D</a> | <a className={this.giveActiveClass('/map2d')} target={'_blank'} href="http://2d.uaig.kz/">2D</a>
-            </li>
-            <li><a className="nav-link last-item" target="_blank" href="/docs/doingBusiness.pdf">Doing business</a></li>
+
+            {this.state.loaderHidden &&
+              <li className="nav-item map">
+                <span>Карта:</span> <a className={this.giveActiveClass('/map')} target={'_blank'} href="http://3d.uaig.kz/">3D</a> | <a className={this.giveActiveClass('/map2d')} target={'_blank'} href="http://2d.uaig.kz/">2D</a>
+              </li>
+            }
+            {this.state.loaderHidden &&
+              <li><a className="nav-link last-item" target="_blank" href="/docs/doingBusiness.pdf">Doing business</a></li>
+            }
           </ul>
         </div>
       </nav>
