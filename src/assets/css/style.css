@@ -1121,6 +1121,34 @@ table{
   font-size: .875rem;
 }
 
+.apz_department_form .select_type {
+  text-align: center;
+}
+
+.apz_department_form .select_type > span {
+  display: block;
+  margin-bottom: 15px;
+}
+
+.apz_department_form .select_type label {
+  margin: 0 2px;
+}
+
+.apz_department_form .select_type label span {
+  background: #ddd;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.apz_department_form .select_type input {
+  display: none;
+}
+
+.apz_department_form .select_type input:checked + span {
+  background: #03a9f4;
+  color: #fff;
+}
+
 .provider_answer_top .btn {
   box-shadow: none;
 }

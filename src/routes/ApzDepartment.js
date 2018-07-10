@@ -224,6 +224,7 @@ class ShowApz extends React.Component {
       storageAlias: "PKCS12",
       xmlFile: false,
       isSigned: false,
+      templateType: '',
 
       basisForDevelopmentApz: 'Постановление акимата города (района) №_____ от __________ (число, месяц, год)',
       buildingPresence: 'Строений нет',
@@ -237,7 +238,7 @@ class ShowApz extends React.Component {
       engineeringSupport: 'Централизованное. Предусмотреть коридоры инженерных и внутриплощадочных сетей в пределах отводимого участка',
       energyEfficiencyClass: 'Указать в проекте',
       spatialSolution: 'Увязать со смежными по участку объектами',
-      draftMasterPlan: 'Учесть ограниченные территориальные параметры участка и перспективу развития транспортно-пешеходных коммуникаций. Следует распологать с отступом от красной линии согласно СН РК 3.01-01-2013.',
+      draftMasterPlan: 'Учесть ограниченные территориальные параметры участка и перспективу развития транспортно-пешеходных коммуникаций. Следует располагать с отступом от красной линии согласно СН РК 3.01-01-2013.',
       verticalLayout: 'Увязать с высотными отметками ПДП прилегающей территории',
       landscapingAndGardening: 'В генплане указать нормативное описание',
       parking: 'На своем земельном участке',
@@ -276,6 +277,218 @@ class ShowApz extends React.Component {
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.sendForm = this.sendForm.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
+  }
+
+  onTypeChange(type) {
+    if (!window.confirm('При смене шаблона, вся информация, находящаяся в обновляемых разделах перезапишется. Продолжить?')) {
+      return false;
+    }
+
+    switch (type) {
+      case 'big_object':
+        this.setState({
+          templateType: 'big_object',
+          basisForDevelopmentApz: '1. Письмо застройщика<br />2. Акт на земельный участок.<br />3. Задание на проектирование утвержденное застройщиком (заказчиком)',
+          buildingPresence: 'Строений нет',
+          address: 'Город, район, микрорайон, аул, квартал',
+          geodeticStudy: 'Предусмотреть в проекте',
+          engineeringGeologicalStudy: 'По фондовым материалам (топографическая съемка, масштаб, наличие корректировок)',
+          planningSystem: 'По проекту с учетом функционального назначения объекта',
+          functionalValueOfObject: 'Строительство многофункционального жилого комплекса',
+          floorSum: '9 этажей',
+          structuralScheme: 'По проекту',
+          engineeringSupport: 'Централизованное. Предусмотреть коридоры инженерных и внутриплощадочных сетей в пределах отводимого участка',
+          energyEfficiencyClass: 'Указать в проекте',
+          spatialSolution: 'Увязать со смежными по участку объектами',
+          draftMasterPlan: 'Учесть ограниченные территориальные параметры участка и перспективу развития транспортно-пешеходных коммуникаций. Следует располагать с отступом от красной линии согласно СН РК 3.01-01-2013.',
+          verticalLayout: 'Увязать с высотными отметками ПДП прилегающей территории',
+          landscapingAndGardening: 'В генплане указать нормативное описание',
+          parking: 'На своем земельном участке',
+          useOfFertileSoilLayer: 'На усмотрение собственника',
+          smallArchitecturalForms: 'Указать в проекте',
+          lighting: 'Указать в проекте',
+          stylisticsOfArchitecture: 'Сформировать архитектурный образ в соответствии с функциональными особенностями объекта',
+          natureCombination: 'С целью улучшения архитектурного облика города сформировать архитектурный образ в соответствии с фасадами существующих объектов.',
+          colorSolution: 'Согласно эскизному проекту',
+          advertisingAndInformationSolution: 'Предусмотреть рекламно-информационные установки согласно статьи 21 Закона Республики Казахстан «О языках Республики Казахстан»',
+          nightLighting: 'Указать в проекте',
+          inputNodes: 'Предложить акцентирование входных узлов. Предусматривать систему охраны входов (аудио-, видеодомофон, и т.д.) Оборудовать современными средствами дистанционного электронного контроля',
+          conditionsForLowMobileGroups: 'Предусмотреть мероприятия в соответствии с указаниями и требованиями строительных нормативных документов РК; предусмотреть доступ инвалидов к зданию, предусмотреть пандусы, специальные подъездные пути и устройства для проезда инвалидных колясок',
+          complianceNoiseConditions: 'Согласно СНиП РК',
+          plinth: 'Указать в проекте',
+          facade: 'Указать в проекте',
+          heatSupply: 'Согласно техническим условиям (№___ и даты выдачи ТУ)',
+          waterSupply: 'Согласно техническим условиям (№___ и даты выдачи ТУ)',
+          sewerage: 'Согласно техническим условиям (№___ и даты выдачи ТУ)',
+          powerSupply: 'Согласно техническим условиям (№___ и даты выдачи ТУ)',
+          gasSupply: 'Технические условия не предусмотрены',
+          phoneSupply: 'Технические условия не предусмотрены',
+          drainage: 'Технические условия не предусмотрены',
+          irrigationSystems: 'Технические условия не предусмотрены',
+          engineeringSurveysObligation: 'Приступать к освоению земельного участка разрешается после геодезического выноса и закрепления его границ в натуре (на местности) и ордера на производство земляных работ',
+          demolitionObligation: 'В случае необходимости краткое описание',
+          transferCommunicationsObligation: 'Согласно техническим условиям на перенос (вынос) либо на проведения мероприятия по защите сетей и сооружений',
+          conservationPlantObligation: 'Указать в проекте',
+          temporaryFencingConstructionObligation: 'Указать в проекте',
+          additionalRequirements: '1. При проектировании системы кондиционирования в здании (в том случае, когда проектом не предусмотрено централизованное холодоснабжение и кондиционирование) необходимо предусмотреть размещение наружных элементов локальных систем в соответствии с архитектурным решением фасадов здания. На фасадах проектируемого здания предусмотреть места (ниши, выступы, балконы и т.д.) для размещения наружных элементов локальных систем кондиционирования.<br />2. Приненить материалы по ресурсосбережению и современных энергосберегающих технологий.',
+          generalRequirements: '1. При разработке проекта (рабочего проекта) необходимо руководствоваться нормами действующего законодательства Республики Казахстан в сфере архитектурной, градостроительной и строительной деятельности.<br />2. Согласовать с главным архитектором города (района):<br />- Эскизный проект<br />Эскизный проект в полном объеме, в том числе:<br />- краткая пояснительная записка с обоснованием принятых решений;<br />- технико-экономические показатели в соответствии с требованиями строительных нормативных документов РК;<br />- ситуационная схема в М 1:2000;<br />- генплан в М 1:500 на топографической основе (проект благоустройства и озеленения);<br />- малые архитектурные формы;<br />- фасады (в цвете) с таблицей по наружной отделке согласованной с заказчиком, фрагменты фасадов (декоративные элементы и т.д.);<br />- планы этажей и план кровли, разрезы;<br />- планы инженерных сетей;',
+          notes: '1. АПЗ и ТУ действуют в течение всего срока нормативной продолжительности строительства, утвержденного в составе проектной (проектно-сметной) документации.<br />2. В случае возникновения обстоятельств, требующих пересмотра условий АПЗ, изменения в него могут быть внесены по согласованию с заказчиком.<br />3. Требования и условия, изложенные в АПЗ, обязательны для всех участников инвестиционного процесса независимо от форм собственности и источников финансирования. АПЗ по просьбе заказчика или местного органа архитектуры и градостроительства может быть предметом обсуждения градостроительного совета, архитектурной общественности, рассмотрено в независимой экспертизе.<br />4. Несогласие заказчика с требованиями, содержащимися в АПЗ, может быть обжаловано в судебном порядке.'
+        });
+        break;
+
+      case 'small_object':
+        this.setState({
+          templateType: 'small_object',
+          basisForDevelopmentApz: '1. Заявление застройщика<br />2. Акт на земельный участок.<br />3. Задание на проектирование утвержденное застройщиком (заказчиком)',
+          buildingPresence: 'Строений нет',
+          address: 'Город, район, микрорайон, аул, квартал',
+          geodeticStudy: 'Предусмотреть в проекте',
+          engineeringGeologicalStudy: 'По фондовым материалам (топографическая съемка, масштаб, наличие корректировок)',
+          planningSystem: 'По проекту с учетом функционального назначения объекта',
+          functionalValueOfObject: 'Строительство индивидуального жилого дом',
+          floorSum: 'Двухэтажный',
+          structuralScheme: 'По проекту',
+          engineeringSupport: 'Централизованное. Предусмотреть коридоры инженерных и внутриплощадочных сетей в пределах отводимого участка',
+          energyEfficiencyClass: 'Указать в проекте',
+          spatialSolution: 'Увязать со смежными по участку объектами',
+          draftMasterPlan: 'Учесть ограниченные территориальные параметры участка и перспективу развития транспортно-пешеходных коммуникаций. Следует располагать с отступом от красной линии согласно СН РК 3.01-01-2013.',
+          verticalLayout: 'Увязать с высотными отметками ПДП прилегающей территории',
+          landscapingAndGardening: 'В генплане указать нормативное описание',
+          parking: 'На своем земельном участке',
+          useOfFertileSoilLayer: 'На усмотрение собственника',
+          smallArchitecturalForms: '@hide',
+          lighting: 'Указать в проекте',
+          stylisticsOfArchitecture: 'Сформировать архитектурный образ в соответствии с функциональными особенностями объекта',
+          natureCombination: 'С целью улучшения архитектурного облика города сформировать архитектурный образ в соответствии с фасадами существующих объектов.',
+          colorSolution: 'Согласно эскизному проекту',
+          advertisingAndInformationSolution: '@hide',
+          nightLighting: 'Указать в проекте',
+          inputNodes: '@hide',
+          conditionsForLowMobileGroups: '@hide',
+          complianceNoiseConditions: 'Согласно СНиП РК',
+          plinth: 'Указать в проекте',
+          facade: 'Указать в проекте',
+          heatSupply: 'Технические условия не предусмотрены',
+          waterSupply: 'Согласно техническим условиям (№___ и даты выдачи ТУ)',
+          sewerage: 'Согласно техническим условиям (№___ и даты выдачи ТУ)',
+          powerSupply: 'Согласно техническим условиям (№___ и даты выдачи ТУ)',
+          gasSupply: 'Технические условия не предусмотрены',
+          phoneSupply: 'Технические условия не предусмотрены',
+          drainage: 'Технические условия не предусмотрены',
+          irrigationSystems: 'Технические условия не предусмотрены',
+          engineeringSurveysObligation: 'Приступать к освоению земельного участка разрешается после геодезического выноса и закрепления его границ в натуре (на местности) и ордера на производство земляных работ',
+          demolitionObligation: 'В случае необходимости краткое описание',
+          transferCommunicationsObligation: 'Согласно техническим условиям на перенос (вынос) либо на проведения мероприятия по защите сетей и сооружений',
+          conservationPlantObligation: 'Указать в проекте',
+          temporaryFencingConstructionObligation: 'Указать в проекте',
+          additionalRequirements: '1. При проектировании системы кондиционирования в здании (в том случае, когда проектом не предусмотрено централизованное холодоснабжение и кондиционирование) необходимо предусмотреть размещение наружных элементов локальных систем в соответствии с архитектурным решением фасадов здания. На фасадах проектируемого здания предусмотреть места (ниши, выступы, балконы и т.д.) для размещения наружных элементов локальных систем кондиционирования.<br />2. Приненить материалы по ресурсосбережению и современных энергосберегающих технологий.',
+          generalRequirements: '1. При разработке проекта (рабочего проекта) необходимо руководствоваться нормами действующего законодательства Республики Казахстан в сфере архитектурной, градостроительной и строительной деятельности.<br />2. Согласовать с главным архитектором города (района):<br />- Эскизный проект<br />Эскизный проект в полном объеме, в том числе:<br />- краткая пояснительная записка с обоснованием принятых решений;<br />- технико-экономические показатели в соответствии с требованиями строительных нормативных документов РК;<br />- ситуационная схема в М 1:2000;<br />- генплан в М 1:500 на топографической основе (проект благоустройства и озеленения);<br />- малые архитектурные формы;<br />- фасады (в цвете) с таблицей по наружной отделке согласованной с заказчиком, фрагменты фасадов (декоративные элементы и т.д.);<br />- планы этажей и план кровли, разрезы;<br />- планы инженерных сетей;',
+          notes: '1. АПЗ и ТУ действуют в течение всего срока нормативной продолжительности строительства, утвержденного в составе проектной (проектно-сметной) документации.<br />2. В случае возникновения обстоятельств, требующих пересмотра условий АПЗ, изменения в него могут быть внесены по согласованию с заказчиком.<br />3. Требования и условия, изложенные в АПЗ, обязательны для всех участников инвестиционного процесса независимо от форм собственности и источников финансирования. АПЗ по просьбе заказчика или местного органа архитектуры и градостроительства может быть предметом обсуждения градостроительного совета, архитектурной общественности, рассмотрено в независимой экспертизе.<br />4. Несогласие заказчика с требованиями, содержащимися в АПЗ, может быть обжаловано в судебном порядке.'
+        });
+        break;
+
+      case 'network_engineering':
+        this.setState({
+          templateType: 'network_engineering',
+          basisForDevelopmentApz: '1. Письмо застройщика<br />2. Приказ.<br />3. Задание на проектирование утвержденное застройщиком (заказчиком)',
+          buildingPresence: 'Строение есть',
+          address: 'Город, район, микрорайон, аул, квартал',
+          geodeticStudy: 'Предусмотреть в проекте',
+          engineeringGeologicalStudy: 'По фондовым материалам (топографическая съемка, масштаб, наличие корректировок)',
+          planningSystem: 'По проекту с учетом функционального назначения объекта',
+          functionalValueOfObject: 'Реконструкция канализационных сетей',
+          floorSum: '@hide',
+          structuralScheme: '@hide',
+          engineeringSupport: 'Централизованное. Предусмотреть коридоры инженерных и внутриплощадочных сетей в пределах отводимого участка',
+          energyEfficiencyClass: 'Указать в проекте',
+          spatialSolution: 'Увязать со смежными по участку объектами',
+          draftMasterPlan: 'Учесть ограниченные территориальные параметры участка и перспективу развития транспортно-пешеходных коммуникаций. Следует располагать с отступом от красной линии согласно СН РК 3.01-01-2013.',
+          verticalLayout: 'Увязать с высотными отметками ПДП прилегающей территории',
+          landscapingAndGardening: 'В генплане указать нормативное описание',
+          parking: '@hide',
+          useOfFertileSoilLayer: '@hide',
+          smallArchitecturalForms: '@hide',
+          lighting: '@hide',
+          stylisticsOfArchitecture: 'Сформировать архитектурный образ в соответствии с функциональными особенностями объекта',
+          natureCombination: 'Подчиненный',
+          colorSolution: '@hide',
+          advertisingAndInformationSolution: '@hide',
+          nightLighting: '@hide',
+          inputNodes: '@hide',
+          conditionsForLowMobileGroups: '@hide',
+          complianceNoiseConditions: '@hide',
+          plinth: '@hide',
+          facade: 'Указать в проекте',
+          heatSupply: 'Технические условия не предусмотрены',
+          waterSupply: 'Согласно техническим условиям (№___ и даты выдачи ТУ)',
+          sewerage: 'Согласно техническим условиям (№___ и даты выдачи ТУ)',
+          powerSupply: 'Технические условия не предусмотрены',
+          gasSupply: 'Технические условия не предусмотрены',
+          phoneSupply: 'Технические условия не предусмотрены',
+          drainage: 'Технические условия не предусмотрены',
+          irrigationSystems: 'Технические условия не предусмотрены',
+          engineeringSurveysObligation: 'Приступать к освоению земельного участка разрешается после геодезического выноса и закрепления его границ в натуре (на местности) и ордера на производство земляных работ',
+          demolitionObligation: 'В случае необходимости краткое описание',
+          transferCommunicationsObligation: 'В случае обнаружения проходящих инженерных коммуникаций предусмотреть конструктивные мероприятия по их защите, провести согласование с соответствующими инстанциями',
+          conservationPlantObligation: 'Указать в проекте',
+          temporaryFencingConstructionObligation: 'Указать в проекте',
+          additionalRequirements: 'Общая площадь застройи согласно проекту',
+          generalRequirements: '1. При разработке проекта (рабочего проекта) необходимо руководствоваться нормами действующего законодательства Республики Казахстан в сфере архитектурной, градостроительной и строительной деятельности.<br />2. Проектирование (при новом стороительстве) необходимо вести на материалах откорректированной топографическойм съемки в М 1:500 и геологичеких изысканий, выполненных ранее<br />3. Согласовать с главным архитектором города (района):<br />генеральный план в М 1:500;сводный план инженерных сетей;',
+          notes: '1. АПЗ и ТУ действуют в течение всего срока нормативной продолжительности строительства, утвержденного в составе проектной (проектно-сметной) документации.<br />2. В случае возникновения обстоятельств, требующих пересмотра условий АПЗ, изменения в него могут быть внесены по согласованию с заказчиком.<br />3. Требования и условия, изложенные в АПЗ, обязательны для всех участников инвестиционного процесса независимо от форм собственности и источников финансирования. АПЗ по просьбе заказчика или местного органа архитектуры и градостроительства может быть предметом обсуждения градостроительного совета, архитектурной общественности, рассмотрено в независимой экспертизе.<br />4. Несогласие заказчика с требованиями, содержащимися в АПЗ, может быть обжаловано в судебном порядке.'
+        });
+        break;
+
+      case 'redevelopment':
+        this.setState({
+          templateType: 'redevelopment',
+          basisForDevelopmentApz: '1. Заявление застройщика<br />2. Акт на земельный участок.<br />3. Задание на проектирование утвержденное застройщиком (заказчиком)',
+          buildingPresence: 'Строений нет',
+          address: 'Город, район, микрорайон, аул, квартал',
+          geodeticStudy: '@hide',
+          engineeringGeologicalStudy: '@hide',
+          planningSystem: 'По проекту с учетом функционального назначения объекта',
+          functionalValueOfObject: 'Реконструкция входной группы с внутренней перепланировкой нежилого помещения',
+          floorSum: '5 этажей',
+          structuralScheme: 'По проекту',
+          engineeringSupport: 'Централизованное. Запрещается перенос вертикальных инженерных коммуникаций жилого дома, проходящие в пределах квартиры.',
+          energyEfficiencyClass: '@hide',
+          spatialSolution: '@hide',
+          draftMasterPlan: '@hide',
+          verticalLayout: '@hide',
+          landscapingAndGardening: '@hide',
+          parking: '@hide',
+          useOfFertileSoilLayer: '@hide',
+          smallArchitecturalForms: '@hide',
+          lighting: '@hide',
+          stylisticsOfArchitecture: 'Сформировать в соответствии с функциональными особенностями объекта',
+          natureCombination: 'Подчиненный',
+          colorSolution: '@hide',
+          advertisingAndInformationSolution: '@hide',
+          nightLighting: '@hide',
+          inputNodes: '@hide',
+          conditionsForLowMobileGroups: '@hide',
+          complianceNoiseConditions: '@hide',
+          plinth: '@hide',
+          facade: '@hide',
+          heatSupply: 'Централизованный',
+          waterSupply: 'Централизованный',
+          sewerage: 'Централизованный',
+          powerSupply: 'Централизованный',
+          gasSupply: 'Централизованный',
+          phoneSupply: 'Централизованный',
+          drainage: '@hide',
+          irrigationSystems: '@hide',
+          engineeringSurveysObligation: '@hide',
+          demolitionObligation: '@hide',
+          transferCommunicationsObligation: 'В случае обнаружения проходящих инженерных коммуникаций предусмотреть конструктивные мероприятия по их защите, провести согласование с соответствующими инстанциями',
+          conservationPlantObligation: '@hide',
+          temporaryFencingConstructionObligation: '@hide',
+          additionalRequirements: '@hide',
+          generalRequirements: '1. При разработке проекта (рабочего проекта) необходимо руководствоваться нормами действующего законодательства Республики Казахстан в сфере архитектурной, градостроительной и строительной деятельности.<br />2. Проектирование (при новом стороительстве) необходимо вести на материалах откорректированной топографическойм съемки в М 1:500 и геологичеких изысканий, выполненных ранее<br />3. Согласовать с главным архитектором города (района):<br />генеральный план в М 1:500;сводный план инженерных сетей;',
+          notes: '1. АПЗ и ТУ действуют в течение всего срока нормативной продолжительности строительства, утвержденного в составе проектной (проектно-сметной) документации.<br />2. В случае возникновения обстоятельств, требующих пересмотра условий АПЗ, изменения в него могут быть внесены по согласованию с заказчиком.<br />3. Требования и условия, изложенные в АПЗ, обязательны для всех участников инвестиционного процесса независимо от форм собственности и источников финансирования. АПЗ по просьбе заказчика или местного органа архитектуры и градостроительства может быть предметом обсуждения градостроительного совета, архитектурной общественности, рассмотрено в независимой экспертизе.<br />4. Несогласие заказчика с требованиями, содержащимися в АПЗ, может быть обжаловано в судебном порядке.'
+        });
+        break;
+    }
   }
 
   onInputChange(state, value) {
@@ -335,7 +548,7 @@ class ShowApz extends React.Component {
         if (data.apz_department_response) {
           Object.keys(data.apz_department_response).forEach(function(k) {
             let key = this.snakeToCamel(k);
-            this.setState({ [key]: data.apz_department_response[k] });
+            this.setState({ [key]: (data.apz_department_response[k] === null) ? '' : data.apz_department_response[k] });
           }.bind(this));
         }
       }
@@ -644,7 +857,7 @@ class ShowApz extends React.Component {
     var data = {};
 
     Object.keys(this.state).forEach(function(k) {
-      data[k] = this.state[k]
+      data[k] = (this.state[k] === '@hide') ? '' : this.state[k];
     }.bind(this));
 
     data.response = status;
@@ -849,6 +1062,7 @@ class ShowApz extends React.Component {
   
   render() {
     var apz = this.state.apz;
+    var counter = 1;
 
     if (apz.length === 0) {
       return false;
@@ -945,8 +1159,18 @@ class ShowApz extends React.Component {
         {(this.state.showButtons || this.state.showSignButtons || this.state.showSendButton) &&
           <div>
             <form className="apz_department_form">
+              <div className="select_type">
+                <span>Выберите тип: </span> 
+                <div>
+                  <label><input type="radio" name="template_type" onChange={this.onTypeChange.bind(this, 'big_object')} checked={this.state.templateType === 'big_object'} /><span>Большой объект</span></label>
+                  <label><input type="radio" name="template_type" onChange={this.onTypeChange.bind(this, 'small_object')} checked={this.state.templateType === 'small_object'} /><span>Малый объект</span></label>
+                  <label><input type="radio" name="template_type" onChange={this.onTypeChange.bind(this, 'network_engineering')} checked={this.state.templateType === 'network_engineering'} /><span>Инженерные сети</span></label>
+                  <label><input type="radio" name="template_type" onChange={this.onTypeChange.bind(this, 'redevelopment')} checked={this.state.templateType === 'redevelopment'} /><span>Внутренняя перепл. многоквартирного жилого дома</span></label>
+                </div>
+              </div>
+
               <div>
-                <h5>1. Характеристика участка</h5>
+                <h5>{counter++}. Характеристика участка</h5>
                 <div className="form-group">
                   <label>Основание для разработки архитектурно-планировочного задания (АПЗ)</label>
                   <ReactQuill value={this.state.basisForDevelopmentApz} onChange={this.onInputChange.bind(this, 'basisForDevelopmentApz')} />
@@ -959,14 +1183,21 @@ class ShowApz extends React.Component {
                   <label>Местонахождение участка</label>
                   <ReactQuill value={this.state.address} onChange={this.onInputChange.bind(this, 'address')} />
                 </div>
-                <div className="form-group">
-                  <label>Геодезическая изученность</label>
-                  <ReactQuill value={this.state.geodeticStudy} onChange={this.onInputChange.bind(this, 'geodeticStudy')} />
-                </div>
-                <div className="form-group">
-                  <label>Инженерно-геологическая изученность</label>
-                  <ReactQuill value={this.state.engineeringGeologicalStudy} onChange={this.onInputChange.bind(this, 'engineeringGeologicalStudy')} />
-                </div>
+
+                {this.state.geodeticStudy != '@hide' &&
+                  <div className="form-group">
+                    <label>Геодезическая изученность</label>
+                    <ReactQuill value={this.state.geodeticStudy} onChange={this.onInputChange.bind(this, 'geodeticStudy')} />
+                  </div>
+                }
+                
+                {this.state.engineeringGeologicalStudy != '@hide' &&
+                  <div className="form-group">
+                    <label>Инженерно-геологическая изученность</label>
+                    <ReactQuill value={this.state.engineeringGeologicalStudy} onChange={this.onInputChange.bind(this, 'engineeringGeologicalStudy')} />
+                  </div>
+                }
+                
                 <div className="form-group">
                   <label>Планировочная система</label>
                   <ReactQuill value={this.state.planningSystem} onChange={this.onInputChange.bind(this, 'planningSystem')} />
@@ -974,67 +1205,103 @@ class ShowApz extends React.Component {
               </div>
 
               <div>
-                <h5>2. Характеристика проектируемого объекта</h5>
+                <h5>{counter++}. Характеристика проектируемого объекта</h5>
                 <div className="form-group">
                   <label>Функциональное значение объекта</label>
                   <ReactQuill value={this.state.functionalValueOfObject} onChange={this.onInputChange.bind(this, 'functionalValueOfObject')} />
                 </div>
-                <div className="form-group">
-                  <label>Этажность</label>
-                  <ReactQuill value={this.state.floorSum} onChange={this.onInputChange.bind(this, 'floorSum')} />
-                </div>
-                <div className="form-group">
-                  <label>Конструктивная схема</label>
-                  <ReactQuill value={this.state.structuralScheme} onChange={this.onInputChange.bind(this, 'structuralScheme')} />
-                </div>
+
+                {this.state.floorSum != '@hide' &&
+                  <div className="form-group">
+                    <label>Этажность</label>
+                    <ReactQuill value={this.state.floorSum} onChange={this.onInputChange.bind(this, 'floorSum')} />
+                  </div>
+                }
+                
+                {this.state.structuralScheme != '@hide' &&
+                  <div className="form-group">
+                    <label>Конструктивная схема</label>
+                    <ReactQuill value={this.state.structuralScheme} onChange={this.onInputChange.bind(this, 'structuralScheme')} />
+                  </div>
+                }
+                
                 <div className="form-group">
                   <label>Инженерное обеспечение</label>
                   <ReactQuill value={this.state.engineeringSupport} onChange={this.onInputChange.bind(this, 'engineeringSupport')} />
                 </div>
-                <div className="form-group">
-                  <label>Класс энергоэффективности</label>
-                  <ReactQuill value={this.state.energyEfficiencyClass} onChange={this.onInputChange.bind(this, 'energyEfficiencyClass')} />
-                </div>
+
+                {this.state.energyEfficiencyClass != '@hide' &&
+                  <div className="form-group">
+                    <label>Класс энергоэффективности</label>
+                    <ReactQuill value={this.state.energyEfficiencyClass} onChange={this.onInputChange.bind(this, 'energyEfficiencyClass')} />
+                  </div>
+                }
               </div>
 
-              <div>
-                <h5>3. Градостроительные требования</h5>
-                <div className="form-group">
-                  <label>Объемно-пространственное решение</label>
-                  <ReactQuill value={this.state.spatialSolution} onChange={this.onInputChange.bind(this, 'spatialSolution')} />
+              {this.state.templateType != 'redevelopment' &&
+                <div>
+                  <h5>{counter++}. Градостроительные требования</h5>
+
+                  {this.state.spatialSolution != '@hide' &&
+                    <div className="form-group">
+                      <label>Объемно-пространственное решение</label>
+                      <ReactQuill value={this.state.spatialSolution} onChange={this.onInputChange.bind(this, 'spatialSolution')} />
+                    </div>
+                  }
+                  
+                  {this.state.draftMasterPlan != '@hide' &&
+                    <div className="form-group">
+                      <label>Проект генерального плана</label>
+                      <ReactQuill value={this.state.draftMasterPlan} onChange={this.onInputChange.bind(this, 'draftMasterPlan')} />
+                    </div>
+                  }
+                  
+                  {this.state.verticalLayout != '@hide' &&
+                    <div className="form-group">
+                      <label>Вертикальная планировка</label>
+                      <ReactQuill value={this.state.verticalLayout} onChange={this.onInputChange.bind(this, 'verticalLayout')} />
+                    </div>
+                  }
+                  
+                  {this.state.landscapingAndGardening != '@hide' &&
+                    <div className="form-group">
+                      <label>Благоустройство и озеленение</label>
+                      <ReactQuill value={this.state.landscapingAndGardening} onChange={this.onInputChange.bind(this, 'landscapingAndGardening')} />
+                    </div>
+                  }
+
+                  {this.state.parking != '@hide' &&
+                    <div className="form-group">
+                      <label>Парковка автомобилей</label>
+                      <ReactQuill value={this.state.parking} onChange={this.onInputChange.bind(this, 'parking')} />
+                    </div>
+                  }
+                  
+                  {this.state.useOfFertileSoilLayer != '@hide' &&
+                    <div className="form-group">
+                      <label>Использование плодородного слоя почвы</label>
+                      <ReactQuill value={this.state.useOfFertileSoilLayer} onChange={this.onInputChange.bind(this, 'useOfFertileSoilLayer')} />
+                    </div>
+                  }
+
+                  {this.state.smallArchitecturalForms != '@hide' &&
+                    <div className="form-group">
+                      <label>Малые архитектурные формы</label>
+                      <ReactQuill value={this.state.smallArchitecturalForms} onChange={this.onInputChange.bind(this, 'smallArchitecturalForms')} />
+                    </div>
+                  }
+
+                  {this.state.lighting != '@hide' &&
+                    <div className="form-group">
+                      <label>Освещение</label>
+                      <ReactQuill value={this.state.lighting} onChange={this.onInputChange.bind(this, 'lighting')} />
+                    </div>
+                  }
                 </div>
-                <div className="form-group">
-                  <label>Проект генерального плана</label>
-                  <ReactQuill value={this.state.draftMasterPlan} onChange={this.onInputChange.bind(this, 'draftMasterPlan')} />
-                </div>
-                <div className="form-group">
-                  <label>Вертикальная планировка</label>
-                  <ReactQuill value={this.state.verticalLayout} onChange={this.onInputChange.bind(this, 'verticalLayout')} />
-                </div>
-                <div className="form-group">
-                  <label>Благоустройство и озеленение</label>
-                  <ReactQuill value={this.state.landscapingAndGardening} onChange={this.onInputChange.bind(this, 'landscapingAndGardening')} />
-                </div>
-                <div className="form-group">
-                  <label>Парковка автомобилей</label>
-                  <ReactQuill value={this.state.parking} onChange={this.onInputChange.bind(this, 'parking')} />
-                </div>
-                <div className="form-group">
-                  <label>Использование плодородного слоя почвы</label>
-                  <ReactQuill value={this.state.useOfFertileSoilLayer} onChange={this.onInputChange.bind(this, 'useOfFertileSoilLayer')} />
-                </div>
-                <div className="form-group">
-                  <label>Малые архитектурные формы</label>
-                  <ReactQuill value={this.state.smallArchitecturalForms} onChange={this.onInputChange.bind(this, 'smallArchitecturalForms')} />
-                </div>
-                <div className="form-group">
-                  <label>Освещение</label>
-                  <ReactQuill value={this.state.lighting} onChange={this.onInputChange.bind(this, 'lighting')} />
-                </div>
-              </div>
+              }
 
               <div>
-                <h5>4. Архитектурные требования</h5>
+                <h5>{counter++}. Архитектурные требования</h5>
                 <div className="form-group">
                   <label>Стилистика архитектурного образа</label>
                   <ReactQuill value={this.state.stylisticsOfArchitecture} onChange={this.onInputChange.bind(this, 'stylisticsOfArchitecture')} />
@@ -1043,46 +1310,72 @@ class ShowApz extends React.Component {
                   <label>Характер сочетания с окружающей застройкой</label>
                   <ReactQuill value={this.state.natureCombination} onChange={this.onInputChange.bind(this, 'natureCombination')} />
                 </div>
-                <div className="form-group">
-                  <label>Цветовое решение</label>
-                  <ReactQuill value={this.state.colorSolution} onChange={this.onInputChange.bind(this, 'colorSolution')} />
-                </div>
-                <div className="form-group">
-                  <label>Рекламно-информационное решение</label>
-                  <ReactQuill value={this.state.advertisingAndInformationSolution} onChange={this.onInputChange.bind(this, 'advertisingAndInformationSolution')} />
-                </div>
-                <div className="form-group">
-                  <label>Ночное световое оформление</label>
-                  <ReactQuill value={this.state.nightLighting} onChange={this.onInputChange.bind(this, 'nightLighting')} />
-                </div>
-                <div className="form-group">
-                  <label>Входные узлы</label>
-                  <ReactQuill value={this.state.inputNodes} onChange={this.onInputChange.bind(this, 'inputNodes')} />
-                </div>
-                <div className="form-group">
-                  <label>Создание условий для жизнедеятельности маломобильных групп населения</label>
-                  <ReactQuill value={this.state.conditionsForLowMobileGroups} onChange={this.onInputChange.bind(this, 'conditionsForLowMobileGroups')} />
-                </div>
-                <div className="form-group">
-                  <label>Соблюдение условий по звукошумовым показателям</label>
-                  <ReactQuill value={this.state.complianceNoiseConditions} onChange={this.onInputChange.bind(this, 'complianceNoiseConditions')} />
-                </div>
+
+                {this.state.colorSolution != '@hide' &&
+                  <div className="form-group">
+                    <label>Цветовое решение</label>
+                    <ReactQuill value={this.state.colorSolution} onChange={this.onInputChange.bind(this, 'colorSolution')} />
+                  </div>
+                }
+
+                {this.state.advertisingAndInformationSolution != '@hide' &&
+                  <div className="form-group">
+                    <label>Рекламно-информационное решение</label>
+                    <ReactQuill value={this.state.advertisingAndInformationSolution} onChange={this.onInputChange.bind(this, 'advertisingAndInformationSolution')} />
+                  </div>
+                }
+                
+                {this.state.nightLighting != '@hide' &&
+                  <div className="form-group">
+                    <label>Ночное световое оформление</label>
+                    <ReactQuill value={this.state.nightLighting} onChange={this.onInputChange.bind(this, 'nightLighting')} />
+                  </div>
+                }
+
+                {this.state.inputNodes != '@hide' &&
+                  <div className="form-group">
+                    <label>Входные узлы</label>
+                    <ReactQuill value={this.state.inputNodes} onChange={this.onInputChange.bind(this, 'inputNodes')} />
+                  </div>
+                }
+                
+                {this.state.conditionsForLowMobileGroups != '@hide' &&
+                  <div className="form-group">
+                    <label>Создание условий для жизнедеятельности маломобильных групп населения</label>
+                    <ReactQuill value={this.state.conditionsForLowMobileGroups} onChange={this.onInputChange.bind(this, 'conditionsForLowMobileGroups')} />
+                  </div>
+                }
+                
+                {this.state.complianceNoiseConditions != '@hide' &&
+                  <div className="form-group">
+                    <label>Соблюдение условий по звукошумовым показателям</label>
+                    <ReactQuill value={this.state.complianceNoiseConditions} onChange={this.onInputChange.bind(this, 'complianceNoiseConditions')} />
+                  </div>
+                }
               </div>
 
-              <div>
-                <h5>5. Требования к наружной отделке</h5>
-                <div className="form-group">
-                  <label>Цоколь</label>
-                  <ReactQuill value={this.state.plinth} onChange={this.onInputChange.bind(this, 'plinth')} />
+              {this.state.templateType != 'redevelopment' &&
+                <div>
+                  <h5>{counter++}. Требования к наружной отделке</h5>
+
+                  {this.state.plinth != '@hide' &&
+                    <div className="form-group">
+                      <label>Цоколь</label>
+                      <ReactQuill value={this.state.plinth} onChange={this.onInputChange.bind(this, 'plinth')} />
+                    </div>
+                  }
+                  
+                  {this.state.facade != '@hide' &&
+                    <div className="form-group">
+                      <label>Фасад. Ограждающие конструкций</label>
+                      <ReactQuill value={this.state.facade} onChange={this.onInputChange.bind(this, 'facade')} />
+                    </div>
+                  }
                 </div>
-                <div className="form-group">
-                  <label>Фасад. Ограждающие конструкций</label>
-                  <ReactQuill value={this.state.facade} onChange={this.onInputChange.bind(this, 'facade')} />
-                </div>
-              </div>
+              }
 
               <div>
-                <h5>6. Требования к инженерным сетям</h5>
+                <h5>{counter++}. Требования к инженерным сетям</h5>
                 <div className="form-group">
                   <label>Теплоснабжение</label>
                   <ReactQuill value={this.state.heatSupply} onChange={this.onInputChange.bind(this, 'heatSupply')} />
@@ -1107,49 +1400,70 @@ class ShowApz extends React.Component {
                   <label>Телекоммуникация и телерадиовещания</label>
                   <ReactQuill value={this.state.phoneSupply} onChange={this.onInputChange.bind(this, 'phoneSupply')} />
                 </div>
-                <div className="form-group">
-                  <label>Дренаж (при необходимости) и ливневая канализация</label>
-                  <ReactQuill value={this.state.drainage} onChange={this.onInputChange.bind(this, 'drainage')} />
-                </div>
-                <div className="form-group">
-                  <label>Стационарные поливочные системы</label>
-                  <ReactQuill value={this.state.irrigationSystems} onChange={this.onInputChange.bind(this, 'irrigationSystems')} />
-                </div>
+
+                {this.state.drainage != '@hide' &&
+                  <div className="form-group">
+                    <label>Дренаж (при необходимости) и ливневая канализация</label>
+                    <ReactQuill value={this.state.drainage} onChange={this.onInputChange.bind(this, 'drainage')} />
+                  </div>
+                }
+                
+                {this.state.irrigationSystems != '@hide' &&
+                  <div className="form-group">
+                    <label>Стационарные поливочные системы</label>
+                    <ReactQuill value={this.state.irrigationSystems} onChange={this.onInputChange.bind(this, 'irrigationSystems')} />
+                  </div>
+                }
               </div>
 
               <div>
-                <h5>7. Обязательства, возлагаемые на застройщика</h5>
-                <div className="form-group">
-                  <label>По инженерным изысканиям</label>
-                  <ReactQuill value={this.state.engineeringSurveysObligation} onChange={this.onInputChange.bind(this, 'engineeringSurveysObligation')} />
-                </div>
-                <div className="form-group">
-                  <label>По сносу (переносу) существующих строений и сооружений</label>
-                  <ReactQuill value={this.state.demolitionObligation} onChange={this.onInputChange.bind(this, 'demolitionObligation')} />
-                </div>
+                <h5>{counter++}. Обязательства, возлагаемые на застройщика</h5>
+
+                {this.state.engineeringSurveysObligation != '@hide' &&
+                  <div className="form-group">
+                    <label>По инженерным изысканиям</label>
+                    <ReactQuill value={this.state.engineeringSurveysObligation} onChange={this.onInputChange.bind(this, 'engineeringSurveysObligation')} />
+                  </div>
+                }
+                
+                {this.state.demolitionObligation != '@hide' &&
+                  <div className="form-group">
+                    <label>По сносу (переносу) существующих строений и сооружений</label>
+                    <ReactQuill value={this.state.demolitionObligation} onChange={this.onInputChange.bind(this, 'demolitionObligation')} />
+                  </div>
+                }
+
                 <div className="form-group">
                   <label>По переносу существующих подземных и надземных коммуникаций</label>
                   <ReactQuill value={this.state.transferCommunicationsObligation} onChange={this.onInputChange.bind(this, 'transferCommunicationsObligation')} />
                 </div>
-                <div className="form-group">
-                  <label>По сохранению и/или пересадке зеленых насаждений</label>
-                  <ReactQuill value={this.state.conservationPlantObligation} onChange={this.onInputChange.bind(this, 'conservationPlantObligation')} />
-                </div>
-                <div className="form-group">
-                  <label>По строительству временного ограждения участка</label>
-                  <ReactQuill value={this.state.temporaryFencingConstructionObligation} onChange={this.onInputChange.bind(this, 'temporaryFencingConstructionObligation')} />
-                </div>
+
+                {this.state.conservationPlantObligation != '@hide' &&
+                  <div className="form-group">
+                    <label>По сохранению и/или пересадке зеленых насаждений</label>
+                    <ReactQuill value={this.state.conservationPlantObligation} onChange={this.onInputChange.bind(this, 'conservationPlantObligation')} />
+                  </div>
+                }
+                
+                {this.state.temporaryFencingConstructionObligation != '@hide' &&
+                  <div className="form-group">
+                    <label>По строительству временного ограждения участка</label>
+                    <ReactQuill value={this.state.temporaryFencingConstructionObligation} onChange={this.onInputChange.bind(this, 'temporaryFencingConstructionObligation')} />
+                  </div>
+                }
               </div>
 
-              <div>
-                <h5>8. Дополнительные требования</h5>
-                <div className="form-group">
-                  <ReactQuill value={this.state.additionalRequirements} onChange={this.onInputChange.bind(this, 'additionalRequirements')} />
+              {this.state.additionalRequirements != '@hide' &&
+                <div>
+                  <h5>{counter++}. Дополнительные требования</h5>
+                  <div className="form-group">
+                    <ReactQuill value={this.state.additionalRequirements} onChange={this.onInputChange.bind(this, 'additionalRequirements')} />
+                  </div>
                 </div>
-              </div>
+              }
 
               <div>
-                <h5>9. Общие требования</h5>
+                <h5>{counter++}. Общие требования</h5>        
                 <div className="form-group">
                   <ReactQuill value={this.state.generalRequirements} onChange={this.onInputChange.bind(this, 'generalRequirements')} />
                 </div>
