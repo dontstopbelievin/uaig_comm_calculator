@@ -494,6 +494,7 @@ class ShowApz extends React.Component {
   onInputChange(state, value) {
     // const { value, name } = e.target
     // this.setState({ [name] : value })
+    value = value.replace(/(style=")([a-zA-Z0-9:;\.\s\(\)\-\,]*)(")/gi, '');
     this.setState({ [state] : value })
   }
 
