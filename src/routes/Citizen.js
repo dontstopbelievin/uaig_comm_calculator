@@ -852,34 +852,11 @@ class AddApz extends React.Component {
                     <form id="tab0-form" data-tab="0" onSubmit={this.saveApz.bind(this, false)}>
                       <div className="row">
                         <div className="col-md-6">
-
-                          {bin ?
-                            <div className="form-group">
-                              <label htmlFor="Applicant">Заявитель:</label>
-                              <select id="companyList" onChange={this.onInputChange} value={this.state.applicant} required name="applicant" className="form-control mb-1">
-                                {this.state.companyList.length > 0 ?
-                                  <option value="">--- Выберите компанию ---</option>
-                                  :
-                                  <option value="">--- Список пуст. Повторите поиск ---</option>
-                                }
-                                
-                                {this.state.companyList.map(function(company, index) {
-                                  return(
-                                    <option key={index}>{company.licensee}</option>
-                                    );
-                                  }.bind(this))
-                                }
-                              </select>
-                              <button type="button" onClick={this.companySearch} className="w-100 btn btn-outline-secondary btn-sm">Поиск лицензии</button>
-                            </div>
-                            :
-                            <div className="form-group">
-                              <label htmlFor="Applicant">Заявитель:</label>
-                              <input type="text" className="form-control" onChange={this.onInputChange} required name="applicant" value={this.state.applicant} placeholder="ФИО / Наименование компании" />
-                              <span className="help-block"></span>
-                            </div>
-                          }
-
+                          <div className="form-group">
+                            <label htmlFor="Applicant">Заявитель:</label>
+                            <input type="text" className="form-control" onChange={this.onInputChange} required name="applicant" value={this.state.applicant} placeholder="ФИО / Наименование компании" />
+                            <span className="help-block"></span>
+                          </div>
                           <div className="form-group">
                             <label htmlFor="Phone">Телефон</label>
                             <input type="tel" className="form-control" onChange={this.onInputChange} value={this.state.phone} name="phone" placeholder="8 (7xx) xxx xx xx" />
@@ -1043,18 +1020,10 @@ class AddApz extends React.Component {
                             <label htmlFor="ObjectName">Наименование объекта:</label>
                             <input type="text" required className="form-control" name="ObjectName" placeholder="наименование" />
                           </div>*/}
-
-                          {bin ?
-                            <div className="form-group">
-                              <label htmlFor="Customer">Заказчик</label>
-                              <input type="text" required readOnly="readonly" value={this.state.applicant} className="form-control customer_field" name="customer" placeholder="ФИО / Наименование компании" />
-                            </div>
-                            :
-                            <div className="form-group">
-                              <label htmlFor="Customer">Заказчик</label>
-                              <input type="text" required onChange={this.onInputChange} value={this.state.customer} className="form-control customer_field" name="customer" placeholder="ФИО / Наименование компании" />
-                            </div>
-                          }
+                          <div className="form-group">
+                            <label htmlFor="Customer">Заказчик</label>
+                            <input type="text" required onChange={this.onInputChange} value={this.state.customer} className="form-control customer_field" name="customer" placeholder="ФИО / Наименование компании" />
+                          </div>
                           <div className="form-group">
                             <label htmlFor="CadastralNumber">Кадастровый номер:</label>
                             <input type="text" className="form-control" onChange={this.onInputChange} value={this.state.cadastralNumber} name="cadastralNumber" placeholder="" />
