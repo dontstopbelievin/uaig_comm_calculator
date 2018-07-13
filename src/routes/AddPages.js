@@ -471,47 +471,51 @@ class UpdatePage extends React.Component {
             <div className="form-group form3">
                 <label htmlFor="text">Содержание страницы на русском</label>
                 {this.state.content &&
-                  <ReactSummernote
-                    value={this.state.content}
-                    options={{
-                      // lang: 'ru-RU',
-                      height: 350,
-                      dialogsInBody: true,
-                      toolbar: [
-                        ['style', ['style']],
-                        ['font', ['bold', 'underline', 'clear']],
-                        ['fontname', ['fontname']],
-                        ['para', ['ul', 'ol', 'paragraph']],
-                        ['table', ['table']],
-                        ['insert', ['link', 'picture', 'video']],
-                        ['view', ['fullscreen', 'codeview']]
-                      ]
-                    }}
-                    onChange={this.onChange}
-                  />
+                  <div className={'col-md-12'}>
+                    <ReactSummernote
+                      value={this.state.content}
+                      options={{
+                        // lang: 'ru-RU',
+                        height: 350,
+                        dialogsInBody: true,
+                        toolbar: [
+                          ['style', ['style']],
+                          ['font', ['bold', 'underline', 'clear']],
+                          ['fontname', ['fontname']],
+                          ['para', ['ul', 'ol', 'paragraph']],
+                          ['table', ['table']],
+                          ['insert', ['link', 'picture', 'video']],
+                          ['view', ['fullscreen', 'codeview']]
+                        ]
+                      }}
+                      onChange={this.onChange}
+                    />
+                  </div>
                 }
             </div>
             <div className="form-group form3">
                 <label htmlFor="text">Содержание страницы на казахском</label>
-                {this.state.content_kk &&
-                  <ReactSummernote
-                    value={this.state.content_kk}
-                    options={{
-                      // lang: 'ru-RU',
-                      height: 350,
-                      dialogsInBody: true,
-                      toolbar: [
-                        ['style', ['style']],
-                        ['font', ['bold', 'underline', 'clear']],
-                        ['fontname', ['fontname']],
-                        ['para', ['ul', 'ol', 'paragraph']],
-                        ['table', ['table']],
-                        ['insert', ['link', 'picture', 'video']],
-                        ['view', ['fullscreen', 'codeview']]
-                      ]
-                    }}
-                    onChange={this.onChangeKK}
-                  />
+                {this.state.content &&
+                  <div className={'col-md-12'}>
+                    <ReactSummernote
+                      value={this.state.content_kk}
+                      options={{
+                        // lang: 'ru-RU',
+                        height: 350,
+                        dialogsInBody: true,
+                        toolbar: [
+                          ['style', ['style']],
+                          ['font', ['bold', 'underline', 'clear']],
+                          ['fontname', ['fontname']],
+                          ['para', ['ul', 'ol', 'paragraph']],
+                          ['table', ['table']],
+                          ['insert', ['link', 'picture', 'video']],
+                          ['view', ['fullscreen', 'codeview']]
+                        ]
+                      }}
+                      onChange={this.onChangeKK}
+                    />
+                  </div>
                 }
             </div>
             <input type="submit" className="btn btn-outline-success" value="Отправить статью" onClick={this.requestSubmission.bind(this)} />
