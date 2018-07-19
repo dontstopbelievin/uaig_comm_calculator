@@ -12,15 +12,20 @@ export default class AnswerTemplate extends React.Component{
   render() {
     return (
       <div className="content container body-content">
-        <div className="card">
-          <div className="card-header">
-          <h4 className="mb-0">Шаблоны отказов</h4></div>
-          <div className="card-body">
+        <div>
+
+          <div>
             <Switch>
-              <Route path="/answertemplate/all/:page" component={AllTemplates} />
-              <Route path="/answertemplate/add" component={AddTemplate} />
-              <Route path="/answertemplate/show/:id" component={ShowTemplate} />
-              <Redirect from="/answertemplate" to="/answertemplate/all/1" />
+              <Route path="/panel/urban/answer-template/all/:page" exact render={(props) =>(
+                <AllTemplates {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+              )} />
+              <Route path="/panel/urban/answer-template/add" exact render={(props) =>(
+                <AddTemplate {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+              )} />
+              <Route path="/panel/urban/answer-template/show/:id" exact render={(props) =>(
+                <ShowTemplate {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+              )} />
+              <Redirect from="/panel/urban/answer-template" to="/panel/urban/answer-template/all/1" />
             </Switch>
           </div>
         </div>
@@ -41,6 +46,7 @@ class AllTemplates extends React.Component {
   }
 
   componentDidMount() {
+    this.props.breadCrumbs();
     this.getTemplates();
   }
 
@@ -105,7 +111,11 @@ class AllTemplates extends React.Component {
 
     return (
       <div>
-        <Link className="btn btn-outline-primary mb-3" to="/answertemplate/add">Создать шаблон</Link>
+        <div>
+          <h4 className="mb-0">Шаблоны отказов</h4>
+          <br />
+        </div>
+        <Link className="btn btn-outline-primary mb-3" to="/panel/urban/answer-template/add">Создать шаблон</Link>
 
         {this.state.loaderHidden &&
           <div>
@@ -131,7 +141,7 @@ class AllTemplates extends React.Component {
                       </td>
                       <td>
                         <div className="btn-group btn-group-xs" style={{margin: '0'}} role="group">
-                          <Link className="btn btn-outline-info" to={'/answertemplate/show/' + template.id}><i className="glyphicon glyphicon-pencil mr-2"></i> Изменить</Link>
+                          <Link className="btn btn-outline-info" to={'/panel/urban/answer-template/show/' + template.id}><i className="glyphicon glyphicon-pencil mr-2"></i> Изменить</Link>
                           <button className="btn btn-outline-danger" onClick={this.deleteTemplate.bind(this, template.id, template.title)}><i className="glyphicon glyphicon-trash mr-2"></i> Удалить</button>
                         </div>
                       </td>
@@ -146,19 +156,19 @@ class AllTemplates extends React.Component {
               <nav className="pagination_block">
                 <ul className="pagination justify-content-center">
                   <li className="page-item">
-                    <Link className="page-link" to={'/answertemplate/all/1'}>В начало</Link>
+                    <Link className="page-link" to={'/panel/urban/answer-template/all/1'}>В начало</Link>
                   </li>
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
                       <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
-                        <Link className="page-link" to={'/answertemplate/all/' + num}>{num}</Link>
+                        <Link className="page-link" to={'/panel/urban/answer-template/all/' + num}>{num}</Link>
                       </li>
                       );
                     }.bind(this))
                   }
                   <li className="page-item">
-                    <Link className="page-link" to={'/answertemplate/all/' + this.state.response.last_page}>В конец</Link>
+                    <Link className="page-link" to={'/panel/urban/answer-template/all/' + this.state.response.last_page}>В конец</Link>
                   </li>
                 </ul>
               </nav>
@@ -189,6 +199,10 @@ class AddTemplate extends React.Component {
     this.onTextChange = this.onTextChange.bind(this);
   }
 
+  componentDidMount() {
+    this.props.breadCrumbs();
+  }
+
   requestSubmission(e) {
     e.preventDefault();
 
@@ -204,7 +218,7 @@ class AddTemplate extends React.Component {
     xhr.onload = function() {
       if (xhr.status === 200) {
         alert('Шаблон успешно создан');
-        this.props.history.push('/answertemplate');
+        this.props.history.push('/panel/urban/answer-template');
       }
     }.bind(this);
     xhr.send(formData);
@@ -244,7 +258,7 @@ class AddTemplate extends React.Component {
 
         <div>
           <hr />
-          <Link className="btn btn-outline-secondary pull-right" id="back" to={'/answertemplate/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+          <Link className="btn btn-outline-secondary pull-right" id="back" to={'/panel/urban/answer-template/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
         </div>
       </div>
     )
@@ -263,6 +277,9 @@ class ShowTemplate extends React.Component {
     };
 
     this.onTextChange = this.onTextChange.bind(this);
+  }
+  componentDidMount() {
+    this.props.breadCrumbs();
   }
 
   componentWillMount() {
@@ -350,7 +367,7 @@ class ShowTemplate extends React.Component {
 
             <div>
               <hr />
-              <Link className="btn btn-outline-secondary pull-right" id="back" to={'/answertemplate/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+              <Link className="btn btn-outline-secondary pull-right" id="back" to={'/panel/urban/answer-template/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
             </div>
           </div>
         }

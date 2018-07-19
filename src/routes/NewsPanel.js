@@ -13,7 +13,7 @@ let e = new LocalizedStrings({ru,kk});
 
 
 
-export default class newsPanel extends React.Component{
+export default class NewsPanel extends React.Component{
 
     constructor() {
         super();
@@ -28,24 +28,22 @@ export default class newsPanel extends React.Component{
   render() {
     return (
         <div className="container body-content">
-        
-            
-        
-          <div className="content container citizen-apz-list-page">
-            <div className="card">
-              <div className="card-header">
-                  <h4 className="mb-0 mt-2">Добавления новостей</h4>
-                <div className="container navigational_price">
-                    <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.newsPanel}
-                </div>
-              </div>
 
-              <div className="card-body">
+          <div className="content container citizen-apz-list-page">
+            <div>
+
+              <div>
                 <Switch>
-                    <Route path="/newsPanel/all" component={AllNews} />
-                    <Route path="/newsPanel/add" component={AddNews} />
-                    <Route path="/newsPanel/update/:id" component={updateNews} />
-                    <Redirect from="/newsPanel" to="/newsPanel/all" />
+                    <Route path="/panel/admin/newsPanel/all" exact render={(props) =>(
+                      <AllNews {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+                    )} />
+                    <Route path="/panel/admin/newsPanel/add" exact render={(props) =>(
+                      <AddNews {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+                    )} />
+                    <Route path="/panel/admin/newsPanel/update/:id" exact render={(props) =>(
+                      <UpdateNews {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+                    )} />
+                    <Redirect from="/panel/admin/newsPanel" to="/panel/admin/newsPanel/all" />
                 </Switch>
               </div>
         
@@ -69,6 +67,7 @@ class AllNews extends React.Component {
   }
 
   componentDidMount() {
+    this.props.breadCrumbs();
     this.getNews();
   }
 
@@ -127,10 +126,13 @@ class AllNews extends React.Component {
     return (
       <div>
         {this.state.loaderHidden &&
-          <div>  
+          <div>
+            <div>
+              <h4 className="mb-0 mt-2">Добавления новостей</h4>
+            </div>
             <div className="row">
               <div className="col-sm-8">
-                <Link className="btn btn-outline-primary mb-3" to="/newsPanel/add">Создать новость</Link>
+                <Link className="btn btn-outline-primary mb-3" to="/panel/admin/newsPanel/add">Создать новость</Link>
               </div>
               
             </div>
@@ -159,7 +161,7 @@ class AllNews extends React.Component {
                       <td>{article.updated_at}</td>
                       
                       <td>
-                        <Link className="btn btn-outline-info col-md-8" to={'/newsPanel/update/' + article.id}>Изменить</Link>
+                        <Link className="btn btn-outline-info col-md-8" to={'/panel/admin/newsPanel/update/' + article.id}>Изменить</Link>
                         <button className="btn btn-outline-danger col-md-8" data-link={'/newsPanel/delete/' + article.id} onClick={this.delete_article.bind(this)}>Удалить</button>
                       </td>
                     </tr>
@@ -189,7 +191,7 @@ class AllNews extends React.Component {
 }
 
 class AddNews extends React.Component {
-    constructor(props) {
+  constructor(props) {
     super(props);
     this.state = {
       selectedOptions : '1',
@@ -204,137 +206,140 @@ class AddNews extends React.Component {
     this.updateContent = this.updateContent.bind(this);
   }
 
-    handleOptionChange (e) {
-        this.setState({
-            selectedOptions: e.target.value
-          });
-        console.log(e.target.value);
-    }
+  componentDidMount() {
+    this.props.breadCrumbs();
+  }
 
-    updateContent(newContent) {
-        this.setState({
-            content: newContent
-        })
-    }
-
-    onChange(evt){
-      console.log("onChange fired with event info: ", evt);
-      var newContent = evt.editor.getData();
-      this.setState({
-        content: newContent
+  handleOptionChange (e) {
+    this.setState({
+        selectedOptions: e.target.value
       });
-    }
+    console.log(e.target.value);
+  }
 
-    onBlur(evt){
-      console.log("onBlur event called with event info: ", evt);
-    }
+  updateContent(newContent) {
+    this.setState({
+        content: newContent
+    })
+  }
 
-    afterPaste(evt){
-      console.log("afterPaste event called with event info: ", evt);
-    }
+  onChange(evt){
+    console.log("onChange fired with event info: ", evt);
+    var newContent = evt.editor.getData();
+    this.setState({
+      content: newContent
+    });
+  }
+
+  onBlur(evt){
+    console.log("onBlur event called with event info: ", evt);
+  }
+
+  afterPaste(evt){
+    console.log("afterPaste event called with event info: ", evt);
+  }
 
 
 
-    requestSubmission(e){
-        e.preventDefault();
-        var news = new Object();
-            news.title = this.state.title;
-            news.description = this.state.desc;
-            news.text = this.state.content;
-            news.heading_id = parseInt(this.state.selectedOptions);
+  requestSubmission(e){
+    e.preventDefault();
+    var news = new Object();
+        news.title = this.state.title;
+        news.description = this.state.desc;
+        news.text = this.state.content;
+        news.heading_id = parseInt(this.state.selectedOptions);
 
-        console.log(news);
-      if (sessionStorage.getItem('tokenInfo')) {
-        $.ajax({
-          type: 'POST',
-          url: window.url + 'api/newsPanel/insert',
-          contentType: 'application/json; charset=utf-8',
-          beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
-          },
-          data: JSON.stringify(news),
-          success: function (data) {
-              console.log(data);
-            alert(data.message);
-              this.props.history.replace('/newsPanel/all');
-          }.bind(this),
-          fail: function (jqXHR) {
-            alert("Ошибка " + jqXHR.status + ': ' + jqXHR.statusText);
-          },
-          complete: function (jqXHR) {
-          }
-        });
-      } else { console.log('session expired'); }
-    }
+    if (sessionStorage.getItem('tokenInfo')) {
+      $.ajax({
+        type: 'POST',
+        url: window.url + 'api/newsPanel/insert',
+        contentType: 'application/json; charset=utf-8',
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
+        },
+        data: JSON.stringify(news),
+        success: function (data) {
+            console.log(data);
+          alert(data.message);
+            this.props.history.replace('/panel/admin/newsPanel/all');
+        }.bind(this),
+        fail: function (jqXHR) {
+          alert("Ошибка " + jqXHR.status + ': ' + jqXHR.statusText);
+        },
+        complete: function (jqXHR) {
+        }
+      });
+    } else { console.log('session expired'); }
+  }
 
     
-    render() {
-        return(
-            <div className="container">
-                <h4>Форма новой статьи</h4>
-                <br/>
-                <div className="col-md-8">
-                    <form id="insert_form" name="form_aritcle">
-                        <div className="form-group">
-                            <label>Выберите рубрику новостей</label>
-                        <div className="form-group">
-                            <label>
-                                <input value="1" type="radio" name="heading" checked={this.state.selectedOptions === '1'} onChange={this.handleOptionChange} />
-                                &nbsp;Новости управления
-                            </label>
-                        </div>
-                        <div className="form-group">
-                            <label>
-                                <input value="2" type="radio" name="heading" checked={this.state.selectedOptions === '2'}    onChange={this.handleOptionChange}  />
-                                &nbsp;СМИ о нас
-                            </label>
-                        </div>
-                        <div className="form-group">
-                            <label>
-                                <input value="3" type="radio" name="heading"  checked={this.state.selectedOptions === '3'}   onChange={this.handleOptionChange}  />
-                                &nbsp;Кадры решают все
-                            </label>
-                        </div>
+  render() {
+      return(
+          <div className="container">
+              <h4>Форма новой статьи</h4>
+              <br/>
+              <div className="col-md-8">
+                  <form id="insert_form" name="form_aritcle">
+                      <div className="form-group">
+                          <label>Выберите рубрику новостей</label>
+                      <div className="form-group">
+                          <label>
+                              <input value="1" type="radio" name="heading" checked={this.state.selectedOptions === '1'} onChange={this.handleOptionChange} />
+                              &nbsp;Новости управления
+                          </label>
+                      </div>
+                      <div className="form-group">
+                          <label>
+                              <input value="2" type="radio" name="heading" checked={this.state.selectedOptions === '2'}    onChange={this.handleOptionChange}  />
+                              &nbsp;СМИ о нас
+                          </label>
+                      </div>
+                      <div className="form-group">
+                          <label>
+                              <input value="3" type="radio" name="heading"  checked={this.state.selectedOptions === '3'}   onChange={this.handleOptionChange}  />
+                              &nbsp;Кадры решают все
+                          </label>
+                      </div>
 
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="title">Название</label>
-                            <input type="text" name="title" maxlength="150"  id="title" pleaceholder="Title" className="form-control" required onChange={(e) => this.setState({title: e.target.value})} />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="description">Описание</label>
-                            <input type="text" name="description" maxlength="150" id="description" pleaceholder="Description" className="form-control" required onChange={(e) => this.setState({desc: e.target.value})} />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="text">Содержание статьи</label>
-                            <CKEditor
-                              activeClass="p10"
-                              content={this.state.content}
-                              events={{
-                                "blur": this.onBlur,
-                                "afterPaste": this.afterPaste,
-                                "change": this.onChange
-                              }}
-                             />
-                        </div>
-                        <input type="submit" className="btn btn-outline-success" value="Отправить статью" onClick={this.requestSubmission.bind(this)} />
-                        <input type="reset" className="btn btn-outline-warning" value="Очистить" />
-                    </form>
-                    <div>
-                        <hr />
-                        <Link className="btn btn-outline-secondary pull-right" id="back" to={'/newsPanel/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
-                    </div>
-                </div>
-            </div>
-        )
-    }
+                      </div>
+                      <div className="form-group">
+                          <label htmlFor="title">Название</label>
+                          <input type="text" name="title" maxlength="150"  id="title" pleaceholder="Title" className="form-control" required onChange={(e) => this.setState({title: e.target.value})} />
+                      </div>
+                      <div className="form-group">
+                          <label htmlFor="description">Описание</label>
+                          <input type="text" name="description" maxlength="150" id="description" pleaceholder="Description" className="form-control" required onChange={(e) => this.setState({desc: e.target.value})} />
+                      </div>
+                      <div className="form-group">
+                          <label htmlFor="text">Содержание статьи</label>
+                          <CKEditor
+                            activeClass="p10"
+                            content={this.state.content}
+                            events={{
+                              "blur": this.onBlur,
+                              "afterPaste": this.afterPaste,
+                              "change": this.onChange
+                            }}
+                           />
+                      </div>
+                      <input type="submit" className="btn btn-outline-success" value="Отправить статью" onClick={this.requestSubmission.bind(this)} />
+                      <input type="reset" className="btn btn-outline-warning" value="Очистить" />
+                  </form>
+                  <div>
+                      <hr />
+                      <Link className="btn btn-outline-secondary pull-right" id="back" to={'/panel/admin/newsPanel/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+                  </div>
+              </div>
+          </div>
+      )
+  }
     
     
 }
 
 
 
-class updateNews extends React.Component {
+class UpdateNews extends React.Component {
     constructor(props) {
     super(props);
     // this.onTextChange = this.onTextChange.bind(this);
@@ -355,6 +360,7 @@ class updateNews extends React.Component {
   }
 
   componentDidMount() {
+    this.props.breadCrumbs();
     this.getArticle();
   }
 
@@ -439,7 +445,7 @@ class updateNews extends React.Component {
           success: function (data) {
               console.log(data);
             alert(data.message);
-              this.props.history.replace('/newsPanel/all');
+              this.props.history.replace('/panel/admin/newsPanel/all');
           }.bind(this),
           fail: function (jqXHR) {
             alert("Ошибка " + jqXHR.status + ': ' + jqXHR.statusText);
@@ -506,7 +512,7 @@ class updateNews extends React.Component {
                     </form>
                     <div>
                         <hr />
-                        <Link className="btn btn-outline-secondary pull-right" id="back" to={'/newsPanel/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+                        <Link className="btn btn-outline-secondary pull-right" id="back" to={'/panel/admin/newsPanel/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,196 @@
+{
+  "ru":{
+    "electron-architecture":"ЭЛЕКТРОННАЯ АРХИТЕКТУРА",
+    "base-page":"Информационная страница",
+    "admin":{
+      "user-roles":{
+        "name":"Панель управления ролями",
+        "link":"/panel/admin/user-roles"
+      },
+      "addPages":{
+        "name":"Страница добавления страниц",
+        "link":"/panel/admin/addPages",
+        "all":"Все страницы",
+        "add":"Новая страница",
+        "update":"Показать страницу и изменить"
+      },
+      "menuEdit":{
+        "name":"Редактирование пунктов меню",
+        "link":"/panel/admin/menuEdit",
+        "all":"Все существующие пункты меню",
+        "addItem":"Создание пункта меню",
+        "addCategory":"Редактирование категории меню",
+        "editItem":"Изменение пункта меню"
+      },
+      "newsPanel":{
+        "name":"Панель новостей",
+        "link":"/panel/admin/newsPanel",
+        "all":"Все созданные новости",
+        "add":"Создание новости",
+        "update":"Редактирование новостей"
+      },
+      "usersQuestions":{
+        "name":"Вопросы пользователей",
+        "link":"/panel/admin/usersQuestions"
+      }
+    },
+    "urban":{
+      "apz":{
+        "name":"Архитектурно-планировочное задание",
+        "link":"/panel/urban/apz",
+        "status":"Все АПЗ (Архитектурно-планировочное задание)",
+        "show":"Просмотр АПЗ (Архитектурно-планировочное задание)"
+      },
+      "urbanreport":{
+        "name":"Архитектурно-планировочное задание : Отчет",
+        "link":"/panel/urban/urbanreport"
+      },
+      "answer-template":{
+        "name":"Шаблоны отказов",
+        "link":"/panel/urban/answer-template",
+        "all":"Все шаблоны",
+        "add":"Добавить шаблон",
+        "show":"Показать шаблон"
+      }
+    },
+    "elector-provider":{
+      "apz":{
+        "name":"Архитектурно-планировочное задании",
+        "link":"/panel/elector-provider/apz",
+        "status":"Все АПЗ (Архитектурно-планировочное задание)",
+        "show":"Просмотр созданного АПЗ (Архитектурно-планировочное задание)"
+      }
+    },
+    "gas-provider":{
+      "apz":{
+        "name":"Архитектурно-планировочное задании",
+        "link":"/panel/gas-provider/apz",
+        "status":"Все АПЗ (Архитектурно-планировочное задание)",
+        "show":"Просмотр созданного АПЗ (Архитектурно-планировочное задание)"
+      }
+    },
+    "heat-provider":{
+      "apz":{
+        "name":"Архитектурно-планировочное задании",
+        "link":"/panel/heat-provider/apz",
+        "status":"Все АПЗ (Архитектурно-планировочное задание)",
+        "show":"Просмотр созданного АПЗ (Архитектурно-планировочное задание)"
+      }
+    },
+    "water-provider":{
+      "apz":{
+        "name":"Архитектурно-планировочное задании",
+        "link":"/panel/water-provider/apz",
+        "status":"Все АПЗ (Архитектурно-планировочное задание)",
+        "show":"Просмотр созданного АПЗ (Архитектурно-планировочное задание)"
+      }
+    },
+    "phone-provider":{
+      "apz":{
+        "name":"Архитектурно-планировочное задании",
+        "link":"/panel/phone-provider/apz",
+        "status":"Все АПЗ (Архитектурно-планировочное задание)",
+        "show":"Просмотр созданного АПЗ (Архитектурно-планировочное задание)"
+      }
+    },
+    "head":{
+      "apz":{
+        "name":"Архитектурно-планировочное задании",
+        "link":"/panel/head/apz",
+        "status":"Все АПЗ (Архитектурно-планировочное задание)",
+        "show":"Просмотр созданного АПЗ (Архитектурно-планировочное задание)"
+      }
+    },
+    "citizen":{
+      "apz":{
+        "name":"Архитектурно-планировочное задание",
+        "link":"/panel/citizen/apz",
+        "status":"Все АПЗ (Архитектурно-планировочное задание)",
+        "add":"Создание заявления",
+        "show":"Просмотр созданного АПЗ (Архитектурно-планировочное задание)"
+      },
+      "sketch":{
+        "name":"Эскизные проекты",
+        "link":"/panel/citizen/sketch",
+        "status":"Все эскизные проекты",
+        "add":"Создание заявления",
+        "show":"Просмотр созданного эскизного проекта"
+      },
+      "photoreports":{
+        "name":"Фотоотчеты",
+        "link":"/panel/citizen/photoreports"
+      }
+    },
+    "photo-reporter":{},
+    "temporary":{
+      "self-page":{
+        "name":"Личный кабинет",
+        "link":"/panel/temporary/self-page"
+      }
+    },
+    "engineer":{
+      "apz":{
+        "name":"Архитектурно-планировочное задании",
+        "link":"/panel/head/apz",
+        "status":"Все АПЗ (Архитектурно-планировочное задание)",
+        "show":"Просмотр созданного АПЗ (Архитектурно-планировочное задание)"
+      }
+    },
+    "apz":{},
+    "common":{
+      "files":{
+        "name":"Мои файлы",
+        "link":"/panel/common/files",
+        "all":"Все файлы",
+        "images":"Изображении"
+      },
+      "photoreports":{
+        "name":"Мои фотоотчеты",
+        "link":"/panel/common/photoreports"
+      },
+      "login":{
+        "name":"Авторизация",
+        "link":"/panel/common/login"
+      },
+      "register":{
+        "name":"Регистрация",
+        "link":"/panel/common/register"
+      }
+    },
+    "apz-department":{
+      "apz":{
+        "name":"Архитектурно-планировочное задании",
+        "link":"/panel/head/apz",
+        "status":"Все АПЗ (Архитектурно-планировочное задание)",
+        "show":"Просмотр созданного АПЗ (Архитектурно-планировочное задание)"
+      },
+      "sketch":{
+        "name":"Эскизный проект",
+        "link":"/panel/apz-department/sketch",
+        "status":"Все Эскизные проекты",
+        "show":"Просмотр Эскизных проектов"
+      }
+    }
+  },
+  "kk":{
+    "electron-architecture":"ЭЛЕКТРОНДЫҚ АРХИТЕКТУРА",
+    "base-page":"Ақпараттық бет",
+    "admin":{
+      "link": "/panel/admin/"
+    },
+    "reporter":{},
+    "urban":{},
+    "elector-provider":{},
+    "gas-provider":{},
+    "heat-provider":{},
+    "water-provider":{},
+    "phone-provider":{},
+    "head":{},
+    "citizen":{},
+    "photo-reporter":{},
+    "temporary":{},
+    "engineer":{},
+    "apz":{},
+    "apz-department":{}
+  }
+}

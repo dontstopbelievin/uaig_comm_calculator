@@ -13,7 +13,7 @@ var navBtnStyle = {
   backgroundColor: 'rgb(0, 50, 125)',
   border: 'none',
   cursor: 'pointer'
-}
+};
 
 export default class Header extends React.Component {
   constructor(props) {
@@ -25,7 +25,7 @@ export default class Header extends React.Component {
       showBottomNavbar: false,
       loaderHidden: true,
       searchText: ""
-    }
+    };
 
     this.checkToken = this.checkToken.bind(this);
     this.logout = this.logout.bind(this);
@@ -39,26 +39,29 @@ export default class Header extends React.Component {
     this.setState({ loaderHidden: false });
     var token = sessionStorage.getItem('tokenInfo');
     //console.log(token);
-    var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + "api/logout", true);
-    //Send the proper header information along with the request
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    if (token)
+    {
+      var xhr = new XMLHttpRequest();
+      xhr.open("post", window.url + "api/logout", true);
+      //Send the proper header information along with the request
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        sessionStorage.clear();
-        this.props.history.replace('/');
-        console.log("loggedOut");
-      }
-      else if(xhr.status === 401){
-        sessionStorage.clear();
-        this.props.history.replace("/");
-      }
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          sessionStorage.clear();
+          this.props.history.replace('/');
+          console.log("loggedOut");
+        }
+        else if(xhr.status === 401){
+          sessionStorage.clear();
+          this.props.history.replace("/");
+        }
 
-      this.setState({ loaderHidden: true });
-    }.bind(this);
-    xhr.send();
+        this.setState({ loaderHidden: true });
+      }.bind(this);
+      xhr.send();
+    }
   }
 
   search(e) {
@@ -125,7 +128,6 @@ export default class Header extends React.Component {
     }
   }
 
-
   componentWillUnmount() {
     //console.log("Header will unmount");
   }
@@ -143,89 +145,142 @@ export default class Header extends React.Component {
       }
     }
 
-    return (
-      <div>
-        {!this.state.loaderHidden &&
+    var fullLoc = window.location.href.split('/');
+    var style, panelTrue;
+    if ( fullLoc[4] === 'panel')
+    {
+      style = {
+        background: '#353535'
+      };
+      panelTrue = true;
+      return (
+        <div style={{height: '60px',position: 'relative',background:'#222222'}}>
+          {!this.state.loaderHidden &&
           <div className="bigLoaderDiv">
             <div className="loaderDiv" style={{textAlign: 'center'}}>
-              <Loader type="Oval" color="#46B3F2" height="200" width="200" />
+              <Loader type="Oval" color="#46B3F2" height="200" width="200"/>
             </div>
           </div>
-        }
-        <div className="header" data-url={this.props.location.pathname}>
-          <div className="header_top">
-            <div className="container">
-              <div className="row">
-                <div className="search col-md-7 text-left pl-0">
-                  <form onSubmit={this.search}>
-                    <div className="form-group ">
-                      <Autocomplete
-                        getItemValue={(item) => item.label}
-                        shouldItemRender={(item, value) => item.label.toLowerCase().indexOf(value.toLowerCase()) > -1}
-                        items={[
-                          { key: 0, label: 'Выдача АПЗ' },
-                        ]}
-                        renderItem={(item, isHighlighted) =>
-                          <div key={item.key} style={{ fontWeight: 'bold', backgroundColor: '#fff', color: '#1a4482', padding: '2px 10px', borderRadius: '0', cursor: 'pointer'}}>
-                            {item.label}
-                          </div>
-                        }
-                        open={this.state.searchText.length > 2}
-                        value={this.state.searchText}
-                        onChange={(e) => this.setState({searchText: e.target.value})}
-                        onSelect={(val) => this.props.history.push('/search/' + val)}
-                        wrapperStyle={{ display: 'block' }}
-                        menuStyle={{ borderRadius: '0px', background: 'rgba(255, 255, 255, 0.9)', padding: '0', fontSize: '90%', position: 'fixed', overflow: 'auto', maxHeight: '50%' }}
-                        inputProps={{ className: "col-md-4 mainSearch", id: "search_field", placeholder: e.searchbysite}}
-                      />
-                      <span className=" text-white">{e.justlike}: <Link className="underline text-white" to={"/search/" + e.issuanceof}>{e.issuanceof}</Link></span>
-                    </div>
-                  </form>
-                </div>
-                <div className="col-md-5 ml-0 regist pr-0">
-                  <div className="lang pull-right">
-                    {localStorage.getItem('lang') === 'kk' ?
-                      (<span>Қаз</span>) :
-                      (<a style={{cursor: 'pointer', color: '#ffc107'}} onClick={this.updateLanguage.bind(this, 'kk')}>Қаз</a>)
-                    } &nbsp;
-                    {localStorage.getItem('lang') === 'ru' ?
-                      (<span>Рус</span>) :
-                      (<a style={{cursor: 'pointer', color: '#ffc107'}} onClick={this.updateLanguage.bind(this, 'ru')}>Рус</a>)
-                    }
+          }
+          <div className="container-fluid p-0" style={{background: '#222222'}}>
+            {this.state.loaderHidden &&
+            <NavBar pathName={this.props.location.pathname} logout={this.logout.bind(this)} bgstyle={style} panelTrue={panelTrue} />
+            } 
+          </div>
+        </div>
+      );
+    }else {
+      style = {
+        background: '#F8F9FA'
+      };
+      panelTrue = false;
+      return (
+        <div>
+          {!this.state.loaderHidden &&
+          <div className="bigLoaderDiv">
+            <div className="loaderDiv" style={{textAlign: 'center'}}>
+              <Loader type="Oval" color="#46B3F2" height="200" width="200"/>
+            </div>
+          </div>
+          }
+          <div className="header" data-url={this.props.location.pathname}>
+            <div className="header_top">
+              <div className="container">
+                <div className="row">
+                  <div className="search col-md-7 text-left pl-0">
+                    <form onSubmit={this.search}>
+                      <div className="form-group ">
+                        <Autocomplete
+                          getItemValue={(item) => item.label}
+                          shouldItemRender={(item, value) => item.label.toLowerCase().indexOf(value.toLowerCase()) > -1}
+                          items={[
+                            {key: 0, label: 'Выдача АПЗ'},
+                          ]}
+                          renderItem={(item, isHighlighted) =>
+                            <div key={item.key} style={{
+                              fontWeight: 'bold',
+                              backgroundColor: '#fff',
+                              color: '#1a4482',
+                              padding: '2px 10px',
+                              borderRadius: '0',
+                              cursor: 'pointer'
+                            }}>
+                              {item.label}
+                            </div>
+                          }
+                          open={this.state.searchText.length > 2}
+                          value={this.state.searchText}
+                          onChange={(e) => this.setState({searchText: e.target.value})}
+                          onSelect={(val) => this.props.history.push('/search/' + val)}
+                          wrapperStyle={{display: 'block'}}
+                          menuStyle={{
+                            borderRadius: '0px',
+                            background: 'rgba(255, 255, 255, 0.9)',
+                            padding: '0',
+                            fontSize: '90%',
+                            position: 'fixed',
+                            overflow: 'auto',
+                            maxHeight: '50%'
+                          }}
+                          inputProps={{
+                            className: "col-md-4 mainSearch",
+                            id: "search_field",
+                            placeholder: e.searchbysite
+                          }}
+                        />
+                        <span className=" text-white">
+                          {e.justlike}:
+                          <Link className="underline text-white" to={"/search/" + e.issuanceof}>
+                            {e.issuanceof}
+                          </Link>
+                        </span>
+                      </div>
+                    </form>
                   </div>
+                  <div className="col-md-5 ml-0 regist pr-0">
+                    <div className="lang pull-right">
+                      {localStorage.getItem('lang') === 'kk' ?
+                        (<span>Қаз</span>) :
+                        (<a style={{cursor: 'pointer', color: '#ffc107'}}
+                            onClick={this.updateLanguage.bind(this, 'kk')}>Қаз</a>)
+                      } &nbsp;
+                      {localStorage.getItem('lang') === 'ru' ?
+                        (<span>Рус</span>) :
+                        (<a style={{cursor: 'pointer', color: '#ffc107'}}
+                            onClick={this.updateLanguage.bind(this, 'ru')}>Рус</a>)
+                      }
+                    </div>
 
-                  <div className="login_buttons pull-right clear">
-                    {/*<a className="float-left nav-link" href="#">
+                    <div className="login_buttons pull-right clear">
+                      {/*<a className="float-left nav-link" href="#">
                       <button className="btn btn-outline-light  my-2 my-sm-0" type="submit"><span>ВХОД</span></button>
                       <Button color="primary" on>ВХОД</Button>
                     </a>*/}
-                    {sessionStorage.getItem('logStatus') ? (
-                      <LogoutBtn logout={this.logout} history={this.props.history} />
-                    ) : (
-                      <LoginBtn handler={this.handler} />
-                    )}
-                    {/*<a className="nav-link" href="#">
+                      <NavLink to={"/panel/"} className="btn btn-danger bg-danger text-white font-weight-bold" replace>Электронная архитектура</NavLink>
+                      {/*<a className="nav-link" href="#">
                       <button className="btn btn-outline-light my-2 my-sm-0" type="submit"><span>РЕГИСТРАЦИЯ</span></button>
                     </a>*/}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="container header_bottom">
-            <div className="text-center site-logo">
-              <img className="image-fluid" width="90" src="./images/logo.png" alt="Управление Архитектуры и Градостроительства города Алматы" />
-              <h4 className="text-white font-weight-bold ">{e.title}</h4>
-            </div>   
-          </div>
-          <div className="container nav-bar p-0" style={{background: '#F8F9FA'}}>
-            {this.state.loaderHidden &&
-              <NavBar pathName={this.props.location.pathname} />
-            }
+            <div className="container header_bottom">
+              <div className="text-center site-logo">
+                <img className="image-fluid" width="90" src="./images/logo.png"
+                     alt="Управление Архитектуры и Градостроительства города Алматы"/>
+                <h4 className="text-white font-weight-bold ">{e.title}</h4>
+              </div>
+            </div>
+            <div className="container nav-bar p-0" style={{background: '#F8F9FA'}}>
+              {this.state.loaderHidden &&
+              <NavBar pathName={this.props.location.pathname} logout={false} bgstyle={style} panelTrue={panelTrue} />
+              }
+            </div>
           </div>
         </div>
-      </div>
-    )
+      )
+    }
   }
 }
 
@@ -300,6 +355,7 @@ class LogoutBtn extends Component {
                 }
 
               })()}
+              <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
               <NavLink to={"/editPassword"} replace className="dropdown-item" activeClassName="active">Изменить пароль</NavLink>
               <button onClick={this.onLogout} className="dropdown-item" style={{cursor: 'pointer'}}>Выйти</button>
             </ul>
@@ -319,7 +375,6 @@ class AdminMenu extends Component {
         <NavLink to={"/menuEdit"} replace className="dropdown-item" activeClassName="active">Пункты меню</NavLink>
         <NavLink to={"/newsPanel"} replace className="dropdown-item" activeClassName="active">Добавить новость</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
-        <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
         <NavLink to={"/usersQuestions"} replace className="dropdown-item" activeClassName="active">Вопросы пользователей</NavLink>
       </div>
     )
@@ -331,7 +386,6 @@ class ReporterMenu extends Component {
     return (
       <div>
         <NavLink to={"/newsPanel"} replace className="dropdown-item" activeClassName="active">Добавить новость</NavLink>
-        <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
     )
   }
@@ -346,7 +400,6 @@ class UrbanMenu extends Component {
         <NavLink to={"/urbanreport"} replace className="dropdown-item" activeClassName="active">Фильтр</NavLink>
         <NavLink to={"/answertemplate"} replace className="dropdown-item" activeClassName="active">Шаблоны отказов</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
-        <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
     )
   }
@@ -359,7 +412,6 @@ class ElectroProviderMenu extends Component {
         <NavLink to={"/providerelectro"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
-        <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
     )
   }
@@ -372,7 +424,6 @@ class GasProviderMenu extends Component {
         <NavLink to={"/providergas"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
-        <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
     )
   }
@@ -385,7 +436,6 @@ class HeatProviderMenu extends Component {
         <NavLink to={"/providerheat"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
-        <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
     )
   }
@@ -398,7 +448,6 @@ class WaterProviderMenu extends Component {
         <NavLink to={"/providerwater"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
-        <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
     )
   }
@@ -411,7 +460,6 @@ class PhoneProviderMenu extends Component {
         <NavLink to={"/providerphone"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
-        <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
     )
   }
@@ -425,7 +473,6 @@ class HeadMenu extends Component {
         <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         <NavLink to={"/headreport"} replace className="dropdown-item" activeClassName="active">Фильтр</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
-        <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
     )
   }
@@ -439,7 +486,6 @@ class CitizenMenu extends Component {
         <NavLink to={"/sketch"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
         <NavLink to={"/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         <NavLink to={"/files"} replace className="dropdown-item" activeClassName="active">Мои файлы</NavLink>
-        <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
     )
   }
@@ -450,7 +496,6 @@ class PhotoReportMenu extends Component {
     return (
       <div>
         <NavLink to={"/photoreportsManage"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
-        <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
     )
   }
@@ -461,7 +506,6 @@ class TemporaryMenu extends Component {
     return (
       <div>
         <NavLink to={"/temporary"} replace className="dropdown-item" activeClassName="active">Личный кабинет</NavLink>
-        <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
     )
   }
@@ -472,7 +516,6 @@ class EngineerMenu extends Component {
     return (
       <div>
         <NavLink to={"/engineer"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
-        <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
     )
   }
@@ -483,7 +526,6 @@ class ApzMenu extends Component {
     return (
       <div>
         <NavLink to={"/apz"} replace className="dropdown-item" activeClassName="active">Личный кабинет</NavLink>
-        <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
     )
   }
@@ -495,7 +537,6 @@ class ApzDepartmentMenu extends Component {
       <div>
         <NavLink to={"/apz_department"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/panel/sketch/apz_department"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
-        <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
       </div>
     )
   }

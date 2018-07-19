@@ -2,18 +2,8 @@ import React from 'react';
 
 export default class Temporary extends React.Component {
 
-  componentWillMount() {
-    //console.log("CitizenComponent will mount");
-    if(sessionStorage.getItem('tokenInfo')){
-      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];
-      this.props.history.replace('/' + userRole);
-    }else {
-      this.props.history.replace('/');
-    }
-  }
-
   componentDidMount() {
-    //console.log("CitizenComponent did mount");
+    this.props.breadCrumbs();
   }
 
   componentWillUnmount() {
@@ -24,7 +14,9 @@ export default class Temporary extends React.Component {
     //console.log("rendering the CitizenComponent");
     return (
       <div className="content container">
-        <h2>Вам еще не задана роль</h2>
+        <div className="alert alert-danger">
+          <strong>Danger!</strong> <h4>Ваши функции отключены администратором.</h4>
+        </div>
       </div>
     )
   }

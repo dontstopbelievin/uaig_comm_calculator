@@ -23,7 +23,8 @@ export default class UsersQuestions extends React.Component {
 
   componentDidMount ()
   {
-      this.getMessages();
+    this.props.breadCrumbs();
+    this.getMessages();
   }
    getMessages ()
   {

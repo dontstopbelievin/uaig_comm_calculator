@@ -6,13 +6,9 @@ import $ from 'jquery';
 import { Route, Link,  Switch, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 
-
 let e = new LocalizedStrings({ru,kk});
 
-
-
 export default class Menu extends React.Component{
-
   constructor() {
     super();
     (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
@@ -27,26 +23,26 @@ export default class Menu extends React.Component{
     return (
       <div className="container body-content">
 
-
-
           <div className="content container citizen-apz-list-page">
-          <div className="card">
-            <div className="card-header">
-                <h4 className="mb-0 mt-2">Добавления пунктов меню</h4>
-              <div className="container navigational_price">
-                  <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.newsPanel}
-              </div>
-            </div>
+          <div>
 
-            <div className="card-body">
+            <div>
               <Switch>
-                  <Route path="/menuEdit/all" component={AllItems} />
-                  <Route path="/menuEdit/addItem" component={AddItem} />
-                  <Route path="/menuEdit/editItem/:id" component={UpdateItem} />
-                  <Route path="/menuEdit/addCategory" component={AddCategory} />
-                  <Redirect from="/menuEdit" to="/menuEdit/all" />
+                  <Route path="/panel/admin/menuEdit/all" exact render={(props) =>(
+                    <AllItems {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+                  )} />
+                  <Route path="/panel/admin/menuEdit/addItem" exact render={(props) =>(
+                    <AddItem {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+                  )} />
+                  <Route path="/panel/admin/menuEdit/editItem/:id" exact render={(props) =>(
+                    <UpdateItem {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+                  )} />
+                  <Route path="/panel/admin/menuEdit/addCategory" exact render={(props) =>(
+                    <AddCategory {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+                  )} />
+                  <Redirect from="/panel/admin/menuEdit" to="/panel/admin/menuEdit/all" />
               </Switch>
-          </div>
+            </div>
 
           </div>
         </div>
@@ -68,6 +64,7 @@ class AllItems extends React.Component {
   }
 
   componentDidMount() {
+    this.props.breadCrumbs();
     this.getItems();
   }
 
@@ -135,12 +132,15 @@ class AllItems extends React.Component {
       <div>
         {this.state.loaderHidden &&
           <div>
+            <div>
+              <h4 className="mb-0 mt-2">Добавления пунктов меню</h4>
+            </div>
             <div className="row">
               <div className="col-sm-3">
-                <Link className="btn btn-outline-primary mb-3" to="/menuEdit/addItem">Создать пункт меню</Link>
+                <Link className="btn btn-outline-primary mb-3" to="/panel/admin/menuEdit/addItem">Создать пункт меню</Link>
               </div>
               <div className="col-sm-3">
-                <Link className="btn btn-outline-primary mb-3" to="/menuEdit/addCategory">Изменить категории</Link>
+                <Link className="btn btn-outline-primary mb-3" to="/panel/admin/menuEdit/addCategory">Изменить категории</Link>
               </div>
             </div>
 
@@ -178,7 +178,7 @@ class AllItems extends React.Component {
                       <td className={'col-md-3'}>{item.created_at}</td>
 
                       <td className={'col-md-2'}>
-                        <Link className="btn btn-outline-info col-md-12" to={'/menuEdit/editItem/' + item.id}>Изменить</Link><br/>
+                        <Link className="btn btn-outline-info col-md-12" to={'/panel/admin/menuEdit/editItem/' + item.id}>Изменить</Link><br/>
                         <button className="btn btn-outline-danger col-md-12"
                                 data-link={'/menu/delete/' + item.id}
                                 data-delete={item.id}
@@ -234,6 +234,9 @@ class AddItem extends React.Component {
     this.getCategories();
     this.getPages();
     this.getRoles();
+  }
+  componentDidMount() {
+    this.props.breadCrumbs();
   }
   handleTitleKK (e) {
     this.setState({titlekk: e.target.value});
@@ -353,7 +356,7 @@ class AddItem extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           alert('Элемент добавлен!');
-          this.props.history.replace("/menuEdit");
+          this.props.history.replace("/panel/admin/menuEdit");
         }else if(xhr.status === 500){
           alert('Не получилось добавить в базу данных!');
         } else if (xhr.status === 401) {
@@ -476,7 +479,7 @@ class AddItem extends React.Component {
           <div>
               <hr />
               <Link className="btn btn-outline-secondary pull-right"
-                    id="back" to={'/menuEdit/'}>
+                    id="back" to={'/panel/admin/menuEdit/'}>
                 <i className="glyphicon glyphicon-chevron-left"></i>
                 Назад
               </Link>
@@ -512,6 +515,7 @@ class UpdateItem extends React.Component {
   };
   }
   componentDidMount() {
+    this.props.breadCrumbs();
     this.getItemMenu();
   }
   componentWillMount() {
@@ -670,7 +674,7 @@ class UpdateItem extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           alert('Элемент добавлен!');
-          this.props.history.replace("/menuEdit");
+          this.props.history.replace("/panel/admin/menuEdit");
         }else if(xhr.status === 500){
           alert('Не получилось добавить в базу данных!');
         } else if (xhr.status === 401) {
@@ -798,7 +802,7 @@ class UpdateItem extends React.Component {
               <hr />
               <Link className="btn btn-outline-secondary pull-right"
                     id="back"
-                    to={'/menuEdit/'}>
+                    to={'/panel/admin/menuEdit/'}>
                 <i className="glyphicon glyphicon-chevron-left"></i>
                 Назад
               </Link>
@@ -825,6 +829,7 @@ class AddCategory extends React.Component {
   }
 
   componentDidMount() {
+    this.props.breadCrumbs();
     this.getCategories ();
   }
   handleTitleKK (e) {
@@ -921,7 +926,13 @@ class AddCategory extends React.Component {
         <div className="col-md-12">
           <div className={'row'}>
             <div className={'col-md-6'}>
-
+              {!this.state.loaderHidden &&
+                <div style={{textAlign: 'center'}}>
+                  <br/>
+                  <br/>
+                  <Loader type="Oval" color="#46B3F2" height="200" width="200" />
+                </div>
+              }
               {this.state.categories.map(function ( category, index ) {
                 return(
                   <div key={index} className="btn-group btn-group-md mb-4" role="group">
@@ -977,7 +988,7 @@ class AddCategory extends React.Component {
             </div><hr />
               <Link className="btn btn-outline-secondary pull-right"
                     id="back"
-                    to={'/menuEdit/'}>
+                    to={'/panel/admin/menuEdit/'}>
                 <i className="glyphicon glyphicon-chevron-left"></i>
                 Назад
               </Link>

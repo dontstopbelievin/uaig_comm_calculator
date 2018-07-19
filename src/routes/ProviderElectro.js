@@ -9,14 +9,16 @@ export default class ProviderElectro extends React.Component {
   render() {
     return (
       <div className="content container body-content">
-        <div className="card">
-          <div className="card-header">
-          <h4 className="mb-0">Архитектурно-планировочное задание</h4></div>
-          <div className="card-body">
+        <div>
+          <div>
             <Switch>
-              <Route path="/providerelectro/status/:status/:page" component={AllApzs} />
-              <Route path="/providerelectro/show/:id" component={ShowApz} />
-              <Redirect from="/providerelectro" to="/providerelectro/status/active/1" />
+              <Route path="/panel/elector-provider/apz/status/:status/:page" exact render={(props) =>(
+                <AllApzs {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+              )} />
+              <Route path="/panel/elector-provider/apz/show/:id" exact render={(props) =>(
+                <ShowApz {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+              )} />
+              <Redirect from="/panel/elector-provider/apz" to="/panel/elector-provider/apz/status/active/1" />
             </Switch>
           </div>
         </div>
@@ -41,6 +43,7 @@ class AllApzs extends React.Component {
   }
 
   componentDidMount() {
+    this.props.breadCrumbs();
     this.getApzs();
   }
 
@@ -117,17 +120,20 @@ class AllApzs extends React.Component {
 
     return (
       <div>
+        <div>
+          <h4>Архитектурно-планировочное задание</h4>
+        </div>
         {this.state.loaderHidden &&
           <div>
             <ul className="nav nav-tabs mb-2 pull-right">
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/providerelectro/status/active/1" replace>Активные</NavLink></li>
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/elector-provider/apz/status/active/1" replace>Активные</NavLink></li>
               
               {this.state.isPerformer &&
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'awaiting'} to="/providerelectro/status/awaiting/1" replace>В ожидании</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'awaiting'} to="/panel/elector-provider/apz/status/awaiting/1" replace>В ожидании</NavLink></li>
               }
               
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/providerelectro/status/accepted/1" replace>Принятые</NavLink></li>
-              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/providerelectro/status/declined/1" replace>Отказанные</NavLink></li>
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/elector-provider/apz/status/accepted/1" replace>Принятые</NavLink></li>
+              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/elector-provider/apz/status/declined/1" replace>Отказанные</NavLink></li>
             </ul>
 
             <table className="table">
@@ -169,7 +175,7 @@ class AllApzs extends React.Component {
                         </td>
                       }
                       <td>
-                        <Link className="btn btn-outline-info" to={'/providerelectro/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link className="btn btn-outline-info" to={'/panel/elector-provider/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
                     </tr>
                     );
@@ -182,19 +188,19 @@ class AllApzs extends React.Component {
               <nav className="pagination_block">
                 <ul className="pagination justify-content-center">
                   <li className="page-item">
-                    <Link className="page-link" to={'/providerelectro/status/' + status + '/1'}>В начало</Link>
+                    <Link className="page-link" to={'/panel/elector-provider/apz/status/' + status + '/1'}>В начало</Link>
                   </li>
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
                       <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
-                        <Link className="page-link" to={'/providerelectro/status/' + status + '/' + num}>{num}</Link>
+                        <Link className="page-link" to={'/panel/elector-provider/apz/status/' + status + '/' + num}>{num}</Link>
                       </li>
                       );
                     }.bind(this))
                   }
                   <li className="page-item">
-                    <Link className="page-link" to={'/providerelectro/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
+                    <Link className="page-link" to={'/panel/elector-provider/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
                   </li>
                 </ul>
               </nav>
@@ -275,6 +281,9 @@ class ShowApz extends React.Component {
     this.sendElectroResponse = this.sendElectroResponse.bind(this);
     this.onHeadCommentChange = this.onHeadCommentChange.bind(this);
     this.onCustomTcFileChange = this.onCustomTcFileChange.bind(this);
+  }
+  componentDidMount() {
+    this.props.breadCrumbs();
   }
 
   onElecReqPowerChange(e) {
@@ -1399,7 +1408,7 @@ printData()
 
         <div className="col-sm-12">
           <hr />
-          <Link className="btn btn-outline-secondary pull-right" to={'/providerelectro/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+          <Link className="btn btn-outline-secondary pull-right" to={'/panel/elector-provider/apz/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
         </div>
       </div>
     )

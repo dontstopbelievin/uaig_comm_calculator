@@ -105,6 +105,8 @@ export default class Register extends React.Component {
         if (xhr.status === 200) {
           this.setState({loaderHidden: true});
           alert("Вы успешно зарегистрировались!\n Можете войти через созданный аккаунт!");
+          window.location.href = '/#/panel/common/login';
+
         } else if (xhr.status === 400) {
           this.setState({loaderHidden: true});
           var data = JSON.parse(xhr.responseText);
@@ -352,18 +354,16 @@ export default class Register extends React.Component {
 
   componentWillMount() {
     //console.log("RegisterComponent will mount");
-    if(sessionStorage.getItem('tokenInfo')) {
-      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];
-      this.props.history.replace('/' + userRole);
-    } else {
-      this.props.history.replace('/register');
+    if (sessionStorage.getItem('tokenInfo'))
+    {
+      window.location.href = '/#/panel/base-page';
     }
 
     this.webSocketFunction();
   }
 
   componentDidMount() {
-    //console.log("RegisterComponent did mount");
+    this.props.breadCrumbs();
   }
 
   componentWillUnmount() {
@@ -373,7 +373,7 @@ export default class Register extends React.Component {
   render() {
     //console.log("rendering the RegisterComponent");
     return (
-      <div className="bigBody">
+      <div>
       <div className="container">
         <div className="" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div className="modal-dialog" role="document">

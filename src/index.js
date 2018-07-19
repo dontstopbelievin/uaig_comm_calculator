@@ -78,6 +78,7 @@ import Menu from "./routes/Menu";
 import Search from "./routes/Search";
 import UsersQuestions from "./routes/UsersQuestions";
 import AllQuestions from "./routes/AllQuestions";
+import PanelBase from "./routes/PanelBase";
 // import tether from 'tether';
 // global.Tether = tether;
 //import 'bootstrap/dist/css/bootstrap.min.css';
@@ -93,7 +94,6 @@ require('./assets/css/common.css');
 require('./assets/css/animate.css');
 
 export default class Main extends React.Component {
-
   setLang() {
     return localStorage.getItem('lang') ? true : localStorage.setItem('lang', 'ru');
   }
@@ -102,12 +102,12 @@ export default class Main extends React.Component {
     this.setLang();
 
 
-    window.url = 'https://api.uaig.kz:8843/';
+    //window.url = 'https://api.uaig.kz:8843/';
     //window.url = 'http://192.168.0.231/';
-    window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
+    //window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
 
-     //window.url = 'http://uaig/';
-     //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
+     window.url = 'http://uaig/';
+     window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
      //window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
   }
 
@@ -139,6 +139,7 @@ export default class Main extends React.Component {
               <Route path="/login" render={(props) => (<Login {...props} />)} />
               <Route path="/register" render={(props) => (<Register {...props} />)} />
               <Route path="/temporary" render={(props) => (<Temporary {...props} />)} />
+              <Route path="/panel" render={(props) => (<PanelBase {...props} />)} />
               <Route path="/urban" render={(props) => (<Urban {...props} />)} />
               <Route path="/urbanreport" render={(props) => (<UrbanReport {...props} />)} />
               <Route path="/head" render={(props) => (<Head {...props} />)} />

@@ -10,17 +10,20 @@ export default class Sketch extends React.Component {
   render() {
     return (
       <div className="content container body-content citizen-sketch-list-page">
-        <div className="card">
-          <div className="card-header">
-            <h4 className="mb-0 mt-2">Эскизный проект</h4>
-          </div>
+        <div>
           
           <div className="card-body">
             <Switch>
-              <Route path="/sketch/status/:status/:page" component={AllSketch} />
-              <Route path="/sketch/add" component={AddSketch} />
-              <Route path="/sketch/show/:id" component={ShowSketch} />
-              <Redirect from="/sketch" to="/sketch/status/active/1" />
+                <Route path="/panel/citizen/sketch/status/:status/:page" exact render={(props) =>(
+                <AllSketch {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+              )} />
+              <Route path="/panel/citizen/sketch/add" exact render={(props) =>(
+                <AddSketch {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+              )} />
+              <Route path="/panel/citizen/sketch/show/:id" exact render={(props) =>(
+                <ShowSketch {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+              )} />
+              <Redirect from="/panel/citizen/sketch" to="/panel/citizen/sketch/status/active/1" />
             </Switch>
           </div>
         </div>
@@ -42,6 +45,7 @@ class AllSketch extends React.Component {
   }
 
   componentDidMount() {
+    this.props.breadCrumbs();
     this.getSketches();
   }
 
@@ -116,13 +120,13 @@ class AllSketch extends React.Component {
           <div>  
             <div className="row">
               <div className="col-sm-8">
-                <Link className="btn btn-outline-primary mb-3" to="/sketch/add">Создать заявление</Link>
+                <Link className="btn btn-outline-primary mb-3" to="/panel/citizen/sketch/add">Создать заявление</Link>
               </div>
               <div className="col-sm-4 statusActive">
                 <ul className="nav nav-tabs mb-2 pull-right">
-                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'active'} activeStyle={{color:"black"}} to="/sketch/status/active/1" replace>Активные</NavLink></li>
-                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'accepted'} activeStyle={{color:"black"}} to="/sketch/status/accepted/1" replace>Принятые</NavLink></li>
-                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'declined'} activeStyle={{color:"black"}} to="/sketch/status/declined/1" replace>Отказанные</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'active'} activeStyle={{color:"black"}} to="/panel/citizen/sketch/status/active/1" replace>Активные</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'accepted'} activeStyle={{color:"black"}} to="/panel/citizen/sketch/status/accepted/1" replace>Принятые</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'declined'} activeStyle={{color:"black"}} to="/panel/citizen/sketch/status/declined/1" replace>Отказанные</NavLink></li>
                 </ul>
               </div>
             </div>
@@ -146,7 +150,7 @@ class AllSketch extends React.Component {
                       <td>{sketch.project_address}</td>
                       <td>{this.toDate(sketch.created_at)}</td>
                       <td>
-                        <Link className="btn btn-outline-info" to={'/sketch/show/' + sketch.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link className="btn btn-outline-info" to={'/panel/citizen/sketch/show/' + sketch.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
                     </tr>
                     );
@@ -165,19 +169,19 @@ class AllSketch extends React.Component {
               <nav className="pagination_block">
                 <ul className="pagination justify-content-center">
                   <li className="page-item">
-                    <Link className="page-link" to={'/sketch/status/' + status + '/1'}>В начало</Link>
+                    <Link className="page-link" to={'/panel/citizen/sketch/status/' + status + '/1'}>В начало</Link>
                   </li>
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
                       <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
-                        <Link className="page-link" to={'/sketch/status/' + status + '/' + num}>{num}</Link>
+                        <Link className="page-link" to={'/panel/citizen/sketch/status/' + status + '/' + num}>{num}</Link>
                       </li>
                       );
                     }.bind(this))
                   }
                   <li className="page-item">
-                    <Link className="page-link" to={'/sketch/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
+                    <Link className="page-link" to={'/panel/citizen/sketch/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
                   </li>
                 </ul>
               </nav>
@@ -206,6 +210,10 @@ class ShowSketch extends React.Component {
       loaderHidden: false,
       responseFile: false,
     };
+  }
+
+  componentDidMount() {
+    this.props.breadCrumbs();
   }
 
   componentWillMount() {
@@ -430,7 +438,7 @@ class ShowSketch extends React.Component {
 
             <div className="col-sm-12">
               <hr />
-              <Link className="btn btn-outline-secondary pull-right" to={'/sketch'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+              <Link className="btn btn-outline-secondary pull-right" to={'/panel/citizen/sketch'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
             </div>
           </div>
         }
@@ -550,6 +558,10 @@ class AddSketch extends React.Component {
 
     this.onCheckboxChange = this.onCheckboxChange.bind(this);
     this.resetForm = this.resetForm.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.breadCrumbs();
   }
 
   onCheckboxChange(e) {
@@ -724,7 +736,7 @@ class AddSketch extends React.Component {
 
         <div className="col-sm-12">
           <hr />
-          <Link className="btn btn-outline-secondary pull-right" to={'/sketch/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+          <Link className="btn btn-outline-secondary pull-right" to={'/panel/citizen/sketch/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
         </div>
       </div>
     )
