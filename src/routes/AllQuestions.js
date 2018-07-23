@@ -156,7 +156,7 @@ export default class AllQuestions extends React.Component{
                     <div className="card-body">
                       <div className="card-text">
                         <h6 className="dearUser text-muted">Обратите внимание!</h6>
-                        <p>Для того, чтобы задать свой вопрос, необходимо <NavLink to={'/login'}>войти</NavLink> в систему или <NavLink to={'/register'}>зарегистрироваться</NavLink>.</p>
+                        <p>Для того, чтобы задать свой вопрос, необходимо <NavLink to={'/panel/common/login'}>войти</NavLink> в систему или <NavLink to={'/panel/common/register'}>зарегистрироваться</NavLink>.</p>
                       </div>
                     </div>
                   </div>
