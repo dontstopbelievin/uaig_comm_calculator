@@ -28,7 +28,9 @@ export default class BasePagePanel extends React.Component{
   componentDidMount() {
     this.props.breadCrumbs();
   }
-  componentWillUnmount() {
+  componentWillMount () {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
     if(sessionStorage.getItem('tokenInfo')){
       this.setState({ tokenExists: true });
       var roleName = JSON.parse(sessionStorage.getItem('userRoles'))[0];
@@ -40,11 +42,6 @@ export default class BasePagePanel extends React.Component{
         this.setState({ rolename: roleName });
       }
     }
-  }
-
-  componentWillMount () {
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
   }
 
   render() {
@@ -63,156 +60,154 @@ export default class BasePagePanel extends React.Component{
     return(
       <div className="container body-content">
 
-        <div className="content container citizen-apz-list-page">
-          <div className="container home-page col-md-12 wow fadeInUp" data-wow-duration="1.5s">
-            <div className="row">
-              <div className="col-md-12 col-xs-12 black-main text-center">
-                <h4 >{e.public_services}</h4>
-                <span><img src="images/line.png" /></span>
+        <div className="container home-page col-md-12 wow fadeInUp" data-wow-duration="1.5s">
+          <div className="row">
+            <div className="col-md-12 col-xs-12 black-main text-center">
+              <h4 >{e.public_services}</h4>
+              <span><img src="images/line.png" /></span>
 
-                <div className="card-deck wow fadeInUp" data-wow-duration="1.5s">
-                  <div className="card  mt-4 mb-4 ">
-                    <div className="card-image card-color-2">
-                      <div className="image-border">
-                        <img src="./images/2.svg" alt="true" />
-                      </div>
-                    </div>
-
-                    <div className="card-body">
-                      <p className="card-text">
-                        {e.secondblock}
-                      </p>
-                    </div>
-                    <div className="card-button">
-                      {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                      {this.state.tokenExists && this.state.rolename === 'Admin' && <NavLink to={"/admin"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/citizen"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/urban"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Head' &&  <NavLink to={"/head"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Electricity' &&  <NavLink to={"/providerelectro"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Gas' &&  <NavLink to={"/providergas"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Heat' &&  <NavLink to={"/providerheat"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Water' &&  <NavLink to={"/providerwater"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'ApzDepartment' &&  <NavLink to={"/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Engineer' &&  <NavLink to={"/engineer"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                      {!this.state.tokenExists && <AlertModal />}
+              <div className="card-deck wow fadeInUp" data-wow-duration="1.5s">
+                <div className="card  mt-4 mb-4 ">
+                  <div className="card-image card-color-2">
+                    <div className="image-border">
+                      <img src="./images/2.svg" alt="true" />
                     </div>
                   </div>
 
-                  <div className="card mt-4 mb-4 info-block">
-                    <div className="card-image card-color-1">
-                      <div className="image-border">
-                        <img src="./images/7.svg" alt="true" />
-                      </div>
-
-                    </div>
-                    <div className="card-body">
-                      <p className="card-text">
-                        {e.homeSketchBlock}
-                      </p>
-                    </div>
-                    <div className="card-button">
-                      {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                      {auth &&
-                      <NavLink to={"/sketch"} replace className="btn btn-primary">{e.apply}</NavLink>
-                      }
-                      {!auth &&
-                      <NavLink to={"/login"} className="btn btn-danger bg-danger text-white font-weight-bold">{e.apply}</NavLink>
-                      }
-                    </div>
+                  <div className="card-body">
+                    <p className="card-text">
+                      {e.secondblock}
+                    </p>
                   </div>
-
-                  <div className="card  mt-4 mb-4 ">
-                    <div className="card-image card-color-3">
-                      <div className="image-border">
-                        <img src="./images/3.svg" alt="true" />
-                      </div>
-                    </div>
-                    <div className="card-body">
-                      <p className="card-text">
-                        {e.thirdblock}
-                      </p>
-                    </div>
-                    <div className="card-button">
-                      {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                      {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">{e.apply}</NavLink>}
-                      {!this.state.tokenExists && <AlertModal />}
-                    </div>
+                  <div className="card-button">
+                    {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
+                    {this.state.tokenExists && this.state.rolename === 'Admin' && <NavLink to={"/admin"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/citizen"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/urban"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Head' &&  <NavLink to={"/head"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Electricity' &&  <NavLink to={"/providerelectro"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Gas' &&  <NavLink to={"/providergas"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Heat' &&  <NavLink to={"/providerheat"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Water' &&  <NavLink to={"/providerwater"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'ApzDepartment' &&  <NavLink to={"/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Engineer' &&  <NavLink to={"/engineer"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {!this.state.tokenExists && <AlertModal />}
                   </div>
                 </div>
 
-                <div className="card-deck wow fadeInUp" data-wow-duration="1.5s">
-                  <div className="card mt-4 mb-4 info-block">
-                    <div className="card-image card-color-1">
-                      <div className="image-border">
-                        <img src="./images/1.svg" alt="true" />
-                      </div>
+                <div className="card mt-4 mb-4 info-block">
+                  <div className="card-image card-color-1">
+                    <div className="image-border">
+                      <img src="./images/7.svg" alt="true" />
+                    </div>
 
-                    </div>
-                    <div className="card-body">
-                      <p className="card-text">
-                        {e.firstblock}
-                      </p>
-                    </div>
-                    <div className="card-button">
-                      {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                      {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">{e.apply}</NavLink>}
-                      {!this.state.tokenExists && <AlertModal />}
+                  </div>
+                  <div className="card-body">
+                    <p className="card-text">
+                      {e.homeSketchBlock}
+                    </p>
+                  </div>
+                  <div className="card-button">
+                    {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
+                    {auth &&
+                    <NavLink to={"/panel/citizen/sketch"} replace className="btn btn-primary" style={{"text-transform":"none"}}>{e.apply}</NavLink>
+                    }
+                    {!auth &&
+                    <NavLink to={"/panel/common/login"} replace className="btn  bg-danger text-white font-weight-bold" style={{"text-transform":"none"}}>{e.apply}</NavLink>
+                    }
+                  </div>
+                </div>
+
+                <div className="card  mt-4 mb-4 ">
+                  <div className="card-image card-color-3">
+                    <div className="image-border">
+                      <img src="./images/3.svg" alt="true" />
                     </div>
                   </div>
+                  <div className="card-body">
+                    <p className="card-text">
+                      {e.thirdblock}
+                    </p>
+                  </div>
+                  <div className="card-button">
+                    {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
+                    {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">{e.apply}</NavLink>}
+                    {!this.state.tokenExists && <AlertModal />}
+                  </div>
+                </div>
+              </div>
 
-                  <div className="card mt-4 mb-4 ">
-                    <div className="card-image card-color-4">
-                      <div className="image-border">
-                        <img src="./images/4.svg" alt="true" />
-                      </div>
+              <div className="card-deck wow fadeInUp" data-wow-duration="1.5s">
+                <div className="card mt-4 mb-4 info-block">
+                  <div className="card-image card-color-1">
+                    <div className="image-border">
+                      <img src="./images/1.svg" alt="true" />
                     </div>
-                    <div className="card-body">
-                      <p className="card-text">
-                        {e.fourthblock}
-                      </p>
-                    </div>
-                    <div className="card-button">
-                      {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                      {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">{e.apply}</NavLink>}
-                      {!this.state.tokenExists && <AlertModal />}
+
+                  </div>
+                  <div className="card-body">
+                    <p className="card-text">
+                      {e.firstblock}
+                    </p>
+                  </div>
+                  <div className="card-button">
+                    {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
+                    {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">{e.apply}</NavLink>}
+                    {!this.state.tokenExists && <AlertModal />}
+                  </div>
+                </div>
+
+                <div className="card mt-4 mb-4 ">
+                  <div className="card-image card-color-4">
+                    <div className="image-border">
+                      <img src="./images/4.svg" alt="true" />
                     </div>
                   </div>
+                  <div className="card-body">
+                    <p className="card-text">
+                      {e.fourthblock}
+                    </p>
+                  </div>
+                  <div className="card-button">
+                    {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
+                    {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">{e.apply}</NavLink>}
+                    {!this.state.tokenExists && <AlertModal />}
+                  </div>
+                </div>
 
-                  <div className="card  mt-4 mb-4 ">
-                    <div className="card-image card-color-5">
-                      <div className="image-border">
-                        <img src="./images/5.svg" alt="true" />
-                      </div>
-                    </div>
-                    <div className="card-body">
-                      <p className="card-text">
-                        {e.fifthblock}
-                      </p>
-                    </div>
-                    <div className="card-button">
-                      {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                      {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">{e.apply}</NavLink>}
-                      {!this.state.tokenExists && <AlertModal />}
+                <div className="card  mt-4 mb-4 ">
+                  <div className="card-image card-color-5">
+                    <div className="image-border">
+                      <img src="./images/5.svg" alt="true" />
                     </div>
                   </div>
+                  <div className="card-body">
+                    <p className="card-text">
+                      {e.fifthblock}
+                    </p>
+                  </div>
+                  <div className="card-button">
+                    {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
+                    {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">{e.apply}</NavLink>}
+                    {!this.state.tokenExists && <AlertModal />}
+                  </div>
+                </div>
 
-                  <div className="card mt-4 mb-4 ">
-                    <div className="card-image card-color-6">
-                      <div className="image-border">
-                        <img src="./images/6.svg" alt="true" />
-                      </div>
+                <div className="card mt-4 mb-4 ">
+                  <div className="card-image card-color-6">
+                    <div className="image-border">
+                      <img src="./images/6.svg" alt="true" />
                     </div>
-                    <div className="card-body">
-                      <p className="card-text">
-                        {e.sixthblock}
-                      </p>
-                    </div>
-                    <div className="card-button">
-                      {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                      {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">{e.apply}</NavLink>}
-                      {!this.state.tokenExists && <AlertModal />}
-                    </div>
+                  </div>
+                  <div className="card-body">
+                    <p className="card-text">
+                      {e.sixthblock}
+                    </p>
+                  </div>
+                  <div className="card-button">
+                    {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
+                    {this.state.tokenExists && <NavLink to={"/"} replace className="btn btn-primary">{e.apply}</NavLink>}
+                    {!this.state.tokenExists && <AlertModal />}
                   </div>
                 </div>
               </div>
@@ -249,10 +244,10 @@ class AlertModal extends React.Component {
           <ModalHeader toggle={this.toggle}>{e.info}</ModalHeader>
           <ModalBody>
             {e.youneed} &nbsp;
-            <NavLink to={"/login"} className="navLink" replace>
+            <NavLink to={"/panel/common/login"} className="navLink" replace>
               {e.login}
             </NavLink> {e.or}  &nbsp;
-            <NavLink to={"/register"} className="navLink" replace>
+            <NavLink to={"/panel/common/register"} className="navLink" replace>
               {e.logup}
             </NavLink> {e.needkz}
           </ModalBody>
