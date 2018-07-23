@@ -50,7 +50,7 @@ export default class PhotoReportsManage extends React.Component {
   }
 
   getDetails(e) {
-    // console.log(e);
+    console.log(e);
     this.setState({ showDetails: true });
     this.setState({ linkToggle: e.Id });
     this.setState({ RequestId: e.Id });

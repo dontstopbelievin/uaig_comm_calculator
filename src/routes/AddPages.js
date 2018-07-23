@@ -26,45 +26,41 @@ let e = new LocalizedStrings({ru,kk});
 
 export default class AddPages extends React.Component{
 
-    constructor() {
-        super();
-        (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
+  constructor() {
+    super();
+    (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
 
-        this.state = {
-            tokenExists: false,
-            rolename: ""
-        }
-
+    this.state = {
+        tokenExists: false,
+        rolename: ""
     }
+  }
 
   render() {
     return (
-        <div className="container body-content">
+      <div className="container body-content">
+        <div className="content container citizen-apz-list-page">
+        <div>
 
-
-
-            <div className="content container citizen-apz-list-page">
-            <div className="card">
-              <div className="card-header">
-                  <h4 className="mb-0 mt-2">Добавления страниц</h4>
-                <div className="container navigational_price">
-                    <NavLink to="/" replace className="">{e.hometwo}</NavLink> / {e.addPages}
-                </div>
-              </div>
-
-              <div className="card-body">
-                <Switch>
-                    <Route path="/addPages/all" component={AllPages} />
-                    <Route path="/addPages/add" component={AddPage} />
-                    <Route path="/addPages/update/:id" component={UpdatePage} />
-                    <Redirect from="/addPages" to="/addPages/all" />
-                </Switch>
-            </div>
-
-            </div>
-          </div>
+          <div>
+            <Switch>
+                <Route path="/panel/admin/addPages/all" exact render={(props) =>(
+                  <AllPages {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+                )} />
+                <Route path="/panel/admin/addPages/add" exact render={(props) =>(
+                  <AddPage {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+                )} />
+                <Route path="/panel/admin/addPages/update/:id" exact render={(props) =>(
+                  <UpdatePage {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+                )} />
+                <Redirect from="/panel/admin/addPages" to="/panel/admin/addPages/all" />
+            </Switch>
+        </div>
 
         </div>
+      </div>
+
+      </div>
     )
   }
 }
@@ -81,6 +77,7 @@ class AllPages extends React.Component {
   }
 
   componentDidMount() {
+    this.props.breadCrumbs();
     this.getPages();
   }
 
@@ -121,19 +118,24 @@ class AllPages extends React.Component {
     }
 
     var token = sessionStorage.getItem('tokenInfo');
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + link, true);
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        alert('Запись была успешно удалена!');
-        this.props.history.replace('/addPages');
-      } else {
-        alert("При удалении произошла ошибка!");
-      }
-    }.bind(this);
-    xhr.send();
+    if (token){
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + link, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          alert('Запись была успешно удалена!');
+          this.props.history.replace('/panel/admin/addPages');
+        } else {
+          alert("При удалении произошла ошибка!");
+        }
+      }.bind(this);
+      xhr.send();
+    } else {
+      alert('Вам нужно переподключится к системе!');
+      this.props.history.push('/login');
+    }
   }
 
   render() {
@@ -141,9 +143,10 @@ class AllPages extends React.Component {
       <div>
         {this.state.loaderHidden &&
           <div>
+            <h3>Добавление страниц</h3>
             <div className="row">
               <div className="col-sm-8">
-                <Link className="btn btn-outline-primary mb-3" to="/addPages/add">Создать страницу</Link>
+                <Link className="btn btn-outline-primary mb-3" to="/panel/admin/addPages/add">Создать страницу</Link>
               </div>
 
             </div>
@@ -168,7 +171,7 @@ class AllPages extends React.Component {
                       <td title={page.description}>{page.description.substr(0,50)} ...</td>
 
                       <td>
-                        <Link className="btn btn-outline-info col-md-8" to={'/addPages/update/' + page.id}>Изменить</Link>
+                        <Link className="btn btn-outline-info col-md-8" to={'/panel/admin/addPages/update/' + page.id}>Изменить</Link>
                         <button className="btn btn-outline-danger col-md-8" data-link={'/addPages/delete/' + page.id}
                                 onClick={this.delete_article.bind(this)}>Удалить</button>
                       </td>
@@ -221,8 +224,10 @@ class AddPage extends React.Component {
     this.onChangeKK = this.onChangeKK.bind(this);
   }
 
-  componentWillMount () {
+  componentDidMount () {
+    this.props.breadCrumbs();
   }
+
   updateContent(newContent) {
         this.setState({
             content: newContent
@@ -260,7 +265,7 @@ class AddPage extends React.Component {
         success: function (data) {
             console.log(data);
           alert(data.message);
-            this.props.history.replace('/addPages/all');
+            this.props.history.replace('/panel/admin/addPages/all');
         }.bind(this),
         fail: function (jqXHR) {
           alert("Ошибка " + jqXHR.status + ': ' + jqXHR.statusText);
@@ -340,7 +345,7 @@ class AddPage extends React.Component {
                   </form>
                   <div>
                       <hr />
-                      <Link className="btn btn-outline-secondary pull-right" id="back" to={'/addPages/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+                      <Link className="btn btn-outline-secondary pull-right" id="back" to={'/panel/admin/addPages/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
                   </div>
               </div>
           </div>
@@ -368,6 +373,7 @@ class UpdatePage extends React.Component {
     };
   }
   componentDidMount() {
+    this.props.breadCrumbs();
     this.getPage();
   }
   getPage() {
@@ -415,7 +421,7 @@ class UpdatePage extends React.Component {
           data: JSON.stringify(page),
           success: function (data) {
             alert(data.message);
-              this.props.history.replace('/addPages/all');
+              this.props.history.replace('/panel/admin/addPages/all');
           }.bind(this),
           fail: function (jqXHR) {
             alert("Ошибка " + jqXHR.status + ': ' + jqXHR.statusText);
@@ -471,47 +477,51 @@ class UpdatePage extends React.Component {
             <div className="form-group form3">
                 <label htmlFor="text">Содержание страницы на русском</label>
                 {this.state.content &&
-                  <ReactSummernote
-                    value={this.state.content}
-                    options={{
-                      // lang: 'ru-RU',
-                      height: 350,
-                      dialogsInBody: true,
-                      toolbar: [
-                        ['style', ['style']],
-                        ['font', ['bold', 'underline', 'clear']],
-                        ['fontname', ['fontname']],
-                        ['para', ['ul', 'ol', 'paragraph']],
-                        ['table', ['table']],
-                        ['insert', ['link', 'picture', 'video']],
-                        ['view', ['fullscreen', 'codeview']]
-                      ]
-                    }}
-                    onChange={this.onChange}
-                  />
+                  <div className={'col-md-12'}>
+                    <ReactSummernote
+                      value={this.state.content}
+                      options={{
+                        // lang: 'ru-RU',
+                        height: 350,
+                        dialogsInBody: true,
+                        toolbar: [
+                          ['style', ['style']],
+                          ['font', ['bold', 'underline', 'clear']],
+                          ['fontname', ['fontname']],
+                          ['para', ['ul', 'ol', 'paragraph']],
+                          ['table', ['table']],
+                          ['insert', ['link', 'picture', 'video']],
+                          ['view', ['fullscreen', 'codeview']]
+                        ]
+                      }}
+                      onChange={this.onChange}
+                    />
+                  </div>
                 }
             </div>
             <div className="form-group form3">
                 <label htmlFor="text">Содержание страницы на казахском</label>
-                {this.state.content_kk &&
-                  <ReactSummernote
-                    value={this.state.content_kk}
-                    options={{
-                      // lang: 'ru-RU',
-                      height: 350,
-                      dialogsInBody: true,
-                      toolbar: [
-                        ['style', ['style']],
-                        ['font', ['bold', 'underline', 'clear']],
-                        ['fontname', ['fontname']],
-                        ['para', ['ul', 'ol', 'paragraph']],
-                        ['table', ['table']],
-                        ['insert', ['link', 'picture', 'video']],
-                        ['view', ['fullscreen', 'codeview']]
-                      ]
-                    }}
-                    onChange={this.onChangeKK}
-                  />
+                {this.state.content &&
+                  <div className={'col-md-12'}>
+                    <ReactSummernote
+                      value={this.state.content_kk}
+                      options={{
+                        // lang: 'ru-RU',
+                        height: 350,
+                        dialogsInBody: true,
+                        toolbar: [
+                          ['style', ['style']],
+                          ['font', ['bold', 'underline', 'clear']],
+                          ['fontname', ['fontname']],
+                          ['para', ['ul', 'ol', 'paragraph']],
+                          ['table', ['table']],
+                          ['insert', ['link', 'picture', 'video']],
+                          ['view', ['fullscreen', 'codeview']]
+                        ]
+                      }}
+                      onChange={this.onChangeKK}
+                    />
+                  </div>
                 }
             </div>
             <input type="submit" className="btn btn-outline-success" value="Отправить статью" onClick={this.requestSubmission.bind(this)} />
@@ -519,7 +529,7 @@ class UpdatePage extends React.Component {
           </form>
           <div>
             <hr />
-            <Link className="btn btn-outline-secondary pull-right" id="back" to={'/addPages/'}>
+            <Link className="btn btn-outline-secondary pull-right" id="back" to={'/panel/admin/addPages/'}>
               <i className="glyphicon glyphicon-chevron-left"></i>
               Назад
             </Link>

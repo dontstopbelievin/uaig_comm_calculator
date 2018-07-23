@@ -12,14 +12,16 @@ export default class UrbanReport extends React.Component {
           <div className="card-header">
             <h4 className="mb-0 h4-inline">Архитектурно-планировочное задание / Отчет</h4>
             <ul className="nav nav-tabs mb-2 pull-right">
-              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link nav-link-reports" activeStyle={{color:"black"}} to="/urbanreport/apzs/accepted" replace>Принятые</NavLink></li>
-              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link nav-link-reports" activeStyle={{color:"black"}} to="/urbanreport/apzs/declined" replace>Отказанные</NavLink></li>
+              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link nav-link-reports" activeStyle={{color:"black"}} to="/panel/urban/urbanreport/apzs/accepted" replace>Принятые</NavLink></li>
+              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link nav-link-reports" activeStyle={{color:"black"}} to="/panel/urban/urbanreport/apzs/declined" replace>Отказанные</NavLink></li>
             </ul>
           </div>
           <div className="card-body">
             <Switch>
-              <Route path="/urbanreport/apzs/:status" component={ApzListReport} />
-              <Redirect from="/urbanreport" to="/urbanreport/apzs/accepted" />
+              <Route path="/panel/urban/urbanreport/apzs/:status" exact render={(props) =>(
+                <ApzListReport {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+              )} />
+              <Redirect from="/panel/urban/urbanreport" to="/panel/urban/urbanreport/apzs/accepted" />
             </Switch>
           </div>
         </div>
@@ -87,7 +89,7 @@ class ApzListReport extends React.Component {
       var status = this.props.match.params.status;
 
       if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Region'){
-        this.props.history.replace('/urbanreport/apzs/' + status);
+        this.props.history.replace('/panel/urban/urbanreport/apzs/' + status);
       }
       else {
         this.props.history.replace('/');
@@ -99,6 +101,7 @@ class ApzListReport extends React.Component {
   }
 
   componentDidMount() {
+    this.props.breadCrumbs();
     //console.log("UrbanReport Component didMount");
     if(sessionStorage.getItem('tokenInfo')){
       //console.log("token exist");

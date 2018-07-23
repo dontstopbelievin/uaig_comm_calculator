@@ -39,7 +39,7 @@ body{
     z-index: 1;
 }
 .row{
-    padding-top: 20px;
+    /*padding-top: 20px;*/
 }
 
 .site-logo{
@@ -85,6 +85,7 @@ body{
     color: #ffc107!important;
     text-decoration: none;
 }
+
 .statusActive {
     padding-left: 0!important;
 }
@@ -164,6 +165,13 @@ input[type=text]:focus {
     font-weight: bolder!important;
     color:#1a4482!important;
 }
+.goHomeDarkNav{
+    font-weight: bolder!important;
+    color:#ffffff!important;
+    font-size:16px;
+    padding-top:12px;
+    text-decoration: none!important;
+}
 /*.home{
     margin-right: 10px;
     padding-top: 10px;
@@ -185,6 +193,26 @@ input[type=text]:focus {
     text-transform:none;
     font-size: 16px!important;
     color:#1a4482!important;
+}
+.nav-bar-dark .nav-item a {
+    font-weight: bolder;
+    text-transform:none;
+    font-size: 16px;
+    color: #ffffff;
+}
+.fixed-line-height {
+    line-height: 50px;
+}
+.fixed-line-height div {
+    line-height: 40px;
+}
+
+.nav-bar-dark {
+    margin:0;
+    padding:0 1rem;
+}
+.lightButton {
+    color: #ffffff!important;
 }
 .nav-item{
     margin-top: 3px;
@@ -547,3 +575,6 @@ nav{
     background: none !important;
     color: #D8A82D !important;
 }
+
+/*  Panel design is start */
+/*  Panel design is start */

@@ -57,6 +57,7 @@ export default class Login extends Component {
     this.setState({aboutNCALayer: true});
   }
   componentDidMount () {
+    this.props.breadCrumbs();
   }
   //user login function
   login(e) {
@@ -121,18 +122,20 @@ export default class Login extends Component {
           if(roles[0] === 'Urban'){
             var role = roles[1];
             switch(role){
-              case 'Region': this.props.history.push('/');
+              case 'Region': window.location.href = '/#/panel/base-page';
               break;
 
-              case 'Head': this.props.history.push('/');
+              case 'Head': window.location.href = '/#/panel/base-page';
               break;
 
-              default: this.props.history.push('/');
+              default: window.location.href = '/#/panel/base-page';
               break;
             }
+          }else if (roles[0] === 'Admin') {
+            window.location.href = '/#/panel/base-page';
           }
           else{
-            this.props.history.push('/');
+            window.location.href = '/#/panel/base-page';
           }
         } 
         else if(xhr.status === 400) {
@@ -426,14 +429,11 @@ export default class Login extends Component {
   }
 
   componentWillMount() {
-    //console.log("LoginComponent will mount");
-    if(sessionStorage.getItem('tokenInfo')) {
-      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];
-      this.props.history.replace('/' + userRole);
-    } else {
-      this.props.history.replace('/login');
+    //console.log("LoginComponent will mount")
+    if (sessionStorage.getItem('tokenInfo'))
+    {
+      window.location.href = '/#/panel/base-page';
     }
-
     this.webSocketFunction();
   }
 
@@ -446,7 +446,7 @@ export default class Login extends Component {
     // console.log(window.checkToken);
     //console.log("rendering the LoginComponent");
     return (
-      <div className="bigBody">
+      <div>
       <div className="container">
         <div id="loginModal" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div className="modal-dialog" role="document">

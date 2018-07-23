@@ -6,24 +6,28 @@ export default class Files extends React.Component {
     //console.log("rendering the AdminComponent");
     return (
       <div className="content container files-page body-content">
-        <div className="card">
-          <div className="card-header"><h4 className="mb-0">Мои файлы</h4></div>
-          <div className="card-body">
+        <div >
+          <div><h4 className="mb-0">Мои файлы</h4></div>
+          <div>
             <div className="row">
               <div className="col-sm-9">
                 <FilesForm history={this.props.history} />
               </div>
               <div className="col-sm-3">
                 <ul className="nav nav-tabs">
-                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/files/all" replace>Все</NavLink></li>
-                  <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/files/images" replace>Изображении</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/panel/common/files/all" replace>Все</NavLink></li>
+                  <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} to="/panel/common/files/images" replace>Изображении</NavLink></li>
                 </ul>
               </div>
             </div>
             <Switch>
-              <Route path="/files/all" component={AllFiles} />
-              <Route path="/files/images" component={Images} />
-              <Redirect from="/files" to="/files/all" />
+              <Route path="/panel/common/files/all" exact render={(props) =>(
+                <AllFiles {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+              )} />
+              <Route path="/panel/common/files/images" exact render={(props) =>(
+                <Images {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+              )} />
+              <Redirect from="/panel/common/files" to="/panel/common/files/all" />
             </Switch>
           </div>
         </div>
@@ -48,7 +52,7 @@ class Images extends React.Component {
   }
 
   componentDidMount() {
-    //console.log("AdminComponent did mount");
+    this.props.breadCrumbs();
     this.getImages();
   }
 
@@ -180,7 +184,7 @@ class AllFiles extends React.Component {
   }
 
   componentDidMount() {
-    //console.log("AdminComponent did mount");
+    this.props.breadCrumbs();
     this.getFiles();
   }
 
@@ -401,8 +405,7 @@ class FilesForm extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           document.getElementById('uploadFileModalClose').click();
-          alert("Файл успешно загружен");
-          this.props.history.replace('/files')
+          alert("Файл успешно загружен")
         } else {
           console.log(xhr.response);
           // alert("Ошибка " + xhr.status + ': ' + xhr.statusText);

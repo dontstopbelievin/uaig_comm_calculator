@@ -7,23 +7,35 @@ import 'jquery-serializejson';
 import '../assets/css/citizen.css';
 import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
+import LocalizedStrings from 'react-localization';
+import {ru, kk} from '../languages/header.json';
+
+let e = new LocalizedStrings({ru,kk});
 
 export default class Citizen extends React.Component {
+  componentDidMount() {
+    this.props.breadCrumbs();
+  }
   render() {
     return (
       <div className="content container body-content citizen-apz-list-page">
-        <div className="card">
-          <div className="card-header">
-              <h4 className="mb-0 mt-2">Архитектурно-планировочное задание</h4>
-          </div>
-          
-          <div className="card-body">
+
+        <div>
+          <div>
             <Switch>
-              <Route path="/citizen/status/:status/:page" component={AllApzs} />
-              <Route path="/citizen/add" component={AddApz} />
-              <Route path="/citizen/edit/:id" component={AddApz} />
-              <Route path="/citizen/show/:id" component={ShowApz} />
-              <Redirect from="/citizen" to="/citizen/status/active/1" />
+              <Route path="/panel/citizen/apz/status/:status/:page" exact render={(props) =>(
+                <AllApzs {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+              )} />
+              <Route path="/panel/citizen/apz/add" exact render={(props) =>(
+                <AddApz {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+              )} />
+              <Route path="/panel/citizen/apz/edit/:id" exact render={(props) =>(
+                <AddApz {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+              )} />
+              <Route path="/panel/citizen/apz/show/:id" exact render={(props) =>(
+                <ShowApz {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+              )} />
+              <Redirect from="/panel/citizen/apz" to="/panel/citizen/apz/status/active/1" />
             </Switch>
           </div>
         </div>
@@ -46,6 +58,7 @@ class AllApzs extends React.Component {
   }
 
   componentDidMount() {
+    this.props.breadCrumbs();
     this.getApzs();
   }
 
@@ -117,17 +130,18 @@ class AllApzs extends React.Component {
     return (
       <div>
         {this.state.loaderHidden &&
-          <div>  
+          <div>
+            <h4 className="mb-0 mt-2">Архитектурно-планировочное задание</h4>
             <div className="row">
               <div className="col-sm-7">
-                <Link className="btn btn-outline-primary mb-3" to="/citizen/add">Создать заявление</Link>
+                <Link className="btn btn-outline-primary mb-3" to="/panel/citizen/apz/add">Создать заявление</Link>
               </div>
               <div className="col-sm-5 statusActive">
                 <ul className="nav nav-tabs mb-2 pull-right">
-                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'active'} activeStyle={{color:"black"}} to="/citizen/status/active/1" replace>Активные</NavLink></li>
-                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'draft'} activeStyle={{color:"black"}} to="/citizen/status/draft/1" replace>Черновики</NavLink></li>
-                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'accepted'} activeStyle={{color:"black"}} to="/citizen/status/accepted/1" replace>Принятые</NavLink></li>
-                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'declined'} activeStyle={{color:"black"}} to="/citizen/status/declined/1" replace>Отказанные</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'active'} activeStyle={{color:"black"}} to="/panel/citizen/apz/status/active/1" replace>Активные</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'draft'} activeStyle={{color:"black"}} to="/panel/citizen/apz/status/draft/1" replace>Черновики</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'accepted'} activeStyle={{color:"black"}} to="/panel/citizen/apz/status/accepted/1" replace>Принятые</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'declined'} activeStyle={{color:"black"}} to="/panel/citizen/apz/status/declined/1" replace>Отказанные</NavLink></li>
                 </ul>
               </div>
             </div>
@@ -157,7 +171,7 @@ class AllApzs extends React.Component {
                       <td>{apz.project_address}</td>
                       <td>{this.toDate(apz.created_at)}</td>
                       <td>
-                        <Link className="btn btn-outline-info" to={'/citizen/' + (apz.status_id === 8 ? 'edit/' : 'show/') + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link className="btn btn-outline-info" to={'/panel/citizen/apz/' + (apz.status_id === 8 ? 'edit/' : 'show/') + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
                     </tr>
                     );
@@ -176,19 +190,19 @@ class AllApzs extends React.Component {
               <nav className="pagination_block">
                 <ul className="pagination justify-content-center">
                   <li className="page-item">
-                    <Link className="page-link" to={'/citizen/status/' + status + '/1'}>В начало</Link>
+                    <Link className="page-link" to={'/panel/citizen/apz/status/' + status + '/1'}>В начало</Link>
                   </li>
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
                       <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
-                        <Link className="page-link" to={'/citizen/status/' + status + '/' + num}>{num}</Link>
+                        <Link className="page-link" to={'/panel/citizen/apz/status/' + status + '/' + num}>{num}</Link>
                       </li>
                       );
                     }.bind(this))
                   }
                   <li className="page-item">
-                    <Link className="page-link" to={'/citizen/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
+                    <Link className="page-link" to={'/panel/citizen/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
                   </li>
                 </ul>
               </nav>
@@ -300,6 +314,10 @@ class AddApz extends React.Component {
   onInputChange(e) {
     const { value, name } = e.target
     this.setState({ [name] : value })
+  }
+
+  componentDidMount() {
+    this.props.breadCrumbs();
   }
 
   componentWillMount() {
@@ -504,12 +522,12 @@ class AddApz extends React.Component {
 
         if (publish) {
           alert("Заявка успешно подана");
-          this.props.history.replace('/citizen');
+          this.props.history.replace('/panel/citizen/apz');
         } else {
           alert('Заявка успешно сохранена');
 
           if (!apzId) {
-            this.props.history.push('/citizen/edit/' + data.id);
+            this.props.history.push('/panel/citizen/apz/edit/' + data.id);
           }
         }
       } else {
@@ -1499,7 +1517,7 @@ class AddApz extends React.Component {
 
         <div>
           <hr />
-          <Link className="btn btn-outline-secondary pull-right" to={'/citizen/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+          <Link className="btn btn-outline-secondary pull-right" to={'/panel/citizen/apz'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
         </div>
       </div>
     )
@@ -1531,6 +1549,10 @@ class ShowApz extends React.Component {
       paymentPhotoFile: false,
       loaderHidden: false
     };
+  }
+
+  componentDidMount() {
+    this.props.breadCrumbs();
   }
 
   componentWillMount() {
@@ -2791,7 +2813,7 @@ class ShowApz extends React.Component {
 
             <div className="col-sm-12">
               <hr />
-              <Link className="btn btn-outline-secondary pull-right" to={'/citizen/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+              <Link className="btn btn-outline-secondary pull-right" to={'/panel/citizen/apz/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
             </div>
           </div>
         }

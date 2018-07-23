@@ -1,5 +1,6 @@
 import React from 'react';
 import '../assets/css/adminDropDown.css';
+import Loader from 'react-loader-spinner';
 
 var columnStyle = {
   textAlign: 'center'
@@ -12,6 +13,7 @@ export default class Admin extends React.Component {
 
     this.state = {
       users: [],
+      loaderHidden: false,
       roles: [],
       roleUser: [],
       isLoggedIn: true,
@@ -21,7 +23,8 @@ export default class Admin extends React.Component {
 
   }
   // получить список пользователей
-  getUsers() { 
+  getUsers() {
+    this.setState({loaderHidden: false});
     //console.log("entered getUsers function");
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
@@ -36,7 +39,7 @@ export default class Admin extends React.Component {
           var users = data.users.filter(function( obj ) {
           return obj.first_name !== 'admin';
         });
-          console.log(users);
+        this.setState({loaderHidden: true});
         this.setState({ users: users });
       }
     }.bind(this);
@@ -75,7 +78,8 @@ export default class Admin extends React.Component {
   }
 
   // получить список ролей
-  getRoles() { 
+  getRoles() {
+    this.setState({loaderHidden: false});
     //console.log("entered getRoles function");
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
@@ -91,7 +95,7 @@ export default class Admin extends React.Component {
         });
 
         this.setState({ roles: roles });
-          console.log(this.state.roles);
+        this.setState({loaderHidden: true});
       }
     }.bind(this);
     xhr.send();
@@ -100,6 +104,7 @@ export default class Admin extends React.Component {
 
   // получить список ролей пользователей
   getRoleUser() {
+    this.setState({loaderHidden: false});
     //console.log("entered getRoles function");
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
@@ -110,9 +115,8 @@ export default class Admin extends React.Component {
     xhr.onload = function () {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-
         this.setState({ roleUser: data.roleUser });
-          console.log(this.state.roleUser);
+        this.setState({loaderHidden: true});
       }
     }.bind(this);
     xhr.send();
@@ -162,14 +166,14 @@ export default class Admin extends React.Component {
     //console.log("AdminComponent will mount");
     if(sessionStorage.getItem('tokenInfo')){
       var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];
-      this.props.history.replace('/' + userRole);
+      // this.props.history.replace('/' + userRole);
     }else {
       this.props.history.replace('/');
     }
   }
 
   componentDidMount() {
-    //console.log("AdminComponent did mount");
+    this.props.breadCrumbs();
     this.getUsers();
     this.getRoles();
     this.getRoleUser();
@@ -196,6 +200,13 @@ export default class Admin extends React.Component {
                   <div className="col-xs-2 col-sm-2 col-md-2" style={columnStyle}>Управление</div>
                 </div>
               </div>
+              {!this.state.loaderHidden &&
+                <div style={{textAlign: 'center'}}>
+                  <br/>
+                  <br/>
+                  <Loader type="Oval" color="#46B3F2" height="200" width="200" />
+                </div>
+              }
               {
                 this.state.users.map(function(user, index){
 

@@ -158,7 +158,7 @@ export default class PhotoReports extends React.Component {
   }
 
   componentDidMount() {
-    //console.log("UrbanComponent did mount");
+    this.props.breadCrumbs();
     this.getList();
   }
   
@@ -166,9 +166,9 @@ export default class PhotoReports extends React.Component {
     // console.log(this.getList)
     return (
       <div className="content container files-page">
-        <div className="card">
-          <div className="card-header"><h4 className="mb-0">Мои фотоотчеты</h4></div>
-          <div className="card-body">
+        <div>
+          <div><h4 className="mb-0">Мои фотоотчеты</h4></div>
+          <div>
             <div className="row">
               <div className="col-sm-9" style={{marginBottom: '15px'}}>
                 <button type="button" className="btn btn-outline-primary" data-toggle="modal" data-target=".bd-example-modal-lg">

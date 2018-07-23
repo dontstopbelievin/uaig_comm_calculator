@@ -32,10 +32,10 @@ export default class Page extends React.Component{
         live: false
     }).init();
 
+    this.getPage(this.props.match.params.id);
   }
 
   componentWillMount () {
-    this.getPage(this.props.match.params.id);
   }
 
   getPage (id) {
@@ -51,6 +51,10 @@ export default class Page extends React.Component{
         this.setState({loaderHidden: true});
         var lang = localStorage.getItem('lang');
         let str = '';
+        var d1 = document.getElementById('innerText');
+        var child = document.getElementById('must-delete');
+        var throwaway = d1.removeChild(child);
+
         if (lang === 'kk')
         {
           str = this.state.page.content_kk;
@@ -69,9 +73,10 @@ export default class Page extends React.Component{
         var te = /&quot;/gi;
         var str2  = str1.replace(te,'"');
         console.log(str2);
+        str2 = '<div id="must-delete">'+ str2 + '</div>';
 
         var d1 = document.getElementById('innerText');
-        d1.innerHTML = '<div class="container-fluid">' + str2 + '</div>';
+        d1.insertAdjacentHTML( 'afterBegin', str2 );
       } else {
         alert("Страница не найдена!");
         this.props.history.replace('/');
@@ -89,17 +94,25 @@ export default class Page extends React.Component{
       <div className="container body-content newsArticle wow fadeInUp" data-wow-duration="1s">
         <div className="row col-md-12">
           {this.state.loaderHidden &&
-          <div className="col-md-12 text-center">
+          <div className="col-md-12 text-center"><br/>
+            <div className={'list-group-item flex-column'}>
+              <br/>
+              <hr/>
+            </div>
             <div className="list-group-item flex-column align-items-start ">
                 <div className="text-left container" id="innerText">
+                  <div id="must-delete"></div>
+                  <div className="col-md-12 text-center">
+                    <br/>
+                    <br/>
+                    <br/>
+                    <hr style={{height:"1px"}}/>
+                    <a className="allnews" href="/#/" onClick={this.props.history.goBack}>Вернуться</a>
+                  </div>
                 </div>
               <br/>
             </div>
-            <br /><br />
-            <hr/>
-            <div className="col-md-12 text-center">
-                <a className="allnews" href="/#/" onClick={this.props.history.goBack}>Вернуться</a>
-            </div>
+
           </div>
           }
           {!this.state.loaderHidden &&
