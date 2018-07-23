@@ -197,6 +197,7 @@ export default class NavBar extends React.Component {
         </nav>
       );
     }else if (this.props.panelTrue) {
+      let auth = (sessionStorage.getItem('tokenInfo')) ? true : false;
       return (
         <nav className={'nav-bar-dark navbar navbar-expand-lg navbar-light fixed-line-height'} style={this.props.bgstyle}>
 
@@ -219,7 +220,7 @@ export default class NavBar extends React.Component {
                     </a>
                     <div className="dropdown-menu main_nav_bar" aria-labelledby="navbarDropdown">
                       {/*  Ссылки используемые роуты  */}
-                      {sessionStorage.getItem('tokenInfo') &&
+                      {sessionStorage.getItem('tokenInfo') ?
                       (() => {
                         switch(JSON.parse(sessionStorage.getItem('userRoles'))[0]) {
                           case 'Admin': return <AdminMenu />;
@@ -257,7 +258,10 @@ export default class NavBar extends React.Component {
                           default: return null;
                         }
 
-                      })()}
+                      })()
+                        :
+                        (<DefaultMenu />)
+                      }
                       {/*  Ссылки используемые роуты  */}
                     </div>
                   </div>
@@ -340,8 +344,8 @@ class LogoutBtn extends Component {
               <span>{sessionStorage.getItem('userName')} <i className="glyphicon glyphicon-menu-hamburger"></i></span>
             </button>
             <ul className="dropdown-menu dropdown-menu-right">
-              <NavLink to={"/editPersonalData"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
-              <NavLink to={"/editPassword"} replace className="dropdown-item" activeClassName="active">Изменить пароль</NavLink>
+              <NavLink to={"/panel/common/edit-personal-data"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
+              <NavLink to={"/panel/common/edit-password"} replace className="dropdown-item" activeClassName="active">Изменить пароль</NavLink>
               <button onClick={this.onLogout.bind(this)} className="dropdown-item" style={{cursor: 'pointer'}}>Выйти</button>
             </ul>
           </li>
@@ -361,6 +365,16 @@ class AdminMenu extends Component {
         <NavLink to={"/panel/admin/newsPanel"} replace className="dropdown-item" activeClassName="active">Добавить новость</NavLink>
         <NavLink to={"/panel/common/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
         <NavLink to={"/panel/admin/usersQuestions"} replace className="dropdown-item" activeClassName="active">Вопросы пользователей</NavLink>
+      </div>
+    )
+  }
+}
+class DefaultMenu extends Component {
+  render() {
+    return (
+      <div>
+        <NavLink to={"/panel/common/login"} replace className="dropdown-item" activeClassName="active">Вход</NavLink>
+        <NavLink to={"/panel/common/register"} replace className="dropdown-item" activeClassName="active">Регистрация</NavLink>
       </div>
     )
   }

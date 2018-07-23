@@ -155,6 +155,18 @@
       "register":{
         "name":"Регистрация",
         "link":"/panel/common/register"
+      },
+      "edit-personal-data":{
+        "name":"Изменение персональных данных",
+        "link":"/panel/common/edit-personal-data"
+      },
+      "edit-password":{
+        "name":"Изменение пароля",
+        "link":"/panel/common/edit-password"
+      },
+      "password-reset":{
+        "name":"Сброс пароля",
+        "link":"/panel/common/password-reset"
       }
     },
     "apz-department":{

@@ -42,7 +42,7 @@ import NewsAll from './routes/NewsAll';
 import NewsArticle from './routes/NewsArticle';
 import NewsByDay from './routes/NewsByDay';
 import AnswerTemplate from './routes/AnswerTemplate';
-import EditData from './routes/EditPersonalData'
+import EditPersonalData from './routes/EditPersonalData'
 import EditPassword from './routes/EditPassword'
 import ForgotPassword from './routes/ForgotPassword'
 import ResetForm from './routes/ResetForm'
@@ -102,12 +102,12 @@ export default class Main extends React.Component {
     this.setLang();
 
 
-    window.url = 'https://api.uaig.kz:8843/';
+    //window.url = 'https://api.uaig.kz:8843/';
     //window.url = 'http://192.168.0.231/';
-    window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
+    //window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
 
-     //window.url = 'http://uaig/';
-     //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
+     window.url = 'http://uaig/';
+     window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
      //window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
   }
 
@@ -133,7 +133,7 @@ export default class Main extends React.Component {
               <Route path="/map2d" render={(props) => (<Map2dView {...props} />)} />
               <Route path="/forgotPassword" render={(props) => (<ForgotPassword {...props} />)} />
               <Route path="/password/reset/:token" render={(props) => (<ResetForm {...props} />)} />
-              <Route path="/editPersonalData" render={(props) => (<EditData {...props} />)} />
+              <Route path="/editPersonalData" render={(props) => (<EditPersonalData {...props} />)} />
               <Route path="/editPassword" render={(props) => (<EditPassword {...props} />)} />
               <Route path="/photos" render={(props) => (<Photos {...props} />)} />
               <Route path="/login" render={(props) => (<Login {...props} />)} />

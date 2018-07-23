@@ -6,11 +6,9 @@ var columnStyle = {
   textAlign: 'center'
 }
 
-
 export default class Admin extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       users: [],
       loaderHidden: false,
@@ -19,8 +17,6 @@ export default class Admin extends React.Component {
       isLoggedIn: true,
       username: ""
     };
-
-
   }
   // получить список пользователей
   getUsers() {

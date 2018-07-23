@@ -33,6 +33,9 @@ import SketchApzDepartment from "./SketchApzDepartment";
 import Temporary from "./Temporary";
 import Register from "./Register";
 import Login from "./Login";
+import EditPersonalData from "./EditPersonalData";
+import EditPassword from "./EditPassword";
+import ResetForm from "./ResetForm";
 
 let e = new LocalizedStrings({ru,kk});
 
@@ -135,6 +138,9 @@ export default class PanelBase extends React.Component{
                 <Route path="/panel/common/files" render={(props) => ( <Files breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/common/login" render={(props) => ( <Login breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/common/register" render={(props) => ( <Register breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                <Route path="/panel/common/edit-personal-data" render={(props) => ( <EditPersonalData breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                <Route path="/panel/common/edit-password" render={(props) => ( <EditPassword breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                {/*<Route path="/panel/common/password-reset/:token" render={(props) => ( <ResetForm breadCrumbs={this.breadCrumbs.bind(this)}/> )} />*/}
                 {/*  the routes is using for role: ALL  */}
 
                 {/*  the routes is using for role: Citizen  */}
