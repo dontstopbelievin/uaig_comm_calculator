@@ -277,13 +277,22 @@ class ShowApz extends React.Component {
       fourWaterPipePressureInRc: "",
       temperatureChart: "",
       connectionTerms: "– Подключение выполнить по технологии присоединения к предызолированным трубопроводам. \n\n– Размещение зданий и сооружений Вашего объекта предусмотреть на расстоянии с учетом соблюдения охранной зоны тепловых сетей 2dy_____ мм, проложенных __________ Вашего объекта. В противном случае выполнить их вынос из-под пятна застройки с переключением существующих потребителей. Проект выноса тепловых сетей согласовать с ТОО «АлТС»",
-      heatingNetworksDesign: "– Тепловые сети запроектировать с применением предварительно изолированных трубопроводов с устройством системы оперативного дистанционного контроля. Способ прокладки тепловых сетей определить проектом с учетом требований МСН 4.02-02-2004 «Тепловые сети». \n\n– После выполнения работ комплект исполнительной документации на бумажном носителе и в электронном исполнении, зарегистрированный в КГУ «Управление архитектуры и градостроительства г. Алматы», передать в ТОО «АлТС».",
-      finalHeatLoads: "Окончательные тепловые нагрузки уточнить проектом и согласовать с Оперативно-диспетчерским управлением ТОО «АлТС» (тел.: 378-07-00, вн.1007). Договор на оказание услуг по передаче и распределению тепловой энергии будет заключен на согласованную уточненную тепловую нагрузку.\n\nВ соответствии с п. 9.4.1, 9.4.2, 9.4.3 СН РК 4.02-01-2011 «Отопление, вентиляция и кондиционирование» в системе вентиляции при обосновании предусмотреть устройства утилизации теплоты вентиляционных выбросов (рекуперация, рециркуляция вытяжного воздуха).",
-      heatNetworksRelaying: "– В связи с увеличением циркуляционного расхода выполнить перекладку тепловых сетей от ТК ___ до ТК ___ с увеличением диаметра с 2Dу___ мм на 2Dу___ мм. Реконструируемые тепловые сети в установленном порядке передать на баланс ТОО «АлТС». \n\n- Выполнить поверочный расчет диаметров трубопроводов внутриплощадочных тепловых сетей с учетом дополнительно подключаемой нагрузки. В случае необходимости – выполнить их замену. \n\n– Выполнить поверочный расчет диаметров трубопроводов внутриплощадочных тепловых сетей с учетом дополнительно подключаемой нагрузки. В случае необходимости – выполнить их замену.",
-      condensateReturn: "Возврат конденсата не предусмотрен.",
-      thermalEnergyMeters: "На вводе для каждой категории абонентов установить прибор учета тепловой энергии, оборудованный модемной связью. Системы отопления и горячего водоснабжения каждой квартиры оборудовать индивидуальными приборами учета расхода теплоты и горячей воды с возможностью дистанционного снятия показаний. Проект на установку системы учета, схему организации учета, место установки приборов учета согласовать со Службой контроля приборов учета тепловой энергии ТОО «АлТС» (тел.: 341-07-77, вн. 2140).",
+      heatingNetworksDesign: "– Тепловые сети рекомендуем запроектировать с применением предварительно изолированных трубопроводов с устройством системы оперативного дистанционного контроля. Способ прокладки тепловых сетей определить проектом с учетом требований МСН 4.02-02-2004 «Тепловые сети». \n\n– После выполнения работ комплект исполнительной документации на бумажном носителе и в электронном исполнении, зарегистрированный в КГУ «Управление архитектуры и градостроительства г. Алматы», передать в ТОО «АлТС».",
+      finalHeatLoads: "Окончательные тепловые нагрузки уточнить проектом. Договор на оказание услуг по передаче и распределению тепловой энергии будет заключен на уточненную тепловую нагрузку, соответствующую требованиям СП РК 2.04-01-2017 «Строительная климатология».",
+      energyEfficiency: "В соответствии с разделом 9 СН РК 4.02-01-2011 «Отопление, вентиляция и кондиционирование» предусмотреть мероприятия для повышения энергоэффективности здания (й).",
+      heatNetworksRelaying: "В связи с увеличением циркуляционного расхода выполнить перекладку тепловых сетей от ТК ___ до ТК ___ с увеличением диаметра с 2Dу___ мм на 2Dу___ мм. Реконструируемые тепловые сети в установленном порядке передать на баланс ТОО «АлТС» (если сети на балансе ТОО «АлТС»). \n\n- Выполнить поверочный расчет диаметров трубопроводов внутриплощадочных тепловых сетей с учетом дополнительно подключаемой нагрузки. В случае необходимости – выполнить их замену.",
+      condensateReturn: "Возврат конденсата не предусмотрен (в случае подключения от СВК).",
+      thermalEnergyMeters: "На вводе для каждой категории абонентов установить прибор учета тепловой энергии, оборудованный модемной связью. Системы отопления и горячего водоснабжения каждой квартиры оборудовать индивидуальными приборами учета расхода теплоты и горячей воды с возможностью дистанционного снятия показаний. Проект на установку системы учета, схему организации учета, место установки приборов учета предоставить в Службу контроля приборов учета тепловой энергии ТОО «АлТС» (тел.: 341-07-77, вн. 2171, 2156).",
       heatSupplySystem: "Открытая",
-      heatSupplySystemNote: "- Предусмотреть догрев ГВС в межотопительный период \n\n- Предусмотреть тепловую изоляцию разводящих трубопроводов и стояков системы горячего водоснабжения. При присоединении распределительной гребенки индивидуальных потребителей к стояку общедомовой системы горячего водоснабжения предусмотреть установку обратного клапана",
+      heatSupplySystemNote: "- Предусмотреть догрев ГВС в межотопительный период",
+      mainIncrease: '',
+      mainPercentageIncrease: '',
+      venIncrease: '',
+      venPercentageIncrease: '',
+      waterMaxIncrease: '',
+      waterMaxPercentageIncrease: '',
+      finalIncrease: '',
+      finalPercentageIncrease: '',
       connectionScheme: "а) узел управления с автоматическим регулированием теплопотребления по зависимой схеме.\nб) узел управления с автоматическим регулированием теплопотребления по независимой схеме.",
       connectionSchemeNote: "В случае применения в системе отопления трубопроводов из полимерных материалов – проектирование вести с учетом требований п. 7.1.3 СНиП РК 4.02-42-2006 «Отопление, вентиляция и кондиционирование». По завершении монтажа узла управления выполнить пуско-наладочные работы по автоматизации теплового пункта.",
       negotiation: "После предварительного согласования с ЦЭР/СВЭР/ЮЭР ТОО «АлТС» проектную документацию (чертежи марки ОВ, ТС, сводный план инженерных сетей) согласовать с Техническим отделом ТОО «АлТС» (тел.: 378-07-00, вн. 1023). \n\nСогласованный проект на бумажном и электронном носителях предоставить в ТОО «АлТС».",
@@ -328,6 +337,7 @@ class ShowApz extends React.Component {
     this.onConnectionTermsChange = this.onConnectionTermsChange.bind(this);
     this.onHeatingNetworksDesignChange = this.onHeatingNetworksDesignChange.bind(this);
     this.onFinalHeatLoadsChange = this.onFinalHeatLoadsChange.bind(this);
+    this.onEnergyEfficiencyChange = this.onEnergyEfficiencyChange.bind(this);
     this.onHeatNetworksRelayingChange = this.onHeatNetworksRelayingChange.bind(this);
     this.onThermalEnergyMetersChange = this.onThermalEnergyMetersChange.bind(this);
     this.onHeatSupplySystemNoteChange = this.onHeatSupplySystemNoteChange.bind(this);
@@ -338,6 +348,74 @@ class ShowApz extends React.Component {
     this.onReconcileConnectionsWithChange = this.onReconcileConnectionsWithChange.bind(this);
     this.onHeadCommentChange = this.onHeadCommentChange.bind(this);
     this.onCondensateReturnChange = this.onCondensateReturnChange.bind(this);
+    this.onMainIncreaseChange = this.onMainIncreaseChange.bind(this);
+    this.onMainPercentageIncreaseChange = this.onMainPercentageIncreaseChange.bind(this);
+    this.onVenIncreaseChange = this.onVenIncreaseChange.bind(this);
+    this.onVenPercentageIncreaseChange = this.onVenPercentageIncreaseChange.bind(this);
+    this.onWaterMaxIncreaseChange = this.onWaterMaxIncreaseChange.bind(this);
+    this.onWaterMaxPercentageIncreaseChange = this.onWaterMaxPercentageIncreaseChange.bind(this);
+    this.onFinalIncreaseChange = this.onFinalIncreaseChange.bind(this);
+    this.onFinalPercentageIncreaseChange = this.onFinalPercentageIncreaseChange.bind(this);
+    this.calculateIncrease = this.calculateIncrease.bind(this);
+  }
+
+  onMainIncreaseChange(e) {
+    this.setState({ mainIncrease: e.target.value });
+  }
+
+  onMainPercentageIncreaseChange(e) {
+    this.setState({ mainPercentageIncrease: e.target.value });
+  }
+
+  onVenIncreaseChange(e) {
+    this.setState({ venIncrease: e.target.value });
+  }
+
+  onVenPercentageIncreaseChange(e) {
+    this.setState({ venPercentageIncrease: e.target.value });
+  }
+
+  onWaterMaxIncreaseChange(e) {
+    this.setState({ waterMaxIncrease: e.target.value });
+  }
+
+  onWaterMaxPercentageIncreaseChange(e) {
+    this.setState({ waterMaxPercentageIncrease: e.target.value });
+  }
+
+  onFinalIncreaseChange(e) {
+    this.setState({ finalIncrease: e.target.value });
+  }
+
+  onFinalPercentageIncreaseChange(e) {
+    this.setState({ finalPercentageIncrease: e.target.value });
+  }
+
+  calculateIncrease() {
+    var blocks = this.state.heatBlocks;
+    var main = 0;
+    var ven = 0;
+    var waterMax = 0;
+    var total = 0;
+    var contractTotal = parseInt(this.state.heatMainInContract) + parseInt(this.state.heatVenInContract) + parseInt(this.state.heatWaterMaxInContract);
+
+    for (var i = 0; i < blocks.length; i++) {
+      main += parseInt(blocks[i].main);
+      ven += parseInt(blocks[i].ven);
+      waterMax += parseInt(blocks[i].waterMax);
+      total += parseInt(main) + parseInt(ven) + parseInt(waterMax);
+    }
+
+    this.setState({ 
+      mainIncrease: this.state.heatMainInContract ? (parseInt(this.state.heatMainInContract) - main) : main,
+      mainPercentageIncrease: this.state.heatMainInContract ? Math.floor(((parseInt(this.state.heatMainInContract) - main) / parseInt(this.state.heatMainInContract)) * 100) : 100,
+      venIncrease: this.state.heatVenInContract ? (parseInt(this.state.heatVenInContract) - ven) : ven,
+      venPercentageIncrease: this.state.heatVenInContract ? Math.floor(((parseInt(this.state.heatVenInContract) - ven) / parseInt(this.state.heatVenInContract)) * 100) : 100,
+      waterMaxIncrease: this.state.heatWaterMaxInContract ? (parseInt(this.state.heatWaterMaxInContract) - waterMax) : waterMax,
+      waterMaxPercentageIncrease: this.state.heatWaterMaxInContract ? Math.floor(((parseInt(this.state.heatWaterMaxInContract) - waterMax) / parseInt(this.state.heatWaterMaxInContract)) * 100) : 100,
+      finalIncrease: parseInt(contractTotal) === 0 ? total : contractTotal - total,
+      finalPercentageIncrease: Math.floor(((parseInt(contractTotal) - total) / total) * 100),
+    });
   }
 
   onHeatResourceChange(e) {
@@ -356,14 +434,18 @@ class ShowApz extends React.Component {
     var blocks = this.state.heatBlocks;
     blocks[key]["main"] = e.target.value;
 
-    this.setState({ heatBlocks: blocks });
+    this.setState({ heatBlocks: blocks }, () => {
+      this.calculateIncrease();
+    });
   }
 
   onHeatVenChange(key, e) {
     var blocks = this.state.heatBlocks;
     blocks[key]["ven"] = e.target.value;
 
-    this.setState({ heatBlocks: blocks });
+    this.setState({ heatBlocks: blocks }, () => {
+      this.calculateIncrease();
+    });
   }
 
   onHeatWaterChange(key, e) {
@@ -377,15 +459,21 @@ class ShowApz extends React.Component {
     var blocks = this.state.heatBlocks;
     blocks[key]["waterMax"] = e.target.value;
 
-    this.setState({ heatBlocks: blocks });
+    this.setState({ heatBlocks: blocks }, () => {
+      this.calculateIncrease();
+    });
   }
 
   onHeatMainInContractChange(e) {
-    this.setState({ heatMainInContract: e.target.value });
+    this.setState({ heatMainInContract: e.target.value }, () => {
+      this.calculateIncrease();
+    });
   }
 
   onHeatVenInContractChange(e) {
-    this.setState({ heatVenInContract: e.target.value });
+    this.setState({ heatVenInContract: e.target.value }, () => {
+      this.calculateIncrease();
+    });
   }
 
   onHeatWaterInContractChange(e) {
@@ -393,7 +481,9 @@ class ShowApz extends React.Component {
   }
 
   onHeatWaterMaxInContractChange(e) {
-    this.setState({ heatWaterMaxInContract: e.target.value });
+    this.setState({ heatWaterMaxInContract: e.target.value }, () => {
+      this.calculateIncrease();
+    });
   }
 
   onConnectionPointChange(e) {
@@ -478,6 +568,10 @@ class ShowApz extends React.Component {
 
   onFinalHeatLoadsChange(e) {
     this.setState({ finalHeatLoads: e.target.value });
+  }
+
+  onEnergyEfficiencyChange(e) {
+    this.setState({ energyEfficiency: e.target.value });
   }
 
   onHeatNetworksRelayingChange(e) {
@@ -575,10 +669,22 @@ class ShowApz extends React.Component {
           data.commission.apz_heat_response.resource ? this.setState({heatResource: data.commission.apz_heat_response.resource}) : this.setState({heatResource: ""});
           data.commission.apz_heat_response.second_resource ? this.setState({heatSecondResource: data.commission.apz_heat_response.second_resource}) : this.setState({heatSecondResource: ""});
           data.commission.apz_heat_response.load_contract_num ? this.setState({heatLoadContractNum: data.commission.apz_heat_response.load_contract_num}) : this.setState({heatLoadContractNum: ""});
-          data.commission.apz_heat_response.main_in_contract ? this.setState({heatMainInContract: data.commission.apz_heat_response.main_in_contract}) : this.setState({heatMainInContract: ""});
-          data.commission.apz_heat_response.ven_in_contract ? this.setState({heatVenInContract: data.commission.apz_heat_response.ven_in_contract}) : this.setState({heatVenInContract: ""});
-          data.commission.apz_heat_response.water_in_contract ? this.setState({heatWaterInContract: data.commission.apz_heat_response.water_in_contract}) : this.setState({heatWaterInContract: ""});
-          data.commission.apz_heat_response.water_in_contract_max ? this.setState({heatWaterMaxInContract: data.commission.apz_heat_response.water_in_contract_max}) : this.setState({heatWaterMaxInContract: ""});
+          
+          data.commission.apz_heat_response.main_in_contract ? this.setState({heatMainInContract: data.commission.apz_heat_response.main_in_contract}) : this.setState({heatMainInContract: data.apz_heat.main_in_contract});
+          data.commission.apz_heat_response.ven_in_contract ? this.setState({heatVenInContract: data.commission.apz_heat_response.ven_in_contract}) : this.setState({heatVenInContract: data.apz_heat.ven_in_contract});
+          data.commission.apz_heat_response.water_in_contract ? this.setState({heatWaterInContract: data.commission.apz_heat_response.water_in_contract}) : this.setState({heatWaterInContract: data.apz_heat.water_in_contract});
+          data.commission.apz_heat_response.water_in_contract_max ? this.setState({heatWaterMaxInContract: data.commission.apz_heat_response.water_in_contract_max}) : this.setState({heatWaterMaxInContract: data.apz_heat.water_in_contract_max});
+          
+          data.commission.apz_heat_response.main_increase ? this.setState({mainIncrease: data.commission.apz_heat_response.main_increase}) : this.setState({mainIncrease: ""});
+          data.commission.apz_heat_response.main_percentage_increase ? this.setState({mainPercentageIncrease: data.commission.apz_heat_response.main_percentage_increase}) : this.setState({mainPercentageIncrease: ""});
+          data.commission.apz_heat_response.ven_increase ? this.setState({venIncrease: data.commission.apz_heat_response.ven_increase}) : this.setState({venIncrease: ""});
+          data.commission.apz_heat_response.ven_percentage_increase ? this.setState({venPercentageIncrease: data.commission.apz_heat_response.ven_percentage_increase}) : this.setState({venPercentageIncrease: ""});
+          data.commission.apz_heat_response.water_max_increase ? this.setState({waterMaxIncrease: data.commission.apz_heat_response.water_max_increase}) : this.setState({waterMaxIncrease: ""});
+          data.commission.apz_heat_response.water_max_percentage_increase ? this.setState({waterMaxPercentageIncrease: data.commission.apz_heat_response.water_max_percentage_increase}) : this.setState({waterMaxPercentageIncrease: ""});
+
+          data.commission.apz_heat_response.final_increase ? this.setState({finalIncrease: data.commission.apz_heat_response.final_increase}) : this.setState({finalIncrease: ""});
+          data.commission.apz_heat_response.final_percentage_increase ? this.setState({finalPercentageIncrease: data.commission.apz_heat_response.final_percentage_increase}) : this.setState({finalPercentageIncrease: ""});
+          
           data.commission.apz_heat_response.addition ? this.setState({addition: data.commission.apz_heat_response.addition}) : this.setState({addition: ""});
           data.commission.apz_heat_response.transporter ? this.setState({heatTransporter: data.commission.apz_heat_response.transporter}) : this.setState({heatTransporter: "2-трубной схеме"}); 
           data.commission.apz_heat_response.two_pipe_pressure_in_tc ? this.setState({twoPipeTcName: data.commission.apz_heat_response.two_pipe_tc_name}) : this.setState({twoPipeTcName: ""});
@@ -598,6 +704,7 @@ class ShowApz extends React.Component {
           data.commission.apz_heat_response.connection_terms ? this.setState({connectionTerms: data.commission.apz_heat_response.connection_terms}) : this.setState({connectionTerms: ""});
           data.commission.apz_heat_response.heating_networks_design ? this.setState({heatingNetworksDesign: data.commission.apz_heat_response.heating_networks_design}) : this.setState({heatingNetworksDesign: ""});
           data.commission.apz_heat_response.final_heat_loads ? this.setState({finalHeatLoads: data.commission.apz_heat_response.final_heat_loads}) : this.setState({finalHeatLoads: ""});
+          data.commission.apz_heat_response.energy_efficiency ? this.setState({energyEfficiency: data.commission.apz_heat_response.energy_efficiency}) : this.setState({energyEfficiency: ""});
           data.commission.apz_heat_response.heat_networks_relaying ? this.setState({heatNetworksRelaying: data.commission.apz_heat_response.heat_networks_relaying}) : this.setState({heatNetworksRelaying: ""});
           data.commission.apz_heat_response.condensate_return ? this.setState({condensateReturn: data.commission.apz_heat_response.condensate_return}) : this.setState({condensateReturn: ""});
           data.commission.apz_heat_response.thermal_energy_meters ? this.setState({thermalEnergyMeters: data.commission.apz_heat_response.thermal_energy_meters}) : this.setState({thermalEnergyMeters: ""});
@@ -614,6 +721,11 @@ class ShowApz extends React.Component {
           this.setState({xmlFile: data.commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 16})[0]});
           this.setState({customTcFile: data.commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 23})[0]});
           this.setState({accept: this.state.customTcFile ? 'answer' : data.commission.apz_heat_response.response ? 'accept' : 'decline'});
+        } else {
+          this.setState({heatMainInContract: data.apz_heat.main_in_contract ? data.apz_heat.main_in_contract : ''});
+          this.setState({heatVenInContract: data.apz_heat.ven_in_contract ? data.apz_heat.ven_in_contract : ''});
+          this.setState({heatWaterInContract: data.apz_heat.water_in_contract ? data.apz_heat.water_in_contract : ''});
+          this.setState({heatWaterMaxInContract: data.apz_heat.water_in_contract_max ? data.apz_heat.water_in_contract_max : ''});
         }
 
         if (data.commission.apz_heat_response && data.commission.apz_heat_response.blocks && data.commission.apz_heat_response.blocks.length > 0) {
@@ -1045,6 +1157,15 @@ class ShowApz extends React.Component {
       formData.append('Connection_terms', this.state.connectionTerms);
       formData.append('Heating_networks_design', this.state.heatingNetworksDesign);
       formData.append('Final_heat_loads', this.state.finalHeatLoads);
+      formData.append('Energy_efficiency', this.state.energyEfficiency);
+      formData.append('Main_increase', this.state.mainIncrease ? this.state.mainIncrease : '');
+      formData.append('Main_percentage_increase', this.state.mainPercentageIncrease ? this.state.mainPercentageIncrease : '');
+      formData.append('Ven_increase', this.state.venIncrease ? this.state.venIncrease : '');
+      formData.append('Ven_percentage_increase', this.state.venPercentageIncrease ? this.state.venPercentageIncrease : '');
+      formData.append('Water_max_increase', this.state.waterMaxIncrease ? this.state.waterMaxIncrease : '');
+      formData.append('Water_max_percentage_increase', this.state.waterMaxPercentageIncrease ? this.state.waterMaxPercentageIncrease : '');
+      formData.append('Final_increase', this.state.finalIncrease ? this.state.finalIncrease : '');
+      formData.append('Final_percentage_increase', this.state.finalPercentageIncrease ? this.state.finalPercentageIncrease : '');
       formData.append('Heat_networks_relaying', this.state.heatNetworksRelaying);
       formData.append('Condensate_return', this.state.condensateReturn);
       formData.append('Thermal_energy_meters', this.state.thermalEnergyMeters);
@@ -1098,6 +1219,15 @@ class ShowApz extends React.Component {
         data.connection_terms ? this.setState({connectionTerms: data.connection_terms}) : this.setState({connectionTerms: ""});
         data.heating_networks_design ? this.setState({heatingNetworksDesign: data.heating_networks_design}) : this.setState({heatingNetworksDesign: ""});
         data.final_heat_loads ? this.setState({finalHeatLoads: data.final_heat_loads}) : this.setState({finalHeatLoads: ""});
+        data.energy_efficiency ? this.setState({energyEfficiency: data.energy_efficiency}) : this.setState({energyEfficiency: ""});
+        data.main_increase ? this.setState({mainIncrease: data.main_increase}) : this.setState({mainIncrease: ""});
+        data.main_percentage_increase ? this.setState({mainPercentageIncrease: data.main_percentage_increase}) : this.setState({mainPercentageIncrease: ""});
+        data.ven_increase ? this.setState({venIncrease: data.ven_increase}) : this.setState({venIncrease: ""});
+        data.ven_percentage_increase ? this.setState({venPercentageIncrease: data.ven_percentage_increase}) : this.setState({venPercentageIncrease: ""});
+        data.water_max_increase ? this.setState({waterMaxIncrease: data.water_max_increase}) : this.setState({waterMaxIncrease: ""});
+        data.water_max_percentage_increase ? this.setState({waterMaxPercentageIncrease: data.water_max_percentage_increase}) : this.setState({waterMaxPercentageIncrease: ""});
+        data.final_increase ? this.setState({finalIncrease: data.final_increase}) : this.setState({finalIncrease: ""});
+        data.final_percentage_increase ? this.setState({finalPercentageIncrease: data.final_percentage_increase}) : this.setState({finalPercentageIncrease: ""});
         data.heat_networks_relaying ? this.setState({heatNetworksRelaying: data.heat_networks_relaying}) : this.setState({heatNetworksRelaying: ""});
         data.condensate_return ? this.setState({condensateReturn: data.condensate_return}) : this.setState({condensateReturn: ""});
         data.thermal_energy_meters ? this.setState({thermalEnergyMeters: data.thermal_energy_meters}) : this.setState({thermalEnergyMeters: ""});
@@ -1136,7 +1266,8 @@ class ShowApz extends React.Component {
     else{
       var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/provider/heat/" + apzId + '/update', true);
+      xhr.open("post", window.url + "api/apz/provider/heat/" + apzId + '/update', true);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.onload = function () {
         if (xhr.status === 200) {
@@ -1158,7 +1289,7 @@ class ShowApz extends React.Component {
 
         window.location.reload();
       }.bind(this);
-      xhr.send();
+      xhr.send(JSON.stringify({docNumber: this.state.docNumber}));
     } 
   }
 
@@ -1421,6 +1552,41 @@ printData()
                 <td>Разделить нагрузку</td>
                 <td>{apz.apz_heat.distribution}</td>
               </tr>
+
+              {apz.apz_heat.contract_num &&
+                <tr>
+                  <td>Номер договора</td>
+                  <td>{apz.apz_heat.contract_num}</td>
+                </tr>
+              }
+
+              {apz.apz_heat.main_in_contract &&
+                <tr>
+                  <td>Отопление по договору (Гкал/ч)</td>
+                  <td>{apz.apz_heat.main_in_contract}</td>
+                </tr>
+              }
+
+              {apz.apz_heat.water_in_contract &&
+                <tr>
+                  <td>Горячее водоснабжение по договору (ср/ч)</td>
+                  <td>{apz.apz_heat.water_in_contract}</td>
+                </tr>
+              }
+
+              {apz.apz_heat.ven_in_contract &&
+                <tr>
+                  <td>Вентиляция по договору (Гкал/ч)</td>
+                  <td>{apz.apz_heat.ven_in_contract}</td>
+                </tr>
+              }
+
+              {apz.apz_heat.water_in_contract_max &&
+                <tr>
+                  <td>Горячее водоснабжение по договору (макс/ч)</td>
+                  <td>{apz.apz_heat.water_in_contract_max}</td>
+                </tr>
+              }
             </tbody>
           </table>
 
@@ -1552,8 +1718,12 @@ printData()
                   <div className="form-group">
                     <label>Дополнительные условия и место подключения согласовать с</label>
                     <select className="form-control" value={this.state.reconcileConnectionsWith} onChange={this.onReconcileConnectionsWithChange}>
+                      <option>ВЭР ТОО «АлТС» (тел. 271-15-58).</option>
+                      <option>ЗЭР ТОО «АлТС» (тел. 243-00-49).</option>
                       <option>ЦЭР ТОО «АлТС» (тел. 274-04-47).</option>
+                      <option>СЗЭР ТОО «АлТС» (тел. 393-41-45).</option>
                       <option>СВЭР ТОО «АлТС» (тел. 252-83-70).</option>
+                      <option>СЭК ТОО «АлТС» (тел. 397-38-24).</option>
                       <option>ЮЭР ТОО «АлТС» (тел. 382-54-32).</option>
                     </select>
                   </div>
@@ -1568,6 +1738,9 @@ printData()
                   <div className="form-group">
                     <label>Окончательные тепловые нагрузки:</label>
                     <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.finalHeatLoads} onChange={this.onFinalHeatLoadsChange} />
+                  </div>
+                  <div className="form-group">
+                    <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.energyEfficiency} onChange={this.onEnergyEfficiencyChange} />
                   </div> 
                 </div>
                 <div className="col-sm-4">
@@ -1652,22 +1825,22 @@ printData()
 
                   <div className="form-group">
                     <label htmlFor="HeatMain">Отопление по договору<br />(Гкал/ч)</label>
-                    <input type="number" step="0.1" className="form-control" value={this.state.heatMainInContract} onChange={this.onHeatMainInContractChange} />
+                    <input type="number" step="any" className="form-control" value={this.state.heatMainInContract} onChange={this.onHeatMainInContractChange} />
                   </div>
 
                   <div className="form-group">
                     <label htmlFor="HeatVentilation">Вентиляция по договору<br />(Гкал/ч)</label>
-                    <input type="number" step="0.1" className="form-control" value={this.state.heatVenInContract} onChange={this.onHeatVenInContractChange} />
+                    <input type="number" step="any" className="form-control" value={this.state.heatVenInContract} onChange={this.onHeatVenInContractChange} />
                   </div>
 
                   <div className="form-group">
                     <label htmlFor="HeatWater">Горячее водоснабжение по договору (макс/ч)</label>
-                    <input type="number" step="0.1" className="form-control" value={this.state.heatWaterMaxInContract} onChange={this.onHeatWaterMaxInContractChange} />
+                    <input type="number" step="any" className="form-control" value={this.state.heatWaterMaxInContract} onChange={this.onHeatWaterMaxInContractChange} />
                   </div>
 
                   <div className="form-group">
                     <label htmlFor="HeatWater">Горячее водоснабжение по договору (ср/ч)</label>
-                    <input type="number" step="0.1" className="form-control" value={this.state.heatWaterInContract} onChange={this.onHeatWaterInContractChange} />
+                    <input type="number" step="any" className="form-control" value={this.state.heatWaterInContract} onChange={this.onHeatWaterInContractChange} />
                   </div>
 
                   <label style={{display: 'block'}}>Схема подключения:</label>
@@ -1699,6 +1872,80 @@ printData()
                   <div className="form-group">
                     <label htmlFor="upload_file">Прикрепить файл</label>
                     <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
+                  </div>
+                </div>
+
+                <div className="col-sm-12">
+                  <div style={{background: '#efefef', margin: '0 0 20px', padding: '20px 0 10px'}}>
+                    <h5 className="px-3 mb-3 block-title-3">Прирост</h5>
+                    <div className="row m-0 p-0">
+                      <div className="col-md-4">
+                        <div className="row pt-0">
+                          <div className="col-sm-8 pr-0">
+                            <div className="form-group">
+                              <label htmlFor="HeatMain">Отопление (Гкал/ч)</label>
+                              <input type="number" step="any" className="form-control" value={this.state.mainIncrease} onChange={this.onMainIncreaseChange} />
+                            </div>
+                          </div>
+                          <div className="col-sm-4">
+                            <div className="form-group">
+                              <label htmlFor="HeatMain">(%)</label>
+                              <input type="number" step="any" className="form-control" value={this.state.mainPercentageIncrease} onChange={this.onMainPercentageIncreaseChange} />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="row pt-0">
+                          <div className="col-sm-8 pr-0">
+                            <div className="form-group">
+                              <label htmlFor="HeatMain">Вентиляция (Гкал/ч)</label>
+                              <input type="number" step="any" className="form-control" value={this.state.venIncrease} onChange={this.onVenIncreaseChange} />
+                            </div>
+                          </div>
+                          <div className="col-sm-4">
+                            <div className="form-group">
+                              <label htmlFor="HeatMain">(%)</label>
+                              <input type="number" step="any" className="form-control" value={this.state.venPercentageIncrease} onChange={this.onVenPercentageIncreaseChange} />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="row pt-0">
+                          <div className="col-sm-8 pr-0">
+                            <div className="form-group">
+                              <label htmlFor="HeatMain">ГВС макс/ч (Гкал/ч)</label>
+                              <input type="number" step="any" className="form-control" value={this.state.waterMaxIncrease} onChange={this.onWaterMaxIncreaseChange} />
+                            </div>
+                          </div>
+                          <div className="col-sm-4">
+                            <div className="form-group">
+                              <label htmlFor="HeatMain">(%)</label>
+                              <input type="number" step="any" className="form-control" value={this.state.waterMaxPercentageIncrease} onChange={this.onWaterMaxPercentageIncreaseChange} />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-sm-4"></div>
+                      <div className="col-sm-4">
+                        <div className="row pt-0">
+                          <div className="col-sm-8 pr-0">
+                            <div className="form-group">
+                              <label>Итоговый прирост (Гкалл/ч)</label>
+                              <input type="number" step="any" className="form-control" value={this.state.finalIncrease} onChange={this.onFinalIncreaseChange} />
+                            </div>
+                          </div>
+                          <div className="col-sm-4">
+                            <div className="form-group">
+                              <label>(%)</label>
+                              <input type="number" step="any" className="form-control" value={this.state.finalPercentageIncrease} onChange={this.onFinalPercentageIncreaseChange} />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-sm-4"></div>
+                    </div>
                   </div>
                 </div>
 
@@ -1804,6 +2051,17 @@ printData()
                       <td>
                         <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
                           Скачать 
+                        </a>
+                      </td>
+                    </tr>
+                  }
+
+                  {this.state.showTechCon === false && (this.state.isDirector || this.state.isHead) &&
+                    <tr>
+                      <td>Ответ в PDF</td>
+                      <td>
+                        <a className="pointer text-info" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>
+                          Скачать
                         </a>
                       </td>
                     </tr>
@@ -1944,14 +2202,20 @@ printData()
                   </div>
                 </div>
               }
+            </div>
+          }
 
-              {this.state.heatStatus === 2 && this.state.isSigned &&
-                <div className="form-group">
-                  <button type="button" className="btn btn-primary" onClick={this.sendHeatResponse.bind(this, apz.id, true, "")}>
-                    Отправить
-                  </button>
-                </div>
-              }
+          {this.state.heatStatus === 2 && this.state.isSigned && this.state.isPerformer &&
+            <div style={{margin: 'auto', marginTop: '20px', display: 'table', width: '30%'}}>
+              <div className="form-group">
+                <label>Номер документа</label>
+                <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+              </div>
+              <div className="form-group">
+                <button type="button" className="btn btn-primary" onClick={this.sendHeatResponse.bind(this, apz.id, true, "")}>
+                  Отправить
+                </button>
+              </div>
             </div>
           }
 

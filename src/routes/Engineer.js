@@ -1657,6 +1657,41 @@ class ShowApz extends React.Component {
                           <td>Разделить нагрузку</td>
                           <td>{apz.apz_heat.distribution}</td>
                         </tr>
+
+                        {apz.apz_heat.contract_num &&
+                          <tr>
+                            <td>Номер договора</td>
+                            <td>{apz.apz_heat.contract_num}</td>
+                          </tr>
+                        }
+
+                        {apz.apz_heat.main_in_contract &&
+                          <tr>
+                            <td>Отопление по договору (Гкал/ч)</td>
+                            <td>{apz.apz_heat.main_in_contract}</td>
+                          </tr>
+                        }
+
+                        {apz.apz_heat.water_in_contract &&
+                          <tr>
+                            <td>Горячее водоснабжение по договору (ср/ч)</td>
+                            <td>{apz.apz_heat.water_in_contract}</td>
+                          </tr>
+                        }
+
+                        {apz.apz_heat.ven_in_contract &&
+                          <tr>
+                            <td>Вентиляция по договору (Гкал/ч)</td>
+                            <td>{apz.apz_heat.ven_in_contract}</td>
+                          </tr>
+                        }
+
+                        {apz.apz_heat.water_in_contract_max &&
+                          <tr>
+                            <td>Горячее водоснабжение по договору (макс/ч)</td>
+                            <td>{apz.apz_heat.water_in_contract_max}</td>
+                          </tr>
+                        }
                       </tbody>
                     </table>
 

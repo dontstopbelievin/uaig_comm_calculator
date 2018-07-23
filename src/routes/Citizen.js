@@ -264,6 +264,12 @@ class AddApz extends React.Component {
       gasVentilation: '',
       gasConditioner: '',
       gasWater: '',
+      contractNum: '',
+      heatMainInContract: '',
+      heatVenInContract: '',
+      heatWaterInContract: '',
+      heatWaterMaxInContract: '',
+      hasHeatContract: false,
 
       showMap: false,
       hasCoordinates: false,
@@ -368,6 +374,12 @@ class AddApz extends React.Component {
           this.setState({heatTech: apz.apz_heat.tech ? apz.apz_heat.tech : '' });
           this.setState({heatDistribution: apz.apz_heat.distribution ? apz.apz_heat.distribution : '' });
           this.setState({heatSaving: apz.apz_heat.saving ? apz.apz_heat.saving : '' });
+          
+          this.setState({contractNum: apz.apz_heat.contract_num ? apz.apz_heat.contract_num : '' });
+          this.setState({heatMainInContract: apz.apz_heat.main_in_contract ? apz.apz_heat.main_in_contract : '' });
+          this.setState({heatVenInContract: apz.apz_heat.ven_in_contract ? apz.apz_heat.ven_in_contract : '' });
+          this.setState({heatWaterInContract: apz.apz_heat.water_in_contract ? apz.apz_heat.water_in_contract : '' });
+          this.setState({heatWaterMaxInContract: apz.apz_heat.water_in_contract_max ? apz.apz_heat.water_in_contract_max : '' });
 
           if (apz.apz_heat.blocks) {
             for (var i = 0; i < apz.apz_heat.blocks.length; i++) {
@@ -383,6 +395,10 @@ class AddApz extends React.Component {
 
               this.setState({blocks: blocks});
             }
+          }
+
+          if (this.state.heatMainInContract || this.state.heatVenInContract || this.state.heatWaterInContract || this.state.heatWaterMaxInContract) {
+            this.setState({ hasHeatContract: true });
           }
         }
 
@@ -520,6 +536,20 @@ class AddApz extends React.Component {
     const { value, name } = e.target
     blocks[index][name] = value;
     this.setState({blocks: blocks});
+  }
+
+  onHeatContractChange(value) {
+    if (!value) {
+      this.setState({ 
+        heatMainInContract: '',
+        heatVenInContract: '',
+        heatWaterInContract: '',
+        heatWaterMaxInContract: '',
+        contractNum: ''
+      })
+    }
+
+    this.setState({ hasHeatContract: value })
   }
 
   deleteBlock(num) {
@@ -1257,6 +1287,41 @@ class AddApz extends React.Component {
                           </div>
                         </div>
                       </div>
+                      <div className="row">
+                        <div className="col-sm-12">
+                          <label><input type="checkbox" onChange={this.onHeatContractChange.bind(this, !this.state.hasHeatContract)} checked={this.state.hasHeatContract} /> Имеется договор</label>
+                        </div>
+                      </div>
+
+                      {this.state.hasHeatContract &&
+                        <div className="row">
+                          <div className="col-sm-6">
+                            <div className="form-group">
+                              <label htmlFor="HeatMain">Отопление по договору<br />(Гкал/ч)</label>
+                              <input type="number" step="any" className="form-control" name="heatMainInContract" value={this.state.heatMainInContract} onChange={this.onInputChange} />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="HeatWater">Горячее водоснабжение по договору<br />(ср/ч)</label>
+                              <input type="number" step="any" className="form-control" name="heatWaterInContract" value={this.state.heatWaterInContract} onChange={this.onInputChange} />
+                            </div>
+                            <div className="form-group">
+                              <label>Номер договора</label>
+                              <input type="number" step="any" className="form-control" name="contractNum" value={this.state.contractNum} onChange={this.onInputChange} />
+                            </div>
+                          </div>
+                          <div className="col-sm-6">
+                            <div className="form-group">
+                              <label htmlFor="HeatVentilation">Вентиляция по договору<br />(Гкал/ч)</label>
+                              <input type="number" step="any" className="form-control" name="heatVenInContract" value={this.state.heatVenInContract} onChange={this.onInputChange} />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="HeatWater">Горячее водоснабжение по договору<br />(макс/ч)</label>
+                              <input type="number" step="any" className="form-control" name="heatWaterMaxInContract" value={this.state.heatWaterMaxInContract} onChange={this.onInputChange} />
+                            </div>
+                          </div>
+                        </div>
+                      }
+
                       <div className="block_list">
                         {this.state.blocks.map(function(item, index) {
                           return(

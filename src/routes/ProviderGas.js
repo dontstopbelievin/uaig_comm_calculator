@@ -755,7 +755,8 @@ class ShowApz extends React.Component {
     else{
       var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/provider/gas/" + apzId + '/update', true);
+      xhr.open("post", window.url + "api/apz/provider/gas/" + apzId + '/update', true);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.onload = function () {
         if (xhr.status === 200) {
@@ -780,7 +781,7 @@ class ShowApz extends React.Component {
           alert(JSON.parse(xhr.responseText).message);
         }
       }.bind(this);
-      xhr.send();
+      xhr.send(JSON.stringify({docNumber: this.state.docNumber}));
     } 
   }
 
@@ -1160,6 +1161,17 @@ printData()
                       </td>
                     </tr>
                   }
+
+                  {this.state.showTechCon === false && (this.state.isDirector || this.state.isHead) &&
+                    <tr>
+                      <td>Ответ в PDF</td>
+                      <td>
+                        <a className="pointer text-info" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>
+                          Скачать
+                        </a>
+                      </td>
+                    </tr>
+                  }
                 </tbody>
               </table>
             </div>
@@ -1222,14 +1234,20 @@ printData()
                   </div>
                 </div>
               }
+            </div>
+          }
 
-              {this.state.gasStatus === 2 && this.state.isSigned &&
-                <div className="form-group">
-                  <button type="button" className="btn btn-primary" onClick={this.sendGasResponse.bind(this, apz.id, true, "")}>
-                    Отправить
-                  </button>
-                </div>
-              }
+          {this.state.gasStatus === 2 && this.state.isSigned && this.state.isPerformer &&
+            <div style={{margin: 'auto', marginTop: '20px', display: 'table', width: '30%'}}>
+              <div className="form-group">
+                <label>Номер документа</label>
+                <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+              </div>
+              <div className="form-group">
+                <button type="button" className="btn btn-primary" onClick={this.sendGasResponse.bind(this, apz.id, true, "")}>
+                  Отправить
+                </button>
+              </div>
             </div>
           }
 
