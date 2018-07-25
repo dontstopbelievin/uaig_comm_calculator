@@ -230,6 +230,7 @@ class AddApz extends React.Component {
       titleDocumentFile: null,
       paymentPhotoFile: null,
       survey: null,
+      claimedCapacityJustification: null,
 
       applicant: '',
       phone: '',
@@ -353,6 +354,7 @@ class AddApz extends React.Component {
         this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
         this.setState({paymentPhotoFile: apz.files.filter(function(obj) { return obj.category_id === 20 })[0]});
         this.setState({survey: apz.files.filter(function(obj) { return obj.category_id === 22 })[0]});
+        this.setState({claimedCapacityJustification: apz.files.filter(function(obj) { return obj.category_id === 24 })[0]});
 
         this.setState({objectType: apz.object_type ? apz.object_type : '' });
         this.setState({customer: apz.customer ? apz.customer : '' });
@@ -480,6 +482,10 @@ class AddApz extends React.Component {
         objectType: 'Тип объекта',
         customer: 'Заказчик'
       };
+
+      if (this.state.electricAllowedPower) {
+        requiredFields['claimedCapacityJustification'] = 'Расчет-обоснование заявленной мощности';
+      }
 
       var errors = 0;
 
@@ -813,6 +819,10 @@ class AddApz extends React.Component {
             case 22:
               this.setState({survey: data});
               break;
+
+            case 24:
+              this.setState({claimedCapacityJustification: data});
+              break;
           }
 
           alert("Файл успешно загружен");
@@ -867,6 +877,10 @@ class AddApz extends React.Component {
 
       case '22':
         this.setState({survey: data});
+        break;
+
+      case '24':
+        this.setState({claimedCapacityJustification: data});
         break;
     }
 
@@ -1121,6 +1135,17 @@ class AddApz extends React.Component {
                             <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
                             <input type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} value={this.state.electricRequiredPower} name="electricRequiredPower" placeholder="" />
                           </div>
+                          <div className="form-group">
+                            <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
+                            <select className="form-control" onChange={this.onInputChange} value={this.state.electricityPhase} name="electricityPhase">
+                              <option>Однофазная</option>
+                              <option>Двухфазная</option>
+                              <option>Трехфазная</option>
+                              <option>Постоянная</option>
+                              <option>Временная</option>
+                              <option>Сезонная</option>
+                            </select>
+                          </div>
                         </div>
                         <div className="col-md-6">
                         {/*<div className="form-group">
@@ -1149,23 +1174,36 @@ class AddApz extends React.Component {
                           <input type="number" className="form-control" name="ElectricMaxLoad" />
                         </div>*/}
                           <div className="form-group">
-                            <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
-                            <select className="form-control" onChange={this.onInputChange} value={this.state.electricityPhase} name="electricityPhase">
-                              <option>Однофазная</option>
-                              <option>Двухфазная</option>
-                              <option>Трехфазная</option>
-                              <option>Постоянная</option>
-                              <option>Временная</option>
-                              <option>Сезонная</option>
-                            </select>
-                          </div>
-                          <div className="form-group">
                             <label htmlFor="ElectricSafetyCategory">Категория по надежности (кВт)</label>
                             <select required className="form-control" onChange={this.onInputChange} value={this.state.electricSafetyCategory} name="electricSafetyCategory">
                               <option value="1">1</option>
                               <option value="2">2</option>
                               <option value="3">3</option>
                             </select>
+                          </div>
+                          <div className="form-group">
+                            <label>Расчет-обоснование заявленной мощности</label>
+                            <div className="file_container">
+                              <div className="progress mb-2" data-category="24" style={{height: '20px', display: 'none'}}>
+                                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                              </div>
+
+                              {this.state.claimedCapacityJustification &&
+                                <div className="file_block mb-2">
+                                  <div>
+                                    {this.state.claimedCapacityJustification.name}
+                                    <a className="pointer" onClick={(e) => this.setState({claimedCapacityJustification: false}) }>×</a>
+                                  </div>
+                                </div>
+                              }
+
+                              <div className="file_buttons btn-group btn-group-justified d-table mt-0">
+                                <label htmlFor="ClaimedCapacityJustification" className="btn btn-success" style={{marginRight: '2px'}}>Загрузить</label>
+                                <input type="file" id="ClaimedCapacityJustification" name="ClaimedCapacityJustification" className="form-control" onChange={this.uploadFile.bind(this, 24)} style={{display: 'none'}} />
+                                <label onClick={this.selectFromList.bind(this, 24)} className="btn btn-info">Выбрать из списка</label>
+                              </div>
+                              <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
+                            </div>
                           </div>
                         </div>
                       </div>

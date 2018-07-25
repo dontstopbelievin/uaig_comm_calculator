@@ -241,6 +241,7 @@ class ShowApz extends React.Component {
       personalIdFile: false,
       confirmedTaskFile: false,
       titleDocumentFile: false,
+      claimedCapacityJustification: false,
       showMapText: 'Показать карту',
       response: null,
       comment: null
@@ -293,6 +294,7 @@ class ShowApz extends React.Component {
         this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
         this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
+        this.setState({claimedCapacityJustification: data.files.filter(function(obj) { return obj.category_id === 24 })[0]});
 
         if (commission) {
           if (commission.apz_water_response && commission.apz_water_response.files) {
@@ -1784,6 +1786,13 @@ class ShowApz extends React.Component {
                           <td>Мощность трансформаторов (кВА)</td>
                           <td>{apz.apz_electricity.allowed_power}</td>
                         </tr>
+
+                        {this.state.claimedCapacityJustification &&
+                          <tr>
+                            <td>Расчет-обоснование заявленной мощности</td>
+                            <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.claimedCapacityJustification.id)}>Скачать</a></td>
+                          </tr>
+                        }
                       </tbody>
                     </table>
                   </div>
