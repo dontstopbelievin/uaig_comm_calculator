@@ -982,7 +982,7 @@ class ShowApz extends React.Component {
                           </td>
                           <td>
                             {item.days > 1 ?
-                              item.days + ' д.'
+                              item.days === 3 ? '2 д. (начиная со следующего дня)' : item.days - 1 + ' д.'
                               :
                               item.days === 1 ? 'Последний день (до 16:00)' : 'Просрочено' 
                             }

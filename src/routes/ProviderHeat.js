@@ -170,7 +170,7 @@ class AllApzs extends React.Component {
                       {(status === 'active' || status === 'awaiting') &&
                         <td>
                           {apz.term > 1 ?
-                            apz.term + ' д.'
+                            apz.term === 3 ? '2 д. (начиная со следующего дня)' : apz.term - 1 + ' д.'
                             :
                             apz.term === 1 ? 'Последний день (до 16:00)' : 'Просрочено' 
                           }
