@@ -167,6 +167,15 @@
       "password-reset":{
         "name":"Сброс пароля",
         "link":"/panel/common/password-reset"
+      },
+      "vacancies":{
+        "name":"Панель редактирование вакансии",
+        "link":"/panel/common/vacancies",
+        "active":"Все активные вакансии",
+        "disable":"Все отключенные вакансии",
+        "trashed":"Все удаленные вакансии",
+        "add":"Создать вакансию",
+        "update":"Предпрсмотр / Изменение вакансии"
       }
     },
     "apz-department":{

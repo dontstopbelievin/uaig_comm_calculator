@@ -363,6 +363,7 @@ class AdminMenu extends Component {
         <NavLink to={"/panel/admin/addPages"} replace className="dropdown-item" activeClassName="active">Добавить страницу</NavLink>
         <NavLink to={"/panel/admin/menuEdit"} replace className="dropdown-item" activeClassName="active">Пункты меню</NavLink>
         <NavLink to={"/panel/admin/newsPanel"} replace className="dropdown-item" activeClassName="active">Добавить новость</NavLink>
+        <NavLink to={"/panel/common/vacancies"} replace className="dropdown-item" activeClassName="active">Добавить вакансии</NavLink>
         <NavLink to={"/panel/common/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
         <NavLink to={"/panel/admin/usersQuestions"} replace className="dropdown-item" activeClassName="active">Вопросы пользователей</NavLink>
       </div>
@@ -385,6 +386,7 @@ class ReporterMenu extends Component {
     return (
       <div>
         <NavLink to={"/panel/admin/newsPanel"} replace className="dropdown-item" activeClassName="active">Добавить новость</NavLink>
+        <NavLink to={"/panel/common/vacancies"} replace className="dropdown-item" activeClassName="active">Добавить вакансии</NavLink>
       </div>
     )
   }

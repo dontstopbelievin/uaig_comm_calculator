@@ -223,20 +223,19 @@ class AddPage extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.onChangeKK = this.onChangeKK.bind(this);
   }
-
   componentDidMount () {
     this.props.breadCrumbs();
+    $('.note-popover').remove();
   }
-
   updateContent(newContent) {
-        this.setState({
-            content: newContent
-        })
+    this.setState({
+        content: newContent
+    })
   }
   updateContentKK(newContent) {
-        this.setState({
-            content_kk: newContent
-        })
+    this.setState({
+        content_kk: newContent
+    })
   }
   onChange(content) {
     this.setState({content: content})
@@ -246,13 +245,14 @@ class AddPage extends React.Component {
   }
 
   requestSubmission(e){
-      e.preventDefault();
-      var page = new Object();
-          page.title = this.state.title;
-          page.description = this.state.desc;
-          page.content = this.state.content;
-          page.content_kk = this.state.content_kk;
-          console.log(page);
+    e.preventDefault();
+    var page = new Object();
+        page.title = this.state.title;
+        page.description = this.state.desc;
+        page.content = this.state.content;
+        page.content_kk = this.state.content_kk;
+        console.log(page);
+
     if (sessionStorage.getItem('tokenInfo')) {
       $.ajax({
         type: 'POST',
