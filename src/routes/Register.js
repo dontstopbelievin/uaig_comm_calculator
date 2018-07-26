@@ -59,13 +59,14 @@ export default class Register extends React.Component {
 
   btnLogin() {
     this.setState({loaderHidden: false});
-    this.setState({inviseBtn: !this.state.inviseBtn});
+    this.setState({inviseBtn: false});
     let password = $('#inpPassword').val();
     let path = $('#storagePath').val();
     let keyType = "AUTH";
     if (path !== null && path !== "" && this.state.storageAlias !== null && this.state.storageAlias !== "") {
       if (password !== null && password !== "") {
         this.getKeys(this.state.storageAlias, path, password, keyType, "loadKeysBack");
+        this.setState({inviseBtn: true});
         //console.log(this.state.resultIIN);
       } else {
         alert("Введите пароль к хранилищу");
