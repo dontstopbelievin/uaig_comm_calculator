@@ -198,6 +198,7 @@ class AllVacancies extends React.Component {
   render() {
     var status = this.props.match.params.status;
     var vacancies = this.state.vacancies;
+    var lang = localStorage.getItem('lang');
     return (
       <div>
 
@@ -232,8 +233,8 @@ class AllVacancies extends React.Component {
                 return(
                   <tr key={index} style={{cursor: "pointer"}}>
                     <td onClick={this.showVacancy.bind(this,vacancy.id)}>{index + 1}</td>
-                    <td onClick={this.showVacancy.bind(this,vacancy.id)}>{vacancy.title}</td>
-                    <td onClick={this.showVacancy.bind(this,vacancy.id)}>{vacancy.description}</td>
+                    <td onClick={this.showVacancy.bind(this,vacancy.id)}>{(lang === 'ru') ? vacancy.title_ru : vacancy.title_kk}</td>
+                    <td onClick={this.showVacancy.bind(this,vacancy.id)}>{(lang === 'ru') ? vacancy.description_ru : vacancy.description_kk}</td>
                     <td title={'Обнавлено последний раз: ' + vacancy.updated_at} onClick={this.showVacancy.bind(this,vacancy.id)}>{vacancy.created_at}</td>
                     <td>
                       <button className="btn btn-outline-danger" onClick={this.deleteTheVacancy.bind(this,index)}><i className="glyphicon glyphicon-remove mr-2"></i> Удалить</button>
@@ -347,6 +348,7 @@ class TrashedVacancies extends React.Component {
   render() {
     var status = this.props.match.params.status;
     var vacancies = this.state.vacancies;
+    var lang = localStorage.getItem('lang');
     return (
       <div>
 
@@ -380,8 +382,8 @@ class TrashedVacancies extends React.Component {
               return(
                 <tr key={index} style={{cursor: "pointer"}}>
                   <td onClick={this.showVacancy.bind(this,vacancy.id)}>{index + 1}</td>
-                  <td onClick={this.showVacancy.bind(this,vacancy.id)}>{vacancy.title}</td>
-                  <td onClick={this.showVacancy.bind(this,vacancy.id)}>{vacancy.description}</td>
+                  <td onClick={this.showVacancy.bind(this,vacancy.id)}>{(lang === 'ru') ? vacancy.title_ru : vacancy.title_kk}</td>
+                  <td onClick={this.showVacancy.bind(this,vacancy.id)}>{(lang === 'ru') ? vacancy.description_ru : vacancy.description_kk}</td>
                   <td title={'Обнавлено последний раз: ' + vacancy.updated_at} onClick={this.showVacancy.bind(this,vacancy.id)}>{vacancy.created_at}</td>
                   <td>
                     <button className="btn btn-outline-success" onClick={this.recoveryTheVacancy.bind(this,index)}><i className="glyphicon glyphicon-edit mr-2"></i> Востановить</button>
@@ -417,9 +419,11 @@ class AddVacancy extends React.Component {
 
     this.state = {
       loaderHidden: true,
-      title : '',
+      title_ru : '',
+      title_kk : '',
       value: '',
-      desc : '',
+      desc_ru : '',
+      desc_kk : '',
       content_ru: '',
       content_kk: ''
     };
@@ -439,8 +443,10 @@ class AddVacancy extends React.Component {
   requestSubmission(e){
     e.preventDefault();
     let vacancy = new Object();
-    vacancy.title = this.state.title;
-    vacancy.description = this.state.desc;
+    vacancy.title_ru = this.state.title_ru;
+    vacancy.title_kk = this.state.title_kk;
+    vacancy.description_ru = this.state.desc_ru;
+    vacancy.description_kk = this.state.desc_kk;
     vacancy.content_ru = this.state.content_ru;
     vacancy.content_kk = this.state.content_kk;
     console.log(vacancy);
@@ -483,14 +489,24 @@ class AddVacancy extends React.Component {
         <div className="col-md-12">
           <form id="insert_form" name="form_aritcle">
             <div className="form-group">
-              <label htmlFor="title">Название</label>
+              <label htmlFor="title">Название на русском</label>
               <input type="text" name="title" maxLength="150" id="title" pleaceholder="Title" className="form-control"
-                     required onChange={(e) => this.setState({title: e.target.value})}/>
+                     required onChange={(e) => this.setState({title_ru: e.target.value})}/>
             </div>
             <div className="form-group">
-              <label htmlFor="description">Описание</label>
+              <label htmlFor="title">Название на казахском</label>
+              <input type="text" name="title" maxLength="150" id="title" pleaceholder="Title" className="form-control"
+                     required onChange={(e) => this.setState({title_kk: e.target.value})}/>
+            </div>
+            <div className="form-group">
+              <label htmlFor="description">Описание на русском</label>
               <input type="text" name="description" maxLength="150" id="description" pleaceholder="Description"
-                     className="form-control" required onChange={(e) => this.setState({desc: e.target.value})}/>
+                     className="form-control" required onChange={(e) => this.setState({desc_ru: e.target.value})}/>
+            </div>
+            <div className="form-group">
+              <label htmlFor="description">Описание на казахском</label>
+              <input type="text" name="description" maxLength="150" id="description" pleaceholder="Description"
+                     className="form-control" required onChange={(e) => this.setState({desc_kk: e.target.value})}/>
             </div>
             <div className="form-group">
               <label htmlFor="text">Содержание на русском</label>
@@ -561,9 +577,11 @@ class ShowVacancies extends React.Component {
 
     this.state = {
       loaderHidden: false,
-      title : '',
+      title_ru : '',
+      title_kk : '',
       value: '',
-      desc : '',
+      desc_ru : '',
+      desc_kk : '',
       content_ru: '',
       content_kk: '',
       status : '',
@@ -597,8 +615,10 @@ class ShowVacancies extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           let data = JSON.parse(xhr.responseText);
-          this.setState({title: data.vacancy.title});
-          this.setState({desc: data.vacancy.description});
+          this.setState({title_ru: data.vacancy.title_ru});
+          this.setState({title_kk: data.vacancy.title_kk});
+          this.setState({desc_ru: data.vacancy.description_ru});
+          this.setState({desc_kk: data.vacancy.description_kk});
           this.setState({status: data.vacancy.status});
           this.setState({content_ru: data.vacancy.content_ru});
           this.setState({content_kk: data.vacancy.content_kk});
@@ -624,8 +644,10 @@ class ShowVacancies extends React.Component {
   }
   requestSubmission(){
     let vacancy = new Object();
-    vacancy.title = this.state.title;
-    vacancy.description = this.state.desc;
+    vacancy.title_ru = this.state.title_ru;
+    vacancy.title_kk = this.state.title_kk;
+    vacancy.description_ru = this.state.desc_ru;
+    vacancy.description_kk = this.state.desc_kk;
     vacancy.content_ru = this.state.content_ru;
     vacancy.content_kk = this.state.content_kk;
     console.log(vacancy);
@@ -810,14 +832,24 @@ class ShowVacancies extends React.Component {
           <div className="col-md-12">
             <form id="insert_form" name="form_aritcle">
               <div className="form-group">
-                <label htmlFor="title">Название</label>
+                <label htmlFor="title">Название на русском</label>
                 <input type="text" name="title" maxLength="150" id="title" pleaceholder="Title" className="form-control"
-                       required onChange={(e) => this.setState({title: e.target.value})} value={this.state.title}/>
+                       required onChange={(e) => this.setState({title_ru: e.target.value})} value={this.state.title_ru}/>
               </div>
               <div className="form-group">
-                <label htmlFor="description">Описание</label>
+                <label htmlFor="title">Название на казахском</label>
+                <input type="text" name="title" maxLength="150" id="title" pleaceholder="Title" className="form-control"
+                       required onChange={(e) => this.setState({title_kk: e.target.value})} value={this.state.title_kk}/>
+              </div>
+              <div className="form-group">
+                <label htmlFor="description">Описание на русском</label>
                 <input type="text" name="description" maxLength="150" id="description" pleaceholder="Description"
-                       className="form-control" required onChange={(e) => this.setState({desc: e.target.value})} value={this.state.desc}/>
+                       className="form-control" required onChange={(e) => this.setState({desc_ru: e.target.value})} value={this.state.desc_ru}/>
+              </div>
+              <div className="form-group">
+                <label htmlFor="description">Описание на казахском</label>
+                <input type="text" name="description" maxLength="150" id="description" pleaceholder="Description"
+                       className="form-control" required onChange={(e) => this.setState({desc_kk: e.target.value})} value={this.state.desc_kk}/>
               </div>
               <div className="form-group">
                 <label htmlFor="text">Содержание на русском</label>

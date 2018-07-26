@@ -10,7 +10,6 @@ import Loader from 'react-loader-spinner';
 let e = new LocalizedStrings({ru,kk});
 
 export default class Page extends React.Component{
-
   constructor() {
     super();
     (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
@@ -94,22 +93,20 @@ export default class Page extends React.Component{
       <div className="container body-content newsArticle wow fadeInUp" data-wow-duration="1s">
         <div className="row col-md-12">
           {this.state.loaderHidden &&
-          <div className="col-md-12 text-center"><br/>
-            <div className={'list-group-item flex-column'}>
-              <br/>
-              <hr/>
-            </div>
+          <div className="col-md-12"><br/>
+            <h4>{this.state.page.title}</h4>
+            <span><img src="images/line.png" /></span>
             <div className="list-group-item flex-column align-items-start ">
-                <div className="text-left container" id="innerText">
-                  <div id="must-delete"></div>
-                  <div className="col-md-12 text-center">
-                    <br/>
-                    <br/>
-                    <br/>
-                    <hr style={{height:"1px"}}/>
-                    <a className="allnews" href="/#/" onClick={this.props.history.goBack}>Вернуться</a>
-                  </div>
+              <div className="text-left container" id="innerText">
+                <div id="must-delete"></div>
+                <div className="col-md-12 text-center">
+                  <br/>
+                  <br/>
+                  <br/>
+                  <hr style={{height:"1px"}}/>
+                  <a className="allnews" href="/#/" onClick={this.props.history.goBack}>Вернуться</a>
                 </div>
+              </div>
               <br/>
             </div>
 
