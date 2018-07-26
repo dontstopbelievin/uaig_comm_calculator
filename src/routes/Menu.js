@@ -371,6 +371,9 @@ class AddItem extends React.Component {
   }
 
   render() {
+    var pages = this.state.pages;
+    var categories = this.state.categories;
+    var roles = this.state.roles;
     return(
       <div className="container">
         <h4>Форма нового элемента меню</h4>
@@ -406,7 +409,7 @@ class AddItem extends React.Component {
               <label>Категория</label>
               <select className={'form-control'} required={true} onChange={this.handleCategorySelect.bind(this)}>
                 <option>Выберите элемент</option>
-                {this.state.categories.map(function (category,i) {
+                {categories.map(function (category,i) {
                     return(
                       <option key={i} value={category.id}>{category.name_kk + ' | ' + category.name_ru}</option>
                     )
@@ -427,7 +430,7 @@ class AddItem extends React.Component {
               <label>Для ролей</label>
               <select className={'form-control'} required={true} onChange={this.handleRoleSelect.bind(this)}>
                 <option>Выберите элемент</option>
-                {this.state.roles.map(function (role,index) {
+                {roles.map(function (role,index) {
                   return(
                     <option value={role.id}>{role.name}</option>
                   )
@@ -461,11 +464,11 @@ class AddItem extends React.Component {
                 <label>Страница</label>
                 <select className={'form-control'} required={true} onChange={this.handlePageSelect.bind(this)}>
                   <option>Выберите элемент</option>
-                  {this.state.pages.map(function (page,i) {
+                  {pages.map(function (page,i) {
                       return(
-                        <option key={i} title={page.description} value={page.id}>{page.title}</option>
+                        <option key={i} title={page.description_ru} value={page.id}>{'id: ' + page.id + ' | ' + page.title_ru}</option>
                       )
-                    })
+                    }.bind(this))
                   }
                 </select>
               </div>
@@ -689,6 +692,9 @@ class UpdateItem extends React.Component {
   }
 
   render() {
+    var pages = this.state.pages;
+    var categories = this.state.categories;
+    var roles = this.state.roles;
     return(
       <div className="container">
         <h4>Форма нового элемента меню</h4>
@@ -726,7 +732,7 @@ class UpdateItem extends React.Component {
               <label>Категория</label>
               <select className={'form-control'} value={this.state.category} required={true} onChange={this.handleCategorySelect.bind(this)}>
                 <option>Выберите элемент</option>
-                {this.state.categories.map(function (category,i) {
+                {categories.map(function (category,i) {
                     return(
                       <option key={i} value={category.id}>{category.name_kk + ' | ' + category.name_ru}</option>
                     )
@@ -747,7 +753,7 @@ class UpdateItem extends React.Component {
               <label>Для ролей</label>
               <select className={'form-control'} value={this.state.roleId} required={true} onChange={this.handleRoleSelect.bind(this)}>
                 <option>Выберите элемент</option>
-                {this.state.roles.map(function (role,index) {
+                {roles.map(function (role,index) {
                   return(
                     <option value={role.id}>{role.name}</option>
                   )
@@ -783,9 +789,9 @@ class UpdateItem extends React.Component {
                 <label>Страница</label>
                 <select className={'form-control'} value={this.state.pageId} required={true} onChange={this.handlePageSelect.bind(this)}>
                   <option>Выберите элемент</option>
-                  {this.state.pages.map(function (page,i) {
+                  {pages.map(function (page,i) {
                       return(
-                        <option key={i} title={page.description} value={page.id}>{page.title}</option>
+                        <option key={i} title={page.description_ru} value={page.id}>{'id: ' + page.id + ' | ' + page.title_ru}</option>
                       )
                     })
                   }

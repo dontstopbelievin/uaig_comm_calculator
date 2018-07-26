@@ -78,6 +78,8 @@ class AllPages extends React.Component {
 
   componentDidMount() {
     this.props.breadCrumbs();
+  }
+  componentWillMount() {
     this.getPages();
   }
 
@@ -167,8 +169,8 @@ class AllPages extends React.Component {
                   return(
                     <tr key={index}>
                       <td >{index+1}</td>
-                      <td title={page.title}>{page.title.substr(0,30)} ...</td>
-                      <td title={page.description}>{page.description.substr(0,50)} ...</td>
+                      <td title={page.title_ru}>{page.title_ru.substr(0,30)} ...</td>
+                      <td title={page.description_ru}>{page.description_ru.substr(0,50)} ...</td>
 
                       <td>
                         <Link className="btn btn-outline-info col-md-8" to={'/panel/admin/addPages/update/' + page.id}>Изменить</Link>
@@ -209,9 +211,11 @@ class AddPage extends React.Component {
 
     this.state = {
       selectedOptions : '1',
-      title : '',
+      title_ru : '',
+      title_kk : '',
+      desc_ru : '',
+      desc_kk : '',
       value: '',
-      desc : '',
       content: '',
       content_kk: '',
       loaderHidden: false
@@ -247,8 +251,10 @@ class AddPage extends React.Component {
   requestSubmission(e){
     e.preventDefault();
     var page = new Object();
-        page.title = this.state.title;
-        page.description = this.state.desc;
+        page.title_ru = this.state.title_ru;
+        page.title_kk = this.state.title_kk;
+        page.description_ru = this.state.desc_ru;
+        page.description_kk = this.state.desc_kk;
         page.content = this.state.content;
         page.content_kk = this.state.content_kk;
         console.log(page);
@@ -291,12 +297,28 @@ class AddPage extends React.Component {
               <div className="col-md-12">
                   <form id="insert_form" name="form_aritcle">
                       <div className="form-group">
-                          <label htmlFor="title">Название</label>
-                          <input type="text" name="title" maxlength="150"  id="title" pleaceholder="Title" className="form-control" required onChange={(e) => this.setState({title: e.target.value})} />
+                          <label htmlFor="title">Название на русском</label>
+                          <input type="text" name="title" maxlength="150"
+                                 id="title" pleaceholder="Title" className="form-control"
+                                 required onChange={(e) => this.setState({title_ru: e.target.value})} />
                       </div>
                       <div className="form-group">
-                          <label htmlFor="description">Описание</label>
-                          <input type="text" name="description" maxlength="150" id="description" pleaceholder="Description" className="form-control" required onChange={(e) => this.setState({desc: e.target.value})} />
+                          <label htmlFor="title">Название на казахском</label>
+                          <input type="text" name="title" maxlength="150"
+                                 id="title" pleaceholder="Title" className="form-control"
+                                 required onChange={(e) => this.setState({title_kk: e.target.value})} />
+                      </div>
+                      <div className="form-group">
+                          <label htmlFor="description">Описание на русском</label>
+                          <input type="text" name="description" maxlength="150"
+                                 id="description" pleaceholder="Description" className="form-control"
+                                 required onChange={(e) => this.setState({desc_ru: e.target.value})} />
+                      </div>
+                      <div className="form-group">
+                          <label htmlFor="description">Описание на казахском</label>
+                          <input type="text" name="description" maxlength="150"
+                                 id="description" pleaceholder="Description" className="form-control"
+                                 required onChange={(e) => this.setState({desc_kk: e.target.value})} />
                       </div>
                       <div className="form-group">
                           <label htmlFor="text">Содержание страницы на русском</label>
@@ -341,7 +363,6 @@ class AddPage extends React.Component {
                           />
                       </div>
                       <input type="submit" className="btn btn-outline-success" value="Отправить статью" onClick={this.requestSubmission.bind(this)} />
-                      <input type="reset" className="btn btn-outline-warning" value="Очистить" />
                   </form>
                   <div>
                       <hr />
@@ -364,8 +385,10 @@ class UpdatePage extends React.Component {
     this.onChangeKK = this.onChangeKK.bind(this);
     this.state = {
       id : '',
-      title : '',
-      desc : '',
+      title_ru : '',
+      title_kk : '',
+      desc_ru : '',
+      desc_kk : '',
       value: '',
       content: false,
       content_kk: false,
@@ -374,6 +397,9 @@ class UpdatePage extends React.Component {
   }
   componentDidMount() {
     this.props.breadCrumbs();
+    $('.note-popover').remove();
+  }
+  componentWillMount() {
     this.getPage();
   }
   getPage() {
@@ -388,8 +414,10 @@ class UpdatePage extends React.Component {
         var article = JSON.parse(xhr.responseText);
 
         this.setState({id: article.page.id});
-        this.setState({title: article.page.title});
-        this.setState({desc: article.page.description});
+        this.setState({title_ru: article.page.title_ru});
+        this.setState({title_kk: article.page.title_kk});
+        this.setState({desc_ru: article.page.description_ru});
+        this.setState({desc_kk: article.page.description_kk});
         this.setState({content: article.page.content});
         this.setState({content_kk: article.page.content_kk});
 
@@ -406,8 +434,10 @@ class UpdatePage extends React.Component {
         e.preventDefault();
         var page = new Object();
             page.id = this.state.id;
-            page.title = this.state.title;
-            page.description = this.state.desc;
+            page.title_ru = this.state.title_ru;
+            page.title_kk = this.state.title_kk;
+            page.description_ru = this.state.desc_ru;
+            page.description_kk = this.state.desc_kk;
             page.content = this.state.content;
             page.content_kk = this.state.content_kk;
       if (sessionStorage.getItem('tokenInfo')) {
@@ -467,65 +497,76 @@ class UpdatePage extends React.Component {
         <div className="col-md-12">
           <form id="insert_form" name="form_aritcle">
             <div className="form-group">
-                <label htmlFor="title">Название</label>
-                <input type="text" name="title" maxLength="150"  id="title" pleaceholder="Title" className="form-control" required onChange={(e) => this.setState({title: e.target.value})} value={this.state.title} />
+                <label htmlFor="title">Название на русском</label>
+                <input type="text" name="title" maxLength="150"
+                       id="title" pleaceholder="Title" className="form-control"
+                       required onChange={(e) => this.setState({title_ru: e.target.value})} value={this.state.title_ru} />
             </div>
             <div className="form-group">
-                <label htmlFor="description">Описание</label>
-                <input type="text" name="description" maxLength="150" id="description" pleaceholder="Description" className="form-control" required onChange={(e) => this.setState({desc: e.target.value})} value={this.state.desc}  />
+                <label htmlFor="title">Название на казахском</label>
+                <input type="text" name="title" maxLength="150"
+                       id="title" pleaceholder="Title" className="form-control"
+                       required onChange={(e) => this.setState({title_kk: e.target.value})} value={this.state.title_kk} />
+            </div>
+            <div className="form-group">
+                <label htmlFor="description">Описание на русском</label>
+                <input type="text" name="description" maxLength="150"
+                       id="description" pleaceholder="Description" className="form-control"
+                       required onChange={(e) => this.setState({desc_ru: e.target.value})} value={this.state.desc_ru}  />
+            </div>
+            <div className="form-group">
+                <label htmlFor="description">Описание на казахском</label>
+                <input type="text" name="description" maxLength="150"
+                       id="description" pleaceholder="Description" className="form-control"
+                       required onChange={(e) => this.setState({desc_kk: e.target.value})} value={this.state.desc_kk}  />
             </div>
             <div className="form-group form3">
-                <label htmlFor="text">Содержание страницы на русском</label>
-                {this.state.content &&
-                  <div className={'col-md-12'}>
-                    <ReactSummernote
-                      value={this.state.content}
-                      options={{
-                        // lang: 'ru-RU',
-                        height: 350,
-                        dialogsInBody: true,
-                        toolbar: [
-                          ['style', ['style']],
-                          ['font', ['bold', 'underline', 'clear']],
-                          ['fontname', ['fontname']],
-                          ['para', ['ul', 'ol', 'paragraph']],
-                          ['table', ['table']],
-                          ['insert', ['link', 'picture', 'video']],
-                          ['view', ['fullscreen', 'codeview']]
-                        ]
-                      }}
-                      onChange={this.onChange}
-                    />
-                  </div>
-                }
+              <label htmlFor="text">Содержание страницы на русском</label>
+                <div className={'col-md-12'}>
+                  <ReactSummernote
+                    value={this.state.content}
+                    options={{
+                      // lang: 'ru-RU',
+                      height: 350,
+                      dialogsInBody: true,
+                      toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['table', ['table']],
+                        ['insert', ['link', 'picture', 'video']],
+                        ['view', ['fullscreen', 'codeview']]
+                      ]
+                    }}
+                    onChange={this.onChange}
+                  />
+                </div>
             </div>
             <div className="form-group form3">
-                <label htmlFor="text">Содержание страницы на казахском</label>
-                {this.state.content &&
-                  <div className={'col-md-12'}>
-                    <ReactSummernote
-                      value={this.state.content_kk}
-                      options={{
-                        // lang: 'ru-RU',
-                        height: 350,
-                        dialogsInBody: true,
-                        toolbar: [
-                          ['style', ['style']],
-                          ['font', ['bold', 'underline', 'clear']],
-                          ['fontname', ['fontname']],
-                          ['para', ['ul', 'ol', 'paragraph']],
-                          ['table', ['table']],
-                          ['insert', ['link', 'picture', 'video']],
-                          ['view', ['fullscreen', 'codeview']]
-                        ]
-                      }}
-                      onChange={this.onChangeKK}
-                    />
-                  </div>
-                }
+              <label htmlFor="text">Содержание страницы на казахском</label>
+                <div className={'col-md-12'}>
+                  <ReactSummernote
+                    value={this.state.content_kk}
+                    options={{
+                      // lang: 'ru-RU',
+                      height: 350,
+                      dialogsInBody: true,
+                      toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['table', ['table']],
+                        ['insert', ['link', 'picture', 'video']],
+                        ['view', ['fullscreen', 'codeview']]
+                      ]
+                    }}
+                    onChange={this.onChangeKK}
+                  />
+                </div>
             </div>
             <input type="submit" className="btn btn-outline-success" value="Отправить статью" onClick={this.requestSubmission.bind(this)} />
-            <input type="reset" className="btn btn-outline-warning" value="Очистить" />
           </form>
           <div>
             <hr />

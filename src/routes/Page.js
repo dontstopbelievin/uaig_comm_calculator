@@ -89,12 +89,13 @@ export default class Page extends React.Component{
   }
 
   render() {
+    var lang =localStorage.getItem('lang');
     return(
       <div className="container body-content newsArticle wow fadeInUp" data-wow-duration="1s">
         <div className="row col-md-12">
           {this.state.loaderHidden &&
           <div className="col-md-12"><br/>
-            <h4>{this.state.page.title}</h4>
+            <h4>{(lang === 'ru') ? this.state.page.title_ru:this.state.page.title_kk}</h4>
             <span><img src="images/line.png" /></span>
             <div className="list-group-item flex-column align-items-start ">
               <div className="text-left container" id="innerText">
@@ -111,6 +112,14 @@ export default class Page extends React.Component{
             </div>
 
           </div>
+          }
+          {!this.state.loaderHidden &&
+            <div className={'row col-md-12'}>
+              <br />
+              <br />
+              <br />
+              <br />
+            </div>
           }
           {!this.state.loaderHidden &&
             <div className={'row col-md-12'}>
