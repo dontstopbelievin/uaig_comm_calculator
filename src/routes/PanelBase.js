@@ -124,7 +124,7 @@ export default class PanelBase extends React.Component{
         <div>
           <div className="alert alert-danger" role="alert">
             Для работы в системе необходимо <a href={"/#/panel/common/login"}>войти </a>
-            или <a href={"/#/panel/common/register"}>зарегистрироватся</a>.
+            или <a href={"/#/panel/common/register"}>зарегистрироваться</a>.
           </div>
         </div>
         }
