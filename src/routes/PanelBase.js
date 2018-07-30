@@ -94,6 +94,17 @@ export default class PanelBase extends React.Component{
           thirdElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
             '<span style="font-weight: bold;">' + e[fullLoc[5]][fullLoc[6]][fullLoc[7]] + '</span>';
           breadCrumbs.appendChild(thirdElem);
+          
+          if (typeof fullLoc[8] !== 'undefined')
+          {
+            if (fullLoc[7] === 'edit')
+            {
+              let forthElem = document.createElement('span');
+              forthElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
+                '<span style="font-weight: bold;">№ ' + fullLoc[8] + '</span>';
+              breadCrumbs.appendChild(forthElem);
+            }
+          }
 
         }else if (typeof fullLoc[7] === 'undefined')
         {
