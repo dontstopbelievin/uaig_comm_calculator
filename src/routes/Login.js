@@ -367,7 +367,8 @@ export default class Login extends Component {
           error: function(jqXHR, textStatus, errorThrown) {
              console.log(textStatus, errorThrown);
              this.setState({loaderHidden: true});
-          }
+             alert('Во время авторизации по ЭЦП произошла ошибка. Возможно срок действия вашего ЭЦП истек или он был отозван');
+          }.bind(this)
       });
 
       // $.post(window.url + 'api/Account/LoginCert', {
