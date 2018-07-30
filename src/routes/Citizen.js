@@ -313,8 +313,8 @@ class AddApz extends React.Component {
   }
 
   onInputChange(e) {
-    const { value, name } = e.target
-    this.setState({ [name] : value })
+    const { value, name } = e.target;
+    this.setState({ [name] : value });
   }
 
   componentDidMount() {
@@ -348,6 +348,7 @@ class AddApz extends React.Component {
         this.setState({projectName: apz.project_name ? apz.project_name : '' });
         this.setState({projectAddress: apz.project_address ? apz.project_address : '' });
         this.setState({projectAddressCoordinates: apz.project_address_coordinates ? apz.project_address_coordinates : '' });
+        this.setState({hasCoordinates: apz.project_address_coordinates ? true : false });
 
         this.setState({personalIdFile: apz.files.filter(function(obj) { return obj.category_id === 3 })[0]});
         this.setState({confirmedTaskFile: apz.files.filter(function(obj) { return obj.category_id === 9 })[0]});
@@ -477,6 +478,7 @@ class AddApz extends React.Component {
         personalIdFile: 'Уд.личности/Реквизиты',
         projectName: 'Наименование проектируемого объекта',
         projectAddress: 'Адрес проектируемого объекта',
+        projectAddressCoordinates: 'Отметить на карте',
         confirmedTaskFile: 'Утвержденное задание на проектирование',
         titleDocumentFile: 'Госакт и правоустанавливающий документ на земельный участок',
         objectType: 'Тип объекта',
@@ -913,7 +915,7 @@ class AddApz extends React.Component {
                   <div className="tab-pane fade show active" id="tab0" role="tabpanel" aria-labelledby="tab0-link">
                     <form id="tab0-form" data-tab="0" onSubmit={this.saveApz.bind(this, false)}>
                       <div className="row">
-                        <div className="col-md-6">
+                        <div className="col-md-7">
                           <div className="form-group">
                             <label htmlFor="Applicant">Заявитель:</label>
                             <input type="text" className="form-control" onChange={this.onInputChange} required name="applicant" value={this.state.applicant} placeholder="ФИО / Наименование компании" />
@@ -956,7 +958,7 @@ class AddApz extends React.Component {
                                 <input type="hidden" onChange={this.onInputChange} value={this.state.projectAddressCoordinates} id="ProjectAddressCoordinates" name="projectAddressCoordinates" />
                               </div>
                               <div className="col-sm-5 p-0">
-                                <a className="btn btn-outline-secondary btn-sm" onClick={() => this.toggleMap(true)}>
+                                <a className="btn btn-secondary btn-sm mark_btn" onClick={() => this.toggleMap(true)}>
                                   {this.state.hasCoordinates &&
                                     <i className="glyphicon glyphicon-ok coordinateIcon mr-1"></i>
                                   }
@@ -967,7 +969,7 @@ class AddApz extends React.Component {
                             </div>
                           </div>
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-md-5">
                           <div className="form-group">
                             <label>Уд.личности/Реквизиты</label>
                             <div className="file_container">
@@ -985,9 +987,9 @@ class AddApz extends React.Component {
                               }
 
                               <div className="file_buttons btn-group btn-group-justified d-table mt-0">
-                                <label htmlFor="PersonalIdFile" className="btn btn-success" style={{marginRight: '2px'}}>Загрузить</label>
+                                <label htmlFor="PersonalIdFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
                                 <input type="file" id="PersonalIdFile" name="PersonalIdFile" className="form-control" onChange={this.uploadFile.bind(this, 3)} style={{display: 'none'}} />
-                                <label onClick={this.selectFromList.bind(this, 3)} className="btn btn-info">Выбрать из списка</label>
+                                <label onClick={this.selectFromList.bind(this, 3)} className="btn btn-info btn-sm">Выбрать из списка</label>
                               </div>
                               <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
                             </div>
@@ -1009,9 +1011,9 @@ class AddApz extends React.Component {
                               }
 
                               <div className="file_buttons btn-group btn-group-justified d-table mt-0">
-                                <label htmlFor="ConfirmedTaskFile" className="btn btn-success" style={{marginRight: '2px'}}>Загрузить</label>
+                                <label htmlFor="ConfirmedTaskFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
                                 <input type="file" id="ConfirmedTaskFile" name="ConfirmedTaskFile" className="form-control" onChange={this.uploadFile.bind(this, 9)} style={{display: 'none'}} />
-                                <label onClick={this.selectFromList.bind(this, 9)} className="btn btn-info">Выбрать из списка</label>
+                                <label onClick={this.selectFromList.bind(this, 9)} className="btn btn-info btn-sm">Выбрать из списка</label>
                               </div>
                               <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
                             </div>
@@ -1034,9 +1036,9 @@ class AddApz extends React.Component {
                               }
 
                               <div className="file_buttons btn-group btn-group-justified d-table mt-0">
-                                <label htmlFor="TitleDocumentFile" className="btn btn-success" style={{marginRight: '2px'}}>Загрузить</label>
+                                <label htmlFor="TitleDocumentFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
                                 <input type="file" id="TitleDocumentFile" name="TitleDocumentFile" className="form-control" onChange={this.uploadFile.bind(this, 10)} style={{display: 'none'}} />
-                                <label onClick={this.selectFromList.bind(this, 10)} className="btn btn-info">Выбрать из списка</label>
+                                <label onClick={this.selectFromList.bind(this, 10)} className="btn btn-info btn-sm">Выбрать из списка</label>
                               </div>
                               <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
                             </div>
@@ -1054,7 +1056,7 @@ class AddApz extends React.Component {
 
                     {this.state.showMap && 
                       <div className="mb-4">
-                        <ShowMap point={true} mapFunction={this.toggleMap} hasCoordinates={this.hasCoordinates}/>
+                        <ShowMap point={true} changeFunction={this.onInputChange} mapFunction={this.toggleMap} hasCoordinates={this.hasCoordinates}/>
                       </div>
                     }
 
@@ -2874,13 +2876,21 @@ class ShowMap extends React.Component {
   }
 
   toggleMap(value) {
-    this.props.mapFunction(value)
+    this.props.mapFunction(value);
+  }
+
+  changeState(name, value) {
+    var data = {
+      target: {name: name, value: value}
+    };
+
+    this.props.changeFunction(data);
   }
 
   saveCoordinates() {
-    $('#ProjectAddressCoordinates').val($('#coordinates').html());
+    this.changeState('projectAddressCoordinates', $('#coordinates').html());
 
-    this.props.hasCoordinates(true)
+    this.props.hasCoordinates(true);
 
     if (window.confirm('Местоположение отмечено. Закрыть карту?')) {
       this.toggleMap(false);

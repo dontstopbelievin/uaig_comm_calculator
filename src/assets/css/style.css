@@ -1069,6 +1069,12 @@ table{
   font-weight: 100;
 }
 
+#apzFormDiv .mark_btn {
+  padding: 0.60620rem 0.5rem;
+  margin: 0;
+  border-radius: 4px;
+}
+
 #sketch-form .row {
   padding-top: 0;
 }
