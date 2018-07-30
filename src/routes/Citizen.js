@@ -292,7 +292,7 @@ class AddApz extends React.Component {
       blocks: [{num: 1, heatMain: '', heatVentilation: '', heatWater: '', heatWaterMax: ''}],
       companyList: [],
       categoryFiles: [],
-    }
+    };
     
     this.saveApz = this.saveApz.bind(this);
     this.hasCoordinates = this.hasCoordinates.bind(this);
