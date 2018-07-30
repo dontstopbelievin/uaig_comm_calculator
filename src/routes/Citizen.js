@@ -489,6 +489,10 @@ class AddApz extends React.Component {
         requiredFields['claimedCapacityJustification'] = 'Расчет-обоснование заявленной мощности';
       }
 
+      if (this.state.phoneServiceNum) {
+        requiredFields['paymentPhotoFile'] = 'Сканированный файл оплаты';
+      }
+
       var errors = 0;
 
       Object.keys(requiredFields).forEach(function(key){

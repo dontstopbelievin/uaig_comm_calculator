@@ -1222,44 +1222,6 @@ printData()
             </table>
           }
 
-          {this.state.isDirector &&
-            <div>
-              {!this.state.xmlFile && !this.state.isSigned && apz.status_id === 5 &&
-                <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                  <div>Выберите хранилище</div>
-                            
-                  <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
-                    <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
-                    <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>eToken</button>
-                  </div>
-
-                  <div className="form-group">
-                    <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
-                    <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
-                  </div>
-
-                  <div className="form-group">
-                    <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
-                  </div>
-                </div>
-              }
-            </div>
-          }
-
-          {this.state.phoneStatus === 2 && this.state.isSigned && this.state.isPerformer &&
-            <div style={{margin: 'auto', marginTop: '20px', display: 'table', width: '30%'}}>
-              <div className="form-group">
-                <label>Номер документа</label>
-                <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
-              </div>
-              <div className="form-group">
-                <button type="button" className="btn btn-primary" onClick={this.sendPhoneResponse.bind(this, apz.id, true, "")}>
-                  Отправить
-                </button>
-              </div>
-            </div>
-          }
-
           {this.state.accept === 'decline' && this.state.phoneStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
             <form className="provider_answer_body" style={{border: 'solid 1px #f44336', padding: '20px'}}>
               <div className="form-group">
@@ -1283,7 +1245,7 @@ printData()
                 <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
               </div>
               <div className="form-group">
-                <button type="button" className="btn btn-secondary" onClick={this.sendPhoneResponse.bind(this, apz.id, false, this.state.description)}>
+                <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, 'decline', this.state.description)}>
                   Вернуть архитектору
                 </button>
               </div>
@@ -1314,6 +1276,44 @@ printData()
                   }
                 </tbody>
               </table>
+            </div>
+          }
+
+          {this.state.phoneStatus === 2 && this.state.isSigned && this.state.isPerformer &&
+            <div style={{margin: 'auto', marginTop: '20px', display: 'table', width: '30%'}}>
+              <div className="form-group">
+                <label>Номер документа</label>
+                <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+              </div>
+              <div className="form-group">
+                <button type="button" className="btn btn-primary" onClick={this.sendPhoneResponse.bind(this, apz.id, (this.state.response), "")}>
+                  Отправить
+                </button>
+              </div>
+            </div>
+          }
+
+          {this.state.isDirector &&
+            <div>
+              {!this.state.xmlFile && !this.state.isSigned && apz.status_id === 5 &&
+                <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                  <div>Выберите хранилище</div>
+                            
+                  <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
+                    <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
+                    <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>eToken</button>
+                  </div>
+
+                  <div className="form-group">
+                    <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
+                    <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                  </div>
+
+                  <div className="form-group">
+                    <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                  </div>
+                </div>
+              }
             </div>
           }
 

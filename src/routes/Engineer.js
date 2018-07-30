@@ -961,6 +961,10 @@ class ShowApz extends React.Component {
             <div>
               <h5 className="block-title-2 mt-3 mb-3">Решение</h5>
 
+              <div class="alert alert-info" role="alert">
+                Отправляя данную заявку коммунальным службам, вы подтверждаете достоверность данных, заполненные заявителем
+              </div>
+
               <table className="table table-bordered commission_users_table">
                 <thead>
                   <tr>
