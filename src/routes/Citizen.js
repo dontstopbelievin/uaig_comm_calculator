@@ -927,7 +927,7 @@ class AddApz extends React.Component {
                             <div className="custom-control custom-radio">
                               <input type="radio" className="custom-control-input" name="type" value="1" id={'apztype1'}
                                      checked={this.state.type == 1 ? true : false} onChange={this.onInputChange} />
-                              <label for="apztype1" className="custom-control-label" style={{cursor:"pointer"}}>Пакет 1
+                              <label htmlFor={"apztype1"} className="custom-control-label" style={{cursor:"pointer"}}>Пакет 1
                               <br/>
                               <span className="help-block text-muted">(архитектурно-планировочное задание, технические условия)</span></label>
                             </div>

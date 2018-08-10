@@ -36,7 +36,7 @@ export default class Footer extends React.Component {
                             
                             <div className="social col-md-5 text-right">
                                 <a href="https://www.facebook.com/uaig.almaty.3"><img src="./images/facebook.png" alt="facebook" /></a>
-                                <a href="https://www.instagram.com/uaigalmaty/"><img src="./images/instagram.png" alt="instagram" /></a>
+                                <a href="https://www.instagram.com/uaigalmatykz/"><img src="./images/instagram.png" alt="instagram" /></a>
                                 <a href="https://vk.com/id485151219"><img src="./images/vk.png" alt="vk" /></a>
                                 <a href="https://twitter.com/?logged_out=1&lang=ru"><img src="./images/twitter.png" alt="twitter" /></a>
                                 <a href="https://www.youtube.com/channel/UCCWoXvhrVkN1NAd6IQLghdQ"><img src="./images/youtube.png" alt="youtube" /></a>
