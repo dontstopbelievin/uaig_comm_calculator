@@ -233,6 +233,7 @@ class AddApz extends React.Component {
       claimedCapacityJustification: null,
 
       applicant: '',
+      type: 1,
       phone: '',
       region: 'Наурызбай',
       designer: '',
@@ -345,6 +346,7 @@ class AddApz extends React.Component {
         this.setState({phone: apz.phone ? apz.phone : '' });
         this.setState({region: apz.region ? apz.region : '' });
         this.setState({designer: apz.designer ? apz.designer : '' });
+        this.setState({type: apz.type ? apz.type : '' });
         this.setState({projectName: apz.project_name ? apz.project_name : '' });
         this.setState({projectAddress: apz.project_address ? apz.project_address : '' });
         this.setState({projectAddressCoordinates: apz.project_address_coordinates ? apz.project_address_coordinates : '' });
@@ -920,6 +922,27 @@ class AddApz extends React.Component {
                     <form id="tab0-form" data-tab="0" onSubmit={this.saveApz.bind(this, false)}>
                       <div className="row">
                         <div className="col-md-7">
+                          <div className="form-group">
+                            <label htmlFor="Region">Вид пакета:</label>
+                            <div className="custom-control custom-radio">
+                              <input type="radio" className="custom-control-input" name="type" value="1" id={'apztype1'}
+                                     checked={this.state.type == 1 ? true : false} onChange={this.onInputChange} />
+                              <label for="apztype1" className="custom-control-label" style={{cursor:"pointer"}}>Пакет 1
+                              <br/>
+                              <span className="help-block text-muted">(архитектурно-планировочное задание, технические условия)</span></label>
+                            </div>
+                            <hr/>
+                            <div className="custom-control custom-radio">
+                              <input type="radio" className="custom-control-input" name="type" value="2" id={'apztype2'}
+                                     checked={this.state.type == 2 ? true : false} onChange={this.onInputChange} />
+                              <label for="apztype2" className="custom-control-label" style={{cursor:"pointer"}}>Пакет 2
+                              <br/>
+                              <span className="help-block text-muted">(архитектурно-планировочное задание, вертикальные планировочные отметки,
+                                выкопировку из проекта детальной планировки, типовые поперечные
+                                профили дорог и улиц, технические условия, схемы трасс наружных инженерных
+                                сетей)</span></label>
+                            </div>
+                          </div>
                           <div className="form-group">
                             <label htmlFor="Applicant">Заявитель:</label>
                             <input type="text" className="form-control" onChange={this.onInputChange} required name="applicant" value={this.state.applicant} placeholder="ФИО / Наименование компании" />
@@ -1586,6 +1609,7 @@ class ShowApz extends React.Component {
       phoneCustomTcFile: null,
       electroCustomTcFile: null,
       heatCustomTcFile: null,
+      pack2IdFile: null,
       gasCustomTcFile: null,
       personalIdFile: false,
       confirmedTaskFile: false,
@@ -1623,6 +1647,11 @@ class ShowApz extends React.Component {
         this.setState({confirmedTaskFile: apz.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
         this.setState({paymentPhotoFile: apz.files.filter(function(obj) { return obj.category_id === 20 })[0]});
+        var pack2IdFile = apz.files.filter(function(obj) { return obj.category_id === 25 }) ?
+          apz.files.filter(function(obj) { return obj.category_id === 25 }) : [];
+        if ( pack2IdFile.length > 0 ) {
+          this.setState({pack2IdFile: pack2IdFile[0]});
+        }
 
         if (apz.status_id === 1 || apz.status_id === 2) {
 
@@ -2287,6 +2316,20 @@ class ShowApz extends React.Component {
                   <tr>
                     <td><b>Сканированный файл оплаты</b></td>
                     <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.paymentPhotoFile.id)}>Скачать</a></td>
+                  </tr>
+                }
+
+                {this.state.pack2IdFile &&
+                  <tr>
+                    <td>
+                      <b>Пакет 2</b>
+                      <br />
+                      <span className={'help-block text-muted'}>архитектурно-планировочное задание, вертикальные планировочные
+                      отметки, выкопировку из проекта детальной планировки, типовые поперечные
+                      профили дорог и улиц, технические условия, схемы трасс наружных инженерных
+                      сетей</span>
+                    </td>
+                    <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.pack2IdFile.id)}>Скачать</a></td>
                   </tr>
                 }
               </tbody>

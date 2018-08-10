@@ -227,7 +227,9 @@ class ShowApz extends React.Component {
       file: false,
       docNumber: "",
       description: '',
+      categoryFiles: [],
       responseFile: null,
+      pack2IdFile: null,
       waterResponseFile: null,
       phoneResponseFile: null,
       electroResponseFile: null,
@@ -251,6 +253,10 @@ class ShowApz extends React.Component {
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onCommentChange = this.onCommentChange.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
+  //
+    this.selectFromList = this.selectFromList.bind(this);
+    this.uploadFile = this.uploadFile.bind(this);
+    this.selectFile = this.selectFile.bind(this);
   }
   componentDidMount() {
     this.props.breadCrumbs();
@@ -294,6 +300,12 @@ class ShowApz extends React.Component {
         this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
         this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
+        var pack2IdFile = data.files.filter(function(obj) { return obj.category_id === 25 }) ?
+          data.files.filter(function(obj) { return obj.category_id === 25 }) : [];
+        if ( pack2IdFile.length > 0 ) {
+          this.setState({pack2IdFile: pack2IdFile[0]});
+        }
+
         this.setState({claimedCapacityJustification: data.files.filter(function(obj) { return obj.category_id === 24 })[0]});
 
         if (commission) {
@@ -778,6 +790,7 @@ class ShowApz extends React.Component {
     var formData = new FormData();
     formData.append('response', status);
     formData.append('message', comment);
+    formData.append('file_id', this.state.pack2IdFile.id);
     formData.append('direct', direct.length > 0 ? direct : 'region');
 
     var xhr = new XMLHttpRequest();
@@ -806,10 +819,149 @@ class ShowApz extends React.Component {
     }.bind(this);
     xhr.send(formData);
   }
+
+  uploadFile(category, e) {
+    var file = e.target.files[0];
+    var name = file.name.replace(/\.[^/.]+$/, "");
+    var progressbar = $('.progress[data-category=' + category + ']');
+
+    if (!file || !category) {
+      alert('Не удалось загрузить файл');
+
+      return false;
+    }
+
+    var formData = new FormData();
+    formData.append('file', file);
+    formData.append('name', name);
+    formData.append('category', category);
+    progressbar.css('display', 'flex');
+    $.ajax({
+      type: 'POST',
+      url: window.url + 'api/file/upload',
+      contentType: false,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
+      },
+      processData: false,
+      data: formData,
+      xhr: function() {
+        var xhr = new window.XMLHttpRequest();
+
+        xhr.upload.addEventListener("progress", function(evt) {
+          if (evt.lengthComputable) {
+            var percentComplete = evt.loaded / evt.total;
+            percentComplete = parseInt(percentComplete * 100);
+            $('div', progressbar).css('width', percentComplete + '%');
+          }
+        }, false);
+
+        return xhr;
+      },
+      success: function (response) {
+        var data = {id: response.id, name: response.name};
+
+        setTimeout(function() {
+          progressbar.css('display', 'none');
+
+          switch (category) {
+            case 3:
+              this.setState({personalIdFile: data});
+              break;
+
+            case 9:
+              this.setState({confirmedTaskFile: data});
+              break;
+
+            case 10:
+              this.setState({titleDocumentFile: data});
+              break;
+
+            case 20:
+              this.setState({paymentPhotoFile: data});
+              break;
+
+            case 22:
+              this.setState({survey: data});
+              break;
+
+            case 24:
+              this.setState({claimedCapacityJustification: data});
+
+            case 25:
+              this.setState({pack2IdFile: data});
+              break;
+          }
+
+          alert("Файл успешно загружен");
+        }.bind(this), '1000')
+      }.bind(this),
+      error: function (response) {
+        progressbar.css('display', 'none');
+        alert("Не удалось загрузить файл");
+      }
+    });
+  }
+
+  selectFromList(category, e) {
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/file/category/" + category, true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        this.setState({categoryFiles: data});
+
+        $('#selectFileModal').modal('show');
+      }
+    }.bind(this)
+    xhr.send();
+  }
+
+  selectFile(e) {
+    var fileName = e.target.dataset.name;
+    var id = e.target.dataset.id;
+    var category = e.target.dataset.category;
+    var data = {id: id, name: fileName};
+
+    switch (category) {
+      case '3':
+        this.setState({personalIdFile: data});
+        break;
+
+      case '9':
+        this.setState({confirmedTaskFile: data});
+        break;
+
+      case '10':
+        this.setState({titleDocumentFile: data});
+        break;
+
+      case '20':
+        this.setState({paymentPhotoFile: data});
+        break;
+
+      case '22':
+        this.setState({survey: data});
+        break;
+
+      case '24':
+        this.setState({claimedCapacityJustification: data});
+        break;
+
+      case '24':
+        this.setState({pack2IdFile: data});
+        break;
+    }
+
+    $('#selectFileModal').modal('hide');
+  }
   
   render() {
     var apz = this.state.apz;
-
+    console.log(apz);
     if (apz.length === 0) {
       return false;
     }
@@ -818,7 +970,18 @@ class ShowApz extends React.Component {
       <div className="row">
         <div className="col-sm-6">
           <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
-          
+
+          <table className="table table-bordered table-striped">
+            <tbody>
+            <tr>
+              <td style={{width: '100%'}}><b>Тип заявки</b></td>
+            </tr>
+            <tr>
+              <td>{apz.type === 1 ? 'Пакет 1': (apz.type === 2 ? 'Пакет 2': 'Не определенный тип')}</td>
+            </tr>
+            </tbody>
+          </table>
+
           <table className="table table-bordered table-striped">
             <tbody>
               <tr>
@@ -961,7 +1124,7 @@ class ShowApz extends React.Component {
             <div>
               <h5 className="block-title-2 mt-3 mb-3">Решение</h5>
 
-              <div class="alert alert-info" role="alert">
+              <div className="alert alert-info" role="alert">
                 Отправляя данную заявку коммунальным службам, вы подтверждаете достоверность данных, заполненные заявителем
               </div>
 
@@ -1050,6 +1213,82 @@ class ShowApz extends React.Component {
                   </div>
                 </div>
               }
+            </div>
+          }
+          {apz.commission.status_id === 2 && apz.type === 2 &&
+            <div className={'row'}>
+              <div className={'col-md-6'}>
+
+                <div className="form-group">
+                  <label>Вложения по Пакету 2</label>
+                  <div className="file_container">
+                    <div className="progress mb-2" data-category="25" style={{height: '20px', display: 'none'}}>
+                      <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+
+                    {this.state.pack2IdFile &&
+                    <div className="file_block mb-2">
+                      <div>
+                        {this.state.pack2IdFile.name}
+                        <a className="pointer" onClick={(e) => this.setState({pack2IdFile: false}) }>×</a>
+                      </div>
+                    </div>
+                    }
+
+                    <div className="file_buttons btn-group btn-group-justified d-table mt-0">
+                      <label htmlFor="pack2IdFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
+                      <input type="file" id="pack2IdFile" name="pack2IdFile" className="form-control" onChange={this.uploadFile.bind(this, 25)} style={{display: 'none'}} />
+                      <label onClick={this.selectFromList.bind(this, 25)} className="btn btn-info btn-sm">Выбрать из списка</label>
+                    </div>
+                    <span className="help-block text-muted">
+                      (архитектурно-планировочное задание, вертикальные планировочные
+                      отметки, выкопировку из проекта детальной планировки, типовые поперечные
+                      профили дорог и улиц, технические условия, схемы трасс наружных инженерных
+                      сетей)
+                    </span>
+                  </div>
+                  <div className="modal fade" id="selectFileModal" tabIndex="-1" role="dialog" aria-hidden="true">
+                    <div className="modal-dialog" role="document">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title">Выбрать файл</h5>
+                          <button type="button" id="selectFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div className="modal-body">
+                          <table className="table">
+                            <thead>
+                            <tr>
+                              <th style={{width: '80%'}}>Название</th>
+                              <th style={{width: '10%'}}>Формат</th>
+                              <th style={{width: '10%'}}></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {this.state.categoryFiles.map(function(file, index){
+                                return(
+                                  <tr key={index}>
+                                    <td>{file.name}</td>
+                                    <td>{file.extension}</td>
+                                    <td><button onClick={this.selectFile} data-category={file.category_id} data-id={file.id} data-name={file.name} className="btn btn-success">Выбрать</button></td>
+                                  </tr>
+                                );
+                              }.bind(this)
+                            )}
+                            </tbody>
+                          </table>
+                        </div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
             </div>
           }
 

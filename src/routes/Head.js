@@ -219,6 +219,7 @@ class ShowApz extends React.Component {
       phoneCustomTcFile: null,
       electroCustomTcFile: null,
       heatCustomTcFile: null,
+      pack2IdFile: null,
       gasCustomTcFile: null,
       headResponseFile: null,
       callSaveFromSend: false,
@@ -278,6 +279,11 @@ class ShowApz extends React.Component {
         this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
         this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
+        var pack2IdFile = data.files.filter(function(obj) { return obj.category_id === 25 }) ?
+          data.files.filter(function(obj) { return obj.category_id === 25 }) : [];
+        if ( pack2IdFile.length > 0 ) {
+          this.setState({pack2IdFile: pack2IdFile[0]});
+        }
 
         if (commission) {
           if (commission.apz_water_response && commission.apz_water_response.files) {
@@ -1215,6 +1221,13 @@ class ShowApz extends React.Component {
                     <tr>
                       <td><b>Правоустанавл. документ</b></td>
                       <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>Скачать</a></td>
+                    </tr>
+                  }
+
+                  {this.state.pack2IdFile &&
+                    <tr>
+                      <td><b>Пакет файлов для типа АПЗ: Пакет 2</b></td>
+                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.pack2IdFile.id)}>Скачать</a></td>
                     </tr>
                   }
                 </tbody>
