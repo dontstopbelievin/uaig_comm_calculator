@@ -215,7 +215,7 @@ export default class NavBar extends React.Component {
                 <div className={'col-md-8 row'}>
                   <div className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{"color":'#ffffff !important',"font-weight":"bold !important"}}>
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{"color":'#ffffff !important',"fontWeight":"bold !important"}}>
                       Электронная архитектура
                     </a>
                     <div className="dropdown-menu main_nav_bar" aria-labelledby="navbarDropdown">
@@ -267,7 +267,7 @@ export default class NavBar extends React.Component {
                   </div>
                   <div className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{"color":'#ffffff !important',"font-weight":"bold !important"}}>
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{"color":'#ffffff !important',"fontWeight":"bold !important"}}>
                       Справочная информация
                     </a>
                     <div className="dropdown-menu main_nav_bar" aria-labelledby="navbarDropdown">
@@ -278,18 +278,18 @@ export default class NavBar extends React.Component {
                        </div>
                     </div>
                   </div>
-                  <div className="nav-item" style={{"line-height":"60px"}}>
+                  <div className="nav-item" style={{"lineHeight":"60px"}}>
                     <span style={{marginBottom: '10px !important'}}>
-                      <span style={{"color":'#ffffff',"font-weight":"bold"}}>Карта: </span>
-                      <a target={'_blank'} href="http://3d.uaig.kz/" style={{"color":"#ffffff!important","font-weight":"bold"}}> 3D </a>
+                      <span style={{"color":'#ffffff',"fontWeight":"bold"}}>Карта: </span>
+                      <a target={'_blank'} href="http://3d.uaig.kz/" style={{"color":"#ffffff!important","fontWeight":"bold"}}> 3D </a>
                       |
-                      <a target={'_blank'} href="http://2d.uaig.kz/" style={{"color":"#ffffff!important","font-weight":"bold"}}> 2D </a>
+                      <a target={'_blank'} href="http://2d.uaig.kz/" style={{"color":"#ffffff!important","fontWeight":"bold"}}> 2D </a>
                     </span>
                   </div>
                 </div>
 
                 <div className="col-md-3 ml-0 regist pr-0">
-                  <div className={'login_buttons pull-right clear'} style={{height:"40px","margin-top":"5px"}}>
+                  <div className={'login_buttons pull-right clear'} style={{height:"40px","marginTop":"5px"}}>
                     {
                       (sessionStorage.getItem('logStatus') ?
                           (<LogoutBtn logout={this.props.logout.bind(this)} history={this.props.history}/>) :
