@@ -130,7 +130,7 @@ export default class Main extends React.Component {
           <div>
             <Route render={(props) => (<Header {...props} />)} />
             <Switch>
-              <Route exact path="/" render={(props) => (<Guest {...props} />)} />
+              <Route exact path="/" render={(props) => (<PanelBase {...props} />)} />
               <Route path="/map" render={(props) => (<MapView {...props} />)} />
               <Route path="/map2d" render={(props) => (<Map2dView {...props} />)} />
               <Route path="/forgotPassword" render={(props) => (<ForgotPassword {...props} />)} />

@@ -224,7 +224,7 @@ export default class PanelBase extends React.Component{
                 <Route path="/panel/temporary/self-page" render={(props) => ( <Temporary breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 {/*  the routes is using for role: Temporary */}
 
-                <Redirect from="/panel" to="/panel/base-page" />
+                <Redirect from="/" to="/panel/base-page" />
               </Switch>
             </div>
           </div>
