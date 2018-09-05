@@ -119,10 +119,20 @@
       },
       "photoreports":{
         "name":"Фотоотчеты",
-        "link":"/panel/citizen/photoreports"
+        "link":"/panel/citizen/photoreports",
+        "status":"Все фотоотчеты",
+        "add":"Создание фотоотчета",
+        "show":"Просмотр фотоотчета"
       }
     },
-    "photo-reporter":{},
+    "photo-reporter":{
+      "photoreportsManage":{
+        "name":"Фотоотчеты",
+        "link":"/panel/photo-reporter/photoreportsManage",
+        "status":"Все фотоотчеты",
+        "show":"Просмотр фотоотчета"
+      }
+    },
     "temporary":{
       "self-page":{
         "name":"Личный кабинет",

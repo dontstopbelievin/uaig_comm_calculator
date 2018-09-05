@@ -1185,3 +1185,36 @@ table{
   border-color: #f44336;
   background: #f44336;
 }
+
+.photo_reports_files_list {
+  border: 1px solid #ccc;
+}
+
+.photo_reports_files_list .file_block {
+  border-bottom: 1px solid #ccc;
+  padding: 5px 10px;
+}
+
+.photo_reports_files_list .file_block:last-child {
+  border-bottom: none;
+}
+
+.photo_reports_files_list .file_block div {
+  position: relative;
+}
+
+.photo_reports_files_list .file_block .pointer {
+  position: absolute;
+  right: 0;
+  top: -1px;
+}
+
+.photo_reports_images .image_block {
+  position: relative;
+}
+
+.photo_reports_images .image {
+  height: 200px;
+  background-size: cover !important;
+  background-position: center center !important;
+}

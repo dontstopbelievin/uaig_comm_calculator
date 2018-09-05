@@ -3,20 +3,23 @@ import { Route, NavLink, Link, Switch, Redirect } from 'react-router-dom';
 import $ from 'jquery';
 import Loader from 'react-loader-spinner';
 
-export default class PhotoReportsManage extends React.Component {
+export default class PhotoReportsCitizen extends React.Component {
   render() {
     return (
       <div className="content container body-content">
         <div>
           <div>
             <Switch>
-              <Route path="/panel/photo-reporter/photoreportsManage/status/:status/:page" exact render={(props) =>(
+              <Route path="/panel/citizen/photoreports/status/:status/:page" exact render={(props) =>(
                 <AllPhotoReports {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
               )} />
-              <Route path="/panel/photo-reporter/photoreportsManage/show/:id" exact render={(props) =>(
+              <Route path="/panel/citizen/photoreports/add" exact render={(props) =>(
+                <AddPhotoReport {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+              )} />
+              <Route path="/panel/citizen/photoreports/show/:id" exact render={(props) =>(
                 <ShowPhotoReport {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
               )} />
-              <Redirect from="/panel/photo-reporter/photoreportsManage" to="/panel/photo-reporter/photoreportsManage/status/active/1" />
+              <Redirect from="/panel/citizen/photoreports" to="/panel/citizen/photoreports/status/active/1" />
             </Switch>
           </div>
         </div>
@@ -58,7 +61,7 @@ class AllPhotoReports extends React.Component {
 
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/photoreports/manager/all/" + status + '?page=' + page, true);
+    xhr.open("get", window.url + "api/photoreports/citizen/all/" + status + '?page=' + page, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
@@ -102,15 +105,25 @@ class AllPhotoReports extends React.Component {
 
     return (
       <div>
-        <h4 className="mb-0">Фотоотчеты</h4>
+        <h4>Мои фотоотчеты</h4>
 
         {this.state.loaderHidden &&
           <div>
-            <ul className="nav nav-tabs mb-2 pull-right">
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/photo-reporter/photoreportsManage/status/active/1" replace>Активные</NavLink></li>
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/photo-reporter/photoreportsManage/status/accepted/1" replace>Принятые</NavLink></li>
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/photo-reporter/photoreportsManage/status/declined/1" replace>Отказанные</NavLink></li>
-            </ul>
+            <div className="row">
+              <div className="col-sm-7">
+                <div className="btn-group" role="group">
+                  <Link className="btn btn-outline-primary mr-2" to="/panel/citizen/photoreports/add">Создать заявление</Link>
+                  <button type="button" className="btn btn-outline-info" data-toggle="modal" data-target=".documents-modal">Перечень необходимых документов</button>
+                </div>
+              </div>
+              <div className="col-sm-5 statusActive">
+                <ul className="nav nav-tabs mb-2 pull-right">
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/citizen/photoreports/status/active/1" replace>Активные</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/citizen/photoreports/status/accepted/1" replace>Принятые</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/citizen/photoreports/status/declined/1" replace>Отказанные</NavLink></li>
+                </ul>
+              </div>
+            </div>
 
             <table className="table">
               <thead>
@@ -144,7 +157,7 @@ class AllPhotoReports extends React.Component {
                         {report.status.name}
                       </td>
                       <td>
-                        <Link className="btn btn-outline-info" to={'/panel/photo-reporter/photoreportsManage/show/' + report.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link className="btn btn-outline-info" to={'/panel/citizen/photoreports/show/' + report.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
                     </tr>
                   );
@@ -157,19 +170,19 @@ class AllPhotoReports extends React.Component {
               <nav className="pagination_block">
                 <ul className="pagination justify-content-center">
                   <li className="page-item">
-                    <Link className="page-link" to={'/panel/photo-reporter/photoreportsManage/status/' + status + '/1'}>В начало</Link>
+                    <Link className="page-link" to={'/panel/citizen/photoreports/status/' + status + '/1'}>В начало</Link>
                   </li>
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
                       <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
-                        <Link className="page-link" to={'/panel/photo-reporter/photoreportsManage/status/' + status + '/' + num}>{num}</Link>
+                        <Link className="page-link" to={'/panel/citizen/photoreports/status/' + status + '/' + num}>{num}</Link>
                       </li>
                       );
                     }.bind(this))
                   }
                   <li className="page-item">
-                    <Link className="page-link" to={'/panel/photo-reporter/photoreportsManage/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
+                    <Link className="page-link" to={'/panel/citizen/photoreports/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
                   </li>
                 </ul>
               </nav>
@@ -182,6 +195,138 @@ class AllPhotoReports extends React.Component {
             <Loader type="Oval" color="#46B3F2" height="200" width="200" />
           </div>
         }
+
+        <div className="modal fade documents-modal" tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+          <div className="modal-dialog modal-lg" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">Перечень необходимых документов</h5>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <p><b>Для размещения объектов наружной (визуальной) рекламы в населенных пунктах:</b></p>
+                <p>1) заявление по форме, установленной в приложении 2 к настоящему стандарту государственной услуги;</p>
+                <p>2) нотариально засвидетельствованная копия правоустанавливающего документа на земельный участок или объект, на который предлагается разместить объект наружной (визуальной) рекламы, либо копия договора о размещении объекта наружной (визуальной) рекламы, заключенный заявителем с собственником (собственниками) объекта, на который предлагается разместить объект наружной (визуальной) рекламы, органом управления объектом кондоминиума или лицами, обладающими иными вещными правами;</p>
+                <p>3) эскиз (цветной), включающий дневное и ночное изображение объекта наружной (визуальной) рекламы, объекта на который предлагается разместить объект наружной (визуальной) рекламы, решения по инженерному функционирования объекта наружной (визуальной) рекламы;</p>
+                <p>4) документ, удостоверяющий личность уполномоченного представителя, и документ, удостоверяющий полномочия на представительство, – при обращении представителя услугополучателя (для идентификации личности);</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+
+class AddPhotoReport extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      CompanyName: "",
+      CompanyLegalAddress: "",
+      CompanyFactualAddress: "",
+      PhotoAddress: "",
+      CompanyRegion: "",
+      IIN: "",
+      CompanyPhone: "",
+      StartDate: "",
+      EndDate: "",
+      Comments: ""
+    };
+    
+    this.onInputChange = this.onInputChange.bind(this);
+  }
+
+  onInputChange(e) {
+    const { value, name } = e.target;
+    this.setState({ [name] : value });
+  }
+
+  sendForm(e) {
+    e.preventDefault();
+
+    var data = JSON.stringify(this.state);
+    var token = sessionStorage.getItem('tokenInfo');
+    
+    var xhr = new XMLHttpRequest();
+    xhr.open("post", window.url + "api/photoreports/citizen/create", true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        alert("Ваш запрос успешно отправлен!");
+
+        this.props.history.push('/panel/citizen/photoreports/');
+      } else {
+        alert("Не удалось отправить заявку");
+      }
+    }.bind(this);
+    xhr.send(data);
+  }
+
+  render() {
+    return (
+      <div>
+        <h5 className="block-title-2 mt-0 mb-3">Заявление для получения фотоотчета</h5>
+
+        <form onSubmit={this.sendForm.bind(this)}>
+          <div className="row">
+            <div className="col-4">
+              <div className="form-group">
+                <label>От ТОО/ИП</label>
+                <input type="text" className="form-control" required placeholder="Компания" name="CompanyName" value={this.state.CompanyName} onChange={this.onInputChange} />
+              </div>
+              <div className="form-group">
+                <label>Юридический адрес</label>
+                <input type="text" className="form-control" required placeholder="Юридический адрес" name="CompanyLegalAddress" value={this.state.CompanyLegalAddress} onChange={this.onInputChange} />
+              </div>
+              <div className="form-group">
+                <label>Фактический адрес</label>
+                <input type="text" className="form-control" required placeholder="Фактический адрес" name="CompanyFactualAddress" value={this.state.CompanyFactualAddress} onChange={this.onInputChange} />
+              </div>
+              <div className="form-group">
+                <label>Адрес рекламы</label>
+                <input type="text" className="form-control" required placeholder="Фактический адрес" name="PhotoAddress" value={this.state.PhotoAddress} onChange={this.onInputChange} />
+              </div>
+            </div>
+            <div className="col-4">
+              <div className="form-group">
+                <label>Регион</label>
+                <input type="text" className="form-control" required placeholder="Регион компании" name="CompanyRegion" value={this.state.CompanyRegion} onChange={this.onInputChange} />
+              </div>
+              <div className="form-group">
+                <label>ИИН/БИН</label>
+                <input type="number" className="form-control" required placeholder="ИИН/БИН" name="IIN" value={this.state.IIN} onChange={this.onInputChange} />
+              </div>
+              <div className="form-group">
+                <label>Телефон</label>
+                <input type="text" className="form-control" required placeholder="Телефон" name="CompanyPhone" value={this.state.CompanyPhone} onChange={this.onInputChange} />
+              </div>
+            </div>
+            <div className="col-4">
+              <div className="form-group">
+                <label>Период с</label>
+                <input type="date" className="form-control" required placeholder="Период" name="StartDate" value={this.state.StartDate} onChange={this.onInputChange} />
+              </div>
+              <div className="form-group">
+                <label>Период до</label>
+                <input type="date" className="form-control" required placeholder="Период" name="EndDate" value={this.state.EndDate} onChange={this.onInputChange} />
+              </div>
+              <div className="form-group">
+                <label>Комментарий</label>
+                <textarea className="form-control" required placeholder="Комментарий" rows="2" name="Comments" value={this.state.Comments} onChange={this.onInputChange}></textarea>
+              </div>
+            </div>
+          </div>
+
+          <input type="submit" className="btn btn-primary" value="Отправить заявку" />
+        </form>
+
+        <hr />
+        <Link className="btn btn-outline-secondary pull-right" to={'/panel/citizen/photoreports/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
       </div>
     )
   }
@@ -192,11 +337,8 @@ class ShowPhotoReport extends React.Component {
     super(props);
 
     this.state = {
-      photoReport: [],
-      files: []
+      photoReport: []
     };
-
-    this.deleteFile = this.deleteFile.bind(this);
   }
   
   componentDidMount() {
@@ -211,48 +353,16 @@ class ShowPhotoReport extends React.Component {
     var id = this.props.match.params.id;
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/photoreports/manager/detail/" + id, true);
+    xhr.open("get", window.url + "api/photoreports/citizen/detail/" + id, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function() {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-        this.setState({
-          photoReport: data,
-          files: data.files
-        });
+        this.setState({photoReport: data});
       }
     }.bind(this)
     xhr.send();
-  }
-
-  sendForm(status) {
-    var id = this.props.match.params.id;
-    var token = sessionStorage.getItem('tokenInfo');
-    var data = JSON.stringify({status: status});
-
-    if (status === false) {
-      if (!window.confirm('Вы уверены что хотите отказать?')) {
-        return false;
-      }
-    }
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + "api/photoreports/manager/status/" + id, true);
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        if (status === true) {
-          alert("Заявление принято!");
-        } else {
-          alert("Заявление отклонено!");
-        }
-
-        this.getPhotoReportInfo();
-      }
-    }.bind(this);
-    xhr.send(data); 
   }
 
   toDate(date) {
@@ -267,89 +377,6 @@ class ShowPhotoReport extends React.Component {
     var formated_date = curr_date + "." + curr_month + "." + curr_year;
     
     return formated_date;
-  }
-
-  uploadFile(category, e) {
-    var id = this.props.match.params.id;
-    var file = e.target.files;
-    var progressbar = $('.progress');
-
-    if (!file || !category) {
-      alert('Не удалось загрузить файл');
-
-      return false;
-    }
-
-    var formData = new FormData();
-
-    Object.keys(file).forEach(function(k) {
-      formData.append('file[' + [k] + ']', file[k]);
-    }.bind(this));
-
-    formData.append('category', category);
-    formData.append('item_id', id);
-    formData.append('item_type', 'photoreports');
-    progressbar.css('display', 'flex');
-    
-    $.ajax({
-      type: 'POST',
-      url: window.url + 'api/file/upload_multiple',
-      contentType: false,
-      beforeSend: function (xhr) {
-        xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
-      },
-      processData: false,
-      data: formData,
-      xhr: function() {
-        var xhr = new window.XMLHttpRequest();
-
-        xhr.upload.addEventListener("progress", function(evt) {
-          if (evt.lengthComputable) {
-            var percentComplete = evt.loaded / evt.total;
-            percentComplete = parseInt(percentComplete * 100);
-            console.log(percentComplete);
-            $('div', progressbar).css('width', percentComplete + '%');
-
-          }
-        }, false);
-
-        return xhr;
-      },
-      success: function (response) {
-        setTimeout(function() {
-          progressbar.css('display', 'none');
-
-          this.setState({files: response});
-
-          alert("Файлы успешно загружены");
-        }.bind(this), '1000')
-      }.bind(this),
-      error: function (response) {
-        progressbar.css('display', 'none');
-        alert("Не удалось загрузить файл");
-      }
-    });
-  }
-
-  deleteFile(event) {
-    var id =  event.target.getAttribute("data-id");
-    var name =  event.target.getAttribute("data-name");
-    var token = sessionStorage.getItem('tokenInfo');
-    
-    if (!window.confirm('Вы действительно хотите удалить файл "' + name + '"?')) {
-      return false;
-    }
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + "api/file/delete/" + id, true);
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        this.getPhotoReportInfo();
-      }
-    }.bind(this)
-    xhr.send();
   }
 
   modalImage(base64) {
@@ -443,60 +470,9 @@ class ShowPhotoReport extends React.Component {
             </div>
           </div>
         }
-
-        {photoReport.status_id === 3 &&
-          <div>
-            <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-              <button type="button" className="btn btn-raised btn-success" data-toggle="modal" data-target="#accepted_modal" style={{marginRight: '5px'}}>Одобрить</button>
-              <button type="button" className="btn btn-raised btn-danger" onClick={this.sendForm.bind(this, false)}>Отказать</button>
-            </div>
-
-            <div className="modal fade" id="accepted_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-              <div className="modal-dialog" role="document">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title">Одобрить</h5>
-                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div className="modal-body">
-                    <div className="form-group">
-                      <label htmlFor="upload_input" className="btn btn-success w-100" style={{marginRight: '2px'}}>Загрузить файлы</label>
-                      <input type="file" id="upload_input" multiple className="form-control" style={{display: 'none'}} onChange={this.uploadFile.bind(this, 26)} />
-                      
-                      <div className="progress mt-2" style={{height: '20px', display: 'none'}}>
-                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </div>
-                    <div className="form-group photo_reports_files_list">
-                    {this.state.files.map(function(file, index) {
-                      return(
-                        <div key={index} className="file_block">
-                          <div>
-                            {file.name}
-                            <a className="pointer" data-id={file.id} data-name={file.name} onClick={this.deleteFile}>×</a>
-                          </div>
-                        </div>
-                      );
-                      }.bind(this))
-                    }
-                    </div>
-                  </div>
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.sendForm.bind(this, true)}>
-                      Одобрить
-                    </button>
-                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        }
-
+        
         <hr />
-        <Link className="btn btn-outline-secondary pull-right" to={'/panel/photo-reporter/photoreportsManage/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+        <Link className="btn btn-outline-secondary pull-right" to={'/panel/citizen/photoreports/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
       </div>
     )
   }

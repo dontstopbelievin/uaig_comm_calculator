@@ -8,7 +8,6 @@ import $ from 'jquery';
 import Loader from 'react-loader-spinner';
 import Citizen from "./Citizen";
 import Sketch from "./Sketch";
-import PhotoReports from "./PhotoReports";
 import Files from "./Files";
 import BasePagePanel from "./BasePagePanel";
 import Admin from "./Admin";
@@ -28,6 +27,7 @@ import Head from "./Head";
 import HeadReport from "./HeadReport";
 import Engineer from "./Engineer";
 import PhotoReportsManage from "./PhotoReportsManage";
+import PhotoReportsCitizen from './PhotoReportsCitizen';
 import ApzDepartment from "./ApzDepartment";
 import SketchApzDepartment from "./SketchApzDepartment";
 import Temporary from "./Temporary";
@@ -86,6 +86,7 @@ export default class PanelBase extends React.Component{
         if (typeof fullLoc[7] !== 'undefined')
         {
           let secondElem = document.createElement('span');
+          console.log(fullLoc);
           secondElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
             '<a href="/#' + e[fullLoc[5]][fullLoc[6]]["link"] + '">' + e[fullLoc[5]][fullLoc[6]]["name"] + '</a>';
           breadCrumbs.appendChild(secondElem);
@@ -146,7 +147,6 @@ export default class PanelBase extends React.Component{
               <Switch>
                 {/*  the routes is using for role: ALL  */}
                 <Route path="/panel/base-page" render={(props) => ( <BasePagePanel breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
-                <Route path="/panel/common/photoreports" render={(props) => ( <PhotoReports breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/common/files" render={(props) => ( <Files breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/common/login" render={(props) => ( <Login breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/common/register" render={(props) => ( <Register breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
@@ -159,6 +159,7 @@ export default class PanelBase extends React.Component{
                 {/*  the routes is using for role: Citizen  */}
                 <Route path="/panel/citizen/apz" render={(props) => ( <Citizen breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/citizen/sketch" render={(props) => ( <Sketch breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                <Route path="/panel/citizen/photoreports" render={(props) => ( <PhotoReportsCitizen breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 {/*  the routes is using for role: Citizen  */}
 
                 {/*  the routes is using for role: Admin  */}
@@ -210,10 +211,6 @@ export default class PanelBase extends React.Component{
                 {/*  the routes is using for role: PhotoReporter */}
                 <Route path="/panel/photo-reporter/photoreportsManage" render={(props) => ( <PhotoReportsManage breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 {/*  the routes is using for role: PhotoReporter */}
-
-                {/*  the routes is using for role: Apz */}
-                <Route path="/panel/photo-reporter/photoreportsManage" render={(props) => ( <PhotoReportsManage breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
-                {/*  the routes is using for role: Apz */}
 
                 {/*  the routes is using for role: ApzDepartment */}
                 <Route path="/panel/apz-department/apz" render={(props) => ( <ApzDepartment breadCrumbs={this.breadCrumbs.bind(this)}/> )} />

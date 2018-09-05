@@ -485,7 +485,7 @@ class CitizenMenu extends Component {
       <div>
         <NavLink to={"/panel/citizen/apz"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/panel/citizen/sketch"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
-        <NavLink to={"/panel/common/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
+        <NavLink to={"/panel/citizen/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         <NavLink to={"/panel/common/files"} replace className="dropdown-item" activeClassName="active">Мои файлы</NavLink>
       </div>
     )
