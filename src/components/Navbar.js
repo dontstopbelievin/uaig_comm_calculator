@@ -255,6 +255,7 @@ export default class NavBar extends React.Component {
                           case 'PhotoReporter': return <PhotoReportMenu />;
                           case 'Temporary': return <TemporaryMenu />;
                           case 'ApzDepartment': return <ApzDepartmentMenu />;
+                          case 'Office': return <OfficeMenu />;
                           default: return null;
                         }
 
@@ -528,6 +529,16 @@ class ApzDepartmentMenu extends Component {
       <div>
         <NavLink to={"/panel/apz-department/apz"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/panel/apz-department/sketch"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
+      </div>
+    )
+  }
+}
+
+class OfficeMenu extends Component {
+  render() {
+    return (
+      <div>
+        <NavLink to={"/panel/office/apz"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
       </div>
     )
   }
