@@ -25,6 +25,7 @@ import ProviderWater from "./ProviderWater";
 import ProviderPhone from "./ProviderPhone";
 import Head from "./Head";
 import HeadReport from "./HeadReport";
+import Office from "./Office";
 import Engineer from "./Engineer";
 import PhotoReportsManage from "./PhotoReportsManage";
 import PhotoReportsCitizen from './PhotoReportsCitizen';
@@ -203,6 +204,10 @@ export default class PanelBase extends React.Component{
                 <Route path="/panel/head/apz" render={(props) => ( <Head breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/head/headreport" render={(props) => ( <HeadReport breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 {/*  the routes is using for role: Head */}
+
+                 {/*  the routes is using for role: Office */}
+                <Route path="/panel/office/apz" render={(props) => ( <Office breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                {/*  the routes is using for role: Office */}
 
                 {/*  the routes is using for role: Engineer */}
                 <Route path="/panel/engineer/apz" render={(props) => ( <Engineer breadCrumbs={this.breadCrumbs.bind(this)}/> )} />

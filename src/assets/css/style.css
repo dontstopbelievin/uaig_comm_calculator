@@ -1218,3 +1218,8 @@ table{
   background-size: cover !important;
   background-position: center center !important;
 }
+
+.office_filter {
+  background: #f3f3f3;
+  padding: 20px;
+}
