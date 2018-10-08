@@ -597,6 +597,7 @@ class ShowApz extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           this.setState({ isSigned: true });
+          alert("Успешно подписан.");
         } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
           alert(JSON.parse(xhr.responseText).message);
         } else {//console.log(JSON.parse(xhr.responseText));
@@ -1150,9 +1151,9 @@ printData()
                         Сохранить
                       </button>
 
-                      <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.sendElectroResponse.bind(this, apz.id, true, "")}>
-                        Отправить без ЭЦП
-                      </button>
+                       {/*<button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.sendElectroResponse.bind(this, apz.id, true, "")}>
+                         Отправить без ЭЦП
+                       </button>*/}
 
                       {this.state.response &&
                         <button type="button" className="btn btn-secondary" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>

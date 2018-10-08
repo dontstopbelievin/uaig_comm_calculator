@@ -790,7 +790,11 @@ class ShowApz extends React.Component {
     var formData = new FormData();
     formData.append('response', status);
     formData.append('message', comment);
-    formData.append('file_id', this.state.pack2IdFile.id);
+    if ( this.state.pack2IdFile != null ) {
+      formData.append('file_id', this.state.pack2IdFile.id);
+    }else{
+      formData.append('file_id', '');
+    }
     formData.append('direct', direct.length > 0 ? direct : 'region');
 
     var xhr = new XMLHttpRequest();
@@ -815,6 +819,8 @@ class ShowApz extends React.Component {
         this.props.history.replace("/login");
       } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
         alert(JSON.parse(xhr.responseText).message);
+      }else{
+        console.log(JSON.parse(xhr.responseText));
       }
     }.bind(this);
     xhr.send(formData);

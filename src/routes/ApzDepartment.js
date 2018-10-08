@@ -72,7 +72,7 @@ class AllApzs extends React.Component {
         var pageNumbers = [];
         var start = (response.current_page - 4) > 0 ? (response.current_page - 4) : 1;
         var end = (response.current_page + 4) < response.last_page ? (response.current_page + 4) : response.last_page;
-        
+
         for (start; start <= end; start++) {
           pageNumbers.push(start);
         }
@@ -98,7 +98,7 @@ class AllApzs extends React.Component {
     var curr_hour = jDate.getHours() < 10 ? "0" + jDate.getHours() : jDate.getHours();
     var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
     var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-    
+
     return formated_date;
   }
 
@@ -106,7 +106,7 @@ class AllApzs extends React.Component {
     var status = this.props.match.params.status;
     var page = this.props.match.params.page;
     var apzs = this.state.response ? this.state.response.data : [];
-    
+
     return (
       <div>
         <div className="card-header">
@@ -135,7 +135,7 @@ class AllApzs extends React.Component {
                   return(
                     <tr key={index}>
                       <td>
-                        {apz.project_name} 
+                        {apz.project_name}
 
                         {apz.object_type &&
                           <span className="ml-1">({apz.object_type})</span>
@@ -543,8 +543,8 @@ class ShowApz extends React.Component {
         this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 18})[0]});
         this.setState({response: data.apz_department_response ? true : false });
 
-        if (data.status_id === 6) { 
-          this.setState({showButtons: true}); 
+        if (data.status_id === 6) {
+          this.setState({showButtons: true});
         }
 
         if (this.state.xmlFile) {
@@ -577,27 +577,27 @@ class ShowApz extends React.Component {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
           var base64ToArrayBuffer = (function () {
-        
+
             return function (base64) {
               var binaryString = window.atob(base64);
               var binaryLen = binaryString.length;
               var bytes = new Uint8Array(binaryLen);
-              
+
               for (var i = 0; i < binaryLen; i++) {
                 var ascii = binaryString.charCodeAt(i);
                 bytes[i] = ascii;
               }
-              
-              return bytes; 
+
+              return bytes;
             }
-            
+
           }());
 
           var saveByteArray = (function () {
             var a = document.createElement("a");
             document.body.appendChild(a);
             a.style = "display: none";
-            
+
             return function (data, name) {
               var blob = new Blob(data, {type: "octet/stream"}),
                   url = window.URL.createObjectURL(blob);
@@ -754,6 +754,7 @@ class ShowApz extends React.Component {
         if (xhr.status === 200) {
           this.setState({ isSigned: true });
           this.setState({ showSendButton: true });
+          alert('Успешно подписан.');
         } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
           alert(JSON.parse(xhr.responseText).message);
         } else {
@@ -803,7 +804,7 @@ class ShowApz extends React.Component {
     this.webSocket.onclose = function (event) {
       if (event.wasClean) {
         console.log('connection has been closed');
-      } 
+      }
       else {
         console.log('Connection error');
         this.openDialog();
@@ -834,7 +835,7 @@ class ShowApz extends React.Component {
             return this.errorCode;
           }
         };
-        
+
         switch (this.callback) {
           case 'chooseStoragePathBack':
             this.chooseStoragePathBack(rw);
@@ -905,7 +906,7 @@ class ShowApz extends React.Component {
     if(this.state.response === null){
       this.setState({callSaveFromSend: true});
       this.saveForm(apzId, status, comment);
-      
+
       return true;
     }
 
@@ -949,7 +950,7 @@ class ShowApz extends React.Component {
           //test of IE
           if (typeof window.navigator.msSaveBlob === "function") {
             window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
-          } 
+          }
           else {
             var blob = xhr.response;
             var link = document.createElement('a');
@@ -994,27 +995,27 @@ class ShowApz extends React.Component {
             var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
 
             var base64ToArrayBuffer = (function () {
-        
+
               return function (base64) {
                 var binaryString =  window.atob(base64);
                 var binaryLen = binaryString.length;
                 var bytes = new Uint8Array(binaryLen);
-                
+
                 for (var i = 0; i < binaryLen; i++) {
                   var ascii = binaryString.charCodeAt(i);
                   bytes[i] = ascii;
                 }
-                
-                return bytes; 
+
+                return bytes;
               }
-              
+
             }());
 
             var saveByteArray = (function () {
               var a = document.createElement("a");
               document.body.appendChild(a);
               a.style = "display: none";
-              
+
               return function (data, name) {
                 var blob = new Blob(data, {type: "octet/stream"}),
                     url = window.URL.createObjectURL(blob);
@@ -1058,7 +1059,7 @@ class ShowApz extends React.Component {
     if(date === null) {
       return date;
     }
-    
+
     var jDate = new Date(date);
     var curr_date = jDate.getDate();
     var curr_month = jDate.getMonth() + 1;
@@ -1066,10 +1067,10 @@ class ShowApz extends React.Component {
     var curr_hour = jDate.getHours();
     var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
     var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-    
+
     return formated_date;
   }
-  
+
   render() {
     var apz = this.state.apz;
     var counter = 1;
@@ -1081,7 +1082,7 @@ class ShowApz extends React.Component {
     return (
       <div>
         <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
-        
+
         <table className="table table-bordered table-striped">
           <tbody>
             <tr>
@@ -1122,7 +1123,7 @@ class ShowApz extends React.Component {
               <td><b>Дата заявления</b></td>
               <td>{apz.created_at && this.toDate(apz.created_at)}</td>
             </tr>
-            
+
             {this.state.personalIdFile &&
               <tr>
                 <td><b>Уд. лич./ Реквизиты</b></td>
@@ -1146,7 +1147,7 @@ class ShowApz extends React.Component {
           </tbody>
         </table>
 
-        {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />} 
+        {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
 
         <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
           {this.state.showMapText}
@@ -1170,7 +1171,7 @@ class ShowApz extends React.Component {
           <div>
             <form className="apz_department_form">
               <div className="select_type">
-                <span>Выберите тип: </span> 
+                <span>Выберите тип: </span>
                 <div>
                   <label><input type="radio" name="template_type" onChange={this.onTypeChange.bind(this, 'big_object')} checked={this.state.templateType === 'big_object'} /><span>Большой объект</span></label>
                   <label><input type="radio" name="template_type" onChange={this.onTypeChange.bind(this, 'small_object')} checked={this.state.templateType === 'small_object'} /><span>Малый объект</span></label>
@@ -1200,14 +1201,14 @@ class ShowApz extends React.Component {
                     <ReactQuill value={this.state.geodeticStudy} onChange={this.onInputChange.bind(this, 'geodeticStudy')} />
                   </div>
                 }
-                
+
                 {this.state.engineeringGeologicalStudy != '@hide' &&
                   <div className="form-group">
                     <label>Инженерно-геологическая изученность</label>
                     <ReactQuill value={this.state.engineeringGeologicalStudy} onChange={this.onInputChange.bind(this, 'engineeringGeologicalStudy')} />
                   </div>
                 }
-                
+
                 <div className="form-group">
                   <label>Планировочная система</label>
                   <ReactQuill value={this.state.planningSystem} onChange={this.onInputChange.bind(this, 'planningSystem')} />
@@ -1227,14 +1228,14 @@ class ShowApz extends React.Component {
                     <ReactQuill value={this.state.floorSum} onChange={this.onInputChange.bind(this, 'floorSum')} />
                   </div>
                 }
-                
+
                 {this.state.structuralScheme != '@hide' &&
                   <div className="form-group">
                     <label>Конструктивная схема</label>
                     <ReactQuill value={this.state.structuralScheme} onChange={this.onInputChange.bind(this, 'structuralScheme')} />
                   </div>
                 }
-                
+
                 <div className="form-group">
                   <label>Инженерное обеспечение</label>
                   <ReactQuill value={this.state.engineeringSupport} onChange={this.onInputChange.bind(this, 'engineeringSupport')} />
@@ -1258,21 +1259,21 @@ class ShowApz extends React.Component {
                       <ReactQuill value={this.state.spatialSolution} onChange={this.onInputChange.bind(this, 'spatialSolution')} />
                     </div>
                   }
-                  
+
                   {this.state.draftMasterPlan != '@hide' &&
                     <div className="form-group">
                       <label>Проект генерального плана</label>
                       <ReactQuill value={this.state.draftMasterPlan} onChange={this.onInputChange.bind(this, 'draftMasterPlan')} />
                     </div>
                   }
-                  
+
                   {this.state.verticalLayout != '@hide' &&
                     <div className="form-group">
                       <label>Вертикальная планировка</label>
                       <ReactQuill value={this.state.verticalLayout} onChange={this.onInputChange.bind(this, 'verticalLayout')} />
                     </div>
                   }
-                  
+
                   {this.state.landscapingAndGardening != '@hide' &&
                     <div className="form-group">
                       <label>Благоустройство и озеленение</label>
@@ -1286,7 +1287,7 @@ class ShowApz extends React.Component {
                       <ReactQuill value={this.state.parking} onChange={this.onInputChange.bind(this, 'parking')} />
                     </div>
                   }
-                  
+
                   {this.state.useOfFertileSoilLayer != '@hide' &&
                     <div className="form-group">
                       <label>Использование плодородного слоя почвы</label>
@@ -1334,7 +1335,7 @@ class ShowApz extends React.Component {
                     <ReactQuill value={this.state.advertisingAndInformationSolution} onChange={this.onInputChange.bind(this, 'advertisingAndInformationSolution')} />
                   </div>
                 }
-                
+
                 {this.state.nightLighting != '@hide' &&
                   <div className="form-group">
                     <label>Ночное световое оформление</label>
@@ -1348,14 +1349,14 @@ class ShowApz extends React.Component {
                     <ReactQuill value={this.state.inputNodes} onChange={this.onInputChange.bind(this, 'inputNodes')} />
                   </div>
                 }
-                
+
                 {this.state.conditionsForLowMobileGroups != '@hide' &&
                   <div className="form-group">
                     <label>Создание условий для жизнедеятельности маломобильных групп населения</label>
                     <ReactQuill value={this.state.conditionsForLowMobileGroups} onChange={this.onInputChange.bind(this, 'conditionsForLowMobileGroups')} />
                   </div>
                 }
-                
+
                 {this.state.complianceNoiseConditions != '@hide' &&
                   <div className="form-group">
                     <label>Соблюдение условий по звукошумовым показателям</label>
@@ -1374,7 +1375,7 @@ class ShowApz extends React.Component {
                       <ReactQuill value={this.state.plinth} onChange={this.onInputChange.bind(this, 'plinth')} />
                     </div>
                   }
-                  
+
                   {this.state.facade != '@hide' &&
                     <div className="form-group">
                       <label>Фасад. Ограждающие конструкций</label>
@@ -1417,7 +1418,7 @@ class ShowApz extends React.Component {
                     <ReactQuill value={this.state.drainage} onChange={this.onInputChange.bind(this, 'drainage')} />
                   </div>
                 }
-                
+
                 {this.state.irrigationSystems != '@hide' &&
                   <div className="form-group">
                     <label>Стационарные поливочные системы</label>
@@ -1435,7 +1436,7 @@ class ShowApz extends React.Component {
                     <ReactQuill value={this.state.engineeringSurveysObligation} onChange={this.onInputChange.bind(this, 'engineeringSurveysObligation')} />
                   </div>
                 }
-                
+
                 {this.state.demolitionObligation != '@hide' &&
                   <div className="form-group">
                     <label>По сносу (переносу) существующих строений и сооружений</label>
@@ -1454,7 +1455,7 @@ class ShowApz extends React.Component {
                     <ReactQuill value={this.state.conservationPlantObligation} onChange={this.onInputChange.bind(this, 'conservationPlantObligation')} />
                   </div>
                 }
-                
+
                 {this.state.temporaryFencingConstructionObligation != '@hide' &&
                   <div className="form-group">
                     <label>По строительству временного ограждения участка</label>
@@ -1473,11 +1474,11 @@ class ShowApz extends React.Component {
               }
 
               <div>
-                <h5>{counter++}. Общие требования</h5>        
+                <h5>{counter++}. Общие требования</h5>
                 <div className="form-group">
                   <ReactQuill value={this.state.generalRequirements} onChange={this.onInputChange.bind(this, 'generalRequirements')} />
                 </div>
-              </div>            
+              </div>
 
               <div>
                 <h5>Примечания</h5>
@@ -1495,10 +1496,10 @@ class ShowApz extends React.Component {
             </form>
 
             <div>
-              {this.state.showSignButtons && !this.state.isSigned &&  
+              {this.state.showSignButtons && !this.state.isSigned &&
                 <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                   <div>Выберите хранилище</div>
-                            
+
                   <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
                     <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
                     <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>eToken</button>
@@ -1589,11 +1590,11 @@ class ShowMap extends React.Component {
     return (
       <div>
         <h5 className="block-title-2 mt-5 mb-3">Карта</h5>
-        <div className="col-md-12 viewDiv"> 
-          <EsriLoaderReact options={options} 
+        <div className="col-md-12 viewDiv">
+          <EsriLoaderReact options={options}
             modulesToLoad={[
               'esri/views/MapView',
-              
+
               'esri/widgets/LayerList',
 
               'esri/WebScene',
@@ -1605,8 +1606,8 @@ class ShowMap extends React.Component {
               'dojo/dom',
               'esri/Graphic',
               'dojo/domReady!'
-            ]}    
-            
+            ]}
+
             onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap, webMercatorUtils, dom, Graphic], containerNode}) => {
               var map = new WebMap({
                 portalItem: {
@@ -1642,7 +1643,7 @@ class ShowMap extends React.Component {
                 title: "Cтолбы возд. линий электропередач"
               });
               map.add(stolby);
-              
+
               var flGosAkts = new FeatureLayer({
                 url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
                 outFields: ["*"],
@@ -1650,14 +1651,14 @@ class ShowMap extends React.Component {
               });
               map.add(flGosAkts);
               */
-              
+
               if (coordinates) {
                 var coordinatesArray = coordinates.split(", ");
 
                 var view = new MapView({
                   container: containerNode,
                   map: map,
-                  center: [parseFloat(coordinatesArray[0]), parseFloat(coordinatesArray[1])], 
+                  center: [parseFloat(coordinatesArray[0]), parseFloat(coordinatesArray[1])],
                   scale: 10000
                 });
 
@@ -1686,11 +1687,11 @@ class ShowMap extends React.Component {
                   view = new MapView({
                   container: containerNode,
                   map: map,
-                  center: [76.886, 43.250], 
+                  center: [76.886, 43.250],
                   scale: 10000
                 });
               }
-              
+
               var searchWidget = new Search({
                 view: view,
                 sources: [{
@@ -1708,7 +1709,7 @@ class ShowMap extends React.Component {
                   placeholder: "Кадастровый поиск"
                 }]
               });
-    
+
               view.when( function(callback){
                 var layerList = new LayerList({
                   view: view
@@ -1726,7 +1727,7 @@ class ShowMap extends React.Component {
                 console.log('MapView promise rejected! Message: ', error);
               });
             }}
-          /> 
+          />
         </div>
       </div>
     )

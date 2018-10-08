@@ -85,7 +85,7 @@ class AllApzs extends React.Component {
         var pageNumbers = [];
         var start = (response.current_page - 4) > 0 ? (response.current_page - 4) : 1;
         var end = (response.current_page + 4) < response.last_page ? (response.current_page + 4) : response.last_page;
-        
+
         for (start; start <= end; start++) {
           pageNumbers.push(start);
         }
@@ -111,7 +111,7 @@ class AllApzs extends React.Component {
     var curr_hour = jDate.getHours() < 10 ? "0" + jDate.getHours() : jDate.getHours();
     var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
     var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-    
+
     return formated_date;
   }
 
@@ -129,7 +129,7 @@ class AllApzs extends React.Component {
           <div>
             <ul className="nav nav-tabs mb-2 pull-right">
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/heat-provider/apz/status/active/1" replace>Активные</NavLink></li>
-              
+
               {this.state.isPerformer &&
                 <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'awaiting'} to="/panel/heat-provider/apz/status/awaiting/1" replace>В ожидании</NavLink></li>
               }
@@ -145,7 +145,7 @@ class AllApzs extends React.Component {
                   <th style={{width: '23%'}}>Заявитель</th>
                   <th style={{width: '20%'}}>Адрес</th>
                   <th style={{width: '20%'}}>Дата заявления</th>
-                  
+
                   {(status === 'active' || status === 'awaiting') &&
                     <th style={{width: '14%'}}>Срок</th>
                   }
@@ -157,7 +157,7 @@ class AllApzs extends React.Component {
                   return(
                     <tr key={index}>
                       <td>
-                        {apz.project_name} 
+                        {apz.project_name}
 
                         {apz.object_type &&
                           <span className="ml-1">({apz.object_type})</span>
@@ -166,13 +166,13 @@ class AllApzs extends React.Component {
                       <td>{apz.applicant}</td>
                       <td>{apz.project_address}</td>
                       <td>{this.toDate(apz.created_at)}</td>
-                      
+
                       {(status === 'active' || status === 'awaiting') &&
                         <td>
                           {apz.term > 1 ?
                             apz.term === 3 ? '2 д. (начиная со следующего дня)' : apz.term - 1 + ' д.'
                             :
-                            apz.term === 1 ? 'Последний день (до 16:00)' : 'Просрочено' 
+                            apz.term === 1 ? 'Последний день (до 16:00)' : 'Просрочено'
                           }
                         </td>
                       }
@@ -412,7 +412,7 @@ class ShowApz extends React.Component {
       total += parseInt(main) + parseInt(ven) + parseInt(waterMax);
     }
 
-    this.setState({ 
+    this.setState({
       mainIncrease: this.state.heatMainInContract ? (parseInt(this.state.heatMainInContract) - main) : main,
       mainPercentageIncrease: this.state.heatMainInContract ? Math.floor(((parseInt(this.state.heatMainInContract) - main) / parseInt(this.state.heatMainInContract)) * 100) : 100,
       venIncrease: this.state.heatVenInContract ? (parseInt(this.state.heatVenInContract) - ven) : ven,
@@ -678,12 +678,12 @@ class ShowApz extends React.Component {
           data.commission.apz_heat_response.resource ? this.setState({heatResource: data.commission.apz_heat_response.resource}) : this.setState({heatResource: ""});
           data.commission.apz_heat_response.second_resource ? this.setState({heatSecondResource: data.commission.apz_heat_response.second_resource}) : this.setState({heatSecondResource: ""});
           data.commission.apz_heat_response.load_contract_num ? this.setState({heatLoadContractNum: data.commission.apz_heat_response.load_contract_num}) : this.setState({heatLoadContractNum: ""});
-          
+
           data.commission.apz_heat_response.main_in_contract ? this.setState({heatMainInContract: data.commission.apz_heat_response.main_in_contract}) : this.setState({heatMainInContract: data.apz_heat.main_in_contract});
           data.commission.apz_heat_response.ven_in_contract ? this.setState({heatVenInContract: data.commission.apz_heat_response.ven_in_contract}) : this.setState({heatVenInContract: data.apz_heat.ven_in_contract});
           data.commission.apz_heat_response.water_in_contract ? this.setState({heatWaterInContract: data.commission.apz_heat_response.water_in_contract}) : this.setState({heatWaterInContract: data.apz_heat.water_in_contract});
           data.commission.apz_heat_response.water_in_contract_max ? this.setState({heatWaterMaxInContract: data.commission.apz_heat_response.water_in_contract_max}) : this.setState({heatWaterMaxInContract: data.apz_heat.water_in_contract_max});
-          
+
           data.commission.apz_heat_response.main_increase ? this.setState({mainIncrease: data.commission.apz_heat_response.main_increase}) : this.setState({mainIncrease: ""});
           data.commission.apz_heat_response.main_percentage_increase ? this.setState({mainPercentageIncrease: data.commission.apz_heat_response.main_percentage_increase}) : this.setState({mainPercentageIncrease: ""});
           data.commission.apz_heat_response.ven_increase ? this.setState({venIncrease: data.commission.apz_heat_response.ven_increase}) : this.setState({venIncrease: ""});
@@ -693,9 +693,9 @@ class ShowApz extends React.Component {
 
           data.commission.apz_heat_response.final_increase ? this.setState({finalIncrease: data.commission.apz_heat_response.final_increase}) : this.setState({finalIncrease: ""});
           data.commission.apz_heat_response.final_percentage_increase ? this.setState({finalPercentageIncrease: data.commission.apz_heat_response.final_percentage_increase}) : this.setState({finalPercentageIncrease: ""});
-          
+
           data.commission.apz_heat_response.addition ? this.setState({addition: data.commission.apz_heat_response.addition}) : this.setState({addition: ""});
-          data.commission.apz_heat_response.transporter ? this.setState({heatTransporter: data.commission.apz_heat_response.transporter}) : this.setState({heatTransporter: "2-трубной схеме"}); 
+          data.commission.apz_heat_response.transporter ? this.setState({heatTransporter: data.commission.apz_heat_response.transporter}) : this.setState({heatTransporter: "2-трубной схеме"});
           data.commission.apz_heat_response.two_pipe_pressure_in_tc ? this.setState({twoPipeTcName: data.commission.apz_heat_response.two_pipe_tc_name}) : this.setState({twoPipeTcName: ""});
           data.commission.apz_heat_response.two_pipe_pressure_in_tc ? this.setState({twoPipePressureInTc: data.commission.apz_heat_response.two_pipe_pressure_in_tc}) : this.setState({twoPipePressureInTc: ""});
           data.commission.apz_heat_response.two_pipe_pressure_in_sc ? this.setState({twoPipePressureInSc: data.commission.apz_heat_response.two_pipe_pressure_in_sc}) : this.setState({twoPipePressureInSc: ""});
@@ -705,7 +705,7 @@ class ShowApz extends React.Component {
           data.commission.apz_heat_response.heat_four_pipe_pressure_in_tc ? this.setState({ fourHeatPipePressureInTc: data.commission.apz_heat_response.heat_four_pipe_pressure_in_tc}) : this.setState({ fourHeatPipePressureInTc: ""});
           data.commission.apz_heat_response.heat_four_pipe_pressure_in_sc ? this.setState({ fourHeatPipePressureInSc: data.commission.apz_heat_response.heat_four_pipe_pressure_in_sc}) : this.setState({ fourHeatPipePressureInSc: ""});
           data.commission.apz_heat_response.heat_four_pipe_pressure_in_rc ? this.setState({ fourHeatPipePressureInRc: data.commission.apz_heat_response.heat_four_pipe_pressure_in_rc}) : this.setState({ fourHeatPipePressureInRc: ""});
-          data.commission.apz_heat_response.water_four_pipe_pressure_in_tc ? this.setState({ fourWaterPipePressureInTc: data.commission.apz_heat_response.water_four_pipe_pressure_in_tc}) : this.setState({ fourWaterPipePressureInTc: ""}); 
+          data.commission.apz_heat_response.water_four_pipe_pressure_in_tc ? this.setState({ fourWaterPipePressureInTc: data.commission.apz_heat_response.water_four_pipe_pressure_in_tc}) : this.setState({ fourWaterPipePressureInTc: ""});
           data.commission.apz_heat_response.water_four_pipe_pressure_in_sc ? this.setState({ fourWaterPipePressureInSc: data.commission.apz_heat_response.water_four_pipe_pressure_in_sc}) : this.setState({ fourWaterPipePressureInSc: ""});
           data.commission.apz_heat_response.water_four_pipe_pressure_in_rc ? this.setState({ fourWaterPipePressureInRc: data.commission.apz_heat_response.water_four_pipe_pressure_in_rc}) : this.setState({ fourWaterPipePressureInRc: ""});
           data.commission.apz_heat_response.temperature_chart ? this.setState({temperatureChart: data.commission.apz_heat_response.temperature_chart}) : this.setState({temperatureChart: ""});
@@ -739,10 +739,10 @@ class ShowApz extends React.Component {
 
         if (data.commission.apz_heat_response && data.commission.apz_heat_response.blocks && data.commission.apz_heat_response.blocks.length > 0) {
           var response_blocks = data.commission.apz_heat_response.blocks;
-          
+
           for (var i = 0; i < response_blocks.length; i++) {
             var blocks = this.state.heatBlocks;
-            
+
             blocks[i] = {
               id: response_blocks[i].block_id,
               main: response_blocks[i].main,
@@ -756,7 +756,7 @@ class ShowApz extends React.Component {
         } else if (data.apz_heat.blocks) {
           for (var i = 0; i < data.apz_heat.blocks.length; i++) {
             var blocks = this.state.heatBlocks;
-            
+
             blocks[i] = {
               id: data.apz_heat.blocks[i].id,
               main: data.apz_heat.blocks[i].main,
@@ -771,10 +771,10 @@ class ShowApz extends React.Component {
 
         this.setState({heatStatus: data.apz_heat.status});
 
-        if (data.status_id === 5 && data.apz_heat.status === 2) { 
-          this.setState({showButtons: true}); 
+        if (data.status_id === 5 && data.apz_heat.status === 2) {
+          this.setState({showButtons: true});
         }
-        
+
         if(data.apz_heat.status === 1){
           this.setState({showTechCon: true});
         }
@@ -804,27 +804,27 @@ class ShowApz extends React.Component {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
           var base64ToArrayBuffer = (function () {
-        
+
             return function (base64) {
               var binaryString = window.atob(base64);
               var binaryLen = binaryString.length;
               var bytes = new Uint8Array(binaryLen);
-              
+
               for (var i = 0; i < binaryLen; i++) {
                 var ascii = binaryString.charCodeAt(i);
                 bytes[i] = ascii;
               }
-              
-              return bytes; 
+
+              return bytes;
             }
-            
+
           }());
 
           var saveByteArray = (function () {
             var a = document.createElement("a");
             document.body.appendChild(a);
             a.style = "display: none";
-            
+
             return function (data, name) {
               var blob = new Blob(data, {type: "octet/stream"}),
                   url = window.URL.createObjectURL(blob);
@@ -980,6 +980,7 @@ class ShowApz extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           this.setState({ isSigned: true });
+          alert("Успешно подписан.");
         } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
           alert(JSON.parse(xhr.responseText).message);
         } else {
@@ -1029,7 +1030,7 @@ class ShowApz extends React.Component {
     this.webSocket.onclose = function (event) {
       if (event.wasClean) {
         console.log('connection has been closed');
-      } 
+      }
       else {
         console.log('Connection error');
         this.openDialog();
@@ -1060,7 +1061,7 @@ class ShowApz extends React.Component {
             return this.errorCode;
           }
         };
-        
+
         switch (this.callback) {
           case 'chooseStoragePathBack':
             this.chooseStoragePathBack(rw);
@@ -1210,7 +1211,7 @@ class ShowApz extends React.Component {
         data.water_in_contract ? this.setState({heatWaterInContract: data.water_in_contract}) : this.setState({heatWaterInContract: ""});
         data.water_in_contract_max ? this.setState({heatWaterMaxInContract: data.water_in_contract_max}) : this.setState({heatWaterMaxInContract: ""});
         data.addition ? this.setState({addition: data.addition}) : this.setState({addition: ""});
-        data.transporter ? this.setState({heatTransporter: data.transporter}) : this.setState({heatTransporter: "2-трубной схеме"}); 
+        data.transporter ? this.setState({heatTransporter: data.transporter}) : this.setState({heatTransporter: "2-трубной схеме"});
         data.two_pipe_tc_name ? this.setState({twoPipeTcName: data.two_pipe_tc_name}) : this.setState({twoPipeTcName: ""});
         data.two_pipe_pressure_in_tc ? this.setState({twoPipePressureInTc: data.two_pipe_pressure_in_tc}) : this.setState({twoPipePressureInTc: ""});
         data.two_pipe_pressure_in_sc ? this.setState({twoPipePressureInSc: data.two_pipe_pressure_in_sc}) : this.setState({twoPipePressureInSc: ""});
@@ -1220,7 +1221,7 @@ class ShowApz extends React.Component {
         data.heat_four_pipe_pressure_in_tc ? this.setState({ fourHeatPipePressureInTc: data.heat_four_pipe_pressure_in_tc}) : this.setState({ fourHeatPipePressureInTc: ""});
         data.heat_four_pipe_pressure_in_sc ? this.setState({ fourHeatPipePressureInSc: data.heat_four_pipe_pressure_in_sc}) : this.setState({ fourHeatPipePressureInSc: ""});
         data.heat_four_pipe_pressure_in_rc ? this.setState({ fourHeatPipePressureInRc: data.heat_four_pipe_pressure_in_rc}) : this.setState({ fourHeatPipePressureInRc: ""});
-        data.water_four_pipe_pressure_in_tc ? this.setState({ fourWaterPipePressureInTc: data.water_four_pipe_pressure_in_tc}) : this.setState({ fourWaterPipePressureInTc: ""}); 
+        data.water_four_pipe_pressure_in_tc ? this.setState({ fourWaterPipePressureInTc: data.water_four_pipe_pressure_in_tc}) : this.setState({ fourWaterPipePressureInTc: ""});
         data.water_four_pipe_pressure_in_sc ? this.setState({ fourWaterPipePressureInSc: data.water_four_pipe_pressure_in_sc}) : this.setState({ fourWaterPipePressureInSc: ""});
         data.water_four_pipe_pressure_in_rc ? this.setState({ fourWaterPipePressureInRc: data.water_four_pipe_pressure_in_rc}) : this.setState({ fourWaterPipePressureInRc: ""});
         data.temperature_chart ? this.setState({temperatureChart: data.temperature_chart}) : this.setState({temperatureChart: ""});
@@ -1284,7 +1285,7 @@ class ShowApz extends React.Component {
 
           if(data.response === 1) {
             alert("Заявление принято!");
-          } 
+          }
           else if(data.response === 0) {
             alert("Заявление отклонено!");
           }
@@ -1299,7 +1300,7 @@ class ShowApz extends React.Component {
         window.location.reload();
       }.bind(this);
       xhr.send(JSON.stringify({docNumber: this.state.docNumber}));
-    } 
+    }
   }
 
   sendHeadResponse(apzId, status, comment) {
@@ -1355,27 +1356,27 @@ class ShowApz extends React.Component {
             var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
 
             var base64ToArrayBuffer = (function () {
-        
+
               return function (base64) {
                 var binaryString =  window.atob(base64);
                 var binaryLen = binaryString.length;
                 var bytes = new Uint8Array(binaryLen);
-                
+
                 for (var i = 0; i < binaryLen; i++) {
                   var ascii = binaryString.charCodeAt(i);
                   bytes[i] = ascii;
                 }
-                
-                return bytes; 
+
+                return bytes;
               }
-              
+
             }());
 
             var saveByteArray = (function () {
               var a = document.createElement("a");
               document.body.appendChild(a);
               a.style = "display: none";
-              
+
               return function (data, name) {
                 var blob = new Blob(data, {type: "octet/stream"}),
                     url = window.URL.createObjectURL(blob);
@@ -1442,7 +1443,7 @@ printData()
     var curr_hour = jDate.getHours();
     var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
     var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-    
+
     return formated_date;
   }
 
@@ -1458,7 +1459,7 @@ printData()
       <div className="row">
           <div className="col-sm-6">
             <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
-         
+
             <table className="table table-bordered table-striped" id="printTable">
               <tbody>
                 <tr>
@@ -1515,7 +1516,7 @@ printData()
                   <td><b>Дата заявления</b></td>
                   <td>{apz.created_at && this.toDate(apz.created_at)}</td>
                 </tr>
-                
+
                 {this.state.personalIdFile &&
                   <tr className="shukichi">
                     <td><b>Уд. лич./ Реквизиты</b></td>
@@ -1546,7 +1547,7 @@ printData()
           <table className="table table-bordered table-striped" id="detail_table">
             <tbody>
               <tr>
-                <td style={{width: '40%'}}>Общая нагрузка (Гкал/ч)</td> 
+                <td style={{width: '40%'}}>Общая нагрузка (Гкал/ч)</td>
                 <td>{apz.apz_heat.general}</td>
               </tr>
               <tr>
@@ -1607,7 +1608,7 @@ printData()
                     {apz.apz_heat.blocks.length > 1 &&
                       <h5 className="block-title-2 mt-4 mb-3">Здание №{index + 1}</h5>
                     }
-                    
+
                     <table className="table table-bordered table-striped">
                       <tbody>
                         <tr>
@@ -1638,7 +1639,7 @@ printData()
         </div>
 
         <div className="col-sm-12">
-          {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />} 
+          {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
 
           <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
             {this.state.showMapText}
@@ -1667,7 +1668,7 @@ printData()
                     return(
                       <tr key={index}>
                         <td width="40%">
-                          {item.user.name} 
+                          {item.user.name}
                         </td>
                         <td width="40%">{item.comments}</td>
                         <td>{this.toDate(item.created_at)}</td>
@@ -1683,7 +1684,7 @@ printData()
           <div className="row provider_answer_top" style={{margin: '16px 0 0'}}>
             {(this.state.isPerformer === true || this.state.responseId != 0) &&
               <div className="col-sm-6 pl-0">
-                <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ</h5> 
+                <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ</h5>
               </div>
             }
             <div className="col-sm-6 pr-0">
@@ -1704,7 +1705,7 @@ printData()
           </div>
 
           {this.state.accept === 'accept' && this.state.heatStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
-            <div className="provider_answer_body" style={{border: 'solid 1px #46A149', padding: '20px'}}>  
+            <div className="provider_answer_body" style={{border: 'solid 1px #46A149', padding: '20px'}}>
               <div className="row pt-0">
                 <div className="col-sm-4">
                   <div className="form-group">
@@ -1750,7 +1751,7 @@ printData()
                   </div>
                   <div className="form-group">
                     <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.energyEfficiency} onChange={this.onEnergyEfficiencyChange} />
-                  </div> 
+                  </div>
                 </div>
                 <div className="col-sm-4">
                   <div className="form-group">
@@ -1758,12 +1759,12 @@ printData()
                     <input type="text" className="form-control" placeholder="Введите номер договора" value={this.state.heatLoadContractNum} onChange={this.onHeatLoadContractNumChange} />
                   </div>
                   <label>Транспортировка тепловой энергии осуществляется по:</label>
-                  <input type="radio" name="twoPipe" value="" 
-                          checked={this.state.heatTransporter === "2-трубной схеме"} 
+                  <input type="radio" name="twoPipe" value=""
+                          checked={this.state.heatTransporter === "2-трубной схеме"}
                           onChange={this.onHeatTransporterChange.bind(this, "2-трубной схеме")} />
                   <label style={{marginRight: '10px'}}>2-трубной схеме</label>
-                  <input type="radio" name="fourPipe" value="" 
-                          checked={this.state.heatTransporter === "4-трубной схеме"} 
+                  <input type="radio" name="fourPipe" value=""
+                          checked={this.state.heatTransporter === "4-трубной схеме"}
                           onChange={this.onHeatTransporterChange.bind(this, "4-трубной схеме")} />
                   <label>4-трубной схеме</label><br /> <br />
                   {this.state.heatTransporter === '2-трубной схеме' &&
@@ -1813,12 +1814,12 @@ printData()
                     <textarea style={{border: 'solid 1px black'}} rows='5' className="form-control" placeholder="" value={this.state.thermalEnergyMeters} onChange={this.onThermalEnergyMetersChange} />
                   </div>
                   <label style={{display: 'block'}}>Система теплоснабжения:</label>
-                  <input type="radio" value="" 
-                          checked={this.state.heatSupplySystem === "Открытая"} 
+                  <input type="radio" value=""
+                          checked={this.state.heatSupplySystem === "Открытая"}
                           onChange={this.onHeatSupplySystemChange.bind(this, "Открытая")} />
                   <label style={{marginRight: '10px'}}>Открытая</label>
-                  <input type="radio" value="" 
-                          checked={this.state.heatSupplySystem === "Закрытая"} 
+                  <input type="radio" value=""
+                          checked={this.state.heatSupplySystem === "Закрытая"}
                           onChange={this.onHeatSupplySystemChange.bind(this, "Закрытая")} />
                   <label>Закрытая</label><br /> <br />
                   <div className="form-group">
@@ -1874,7 +1875,7 @@ printData()
                     <div className="form-group">
                       <label style={{display: 'block'}}>Прикрепленный файл</label>
                       <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
-                        Скачать 
+                        Скачать
                       </a>
                     </div>
                   }
@@ -2002,9 +2003,9 @@ printData()
                         Сохранить
                       </button>
 
-                      <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.sendHeatResponse.bind(this, apz.id, true, "")}>
+                      {/*<button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.sendHeatResponse.bind(this, apz.id, true, "")}>
                         Отправить без ЭЦП
-                      </button>
+                      </button>*/}
 
                       {this.state.response &&
                         <button type="button" className="btn btn-secondary" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>
@@ -2023,13 +2024,13 @@ printData()
               <table className="table table-bordered table-striped">
                 <tbody>
                   <tr>
-                    <td style={{width: '40%'}}>Источник</td> 
+                    <td style={{width: '40%'}}>Источник</td>
                     <td>{this.state.heatResource}</td>
                   </tr>
                   <tr>
-                    <td>Точка подключения</td> 
+                    <td>Точка подключения</td>
                     <td>{this.state.connectionPoint}</td>
-                  </tr> 
+                  </tr>
                   <tr>
                     <td>Тепловые нагрузки по договору</td>
                     <td>{this.state.heatLoadContractNum}</td>
@@ -2059,7 +2060,7 @@ printData()
                       <td>Прикрепленный файл</td>
                       <td>
                         <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
-                          Скачать 
+                          Скачать
                         </a>
                       </td>
                     </tr>
@@ -2086,7 +2087,7 @@ printData()
                         {apz.commission.apz_heat_response.blocks.length > 1 &&
                           <h5 className="block-title-2 mt-4 mb-3">Здание №{index + 1}</h5>
                         }
-                        
+
                         <table className="table table-bordered table-striped">
                           <tbody>
                             <tr>
@@ -2120,7 +2121,7 @@ printData()
               <div className="form-group">
                 <label htmlFor="custom_tc_file">
                   Прикрепить файл
-                  
+
                   {this.state.customTcFile &&
                     <span style={{paddingLeft: '5px'}}>
                       (текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.customTcFile.id)}>{this.state.customTcFile.name}</a>)
@@ -2144,7 +2145,7 @@ printData()
             <table className="table table-bordered table-striped">
               <tbody>
                 <tr>
-                  <td style={{width: '20%'}}>Технические условия</td> 
+                  <td style={{width: '20%'}}>Технические условия</td>
                   <td><a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.customTcFile.id)}>Скачать</a></td>
                 </tr>
               </tbody>
@@ -2166,7 +2167,7 @@ printData()
                     return(
                       <tr key={index}>
                         <td width="40%">
-                          {item.user.name} 
+                          {item.user.name}
                         </td>
                         <td width="40%">{item.comments}</td>
                         <td>{this.toDate(item.created_at)}</td>
@@ -2195,7 +2196,7 @@ printData()
               {!this.state.xmlFile && !this.state.isSigned && apz.status_id === 5 &&
                 <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                   <div>Выберите хранилище</div>
-                            
+
                   <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
                     <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
                     <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>eToken</button>
@@ -2242,7 +2243,7 @@ printData()
                 <div className="form-group">
                   <label style={{display: 'block'}}>Прикрепленный файл</label>
                   <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
-                    Скачать 
+                    Скачать
                   </a>
                 </div>
               }
@@ -2264,7 +2265,7 @@ printData()
               <table className="table table-bordered table-striped">
                 <tbody>
                   <tr>
-                    <td style={{width: '40%'}}>Причина отклонения</td> 
+                    <td style={{width: '40%'}}>Причина отклонения</td>
                     <td>{this.state.description}</td>
                   </tr>
                   <tr>
@@ -2276,7 +2277,7 @@ printData()
                       <td>Прикрепленный файл</td>
                       <td>
                         <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
-                          Скачать 
+                          Скачать
                         </a>
                       </td>
                     </tr>
@@ -2290,7 +2291,7 @@ printData()
             <table className="table table-bordered table-striped">
               <tbody>
                 <tr>
-                  <td style={{width: '40%'}}><b>Сформированный ТУ</b></td>  
+                  <td style={{width: '40%'}}><b>Сформированный ТУ</b></td>
                   <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
                 </tr>
               </tbody>
@@ -2333,11 +2334,11 @@ class ShowMap extends React.Component {
     return (
       <div>
         <h5 className="block-title-2 mt-5 mb-3">Карта</h5>
-        <div className="col-md-12 viewDiv"> 
-          <EsriLoaderReact options={options} 
+        <div className="col-md-12 viewDiv">
+          <EsriLoaderReact options={options}
             modulesToLoad={[
               'esri/views/MapView',
-              
+
               'esri/widgets/LayerList',
 
               'esri/WebScene',
@@ -2349,8 +2350,8 @@ class ShowMap extends React.Component {
               'dojo/dom',
               'esri/Graphic',
               'dojo/domReady!'
-            ]}    
-            
+            ]}
+
             onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap, webMercatorUtils, dom, Graphic], containerNode}) => {
               var map = new WebMap({
                 portalItem: {
@@ -2373,14 +2374,14 @@ class ShowMap extends React.Component {
               });
               map.add(flGosAkts);
               */
-              
+
               if (coordinates) {
                 var coordinatesArray = coordinates.split(", ");
 
                 var view = new MapView({
                   container: containerNode,
                   map: map,
-                  center: [parseFloat(coordinatesArray[0]), parseFloat(coordinatesArray[1])], 
+                  center: [parseFloat(coordinatesArray[0]), parseFloat(coordinatesArray[1])],
                   scale: 10000
                 });
 
@@ -2409,11 +2410,11 @@ class ShowMap extends React.Component {
                   view = new MapView({
                   container: containerNode,
                   map: map,
-                  center: [76.886, 43.250], 
+                  center: [76.886, 43.250],
                   scale: 10000
                 });
               }
-              
+
               var searchWidget = new Search({
                 view: view,
                 sources: [{
@@ -2431,7 +2432,7 @@ class ShowMap extends React.Component {
                   placeholder: "Кадастровый поиск"
                 }]
               });
-    
+
               view.when( function(callback){
                 var layerList = new LayerList({
                   view: view
@@ -2449,10 +2450,9 @@ class ShowMap extends React.Component {
                 console.log('MapView promise rejected! Message: ', error);
               });
             }}
-          /> 
+          />
         </div>
       </div>
     )
   }
 }
-

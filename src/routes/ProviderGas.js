@@ -83,7 +83,7 @@ class AllApzs extends React.Component {
         var pageNumbers = [];
         var start = (response.current_page - 4) > 0 ? (response.current_page - 4) : 1;
         var end = (response.current_page + 4) < response.last_page ? (response.current_page + 4) : response.last_page;
-        
+
         for (start; start <= end; start++) {
           pageNumbers.push(start);
         }
@@ -109,7 +109,7 @@ class AllApzs extends React.Component {
     var curr_hour = jDate.getHours() < 10 ? "0" + jDate.getHours() : jDate.getHours();
     var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
     var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-    
+
     return formated_date;
   }
 
@@ -127,11 +127,11 @@ class AllApzs extends React.Component {
           <div>
             <ul className="nav nav-tabs mb-2 pull-right">
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/gas-provider/apz/status/active/1" replace>Активные</NavLink></li>
-              
+
               {this.state.isPerformer &&
                 <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'awaiting'} to="/panel/gas-provider/apz/status/awaiting/1" replace>В ожидании</NavLink></li>
               }
-              
+
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/gas-provider/apz/status/accepted/1" replace>Принятые</NavLink></li>
               <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/gas-provider/apz/status/declined/1" replace>Отказанные</NavLink></li>
             </ul>
@@ -143,7 +143,7 @@ class AllApzs extends React.Component {
                   <th style={{width: '23%'}}>Заявитель</th>
                   <th style={{width: '20%'}}>Адрес</th>
                   <th style={{width: '20%'}}>Дата заявления</th>
-                  
+
                   {(status === 'active' || status === 'awaiting') &&
                     <th style={{width: '14%'}}>Срок</th>
                   }
@@ -155,7 +155,7 @@ class AllApzs extends React.Component {
                   return(
                     <tr key={index}>
                       <td>
-                        {apz.project_name} 
+                        {apz.project_name}
 
                         {apz.object_type &&
                           <span className="ml-1">({apz.object_type})</span>
@@ -164,13 +164,13 @@ class AllApzs extends React.Component {
                       <td>{apz.applicant}</td>
                       <td>{apz.project_address}</td>
                       <td>{this.toDate(apz.created_at)}</td>
-                      
+
                       {(status === 'active' || status === 'awaiting') &&
                         <td>
                           {apz.term > 1 ?
                             apz.term === 3 ? '2 д. (начиная со следующего дня)' : apz.term - 1 + ' д.'
                             :
-                            apz.term === 1 ? 'Последний день (до 16:00)' : 'Просрочено' 
+                            apz.term === 1 ? 'Последний день (до 16:00)' : 'Просрочено'
                           }
                         </td>
                       }
@@ -379,10 +379,10 @@ class ShowApz extends React.Component {
 
         this.setState({gasStatus: data.apz_gas.status});
 
-        if (data.status_id === 5 && data.apz_gas.status === 2) { 
-          this.setState({showButtons: true}); 
+        if (data.status_id === 5 && data.apz_gas.status === 2) {
+          this.setState({showButtons: true});
         }
-        
+
         if(data.apz_gas.status === 1){
           this.setState({showTechCon: true});
         }
@@ -412,27 +412,27 @@ class ShowApz extends React.Component {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
           var base64ToArrayBuffer = (function () {
-        
+
             return function (base64) {
               var binaryString = window.atob(base64);
               var binaryLen = binaryString.length;
               var bytes = new Uint8Array(binaryLen);
-              
+
               for (var i = 0; i < binaryLen; i++) {
                 var ascii = binaryString.charCodeAt(i);
                 bytes[i] = ascii;
               }
-              
-              return bytes; 
+
+              return bytes;
             }
-            
+
           }());
 
           var saveByteArray = (function () {
             var a = document.createElement("a");
             document.body.appendChild(a);
             a.style = "display: none";
-            
+
             return function (data, name) {
               var blob = new Blob(data, {type: "octet/stream"}),
                   url = window.URL.createObjectURL(blob);
@@ -588,6 +588,7 @@ class ShowApz extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           this.setState({ isSigned: true });
+          alert("Успешно подписан.");
         } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
           alert(JSON.parse(xhr.responseText).message);
         } else {
@@ -637,7 +638,7 @@ class ShowApz extends React.Component {
     this.webSocket.onclose = function (event) {
       if (event.wasClean) {
         console.log('connection has been closed');
-      } 
+      }
       else {
         console.log('Connection error');
         this.openDialog();
@@ -668,7 +669,7 @@ class ShowApz extends React.Component {
             return this.errorCode;
           }
         };
-        
+
         switch (this.callback) {
           case 'chooseStoragePathBack':
             this.chooseStoragePathBack(rw);
@@ -737,7 +738,7 @@ class ShowApz extends React.Component {
         data.gas_pipe_diameter ? this.setState({gasPipeDiameter: data.gas_pipe_diameter}) : this.setState({gasPipeDiameter: ""});
         data.assumed_capacity ? this.setState({assumedCapacity: data.assumed_capacity}) : this.setState({assumedCapacity: ""});
         data.reconsideration ? this.setState({reconsideration: data.reconsideration}) : this.setState({reconsideration: ""});
-        
+
         if (this.state.callSaveFromSend) {
           this.setState({callSaveFromSend: false});
           this.sendGasResponse(apzId, status, comment);
@@ -776,7 +777,7 @@ class ShowApz extends React.Component {
             this.setState({ showButtons: false });
             this.setState({ gasStatus: 1 });
             this.setState({ showTechCon: true });
-          } 
+          }
           else if(data.response === 0) {
             alert("Заявление отклонено!");
             this.setState({ showButtons: false });
@@ -791,7 +792,7 @@ class ShowApz extends React.Component {
         }
       }.bind(this);
       xhr.send(JSON.stringify({docNumber: this.state.docNumber}));
-    } 
+    }
   }
 
   sendHeadResponse(apzId, status, comment) {
@@ -848,27 +849,27 @@ class ShowApz extends React.Component {
             var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
 
             var base64ToArrayBuffer = (function () {
-        
+
               return function (base64) {
                 var binaryString =  window.atob(base64);
                 var binaryLen = binaryString.length;
                 var bytes = new Uint8Array(binaryLen);
-                
+
                 for (var i = 0; i < binaryLen; i++) {
                   var ascii = binaryString.charCodeAt(i);
                   bytes[i] = ascii;
                 }
-                
-                return bytes; 
+
+                return bytes;
               }
-              
+
             }());
 
             var saveByteArray = (function () {
               var a = document.createElement("a");
               document.body.appendChild(a);
               a.style = "display: none";
-              
+
               return function (data, name) {
                 var blob = new Blob(data, {type: "octet/stream"}),
                     url = window.URL.createObjectURL(blob);
@@ -926,7 +927,7 @@ printData()
     if(date === null) {
       return date;
     }
-    
+
     var jDate = new Date(date);
     var curr_date = jDate.getDate();
     var curr_month = jDate.getMonth() + 1;
@@ -934,10 +935,10 @@ printData()
     var curr_hour = jDate.getHours();
     var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
     var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-    
+
     return formated_date;
   }
-  
+
   render() {
     var apz = this.state.apz;
 
@@ -949,7 +950,7 @@ printData()
       <div className="row">
         <div className="col-sm-6">
           <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
-          
+
           <table className="table table-bordered table-striped"  id="printTable">
             <tbody>
               <tr>
@@ -990,7 +991,7 @@ printData()
                 <td><b>Дата заявления</b></td>
                 <td>{apz.created_at && this.toDate(apz.created_at)}</td>
               </tr>
-              
+
               {this.state.personalIdFile &&
                 <tr className="shukichi">
                   <td><b>Уд. лич./ Реквизиты</b></td>
@@ -1021,7 +1022,7 @@ printData()
           <table className="table table-bordered table-striped"  id="detail_table">
             <tbody>
               <tr>
-                <td style={{width: '40%'}}>Общ. потребность (м<sup>3</sup>/час)</td> 
+                <td style={{width: '40%'}}>Общ. потребность (м<sup>3</sup>/час)</td>
                 <td>{apz.apz_gas.general}</td>
               </tr>
               <tr>
@@ -1053,7 +1054,7 @@ printData()
           <div className="row provider_answer_top" style={{margin: '16px 0 0'}}>
             {(this.state.isPerformer === true || this.state.responseId != 0) &&
               <div className="col-sm-6">
-                <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ</h5> 
+                <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ</h5>
               </div>
             }
             <div className="col-sm-6 pr-0">
@@ -1093,16 +1094,16 @@ printData()
                     <label htmlFor="docNumber">Номер документа</label>
                     <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
                   </div>
-                  
+
                   {!this.state.xmlFile &&
                     <div className="form-group">
                       <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, "accept", "")}>
                         Сохранить
                       </button>
 
-                      <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.sendGasResponse.bind(this, apz.id, true, "")}>
+                      {/*<button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.sendGasResponse.bind(this, apz.id, true, "")}>
                         Отправить без ЭЦП
-                      </button>
+                      </button>*/}
 
                       {this.state.response &&
                         <button type="button" className="btn btn-secondary" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>
@@ -1118,7 +1119,7 @@ printData()
                     <div className="form-group">
                       <label style={{display: 'block'}}>Прикрепленный файл</label>
                       <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
-                        Скачать 
+                        Скачать
                       </a>
                     </div>
                   }
@@ -1141,7 +1142,7 @@ printData()
               <table className="table table-bordered table-striped">
                 <tbody>
                   <tr>
-                    <td style={{width: '40%'}}>Точка подключения</td> 
+                    <td style={{width: '40%'}}>Точка подключения</td>
                     <td>{this.state.connectionPoint}</td>
                   </tr>
                   <tr>
@@ -1165,7 +1166,7 @@ printData()
                       <td>Прикрепленный файл</td>
                       <td>
                         <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
-                          Скачать 
+                          Скачать
                         </a>
                       </td>
                     </tr>
@@ -1191,7 +1192,7 @@ printData()
               <div className="form-group">
                 <label htmlFor="custom_tc_file">
                   Прикрепить файл
-                  
+
                   {this.state.customTcFile &&
                     <span style={{paddingLeft: '5px'}}>
                       (текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.customTcFile.id)}>{this.state.customTcFile.name}</a>)
@@ -1215,7 +1216,7 @@ printData()
             <table className="table table-bordered table-striped">
               <tbody>
                 <tr>
-                  <td>Технические условия</td> 
+                  <td>Технические условия</td>
                   <td><a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.customTcFile.id)}>Скачать</a></td>
                 </tr>
               </tbody>
@@ -1227,7 +1228,7 @@ printData()
               {!this.state.xmlFile && !this.state.isSigned && apz.status_id === 5 &&
                 <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                   <div>Выберите хранилище</div>
-                            
+
                   <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
                     <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
                     <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>eToken</button>
@@ -1274,7 +1275,7 @@ printData()
                 <div className="form-group">
                   <label style={{display: 'block'}}>Прикрепленный файл</label>
                   <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
-                    Скачать 
+                    Скачать
                   </a>
                 </div>
               }
@@ -1295,7 +1296,7 @@ printData()
               <table className="table table-bordered table-striped">
                 <tbody>
                   <tr>
-                    <td style={{width: '40%'}}>Причина отклонения</td> 
+                    <td style={{width: '40%'}}>Причина отклонения</td>
                     <td>{this.state.description}</td>
                   </tr>
                   <tr>
@@ -1307,7 +1308,7 @@ printData()
                       <td>Прикрепленный файл</td>
                       <td>
                         <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
-                          Скачать 
+                          Скачать
                         </a>
                       </td>
                     </tr>
@@ -1321,7 +1322,7 @@ printData()
             <table className="table table-bordered table-striped">
               <tbody>
                 <tr>
-                  <td style={{width: '40%'}}><b>Сформированный ТУ</b></td>  
+                  <td style={{width: '40%'}}><b>Сформированный ТУ</b></td>
                   <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
                 </tr>
               </tbody>
@@ -1359,7 +1360,7 @@ printData()
                     return(
                       <tr key={index}>
                         <td width="40%">
-                          {item.user.name} 
+                          {item.user.name}
                         </td>
                         <td width="40%">{item.comments}</td>
                         <td>{this.toDate(item.created_at)}</td>
@@ -1419,11 +1420,11 @@ class ShowMap extends React.Component {
     return (
       <div>
         <h5 className="block-title-2 mt-5 mb-3">Карта</h5>
-        <div className="col-md-12 viewDiv"> 
-          <EsriLoaderReact options={options} 
+        <div className="col-md-12 viewDiv">
+          <EsriLoaderReact options={options}
             modulesToLoad={[
               'esri/views/MapView',
-              
+
               'esri/widgets/LayerList',
 
               'esri/WebScene',
@@ -1435,8 +1436,8 @@ class ShowMap extends React.Component {
               'dojo/dom',
               'esri/Graphic',
               'dojo/domReady!'
-            ]}    
-            
+            ]}
+
             onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap, webMercatorUtils, dom, Graphic], containerNode}) => {
               var map = new WebMap({
                 portalItem: {
@@ -1458,7 +1459,7 @@ class ShowMap extends React.Component {
                 title: "Охранная зона газопровода"
               });
               map.add(gasLineSafetyZone);
-              
+
               var flGosAkts = new FeatureLayer({
                 url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
                 outFields: ["*"],
@@ -1466,14 +1467,14 @@ class ShowMap extends React.Component {
               });
               map.add(flGosAkts);
               */
-              
+
               if (coordinates) {
                 var coordinatesArray = coordinates.split(", ");
 
                 var view = new MapView({
                   container: containerNode,
                   map: map,
-                  center: [parseFloat(coordinatesArray[0]), parseFloat(coordinatesArray[1])], 
+                  center: [parseFloat(coordinatesArray[0]), parseFloat(coordinatesArray[1])],
                   scale: 10000
                 });
 
@@ -1502,11 +1503,11 @@ class ShowMap extends React.Component {
                   view = new MapView({
                   container: containerNode,
                   map: map,
-                  center: [76.886, 43.250], 
+                  center: [76.886, 43.250],
                   scale: 10000
                 });
               }
-              
+
               var searchWidget = new Search({
                 view: view,
                 sources: [{
@@ -1524,7 +1525,7 @@ class ShowMap extends React.Component {
                   placeholder: "Кадастровый поиск"
                 }]
               });
-    
+
               view.when( function(callback){
                 var layerList = new LayerList({
                   view: view
@@ -1542,7 +1543,7 @@ class ShowMap extends React.Component {
                 console.log('MapView promise rejected! Message: ', error);
               });
             }}
-          /> 
+          />
         </div>
       </div>
     )
