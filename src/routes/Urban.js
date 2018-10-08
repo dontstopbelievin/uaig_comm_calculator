@@ -72,7 +72,7 @@ class AllApzs extends React.Component {
         var pageNumbers = [];
         var start = (response.current_page - 4) > 0 ? (response.current_page - 4) : 1;
         var end = (response.current_page + 4) < response.last_page ? (response.current_page + 4) : response.last_page;
-        
+
         for (start; start <= end; start++) {
           pageNumbers.push(start);
         }
@@ -98,7 +98,7 @@ class AllApzs extends React.Component {
     var curr_hour = jDate.getHours() < 10 ? "0" + jDate.getHours() : jDate.getHours();
     var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
     var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-    
+
     return formated_date;
   }
 
@@ -136,7 +136,7 @@ class AllApzs extends React.Component {
                   return(
                     <tr key={index}>
                       <td>
-                        {apz.project_name} 
+                        {apz.project_name}
 
                         {apz.object_type &&
                           <span className="ml-1">({apz.object_type})</span>
@@ -178,8 +178,8 @@ class AllApzs extends React.Component {
             }
           </div>
         }
-        
-        {!this.state.loaderHidden && 
+
+        {!this.state.loaderHidden &&
           <div style={{textAlign: 'center'}}>
             <Loader type="Oval" color="#46B3F2" height="200" width="200" />
           </div>
@@ -259,17 +259,17 @@ class ShowApz extends React.Component {
         this.setState({returnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null })[0]});
         this.setState({needSign: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
 
-        if (apz.status_id === 3) { 
-          this.setState({showButtons: true}); 
+        if (apz.status_id === 3) {
+          this.setState({showButtons: true});
         }
 
         if (this.state.returnedState) {
-          this.setState({response: false}); 
+          this.setState({response: false});
         }
 
         this.setState({loaderHidden: true});
-        this.setState({xmlFile: apz.files.filter(function(obj) { return obj.category_id === 20})[0]});
-
+        // BE CAREFUL OF category_id should be xml регионального архитектора
+        this.setState({xmlFile: apz.files.filter(function(obj) { return obj.category_id === 21})[0]});
         if (this.state.xmlFile) {
           this.setState({needSign: true });
         }
@@ -293,27 +293,27 @@ class ShowApz extends React.Component {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
           var base64ToArrayBuffer = (function () {
-        
+
             return function (base64) {
               var binaryString = window.atob(base64);
               var binaryLen = binaryString.length;
               var bytes = new Uint8Array(binaryLen);
-              
+
               for (var i = 0; i < binaryLen; i++) {
                 var ascii = binaryString.charCodeAt(i);
                 bytes[i] = ascii;
               }
-              
-              return bytes; 
+
+              return bytes;
             }
-            
+
           }());
 
           var saveByteArray = (function () {
             var a = document.createElement("a");
             document.body.appendChild(a);
             a.style = "display: none";
-            
+
             return function (data, name) {
               var blob = new Blob(data, {type: "octet/stream"}),
                   url = window.URL.createObjectURL(blob);
@@ -516,7 +516,7 @@ class ShowApz extends React.Component {
     this.webSocket.onclose = function (event) {
       if (event.wasClean) {
         console.log('connection has been closed');
-      } 
+      }
       else {
         console.log('Connection error');
         this.openDialog();
@@ -547,7 +547,7 @@ class ShowApz extends React.Component {
             return this.errorCode;
           }
         };
-        
+
         switch (this.callback) {
           case 'chooseStoragePathBack':
             this.chooseStoragePathBack(rw);
@@ -617,7 +617,7 @@ class ShowApz extends React.Component {
         $('#accDecApzForm').modal('hide');
       }
     }.bind(this);
-    xhr.send(data); 
+    xhr.send(data);
   }
 
   sendToApz() {
@@ -644,7 +644,7 @@ class ShowApz extends React.Component {
     if(date === null) {
       return date;
     }
-    
+
     var jDate = new Date(date);
     var curr_date = jDate.getDate();
     var curr_month = jDate.getMonth() + 1;
@@ -652,10 +652,10 @@ class ShowApz extends React.Component {
     var curr_hour = jDate.getHours();
     var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
     var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-    
+
     return formated_date;
   }
-  
+
   render() {
     var apz = this.state.apz;
 
@@ -664,7 +664,7 @@ class ShowApz extends React.Component {
         {this.state.loaderHidden &&
           <div>
             <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
-            
+
             <table className="table table-bordered table-striped">
               <tbody>
                 <tr>
@@ -705,7 +705,7 @@ class ShowApz extends React.Component {
                   <td><b>Дата заявления</b></td>
                   <td>{apz.created_at && this.toDate(apz.created_at)}</td>
                 </tr>
-                
+
                 {this.state.personalIdFile &&
                   <tr>
                     <td><b>Уд. лич./ Реквизиты</b></td>
@@ -729,7 +729,7 @@ class ShowApz extends React.Component {
               </tbody>
             </table>
 
-            {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />} 
+            {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
 
             <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
               {this.state.showMapText}
@@ -765,7 +765,7 @@ class ShowApz extends React.Component {
                         {!this.state.xmlFile ?
                           <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                             <div>Выберите хранилище</div>
-                            
+
                             <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
                               <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
                               <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>eToken</button>
@@ -816,7 +816,7 @@ class ShowApz extends React.Component {
                             </select>
                           </div>
                         }
-                        
+
                         <div className="form-group">
                           <ReactQuill value={this.state.description} onChange={this.onDescriptionChange} />
                         </div>
@@ -852,7 +852,7 @@ class ShowApz extends React.Component {
             </div>
           </div>
         }
-        
+
         {!this.state.loaderHidden &&
           <div style={{textAlign: 'center'}}>
             <Loader type="Oval" color="#46B3F2" height="200" width="200" />
@@ -874,11 +874,11 @@ class ShowMap extends React.Component {
     return (
       <div>
         <h5 className="block-title-2 mt-5 mb-3">Карта</h5>
-        <div className="col-md-12 viewDiv"> 
-          <EsriLoaderReact options={options} 
+        <div className="col-md-12 viewDiv">
+          <EsriLoaderReact options={options}
             modulesToLoad={[
               'esri/views/MapView',
-              
+
               'esri/widgets/LayerList',
 
               'esri/WebScene',
@@ -890,8 +890,8 @@ class ShowMap extends React.Component {
               'dojo/dom',
               'esri/Graphic',
               'dojo/domReady!'
-            ]}    
-            
+            ]}
+
             onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap, webMercatorUtils, dom, Graphic], containerNode}) => {
               var map = new WebMap({
                 portalItem: {
@@ -913,7 +913,7 @@ class ShowMap extends React.Component {
                   title: "Функциональное зонирование"
                 });
                 map.add(flFunZones);
-              
+
                 var flGosAkts = new FeatureLayer({
                   url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
                   outFields: ["*"],
@@ -928,7 +928,7 @@ class ShowMap extends React.Component {
                 var view = new MapView({
                   container: containerNode,
                   map: map,
-                  center: [parseFloat(coordinatesArray[0]), parseFloat(coordinatesArray[1])], 
+                  center: [parseFloat(coordinatesArray[0]), parseFloat(coordinatesArray[1])],
                   scale: 10000
                 });
 
@@ -957,11 +957,11 @@ class ShowMap extends React.Component {
                   view = new MapView({
                   container: containerNode,
                   map: map,
-                  center: [76.886, 43.250], 
+                  center: [76.886, 43.250],
                   scale: 10000
                 });
               }
-              
+
               var searchWidget = new Search({
                 view: view,
                 sources: [{
@@ -979,7 +979,7 @@ class ShowMap extends React.Component {
                   placeholder: "Кадастровый поиск"
                 }]
               });
-    
+
               view.when( function(callback){
                 var layerList = new LayerList({
                   view: view
@@ -997,7 +997,7 @@ class ShowMap extends React.Component {
                 console.log('MapView promise rejected! Message: ', error);
               });
             }}
-          /> 
+          />
         </div>
       </div>
     )
