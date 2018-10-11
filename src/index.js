@@ -105,9 +105,10 @@ export default class Main extends React.Component {
 
     //window.url = 'https://api.uaig.kz:8843/';
     //window.url = 'http://192.168.0.231/';
+    //window.url = 'http://shymkentback.uaig.kz/';
     //window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
 
-     window.url = 'http://uaig/';
+    window.url = 'http://uaig/';
      //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
      //window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
      window.clientSecret = 'gqQv9j4PKzJUEb90FwW7nsq7fx1jjr67i9B3xLOn'; // aman
