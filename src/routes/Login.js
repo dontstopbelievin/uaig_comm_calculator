@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import $ from 'jquery';
 import '../assets/css/login.css';
@@ -18,7 +18,7 @@ export default class Login extends Component {
     this.missed_heartbeats_limit = this.missed_heartbeats_limit_min;
     this.callback = null;
     this.state = {
-      username: "", 
+      username: "",
       pwd: "",
       loaderHidden: true,
       storageAlias: "PKCS12",
@@ -74,7 +74,7 @@ export default class Login extends Component {
     var username = this.state.username.trim();
     var pwd = this.state.pwd.trim();
     var params = 'grant_type=password&username=' + username + '&password='+ pwd + '&client_secret=' + window.clientSecret + '&client_id=2';
-      
+
     //========================================
     /*var loginData = {
       grant_type: 'password',
@@ -83,7 +83,7 @@ export default class Login extends Component {
     };*/
     //var data = JSON.stringify(loginData);
     //========================================
-    
+
     //========================================
     /*var fData = new FormData();
     fData.append('grant_type', 'password');
@@ -93,7 +93,7 @@ export default class Login extends Component {
 
     if (!username || !pwd) {
       return;
-    } 
+    }
     else {
       this.setState({loaderHidden: false});
       this.setState({inviseBtn: false});
@@ -105,7 +105,7 @@ export default class Login extends Component {
         if (xhr.status === 200) {
           this.setState({loaderHidden: true});
           console.log("loggedIn");
-          console.log(e.target.response);
+          //console.log(e.target.response);
           var roles = [JSON.parse(e.target.response).role1];
           if(JSON.parse(e.target.response).role2)
             roles.push(JSON.parse(e.target.response).role2);
@@ -119,25 +119,94 @@ export default class Login extends Component {
           sessionStorage.setItem(userBinKey, JSON.parse(e.target.response).bin ? JSON.parse(e.target.response).bin : '');
           sessionStorage.setItem(userRoleKey, JSON.stringify(roles));
           sessionStorage.setItem(logStatusKey, true);
-          if(roles[0] === 'Urban'){
-            var role = roles[1];
-            switch(role){
-              case 'Region': window.location.href = '/#/panel/base-page';
+          console.log(roles);
+          console.log(this.props.location);
+          switch (roles[0]) {
+            case "Citizen":
+              if(this.props.location.state != null && this.props.location.state.url_apz_id){
+                return this.props.history.push("/panel/citizen/apz/show/"+this.props.location.state.url_apz_id);
+              }else{
+                window.location.href = '/#/panel/base-page';
+              }
               break;
+            case 'Urban':
+              switch(roles[1]){
+                case 'Region':
+                  if(this.props.location.state != null && this.props.location.state.url_apz_id){
+                    return this.props.history.replace("/panel/urban/apz/show/"+this.props.location.state.url_apz_id);
+                  }else{
+                    window.location.href = '/#/panel/base-page';
+                  }
+                break;
 
-              case 'Head': window.location.href = '/#/panel/base-page';
-              break;
+                case 'Engineer':
+                  if(this.props.location.state != null && this.props.location.state.url_apz_id){
+                    return this.props.history.push("/panel/engineer/apz/show/"+this.props.location.state.url_apz_id);
+                  }else{
+                    window.location.href = '/#/panel/base-page';
+                  }
+                break;
 
-              default: window.location.href = '/#/panel/base-page';
-              break;
+                case 'Head':
+                  if(this.props.location.state != null && this.props.location.state.url_apz_id){
+                    return this.props.history.push("/panel/head/apz/show/"+this.props.location.state.url_apz_id);
+                  }else{
+                    window.location.href = '/#/panel/base-page';
+                  }
+                break;
+
+                default: window.location.href = '/#/panel/base-page';
+              }
+            break;
+          case "ApzDepartment":
+            if(this.props.location.state != null && this.props.location.state.url_apz_id){
+              return this.props.history.push("/panel/apz-department/apz/show/"+this.props.location.state.url_apz_id);
+            }else{
+              window.location.href = '/#/panel/base-page';
             }
-          }else if (roles[0] === 'Admin') {
-            window.location.href = '/#/panel/base-page';
+            break;
+          case 'Provider':
+            switch (roles[1]) {
+              case 'Water':
+                if(this.props.location.state != null && this.props.location.state.url_apz_id){
+                  return this.props.history.push("/panel/water-provider/apz/show/"+this.props.location.state.url_apz_id);
+                }else{
+                  window.location.href = '/#/panel/base-page';
+                }
+                break;
+                case 'Gas':
+                  if(this.props.location.state != null && this.props.location.state.url_apz_id){
+                    return this.props.history.push("/panel/gas-provider/apz/show/"+this.props.location.state.url_apz_id);
+                  }else{
+                    window.location.href = '/#/panel/base-page';
+                  }
+                  break;
+                case 'Heat':
+                  if(this.props.location.state != null && this.props.location.state.url_apz_id){
+                    return this.props.history.push("/panel/heat-provider/apz/show/"+this.props.location.state.url_apz_id);
+                  }else{
+                    window.location.href = '/#/panel/base-page';
+                  }
+                  break;
+                case 'Electricity':
+                  if(this.props.location.state != null && this.props.location.state.url_apz_id){
+                    return this.props.history.push("/panel/elector-provider/apz/show/"+this.props.location.state.url_apz_id);
+                  }else{
+                    window.location.href = '/#/panel/base-page';
+                  }
+                  break;
+                case 'Phone':
+                  if(this.props.location.state != null && this.props.location.state.url_apz_id){
+                    return this.props.history.push("/panel/phnone-provider/apz/show/"+this.props.location.state.url_apz_id);
+                  }else{
+                    window.location.href = '/#/panel/base-page';
+                  }
+                  break;
+              default:
+            }
+          default: window.location.href = '/#/panel/base-page';
           }
-          else{
-            window.location.href = '/#/panel/base-page';
-          }
-        } 
+        }
         else if(xhr.status === 400) {
           this.setState({loaderHidden: true});
           this.setState({inviseBtn: true});
@@ -177,7 +246,7 @@ export default class Login extends Component {
     }
   }
   openecp(){
-       
+
   }
 
   webSocketFunction() {
@@ -192,7 +261,7 @@ export default class Login extends Component {
     this.webSocket.onclose = function (event) {
       if (event.wasClean) {
         console.log('connection has been closed');
-      } 
+      }
       else {
         console.log('Connection error');
         this.openDialog();
@@ -223,7 +292,7 @@ export default class Login extends Component {
             return this.errorCode;
           }
         };
-        
+
         switch (this.callback) {
           case 'chooseStoragePathBack':
             this.chooseStoragePathBack(rw);
@@ -301,7 +370,7 @@ export default class Login extends Component {
           else {
             alert("Введите пароль к хранилищу");
           }
-        } 
+        }
         else {
           alert("Не выбран хранилище!");
         }
@@ -322,7 +391,7 @@ export default class Login extends Component {
   }
 
   signXmlBack(result) {
-    
+
     if (result['errorCode'] === "NONE") {
       let signedXml = result.result;
       var data = { XmlDoc: signedXml }
@@ -337,7 +406,7 @@ export default class Login extends Component {
                  this.setState({loaderHidden: true});
              // var commonName = response.commonName;
              // var commonNameValues = commonName.split("?");
-             // you will get response from your php page (what you echo or print)  
+             // you will get response from your php page (what you echo or print)
               //window.result = response;
               //$('#userName').val(response.IIN);
 
@@ -417,7 +486,7 @@ export default class Login extends Component {
       else {
         $("#storagePath").val("");
       }
-    } 
+    }
     else {
       $("#storagePath").val("");
     }
@@ -523,7 +592,7 @@ export default class Login extends Component {
                           <label className="control-label">Путь к ЭЦП
                             <input className="form-control" type="text" id="storagePath" readOnly />
                           </label>
-                          <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button> 
+                          <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button>
                         </div>
                         <div className="form-group">
                           <label className="control-label">Пароль от ЭЦП
@@ -536,9 +605,9 @@ export default class Login extends Component {
                       </div>
                     }
 
-                    
 
-                    {this.state.openECP && 
+
+                    {this.state.openECP &&
                       <form id="loginForm" onSubmit={this.login}>
                         <div className="form-group">
                           <label className="control-label">ИИН/БИН:</label>
@@ -568,7 +637,7 @@ export default class Login extends Component {
                     }
                   </div>
                 </div>
-              </div>    
+              </div>
             </div>
           </div>
         </div>

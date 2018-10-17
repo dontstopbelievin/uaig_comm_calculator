@@ -144,11 +144,7 @@ export default class Header extends React.Component {
         rolename = JSON.parse(sessionStorage.getItem('userRoles'))[0];
       }
     }
-
-    var fullLoc = window.location.href.split('/');
     var style, panelTrue;
-    if ( fullLoc[4] === 'panel')
-    {
       style = {
         background: '#353535'
       };
@@ -165,122 +161,10 @@ export default class Header extends React.Component {
           <div className="container-fluid p-0" style={{background: '#222222'}}>
             {this.state.loaderHidden &&
             <NavBar pathName={this.props.location.pathname} logout={this.logout.bind(this)} bgstyle={style} panelTrue={panelTrue} />
-            } 
+            }
           </div>
         </div>
       );
-    }else {
-      style = {
-        background: '#F8F9FA'
-      };
-      panelTrue = false;
-      return (
-        <div>
-          {!this.state.loaderHidden &&
-          <div className="bigLoaderDiv">
-            <div className="loaderDiv" style={{textAlign: 'center'}}>
-              <Loader type="Oval" color="#46B3F2" height="200" width="200"/>
-            </div>
-          </div>
-          }
-          <div className="header" data-url={this.props.location.pathname}>
-            <div className="header_top">
-              <div className="container">
-                <div className="row">
-                  <div className="search col-md-7 text-left pl-0">
-                    <form onSubmit={this.search}>
-                      <div className="form-group ">
-                        <Autocomplete
-                          getItemValue={(item) => item.label}
-                          shouldItemRender={(item, value) => item.label.toLowerCase().indexOf(value.toLowerCase()) > -1}
-                          items={[
-                            {key: 0, label: 'Выдача АПЗ'},
-                          ]}
-                          renderItem={(item, isHighlighted) =>
-                            <div key={item.key} style={{
-                              fontWeight: 'bold',
-                              backgroundColor: '#fff',
-                              color: '#1a4482',
-                              padding: '2px 10px',
-                              borderRadius: '0',
-                              cursor: 'pointer'
-                            }}>
-                              {item.label}
-                            </div>
-                          }
-                          open={this.state.searchText.length > 2}
-                          value={this.state.searchText}
-                          onChange={(e) => this.setState({searchText: e.target.value})}
-                          onSelect={(val) => this.props.history.push('/search/' + val)}
-                          wrapperStyle={{display: 'block'}}
-                          menuStyle={{
-                            borderRadius: '0px',
-                            background: 'rgba(255, 255, 255, 0.9)',
-                            padding: '0',
-                            fontSize: '90%',
-                            position: 'fixed',
-                            overflow: 'auto',
-                            maxHeight: '50%'
-                          }}
-                          inputProps={{
-                            className: "col-md-4 mainSearch",
-                            id: "search_field",
-                            placeholder: e.searchbysite
-                          }}
-                        />
-                        <span className=" text-white">
-                          {e.justlike}:
-                          <Link className="underline text-white" to={"/search/" + e.issuanceof}>
-                            {e.issuanceof}
-                          </Link>
-                        </span>
-                      </div>
-                    </form>
-                  </div>
-                  <div className="col-md-5 ml-0 regist pr-0">
-                    <div className="lang pull-right">
-                      {localStorage.getItem('lang') === 'kk' ?
-                        (<span>Қаз</span>) :
-                        (<a style={{cursor: 'pointer', color: '#ffc107'}}
-                            onClick={this.updateLanguage.bind(this, 'kk')}>Қаз</a>)
-                      } &nbsp;
-                      {localStorage.getItem('lang') === 'ru' ?
-                        (<span>Рус</span>) :
-                        (<a style={{cursor: 'pointer', color: '#ffc107'}}
-                            onClick={this.updateLanguage.bind(this, 'ru')}>Рус</a>)
-                      }
-                    </div>
-
-                    <div className="login_buttons pull-right clear">
-                      {/*<a className="float-left nav-link" href="#">
-                      <button className="btn btn-outline-light  my-2 my-sm-0" type="submit"><span>ВХОД</span></button>
-                      <Button color="primary" on>ВХОД</Button>
-                    </a>*/}
-                      <NavLink to={"/panel/"} className="btn btn-danger bg-danger text-white font-weight-bold" replace>Электронная архитектура</NavLink>
-                      {/*<a className="nav-link" href="#">
-                      <button className="btn btn-outline-light my-2 my-sm-0" type="submit"><span>РЕГИСТРАЦИЯ</span></button>
-                    </a>*/}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="container header_bottom">
-              <div className="text-center site-logo">
-                <img className="image-fluid" width="90" src="./images/logo.png"
-                     alt="Управление Архитектуры и Градостроительства города Алматы"/>
-                <h4 className="text-white font-weight-bold ">{e.title}</h4>
-              </div>
-            </div>
-            <div className="container nav-bar p-0" style={{background: '#F8F9FA'}}>
-              {this.state.loaderHidden &&
-              <NavBar pathName={this.props.location.pathname} logout={false} bgstyle={style} panelTrue={panelTrue} />
-              }
-            </div>
-          </div>
-        </div>
-      )
-    }
   }
 }
 

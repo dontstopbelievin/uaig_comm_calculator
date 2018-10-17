@@ -96,7 +96,7 @@ export default class PanelBase extends React.Component{
           thirdElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
             '<span style="font-weight: bold;">' + e[fullLoc[5]][fullLoc[6]][fullLoc[7]] + '</span>';
           breadCrumbs.appendChild(thirdElem);
-          
+
           if (typeof fullLoc[8] !== 'undefined')
           {
             if (fullLoc[7] === 'edit')
@@ -149,7 +149,7 @@ export default class PanelBase extends React.Component{
                 {/*  the routes is using for role: ALL  */}
                 <Route path="/panel/base-page" render={(props) => ( <BasePagePanel breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/common/files" render={(props) => ( <Files breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
-                <Route path="/panel/common/login" render={(props) => ( <Login breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                <Route path="/panel/common/login" render={(props) => ( <Login {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/common/register" render={(props) => ( <Register breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/common/edit-personal-data" render={(props) => ( <EditPersonalData breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/common/edit-password" render={(props) => ( <EditPassword breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
@@ -176,7 +176,7 @@ export default class PanelBase extends React.Component{
                 {/*  the routes is using for role: Reporter  */}
 
                 {/*  the routes is using for role: Urban */}
-                <Route path="/panel/urban/apz" render={(props) => ( <Urban breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                <Route path="/panel/urban/apz" render={(props) => ( <Urban {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/urban/answer-template" render={(props) => ( <AnswerTemplate breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 {/*  the routes is using for role: Urban */}
 

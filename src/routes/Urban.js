@@ -236,7 +236,12 @@ class ShowApz extends React.Component {
     this.props.breadCrumbs();
   }
   componentWillMount() {
-    this.getApzInfo();
+    if(!sessionStorage.getItem('tokenInfo')){
+      let fullLoc = window.location.href.split('/');
+      this.props.history.replace({pathname: "/panel/common/login", state:{url_apz_id: fullLoc[fullLoc.length-1]}});
+    }else {
+      this.getApzInfo();
+    }
   }
 
   getApzInfo() {
@@ -848,7 +853,7 @@ class ShowApz extends React.Component {
 
             <div className="col-sm-12">
               <hr />
-              <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
+              <button className="btn btn-outline-secondary pull-right" onClick={this.routeChange.bind(this)}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
             </div>
           </div>
         }
@@ -860,6 +865,9 @@ class ShowApz extends React.Component {
         }
       </div>
     )
+  }
+  routeChange(){
+    this.props.history.push('/panel/urban/apz');
   }
 }
 

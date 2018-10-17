@@ -279,7 +279,12 @@ class ShowApz extends React.Component {
   }
 
   componentWillMount() {
-    this.getApzInfo();
+    if(!sessionStorage.getItem('tokenInfo')){
+      let fullLoc = window.location.href.split('/');
+      return this.props.history.replace({pathname: "/panel/common/login", state:{url_apz_id: fullLoc[fullLoc.length-1]}});
+    }else {
+      this.getApzInfo();
+    }
   }
 
   getApzInfo() {
@@ -757,7 +762,7 @@ class ShowApz extends React.Component {
 
   createCommission(id) {
     var data = $('.commission_users_table input').serializeJSON();
-
+    
     if (Object.keys(data).length == 0) {
       alert('Не выбраны провайдеры');
       return false;
