@@ -960,12 +960,12 @@ class AddApz extends React.Component {
                           </div>
                           <div className="form-group">
                             <label htmlFor="Applicant">Заявитель:</label>
-                            <input data-rh="Вам нужна подсказка?" data-rh-at="top" type="text" className="form-control" onChange={this.onInputChange} required name="applicant" value={this.state.applicant} placeholder="ФИО / Наименование компании" />
+                            <input data-rh="Заявитель" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} required name="applicant" value={this.state.applicant} placeholder="ФИО / Наименование компании" />
                             <span className="help-block"></span>
                           </div>
                           <div className="form-group">
                             <label htmlFor="Phone">Телефон</label>
-                            <input type="tel" className="form-control" onChange={this.onInputChange} value={this.state.phone} name="phone" placeholder="8 (7xx) xxx xx xx" />
+                            <input data-rh="Телефон" data-rh-at="right" type="tel" className="form-control" onChange={this.onInputChange} value={this.state.phone} name="phone" placeholder="8 (7xx) xxx xx xx" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="Region">Район</label>
@@ -986,17 +986,17 @@ class AddApz extends React.Component {
                           </div>*/}
                           <div className="form-group">
                             <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
-                            <input type="text" className="form-control" onChange={this.onInputChange} value={this.state.designer} name="designer" />
+                            <input data-rh="Проектировщик №ГСЛ, категория" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.designer} name="designer" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="ProjectName">Наименование проектируемого объекта</label>
-                            <input type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectName} id="ProjectName" name="projectName" />
+                            <input data-rh="Наименование проектируемого объекта" data-rh-at="right" type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectName} id="ProjectName" name="projectName" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
                             <div className="row coordinates_block pt-0">
                               <div className="col-sm-7">
-                                <input type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectAddress} name="projectAddress" />
+                                <input data-rh="Адрес проектируемого объекта" data-rh-at="right" type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectAddress} name="projectAddress" />
                                 <input type="hidden" onChange={this.onInputChange} value={this.state.projectAddressCoordinates} id="ProjectAddressCoordinates" name="projectAddressCoordinates" />
                               </div>
                               <div className="col-sm-5 p-0">
@@ -1128,15 +1128,15 @@ class AddApz extends React.Component {
                           </div>*/}
                           <div className="form-group">
                             <label htmlFor="Customer">Заказчик</label>
-                            <input type="text" required onChange={this.onInputChange} value={this.state.customer} className="form-control customer_field" name="customer" placeholder="ФИО / Наименование компании" />
+                            <input data-rh="Заказчик" data-rh-at="right" type="text" required onChange={this.onInputChange} value={this.state.customer} className="form-control customer_field" name="customer" placeholder="ФИО / Наименование компании" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="CadastralNumber">Кадастровый номер:</label>
-                            <input type="text" className="form-control" onChange={this.onInputChange} value={this.state.cadastralNumber} name="cadastralNumber" placeholder="" />
+                            <input data-rh="Кадастровый номер:" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.cadastralNumber} name="cadastralNumber" placeholder="" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="ObjectTerm">Срок строительства по нормам</label>
-                            <input type="text" name="objectTerm" onChange={this.onInputChange} value={this.state.objectTerm} className="form-control" id="ObjectTerm" placeholder="" />
+                            <input data-rh="Срок строительства по нормам" data-rh-at="right" type="text" name="objectTerm" onChange={this.onInputChange} value={this.state.objectTerm} className="form-control" id="ObjectTerm" placeholder="" />
                           </div>
                           {/* <div className="form-group">
                             <label htmlFor="">Правоустанавливающие документы на объект (реконструкция)</label>
@@ -1149,15 +1149,15 @@ class AddApz extends React.Component {
                         <div className="col-md-6">
                         <div className="form-group">
                           <label htmlFor="ObjectLevel">Этажность</label>
-                          <input type="number" className="form-control" onChange={this.onInputChange} value={this.state.objectLevel} name="objectLevel" placeholder="" />
+                          <input data-rh="Этажность" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChange} value={this.state.objectLevel} name="objectLevel" placeholder="" />
                         </div>
                         <div className="form-group">
                           <label htmlFor="ObjectArea">Площадь здания (кв.м)</label>
-                          <input type="number" step="any" className="form-control" name="objectArea" onChange={this.ObjectArea.bind(this)} value={this.state.objectArea} />
+                          <input data-rh="Площадь здания (кв.м)" data-rh-at="right" type="number" step="any" className="form-control" name="objectArea" onChange={this.ObjectArea.bind(this)} value={this.state.objectArea} />
                         </div>
                         <div className="form-group">
                           <label htmlFor="ObjectRooms">Количество квартир (номеров, кабинетов)</label>
-                          <input type="number" className="form-control" onChange={this.onInputChange} value={this.state.objectRooms} name="objectRooms" />
+                          <input data-rh="Количество квартир (номеров, кабинетов)" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChange} value={this.state.objectRooms} name="objectRooms" />
                         </div>
                         </div>
                       </div>
@@ -1173,11 +1173,11 @@ class AddApz extends React.Component {
                         <div className="col-md-6">
                           <div className="form-group">
                             <label htmlFor="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)</label>
-                            <input type="number" step="any" name="electricAllowedPower" onChange={this.ObjectArea.bind(this)} value={this.state.electricAllowedPower} className="form-control" />
+                            <input data-rh="Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)" data-rh-at="right" type="number" step="any" name="electricAllowedPower" onChange={this.ObjectArea.bind(this)} value={this.state.electricAllowedPower} className="form-control" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
-                            <input type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} value={this.state.electricRequiredPower} name="electricRequiredPower" placeholder="" />
+                            <input data-rh="Требуемая мощность (кВт)" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} value={this.state.electricRequiredPower} name="electricRequiredPower" placeholder="" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
@@ -1263,7 +1263,7 @@ class AddApz extends React.Component {
                         <div className="col-md-6">
                           <div className="form-group">
                             <label>Количество людей</label>
-                            <input type="number" step="any" className="form-control" name="PeopleCount" onChange={this.PeopleCount.bind(this)} value={this.state.peopleCount} placeholder="" />
+                            <input data-rh="Количество людей" data-rh-at="right" type="number" step="any" className="form-control" name="PeopleCount" onChange={this.PeopleCount.bind(this)} value={this.state.peopleCount} placeholder="" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
@@ -1275,13 +1275,13 @@ class AddApz extends React.Component {
                           </div>
                           <div className="form-group">
                             <label htmlFor="WaterProduction">На производственные нужды (м<sup>3</sup>/сутки)</label>
-                            <input type="number" onChange={this.onInputChange} step="any" className="form-control" name="waterProduction" value={this.state.waterProduction} placeholder="" />
+                            <input data-rh="На производственные нужды (м3/сутки)" data-rh-at="right" type="number" onChange={this.onInputChange} step="any" className="form-control" name="waterProduction" value={this.state.waterProduction} placeholder="" />
                           </div>
                         </div>
                         <div className="col-md-6">
                           <div className="form-group">
                             <label htmlFor="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
-                            <input type="number" onChange={this.onInputChange} value={this.state.waterDrinking} step="any" className="form-control" name="WaterDrinking" placeholder="" />
+                            <input data-rh="На хозпитьевые нужды (м3/сутки)" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.waterDrinking} step="any" className="form-control" name="WaterDrinking" placeholder="" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="WaterSewage">Канализация (м<sup>3</sup>/сутки)</label>
@@ -1339,21 +1339,21 @@ class AddApz extends React.Component {
                         <div className="col-md-6">
                         <div className="form-group">
                           <label htmlFor="SewageAmount">Общее количество сточных вод  (м<sup>3</sup>/сутки)</label>
-                          <input type="number" onChange={this.onInputChange} value={this.state.sewageAmount} step="any" className="form-control" name="sewageAmount" placeholder="" />
+                          <input data-rh="Общее количество сточных вод  (м3/сутки)" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.sewageAmount} step="any" className="form-control" name="sewageAmount" placeholder="" />
                         </div>
                         <div className="form-group">
                           <label htmlFor="SewageFeksal">Фекальных (м<sup>3</sup>/сутки)</label>
-                          <input type="number" onChange={this.onInputChange} value={this.state.sewageFeksal} step="any" className="form-control" name="sewageFeksal" placeholder="" />
+                          <input data-rh="Фекальных (м3/сутки)" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.sewageFeksal} step="any" className="form-control" name="sewageFeksal" placeholder="" />
                         </div>
                         </div>
                         <div className="col-md-6">
                         <div className="form-group">
                           <label htmlFor="SewageProduction">Производственно-загрязненных (м<sup>3</sup>/сутки)</label>
-                          <input type="number" onChange={this.onInputChange} value={this.state.sewageProduction} step="any" className="form-control" name="sewageProduction" placeholder="" />
+                          <input data-rh="Производственно-загрязненных (м3/сутки)" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.sewageProduction} step="any" className="form-control" name="sewageProduction" placeholder="" />
                         </div>
                         <div className="form-group">
                           <label htmlFor="SewageToCity">Условно-чистых сбрасываемых на городскую канализацию (м<sup>3</sup>/сутки)</label>
-                          <input type="number" onChange={this.onInputChange} value={this.state.sewageToCity} step="any" className="form-control" name="sewageToCity" />
+                          <input data-rh="Условно-чистых сбрасываемых на городскую канализацию (м3/сутки)" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.sewageToCity} step="any" className="form-control" name="sewageToCity" />
                         </div>
                         </div>
                       </div>
@@ -1369,21 +1369,21 @@ class AddApz extends React.Component {
                         <div className="col-md-6">
                           <div className="form-group">
                             <label htmlFor="HeatGeneral">Общая тепловая нагрузка (Гкал/ч)<br /><br /></label>
-                            <input type="number" onChange={this.onInputChange} value={this.state.heatGeneral} step="any" className="form-control" name="heatGeneral" placeholder="" />
+                            <input data-rh="Общая тепловая нагрузка (Гкал/ч)" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.heatGeneral} step="any" className="form-control" name="heatGeneral" placeholder="" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="HeatTech">Технологические нужды(пар) (Т/ч)</label>
-                            <input type="number" onChange={this.onInputChange} value={this.state.heatTech} step="any" className="form-control" name="heatTech" placeholder="" />
+                            <input data-rh="Технологические нужды(пар) (Т/ч)" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.heatTech} step="any" className="form-control" name="heatTech" placeholder="" />
                           </div>
                         </div>
                         <div className="col-md-6">
                           <div className="form-group">
                             <label htmlFor="HeatDistribution">Разделить нагрузку по жилью и по встроенным помещениям</label>
-                            <input type="text" onChange={this.onInputChange} value={this.state.heatDistribution} className="form-control" name="heatDistribution" />
+                            <input data-rh="Разделить нагрузку по жилью и по встроенным помещениям" data-rh-at="right" type="text" onChange={this.onInputChange} value={this.state.heatDistribution} className="form-control" name="heatDistribution" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="HeatSaving">Энергосберегающее мероприятие</label>
-                            <input type="text" onChange={this.onInputChange} value={this.state.heatSaving} className="form-control" name="heatSaving" />
+                            <input data-rh="Энергосберегающее мероприятие" data-rh-at="right" type="text" onChange={this.onInputChange} value={this.state.heatSaving} className="form-control" name="heatSaving" />
                           </div>
                         </div>
                       </div>
@@ -1398,25 +1398,25 @@ class AddApz extends React.Component {
                           <div className="col-sm-6">
                             <div className="form-group">
                               <label htmlFor="HeatMain">Отопление по договору<br />(Гкал/ч)</label>
-                              <input type="number" step="any" className="form-control" name="heatMainInContract" value={this.state.heatMainInContract} onChange={this.onInputChange} />
+                              <input data-rh="Отопление по договору (Гкал/ч)" data-rh-at="right" type="number" step="any" className="form-control" name="heatMainInContract" value={this.state.heatMainInContract} onChange={this.onInputChange} />
                             </div>
                             <div className="form-group">
                               <label htmlFor="HeatWater">Горячее водоснабжение по договору<br />(ср/ч)</label>
-                              <input type="number" step="any" className="form-control" name="heatWaterInContract" value={this.state.heatWaterInContract} onChange={this.onInputChange} />
+                              <input data-rh="Горячее водоснабжение по договору (ср/ч)" data-rh-at="right" type="number" step="any" className="form-control" name="heatWaterInContract" value={this.state.heatWaterInContract} onChange={this.onInputChange} />
                             </div>
                             <div className="form-group">
                               <label>Номер договора</label>
-                              <input type="number" step="any" className="form-control" name="contractNum" value={this.state.contractNum} onChange={this.onInputChange} />
+                              <input data-rh="Номер договора" data-rh-at="right" type="number" step="any" className="form-control" name="contractNum" value={this.state.contractNum} onChange={this.onInputChange} />
                             </div>
                           </div>
                           <div className="col-sm-6">
                             <div className="form-group">
                               <label htmlFor="HeatVentilation">Вентиляция по договору<br />(Гкал/ч)</label>
-                              <input type="number" step="any" className="form-control" name="heatVenInContract" value={this.state.heatVenInContract} onChange={this.onInputChange} />
+                              <input data-rh="Вентиляция по договору (Гкал/ч)" data-rh-at="right" type="number" step="any" className="form-control" name="heatVenInContract" value={this.state.heatVenInContract} onChange={this.onInputChange} />
                             </div>
                             <div className="form-group">
                               <label htmlFor="HeatWater">Горячее водоснабжение по договору<br />(макс/ч)</label>
-                              <input type="number" step="any" className="form-control" name="heatWaterMaxInContract" value={this.state.heatWaterMaxInContract} onChange={this.onInputChange} />
+                              <input data-rh="Горячее водоснабжение по договору (макс/ч)" data-rh-at="right" type="number" step="any" className="form-control" name="heatWaterMaxInContract" value={this.state.heatWaterMaxInContract} onChange={this.onInputChange} />
                             </div>
                           </div>
                         </div>
@@ -1444,7 +1444,7 @@ class AddApz extends React.Component {
                         <div className="col-md-12">
                         <div className="form-group">
                           <label htmlFor="SewageClientWishes">Пожелание заказчика</label>
-                          <input type="text" onChange={this.onInputChange} value={this.state.sewageClientWishes} className="form-control" name="sewageClientWishes" placeholder="" />
+                          <input data-rh="Пожелание заказчика" data-rh-at="right" type="text" onChange={this.onInputChange} value={this.state.sewageClientWishes} className="form-control" name="sewageClientWishes" placeholder="" />
                         </div>
                         </div>
                       </div>
@@ -1460,11 +1460,11 @@ class AddApz extends React.Component {
                         <div className="col-md-6">
                           <div className="form-group">
                             <label htmlFor="PhoneServiceNum">Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</label>
-                            <input type="number" onChange={this.onInputChange} value={this.state.phoneServiceNum} step="any" className="form-control" name="phoneServiceNum" placeholder="" />
+                            <input data-rh="Количество ОТА и услуг в разбивке физ.лиц и юр.лиц" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.phoneServiceNum} step="any" className="form-control" name="phoneServiceNum" placeholder="" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="PhoneCapacity">Телефонная емкость</label>
-                            <input type="text" onChange={this.onInputChange} value={this.state.phoneCapacity} className="form-control" name="phoneCapacity" placeholder="" />
+                            <input data-rh="Телефонная емкость" data-rh-at="right" type="text" onChange={this.onInputChange} value={this.state.phoneCapacity} className="form-control" name="phoneCapacity" placeholder="" />
                           </div>
                           <div className="form-group">
                             <label>Сканированный файл оплаты</label>
@@ -1494,11 +1494,11 @@ class AddApz extends React.Component {
                         <div className="col-md-6">
                           <div className="form-group">
                             <label htmlFor="PhoneSewage">Планируемая телефонная канализация</label>
-                            <input type="text" onChange={this.onInputChange} value={this.state.phoneSewage} className="form-control" name="phoneSewage" placeholder="" />
+                            <input data-rh="Планируемая телефонная канализация" data-rh-at="right" type="text" onChange={this.onInputChange} value={this.state.phoneSewage} className="form-control" name="phoneSewage" placeholder="" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="PhoneClientWishes">Пожелания заказчика</label>
-                            <input type="text" onChange={this.onInputChange} value={this.state.phoneClientWishes} className="form-control" name="phoneClientWishes" placeholder="Тип оборудования, тип кабеля и др." />
+                            <input data-rh="Пожелания заказчика" data-rh-at="right" type="text" onChange={this.onInputChange} value={this.state.phoneClientWishes} className="form-control" name="phoneClientWishes" placeholder="Тип оборудования, тип кабеля и др." />
                           </div>
                         </div>
                       </div>
@@ -1514,29 +1514,29 @@ class AddApz extends React.Component {
                         <div className="col-md-6">
                           <div className="form-group">
                             <label htmlFor="GasGeneral">Общая потребность (м<sup>3</sup>/час)</label>
-                            <input type="number" onChange={this.onInputChange} value={this.state.gasGeneral} step="any" className="form-control" name="gasGeneral" placeholder="" />
+                            <input data-rh="Общая потребность (м3/час)" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.gasGeneral} step="any" className="form-control" name="gasGeneral" placeholder="" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="GasCooking">На приготовление пищи (м<sup>3</sup>/час)</label>
-                            <input type="number" onChange={this.onInputChange} value={this.state.gasCooking} step="any" className="form-control" name="gasCooking" placeholder="" />
+                            <input data-rh="На приготовление пищи (м3/час)" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.gasCooking} step="any" className="form-control" name="gasCooking" placeholder="" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="GasHeat">Отопление (м<sup>3</sup>/час)</label>
-                            <input type="number" onChange={this.onInputChange} value={this.state.gasHeat} step="any" className="form-control" name="gasHeat" placeholder="" />
+                            <input data-rh="Отопление (м3/час)" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.gasHeat} step="any" className="form-control" name="gasHeat" placeholder="" />
                           </div>
                         </div>
                         <div className="col-md-6">
                           <div className="form-group">
                             <label htmlFor="GasVentilation">Вентиляция (м<sup>3</sup>/час)</label>
-                            <input type="number" step="any" onChange={this.onInputChange} value={this.state.gasVentilation} className="form-control" name="gasVentilation" placeholder="" />
+                            <input data-rh="Вентиляция (м3/час)" data-rh-at="right" type="number" step="any" onChange={this.onInputChange} value={this.state.gasVentilation} className="form-control" name="gasVentilation" placeholder="" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="GasConditioner">Кондиционирование (м<sup>3</sup>/час)</label>
-                            <input type="number" step="any" onChange={this.onInputChange} value={this.state.gasConditioner} className="form-control" name="gasConditioner" />
+                            <input data-rh="Кондиционирование (м3/час)" data-rh-at="right" type="number" step="any" onChange={this.onInputChange} value={this.state.gasConditioner} className="form-control" name="gasConditioner" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="GasWater">Горячее водоснабжение при газификации многоэтажных домов (м<sup>3</sup>/час)</label>
-                            <input type="number" step="any" onChange={this.onInputChange} value={this.state.gasWater} className="form-control" name="gasWater" />
+                            <input data-rh="Горячее водоснабжение при газификации многоэтажных домов (м3/час)" data-rh-at="right" type="number" step="any" onChange={this.onInputChange} value={this.state.gasWater} className="form-control" name="gasWater" />
                           </div>
                         </div>
                       </div>
