@@ -213,6 +213,7 @@ class ShowApz extends React.Component {
       personalIdFile: false,
       confirmedTaskFile: false,
       titleDocumentFile: false,
+      additionalFile: false,
       returnedState: false,
       needSign: false,
       response: true,
@@ -260,6 +261,7 @@ class ShowApz extends React.Component {
         this.setState({personalIdFile: apz.files.filter(function(obj) { return obj.category_id === 3 })[0]});
         this.setState({confirmedTaskFile: apz.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
+        this.setState({additionalFile: apz.files.filter(function(obj) { return obj.category_id === 27 })[0]});
         this.setState({showButtons: false});
         this.setState({returnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null })[0]});
         this.setState({needSign: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
@@ -729,6 +731,13 @@ class ShowApz extends React.Component {
                   <tr>
                     <td><b>Правоустанавл. документ</b></td>
                     <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>Скачать</a></td>
+                  </tr>
+                }
+
+                {this.state.additionalFile &&
+                  <tr>
+                    <td><b>Дополнительно</b></td>
+                    <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.additionalFile.id)}>Скачать</a></td>
                   </tr>
                 }
               </tbody>

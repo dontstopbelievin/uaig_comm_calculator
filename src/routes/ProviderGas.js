@@ -252,6 +252,7 @@ class ShowApz extends React.Component {
       personalIdFile: false,
       confirmedTaskFile: false,
       titleDocumentFile: false,
+      additionalFile: false,
       showMapText: 'Показать карту',
       accept: 'accept',
       callSaveFromSend: false,
@@ -357,6 +358,7 @@ class ShowApz extends React.Component {
         this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
         this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
+        this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
 
         if (data.commission.apz_gas_response) {
           data.commission.apz_gas_response.response_text ? this.setState({description: data.commission.apz_gas_response.response_text}) : this.setState({description: ""});
@@ -1010,6 +1012,13 @@ printData()
                 <tr className="shukichi">
                   <td><b>Правоустанавл. документ</b></td>
                   <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>Скачать</a></td>
+                </tr>
+              }
+
+              {this.state.additionalFile &&
+                <tr className="shukichi">
+                  <td><b>Дополнительно</b></td>
+                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.additionalFile.id)}>Скачать</a></td>
                 </tr>
               }
             </tbody>

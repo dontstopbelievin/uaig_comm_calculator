@@ -231,6 +231,7 @@ class AddApz extends React.Component {
       personalIdFile: null,
       confirmedTaskFile: null,
       titleDocumentFile: null,
+      additionalFile: null,
       paymentPhotoFile: null,
       survey: null,
       claimedCapacityJustification: null,
@@ -245,6 +246,7 @@ class AddApz extends React.Component {
       projectAddressCoordinates: '',
       confirmedTaskFile: '',
       titleDocumentFile: '',
+      additionalFile: '',
       objectType: 'ИЖС',
       customer: '',
       cadastralNumber: '',
@@ -358,6 +360,7 @@ class AddApz extends React.Component {
         this.setState({personalIdFile: apz.files.filter(function(obj) { return obj.category_id === 3 })[0]});
         this.setState({confirmedTaskFile: apz.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
+        this.setState({additionalFile: apz.files.filter(function(obj) { return obj.category_id === 27 })[0]});
         this.setState({paymentPhotoFile: apz.files.filter(function(obj) { return obj.category_id === 20 })[0]});
         this.setState({survey: apz.files.filter(function(obj) { return obj.category_id === 22 })[0]});
         this.setState({claimedCapacityJustification: apz.files.filter(function(obj) { return obj.category_id === 24 })[0]});
@@ -823,6 +826,10 @@ class AddApz extends React.Component {
               this.setState({titleDocumentFile: data});
               break;
 
+            case 27:
+              this.setState({additionalFile: data});
+              break;
+
             case 20:
               this.setState({paymentPhotoFile: data});
               break;
@@ -880,6 +887,10 @@ class AddApz extends React.Component {
 
       case '10':
         this.setState({titleDocumentFile: data});
+        break;
+
+      case '27':
+        this.setState({additionalFile: data});
         break;
 
       case '20':
@@ -1059,8 +1070,8 @@ class AddApz extends React.Component {
                               </div>
                               <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
                             </div>
-
                           </div>
+
                           <div className="form-group">
                             <label>Госакт и правоустанавливающий документ на земельный участок</label>
                             <div className="file_container">
@@ -1085,6 +1096,32 @@ class AddApz extends React.Component {
                               <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
                             </div>
                           </div>
+
+                          <div className="form-group">
+                            <label>Дополнительно</label>
+                            <div className="file_container">
+                              <div className="progress mb-2" data-category="27" style={{height: '20px', display: 'none'}}>
+                                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                              </div>
+
+                              {this.state.additionalFile &&
+                                <div className="file_block mb-2">
+                                  <div>
+                                    {this.state.additionalFile.name}
+                                    <a className="pointer" onClick={(e) => this.setState({additionalFile: false}) }>×</a>
+                                  </div>
+                                </div>
+                              }
+
+                              <div className="file_buttons btn-group btn-group-justified d-table mt-0">
+                                <label htmlFor="AdditionalFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
+                                <input type="file" id="AdditionalFile" name="AdditionalFile" className="form-control" onChange={this.uploadFile.bind(this, 27)} style={{display: 'none'}} />
+                                <label onClick={this.selectFromList.bind(this, 27)} className="btn btn-info btn-sm">Выбрать из списка</label>
+                              </div>
+                              <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
+                            </div>
+                          </div>
+
                           {/*<div className="form-group">
                             <label htmlFor="ApzDate">Дата</label>
                             <input type="date" required className="form-control" name="ApzDate" />
@@ -1629,6 +1666,7 @@ class ShowApz extends React.Component {
       personalIdFile: false,
       confirmedTaskFile: false,
       titleDocumentFile: false,
+      additionalFile: false,
       paymentPhotoFile: false,
       loaderHidden: false
     };
@@ -1656,11 +1694,12 @@ class ShowApz extends React.Component {
       if (xhr.status === 200) {
         var apz = JSON.parse(xhr.responseText);
         var commission = apz.commission;
-
+console.log(apz.files);
         this.setState({apz: apz});
         this.setState({personalIdFile: apz.files.filter(function(obj) { return obj.category_id === 3 })[0]});
         this.setState({confirmedTaskFile: apz.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
+        this.setState({additionalFile: apz.files.filter(function(obj) { return obj.category_id === 27 })[0]});
         this.setState({paymentPhotoFile: apz.files.filter(function(obj) { return obj.category_id === 20 })[0]});
         var pack2IdFile = apz.files.filter(function(obj) { return obj.category_id === 25 }) ?
           apz.files.filter(function(obj) { return obj.category_id === 25 }) : [];
@@ -2324,6 +2363,13 @@ class ShowApz extends React.Component {
                   <tr>
                     <td><b>Правоустанавл. документ</b></td>
                     <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>Скачать</a></td>
+                  </tr>
+                }
+
+                {this.state.additionalFile &&
+                  <tr>
+                    <td><b>Дополнительно</b></td>
+                    <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.additionalFile.id)}>Скачать</a></td>
                   </tr>
                 }
 

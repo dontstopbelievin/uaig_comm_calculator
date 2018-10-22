@@ -243,6 +243,7 @@ class ShowApz extends React.Component {
       personalIdFile: false,
       confirmedTaskFile: false,
       titleDocumentFile: false,
+      additionalFile: false,
       claimedCapacityJustification: false,
       showMapText: 'Показать карту',
       response: null,
@@ -305,6 +306,7 @@ class ShowApz extends React.Component {
         this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
         this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
+        this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
         var pack2IdFile = data.files.filter(function(obj) { return obj.category_id === 25 }) ?
           data.files.filter(function(obj) { return obj.category_id === 25 }) : [];
         if ( pack2IdFile.length > 0 ) {
@@ -762,7 +764,7 @@ class ShowApz extends React.Component {
 
   createCommission(id) {
     var data = $('.commission_users_table input').serializeJSON();
-    
+
     if (Object.keys(data).length == 0) {
       alert('Не выбраны провайдеры');
       return false;
@@ -888,6 +890,10 @@ class ShowApz extends React.Component {
               this.setState({titleDocumentFile: data});
               break;
 
+            case 27:
+              this.setState({additionalFile: data});
+              break;
+
             case 20:
               this.setState({paymentPhotoFile: data});
               break;
@@ -948,6 +954,10 @@ class ShowApz extends React.Component {
 
       case '10':
         this.setState({titleDocumentFile: data});
+        break;
+
+      case '27':
+        this.setState({additionalFile: data});
         break;
 
       case '20':
@@ -1075,6 +1085,13 @@ class ShowApz extends React.Component {
                 <tr>
                   <td><b>Правоустанавл. документ</b></td>
                   <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>Скачать</a></td>
+                </tr>
+              }
+
+              {this.state.additionalFile &&
+                <tr>
+                  <td><b>Дополнительно</b></td>
+                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.additionalFile.id)}>Скачать</a></td>
                 </tr>
               }
             </tbody>
