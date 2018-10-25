@@ -38,6 +38,7 @@ import EditPersonalData from "./EditPersonalData";
 import EditPassword from "./EditPassword";
 import ResetForm from "./ResetForm";
 import Vacancies from "./Vacancies";
+import AdminApzMonitor from "./AdminApzMonitor";
 
 let e = new LocalizedStrings({ru,kk});
 
@@ -164,6 +165,7 @@ export default class PanelBase extends React.Component{
                 {/*  the routes is using for role: Citizen  */}
 
                 {/*  the routes is using for role: Admin  */}
+                <Route path="/panel/admin/apz" render={(props) => ( <AdminApzMonitor breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/admin/user-roles" render={(props) => ( <Admin breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/admin/addPages" render={(props) => ( <AddPages breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/admin/menuEdit" render={(props) => ( <Menu breadCrumbs={this.breadCrumbs.bind(this)}/> )} />

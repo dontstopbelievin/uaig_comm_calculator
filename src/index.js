@@ -24,6 +24,7 @@ import Project from './routes/Project';
 import PhotoReports from './routes/PhotoReports';
 import PhotoReportsManage from './routes/PhotoReportsManage';
 import Admin from './routes/Admin';
+import AdminApzMonitor from './routes/AdminApzMonitor';
 import Files from './routes/Files';
 import Sketch from './routes/Sketch';
 import SketchApzDepartment from './routes/SketchApzDepartment';
@@ -148,6 +149,7 @@ export default class Main extends React.Component {
               <Route path="/head" render={(props) => (<Head {...props} />)} />
               <Route path="/headreport" render={(props) => (<HeadReport {...props} />)} />
               <Route path="/citizen" render={(props) => (<Citizen {...props} />)} />
+              <Route path="/adminApzMonitor" render={(props) => (<AdminApzMonitor {...props} />)} />
               <Route path="/providerelectro" render={(props) => (<ProviderElectro {...props} />)} />
               <Route path="/providergas" render={(props) => (<ProviderGas {...props} />)} />
               <Route path="/providerphone" render={(props) => (<ProviderPhone {...props} />)} />

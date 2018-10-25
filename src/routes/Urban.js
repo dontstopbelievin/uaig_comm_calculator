@@ -353,9 +353,11 @@ class ShowApz extends React.Component {
       "method": "browseKeyStore",
       "args": [storageName, fileExtension, currentDirectory]
     };
+    //console.log(browseKeyStore);
     this.callback = callBack;
     this.webSocketFunction();
     this.setMissedHeartbeatsLimitToMax();
+    //console.log(browseKeyStore);
     this.webSocket.send(JSON.stringify(browseKeyStore));
   }
 
@@ -385,6 +387,7 @@ class ShowApz extends React.Component {
     let password = document.getElementById("inpPassword").value;
     let path = document.getElementById("storagePath").value;
     let keyType = "SIGN";
+    //console.log(path);
     if (path !== null && path !== "" && this.state.storageAlias !== null && this.state.storageAlias !== "") {
       if (password !== null && password !== "") {
         this.getKeys(this.state.storageAlias, path, password, keyType, "loadKeysBack");
@@ -403,6 +406,7 @@ class ShowApz extends React.Component {
     }
 
     let alias = "";
+    console.log(result);
     if (result && result.result) {
       let keys = result.result.split('/n');
       if (keys && keys.length > 0) {
@@ -507,9 +511,10 @@ class ShowApz extends React.Component {
         document.getElementById("storagePath").value = "";
       }
     } else {
+      console.log(rw.getErrorCode());
       document.getElementById("storagePath").value = "";
     }
-  }
+}
 
   webSocketFunction() {
     this.webSocket.onopen = function (event) {
@@ -782,7 +787,7 @@ class ShowApz extends React.Component {
 
                             <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
                               <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
-                              <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>eToken</button>
+                              <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>Kaztoken</button>
                             </div>
 
                             <div className="form-group">
