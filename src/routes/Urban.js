@@ -390,7 +390,7 @@ class ShowApz extends React.Component {
     //console.log(path);
     if (path !== null && path !== "" && this.state.storageAlias !== null && this.state.storageAlias !== "") {
       if (password !== null && password !== "") {
-        this.getKeys(this.state.storageAlias, path, password, keyType, "loadKeysBack");
+          this.getKeys(this.state.storageAlias, path, password, keyType, "loadKeysBack");
       } else {
         alert("Введите пароль к хранилищу");
       }
@@ -780,24 +780,26 @@ class ShowApz extends React.Component {
                         </button>
                       </div>
                       :
-                      <div>
-                        {!this.state.xmlFile ?
-                          <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                            <div>Выберите хранилище</div>
+                        <div>
+                        { !this.state.xmlFile ?
+                          <div>
+                            <div id="MySignForm" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                              <div>Выберите хранилище</div>
 
-                            <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
-                              <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
-                              <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>Kaztoken</button>
-                            </div>
+                              <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
+                                <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
+                                <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>Kaztoken</button>
+                              </div>
 
-                            <div className="form-group">
-                              <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
-                              <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
-                            </div>
+                              <div className="form-group">
+                                <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
+                                <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                              </div>
 
-                            <div className="form-group">
-                              <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
-                              <button type="button" className="btn btn-secondary" data-toggle="modal" data-target="#accDecApzForm">Отклонить</button>
+                              <div className="form-group">
+                                <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                                <button type="button" className="btn btn-secondary" data-toggle="modal" data-target="#accDecApzForm">Отклонить</button>
+                              </div>
                             </div>
                           </div>
                           :

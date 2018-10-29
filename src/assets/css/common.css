@@ -8,16 +8,19 @@
 ul{
     list-style-type: none;
 }
-
+html {
+    position: relative;
+    min-height: 100%;
+}
 body{
     height: auto;
     background-image:url(/images/bg1.1.png);
     background-size: 120px;
     background-repeat:repeat;
     /*z-index: -1;*/
-    position: absolute;
     width: 100%;
     margin: 0 auto;
+    padding-bottom: 304px;
 }
 
 .btn, .nav-tabs .nav-link {
@@ -28,7 +31,7 @@ body{
     position: relative;
     background-image: url(/images/header-bg.jpg);
     background-size:100%;
-    width: 100%;  
+    width: 100%;
     height: 75vh;
     background-position:  center top;
     background-repeat: no-repeat;
@@ -224,7 +227,7 @@ input[type=text]:focus {
     height: 29px!important;
     padding-top: 5px!important;
     padding-bottom: 5px!important;
-    
+
 
 }
 a.dropdown-item{
@@ -420,7 +423,7 @@ nav{
 }
 
 @media screen and (max-width: 420px) {
-    .weekdays li{width: 12%;} 
+    .weekdays li{width: 12%;}
     .days li {width: 13.2%;}
     .days li .active {padding: 2px;}
 }
@@ -454,15 +457,20 @@ nav{
     border-radius: 5px;
 }
 .strategy img:hover{
-    transform: scale(1.1); 
+    transform: scale(1.1);
     box-shadow: 0 3px 6px #ccc;
     transition: 0.3s ease-in-out;
 }
 
 .footer{
     background: #222222;
-    height: auto;
     padding-bottom: 10px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 304px;
+    width: 100%;
+    overflow: hidden;
 }
 .social img, .contact img,.address img,.email img{
     width: 25px;

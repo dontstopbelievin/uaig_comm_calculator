@@ -446,6 +446,7 @@ class ShowApz extends React.Component {
   }
 
   signMessage() {
+    this.setState({ loaderHidden: false });
     let password = document.getElementById("inpPassword").value;
     let path = document.getElementById("storagePath").value;
     let keyType = "SIGN";
@@ -458,6 +459,7 @@ class ShowApz extends React.Component {
     } else {
       alert("Не выбран хранилище!");
     }
+    this.setState({ loaderHidden: true });
   }
 
   loadKeysBack(result) {
@@ -653,6 +655,7 @@ class ShowApz extends React.Component {
   saveApzForm(apzId, status, comment) {
     var token = sessionStorage.getItem('tokenInfo');
     var file = this.state.file;
+    if(!file){alert("Загрузите файл"); return;}
 
     var formData = new FormData();
     formData.append('file', file);
@@ -1316,24 +1319,24 @@ class ShowApz extends React.Component {
               }
 
               {this.state.showSignButtons && !this.state.isSigned &&
-                <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                  <div>Выберите хранилище</div>
+                  <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                    <div>Выберите хранилище</div>
 
-                  <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
-                    <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
-                    <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>eToken</button>
-                  </div>
+                    <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
+                      <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
+                      <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>eToken</button>
+                    </div>
 
-                  <div className="form-group">
-                    <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
-                    <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
-                  </div>
+                    <div className="form-group">
+                      <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
+                      <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                    </div>
 
-                  <div className="form-group">
-                    <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                    <div className="form-group">
+                      <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                    </div>
                   </div>
-                </div>
-              }
+                }
 
               <div>
                 {this.state.showButtons &&
@@ -1363,11 +1366,11 @@ class ShowApz extends React.Component {
                           <div className="modal-body">
                             <div className="form-group">
                               <label htmlFor="pname">Наименование объекта</label>
-                              <input type="text" readOnly="readonly" className="form-control" id="pname" placeholder={apz.project_name} />
+                              <input type="text" readOnly="readonly" className="form-control" id="pname" style={{background:'lightblue'}} placeholder={apz.project_name} />
                             </div>
                             <div className="form-group">
                               <label htmlFor="adress">Адрес объекта</label>
-                              <input type="text" readOnly="readonly" className="form-control" id="adress" placeholder={apz.project_address} />
+                              <input type="text" readOnly="readonly" className="form-control" id="adress" style={{background:'lightblue'}} placeholder={apz.project_address} />
                             </div>
                             <div className="form-group">
                               <label htmlFor="docNumber">Номер документа</label>
