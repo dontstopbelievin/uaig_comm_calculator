@@ -35,7 +35,6 @@ class AllApzs extends React.Component {
     super(props);
 
     var roles = JSON.parse(sessionStorage.getItem('userRoles'));
-
     this.state = {
       loaderHidden: false,
       isPerformer: (roles.indexOf('PerformerWater') != -1),
@@ -74,10 +73,14 @@ class AllApzs extends React.Component {
       this.props.history.replace("/login");
       return false;
     }
-
+    var directorId = JSON.parse(sessionStorage.getItem('userId'));
     var providerName = roles[1];
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/provider/" + providerName + "/all/" + status + '?page=' + page, true);
+    if(roles[2] == 'DirectorWater'){
+      xhr.open("get", window.url + "api/apz/provider/" + providerName + "/all/" + status + "/" + directorId + '?page=' + page, true);
+    }else{
+      xhr.open("get", window.url + "api/apz/provider/" + providerName + "/all/" + status + "/0" + '?page=' + page, true);
+    }
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
@@ -287,8 +290,31 @@ class ShowApz extends React.Component {
       tcTextSewage: "",
       tcTextSewageRequirements: "",
       tcTextSewageGeneral: "",
+      zhk_tcTextWater: "",
+      zhk_tcTextWaterRequirements: "",
+      zhk_tcTextWaterGeneral: "",
+      zhk_tcTextSewageRequirements: "",
+      zhk_tcTextSewage: "",
+      zhk_tcTextSewageGeneral: "",
+      perenos_tcTextWater: "",
+      perenos_tcTextWaterRequirements: "",
+      perenos_tcTextWaterGeneral: "",
+      ks_tcTextWater: "",
+      ks_tcTextWaterRequirements: "",
+      ks_tcTextWaterGeneral: "",
+      ks_tcTextSewage: "",
+      ks_tcTextSewageRequirements: "",
+      ks_tcTextSewageGeneral: "",
+      tab_tcTextWater: "",
+      tab_tcTextWaterRequirements: "",
+      tab_tcTextWaterGeneral: "",
+      tab_tcTextSewage: "",
+      tab_tcTextSewageRequirements: "",
+      tab_tcTextSewageGeneral: "",
       waterTab: true,
-      sewageTab: false
+      sewageTab: false,
+      ty_director_id: "",
+      water_directors_id: []
     };
 
     this.onGenWaterReqChange = this.onGenWaterReqChange.bind(this);
@@ -318,10 +344,29 @@ class ShowApz extends React.Component {
     this.onTcTextSewageChange = this.onTcTextSewageChange.bind(this);
     this.onTcTextSewageRequirementsChange = this.onTcTextSewageRequirementsChange.bind(this);
     this.onTcTextSewageGeneralChange = this.onTcTextSewageGeneralChange.bind(this);
+    this.onzhk_TcTextWaterChange = this.onzhk_TcTextWaterChange.bind(this);
+    this.onzhk_TcTextWaterRequirementsChange = this.onzhk_TcTextWaterRequirementsChange.bind(this);
+    this.onzhk_TcTextWaterGeneralChange = this.onzhk_TcTextWaterGeneralChange.bind(this);
+    this.onzhk_TcTextSewageChange = this.onzhk_TcTextSewageChange.bind(this);
+    this.onzhk_TcTextSewageRequirementsChange = this.onzhk_TcTextSewageRequirementsChange.bind(this);
+    this.onzhk_TcTextSewageGeneralChange = this.onzhk_TcTextSewageGeneralChange.bind(this);
+    this.onks_TcTextWaterChange = this.onks_TcTextWaterChange.bind(this);
+    this.onks_TcTextWaterRequirementsChange = this.onks_TcTextWaterRequirementsChange.bind(this);
+    this.onks_TcTextWaterGeneralChange = this.onks_TcTextWaterGeneralChange.bind(this);
+    this.onks_TcTextSewageChange = this.onks_TcTextSewageChange.bind(this);
+    this.onks_TcTextSewageRequirementsChange = this.onks_TcTextSewageRequirementsChange.bind(this);
+    this.onks_TcTextSewageGeneralChange = this.onks_TcTextSewageGeneralChange.bind(this);
+    this.onperenos_TcTextWaterChange = this.onperenos_TcTextWaterChange.bind(this);
+    this.onperenos_TcTextWaterRequirementsChange = this.onperenos_TcTextWaterRequirementsChange.bind(this);
+    this.onperenos_TcTextWaterGeneralChange = this.onperenos_TcTextWaterGeneralChange.bind(this);
     this.toggleFormTabs = this.toggleFormTabs.bind(this);
   }
   componentDidMount() {
     this.props.breadCrumbs();
+    var roles = JSON.parse(sessionStorage.getItem('userRoles'));
+    if(roles[2] == 'PerformerWater'){
+      this.getDirectors();
+    }
   }
 
   onGenWaterReqChange(e) {
@@ -403,27 +448,70 @@ class ShowApz extends React.Component {
   }
 
   onTcTextWaterChange(value) {
-    this.setState({ tcTextWater: value });
+    this.setState({ tab_tcTextWater: value });
   }
-
   onTcTextWaterRequirementsChange(value) {
-    this.setState({ tcTextWaterRequirements: value });
+    this.setState({ tab_tcTextWaterRequirements: value });
   }
-
   onTcTextWaterGeneralChange(value) {
-    this.setState({ tcTextWaterGeneral: value });
+    this.setState({ tab_tcTextWaterGeneral: value });
   }
-
   onTcTextSewageChange(value) {
-    this.setState({ tcTextSewage: value });
+    this.setState({ tab_tcTextSewage: value });
   }
-
   onTcTextSewageRequirementsChange(value) {
-    this.setState({ tcTextSewageRequirements: value });
+    this.setState({ tab_tcTextSewageRequirements: value });
+  }
+  onTcTextSewageGeneralChange(value) {
+    this.setState({ tab_tcTextSewageGeneral: value });
   }
 
-  onTcTextSewageGeneralChange(value) {
-    this.setState({ tcTextSewageGeneral: value });
+  onzhk_TcTextWaterChange(value) {
+    this.setState({ zhk_tcTextWater: value });
+  }
+  onzhk_TcTextWaterRequirementsChange(value) {
+    this.setState({ zhk_tcTextWaterRequirements: value });
+  }
+  onzhk_TcTextWaterGeneralChange(value) {
+    this.setState({ zhk_tcTextWaterGeneral: value });
+  }
+  onzhk_TcTextSewageChange(value) {
+    this.setState({ zhk_tcTextSewage: value });
+  }
+  onzhk_TcTextSewageRequirementsChange(value) {
+    this.setState({ zhk_tcTextSewageRequirements: value });
+  }
+  onzhk_TcTextSewageGeneralChange(value) {
+    this.setState({ zhk_tcTextSewageGeneral: value });
+  }
+
+  onks_TcTextWaterChange(value) {
+    this.setState({ ks_tcTextWater: value });
+  }
+  onks_TcTextWaterRequirementsChange(value) {
+    this.setState({ ks_tcTextWaterRequirements: value });
+  }
+  onks_TcTextWaterGeneralChange(value) {
+    this.setState({ ks_tcTextWaterGeneral: value });
+  }
+  onks_TcTextSewageChange(value) {
+    this.setState({ ks_tcTextSewage: value });
+  }
+  onks_TcTextSewageRequirementsChange(value) {
+    this.setState({ ks_tcTextSewageRequirements: value });
+  }
+  onks_TcTextSewageGeneralChange(value) {
+    this.setState({ ks_tcTextSewageGeneral: value });
+  }
+
+  onperenos_TcTextWaterChange(value) {
+    this.setState({ perenos_tcTextWater: value });
+  }
+  onperenos_TcTextWaterRequirementsChange(value) {
+    this.setState({ perenos_tcTextWaterRequirements: value });
+  }
+  onperenos_TcTextWaterGeneralChange(value) {
+    this.setState({ perenos_tcTextWaterGeneral: value });
   }
 
   toggleFormTabs(tab) {
@@ -451,6 +539,27 @@ class ShowApz extends React.Component {
     this.getApzInfo();
   }
 
+  getDirectors(){
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/apz/getwaterdirectors", true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        //console.log(data);
+        var select_directors = [];
+        for (var i = 0; i < data.length; i++) {
+          select_directors.push(<option value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
+        }
+        this.setState({water_directors_id: select_directors});
+        this.setState({ty_director_id: data[0].user_id});
+      }
+    }.bind(this);
+    xhr.send();
+  }
+
   getApzInfo() {
     var id = this.props.match.params.id;
     var roles = JSON.parse(sessionStorage.getItem('userRoles'));
@@ -472,7 +581,7 @@ class ShowApz extends React.Component {
     xhr.onload = function() {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-        console.log(data);
+        //console.log(data);
 
         this.setState({apz: data});
         this.setState({showButtons: false});
@@ -488,6 +597,27 @@ class ShowApz extends React.Component {
         this.setState({tcTextSewage: data.tc_text_sewage});
         this.setState({tcTextSewageRequirements: data.tc_text_sewage_requirements});
         this.setState({tcTextSewageGeneral: data.tc_text_sewage_general});
+        this.setState({tab_tcTextWater: data.tc_text_water});
+        this.setState({tab_tcTextWaterRequirements: data.tc_text_water_requirements});
+        this.setState({tab_tcTextWaterGeneral: data.tc_text_water_general});
+        this.setState({tab_tcTextSewage: data.tc_text_sewage});
+        this.setState({tab_tcTextSewageRequirements: data.tc_text_sewage_requirements});
+        this.setState({tab_tcTextSewageGeneral: data.tc_text_sewage_general});
+        this.setState({zhk_tcTextWater: data.tc_text_water_zhk});
+        this.setState({zhk_tcTextWaterRequirements: data.tc_text_water_requirements_zhk});
+        this.setState({zhk_tcTextWaterGeneral: data.tc_text_water_general_zhk});
+        this.setState({zhk_tcTextSewage: data.tc_text_sewage_zhk});
+        this.setState({zhk_tcTextSewageRequirements: data.tc_text_sewage_requirements_zhk});
+        this.setState({zhk_tcTextSewageGeneral: data.tc_text_sewage_general_zhk});
+        this.setState({ks_tcTextWater: data.tc_text_water_ks});
+        this.setState({ks_tcTextWaterRequirements: data.tc_text_water_requirements_ks});
+        this.setState({ks_tcTextWaterGeneral: data.tc_text_water_general_ks});
+        this.setState({ks_tcTextSewage: data.tc_text_sewage_ks});
+        this.setState({ks_tcTextSewageRequirements: data.tc_text_sewage_requirements_ks});
+        this.setState({ks_tcTextSewageGeneral: data.tc_text_sewage_general_ks});
+        this.setState({perenos_tcTextWater: data.tc_text_water_perenos});
+        this.setState({perenos_tcTextWaterRequirements: data.tc_text_water_requirements_perenos});
+        this.setState({perenos_tcTextWaterGeneral: data.tc_text_water_general_perenos});
 
         if (data.commission && data.commission.apz_water_response) {
           data.commission.apz_water_response.response_text ? this.setState({description: data.commission.apz_water_response.response_text}) : this.setState({description: "" });
@@ -506,6 +636,8 @@ class ShowApz extends React.Component {
           data.commission.apz_water_response.water_customer_duties ? this.setState({waterCustomerDuties: data.commission.apz_water_response.water_customer_duties}) : this.setState({waterCustomerDuties: "" });
           data.commission.apz_water_response.sewage_customer_duties ? this.setState({sewageCustomerDuties: data.commission.apz_water_response.sewage_customer_duties}) : this.setState({sewageCustomerDuties: "" });
           data.commission.apz_water_response.doc_number ? this.setState({docNumber: data.commission.apz_water_response.doc_number}) : this.setState({docNumber: "" });
+          data.commission.apz_water_response.ty_object_type ? this.setState({ty_object_type: data.commission.apz_water_response.ty_object_type}) : this.setState({ty_object_type: "ИЖС" });
+          data.commission.apz_water_response.ty_director_id ? this.setState({ty_director_id: data.commission.apz_water_response.ty_director_id}) : this.setState({ty_director_id: "" });
           data.commission.apz_water_response.id ? this.setState({responseId: data.commission.apz_water_response.id}) : this.setState({responseId: "" });
           data.commission.apz_water_response.response ? this.setState({response: data.commission.apz_water_response.response}) : this.setState({response: "" });
           data.commission.apz_water_response.files ? this.setState({customTcFile: data.commission.apz_water_response.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: null});;
@@ -880,14 +1012,16 @@ class ShowApz extends React.Component {
       formData.append('WaterPressure', this.state.waterPressure);
       formData.append('WaterCustomerDuties', this.state.waterCustomerDuties);
       formData.append('SewageCustomerDuties', this.state.sewageCustomerDuties);
-      formData.append('TcTextWater', this.state.tcTextWater);
-      formData.append('TcTextWaterRequirements', this.state.tcTextWaterRequirements);
-      formData.append('TcTextWaterGeneral', this.state.tcTextWaterGeneral);
-      formData.append('TcTextSewage', this.state.tcTextSewage);
-      formData.append('TcTextSewageRequirements', this.state.tcTextSewageRequirements);
-      formData.append('TcTextSewageGeneral', this.state.tcTextSewageGeneral);
+      formData.append('TcTextWater', this.state.tab_tcTextWater);
+      formData.append('TcTextWaterRequirements', this.state.tab_tcTextWaterRequirements);
+      formData.append('TcTextWaterGeneral', this.state.tab_tcTextWaterGeneral);
+      formData.append('TcTextSewage', this.state.tab_tcTextSewage);
+      formData.append('TcTextSewageRequirements', this.state.tab_tcTextSewageRequirements);
+      formData.append('TcTextSewageGeneral', this.state.tab_tcTextSewageGeneral);
     }
     formData.append('DocNumber', this.state.docNumber);
+    formData.append('ty_object_type', this.state.ty_object_type);
+    formData.append('ty_director_id', this.state.ty_director_id);
 
     var xhr = new XMLHttpRequest();
     xhr.open("post", window.url + "api/apz/provider/water/" + apzId + '/save', true);
@@ -1114,6 +1248,55 @@ class ShowApz extends React.Component {
     }
    newWin.print();
    newWin.close();
+}
+handleDirectorIDChange(event){
+  if(this.state.ty_director_id != ""){
+      this.setState({ty_director_id: event.target.value});
+  }
+}
+handleObjTypeChange(event){
+  this.setState({ty_object_type: event.target.value});
+  switch(event.target.value) {
+        case 'ИЖС':
+            this.setState({tab_tcTextWater: this.state.tcTextWater});
+            this.setState({tab_tcTextWaterRequirements: this.state.tcTextWaterRequirements});
+            this.setState({tab_tcTextWaterGeneral: this.state.tcTextWaterGeneral});
+            this.setState({tab_tcTextSewage: this.state.tcTextSewage});
+            this.setState({tab_tcTextSewageRequirements: this.state.tcTextSewageRequirements});
+            this.setState({tab_tcTextSewageGeneral: this.state.tcTextSewageGeneral});
+            break;
+        case 'ЖК':
+            this.setState({tab_tcTextWater: this.state.zhk_tcTextWater});
+            this.setState({tab_tcTextWaterRequirements: this.state.zhk_tcTextWaterRequirements});
+            this.setState({tab_tcTextWaterGeneral: this.state.zhk_tcTextWaterGeneral});
+            this.setState({tab_tcTextSewage: this.state.zhk_tcTextSewage});
+            this.setState({tab_tcTextSewageRequirements: this.state.zhk_tcTextSewageRequirements});
+            this.setState({tab_tcTextSewageGeneral: this.state.zhk_tcTextSewageGeneral});
+            break;
+        case 'КоммСтр':
+            this.setState({tab_tcTextWater: this.state.ks_tcTextWater});
+            this.setState({tab_tcTextWaterRequirements: this.state.ks_tcTextWaterRequirements});
+            this.setState({tab_tcTextWaterGeneral: this.state.ks_tcTextWaterGeneral});
+            this.setState({tab_tcTextSewage: this.state.ks_tcTextSewage});
+            this.setState({tab_tcTextSewageRequirements: this.state.ks_tcTextSewageRequirements});
+            this.setState({tab_tcTextSewageGeneral: this.state.ks_tcTextSewageGeneral});
+            break;
+        case 'Перенос':
+            this.setState({tab_tcTextWater: this.state.perenos_tcTextWater});
+            this.setState({tab_tcTextWaterRequirements: this.state.perenos_tcTextWaterRequirements});
+            this.setState({tab_tcTextWaterGeneral: this.state.perenos_tcTextWaterGeneral});
+            this.setState({tab_tcTextSewage: ""});
+            this.setState({tab_tcTextSewageRequirements: ""});
+            this.setState({tab_tcTextSewageGeneral: ""});
+            break;
+        default:
+            this.setState({tab_tcTextWater: this.state.tcTextWater});
+            this.setState({tab_tcTextWaterRequirements: this.state.tcTextWaterRequirements});
+            this.setState({tab_tcTextWaterGeneral: this.state.tcTextWaterGeneral});
+            this.setState({tab_tcTextSewage: this.state.tcTextSewage});
+            this.setState({tab_tcTextSewageRequirements: this.state.tcTextSewageRequirements});
+            this.setState({tab_tcTextSewageGeneral: this.state.tcTextSewageGeneral});
+    }
 }
 
   render() {
@@ -1497,6 +1680,15 @@ class ShowApz extends React.Component {
                   </div>
                 </div>
                 <div className="col-sm-12">
+                  <div style={{paddingLeft:'5px', fontSize: '18px', margin: '10px 0px'}}>
+                    <b>Выберите тип ТУ:</b>
+                    <select style={{padding: '0px 4px', margin: '5px'}} value={this.state.ty_object_type} onChange={this.handleObjTypeChange.bind(this)}>
+                      <option value="ИЖС">ИЖС</option>
+                      <option value="ЖК">ЖК</option>
+                      <option value="КоммСтр">Коммерческие структуры</option>
+                      <option value="Перенос">Перенос сетей</option>
+                    </select>
+                  </div>
                   <ul className="nav nav-tabs mb-3">
                     <li className="nav-item">
                       <a className="water_tab nav-link pointer active" onClick={this.toggleFormTabs.bind(this, 'water')}>Водопотребление</a>
@@ -1510,15 +1702,15 @@ class ShowApz extends React.Component {
                     <div>
                       <div className="form-group">
                         <label><b>1. Водопотребление</b></label>
-                        <ReactQuill value={this.state.tcTextWater} onChange={this.onTcTextWaterChange} />
+                        <ReactQuill value={this.state.tab_tcTextWater} onChange={this.onTcTextWaterChange} />
                       </div>
                       <div className="form-group">
                         <label><b>2. Другие требования</b></label>
-                        <ReactQuill value={this.state.tcTextWaterRequirements} onChange={this.onTcTextWaterRequirementsChange} />
+                        <ReactQuill value={this.state.tab_tcTextWaterRequirements} onChange={this.onTcTextWaterRequirementsChange} />
                       </div>
                       <div className="form-group">
                         <label><b>3. Общие положения</b></label>
-                        <ReactQuill value={this.state.tcTextWaterGeneral} onChange={this.onTcTextWaterGeneralChange} />
+                        <ReactQuill value={this.state.tab_tcTextWaterGeneral} onChange={this.onTcTextWaterGeneralChange} />
                       </div>
                     </div>
                   }
@@ -1527,21 +1719,27 @@ class ShowApz extends React.Component {
                     <div>
                       <div className="form-group">
                         <label><b>1. Водопотребление</b></label>
-                        <ReactQuill value={this.state.tcTextSewage} onChange={this.onTcTextSewageChange} />
+                        <ReactQuill value={this.state.tab_tcTextSewage} onChange={this.onTcTextSewageChange} />
                       </div>
                       <div className="form-group">
                         <label><b>2. Другие требования</b></label>
-                        <ReactQuill value={this.state.tcTextSewageRequirements} onChange={this.onTcTextSewageRequirementsChange} />
+                        <ReactQuill value={this.state.tab_tcTextSewageRequirements} onChange={this.onTcTextSewageRequirementsChange} />
                       </div>
                       <div className="form-group">
                         <label><b>3. Общие положения</b></label>
-                        <ReactQuill value={this.state.tcTextSewageGeneral} onChange={this.onTcTextSewageGeneralChange} />
+                        <ReactQuill value={this.state.tab_tcTextSewageGeneral} onChange={this.onTcTextSewageGeneralChange} />
                       </div>
                     </div>
                   }
 
                   {!this.state.xmlFile &&
                     <div className="form-group">
+                      <div style={{paddingLeft:'5px', fontSize: '18px', margin: '10px 0px'}}>
+                        <b>Выберите директора:</b>
+                        <select id="water_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.ty_director_id} onChange={this.handleDirectorIDChange.bind(this)}>
+                          {this.state.water_directors_id}
+                        </select>
+                      </div>
                       <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, "accept", "")}>
                         Сохранить
                       </button>

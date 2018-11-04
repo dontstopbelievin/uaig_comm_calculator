@@ -275,7 +275,7 @@ export default class Login extends Component {
         return;
       }
 
-      var result = JSON.parse(event.data);
+      var result = JSON.parse(event.data);console.log(result);
 
       if (result != null) {
         var rw = {

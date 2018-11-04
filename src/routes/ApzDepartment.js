@@ -734,6 +734,7 @@ class ShowApz extends React.Component {
       "method": "signXml",
       "args": [storageName, storagePath, alias, password, xmlToSign]
     };
+    //console.log(xmlToSign);
     this.callback = callBack;
     this.webSocketFunction();
     this.setMissedHeartbeatsLimitToMax();

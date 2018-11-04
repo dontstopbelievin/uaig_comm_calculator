@@ -18,15 +18,15 @@ export default class Register extends React.Component {
     this.missed_heartbeats_limit = this.missed_heartbeats_limit_min;
     this.callback = null;
     this.state = {
-      username: "", 
-      companyName: "", 
-      iin: "", 
-      bin: "", 
+      username: "",
+      companyName: "",
+      iin: "",
+      bin: "",
       firstName: "",
       lastName: "",
       middleName: "",
-      email: "", 
-      pwd: "", 
+      email: "",
+      pwd: "",
       confirmPwd: "",
       loadingVisible: false,
       isCompany: false,
@@ -95,7 +95,7 @@ export default class Register extends React.Component {
     if (!this.state.email || !this.state.pwd || !this.state.confirmPwd) {
       alert('Заполните все обязательные поля');
       return;
-    } 
+    }
     else {
       this.setState({loadingVisible: true});
       var xhr = new XMLHttpRequest();
@@ -117,7 +117,7 @@ export default class Register extends React.Component {
           //alert("Ошибка " + xhr.status + ': ' + xhr.statusText);
         }
 
-        this.setState({loadingVisible: false}); 
+        this.setState({loadingVisible: false});
       }.bind(this);
       //console.log(data);
       xhr.send(data);
@@ -136,7 +136,7 @@ export default class Register extends React.Component {
     this.webSocket.onclose = function (event) {
       if (event.wasClean) {
         console.log('connection has been closed');
-      } 
+      }
       else {
         console.log('Connection error');
         this.openDialog();
@@ -146,12 +146,13 @@ export default class Register extends React.Component {
     }.bind(this);
 
     this.webSocket.onmessage = function (event) {
+      console.log(event);
       if (event.data === this.state.heartbeat_msg) {
         this.missed_heartbeats = 0;
         return;
       }
 
-      var result = JSON.parse(event.data);
+      var result = JSON.parse(event.data);//console.log(result);
 
       if (result != null) {
         var rw = {
@@ -168,7 +169,7 @@ export default class Register extends React.Component {
             return this.errorCode;
           }
         };
-        
+
         switch (this.callback) {
           case 'chooseStoragePathBack':
             this.chooseStoragePathBack(rw);
@@ -179,6 +180,7 @@ export default class Register extends React.Component {
             break;
 
           case 'signXmlBack':
+            //console.log(rw);
             this.signXmlBack(rw);
             break;
           default:
@@ -225,6 +227,7 @@ export default class Register extends React.Component {
   }
 
   getTokenXml(alias) {
+    //console.log(alias);
     let storagePath = $('#storagePath').val();
     let password = $('#inpPassword').val();
     $.get(window.url + 'api/get_token_xml', function (tokenXml) {
@@ -232,7 +235,7 @@ export default class Register extends React.Component {
           if (password !== null && password !== "") {
             if (alias !== null && alias !== "") {
               if (tokenXml !== null && tokenXml !== "") {
-                // console.log(tokenXml);
+                //console.log(tokenXml);
                 this.signXml(this.state.storageAlias, storagePath, alias, password, tokenXml, "signXmlBack");
               }
               else {
@@ -246,7 +249,7 @@ export default class Register extends React.Component {
           else {
             alert("Введите пароль к хранилищу");
           }
-        } 
+        }
         else {
           alert("Не выбран хранилище!");
         }
@@ -259,7 +262,7 @@ export default class Register extends React.Component {
         "method": "signXml",
         "args": [storageName, storagePath, alias, password, xmlToSign]
     };
-    //console.log(signXml);
+    //console.log(xmlToSign);
     this.callback = callBack;
     this.webSocketFunction();
     this.setMissedHeartbeatsLimitToMax();
@@ -267,7 +270,7 @@ export default class Register extends React.Component {
   }
 
   signXmlBack(result) {
-    
+
     if (result['errorCode'] === "NONE") {
       let signedXml = result.result;
       var data = { XmlDoc: signedXml }
@@ -279,7 +282,7 @@ export default class Register extends React.Component {
           success: function (response) {
              // var commonName = response.commonName;
              // var commonNameValues = commonName.split("?");
-             // you will get response from your php page (what you echo or print)  
+             // you will get response from your php page (what you echo or print)
              this.setState({openECP: !this.state.openECP});
              this.setState({closeecp: !this.state.closeecp});
               this.setState({bin: response.bin});
@@ -340,7 +343,7 @@ export default class Register extends React.Component {
       else {
         $("#storagePath").val("");
       }
-    } 
+    }
     else {
       $("#storagePath").val("");
     }
@@ -414,7 +417,7 @@ export default class Register extends React.Component {
                     <form>
                       {
                         this.state.isCompany
-                          ? 
+                          ?
                           <div>
                             <div className="form-group">
                                 <label>БИН:</label>
@@ -425,7 +428,7 @@ export default class Register extends React.Component {
                                 <input type="text" className="form-control" required onChange={(e) => this.setState({companyName: e.target.value})} />
                             </div>
                           </div>
-                          : 
+                          :
                           <div className="form-group">
                               <label>ИИН:</label>
                               <input type="text" className="form-control" required onChange={(e) => this.setState({iin: e.target.value})} />
@@ -485,7 +488,7 @@ export default class Register extends React.Component {
                             <label className="control-label">Путь к ЭЦП
                               <input className="form-control" type="text" id="storagePath" readOnly />
                             </label>
-                            <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button> 
+                            <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button>
                           </div>
                           <div className="form-group">
                             <label className="control-label">Пароль ЭЦП
@@ -499,7 +502,7 @@ export default class Register extends React.Component {
                           <hr />
                         </div>
                       }
-                      {this.state.openECP && 
+                      {this.state.openECP &&
                         <form>
                         <div className="isCompany">
                             <label>
@@ -515,7 +518,7 @@ export default class Register extends React.Component {
                           </div>
                           {
                             this.state.isCompany
-                              ? 
+                              ?
                               <div className="form-group">
                                   <label>Название компании:</label>
                                   <input type="text" className="form-control" required onChange={(e) => this.setState({companyName: e.target.value})} />
@@ -562,7 +565,7 @@ export default class Register extends React.Component {
                     </div>
                   </div>
                 </div>
-                
+
               </div>
             </div>
           </div>
