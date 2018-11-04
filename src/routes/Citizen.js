@@ -493,10 +493,6 @@ class AddApz extends React.Component {
         customer: 'Заказчик'
       };
 
-      if (this.state.electricAllowedPower) {
-        requiredFields['claimedCapacityJustification'] = 'Расчет-обоснование заявленной мощности';
-      }
-
       if (this.state.phoneServiceNum) {
         requiredFields['paymentPhotoFile'] = 'Сканированный файл оплаты';
       }
