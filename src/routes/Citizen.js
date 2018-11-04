@@ -55,11 +55,16 @@ class AllApzs extends React.Component {
     this.state = {
       loaderHidden: false,
       response: null,
-      pageNumbers: []
+      pageNumbers: [],
+      applicant:''
     };
 
   }
-
+  onRequestSubmission() {
+    console.log(JSON.stringify(this.state.userData));
+    var data = new Object();
+    data.applicant=this.state.applicant;
+  }
   componentDidMount() {
     this.props.breadCrumbs();
     this.getApzs();
@@ -257,7 +262,7 @@ class AddApz extends React.Component {
       electricAllowedPower: '',
       electricRequiredPower: '',
       electricityPhase: 'Однофазная',
-      electricSafetyCategory: 3,
+      electricSafetyCategory: 5,
       peopleCount: 0,
       waterRequirement: '',
       waterSewage: '',
@@ -298,6 +303,10 @@ class AddApz extends React.Component {
       blocks: [{num: 1, heatMain: '', heatVentilation: '', heatWater: '', heatWaterMax: ''}],
       companyList: [],
       categoryFiles: [],
+      first_name: '',
+      last_name:'',
+      middle_name:'',
+      company_name:'',
     };
 
     this.saveApz = this.saveApz.bind(this);
@@ -312,8 +321,15 @@ class AddApz extends React.Component {
     this.selectFromList = this.selectFromList.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
     this.selectFile = this.selectFile.bind(this);
+    this.onNameChange=this.onNameChange.bind(this);
+    this.onCustomerChange=this.onCustomerChange.bind(this);
   }
-
+  onCustomerChange(e){
+      this.setState({customer:e.target.value});
+  }
+  onNameChange(e){
+      this.setState({applicant:e.target.value});
+  }
   onApplicantChange(e) {
     $('.customer_field').val(e.target.value);
   }
@@ -324,6 +340,38 @@ class AddApz extends React.Component {
   }
 
   componentDidMount() {
+    console.log(sessionStorage.getItem('userId'));
+    var userId = sessionStorage.getItem('userId');
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/personalData/edit/"+userId, true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            var data = JSON.parse(xhr.responseText);
+            data = data.userData;
+            console.log(data);
+            this.setState({first_name: data.first_name});
+            this.setState({last_name: data.last_name});
+            this.setState({middle_name: data.middle_name ?data.middle_name:" "});
+            this.setState({company_name:data.company_name ?data.company_name:" "});
+            if (data.bin !== null){
+                this.setState({bin: data.bin});
+            }else{
+                this.setState({bin: false});
+                this.setState({iin: data.iin});
+            }
+            this.setState({ loaderHidden: true });
+        } else if (xhr.status === 401) {
+            sessionStorage.clear();
+            alert("Время сессии истекло. Пожалуйста войдите заново!");
+            this.props.history.replace("/login");
+        } else if (xhr.status === 500) {
+            alert('Пользователь не найден в базе данных. Попробуйте еще раз!')
+        }
+    }.bind(this);
+    xhr.send();
     this.props.breadCrumbs();
   }
 
@@ -927,6 +975,29 @@ class AddApz extends React.Component {
             <div className="row">
               <div className="col-4">
                 <div className="nav flex-column nav-pills container-fluid" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <a className="nav-link" style={{cursor:"pointer",color:"#007bff"}} data-toggle="modal" data-target=".documents-modal-lg" role="tab" aria-selected="false">Примечание<span id="tabIcon"></span></a>
+                    <div className="modal fade documents-modal-lg" tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                        <div className="modal-dialog modal-lg" role="document">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="exampleModalLabel">ПРИМЕЧАНИЕ:</h5>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-content">
+                                    <div className="modal-body">
+                                        <p>1. В части заполнения исходных данных представить копии следующих документов:</p>
+                                        <p>  - Для физических лиц - копии удостоверения личности, для юридических лиц </p>
+                                        <p>  - Копия бизнес-идентификационного номера (БИН)</p>
+                                        <p>  - Копии правоустанавливающих документов (Акт на право частной собственности на земельный участок, основание его выдачи - (постановление Акимата или копия договора купли-продажи, или договор дарения и т.д.), сведения о собственнике;</p>
+                                        <p>2. В части "Водоснабжение" и "Водоотведение" данные подтвердить расчетов с указанием требуемых расходов на водопотребление, пожаротушение и водоотведение, выполненных согласно требованиям СНиП c указанием количества вводов водопровода.</p>
+                                        <p>3. Ситуационная схема или топографическая съемка с указанием границ земельного участка в соответствии с актами на выбор земельного участка, отражающая существующее положение объекта и коммуникаций на момент запроса технических условий, подтвержданная УАиГ города Алматы.</p>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                   <a className="nav-link active" id="tab0-link" data-toggle="pill" href="#tab0" role="tab" aria-controls="tab0" aria-selected="true">Заявление <span id="tabIcon"></span></a>
                   <a className="nav-link" id="tab1-link" data-toggle="pill" href="#tab1" role="tab" aria-controls="tab1" aria-selected="false">Объект <span id="tabIcon"></span></a>
                   <a className="nav-link" id="tab2-link" data-toggle="pill" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">Электроснабжение <span id="tabIcon"></span></a>
@@ -967,8 +1038,8 @@ class AddApz extends React.Component {
                           </div>
                           <div className="form-group">
                             <label htmlFor="Applicant">Заявитель:</label>
-                            <input data-rh="Заявитель" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} required name="applicant" value={this.state.applicant} placeholder="ФИО / Наименование компании" />
-                            <span className="help-block"></span>
+                            <input data-rh="Заявитель" data-rh-at="right" type="text" className="form-control" onChange={this.onNameChange} name="applicant" value={this.state.applicant=this.state.company_name==' ' ?this.state.last_name+" "+this.state.first_name+" "+this.state.middle_name:this.state.company_name } required />
+                            {/*<span className="help-block"></span>*/}
                           </div>
                           <div className="form-group">
                             <label htmlFor="Phone">Телефон</label>
@@ -1161,7 +1232,7 @@ class AddApz extends React.Component {
                           </div>*/}
                           <div className="form-group">
                             <label htmlFor="Customer">Заказчик</label>
-                            <input data-rh="Заказчик" data-rh-at="right" type="text" required onChange={this.onInputChange} value={this.state.customer} className="form-control customer_field" name="customer" placeholder="ФИО / Наименование компании" />
+                            <input data-rh="Заказчик" data-rh-at="right" type="text" required onChange={this.onCustomerChange} value={this.state.customer=this.state.company_name==' ' ?this.state.last_name+" "+this.state.first_name+" "+this.state.middle_name:this.state.company_name} className="form-control customer_field" name="customer" placeholder="ФИО / Наименование компании" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="CadastralNumber">Кадастровый номер:</label>
@@ -1256,6 +1327,8 @@ class AddApz extends React.Component {
                               <option value="1">1</option>
                               <option value="2">2</option>
                               <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
                             </select>
                           </div>
                           <div className="form-group">

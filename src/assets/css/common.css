@@ -147,7 +147,8 @@ input[type=text]:focus {
 }
 
 .form-group ::placeholder{
-    color: #fff;
+    color: #D3D3D3
+    ;
 }
 
 .underline{
@@ -158,6 +159,7 @@ input[type=text]:focus {
 }
 
 .last-item{
+
     margin-right: -10px!important;
     margin-left: 10px!important;
     margin-top: 4px!important;
@@ -168,12 +170,16 @@ input[type=text]:focus {
     font-weight: bolder!important;
     color:#1a4482!important;
 }
+.goSite{
+    color:#ffffff;
+}
 .goHomeDarkNav{
     font-weight: bolder!important;
     color:#ffffff!important;
     font-size:16px;
     padding-top:12px;
     text-decoration: none!important;
+    text-transform: none!important;
 }
 /*.home{
     margin-right: 10px;

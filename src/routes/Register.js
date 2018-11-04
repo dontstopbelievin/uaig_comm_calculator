@@ -399,12 +399,12 @@ export default class Register extends React.Component {
               </div>
               <div className="modal-body">
                 <ul className="nav nav-tabs">
-                  <li className="nav-item"><a className="nav-link active" data-toggle="tab" href="#menu1">Регистрация без ЭЦП</a></li>
-                  <li className="nav-item"><a className="nav-link" data-toggle="tab" href="#menu2">Регистрация с ЭЦП</a></li>
+                {/*<li className="nav-item"><a className="nav-link active" data-toggle="tab" href="#menu1">Регистрация без ЭЦП</a></li>*/}
+                <li className="nav-item"><a className="nav-link active" data-toggle="tab" href="#menu2">Регистрация с ЭЦП</a></li>
                 </ul>
 
                 <div className="tab-content">
-                  <div id="menu1" className="tab-pane fade active show">
+                  {/*<div id="menu1" className="tab-pane fade active show">
                     <p>&nbsp;</p>
                     <div className="isCompany">
                       <label>
@@ -465,8 +465,8 @@ export default class Register extends React.Component {
                         </Link>
                       </div>
                     </form>
-                  </div>
-                  <div id="menu2" className="tab-pane fade">
+                  </div>*/}
+                  <div id="menu2" className="tab-pane fade active show">
                     <div>
                         {this.state.aboutNCALayer &&
                         <div className="modal-body">

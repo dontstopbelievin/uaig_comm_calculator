@@ -216,7 +216,7 @@ export default class NavBar extends React.Component {
                   <div className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{"color":'#ffffff !important',"fontWeight":"bold !important"}}>
-                      Электронная архитектура
+                      Услуги
                     </a>
                     <div className="dropdown-menu main_nav_bar" aria-labelledby="navbarDropdown">
                       {/*  Ссылки используемые роуты  */}
@@ -273,9 +273,9 @@ export default class NavBar extends React.Component {
                     </a>
                     <div className="dropdown-menu main_nav_bar" aria-labelledby="navbarDropdown">
                       <div>
-                        <NavLink to={"/panel/example-first"} replace className="dropdown-item" activeClassName="active">Место для справочной информации 1</NavLink>
-                        <NavLink to={"/panel/example-second"} replace className="dropdown-item" activeClassName="active">Место для справочной информации 2</NavLink>
-                        <NavLink to={"/panel/example-third"} replace className="dropdown-item" activeClassName="active">Место для справочной информации 3</NavLink>
+                        <NavLink to={"/panel/example-first"} replace className="dropdown-item" activeClassName="active">Данный раздел в разработке</NavLink>
+                        {/*<NavLink to={"/panel/example-second"} replace className="dropdown-item" activeClassName="active">Место для справочной информации 2</NavLink>
+                        <NavLink to={"/panel/example-third"} replace className="dropdown-item" activeClassName="active">Место для справочной информации 3</NavLink>*/}
                        </div>
                     </div>
                   </div>
@@ -286,6 +286,11 @@ export default class NavBar extends React.Component {
                       |
                       <a target={'_blank'} href="http://2d.uaig.kz/" style={{"color":"#ffffff!important","fontWeight":"bold"}}> 2D </a>
                     </span>
+                  </div>
+                  <div className="nav-item dropdown">
+                        <a className="nav-link goSite" href="https://almaty.uaig.kz/ru/" id="navbarDropdown" role="button">
+                            Вернуться на сайт
+                        </a>
                   </div>
                 </div>
 
