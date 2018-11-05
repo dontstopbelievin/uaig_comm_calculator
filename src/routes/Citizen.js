@@ -3226,17 +3226,29 @@ class ShowMap extends React.Component {
                 view: view,
                 sources: [{
                   featureLayer: new FeatureLayer({
-                    url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+                    //url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+                    url: "https://gis.uaig.kz:6443/arcgis/rest/services/Map/MapAlm/MapServer/69",
                     popupTemplate: { // autocasts as new PopupTemplate()
-                      title: "Кадастровый номер: {cadastral_number} </br> Назначение: {function} <br/> Вид собственности: {ownership}"
+                      title: `<table>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Кадастровый номер:</td>  <td class="attrValue">`+"{KAD_N}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Код района:</td>  <td class="attrValue">`+"{CodeR}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Адрес:</td>  <td class="attrValue">`+"{Adress}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Целевое назначение</td>  <td class="attrValue">`+"{Funk}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Площадь зу:</td>  <td class="attrValue">`+"{S}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Право:</td>  <td class="attrValue">`+"{right}"+`</td></tr>
+                      </table>`
                     }
                   }),
-                  searchFields: ["cadastral_number"],
-                  displayField: "cadastral_number",
+                  searchFields: ["KAD_N"],
+                  displayField: "KAD_N",
                   exactMatch: false,
-                  outFields: ["cadastral_number", "function", "ownership"],
-                  name: "Зарегистрированные государственные акты",
-                  placeholder: "Кадастровый поиск"
+                  outFields: ["*"],
+                  name: "Кадастровый номер",
+                  placeholder: "введите кадастровый номер",
+                  maxResults: 6,
+                  maxSuggestions: 6,
+                  enableSuggestions: true,
+                  minCharacters: 0
                 }]
               });
 
