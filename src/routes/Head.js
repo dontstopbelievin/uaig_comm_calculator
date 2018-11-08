@@ -113,6 +113,7 @@ class AllApzs extends React.Component {
           <div>
             <ul className="nav nav-tabs mb-2 pull-right">
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/head/apz/status/active/1" replace>Активные</NavLink></li>
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'inproccess'} to="/panel/head/apz/status/inproccess/1" replace>В процессе</NavLink></li>
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/head/apz/status/accepted/1" replace>Принятые</NavLink></li>
               <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/head/apz/status/declined/1" replace>Отказанные</NavLink></li>
             </ul>

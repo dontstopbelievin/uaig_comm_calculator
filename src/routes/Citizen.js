@@ -3249,6 +3249,34 @@ class ShowMap extends React.Component {
                   maxSuggestions: 6,
                   enableSuggestions: true,
                   minCharacters: 0
+                },
+                {
+                  featureLayer: new FeatureLayer({
+                    url: "https://gis.uaig.kz:6443/arcgis/rest/services/Map/MapAlm/MapServer/2",
+                    popupTemplate: {
+                      title: `<table>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Адрес:</td>  <td class="attrValue">`+"{address}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Этажность:</td>  <td class="attrValue">`+"{FLOOR}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Год постройки:</td>  <td class="attrValue">`+"{YEAR_OF_FO}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Функциональное назначение:</td>  <td class="attrValue">`+"{NAME}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Площадь постройки:</td>  <td class="attrValue">`+"{ZASTR_AREA}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Общая площадь:</td>  <td class="attrValue">`+"{OBSCH_AREA}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Материал строения:</td>  <td class="attrValue">`+"{MATERIAL}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Комментарий:</td>  <td class="attrValue">`+"{NOTE}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Ссылка:</td>  <td class="attrValue">`+"<a target='_blank' href='{links}'>Подробнее</a>"+`</td></tr>
+                      </table>`
+                    }
+                  }),
+                  searchFields: ["address"],
+                  displayField: "address",
+                  exactMatch: false,
+                  outFields: ["*"],
+                  name: "Здания и сооружения",
+                  placeholder: "введите адрес",
+                  maxResults: 6,
+                  maxSuggestions: 6,
+                  enableSuggestions: true,
+                  minCharacters: 0
                 }]
               });
 
