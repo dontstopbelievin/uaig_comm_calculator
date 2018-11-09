@@ -71,10 +71,14 @@ class AllApzs extends React.Component {
       this.props.history.replace("/login");
       return false;
     }
-
+    var directorId = JSON.parse(sessionStorage.getItem('userId'));
     var providerName = roles[1];
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/provider/" + providerName + "/all/" + status + '?page=' + page, true);
+    if(roles[2] == 'DirectorGas'){
+        xhr.open("get", window.url + "api/apz/provider/" + providerName + "/all/" + status + "/" + directorId + '?page=' + page, true);
+    }else{
+        xhr.open("get", window.url + "api/apz/provider/" + providerName + "/all/" + status + "/0" + '?page=' + page, true);
+    }
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
@@ -266,6 +270,8 @@ class ShowApz extends React.Component {
       heads_responses: [],
       head_accepted: true,
       headComment: "",
+      ty_director_id: "",
+      gas_directors_id: [],
       customTcFile: null
     };
 
@@ -283,6 +289,10 @@ class ShowApz extends React.Component {
   }
   componentDidMount() {
     this.props.breadCrumbs();
+    var roles = JSON.parse(sessionStorage.getItem('userRoles'));
+    if(roles[2] == 'PerformerGas'){
+      this.getDirectors();
+    }
   }
 
   onConnectionPointChange(e) {
@@ -330,6 +340,29 @@ class ShowApz extends React.Component {
     this.getApzInfo();
   }
 
+  getDirectors(){
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/apz/getgasdirectors", true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        //console.log(data);
+        var select_directors = [];
+        for (var i = 0; i < data.length; i++) {
+          select_directors.push(<option value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
+        }
+        this.setState({gas_directors_id: select_directors});
+        if(this.state.ty_director_id == "" || this.state.ty_director_id == " "){
+            this.setState({ty_director_id: data[0].user_id});
+        }
+      }
+    }.bind(this);
+    xhr.send();
+  }
+
   getApzInfo() {
     var id = this.props.match.params.id;
     var roles = JSON.parse(sessionStorage.getItem('userRoles'));
@@ -369,6 +402,7 @@ class ShowApz extends React.Component {
           data.commission.apz_gas_response.doc_number ? this.setState({docNumber: data.commission.apz_gas_response.doc_number}) : this.setState({docNumber: ""});
           data.commission.apz_gas_response.id ? this.setState({responseId: data.commission.apz_gas_response.id}) : this.setState({responseId: ""});
           data.commission.apz_gas_response.response ? this.setState({response: data.commission.apz_gas_response.response}) : this.setState({response: ""});
+          data.commission.apz_heat_response.heat_director_id ? this.setState({ty_director_id: data.commission.apz_heat_response.heat_director_id}) : this.setState({ty_director_id: "" });
           data.commission.apz_gas_response.files ? this.setState({customTcFile: data.commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: null});;
 
           if(data.commission.apz_gas_response.id !== -1){
@@ -723,6 +757,7 @@ class ShowApz extends React.Component {
       formData.append('Reconsideration', this.state.reconsideration);
     }
     formData.append('DocNumber', this.state.docNumber);
+    formData.append('ty_director_id', this.state.ty_director_id);
 
     var xhr = new XMLHttpRequest();
     xhr.open("post", window.url + "api/apz/provider/gas/" + apzId + '/save', true);
@@ -924,7 +959,9 @@ printData()
    newWin.print();
    newWin.close();
 }
-
+handleDirectorIDChange(event){
+  this.setState({ty_director_id: event.target.value});
+}
   toDate(date) {
     if(date === null) {
       return date;
@@ -1106,6 +1143,12 @@ printData()
 
                   {!this.state.xmlFile &&
                     <div className="form-group">
+                      <div style={{paddingLeft:'5px', fontSize: '18px', margin: '10px 0px'}}>
+                        <b>Выберите директора:</b>
+                        <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.ty_director_id} onChange={this.handleDirectorIDChange.bind(this)}>
+                          {this.state.gas_directors_id}
+                        </select>
+                      </div>
                       <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, "accept", "")}>
                         Сохранить
                       </button>

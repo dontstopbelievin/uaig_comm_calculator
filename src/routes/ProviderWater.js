@@ -45,6 +45,7 @@ class AllApzs extends React.Component {
   }
 
   componentDidMount() {
+    console.log('1');
     this.props.breadCrumbs();
     this.getApzs();
   }
@@ -554,7 +555,9 @@ class ShowApz extends React.Component {
           select_directors.push(<option value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
         }
         this.setState({water_directors_id: select_directors});
-        this.setState({ty_director_id: data[0].user_id});
+        if(this.state.ty_director_id == "" || this.state.ty_director_id == " "){
+            this.setState({ty_director_id: data[0].user_id});
+        }
       }
     }.bind(this);
     xhr.send();
@@ -637,7 +640,7 @@ class ShowApz extends React.Component {
           data.commission.apz_water_response.sewage_customer_duties ? this.setState({sewageCustomerDuties: data.commission.apz_water_response.sewage_customer_duties}) : this.setState({sewageCustomerDuties: "" });
           data.commission.apz_water_response.doc_number ? this.setState({docNumber: data.commission.apz_water_response.doc_number}) : this.setState({docNumber: "" });
           data.commission.apz_water_response.ty_object_type ? this.setState({ty_object_type: data.commission.apz_water_response.ty_object_type}) : this.setState({ty_object_type: "ИЖС" });
-          data.commission.apz_water_response.ty_director_id ? this.setState({ty_director_id: data.commission.apz_water_response.ty_director_id}) : this.setState({ty_director_id: "" });
+          data.commission.apz_water_response.water_director_id ? this.setState({ty_director_id: data.commission.apz_water_response.water_director_id}) : this.setState({ty_director_id: "" });
           data.commission.apz_water_response.id ? this.setState({responseId: data.commission.apz_water_response.id}) : this.setState({responseId: "" });
           data.commission.apz_water_response.response ? this.setState({response: data.commission.apz_water_response.response}) : this.setState({response: "" });
           data.commission.apz_water_response.files ? this.setState({customTcFile: data.commission.apz_water_response.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: null});;
@@ -1250,9 +1253,7 @@ class ShowApz extends React.Component {
    newWin.close();
 }
 handleDirectorIDChange(event){
-  if(this.state.ty_director_id != ""){
-      this.setState({ty_director_id: event.target.value});
-  }
+  this.setState({ty_director_id: event.target.value});
 }
 handleObjTypeChange(event){
   this.setState({ty_object_type: event.target.value});

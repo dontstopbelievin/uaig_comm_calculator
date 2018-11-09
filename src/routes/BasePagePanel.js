@@ -89,6 +89,7 @@ export default class BasePagePanel extends React.Component{
                     {this.state.tokenExists && this.state.rolename === 'Gas' &&  <NavLink to={"/panel/gas-provider/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
                     {this.state.tokenExists && this.state.rolename === 'Heat' &&  <NavLink to={"/panel/heat-provider/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
                     {this.state.tokenExists && this.state.rolename === 'Water' &&  <NavLink to={"/panel/water-provider/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Phone' &&  <NavLink to={"/panel/phone-provider/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
                     {this.state.tokenExists && this.state.rolename === 'ApzDepartment' &&  <NavLink to={"/panel/apz-department/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
                     {this.state.tokenExists && this.state.rolename === 'Engineer' &&  <NavLink to={"/panel/engineer/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
                     {!this.state.tokenExists && <AlertModal />}
