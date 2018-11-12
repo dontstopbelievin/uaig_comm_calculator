@@ -536,7 +536,7 @@ class AddApz extends React.Component {
         projectAddress: 'Адрес проектируемого объекта',
         projectAddressCoordinates: 'Отметить на карте',
         confirmedTaskFile: 'Утвержденное задание на проектирование',
-        titleDocumentFile: 'Госакт и правоустанавливающий документ на земельный участок',
+        titleDocumentFile: 'Госакт и правоустанавливающий документ на земельный участок, договор о купли-продажи',
         objectType: 'Тип объекта',
         customer: 'Заказчик'
       };
@@ -585,7 +585,7 @@ class AddApz extends React.Component {
         var data = JSON.parse(xhr.responseText);
 
         if (publish) {
-          alert("Заявка успешно подана");
+          alert("Заявка успешно подана.\nЗаявка будет рассматриваться завтра.");
           this.props.history.replace('/panel/citizen/apz');
         } else {
           alert('Заявка успешно сохранена');
@@ -1140,7 +1140,7 @@ class AddApz extends React.Component {
                           </div>
 
                           <div className="form-group">
-                            <label>Госакт и правоустанавливающий документ на земельный участок</label>
+                            <label>Госакт и правоустанавливающий документ на земельный участок, договор о купли-продажи</label>
                             <div className="file_container">
                               <div className="progress mb-2" data-category="10" style={{height: '20px', display: 'none'}}>
                                 <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
@@ -1165,7 +1165,7 @@ class AddApz extends React.Component {
                           </div>
 
                           <div className="form-group">
-                            <label>Дополнительно</label>
+                            <label>Дополнительно (нотариальное согласие долевика, распоряжение с акимата на временное пользование)</label>
                             <div className="file_container">
                               <div className="progress mb-2" data-category="27" style={{height: '20px', display: 'none'}}>
                                 <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>

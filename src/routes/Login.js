@@ -105,12 +105,11 @@ export default class Login extends Component {
         if (xhr.status === 200) {
           this.setState({loaderHidden: true});
           console.log("loggedIn");
-          //console.log(e.target.response);
-          var roles = [JSON.parse(e.target.response).role1];
-          if(JSON.parse(e.target.response).role2)
-            roles.push(JSON.parse(e.target.response).role2);
-          if(JSON.parse(e.target.response).role3)
-            roles.push(JSON.parse(e.target.response).role3);
+          console.log(JSON.parse(e.target.response).roles);
+          var roles = [];
+          for(var index = 0; index < JSON.parse(e.target.response).roles.length; index++){
+            roles.push(JSON.parse(e.target.response).roles[index].name);
+          }
           // сохраняем в хранилище sessionStorage токен доступа
           sessionStorage.setItem(tokenKey, JSON.parse(e.target.response).access_token);
           sessionStorage.setItem(userIdKey, JSON.parse(e.target.response).id);

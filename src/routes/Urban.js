@@ -36,7 +36,9 @@ class AllApzs extends React.Component {
     this.state = {
       loaderHidden: false,
       response: null,
-      pageNumbers: []
+      pageNumbers: [],
+      regions:[],
+      current_region: ""
     };
 
   }
@@ -44,6 +46,16 @@ class AllApzs extends React.Component {
   componentDidMount() {
     this.props.breadCrumbs();
     this.getApzs();
+  }
+
+  componentWillMount() {
+    var data = JSON.parse(sessionStorage.getItem('userRoles'));
+    var select_regions = [];
+    for (var i = 2; i < data.length; i++) {
+      select_regions.push(<option value={data[i]}> {data[i]} </option>);
+    }
+    this.setState({regions: select_regions});
+    this.setState({current_region: data[2]});
   }
 
   componentWillReceiveProps(nextProps) {
@@ -63,7 +75,7 @@ class AllApzs extends React.Component {
 
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/region/all/" + status + '?page=' + page, true);
+    xhr.open("get", window.url + "api/apz/region/all/" + status + '/' + this.state.current_region + '?page=' + page, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
@@ -102,6 +114,12 @@ class AllApzs extends React.Component {
     return formated_date;
   }
 
+  handleRegionChange(event){
+    this.setState({current_region: event.target.value}, function stateUpdateComplete() {
+      this.getApzs();
+    }.bind(this));
+  }
+
   render() {
     var status = this.props.match.params.status;
     var page = this.props.match.params.page;
@@ -113,6 +131,12 @@ class AllApzs extends React.Component {
           <div>
             <div>
               <h4 className="mb-0">Архитектурно-планировочное задание</h4>
+            </div>
+            <div style={{fontSize: '18px', margin: '10px 0px'}}>
+              <b>Выберите регион:</b>
+              <select style={{padding: '0px 4px', margin: '5px'}} value={this.state.current_region} onChange={this.handleRegionChange.bind(this)}>
+                {this.state.regions}
+              </select>
             </div>
             <ul className="nav nav-tabs mb-2 pull-right">
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/urban/apz/status/active/1" replace>Активные</NavLink></li>
@@ -747,6 +771,407 @@ class ShowApz extends React.Component {
                 }
               </tbody>
             </table>
+
+            <h5 className="block-title-2 mb-3">Службы</h5>
+
+            <table className="table table-bordered table-striped">
+              <tbody>
+                {apz.apz_water &&
+                  <tr>
+                    <td><b>Водоснабжение</b></td>
+                    <td><a className="text-info pointer" data-toggle="modal" data-target="#water_modal">Открыть</a></td>
+                  </tr>
+                }
+
+                {apz.apz_heat &&
+                  <tr>
+                    <td><b>Теплоснабжение</b></td>
+                    <td><a className="text-info pointer" data-toggle="modal" data-target="#heat_modal">Открыть</a></td>
+                  </tr>
+                }
+
+                {apz.apz_electricity &&
+                  <tr>
+                    <td><b>Электроснабжение</b></td>
+                    <td><a className="text-info pointer" data-toggle="modal" data-target="#electro_modal">Открыть</a></td>
+                  </tr>
+                }
+
+                {apz.apz_gas &&
+                  <tr>
+                    <td><b>Газоснабжение</b></td>
+                    <td><a className="text-info pointer" data-toggle="modal" data-target="#gas_modal">Открыть</a></td>
+                  </tr>
+                }
+
+                {apz.apz_phone &&
+                  <tr>
+                    <td><b>Телефонизация</b></td>
+                    <td><a className="text-info pointer" data-toggle="modal" data-target="#phone_modal">Открыть</a></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+
+            {apz.apz_water &&
+              <div className="modal fade" id="water_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title">Водоснабжение</h5>
+                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div className="modal-body">
+                      <table className="table table-bordered table-striped" style={{textAlign: 'left'}}>
+                        <tbody>
+                          <tr>
+                            <td style={{width: '70%'}}>Общая потребность (м<sup>3</sup>/сутки)</td>
+                            <td>{apz.apz_water.requirement}</td>
+                          </tr>
+                          <tr>
+                            <td>Общая потребность питьевой воды (м<sup>3</sup>/час)</td>
+                            <td>{apz.apz_water.requirement_hour}</td>
+                          </tr>
+                          <tr>
+                            <td>Общая потребность (л/сек макс)</td>
+                            <td>{apz.apz_water.requirement_sec}</td>
+                          </tr>
+                          <tr>
+                            <td>Хозпитьевые нужды (м<sup>3</sup>/сутки)</td>
+                            <td>{apz.apz_water.drinking}</td>
+                          </tr>
+                          <tr>
+                            <td>Хозпитьевые нужды (м<sup>3</sup>/час)</td>
+                            <td>{apz.apz_water.drinking_hour}</td>
+                          </tr>
+                          <tr>
+                            <td>Хозпитьевые нужды (л/сек макс)</td>
+                            <td>{apz.apz_water.drinking_sec}</td>
+                          </tr>
+                          <tr>
+                            <td>Производственные нужды (м<sup>3</sup>/сутки)</td>
+                            <td>{apz.apz_water.production}</td>
+                          </tr>
+                          <tr>
+                            <td>Производственные нужды (м<sup>3</sup>/час)</td>
+                            <td>{apz.apz_water.production_hour}</td>
+                          </tr>
+                          <tr>
+                            <td>Производственные нужды (л/сек макс)</td>
+                            <td>{apz.apz_water.production_sec}</td>
+                          </tr>
+                          <tr>
+                            <td>Расходы пожаротушения (л/сек наружное)</td>
+                            <td>{apz.apz_water.fire_fighting}</td>
+                          </tr>
+                          <tr>
+                            <td>Расходы пожаротушения (л/сек внутреннее)</td>
+                            <td>{apz.apz_water.fire_fighting}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+
+                      {apz.apz_sewage &&
+                        <table className="table table-bordered table-striped" style={{textAlign: 'left'}}>
+                          <tbody>
+                            <tr>
+                              <td style={{width: '70%'}}>Общее количество сточных вод (м<sup>3</sup>/сутки)</td>
+                              <td>{apz.apz_sewage.amount}</td>
+                            </tr>
+                            <tr>
+                              <td>Общее количество сточных вод (м<sup>3</sup>/час макс)</td>
+                              <td>{apz.apz_sewage.amount_hour}</td>
+                            </tr>
+                            <tr>
+                              <td>Фекальных (м<sup>3</sup>/сутки)</td>
+                              <td>{apz.apz_sewage.feksal}</td>
+                            </tr>
+                            <tr>
+                              <td>Фекальных (м<sup>3</sup>/час макс)</td>
+                              <td>{apz.apz_sewage.feksal_hour}</td>
+                            </tr>
+                            <tr>
+                              <td>Производственно-загрязненных (м<sup>3</sup>/сутки)</td>
+                              <td>{apz.apz_sewage.production}</td>
+                            </tr>
+                            <tr>
+                              <td>Производственно-загрязненных (м<sup>3</sup>/час макс)</td>
+                              <td>{apz.apz_sewage.production_hour}</td>
+                            </tr>
+                            <tr>
+                              <td>Условно-чистых сбрасываемых на городскую сеть (м<sup>3</sup>/сутки)</td>
+                              <td>{apz.apz_sewage.to_city}</td>
+                            </tr>
+                            <tr>
+                              <td>Условно-чистых сбрасываемых на городскую сеть (м<sup>3</sup>/час макс)</td>
+                              <td>{apz.apz_sewage.to_city_hour}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      }
+                    </div>
+                    <div className="modal-footer">
+                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+
+            {apz.apz_heat &&
+              <div className="modal fade" id="heat_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title">Теплоснабжение</h5>
+                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div className="modal-body">
+                      <table className="table table-bordered table-striped">
+                        <tbody>
+                          <tr>
+                            <td style={{width: '70%'}}>Общая нагрузка (Гкал/ч)</td>
+                            <td>{apz.apz_heat.general}</td>
+                          </tr>
+                          <tr>
+                            <td>Энергосб. мероприятие</td>
+                            <td>{apz.apz_heat.saving}</td>
+                          </tr>
+                          <tr>
+                            <td>Технолог. нужды(пар) (Т/ч)</td>
+                            <td>{apz.apz_heat.tech}</td>
+                          </tr>
+                          <tr>
+                            <td>Разделить нагрузку</td>
+                            <td>{apz.apz_heat.distribution}</td>
+                          </tr>
+
+                          {apz.apz_heat.contract_num &&
+                            <tr>
+                              <td>Номер договора</td>
+                              <td>{apz.apz_heat.contract_num}</td>
+                            </tr>
+                          }
+
+                          {apz.apz_heat.main_in_contract &&
+                            <tr>
+                              <td>Отопление по договору (Гкал/ч)</td>
+                              <td>{apz.apz_heat.main_in_contract}</td>
+                            </tr>
+                          }
+
+                          {apz.apz_heat.water_in_contract &&
+                            <tr>
+                              <td>Горячее водоснабжение по договору (ср/ч)</td>
+                              <td>{apz.apz_heat.water_in_contract}</td>
+                            </tr>
+                          }
+
+                          {apz.apz_heat.ven_in_contract &&
+                            <tr>
+                              <td>Вентиляция по договору (Гкал/ч)</td>
+                              <td>{apz.apz_heat.ven_in_contract}</td>
+                            </tr>
+                          }
+
+                          {apz.apz_heat.water_in_contract_max &&
+                            <tr>
+                              <td>Горячее водоснабжение по договору (макс/ч)</td>
+                              <td>{apz.apz_heat.water_in_contract_max}</td>
+                            </tr>
+                          }
+                        </tbody>
+                      </table>
+
+                      {apz.apz_heat.blocks &&
+                        <div>
+                          {apz.apz_heat.blocks.map(function(item, index) {
+                            return(
+                              <div key={index}>
+                                {apz.apz_heat.blocks.length > 1 &&
+                                  <h5 className="block-title-2 mt-4 mb-3">Здание №{index + 1}</h5>
+                                }
+
+                                <table className="table table-bordered table-striped">
+                                  <tbody>
+                                    <tr>
+                                      <td style={{width: '70%'}}>Отопление (Гкал/ч)</td>
+                                      <td>{item.main}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Вентиляция (Гкал/ч)</td>
+                                      <td>{item.ventilation}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Горячее водоснаб. (ср/ч)</td>
+                                      <td>{item.water}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Горячее водоснаб. (макс/ч)</td>
+                                      <td>{item.water_max}</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            );
+                          }.bind(this))}
+                        </div>
+                      }
+                    </div>
+                    <div className="modal-footer">
+                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+
+            {apz.apz_electricity &&
+              <div className="modal fade" id="electro_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title">Электроснабжение</h5>
+                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div className="modal-body">
+                      <table className="table table-bordered table-striped">
+                        <tbody>
+                          <tr>
+                            <td style={{width: '60%'}}>Требуемая мощность (кВт)</td>
+                            <td>{apz.apz_electricity.required_power}</td>
+                          </tr>
+                          <tr>
+                            <td>Характер нагрузки (фаза)</td>
+                            <td>{apz.apz_electricity.phase}</td>
+                          </tr>
+                          <tr>
+                            <td>Категория (кВт)</td>
+                            <td>{apz.apz_electricity.safety_category}</td>
+                          </tr>
+                          <tr>
+                            <td>Из указ. макс. нагрузки относ. к э-приемникам (кВА)</td>
+                            <td>{apz.apz_electricity.max_load_device}</td>
+                          </tr>
+                          <tr>
+                            <td>Сущ. макс. нагрузка (кВА)</td>
+                            <td>{apz.apz_electricity.max_load}</td>
+                          </tr>
+                          <tr>
+                            <td>Мощность трансформаторов (кВА)</td>
+                            <td>{apz.apz_electricity.allowed_power}</td>
+                          </tr>
+
+                          {this.state.claimedCapacityJustification &&
+                            <tr>
+                              <td>Расчет-обоснование заявленной мощности</td>
+                              <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.claimedCapacityJustification.id)}>Скачать</a></td>
+                            </tr>
+                          }
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="modal-footer">
+                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+
+            {apz.apz_gas &&
+              <div className="modal fade" id="gas_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title">Газоснабжение</h5>
+                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div className="modal-body">
+                      <table className="table table-bordered table-striped">
+                        <tbody>
+                          <tr>
+                            <td style={{width: '60%'}}>Общ. потребность (м<sup>3</sup>/час)</td>
+                            <td>{apz.apz_gas.general}</td>
+                          </tr>
+                          <tr>
+                            <td>На приготов. пищи (м<sup>3</sup>/час)</td>
+                            <td>{apz.apz_gas.cooking}</td>
+                          </tr>
+                          <tr>
+                            <td>Отопление (м<sup>3</sup>/час)</td>
+                            <td>{apz.apz_gas.heat}</td>
+                          </tr>
+                          <tr>
+                            <td>Вентиляция (м<sup>3</sup>/час)</td>
+                            <td>{apz.apz_gas.ventilation}</td>
+                          </tr>
+                          <tr>
+                            <td>Кондиционирование (м<sup>3</sup>/час)</td>
+                            <td>{apz.apz_gas.conditionaer}</td>
+                          </tr>
+                          <tr>
+                            <td>Горячее водоснаб. (м<sup>3</sup>/час)</td>
+                            <td>{apz.apz_gas.water}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="modal-footer">
+                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+
+            {apz.apz_phone &&
+              <div className="modal fade" id="phone_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title">Телефонизация</h5>
+                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div className="modal-body">
+                      <table className="table table-bordered table-striped">
+                        <tbody>
+                          <tr>
+                            <td style={{width: '60%'}}>Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</td>
+                            <td>{apz.apz_phone.service_num}</td>
+                          </tr>
+                          <tr>
+                            <td>Телефонная емкость</td>
+                            <td>{apz.apz_phone.capacity}</td>
+                          </tr>
+                          <tr>
+                            <td>Планируемая телефонная канализация</td>
+                            <td>{apz.apz_phone.sewage}</td>
+                          </tr>
+                          <tr>
+                            <td>Пожелания заказчика (тип оборудования, тип кабеля и др.)</td>
+                            <td>{apz.apz_phone.client_wishes}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="modal-footer">
+                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
 
             {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
 
