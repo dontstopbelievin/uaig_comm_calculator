@@ -1338,7 +1338,7 @@ class ShowApz extends React.Component {
                 Отправить архитектору
               </button>
 
-              <button className="btn btn-raised btn-danger" onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.description)}>
+              <button className="btn btn-raised btn-danger" onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.comment)}>
                 Вернуть архитектору
               </button>
             </div>
