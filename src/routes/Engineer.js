@@ -226,7 +226,6 @@ class ShowApz extends React.Component {
       showCommission: false,
       file: false,
       docNumber: "",
-      description: '',
       categoryFiles: [],
       responseFile: null,
       pack2IdFile: null,
@@ -251,7 +250,6 @@ class ShowApz extends React.Component {
     };
 
     this.onDocNumberChange = this.onDocNumberChange.bind(this);
-    this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onCommentChange = this.onCommentChange.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
   //
@@ -266,11 +264,6 @@ class ShowApz extends React.Component {
   onDocNumberChange(e) {
     this.setState({ docNumber: e.target.value });
   }
-
-  onDescriptionChange(e) {
-    this.setState({ description: e.target.value });
-  }
-
   onCommentChange(e) {
     this.setState({ comment: e.target.value });
   }
