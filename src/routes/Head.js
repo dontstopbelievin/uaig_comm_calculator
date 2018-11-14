@@ -1353,7 +1353,7 @@ class ShowApz extends React.Component {
                     }
 
                     <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#DeclineApzForm">
-                      Вернуть архитектору
+                      Отклонить
                     </button>
                     <div className="modal fade" id="AcceptApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
                       <div className="modal-dialog" role="document">
@@ -1367,11 +1367,11 @@ class ShowApz extends React.Component {
                           <div className="modal-body">
                             <div className="form-group">
                               <label htmlFor="pname">Наименование объекта</label>
-                              <input type="text" readOnly="readonly" className="form-control" id="pname" style={{background:'lightblue'}} placeholder={apz.project_name} />
+                              <input type="text" readOnly="readonly" className="form-control" id="pname" style={{background:'lightblue'}} value={apz.project_name} />
                             </div>
                             <div className="form-group">
                               <label htmlFor="adress">Адрес объекта</label>
-                              <input type="text" readOnly="readonly" className="form-control" id="adress" style={{background:'lightblue'}} placeholder={apz.project_address} />
+                              <input type="text" readOnly="readonly" className="form-control" id="adress" style={{background:'lightblue'}} value={apz.project_address} />
                             </div>
                             <div className="form-group">
                               <label htmlFor="docNumber">Номер документа</label>
@@ -1393,7 +1393,7 @@ class ShowApz extends React.Component {
                       <div className="modal-dialog" role="document">
                         <div className="modal-content">
                           <div className="modal-header">
-                            <h5 className="modal-title">Вернуть архитектору</h5>
+                            <h5 className="modal-title">Отклонить</h5>
                             <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                             </button>
@@ -1408,7 +1408,7 @@ class ShowApz extends React.Component {
                               <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
                             </div>
                             <div className="form-group">
-                              <label htmlFor="upload_file">Прикрепить файл</label>
+                              <label htmlFor="upload_file">Прикрепить файл (Мотивированный отказ)</label>
                               <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
                             </div>
                           </div>
