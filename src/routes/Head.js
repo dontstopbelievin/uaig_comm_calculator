@@ -234,6 +234,7 @@ class ShowApz extends React.Component {
       loaderHidden: false,
       storageAlias: "PKCS12",
       xmlFile: false,
+      returnedState: false,
       isSigned: false
     };
 
@@ -273,7 +274,7 @@ class ShowApz extends React.Component {
         var data = JSON.parse(xhr.responseText);
         var commission = data.commission;
         var hasDeclined = data.state_history.filter(function(obj) {
-          return obj.state_id === 9 || obj.state_id === 11 || obj.state_id === 13 || obj.state_id === 15 || obj.state_id === 17
+          return obj.state_id === 3
         });
 
         this.setState({apz: data});
@@ -282,6 +283,7 @@ class ShowApz extends React.Component {
         this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
         this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
+        this.setState({returnedState: data.state_history.filter(function(obj) { return obj.state_id === 3 && obj.comment != null })[0]});
         var pack2IdFile = data.files.filter(function(obj) { return obj.category_id === 25 }) ?
           data.files.filter(function(obj) { return obj.category_id === 25 }) : [];
         if ( pack2IdFile.length > 0 ) {
@@ -342,7 +344,7 @@ class ShowApz extends React.Component {
 
         this.setState({loaderHidden: true});
 
-        if (hasDeclined.length == 0) {
+        if (hasDeclined.length != 0) {
           this.setState({response: true});
         }
       } else if (xhr.status === 401) {
@@ -1340,9 +1342,13 @@ class ShowApz extends React.Component {
                 }
 
               <div>
+                {this.state.returnedState &&
+                  <div className="alert alert-danger" dangerouslySetInnerHTML={{__html: this.state.returnedState.comment}}>
+                  </div>
+                }
                 {this.state.showButtons &&
                   <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
-                    { this.state.response ?
+                    { !this.state.response ?
                       <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} data-toggle="modal" data-target="#AcceptApzForm">
                         Одобрить
                       </button>
