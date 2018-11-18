@@ -1251,11 +1251,7 @@ class ShowApz extends React.Component {
             </div>
 
             <div className="col-sm-6">
-              {apz.commission && (Object.keys(apz.commission).length > 0) || this.state.showButtons ?
-                <h5 className="block-title-2 mt-3 mb-3">Решение</h5>
-                :
-                ''
-              }
+              <h5 className="block-title-2 mt-3 mb-3">Решение</h5>
 
               {apz.apz_department_response &&
                 <div>
