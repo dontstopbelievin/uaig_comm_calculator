@@ -307,6 +307,8 @@ class AddApz extends React.Component {
       last_name:'',
       middle_name:'',
       company_name:'',
+      n_lamp: '',
+      n_rozetka: '',
     };
 
     this.saveApz = this.saveApz.bind(this);
@@ -953,16 +955,33 @@ class AddApz extends React.Component {
     $('#selectFileModal').modal('hide');
   }
 
-  onRenderContent = (target, content) => {
-          const {catId} = target.dataset
-          const width = 240
-          const url = `https://images.pexels.com/photos/${catId}/pexels-photo-${catId}.jpeg?w=${width}`
+  Calculate_lamp(e){console.log(this.state.n_rozetka);
+    this.setState({n_lamp: e.target.value});
+    if(this.state.n_rozetka != '' && this.state.n_rozetka != ' '){
+      var srp = e.target.value * 0.06 + this.state.n_rozetka * 0.6
+      this.setState({electricRequiredPower: srp});
+    }
+  }
+  Calculate_rozetka(e){
+    this.setState({n_rozetka: e.target.value});
+    if(this.state.n_lamp != '' && this.state.n_lamp != ' '){
+      var srp = e.target.value * 0.6 + this.state.n_lamp * 0.06
+      this.setState({electricRequiredPower: srp});
+    }
+  }
 
-          return <div className="custom-hint__content">
-              <img src={url} width={width} />
-              <button ref={(ref) => ref && ref.focus()}
-                  onClick={() => this.instance.toggleHint()}>Ok</button>
-          </div>
+  onRenderContent = (target, content) => {
+          return <div className="react-hint__content">
+                  <table><tbody><tr><td>Жилище</td><td>Количество ламп</td></tr>
+                  <tr><td>Общежитие 1 комн.</td><td>1 лампа</td></tr>
+                  <tr><td>1-комнатное</td><td>4 лампа</td></tr>
+                  <tr><td>2-комнатное</td><td>6 лампы</td></tr>
+                  <tr><td>3-комнатное</td><td>7 ламп</td></tr>
+                  <tr><td>4-комнатное</td><td>8 ламп</td></tr>
+                  <tr><td>5-комнатное</td><td>9 ламп</td></tr>
+                  <tr><td>6-комнатное</td><td>11 ламп</td></tr>
+                  <tr><td>x комнат</td><td>x+5</td></tr></tbody></table>
+                </div>
   }
   render() {
     var bin = sessionStorage.getItem('userBin');
@@ -970,6 +989,7 @@ class AddApz extends React.Component {
     return (
       <div className="container" id="apzFormDiv">
       <ReactHint autoPosition events delay={100} />
+      <ReactHint autoPosition attribute="data-custom" events onRenderContent={this.onRenderContent} delay={100}/>
         {this.state.loaderHidden &&
           <div className="tab-pane">
             <div className="row">
@@ -1274,13 +1294,28 @@ class AddApz extends React.Component {
                   <div className="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-link">
                     <form id="tab2-form" data-tab="2" onSubmit={this.saveApz.bind(this, false)}>
                       <div className="row">
+                        <div className="col-md-12">
+                          <p>Расчет по типовым правилам расчета норм потребления коммунальных услуг по электроснабжению(<a target="_blank" href="http://online.zakon.kz/m/Document/?doc_id=31676321">см. Приказ</a>)</p>
+                          <p>P = N<sub>л</sub> * P<sub>л</sub> + N<sub>р</sub> * P<sub>р</sub><br/>
+                          P<sub>р</sub> - мощность 1 электрической розетки, P<sub>р</sub> = 0,6 кВт; N<sub>р</sub> - количество розеток<br/>
+                          P<sub>л</sub> - мощность 1 лампы, P<sub>л</sub> = 0,06 кВт; N<sub>л</sub> - количество ламп</p>
+                        </div>
                         <div className="col-md-6">
                           <div className="form-group">
                             <label htmlFor="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)</label>
                             <input data-rh="Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)" data-rh-at="right" type="number" step="any" name="electricAllowedPower" onChange={this.ObjectArea.bind(this)} value={this.state.electricAllowedPower} className="form-control" />
                           </div>
                           <div className="form-group">
+                            <label>Количество ламп <img data-custom data-custom-at="bottom" src="./images/info.png" width="20px"/></label>
+                            <input data-rh="Количество ламп" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.Calculate_lamp.bind(this)} value={this.state.n_lamp} name="electricRequiredPower" placeholder="" />
+                          </div>
+                          <div className="form-group">
+                            <label>Количество розеток</label>
+                            <input data-rh="Количество розеток" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.Calculate_rozetka.bind(this)} value={this.state.n_rozetka} name="electricRequiredPower" placeholder="" />
+                          </div>
+                          <div className="form-group">
                             <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
+                            {/*<input data-rh="Требуемая мощность (кВт)" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} value={this.state.electricRequiredPower} name="electricRequiredPower" placeholder="" />*/}
                             <input data-rh="Требуемая мощность (кВт)" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} value={this.state.electricRequiredPower} name="electricRequiredPower" placeholder="" />
                           </div>
                           <div className="form-group">

@@ -23,7 +23,7 @@ export default class Footer extends React.Component {
             s.src = (document.location.protocol === "https:" ? "https:" : "http:")
             + "//c.zero.kz/z.js";
             a.parentNode.insertBefore(s, a);
-        })(); 
+        })();
 
         return(
             <div className="footer">
@@ -33,7 +33,7 @@ export default class Footer extends React.Component {
                             <div className="copyright col-md-7">
                                 <p className="mt-2 mb-2 text-white font-weight-bold">© 2017 - {e.kgu} "{e.title}"</p>
                             </div>
-                            
+
                             <div className="social col-md-5 text-right">
                                 <a href="https://www.facebook.com/uaig.almaty.3"><img src="./images/facebook.png" alt="facebook" /></a>
                                 <a href="https://www.instagram.com/uaigalmatykz/"><img src="./images/instagram.png" alt="instagram" /></a>
@@ -57,7 +57,7 @@ export default class Footer extends React.Component {
                                 <YMInitializer accounts={[49388944]} />
                             </div>
                             <div className="contact col-md-8 text-left font-weight-bold">
-                                <p className="text-white"><img src="./images/phone-call.png" />{e.singlecontact} <b className="underline">+7 (727) 279-58-24</b></p>
+                                <p className="text-white"><img src="./images/phone-call.png" />Call center: <b className="underline"> +7 (707) 429-55-39</b></p>
                             </div>
                         </div>
                     </div>
