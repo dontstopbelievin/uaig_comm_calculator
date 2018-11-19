@@ -317,9 +317,9 @@ class ShowApz extends React.Component {
           }
         }
 
-        if (data.apz_head_response && data.apz_head_response.files) {
+        /*if (data.apz_head_response && data.apz_head_response.files) {
           this.setState({headResponseFile: data.apz_head_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-        }
+        }*/
 
         if (data.apz_head_response && data.apz_head_response.files) {
           this.setState({xmlFile: data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0]});
@@ -338,6 +338,9 @@ class ShowApz extends React.Component {
           this.setState({showSendButton: true});
         }
 
+        /*if (!this.state.xmlFile && this.state.headResponseFile && data.status_id === 7) {
+          this.setState({showSignButtons: true});
+        }*/
         if (!this.state.xmlFile && this.state.headResponseFile && data.status_id === 7) {
           this.setState({showSignButtons: true});
         }
@@ -657,11 +660,14 @@ class ShowApz extends React.Component {
 
   saveApzForm(apzId, status, comment) {
     var token = sessionStorage.getItem('tokenInfo');
-    var file = this.state.file;
-    if(!file){alert("Загрузите файл"); return;}
+
 
     var formData = new FormData();
-    formData.append('file', file);
+    if(status){
+      var file = this.state.file;
+      if(!file){alert("Загрузите файл"); return;}
+      formData.append('file', file);
+    }
     formData.append('Response', status);
     formData.append('Message', comment);
     formData.append('DocNumber', this.state.docNumber);
@@ -1157,6 +1163,65 @@ class ShowApz extends React.Component {
     return formated_date;
   }
 
+  printRegionAnswer(apzId) {
+    var token = sessionStorage.getItem('tokenInfo');
+    if (token) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/print/region/" + apzId, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          //test of IE
+          if (typeof window.navigator.msSaveBlob === "function") {
+            window.navigator.msSaveBlob(xhr.response, "МО.pdf");
+          } else {
+            var data = JSON.parse(xhr.responseText);
+
+            var base64ToArrayBuffer = (function () {
+
+              return function (base64) {
+                var binaryString =  window.atob(base64);
+                var binaryLen = binaryString.length;
+                var bytes = new Uint8Array(binaryLen);
+
+                for (var i = 0; i < binaryLen; i++) {
+                  var ascii = binaryString.charCodeAt(i);
+                  bytes[i] = ascii;
+                }
+
+                return bytes;
+              }
+
+            }());
+
+            var saveByteArray = (function () {
+              var a = document.createElement("a");
+              document.body.appendChild(a);
+              a.style = "display: none";
+
+              return function (data, name) {
+                var blob = new Blob(data, {type: "octet/stream"}),
+                    url = window.URL.createObjectURL(blob);
+                a.href = url;
+                a.download = name;
+                a.click();
+                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+              };
+
+            }());
+
+            saveByteArray([base64ToArrayBuffer(data.file)], "МО.pdf");
+          }
+        } else {
+          alert('Не удалось скачать файл');
+        }
+      }
+      xhr.send();
+    } else {
+      console.log('Время сессии истекло.');
+    }
+  }
+
   render() {
     var apz = this.state.apz;
 
@@ -1316,7 +1381,16 @@ class ShowApz extends React.Component {
                   </tbody>
                 </table>
               }
-
+              {this.state.returnedState &&
+                <table className="table table-bordered">
+                  <tbody>
+                    <tr>
+                      <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
+                      <td><a className="text-info pointer" onClick={this.printRegionAnswer.bind(this, apz.id)}>Скачать</a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              }
               {this.state.showSignButtons && !this.state.isSigned &&
                   <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                     <div>Выберите хранилище</div>
@@ -1338,11 +1412,7 @@ class ShowApz extends React.Component {
                 }
 
               <div>
-                {this.state.returnedState &&
-                  <div className="alert alert-danger" dangerouslySetInnerHTML={{__html: this.state.returnedState.comment}}>
-                  </div>
-                }
-                {this.state.showButtons &&
+                {this.state.showButtons && !this.state.isSigned &&
                   <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
                     { !this.state.response ?
                       <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} data-toggle="modal" data-target="#AcceptApzForm">
@@ -1379,13 +1449,9 @@ class ShowApz extends React.Component {
                               <label htmlFor="docNumber">Номер документа</label>
                               <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
                             </div>
-                            <div className="form-group">
-                              <label htmlFor="upload_file">Прикрепить файл</label>
-                              <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
-                            </div>
                           </div>
                           <div className="modal-footer">
-                            <button type="button" className="btn btn-primary" onClick={this.saveApzForm.bind(this, apz.id, true, "your form was accepted")}>Отправить</button>
+                            <button type="button" className="btn btn-primary" onClick={this.saveApzForm.bind(this, apz.id, true, "your form was accepted")}>Сохранить</button>
                             <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                           </div>
                         </div>
@@ -1402,20 +1468,20 @@ class ShowApz extends React.Component {
                           </div>
                           <div className="modal-body">
                             <div className="form-group">
+                              <label htmlFor="pname">Наименование объекта</label>
+                              <input type="text" readOnly="readonly" className="form-control" id="pname" style={{background:'lightblue'}} value={apz.project_name} />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="adress">Адрес объекта</label>
+                              <input type="text" readOnly="readonly" className="form-control" id="adress" style={{background:'lightblue'}} value={apz.project_address} />
+                            </div>
+                            <div className="form-group">
                               <label htmlFor="docNumber">Номер документа</label>
                               <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
                             </div>
-                            <div className="form-group">
-                             <label>Причина отклонения</label>
-                              <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
-                            </div>
-                            <div className="form-group">
-                              <label htmlFor="upload_file">Прикрепить файл (Мотивированный отказ)</label>
-                              <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
-                            </div>
                           </div>
                           <div className="modal-footer">
-                            <button type="button" className="btn btn-primary" onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.description)}>Отправить</button>
+                            <button type="button" className="btn btn-primary" onClick={this.saveApzForm.bind(this, apz.id, false, 'Откланен главным архитектором')}>Сохранить</button>
                             <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                           </div>
                         </div>
@@ -1425,7 +1491,7 @@ class ShowApz extends React.Component {
                 }
 
                 {this.state.showSendButton &&
-                  <button type="button" className="btn btn-primary" onClick={this.acceptDeclineApzForm.bind(this, apz.id, this.state.headResponse ? true : false, "")}>Отправить</button>
+                  <button type="button" className="btn btn-primary" onClick={this.acceptDeclineApzForm.bind(this, apz.id, this.state.returnedState ? false : true, "")}>Отправить</button>
                 }
               </div>
             </div>
@@ -1944,13 +2010,15 @@ class ShowMap extends React.Component {
               'esri/geometry/support/webMercatorUtils',
               'dojo/dom',
               'esri/Graphic',
+              'esri/config',
               'dojo/domReady!'
             ]}
 
-            onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap, webMercatorUtils, dom, Graphic], containerNode}) => {
+            onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap, webMercatorUtils, dom, Graphic, esriConfig], containerNode}) => {
+              esriConfig.portalUrl = "https://gis.uaig.kz/arcgis";
               var map = new WebMap({
                 portalItem: {
-                  id: "caa580cafc1449dd9aa4fd8eafd3a14d"
+                  id: "0e8ae8f43ea94d358673e749f9a5e147"
                 }
               });
 
@@ -1998,17 +2066,57 @@ class ShowMap extends React.Component {
                 view: view,
                 sources: [{
                   featureLayer: new FeatureLayer({
-                    url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+                    //url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
+                    url: "https://gis.uaig.kz/server/rest/services/Map2d/объекты_города/MapServer/20",
                     popupTemplate: { // autocasts as new PopupTemplate()
-                      title: "Кадастровый номер: {cadastral_number} </br> Назначение: {function} <br/> Вид собственности: {ownership}"
+                      title: `<table>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Кадастровый номер:</td>  <td class="attrValue">`+"{kad_n}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Код района:</td>  <td class="attrValue">`+"{coder}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Адрес:</td>  <td class="attrValue">`+"{adress}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Целевое назначение</td>  <td class="attrValue">`+"{funk}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Площадь зу:</td>  <td class="attrValue">`+"{s}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Право:</td>  <td class="attrValue">`+"{right_}"+`</td></tr>
+                      </table>`
                     }
                   }),
-                  searchFields: ["cadastral_number"],
-                  displayField: "cadastral_number",
+                  searchFields: ["kad_n"],
+                  displayField: "kad_n",
                   exactMatch: false,
-                  outFields: ["cadastral_number", "function", "ownership"],
-                  name: "Зарегистрированные государственные акты",
-                  placeholder: "Кадастровый поиск"
+                  outFields: ["*"],
+                  name: "Кадастровый номер",
+                  placeholder: "введите кадастровый номер",
+                  maxResults: 6,
+                  maxSuggestions: 6,
+                  enableSuggestions: true,
+                  minCharacters: 0
+                },
+                {
+                  featureLayer: new FeatureLayer({
+                    url: "https://gis.uaig.kz/server/rest/services/Map2d/Базовая_карта_MIL1/MapServer/16",
+                    popupTemplate: {
+                      title: `<table>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);width:100%"><td class="attrName">Адресный массив:</td>  <td class="attrValue">`+"{id_adr_massive}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Количество этажей:</td>  <td class="attrValue">`+"{floor}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Год постройки:</td>  <td class="attrValue">`+"{year_of_foundation}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Общая площадь:</td>  <td class="attrValue">`+"{obsch_area}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Объем здания, м3:</td>  <td class="attrValue">`+"{volume_build}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Площадь жил. помещения:</td>  <td class="attrValue">`+"{zhil_area}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Площадь застройки, м2:</td>  <td class="attrValue">`+"{zastr_area}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Наименование первичной улицы:</td>  <td class="attrValue">`+"{street_name_1}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Основной номер дома:</td>  <td class="attrValue">`+"{number_1}"+`</td></tr>
+                      </table>`
+                    }
+                  }),
+                  searchFields: ["street_name_1"],
+                  displayField: "street_name_1",
+                  exactMatch: false,
+                  outFields: ["*"],
+                  name: "Здания и сооружения",
+                  placeholder: "введите адрес",
+                  maxResults: 6,
+                  maxSuggestions: 6,
+                  enableSuggestions: true,
+                  minCharacters: 0
                 }]
               });
 
