@@ -309,6 +309,9 @@ class AddApz extends React.Component {
       company_name:'',
       n_lamp: '',
       n_rozetka: '',
+      udelnayaNorma: '',
+      tempVnutri: '',
+      obshayaPloshad: '',
     };
 
     this.saveApz = this.saveApz.bind(this);
@@ -318,6 +321,7 @@ class AddApz extends React.Component {
     this.companySearch = this.companySearch.bind(this);
     this.onApplicantChange = this.onApplicantChange.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
+    this.Calculate_teplo = this.Calculate_teplo.bind(this);
     this.onBlockChange = this.onBlockChange.bind(this);
     this.downloadFile = this.downloadFile.bind(this);
     this.selectFromList = this.selectFromList.bind(this);
@@ -969,19 +973,53 @@ class AddApz extends React.Component {
       this.setState({electricRequiredPower: srp});
     }
   }
+  Calculate_teplo(e){
+    const { value, name } = e.target;
+    this.setState({[name]: value });
+    switch (name) {
+      case 'udelnayaNorma':
+        if(this.state.tempVnutri != '' && this.state.tempVnutri != ' ' && this.state.obshayaPloshad != '' && this.state.obshayaPloshad != ' '){
+          var heatGeneral = value * this.state.obshayaPloshad / 1.163 * (this.state.tempVnutri + 25)/(this.state.tempVnutri + 20.1) / 1000000;
+          this.setState({heatGeneral: heatGeneral});
+        }
+        break;
+      case 'tempVnutri':
+        if(this.state.udelnayaNorma != '' && this.state.udelnayaNorma != ' ' && this.state.obshayaPloshad != '' && this.state.obshayaPloshad != ' '){
+          var heatGeneral = this.state.udelnayaNorma * this.state.obshayaPloshad / 1.163 * (value + 25)/(value + 20.1) / 1000000;
+          this.setState({heatGeneral: heatGeneral});
+        }
+        break;
+      case 'obshayaPloshad':
+        if(this.state.tempVnutri != '' && this.state.tempVnutri != ' ' && this.state.udelnayaNorma != '' && this.state.udelnayaNorma != ' '){
+          var heatGeneral = this.state.udelnayaNorma * value / 1.163 * (this.state.tempVnutri + 25)/(this.state.tempVnutri + 20.1) / 1000000;
+          this.setState({heatGeneral: heatGeneral});
+        }
+        break;
+    }
+  }
 
   onRenderContent = (target, content) => {
-          return <div className="react-hint__content">
-                  <table><tbody><tr><td>Жилище</td><td>Количество ламп</td></tr>
-                  <tr><td>Общежитие 1 комн.</td><td>1 лампа</td></tr>
-                  <tr><td>1-комнатное</td><td>4 лампа</td></tr>
-                  <tr><td>2-комнатное</td><td>6 лампы</td></tr>
-                  <tr><td>3-комнатное</td><td>7 ламп</td></tr>
-                  <tr><td>4-комнатное</td><td>8 ламп</td></tr>
-                  <tr><td>5-комнатное</td><td>9 ламп</td></tr>
-                  <tr><td>6-комнатное</td><td>11 ламп</td></tr>
-                  <tr><td>x комнат</td><td>x+5</td></tr></tbody></table>
-                </div>
+          const {customId} = target.dataset;
+          if(customId == 1){
+            return <div className="react-hint__content">
+                    <table><thead><tr><td>Жилище</td><td>Количество ламп</td></tr></thead><tbody>
+                    <tr><td>Общежитие 1 комн.</td><td>1 лампа</td></tr>
+                    <tr><td>1-комнатное</td><td>4 лампа</td></tr>
+                    <tr><td>2-комнатное</td><td>6 лампы</td></tr>
+                    <tr><td>3-комнатное</td><td>7 ламп</td></tr>
+                    <tr><td>4-комнатное</td><td>8 ламп</td></tr>
+                    <tr><td>5-комнатное</td><td>9 ламп</td></tr>
+                    <tr><td>6-комнатное</td><td>11 ламп</td></tr>
+                    <tr><td>x комнат</td><td>x+5</td></tr></tbody></table>
+                  </div>
+          }else{
+            return <div className="react-hint__content">
+                    <table><thead><tr><td>Этажность жилой постройки</td><td>Вт в час <br/>на 1 м2 общей площади</td></tr></thead><tbody>
+                    <tr><td>1-2</td><td>173</td></tr>
+                    <tr><td>3-4</td><td>97</td></tr>
+                    <tr><td>5 и более</td><td>81</td></tr></tbody></table>
+                  </div>
+          }
   }
   render() {
     var bin = sessionStorage.getItem('userBin');
@@ -989,7 +1027,7 @@ class AddApz extends React.Component {
     return (
       <div className="container" id="apzFormDiv">
       <ReactHint autoPosition events delay={100} />
-      <ReactHint autoPosition attribute="data-custom" events onRenderContent={this.onRenderContent} delay={100}/>
+      <ReactHint autoPosition attribute="data-custom" events onRenderContent={this.onRenderContent} ref={(ref) => this.instance = ref} delay={100}/>
         {this.state.loaderHidden &&
           <div className="tab-pane">
             <div className="row">
@@ -1048,7 +1086,7 @@ class AddApz extends React.Component {
                             <div className="custom-control custom-radio">
                               <input type="radio" className="custom-control-input" name="type" value="2" id={'apztype2'}
                                      checked={this.state.type == 2 ? true : false} onChange={this.onInputChange} />
-                              <label for="apztype2" className="custom-control-label" style={{cursor:"pointer"}}>Пакет 2
+                              <label htmlFor="apztype2" className="custom-control-label" style={{cursor:"pointer"}}>Пакет 2
                               <br/>
                               <span className="help-block text-muted">(архитектурно-планировочное задание, вертикальные планировочные отметки,
                                 выкопировку из проекта детальной планировки, типовые поперечные
@@ -1294,9 +1332,9 @@ class AddApz extends React.Component {
                   <div className="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-link">
                     <form id="tab2-form" data-tab="2" onSubmit={this.saveApz.bind(this, false)}>
                       <div className="row">
-                        <div className="col-md-12">
+                        <div className="col-md-12" style={{fontSize:'15px'}}>
                           <p>Расчет по типовым правилам расчета норм потребления коммунальных услуг по электроснабжению(<a target="_blank" href="http://online.zakon.kz/m/Document/?doc_id=31676321">см. Приказ</a>)</p>
-                          <p>P = N<sub>л</sub> * P<sub>л</sub> + N<sub>р</sub> * P<sub>р</sub><br/>
+                          <p>P = N<sub>л</sub> * P<sub>л</sub> + N<sub>р</sub> * P<sub>р</sub> - Требуемая мощность (кВт)<br/>
                           P<sub>р</sub> - мощность 1 электрической розетки, P<sub>р</sub> = 0,6 кВт; N<sub>р</sub> - количество розеток<br/>
                           P<sub>л</sub> - мощность 1 лампы, P<sub>л</sub> = 0,06 кВт; N<sub>л</sub> - количество ламп</p>
                         </div>
@@ -1306,7 +1344,7 @@ class AddApz extends React.Component {
                             <input data-rh="Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)" data-rh-at="right" type="number" step="any" name="electricAllowedPower" onChange={this.ObjectArea.bind(this)} value={this.state.electricAllowedPower} className="form-control" />
                           </div>
                           <div className="form-group">
-                            <label>Количество ламп <img data-custom data-custom-at="bottom" src="./images/info.png" width="20px"/></label>
+                            <label>Количество ламп <img data-custom data-custom-at="bottom" data-custom-id="1" src="./images/info.png" width="20px"/></label>
                             <input data-rh="Количество ламп" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.Calculate_lamp.bind(this)} value={this.state.n_lamp} name="electricRequiredPower" placeholder="" />
                           </div>
                           <div className="form-group">
@@ -1499,17 +1537,37 @@ class AddApz extends React.Component {
                   <div className="tab-pane fade" id="tab5" role="tabpanel" aria-labelledby="tab5-link">
                     <form id="tab5-form" data-tab="5" onSubmit={this.saveApz.bind(this, false)}>
                       <div className="row">
+                        <div className="col-md-12" style={{fontSize:'15px'}}>
+                          <p>Расчет по типовым правилам расчета норм потребления коммунальных услуг по теплоснабжению(<a target="_blank" href="http://online.zakon.kz/m/Document/?doc_id=31676321">см. Приказ</a>)</p>
+                          <p>Q = q<sub>уд</sub> * S/1.163 * (t<sub>вн</sub> - t<sub>сро</sub>)/(t<sub>вн</sub> - t<sub>ро</sub>) * 10<sup>-6</sup>- Общая тепловая нагрузка (Гкал/ч)<br/>
+                          q<sub>уд</sub> - нормируемый удельный расход тепловой энергии; S - общая площадь<br/>
+                          t<sub>вн</sub> - температура внутреннего воздуха (°С)<br/>
+                          t<sub>сро</sub> - среднесуточная темп. наружного воздуха за расчетный период (°С), t<sub>сро</sub> = -25<br/>
+                          t<sub>ро</sub> - расч. темп. наружного воздуха в целях проектирования отопления (°С), t<sub>ро</sub> = -20.1</p>
+                        </div>
                         <div className="col-md-6">
                           <div className="form-group">
-                            <label htmlFor="HeatGeneral">Общая тепловая нагрузка (Гкал/ч)<br /><br /></label>
+                            <label>q<sub>уд</sub> <img data-custom data-custom-at="bottom" data-custom-id="2" src="./images/info.png" width="20px"/></label>
+                            <input data-rh="Нормируемый удельный расход тепловой энергии на отопление многоквартирного или индивидуального жилого дома на 1 м2 общей площади" data-rh-at="right" type="number" onChange={this.Calculate_teplo} value={this.state.udelnayaNorma} step="any" className="form-control" name="udelnayaNorma" placeholder="" />
+                          </div>
+                          <div className="form-group">
+                            <label>Температура внутреннего воздуха</label>
+                            <input data-rh="Температура внутреннего воздуха: +18, +20, +22 °С" data-rh-at="right" type="number" onChange={this.Calculate_teplo} value={this.state.tempVnutri} step="any" className="form-control" name="tempVnutri" placeholder="" />
+                          </div>
+                          <div className="form-group">
+                            <label>Общая площадь (кв. м)</label>
+                            <input data-rh="Общая площадь жилых и нежилых помещений многоквартирного или индивидуального жилого дома (кв. м)" data-rh-at="right" type="number" onChange={this.Calculate_teplo} value={this.state.obshayaPloshad} step="any" className="form-control" name="obshayaPloshad" placeholder="" />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="HeatGeneral">Общая тепловая нагрузка (Гкал/ч)</label>
                             <input data-rh="Общая тепловая нагрузка (Гкал/ч)" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.heatGeneral} step="any" className="form-control" name="heatGeneral" placeholder="" />
                           </div>
+                        </div>
+                        <div className="col-md-6">
                           <div className="form-group">
                             <label htmlFor="HeatTech">Технологические нужды(пар) (Т/ч)</label>
                             <input data-rh="Технологические нужды(пар) (Т/ч)" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.heatTech} step="any" className="form-control" name="heatTech" placeholder="" />
                           </div>
-                        </div>
-                        <div className="col-md-6">
                           <div className="form-group">
                             <label htmlFor="HeatDistribution">Разделить нагрузку по жилью и по встроенным помещениям</label>
                             <input data-rh="Разделить нагрузку по жилью и по встроенным помещениям" data-rh-at="right" type="text" onChange={this.onInputChange} value={this.state.heatDistribution} className="form-control" name="heatDistribution" />
