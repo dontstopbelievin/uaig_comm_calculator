@@ -321,6 +321,7 @@ class AddApz extends React.Component {
     this.companySearch = this.companySearch.bind(this);
     this.onApplicantChange = this.onApplicantChange.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
+    this.onInputChangeLevel = this.onInputChangeLevel.bind(this);
     this.Calculate_teplo = this.Calculate_teplo.bind(this);
     this.onBlockChange = this.onBlockChange.bind(this);
     this.downloadFile = this.downloadFile.bind(this);
@@ -343,6 +344,21 @@ class AddApz extends React.Component {
   onInputChange(e) {
     const { value, name } = e.target;
     this.setState({ [name] : value });
+  }
+  onInputChangeLevel(e) {
+    const { value, name } = e.target;
+    this.setState({ [name] : value });
+    switch (true) {
+      case (value > 0 && value < 3):
+        this.setState({udelnayaNorma: '173'});
+        break;
+      case (value > 2 && value < 5):
+        this.setState({udelnayaNorma: '97'});
+        break;
+      case (value > 4):
+        this.setState({udelnayaNorma: '81'});
+        break;
+    }
   }
 
   componentDidMount() {
@@ -1311,7 +1327,7 @@ class AddApz extends React.Component {
                         <div className="col-md-6">
                         <div className="form-group">
                           <label htmlFor="ObjectLevel">Этажность</label>
-                          <input data-rh="Этажность" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChange} value={this.state.objectLevel} name="objectLevel" placeholder="" />
+                          <input data-rh="Этажность" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChangeLevel} value={this.state.objectLevel} name="objectLevel" placeholder="" />
                         </div>
                         <div className="form-group">
                           <label htmlFor="ObjectArea">Площадь здания (кв.м)</label>
