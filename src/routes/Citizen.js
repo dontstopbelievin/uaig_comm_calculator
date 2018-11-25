@@ -348,16 +348,24 @@ class AddApz extends React.Component {
   onInputChangeLevel(e) {
     const { value, name } = e.target;
     this.setState({ [name] : value });
+    var unorma;
     switch (true) {
       case (value > 0 && value < 3):
         this.setState({udelnayaNorma: '173'});
+        unorma = 173;
         break;
       case (value > 2 && value < 5):
         this.setState({udelnayaNorma: '97'});
+        unorma = 97;
         break;
       case (value > 4):
         this.setState({udelnayaNorma: '81'});
+        unorma = 81;
         break;
+    }
+    if(this.state.tempVnutri != '' && this.state.tempVnutri != ' ' && this.state.obshayaPloshad != '' && this.state.obshayaPloshad != ' '){
+      var heatGeneral = unorma * this.state.obshayaPloshad / 1.163 * (this.state.tempVnutri + 25)/(this.state.tempVnutri + 20.1) / 1000000;
+      this.setState({heatGeneral: heatGeneral});
     }
   }
 
@@ -1030,7 +1038,7 @@ class AddApz extends React.Component {
                   </div>
           }else{
             return <div className="react-hint__content">
-                    <table><thead><tr><td>Этажность жилой постройки</td><td>Вт в час <br/>на 1 м2 общей площади</td></tr></thead><tbody>
+                    <table><thead><tr><td>Этажность жилой<br/>постройки</td><td>Вт в час на 1 м2<br/> общей площади(q<sub>уд</sub>)</td></tr></thead><tbody>
                     <tr><td>1-2</td><td>173</td></tr>
                     <tr><td>3-4</td><td>97</td></tr>
                     <tr><td>5 и более</td><td>81</td></tr></tbody></table>
@@ -1564,7 +1572,12 @@ class AddApz extends React.Component {
                         <div className="col-md-6">
                           <div className="form-group">
                             <label>q<sub>уд</sub> <img data-custom data-custom-at="bottom" data-custom-id="2" src="./images/info.png" width="20px"/></label>
-                            <input data-rh="Нормируемый удельный расход тепловой энергии на отопление многоквартирного или индивидуального жилого дома на 1 м2 общей площади" data-rh-at="right" type="number" onChange={this.Calculate_teplo} value={this.state.udelnayaNorma} step="any" className="form-control" name="udelnayaNorma" placeholder="" />
+                            <select className="form-control" onChange={this.Calculate_teplo} value={this.state.udelnayaNorma} name="udelnayaNorma" data-rh="Нормируемый удельный расход тепловой энергии на отопление многоквартирного или индивидуального жилого дома на 1 м2 общей площади" data-rh-at="right">
+                              <option></option>
+                              <option>173</option>
+                              <option>97</option>
+                              <option>81</option>
+                            </select>
                           </div>
                           <div className="form-group">
                             <label>Температура внутреннего воздуха</label>
@@ -1718,6 +1731,9 @@ class AddApz extends React.Component {
                   <div className="tab-pane fade" id="tab8" role="tabpanel" aria-labelledby="tab8-link">
                     <form id="tab8-form" data-tab="8" onSubmit={this.saveApz.bind(this, false)}>
                       <div className="row">
+                        <div className="col-md-12" style={{fontSize:'15px'}}>
+                          <p>Расчета и утверждения норм потребления газа на отопление(<a target="_blank" href="http://online.zakon.kz/Document/?doc_id=32782895">см. Приказ</a>)</p>
+                        </div>
                         <div className="col-md-6">
                           <div className="form-group">
                             <label htmlFor="GasGeneral">Общая потребность (м<sup>3</sup>/час)</label>
@@ -3226,12 +3242,23 @@ class ShowMap extends React.Component {
             onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap, webMercatorUtils, dom, Map,
               MapImageLayer, Graphic, esriConfig], containerNode}) => {
               esriConfig.portalUrl = "https://gis.uaig.kz/arcgis";
-              var map = new WebMap({
+              /*var map = new WebMap({
                 basemap: "streets",
                 portalItem: {
                   id: "0e8ae8f43ea94d358673e749f9a5e147"
                 }
+              });*/
+              var map = new Map("map",{
+                scale: 250000,
+                maxScale: 500,
+                minScale: 250000,
+                slider:false
               });
+              var layer, layer2;
+              layer = new MapImageLayer("http://gis.uaig.kz/server/rest/services/Map2d/Базовая_карта_MIL1/MapServer");
+              layer2 = new MapImageLayer("http://gis.uaig.kz/server/rest/services/Map2d/объекты_города/MapServer");
+              map.layers.add(layer2);
+              map.layers.add(layer);
 
               if (coordinates) {
                 var coordinatesArray = coordinates.split(", ");
@@ -3376,7 +3403,7 @@ class ShowMap extends React.Component {
                 });
 
                 // Add widget to the bottom right corner of the view
-                view.ui.add(layerList, "bottom-right");
+                //view.ui.add(layerList, "bottom-right");
 
               }, function(error) {
                 console.log('MapView promise rejected! Message: ', error);

@@ -504,6 +504,7 @@ class ShowApz extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           this.setState({ xmlFile: true });
+          alert("Успешно подписан!");
         } else {
           alert("Не удалось подписать файл");
         }
@@ -1230,7 +1231,7 @@ class ShowApz extends React.Component {
                           :
                           <div>
                             <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", "apz")}>
-                              Отправить
+                              В отдел АПЗ
                             </button>
                           </div>
                         }
