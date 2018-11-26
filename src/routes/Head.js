@@ -330,18 +330,18 @@ class ShowApz extends React.Component {
           this.setState({showButtons: true});
         }
 
-        if (this.state.xmlFile) {
+        if (data.apz_head_response && data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0]) {
           this.setState({isSigned: true});
         }
 
-        if (this.state.xmlFile && data.status_id === 7) {
+        if (data.apz_head_response && data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0] && data.status_id === 7) {
           this.setState({showSendButton: true});
         }
 
         /*if (!this.state.xmlFile && this.state.headResponseFile && data.status_id === 7) {
           this.setState({showSignButtons: true});
         }*/
-        if (!this.state.xmlFile && this.state.headResponseFile && data.status_id === 7) {
+        if (data.apz_head_response && !data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0] && data.status_id === 7) {
           this.setState({showSignButtons: true});
         }
 
@@ -663,11 +663,11 @@ class ShowApz extends React.Component {
 
 
     var formData = new FormData();
-    if(status){
+    /*if(status){
       var file = this.state.file;
       if(!file){alert("Загрузите файл"); return;}
       formData.append('file', file);
-    }
+    }*/
     formData.append('Response', status);
     formData.append('Message', comment);
     formData.append('DocNumber', this.state.docNumber);

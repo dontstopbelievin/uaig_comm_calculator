@@ -218,6 +218,14 @@ class AllApzs extends React.Component {
 class ShowApz extends React.Component {
   constructor(props) {
     super(props);
+    this.webSocket = new WebSocket('wss://127.0.0.1:13579/');
+    this.heartbeat_msg = '--heartbeat--';
+    this.heartbeat_interval = null;
+    this.missed_heartbeats = 0;
+    this.missed_heartbeats_limit_min = 3;
+    this.missed_heartbeats_limit_max = 50;
+    this.missed_heartbeats_limit = this.missed_heartbeats_limit_min;
+    this.callback = null;
 
     this.state = {
       apz: [],
@@ -246,6 +254,8 @@ class ShowApz extends React.Component {
       claimedCapacityJustification: false,
       showMapText: 'Показать карту',
       response: null,
+      storageAlias: "PKCS12",
+      needSign: false,
       comment: null
     };
 
@@ -300,6 +310,7 @@ class ShowApz extends React.Component {
         this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
         this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
+
         var pack2IdFile = data.files.filter(function(obj) { return obj.category_id === 25 }) ?
           data.files.filter(function(obj) { return obj.category_id === 25 }) : [];
         if ( pack2IdFile.length > 0 ) {
@@ -342,9 +353,16 @@ class ShowApz extends React.Component {
         if (hasReponse.length == 0) {
           this.setState({showCommission: true});
         }
+
+        this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 28})[0]});
+        this.setState({needSign: data.files.filter(function(obj) { return obj.category_id === 28})[0]});
       }
     }.bind(this)
     xhr.send();
+  }
+
+  sendToApz() {
+    this.setState({needSign: true });
   }
 
   downloadFile(id) {
@@ -396,6 +414,244 @@ class ShowApz extends React.Component {
         }
       }
     xhr.send();
+  }
+
+  setMissedHeartbeatsLimitToMax() {
+    this.missed_heartbeats_limit = this.missed_heartbeats_limit_max;
+  }
+
+  setMissedHeartbeatsLimitToMin() {
+    this.missed_heartbeats_limit = this.missed_heartbeats_limit_min;
+  }
+  browseKeyStore(storageName, fileExtension, currentDirectory, callBack) {
+    var browseKeyStore = {
+      "method": "browseKeyStore",
+      "args": [storageName, fileExtension, currentDirectory]
+    };
+    //console.log(browseKeyStore);
+    this.callback = callBack;
+    this.webSocketFunction();
+    this.setMissedHeartbeatsLimitToMax();
+    //console.log(browseKeyStore);
+    this.webSocket.send(JSON.stringify(browseKeyStore));
+  }
+
+  getKeys(storageName, storagePath, password, type, callBack) {
+    var getKeys = {
+      "method": "getKeys",
+      "args": [storageName, storagePath, password, type]
+    };
+    this.callback = callBack;
+    this.webSocketFunction();
+    this.setMissedHeartbeatsLimitToMax();
+    this.webSocket.send(JSON.stringify(getKeys));
+  }
+
+  chooseFile() {
+    var browseKeyStore = {
+      "method": "browseKeyStore",
+      "args": [this.state.storageAlias, "P12", '']
+    };
+    this.callback = "chooseStoragePathBack";
+    this.webSocketFunction();
+    this.setMissedHeartbeatsLimitToMax();
+    this.webSocket.send(JSON.stringify(browseKeyStore));
+  }
+  signMessage() {
+    let password = document.getElementById("inpPassword").value;
+    let path = document.getElementById("storagePath").value;
+    let keyType = "SIGN";
+    //console.log(path);
+    if (path !== null && path !== "" && this.state.storageAlias !== null && this.state.storageAlias !== "") {
+      if (password !== null && password !== "") {
+          this.getKeys(this.state.storageAlias, path, password, keyType, "loadKeysBack");
+      } else {
+        alert("Введите пароль к хранилищу");
+      }
+    } else {
+      alert("Не выбран хранилище!");
+    }
+  }
+
+  loadKeysBack(result) {
+    if (result.errorCode === "WRONG_PASSWORD") {
+      alert("Неверный пароль!");
+      return false;
+    }
+
+    let alias = "";
+    console.log(result);
+    if (result && result.result) {
+      let keys = result.result.split('/n');
+      if (keys && keys.length > 0) {
+        let arr = keys[0].split('|');
+        alias = arr[3];
+        this.getTokenXml(alias);
+      }
+    }
+    if (!alias) {
+      alert('Нет ключа подписания');
+    }
+  }
+  getTokenXml(alias) {
+    let password = document.getElementById("inpPassword").value;
+    let storagePath = document.getElementById("storagePath").value;
+    var token = sessionStorage.getItem('tokenInfo');
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + 'api/apz/engineer/get_xml/' + this.state.apz.id, true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      var tokenXml = xhr.responseText;
+
+      if (storagePath !== null && storagePath !== "" && this.state.storageAlias !== null && this.state.storageAlias !== "") {
+        if (password !== null && password !== "") {
+          if (alias !== null && alias !== "") {
+            if (tokenXml !== null && tokenXml !== "") {
+                this.signXml(this.state.storageAlias, storagePath, alias, password, tokenXml, "signXmlBack");
+            }
+            else {
+                alert("Нет данных для подписания!");
+            }
+          } else {
+              alert("Вы не выбрали ключ!");
+          }
+        } else {
+            alert("Введите пароль к хранилищу");
+        }
+      } else {
+          alert("Не выбран хранилище!");
+      }
+    }.bind(this);
+    xhr.send();
+  }
+  signXml(storageName, storagePath, alias, password, xmlToSign, callBack) {
+    var signXml = {
+      "method": "signXml",
+      "args": [storageName, storagePath, alias, password, xmlToSign]
+    };
+    this.callback = callBack;
+    this.webSocketFunction();
+    this.setMissedHeartbeatsLimitToMax();
+    this.webSocket.send(JSON.stringify(signXml));
+  }
+  signXmlBack(result) {
+    if (result['errorCode'] === "NONE") {
+      let signedXml = result.result;
+      var token = sessionStorage.getItem('tokenInfo');
+      var data = {xml: signedXml}
+
+      console.log("SIGNED XML ------> \n", signedXml);
+
+      var xhr = new XMLHttpRequest();
+      xhr.open("post", window.url + 'api/apz/engineer/save_xml/' + this.state.apz.id, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          this.setState({ xmlFile: true });
+          alert("Успешно подписан!");
+        } else {
+          alert("Не удалось подписать файл");
+        }
+      }.bind(this);
+      xhr.send(JSON.stringify(data));
+    }
+    else {
+      if (result['errorCode'] === "WRONG_PASSWORD" && result['result'] > -1) {
+        alert("Неправильный пароль! Количество оставшихся попыток: " + result['result']);
+      } else if (result['errorCode'] === "WRONG_PASSWORD") {
+        alert("Неправильный пароль!");
+      } else {
+        alert(result['errorCode']);
+      }
+    }
+  }
+  chooseStorage(storage) {
+    this.browseKeyStore(storage, "P12", '', "chooseStoragePathBack");
+  }
+  chooseStoragePathBack(rw) {
+    if (rw.getErrorCode() === "NONE") {
+      var storagePath = rw.getResult();
+      if (storagePath !== null && storagePath !== "") {
+        document.getElementById("storagePath").value = storagePath;
+      }
+      else {
+        document.getElementById("storagePath").value = "";
+      }
+    } else {
+      console.log(rw.getErrorCode());
+      document.getElementById("storagePath").value = "";
+    }
+  }
+  webSocketFunction() {
+    this.webSocket.onopen = function (event) {
+      if (this.heartbeat_interval == "") {
+        this.missed_heartbeats = 0;
+        this.heartbeat_interval = setInterval(this.pingLayer, 2000);
+      }
+      console.log("Connection opened");
+    }.bind(this);
+
+    this.webSocket.onclose = function (event) {
+      if (event.wasClean) {
+        console.log('connection has been closed');
+      }
+      else {
+        console.log('Connection error');
+        this.openDialog();
+      }
+      console.log('Code: ' + event.code + ' Reason: ' + event.reason);
+    }.bind(this);
+
+    this.webSocket.onmessage = function (event) {
+      if (event.data === this.heartbeat_msg) {
+        this.missed_heartbeats = 0;
+        return;
+      }
+
+      var result = JSON.parse(event.data);
+
+      if (result != null) {
+        var rw = {
+          result: result['result'],
+          secondResult: result['secondResult'],
+          errorCode: result['errorCode'],
+          getResult: function () {
+            return this.result;
+          },
+          getSecondResult: function () {
+            return this.secondResult;
+          },
+          getErrorCode: function () {
+            return this.errorCode;
+          }
+        };
+
+        switch (this.callback) {
+          case 'chooseStoragePathBack':
+            this.chooseStoragePathBack(rw);
+            break;
+
+          case 'loadKeysBack':
+            this.loadKeysBack(rw);
+            break;
+
+          case 'signXmlBack':
+            this.signXmlBack(rw);
+            break;
+          default:
+            break;
+        }
+      }
+      this.setMissedHeartbeatsLimitToMin();
+    }.bind(this);
+  }
+  openDialog() {
+    if (window.confirm("Ошибка при подключений к прослойке. Убедитесь что программа запущена и нажмите ОК") === true) {
+      window.location.reload();
+    }
   }
 
   // print technical condition of waterProvider
@@ -1227,13 +1483,11 @@ class ShowApz extends React.Component {
                 }
               </table>
 
-              {!apz.commission &&
                 <div className="col-sm-12">
                   <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                     <textarea style={{marginBottom: '10px'}} placeholder="Комментарий" rows="7" cols="50" className="form-control" defaultValue={this.state.comment} onChange={this.onCommentChange}></textarea>
                   </div>
                 </div>
-              }
             </div>
           }
           {apz.commission != null && apz.commission.status_id === 2 && apz.type === 2 &&
@@ -1320,20 +1574,50 @@ class ShowApz extends React.Component {
                   Создать комиссию
                 </button>
               }
+              {!this.state.needSign ?
+                <div>
+                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>Одобрить</button>
+                  <button className="btn btn-raised btn-danger" onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.comment)}>
+                    Вернуть архитектору
+                  </button>
+                </div>
+                :
+                  <div>
+                  { !this.state.xmlFile ?
+                    <div>
+                      <div id="MySignForm" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                        <div>Выберите хранилище</div>
 
-              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
-                      onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", 'apz')}>
-                В отдел АПЗ
-              </button>
+                        <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
+                          <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
+                          <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>Kaztoken</button>
+                        </div>
 
-              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
-                      onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>
-                Отправить архитектору
-              </button>
+                        <div className="form-group">
+                          <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
+                          <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                        </div>
 
-              <button className="btn btn-raised btn-danger" onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.comment)}>
-                Вернуть архитектору
-              </button>
+                        <div className="form-group">
+                          <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                        </div>
+                      </div>
+                    </div>
+                    :
+                    <div>
+                      <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
+                              onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", 'apz')}>
+                        В отдел АПЗ
+                      </button>
+
+                      <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
+                              onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>
+                        Отправить архитектору
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
             </div>
           </div>
 

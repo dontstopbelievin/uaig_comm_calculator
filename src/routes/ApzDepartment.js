@@ -545,16 +545,20 @@ class ShowApz extends React.Component {
         this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 18})[0]});
         this.setState({response: data.apz_department_response ? true : false });
 
-        if (data.status_id === 6) {
+        if (!data.apz_department_response && data.status_id === 6) {
           this.setState({showButtons: true});
         }
 
-        if (this.state.xmlFile) {
+        if (data.files.filter(function(obj) { return obj.category_id === 18})[0]) {
           this.setState({isSigned: true});
         }
 
-        if (this.state.xmlFile && data.status_id === 6) {
+        if (data.files.filter(function(obj) { return obj.category_id === 18})[0] && data.status_id === 6) {
           this.setState({showSendButton: true});
+        }
+
+        if (data.apz_department_response && !data.files.filter(function(obj) { return obj.category_id === 18})[0] && data.status_id === 6) {
+          this.setState({showSignButtons: true});
         }
 
         if (data.apz_department_response) {
