@@ -670,6 +670,7 @@ class ShowApz extends React.Component {
     }*/
     formData.append('Response', status);
     formData.append('Message', comment);
+    if(this.state.docNumber == '' || this.state.docNumber == ' '){alert("Введите номер документа"); return;}
     formData.append('DocNumber', this.state.docNumber);
 
     var xhr = new XMLHttpRequest();
@@ -1491,7 +1492,7 @@ class ShowApz extends React.Component {
                 }
 
                 {this.state.showSendButton &&
-                  <button type="button" className="btn btn-primary" onClick={this.acceptDeclineApzForm.bind(this, apz.id, this.state.returnedState ? false : true, "")}>Отправить</button>
+                  <button type="button" className="btn btn-primary" onClick={this.acceptDeclineApzForm.bind(this, apz.id, this.state.returnedState ? false : true, "")}>Отправить заявителю</button>
                 }
               </div>
             </div>

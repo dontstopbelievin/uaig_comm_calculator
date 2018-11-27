@@ -1540,7 +1540,7 @@ class ShowApz extends React.Component {
               }
 
               {this.state.showSendButton &&
-                <button type="button" className="btn btn-primary" onClick={this.sendForm.bind(this, apz.id, true, "")}>Отправить</button>
+                <button type="button" className="btn btn-primary" onClick={this.sendForm.bind(this, apz.id, true, "")}>Отправить к глав. архитектору</button>
               }
 
               <div className="modal fade" id="declined_modal" tabIndex="-1" role="dialog" aria-hidden="true">
