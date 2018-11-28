@@ -81,17 +81,18 @@ export default class BasePagePanel extends React.Component{
                   </div>
                   <div className="card-button">
                     {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                    {this.state.tokenExists && this.state.rolename === 'Admin' && <NavLink to={"/admin"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Admin' && <NavLink to={"/panel/admin/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                     {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/panel/citizen/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/panel/urban/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'Head' &&  <NavLink to={"/panel/head/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'Electricity' &&  <NavLink to={"/panel/elector-provider/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'Gas' &&  <NavLink to={"/panel/gas-provider/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'Heat' &&  <NavLink to={"/panel/heat-provider/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'Water' &&  <NavLink to={"/panel/water-provider/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'Phone' &&  <NavLink to={"/panel/phone-provider/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'ApzDepartment' &&  <NavLink to={"/panel/apz-department/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'Engineer' &&  <NavLink to={"/panel/engineer/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/panel/urban/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Head' &&  <NavLink to={"/panel/head/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Electricity' &&  <NavLink to={"/panel/elector-provider/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Gas' &&  <NavLink to={"/panel/gas-provider/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Heat' &&  <NavLink to={"/panel/heat-provider/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Water' &&  <NavLink to={"/panel/water-provider/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Phone' &&  <NavLink to={"/panel/phone-provider/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'ApzDepartment' &&  <NavLink to={"/panel/apz-department/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Engineer' &&  <NavLink to={"/panel/engineer/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Office' &&  <NavLink to={"/panel/office/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                     {!this.state.tokenExists && <AlertModal />}
                   </div>
                 </div>

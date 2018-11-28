@@ -203,6 +203,7 @@ export default class Login extends Component {
                   break;
               default:
             }
+            break;
           default: window.location.href = '/#/panel/base-page';
           }
         }

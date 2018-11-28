@@ -786,7 +786,7 @@ class AddApz extends React.Component {
   PeopleCount(e) {
     this.setState({waterRequirement: parseFloat( "0.19" * e.target.value)});
     this.setState({peopleCount: e.target.value});
-    this.setState({waterSewage: this.state.waterRequirement});
+    this.setState({waterSewage: parseFloat( "0.19" * e.target.value)});
     //document.getElementsByName('WaterRequirement')[0].value = parseFloat( "0.19" * document.getElementsByName('PeopleCount')[0].value);
     //document.getElementsByName('WaterSewage')[0].value = document.getElementsByName('WaterRequirement')[0].value;
   }
@@ -1470,11 +1470,11 @@ class AddApz extends React.Component {
                           </div>
                           <div className="form-group">
                             <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
-                            <input type="number" step="any" className="form-control" onChange={this.onInputChange} value={this.state.waterRequirement} name="WaterRequirement" placeholder="" />
+                            <input type="number" onChange={this.onInputChange} step="any" className="form-control" name="WaterRequirement" value={this.state.waterRequirement} placeholder="" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="WaterFireFighting">Потребные расходы наружного пожаротушения (л/сек)</label>
-                            <input type="number" onChange={this.onInputChange} value={this.state.waterFireFighting} min="10" className="form-control" name="WaterFireFighting" />
+                            <input data-rh="Потребные расходы наружного пожаротушения (л/сек)" data-rh-at="right" type="number" onChange={this.onInputChange} step="any" min="10" className="form-control" name="waterFireFighting" value={this.state.waterFireFighting} />
                           </div>
                           <div className="form-group">
                             <label htmlFor="WaterProduction">На производственные нужды (м<sup>3</sup>/сутки)</label>
@@ -1484,15 +1484,15 @@ class AddApz extends React.Component {
                         <div className="col-md-6">
                           <div className="form-group">
                             <label htmlFor="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
-                            <input data-rh="На хозпитьевые нужды (м3/сутки)" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.waterDrinking} step="any" className="form-control" name="WaterDrinking" placeholder="" />
+                            <input data-rh="На хозпитьевые нужды (м3/сутки)" data-rh-at="right" type="number" onChange={this.onInputChange} step="any" className="form-control" name="WaterDrinking" value={this.state.WaterDrinking} placeholder="" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="WaterSewage">Канализация (м<sup>3</sup>/сутки)</label>
-                            <input type="number" readOnly="readonly" className="form-control" onChange={this.onInputChange} value={this.state.waterSewage} name="WaterSewage" />
+                            <input data-rh="Канализация (м/3)" data-rh-at="right" type="number" onChange={this.onInputChange} className="form-control" name="waterSewage" value={this.state.waterSewage} />
                           </div>
                           <div className="form-group">
                             <label>Потребные расходы внутреннего пожаротушения (л/сек)</label>
-                            <input type="number" className="form-control" onChange={this.onInputChange} value={this.state.waterFireFightingIn}/>
+                            <input data-rh="Потребные расходы внутреннего пожаротушения (л/сек)" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChange} name="waterFireFightingIn" value={this.state.waterFireFightingIn}/>
                           </div>
                           <div className="form-group">
                             <label>Топографическая съемка</label>
