@@ -1407,7 +1407,7 @@ class ShowApz extends React.Component {
                     </div>
 
                     <div className="form-group">
-                      <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                      <button className="btn btn-raised btn-success" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
                     </div>
                   </div>
                 }
@@ -1492,7 +1492,7 @@ class ShowApz extends React.Component {
                 }
 
                 {this.state.showSendButton &&
-                  <button type="button" className="btn btn-primary" onClick={this.acceptDeclineApzForm.bind(this, apz.id, this.state.returnedState ? false : true, "")}>Отправить заявителю</button>
+                  <button type="button" className="btn btn-raised btn-success" onClick={this.acceptDeclineApzForm.bind(this, apz.id, this.state.returnedState ? false : true, "")}>Отправить заявителю</button>
                 }
               </div>
             </div>
@@ -1526,7 +1526,7 @@ class ShowApz extends React.Component {
                           </tbody>
                         }
 
-                        {!this.state.waterCustomTcFile && apz.commission.apz_water_response.response &&
+                        {Boolean(!this.state.waterCustomTcFile) && Boolean(apz.commission.apz_water_response.response) &&
                           <tbody>
                             <tr>
                               <td style={{width: '50%'}}><b>Общая потребность (м<sup>3</sup>/сутки)</b></td>
@@ -1574,7 +1574,14 @@ class ShowApz extends React.Component {
                             </tr>
                           </tbody>
                         }
-
+                        {!apz.commission.apz_water_response.response && !this.state.waterResponseFile &&
+                          <tbody>
+                            <tr>
+                              <td style={{width: '50%'}}><b>Причина отказа</b></td>
+                              <td>{apz.commission.apz_water_response.response_text}</td>
+                            </tr>
+                          </tbody>
+                        }
                         {!apz.commission.apz_water_response.response && this.state.waterResponseFile &&
                           <tbody>
                             <tr>
@@ -1614,7 +1621,7 @@ class ShowApz extends React.Component {
                           </tbody>
                         }
 
-                        {!this.state.heatCustomTcFile && apz.commission.apz_heat_response.response &&
+                        {Boolean(!this.state.heatCustomTcFile) && Boolean(apz.commission.apz_heat_response.response) &&
                           <tbody>
                             <tr>
                               <td style={{width: '50%'}}><b>Источник теплоснабжения</b></td>
@@ -1666,7 +1673,14 @@ class ShowApz extends React.Component {
                             </tr>
                           </tbody>
                         }
-
+                        {!apz.commission.apz_heat_response.response && !this.state.heatResponseFile &&
+                          <tbody>
+                            <tr>
+                              <td style={{width: '50%'}}><b>Причина отказа</b></td>
+                              <td>{apz.commission.apz_heat_response.response_text}</td>
+                            </tr>
+                          </tbody>
+                        }
                         {!apz.commission.apz_heat_response.response && this.state.heatResponseFile &&
                           <tbody>
                             <tr>
@@ -1677,7 +1691,7 @@ class ShowApz extends React.Component {
                         }
                       </table>
 
-                      {!this.state.heatCustomTcFile && apz.commission.apz_heat_response.response && apz.commission.apz_heat_response.blocks &&
+                      {Boolean(!this.state.heatCustomTcFile) && Boolean(apz.commission.apz_heat_response.response) && Boolean(apz.commission.apz_heat_response.blocks) &&
                         <div>
                           {apz.commission.apz_heat_response.blocks.map(function(item, index) {
                             return(
@@ -1741,7 +1755,7 @@ class ShowApz extends React.Component {
                           </tbody>
                         }
 
-                        {!this.state.electroCustomTcFile && apz.commission.apz_electricity_response.response &&
+                        {Boolean(!this.state.electroCustomTcFile) && Boolean(apz.commission.apz_electricity_response.response) &&
                           <tbody>
                             <tr>
                               <td style={{width: '50%'}}><b>Требуемая мощность (кВт)</b></td>
@@ -1781,7 +1795,14 @@ class ShowApz extends React.Component {
                             </tr>
                           </tbody>
                         }
-
+                        {!apz.commission.apz_electricity_response.response && !this.state.electroResponseFile &&
+                          <tbody>
+                            <tr>
+                              <td style={{width: '50%'}}><b>Причина отказа</b></td>
+                              <td>{apz.commission.apz_electricity_response.response_text}</td>
+                            </tr>
+                          </tbody>
+                        }
                         {!apz.commission.apz_electricity_response.response && this.state.electroResponseFile &&
                           <tbody>
                             <tr>
@@ -1821,7 +1842,7 @@ class ShowApz extends React.Component {
                           </tbody>
                         }
 
-                        {!this.state.gasCustomTcFile && apz.commission.apz_gas_response.response &&
+                        {Boolean(!this.state.gasCustomTcFile) && Boolean(apz.commission.apz_gas_response.response) &&
                           <tbody>
                             <tr>
                               <td style={{width: '50%'}}><b>Точка подключения</b></td>
@@ -1857,7 +1878,14 @@ class ShowApz extends React.Component {
                             </tr>
                           </tbody>
                         }
-
+                        {!apz.commission.apz_gas_response.response && !this.state.gasResponseFile &&
+                          <tbody>
+                            <tr>
+                              <td style={{width: '50%'}}><b>Причина отказа</b></td>
+                              <td>{apz.commission.apz_gas_response.response_text}</td>
+                            </tr>
+                          </tbody>
+                        }
                         {!apz.commission.apz_gas_response.response && this.state.gasResponseFile &&
                           <tbody>
                             <tr>
@@ -1897,7 +1925,7 @@ class ShowApz extends React.Component {
                           </tbody>
                         }
 
-                        {!this.state.phoneCustomTcFile && apz.commission.apz_phone_response.response &&
+                        {Boolean(!this.state.phoneCustomTcFile) && Boolean(apz.commission.apz_phone_response.response) &&
                           <tbody>
                             <tr>
                               <td style={{width: '50%'}}><b>Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</b></td>
@@ -1933,7 +1961,14 @@ class ShowApz extends React.Component {
                             </tr>
                           </tbody>
                         }
-
+                        {!apz.commission.apz_phone_response.response && !this.state.phoneResponseFile &&
+                          <tbody>
+                            <tr>
+                              <td style={{width: '50%'}}><b>Причина отказа</b></td>
+                              <td>{apz.commission.apz_phone_response.response_text}</td>
+                            </tr>
+                          </tbody>
+                        }
                         {!apz.commission.apz_phone_response.response && this.state.phoneResponseFile &&
                           <tbody>
                             <tr>

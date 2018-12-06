@@ -7,6 +7,7 @@ import { Route, NavLink, Link, Switch, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import saveAs from 'file-saver';
 
 export default class ProviderWater extends React.Component {
   render() {
@@ -728,6 +729,51 @@ class ShowApz extends React.Component {
     xhr.send();
   }
 
+  downloadAllFile(id) {
+    var token = sessionStorage.getItem('tokenInfo');
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + 'api/file/downloadAll/' + id, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+          //console.log(data.my_files[0]);return;
+          var base64ToArrayBuffer = (function () {
+
+            return function (base64) {
+              var binaryString = window.atob(base64);
+              var binaryLen = binaryString.length;
+              var bytes = new Uint8Array(binaryLen);
+
+              for (var i = 0; i < binaryLen; i++) {
+                var ascii = binaryString.charCodeAt(i);
+                bytes[i] = ascii;
+              }
+
+              return bytes;
+            }
+
+          }());
+
+          var JSZip = require("jszip");
+          var zip = new JSZip();
+          for(var i=0; i<data.my_files.length;i++){
+            zip.file(data.my_files[i].file_name, base64ToArrayBuffer(data.my_files[i].file), {binary:true});
+          }
+          zip.generateAsync({type:"blob"})
+          .then(function (content) {
+              // see FileSaver.js
+              saveAs(content, data.zip_name);
+          });
+        } else {
+          alert('Не удалось скачать файл');
+        }
+      }
+    xhr.send();
+  }
+
   setMissedHeartbeatsLimitToMax() {
     this.missed_heartbeats_limit = this.missed_heartbeats_limit_max;
   }
@@ -1074,10 +1120,12 @@ class ShowApz extends React.Component {
   // this function is to send the final response
   sendWaterResponse(apzId, status, comment) {
     if(this.state.responseId <= 0 || this.state.responseId > 0 && this.state.response != status){
+      console.log('saving');
       this.setState({callSaveFromSend: true});
       this.saveResponseForm(apzId, status, comment);
     }
     else{
+      console.log('updating or sending');
       var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
       xhr.open("post", window.url + "api/apz/provider/water/" + apzId + '/update', true);
@@ -1424,6 +1472,11 @@ handleObjTypeChange(event){
                   <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.surveyFile.id)}>Скачать</a></td>
                 </tr>
               }
+              {(this.state.personalIdFile || this.state.confirmedTaskFile || this.state.titleDocumentFile || this.state.additionalFile || this.state.surveyFile) &&
+                <tr className="shukichi">
+                  <td colspan="2"><a className="text-info pointer" onClick={this.downloadAllFile.bind(this, this.state.apz.id)}><img style={{height:'16px'}} src="./images/download.png"/>Скачать одним архивом</a></td>
+                </tr>
+              }
             </tbody>
           </table>
         </div>
@@ -1754,6 +1807,7 @@ handleObjTypeChange(event){
                           Предварительный просмотр
                         </button>
                       }
+                      <p style={{color:'#777777'}}>Сохранение перезаписывает предыдущий вариант.</p>
                     </div>
                   }
                 </div>
@@ -1838,23 +1892,34 @@ handleObjTypeChange(event){
                 <input type="file" id="custom_tc_file" className="form-control" onChange={this.onCustomTcFileChange} />
               </div>
 
+              <div style={{paddingLeft:'5px', fontSize: '18px', margin: '10px 0px'}}>
+                <b>Выберите директора:</b>
+                <select id="water_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.ty_director_id} onChange={this.handleDirectorIDChange.bind(this)}>
+                  {this.state.water_directors_id}
+                </select>
+              </div>
+
               {!this.state.xmlFile &&
-                <div className="form-group">
-                  <button type="button" className="btn btn-secondary" onClick={this.sendWaterResponse.bind(this, apz.id, true, "")}>
-                    Отправить
+                <div className="form-group" style={{marginBottom:'5px'}}>
+                  <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
+                    Сохранить
                   </button>
                 </div>
               }
+              <p style={{color:'#777777', marginBottom:'0px'}}>Если есть сканированное техническое условие. Сканированный ТУ заменяет ТУ созданный сайтом.</p>
+              <p style={{color:'#777777'}}>Сохранение перезаписывает предыдущий файл.</p>
             </div>
           }
 
           {this.state.accept === 'answer' && this.state.responseId != 0 && (this.state.waterStatus === 1 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
             <table className="table table-bordered table-striped">
               <tbody>
+              {this.state.customTcFile &&
                 <tr>
                   <td>Технические условия</td>
                   <td><a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.customTcFile.id)}>Скачать</a></td>
                 </tr>
+              }
               </tbody>
             </table>
           }
@@ -1898,7 +1963,7 @@ handleObjTypeChange(event){
             </div>
           }
 
-          {this.state.isDirector &&
+          {this.state.isDirector && this.state.waterStatus != 0 &&
             <div>
               {!this.state.xmlFile && !this.state.isSigned && apz.status_id === 5 &&
                 <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
@@ -1930,7 +1995,7 @@ handleObjTypeChange(event){
               </div>
               <div className="form-group">
                 <button type="button" className="btn btn-primary" onClick={this.sendWaterResponse.bind(this, apz.id, true, "")}>
-                  Отправить
+                  Отправить инженеру
                 </button>
               </div>
             </div>
@@ -1996,7 +2061,7 @@ handleObjTypeChange(event){
             </div>
           }
 
-          <div className={this.state.showTechCon ? '' : 'invisible'}>
+          {!this.state.customTcFile && <div className={this.state.showTechCon ? '' : 'invisible'}>
             <table className="table table-bordered table-striped">
               <tbody>
                 <tr>
@@ -2005,7 +2070,7 @@ handleObjTypeChange(event){
                 </tr>
               </tbody>
             </table>
-          </div>
+          </div>}
         </div>
 
         {apz.state_history.length > 0 &&

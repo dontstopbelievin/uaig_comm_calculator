@@ -4,6 +4,7 @@ import EsriLoaderReact from 'esri-loader-react';
 //import { NavLink } from 'react-router-dom';
 import { Route, NavLink, Link, Switch, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
+import saveAs from 'file-saver';
 
 export default class ProviderGas extends React.Component {
   render() {
@@ -73,15 +74,15 @@ class AllApzs extends React.Component {
     }
     var directorId = JSON.parse(sessionStorage.getItem('userId'));
     var providerName = roles[1];
-    var xhr = new XMLHttpRequest();
+    var xhr = new XMLHttpRequest();
     if(roles[2] == 'DirectorGas'){
-        xhr.open("get", window.url + "api/apz/provider/" + providerName + "/all/" + status + "/" + directorId + '?page=' + page, true);
+        xhr.open("get", window.url + "api/apz/provider/" + providerName + "/all/" + status + "/" + directorId + '?page=' + page, true);
     }else{
-        xhr.open("get", window.url + "api/apz/provider/" + providerName + "/all/" + status + "/0" + '?page=' + page, true);
+        xhr.open("get", window.url + "api/apz/provider/" + providerName + "/all/" + status + "/0" + '?page=' + page, true);
     }
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function () {
+    xhr.onload = function () {
       if (xhr.status === 200) {
         var response = JSON.parse(xhr.responseText);
         var pageNumbers = [];
@@ -97,8 +98,8 @@ class AllApzs extends React.Component {
       }
 
       this.setState({ loaderHidden: true });
-    }.bind(this);
-    xhr.send();
+    }.bind(this);
+    xhr.send();
   }
 
   toDate(date) {
@@ -487,6 +488,50 @@ class ShowApz extends React.Component {
       }
     xhr.send();
   }
+  downloadAllFile(id) {
+    var token = sessionStorage.getItem('tokenInfo');
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + 'api/file/downloadAll/' + id, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+          //console.log(data.my_files[0]);return;
+          var base64ToArrayBuffer = (function () {
+
+            return function (base64) {
+              var binaryString = window.atob(base64);
+              var binaryLen = binaryString.length;
+              var bytes = new Uint8Array(binaryLen);
+
+              for (var i = 0; i < binaryLen; i++) {
+                var ascii = binaryString.charCodeAt(i);
+                bytes[i] = ascii;
+              }
+
+              return bytes;
+            }
+
+          }());
+
+          var JSZip = require("jszip");
+          var zip = new JSZip();
+          for(var i=0; i<data.my_files.length;i++){
+            zip.file(data.my_files[i].file_name, base64ToArrayBuffer(data.my_files[i].file), {binary:true});
+          }
+          zip.generateAsync({type:"blob"})
+          .then(function (content) {
+              // see FileSaver.js
+              saveAs(content, data.zip_name);
+          });
+        } else {
+          alert('Не удалось скачать файл');
+        }
+      }
+    xhr.send();
+  }
 
   setMissedHeartbeatsLimitToMax() {
     this.missed_heartbeats_limit = this.missed_heartbeats_limit_max;
@@ -760,10 +805,10 @@ class ShowApz extends React.Component {
     formData.append('ty_director_id', this.state.ty_director_id);
 
     var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + "api/apz/provider/gas/" + apzId + '/save', true);
+    xhr.open("post", window.url + "api/apz/provider/gas/" + apzId + '/save', true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.onload = function () {
-      if (xhr.status === 200) {
+    xhr.onload = function () {
+      if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
         //console.log(data);
         this.setState({responseId: data.id});
@@ -784,13 +829,13 @@ class ShowApz extends React.Component {
 
           this.setState({showSignButtons: true})
         }
-      } else if (xhr.status === 401) {
+      } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
       }
-    }.bind(this);
-    xhr.send(formData);
+    }.bind(this);
+    xhr.send(formData);
   }
 
   // this function is to send the final response
@@ -802,11 +847,11 @@ class ShowApz extends React.Component {
     else{
       var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
-      xhr.open("post", window.url + "api/apz/provider/gas/" + apzId + '/update', true);
+      xhr.open("post", window.url + "api/apz/provider/gas/" + apzId + '/update', true);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.onload = function () {
-        if (xhr.status === 200) {
+        if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
 
           if(data.response === 1) {
@@ -820,14 +865,14 @@ class ShowApz extends React.Component {
             this.setState({ showButtons: false });
             this.setState({ gasStatus: 0 });
           }
-        } else if (xhr.status === 401) {
+        } else if (xhr.status === 401) {
           sessionStorage.clear();
           alert("Время сессии истекло. Пожалуйста войдите заново!");
           this.props.history.replace("/login");
         } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
           alert(JSON.parse(xhr.responseText).message);
         }
-      }.bind(this);
+      }.bind(this);
       xhr.send(JSON.stringify({docNumber: this.state.docNumber}));
     }
   }
@@ -845,22 +890,22 @@ class ShowApz extends React.Component {
       return false;
     }
 
-    xhr.open("post", window.url + "api/apz/provider/headgas/" + apzId + '/response', true);
+    xhr.open("post", window.url + "api/apz/provider/headgas/" + apzId + '/response', true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function () {
-      if (xhr.status === 200) {
+      if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
         alert('Ответ успешно отправлен');
         this.setState({head_accepted: true});
         this.setState({heads_responses: data.head_responses});
-      } else if (xhr.status === 401) {
+      } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
         this.props.history.replace("/login");
       } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
         alert(JSON.parse(xhr.responseText).message);
       }
-    }.bind(this);
+    }.bind(this);
     xhr.send(formData);
   }
 
@@ -931,7 +976,7 @@ class ShowApz extends React.Component {
   }
 
   toggleMap(value) {
-    this.setState({
+    this.setState({
       showMap: value
     })
 
@@ -944,7 +989,7 @@ class ShowApz extends React.Component {
         showMapText: 'Показать карту'
       })
     }
-  }
+  }
 
 printData()
 {
@@ -1058,6 +1103,11 @@ handleDirectorIDChange(event){
                   <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.additionalFile.id)}>Скачать</a></td>
                 </tr>
               }
+              {(this.state.personalIdFile || this.state.confirmedTaskFile || this.state.titleDocumentFile || this.state.additionalFile) &&
+                <tr className="shukichi">
+                  <td colspan="2"><a className="text-info pointer" onClick={this.downloadAllFile.bind(this, this.state.apz.id)}><img style={{height:'16px'}} src="./images/download.png"/>Скачать одним архивом</a></td>
+                </tr>
+              }
             </tbody>
           </table>
         </div>
@@ -1162,6 +1212,7 @@ handleDirectorIDChange(event){
                           Предварительный просмотр
                         </button>
                       }
+                      <p style={{color:'#777777'}}>Сохранение перезаписывает предыдущий вариант.</p>
                     </div>
                   }
                 </div>
@@ -1254,28 +1305,38 @@ handleDirectorIDChange(event){
                 <input type="file" id="custom_tc_file" className="form-control" onChange={this.onCustomTcFileChange} />
               </div>
 
+              <div style={{paddingLeft:'5px', fontSize: '18px', margin: '10px 0px'}}>
+                <b>Выберите директора:</b>
+                <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.ty_director_id} onChange={this.handleDirectorIDChange.bind(this)}>
+                  {this.state.gas_directors_id}
+                </select>
+              </div>
+
               {!this.state.xmlFile &&
-                <div className="form-group">
-                  <button type="button" className="btn btn-secondary" onClick={this.sendGasResponse.bind(this, apz.id, true, "")}>
-                    Отправить
+                <div className="form-group style={{marginBottom:'5px'}}">
+                  <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
+                    Сохранить
                   </button>
                 </div>
               }
+              <p style={{color:'#777777', marginBottom:'0px'}}>Если есть сканированное техническое условие. Сканированный ТУ заменяет ТУ созданный сайтом.</p>
+              <p style={{color:'#777777'}}>Сохранение перезаписывает предыдущий файл.</p>
             </div>
           }
 
           {this.state.accept === 'answer' && this.state.responseId != 0 && (this.state.gasStatus === 1 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
             <table className="table table-bordered table-striped">
               <tbody>
+              {this.state.customTcFile &&
                 <tr>
                   <td>Технические условия</td>
                   <td><a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.customTcFile.id)}>Скачать</a></td>
-                </tr>
+                </tr>}
               </tbody>
             </table>
           }
 
-          {this.state.isDirector &&
+          {this.state.isDirector && this.state.gasStatus != 0 &&
             <div>
               {!this.state.xmlFile && !this.state.isSigned && apz.status_id === 5 &&
                 <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
@@ -1307,7 +1368,7 @@ handleDirectorIDChange(event){
               </div>
               <div className="form-group">
                 <button type="button" className="btn btn-primary" onClick={this.sendGasResponse.bind(this, apz.id, true, "")}>
-                  Отправить
+                  Отправить инженеру
                 </button>
               </div>
             </div>
@@ -1370,16 +1431,17 @@ handleDirectorIDChange(event){
             </div>
           }
 
-          <div className={this.state.showTechCon ? '' : 'invisible'}>
-            <table className="table table-bordered table-striped">
-              <tbody>
-                <tr>
-                  <td style={{width: '40%'}}><b>Сформированный ТУ</b></td>
-                  <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          {!this.state.customTcFile &&
+            <div className={this.state.showTechCon ? '' : 'invisible'}>
+              <table className="table table-bordered table-striped">
+                <tbody>
+                  <tr>
+                    <td style={{width: '40%'}}><b>Сформированный ТУ</b></td>
+                    <td><a className="text-info pointer" onClick={this.printTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>}
         </div>
 
         <div className="col-sm-12">

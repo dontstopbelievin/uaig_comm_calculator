@@ -1525,7 +1525,7 @@ class ShowApz extends React.Component {
                   </div>
 
                   <div className="form-group">
-                    <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                    <button className="btn btn-raised btn-success" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
                   </div>
                 </div>
               }
@@ -1535,12 +1535,14 @@ class ShowApz extends React.Component {
                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.saveForm.bind(this, apz.id, true, "")}>
                     Сохранить
                   </button>
-                  <button type="button" className="btn btn-secondary" data-toggle="modal" data-target="#declined_modal">Вернуть архитектору</button>
+                  <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#declined_modal">Вернуть архитектору</button>
                 </div>
               }
 
               {this.state.showSendButton &&
-                <button type="button" className="btn btn-primary" onClick={this.sendForm.bind(this, apz.id, true, "")}>Отправить к глав. архитектору</button>
+                <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', display: 'table'}}>
+                  <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "")}>Отправить к глав. архитектору</button>
+                </div>
               }
 
               <div className="modal fade" id="declined_modal" tabIndex="-1" role="dialog" aria-hidden="true">

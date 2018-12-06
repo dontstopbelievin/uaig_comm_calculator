@@ -242,6 +242,7 @@ class ShowApz extends React.Component {
       needSign: false,
       response: true,
       storageAlias: "PKCS12",
+      acceptSign: false,
       xmlFile: false
     };
 
@@ -661,6 +662,10 @@ class ShowApz extends React.Component {
     this.setState({needSign: true });
   }
 
+  sendToApzAccept(){
+    this.setState({acceptSign: true });
+  }
+
   toggleMap(value) {
     this.setState({
       showMap: value
@@ -691,6 +696,65 @@ class ShowApz extends React.Component {
     var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
 
     return formated_date;
+  }
+
+  printRegionAnswer(apzId) {
+    var token = sessionStorage.getItem('tokenInfo');
+    if (token) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/print/region/" + apzId, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          //test of IE
+          if (typeof window.navigator.msSaveBlob === "function") {
+            window.navigator.msSaveBlob(xhr.response, "МО.pdf");
+          } else {
+            var data = JSON.parse(xhr.responseText);
+
+            var base64ToArrayBuffer = (function () {
+
+              return function (base64) {
+                var binaryString =  window.atob(base64);
+                var binaryLen = binaryString.length;
+                var bytes = new Uint8Array(binaryLen);
+
+                for (var i = 0; i < binaryLen; i++) {
+                  var ascii = binaryString.charCodeAt(i);
+                  bytes[i] = ascii;
+                }
+
+                return bytes;
+              }
+
+            }());
+
+            var saveByteArray = (function () {
+              var a = document.createElement("a");
+              document.body.appendChild(a);
+              a.style = "display: none";
+
+              return function (data, name) {
+                var blob = new Blob(data, {type: "octet/stream"}),
+                    url = window.URL.createObjectURL(blob);
+                a.href = url;
+                a.download = name;
+                a.click();
+                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+              };
+
+            }());
+
+            saveByteArray([base64ToArrayBuffer(data.file)], "МО.pdf");
+          }
+        } else {
+          alert('Не удалось скачать файл');
+        }
+      }
+      xhr.send();
+    } else {
+      console.log('Время сессии истекло.');
+    }
   }
 
   render() {
@@ -1182,8 +1246,22 @@ class ShowApz extends React.Component {
 
             {this.state.returnedState &&
               <div className="alert alert-danger">
-                {this.state.returnedState.comment}
+                Комментарий инженера: {this.state.returnedState.comment}
               </div>
+            }
+            {apz.status_id === 1 &&
+              <table className="table table-bordered">
+                <tbody>
+                  <tr>
+                    <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
+                      {this.state.headResponseFile ?
+                        <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.headResponseFile.id)}>Скачать</a></td>
+                      :
+                        <td><a className="text-info pointer" onClick={this.printRegionAnswer.bind(this, apz.id)}>Скачать</a></td>
+                      }
+                  </tr>
+                </tbody>
+              </table>
             }
 
             <div className={this.state.showButtons ? '' : 'invisible'}>
@@ -1209,25 +1287,32 @@ class ShowApz extends React.Component {
                         <div>
                         { !this.state.xmlFile ?
                           <div>
-                            <div id="MySignForm" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                              <div>Выберите хранилище</div>
+                          {!this.state.acceptSign ?
+                            <div className="form-group">
+                              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApzAccept.bind(this)}>Одобрить</button>
+                              <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">Отклонить</button>
+                            </div>
+                            :
+                            <div>
+                              <div id="MySignForm" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                                <div>Выберите хранилище</div>
 
-                              <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
-                                <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
-                                <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>Kaztoken</button>
-                              </div>
+                                <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
+                                  <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
+                                  <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>Kaztoken</button>
+                                </div>
 
-                              <div className="form-group">
-                                <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
-                                <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
-                              </div>
+                                <div className="form-group">
+                                  <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
+                                  <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                                </div>
 
-                              <div className="form-group">
-                                <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
-                                <button type="button" className="btn btn-secondary" data-toggle="modal" data-target="#accDecApzForm">Отклонить</button>
+                                <div className="form-group">
+                                  <button className="btn btn-raised btn-success" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                                </div>
                               </div>
                             </div>
-                          </div>
+                          }</div>
                           :
                           <div>
                             <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", "apz")}>
