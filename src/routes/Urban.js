@@ -243,6 +243,7 @@ class ShowApz extends React.Component {
       response: true,
       storageAlias: "PKCS12",
       acceptSign: false,
+      //backFromHead: false,
       xmlFile: false
     };
 
@@ -288,6 +289,7 @@ class ShowApz extends React.Component {
         this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
         this.setState({additionalFile: apz.files.filter(function(obj) { return obj.category_id === 27 })[0]});
         this.setState({showButtons: false});
+        //this.setState({backFromHead: apz.state_history.filter(function(obj) { return obj.state_id === 33 })[0]});
         this.setState({returnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null })[0]});
         this.setState({needSign: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
 
@@ -295,7 +297,7 @@ class ShowApz extends React.Component {
           this.setState({showButtons: true});
         }
 
-        if (this.state.returnedState) {
+        if (apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null })[0]) {
           this.setState({response: false});
         }
 

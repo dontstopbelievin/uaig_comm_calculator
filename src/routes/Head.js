@@ -279,6 +279,7 @@ class ShowApz extends React.Component {
 
         this.setState({apz: data});
         this.setState({showButtons: false});
+        this.setState({docNumber: data.id});
         this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
         this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
@@ -452,6 +453,7 @@ class ShowApz extends React.Component {
   }
 
   signMessage() {
+    this.saveApzForm(this.state.apz.id, this.state.returnedState ? false : true, "");
     this.setState({ loaderHidden: false });
     let password = document.getElementById("inpPassword").value;
     let path = document.getElementById("storagePath").value;
@@ -660,8 +662,6 @@ class ShowApz extends React.Component {
 
   saveApzForm(apzId, status, comment) {
     var token = sessionStorage.getItem('tokenInfo');
-
-
     var formData = new FormData();
     /*if(status){
       var file = this.state.file;
@@ -699,21 +699,50 @@ class ShowApz extends React.Component {
     }.bind(this);
     xhr.send(formData);
 
-    $('.modal').modal('hide');
+    /*$('.modal').modal('hide');
     $('body').removeClass('modal-open');
-    $('.modal-backdrop').remove();
+    $('.modal-backdrop').remove();*/
+  }
+
+  showSignBtns(){
+    this.setState({ showSignButtons: true });
+    this.setState({ showButtons: false });
+  }
+  hideSignBtns(){
+    this.setState({ showSignButtons: false });
+    this.setState({ showButtons: true });
+  }
+
+  returnApzForm(apzId) {
+    var token = sessionStorage.getItem('tokenInfo');
+    var formData = new FormData();
+    formData.append('description', this.state.description);
+    var xhr = new XMLHttpRequest();
+    xhr.open("post", window.url + "api/apz/head/return/" + apzId, true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        this.setState({ showButtons: false });
+        alert("Заявка возвращена!");
+      }
+      else if(xhr.status === 401){
+        sessionStorage.clear();
+        alert("Время сессии истекло. Пожалуйста войдите заново!");
+        this.props.history.replace("/login");
+      }
+    }.bind(this);
+    xhr.send(formData);
   }
 
   acceptDeclineApzForm(apzId, status, comment) {
     if(this.state.headResponse === null){
       this.setState({callSaveFromSend: true});
       this.saveApzForm(apzId, status, comment);
-
       return true;
     }
 
     var token = sessionStorage.getItem('tokenInfo');
-
     var formData = new FormData();
     formData.append('Response', status);
 
@@ -1407,7 +1436,8 @@ class ShowApz extends React.Component {
                     </div>
 
                     <div className="form-group">
-                      <button className="btn btn-raised btn-success" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                      <button className="btn btn-raised btn-success" type="button" style={{marginRight: '5px'}} onClick={this.signMessage.bind(this)}>Подписать</button>
+                      <button className="btn btn-primary" type="button" onClick={this.hideSignBtns.bind(this)}>Назад</button>
                     </div>
                   </div>
                 }
@@ -1415,20 +1445,37 @@ class ShowApz extends React.Component {
               <div>
                 {this.state.showButtons && !this.state.isSigned &&
                   <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
-                    { !this.state.response ?
-                      <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} data-toggle="modal" data-target="#AcceptApzForm">
-                        Одобрить
-                      </button>
-                      :
-                      <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled="disabled">
-                        Одобрить
-                      </button>
-                    }
-
-                    <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#DeclineApzForm">
-                      Отклонить
+                    <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.showSignBtns.bind(this)}>Посатвить подпись</button>
+                    <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm" disabled="disabled" style={{visibility:'hidden'}}>
+                      Вернуть на доработку
                     </button>
-                    <div className="modal fade" id="AcceptApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+
+                    <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                      <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                          <div className="modal-header">
+                            <h5 className="modal-title">Вернуть заявку на доработку</h5>
+                            <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div className="modal-body">
+                            <div className="form-group">
+                              <label htmlFor="docNumber">Комментарий</label>
+                              <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.description} onChange={this.onDescriptionChange} />
+                            </div>
+                          </div>
+                          <div className="modal-footer">
+                            <button type="button" className="btn btn-raised btn-danger" style={{marginRight: '5px'}} onClick={this.returnApzForm.bind(this, apz.id)}>Вернуть на доработку</button>
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/*<button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#DeclineApzForm">
+                      Отклонить
+                    </button>*/}
+                    {/*<div className="modal fade" id="AcceptApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
                       <div className="modal-dialog" role="document">
                         <div className="modal-content">
                           <div className="modal-header">
@@ -1487,7 +1534,7 @@ class ShowApz extends React.Component {
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div>*/}
                   </div>
                 }
 
