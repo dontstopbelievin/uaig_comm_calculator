@@ -334,8 +334,8 @@ class ShowApz extends React.Component {
         if ( pack2IdFile.length > 0 ) {
           this.setState({pack2IdFile: pack2IdFile[0]});
         }
-        if(data.state_history[data.state_history.length-1].comment != null){
-          this.setState({lastDecisionIsMO: true});
+        if(data.state_history.length > 0 && data.state_history[data.state_history.length-1].comment != null){
+            this.setState({lastDecisionIsMO: true});
         }
 
         if (commission) {
