@@ -364,6 +364,9 @@ class ShowApz extends React.Component {
   sendToApz() {
     this.setState({needSign: true });
   }
+  hideSignBtns(){
+    this.setState({ needSign: false });
+  }
 
   downloadFile(id) {
     var token = sessionStorage.getItem('tokenInfo');
@@ -1482,12 +1485,6 @@ class ShowApz extends React.Component {
                   </tbody>
                 }
               </table>
-
-                <div className="col-sm-12">
-                  <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                    <textarea style={{marginBottom: '10px'}} placeholder="Комментарий" rows="7" cols="50" className="form-control" defaultValue={this.state.comment} onChange={this.onCommentChange}></textarea>
-                  </div>
-                </div>
             </div>
           }
           {apz.commission != null && apz.commission.status_id === 2 && apz.type === 2 &&
@@ -1577,9 +1574,33 @@ class ShowApz extends React.Component {
               {!this.state.needSign ?
                 <div>
                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>Одобрить</button>
-                  <button className="btn btn-raised btn-danger" onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.comment)}>
+                  <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">
                     Вернуть архитектору
                   </button>
+                  <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                    <div className="modal-dialog" role="document">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title">Вернуть архитектору</h5>
+                          <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div className="modal-body">
+                          <div className="form-group">
+                            <label htmlFor="docNumber">Комментарий:</label>
+                            <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                              <textarea style={{marginBottom: '10px'}} placeholder="Комментарий" rows="7" cols="50" className="form-control" defaultValue={this.state.comment} onChange={this.onCommentChange}></textarea>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-raised btn-danger" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.comment)}>Вернуть архитектору</button>
+                          <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 :
                   <div>
@@ -1599,7 +1620,8 @@ class ShowApz extends React.Component {
                         </div>
 
                         <div className="form-group">
-                          <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                          <button className="btn btn-raised btn-success" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                          <button className="btn btn-primary" type="button" style={{marginLeft: '5px'}} onClick={this.hideSignBtns.bind(this)}>Назад</button>
                         </div>
                       </div>
                     </div>

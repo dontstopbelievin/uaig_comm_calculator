@@ -242,8 +242,11 @@ class ShowApz extends React.Component {
       needSign: false,
       response: true,
       storageAlias: "PKCS12",
-      acceptSign: false,
-      //backFromHead: false,
+      //acceptSign: false,
+      backFromHead: false,
+      apz_head_id: '',
+      apz_heads_id: [],
+      engineerSign: false,
       xmlFile: false
     };
 
@@ -268,7 +271,31 @@ class ShowApz extends React.Component {
       this.props.history.replace({pathname: "/panel/common/login", state:{url_apz_id: fullLoc[fullLoc.length-1]}});
     }else {
       this.getApzInfo();
+      this.getHeads();
     }
+  }
+
+  getHeads(){
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/apz/getheads", true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        //console.log(data);
+        var select_directors = [];
+        for (var i = 0; i < data.length; i++) {
+          select_directors.push(<option value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
+        }
+        this.setState({apz_heads_id: select_directors});
+        if(this.state.apz_head_id == "" || this.state.apz_head_id == " "){
+            this.setState({apz_head_id: data[0].user_id});
+        }
+      }
+    }.bind(this);
+    xhr.send();
   }
 
   getApzInfo() {
@@ -289,9 +316,13 @@ class ShowApz extends React.Component {
         this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
         this.setState({additionalFile: apz.files.filter(function(obj) { return obj.category_id === 27 })[0]});
         this.setState({showButtons: false});
-        //this.setState({backFromHead: apz.state_history.filter(function(obj) { return obj.state_id === 33 })[0]});
+        var states = apz.state_history.filter(function(obj) { return obj.state_id === 33 });
+        this.setState({backFromHead: states[states.length-1]});
         this.setState({returnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null })[0]});
         this.setState({needSign: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
+        this.setState({backFromHead: states[states.length-1]});
+        this.setState({engineerSign: apz.files.filter(function(obj) { return obj.category_id === 28 })[0]});
+        if(apz.apz_head_id){this.setState({apz_head_id: apz.apz_head_id});}
 
         if (apz.status_id === 3) {
           this.setState({showButtons: true});
@@ -304,8 +335,13 @@ class ShowApz extends React.Component {
         this.setState({loaderHidden: true});
         // BE CAREFUL OF category_id should be xml регионального архитектора
         this.setState({xmlFile: apz.files.filter(function(obj) { return obj.category_id === 21})[0]});
-        if (this.state.xmlFile) {
-          this.setState({needSign: true });
+        this.setState({needSign: apz.files.filter(function(obj) { return obj.category_id === 21})[0]});
+        if(apz.state_history.filter(function(obj) { return obj.state_id === 33 })[0]){
+            this.setState({needSign: false});
+        }
+        //use instead new columns from table
+        if(!apz.urban_sign_returned){
+            this.setState({xmlFile: false});
         }
       } else if (xhr.status === 401) {
         sessionStorage.clear();
@@ -314,6 +350,10 @@ class ShowApz extends React.Component {
       }
     }.bind(this);
     xhr.send();
+  }
+
+  handleHeadIDChange(event){
+    this.setState({apz_head_id: event.target.value});
   }
 
   downloadFile(id) {
@@ -620,6 +660,7 @@ class ShowApz extends React.Component {
     var registerData = {
       response: status,
       message: comment,
+      apz_head_id: this.state.apz_head_id,
       direct: direct.length > 0 ? direct : 'engineer'
     };
 
@@ -663,10 +704,13 @@ class ShowApz extends React.Component {
   sendToApz() {
     this.setState({needSign: true });
   }
-
-  sendToApzAccept(){
-    this.setState({acceptSign: true });
+  hideSignBtns() {
+    this.setState({needSign: false });
   }
+
+  /*sendToApzAccept(){
+    this.setState({acceptSign: true });
+  }*/
 
   toggleMap(value) {
     this.setState({
@@ -1265,9 +1309,21 @@ class ShowApz extends React.Component {
                 </tbody>
               </table>
             }
-
+            {this.state.backFromHead &&
+              <div className="alert alert-danger">
+                Комментарий главного архитектора: {this.state.backFromHead.comment}
+              </div>
+            }
             <div className={this.state.showButtons ? '' : 'invisible'}>
               <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                {apz.status_id == 3 && !this.state.xmlFile &&
+                  <div style={{paddingLeft:'5px', fontSize: '18px', textAlign:'center'}}>
+                    <b>Выберите главного архитектора:</b>
+                    <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
+                      {this.state.apz_heads_id}
+                    </select>
+                  </div>
+                }
                 {!this.state.response ?
                   <div>
                     <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled="disabled">Одобрить</button>
@@ -1279,7 +1335,7 @@ class ShowApz extends React.Component {
                   <div>
                     {!this.state.needSign ?
                       <div>
-                        <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>Отправить инженеру</button>
+                        {!this.state.backFromHead && !this.state.engineerSign && <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>Отправить инженеру</button>}
                         <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>В отдел АПЗ</button>
                         <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
                           Отклонить
@@ -1288,37 +1344,28 @@ class ShowApz extends React.Component {
                       :
                         <div>
                         { !this.state.xmlFile ?
-                          <div>
-                          {!this.state.acceptSign ?
+                          <div id="MySignForm" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                            <div>Выберите хранилище</div>
+
+                            <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
+                              <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
+                              <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>Kaztoken</button>
+                            </div>
+
                             <div className="form-group">
-                              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApzAccept.bind(this)}>Одобрить</button>
-                              <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">Отклонить</button>
+                              <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
+                              <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
                             </div>
-                            :
-                            <div>
-                              <div id="MySignForm" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                                <div>Выберите хранилище</div>
 
-                                <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
-                                  <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
-                                  <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>Kaztoken</button>
-                                </div>
-
-                                <div className="form-group">
-                                  <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
-                                  <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
-                                </div>
-
-                                <div className="form-group">
-                                  <button className="btn btn-raised btn-success" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
-                                </div>
-                              </div>
+                            <div className="form-group">
+                              <button className="btn btn-raised btn-success" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                              <button className="btn btn-primary" type="button" style={{marginLeft: '5px'}} onClick={this.hideSignBtns.bind(this)}>Назад</button>
                             </div>
-                          }</div>
+                          </div>
                           :
                           <div>
                             <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", "apz")}>
-                              В отдел АПЗ
+                              Отправить в отдел АПЗ
                             </button>
                           </div>
                         }
@@ -1356,7 +1403,7 @@ class ShowApz extends React.Component {
                         </div>
                       </div>
                       <div className="modal-footer">
-                        <button type="button" className="btn btn-primary" onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.description)}>Отправить</button>
+                        <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.description)}>Отправить</button>
                         <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                       </div>
                     </div>

@@ -232,6 +232,7 @@ class ShowApz extends React.Component {
       xmlFile: false,
       isSigned: false,
       templateType: '',
+      backFromHead: false,
 
       basisForDevelopmentApz: 'Постановление акимата города (района) №_____ от __________ (число, месяц, год)',
       buildingPresence: 'Строений нет',
@@ -544,6 +545,8 @@ class ShowApz extends React.Component {
         this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
         this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 18})[0]});
         this.setState({response: data.apz_department_response ? true : false });
+        var states = data.state_history.filter(function(obj) { return obj.state_id === 33 });
+        this.setState({backFromHead: states[states.length-1]});
 
         if (!data.apz_department_response && data.status_id === 6) {
           this.setState({showButtons: true});
@@ -566,6 +569,12 @@ class ShowApz extends React.Component {
             let key = this.snakeToCamel(k);
             this.setState({ [key]: (data.apz_department_response[k] === null) ? '' : data.apz_department_response[k] });
           }.bind(this));
+        }
+        if(!data.apz_sign_returned){
+            this.setState({xmlFile: false});
+            this.setState({isSigned: false});
+            this.setState({showButtons: true});
+            this.setState({showSendButton: false});
         }
       }
     }.bind(this)
@@ -1509,6 +1518,11 @@ class ShowApz extends React.Component {
               </div>
             </form>
 
+            {this.state.backFromHead &&
+              <div className="alert alert-danger">
+                Комментарий главного архитектора: {this.state.backFromHead.comment}
+              </div>
+            }
             <div>
               {this.state.showSignButtons && !this.state.isSigned &&
                 <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
@@ -1561,8 +1575,8 @@ class ShowApz extends React.Component {
                       </div>
                     </div>
                     <div className="modal-footer">
-                      <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.sendForm.bind(this, apz.id, false, this.state.description)}>
-                        Вернуть архитектору
+                      <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} data-dismiss="modal" onClick={this.sendForm.bind(this, apz.id, false, this.state.description)}>
+                        Отправить
                       </button>
                       <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                     </div>

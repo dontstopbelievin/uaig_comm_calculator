@@ -150,7 +150,7 @@ export default class Header extends React.Component {
       };
       panelTrue = true;
       return (
-        <div style={{height: '60px',position: 'relative',background:'#222222'}}>
+        <div style={{position: 'relative'}}>
           {!this.state.loaderHidden &&
           <div className="bigLoaderDiv">
             <div className="loaderDiv" style={{textAlign: 'center'}}>
@@ -158,11 +158,9 @@ export default class Header extends React.Component {
             </div>
           </div>
           }
-          <div className="container-fluid p-0" style={{background: '#222222'}}>
-            {this.state.loaderHidden &&
-            <NavBar pathName={this.props.location.pathname} logout={this.logout.bind(this)} bgstyle={style} panelTrue={panelTrue} />
-            }
-          </div>
+          {this.state.loaderHidden &&
+          <NavBar pathName={this.props.location.pathname} logout={this.logout.bind(this)} panelTrue={panelTrue} />
+          }
         </div>
       );
   }
@@ -172,7 +170,7 @@ class LoginBtn extends React.Component {
 
   render() {
     return(
-      <div className="row" style={{paddingTop: '0'}}>
+      <div>
         <NavLink to={"/login"} className="btn btn-white LoginBtn" replace>{e.login}</NavLink>&nbsp;
         <NavLink to={"/register"} className="btn btn-white LoginBtn" replace>{e.register}</NavLink>
       </div>
@@ -195,8 +193,8 @@ class LogoutBtn extends Component {
     return(
       <div>
         <ul>
-          <li className="nav-item dropdown personalCabinetDropdown">
-            <button className="btn btn-outline-secondary btn-white personalCabinet" href="#" id="cabinetDropdownMenuLink" data-toggle="dropdown">
+          <li className="nav-item dropdown">
+            <button className="btn btn-light" href="#" id="cabinetDropdownMenuLink" data-toggle="dropdown">
               <span>{sessionStorage.getItem('userName')} <i className="glyphicon glyphicon-menu-hamburger"></i></span>
             </button>
             <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="cabinetDropdownMenuLink">

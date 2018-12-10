@@ -34,17 +34,47 @@ class AllApzs extends React.Component {
     this.state = {
       loaderHidden: false,
       response: null,
+      current_head: '',
+      apz_heads:[],
       pageNumbers: []
     };
   }
 
   componentDidMount() {
     this.props.breadCrumbs();
-    this.getApzs();
+  }
+
+  componentWillMount() {
+    this.getHeads();
   }
 
   componentWillReceiveProps(nextProps) {
     this.getApzs(nextProps.match.params.status, nextProps.match.params.page);
+  }
+
+  getHeads(){
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/apz/getheads", true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        //console.log(data);
+        var select_directors = [];
+        for (var i = 0; i < data.length; i++) {
+          select_directors.push(<option value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
+        }
+        this.setState({apz_heads: select_directors});
+        if(this.state.current_head == "" || this.state.current_head == " "){
+            this.setState({current_head: data[0].user_id}, function stateUpdateComplete() {
+              this.getApzs();
+            }.bind(this));
+        }
+      }
+    }.bind(this);
+    xhr.send();
   }
 
   getApzs(status = null, page = null) {
@@ -60,12 +90,13 @@ class AllApzs extends React.Component {
 
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/head/all/" + status + '?page=' + page, true);
+    xhr.open("get", window.url + "api/apz/head/all/" + status + '/' + this.state.current_head + '?page=' + page, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
       if (xhr.status === 200) {
         var response = JSON.parse(xhr.responseText);
+        console.log(response);
         var pageNumbers = [];
         var start = (response.current_page - 4) > 0 ? (response.current_page - 4) : 1;
         var end = (response.current_page + 4) < response.last_page ? (response.current_page + 4) : response.last_page;
@@ -81,6 +112,12 @@ class AllApzs extends React.Component {
       this.setState({ loaderHidden: true });
     }.bind(this);
     xhr.send();
+  }
+
+  handleHeadChange(event){
+    this.setState({current_head: event.target.value}, function stateUpdateComplete() {
+      this.getApzs();
+    }.bind(this));
   }
 
   toDate(date) {
@@ -111,6 +148,12 @@ class AllApzs extends React.Component {
         </div>
         {this.state.loaderHidden &&
           <div>
+            <div style={{fontSize: '18px', margin: '10px 0px'}}>
+              <b>Выберите главного архитектора:</b>
+              <select style={{padding: '0px 4px', margin: '5px'}} value={this.state.current_head} onChange={this.handleHeadChange.bind(this)}>
+                {this.state.apz_heads}
+              </select>
+            </div>
             <ul className="nav nav-tabs mb-2 pull-right">
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/head/apz/status/active/1" replace>Активные</NavLink></li>
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'inproccess'} to="/panel/head/apz/status/inproccess/1" replace>В процессе</NavLink></li>
@@ -234,7 +277,8 @@ class ShowApz extends React.Component {
       loaderHidden: false,
       storageAlias: "PKCS12",
       xmlFile: false,
-      returnedState: false,
+      //returnedState: false,
+      lastDecisionIsMO: false,
       isSigned: false
     };
 
@@ -284,11 +328,14 @@ class ShowApz extends React.Component {
         this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
         this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
-        this.setState({returnedState: data.state_history.filter(function(obj) { return obj.state_id === 3 && obj.comment != null })[0]});
+        //this.setState({returnedState: data.state_history.filter(function(obj) { return obj.state_id === 3 && obj.comment != null })[0]});
         var pack2IdFile = data.files.filter(function(obj) { return obj.category_id === 25 }) ?
           data.files.filter(function(obj) { return obj.category_id === 25 }) : [];
         if ( pack2IdFile.length > 0 ) {
           this.setState({pack2IdFile: pack2IdFile[0]});
+        }
+        if(data.state_history[data.state_history.length-1].comment != null){
+          this.setState({lastDecisionIsMO: true});
         }
 
         if (commission) {
@@ -453,7 +500,7 @@ class ShowApz extends React.Component {
   }
 
   signMessage() {
-    this.saveApzForm(this.state.apz.id, this.state.returnedState ? false : true, "");
+    this.saveApzForm(this.state.apz.id, this.state.lastDecisionIsMO ? false : true, "");
     this.setState({ loaderHidden: false });
     let password = document.getElementById("inpPassword").value;
     let path = document.getElementById("storagePath").value;
@@ -733,6 +780,10 @@ class ShowApz extends React.Component {
       }
     }.bind(this);
     xhr.send(formData);
+
+    $('.modal').modal('hide');
+    $('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
   }
 
   acceptDeclineApzForm(apzId, status, comment) {
@@ -1348,7 +1399,7 @@ class ShowApz extends React.Component {
             <div className="col-sm-6">
               <h5 className="block-title-2 mt-3 mb-3">Решение</h5>
 
-              {apz.apz_department_response &&
+              {apz.apz_department_response && !this.state.lastDecisionIsMO &&
                 <div>
                   <table className="table table-bordered table-striped">
                     <tbody>
@@ -1411,7 +1462,7 @@ class ShowApz extends React.Component {
                   </tbody>
                 </table>
               }
-              {this.state.returnedState &&
+              {this.state.lastDecisionIsMO &&
                 <table className="table table-bordered">
                   <tbody>
                     <tr>
@@ -1445,8 +1496,8 @@ class ShowApz extends React.Component {
               <div>
                 {this.state.showButtons && !this.state.isSigned &&
                   <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
-                    <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.showSignBtns.bind(this)}>Посатвить подпись</button>
-                    <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm" disabled="disabled" style={{visibility:'hidden'}}>
+                    <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.showSignBtns.bind(this)}>Поставить подпись</button>
+                    <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">
                       Вернуть на доработку
                     </button>
 
@@ -1466,7 +1517,7 @@ class ShowApz extends React.Component {
                             </div>
                           </div>
                           <div className="modal-footer">
-                            <button type="button" className="btn btn-raised btn-danger" style={{marginRight: '5px'}} onClick={this.returnApzForm.bind(this, apz.id)}>Вернуть на доработку</button>
+                            <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.returnApzForm.bind(this, apz.id)}>Отправить</button>
                             <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                           </div>
                         </div>
@@ -1539,7 +1590,7 @@ class ShowApz extends React.Component {
                 }
 
                 {this.state.showSendButton &&
-                  <button type="button" className="btn btn-raised btn-success" onClick={this.acceptDeclineApzForm.bind(this, apz.id, this.state.returnedState ? false : true, "")}>Отправить заявителю</button>
+                  <button type="button" className="btn btn-raised btn-success" onClick={this.acceptDeclineApzForm.bind(this, apz.id, this.state.lastDecisionIsMO ? false : true, "")}>Отправить заявителю</button>
                 }
               </div>
             </div>

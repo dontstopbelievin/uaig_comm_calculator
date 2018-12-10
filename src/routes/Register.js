@@ -476,7 +476,7 @@ export default class Register extends React.Component {
                           Для установки пройдите по ссылке:&nbsp;
                           <a onClick={() => document.getElementById("alertModalClose").click()}
                              href="http://pki.gov.kz/index.php/ru/ncalayer" target="_blank">
-                            http://pki.gov.kz/index.php/ru/ncalayer</a>
+                            pki.gov.kz</a>
                         </div>
                         }
                       {this.state.closeecp &&
@@ -488,14 +488,14 @@ export default class Register extends React.Component {
                             <label className="control-label">Путь к ЭЦП
                               <input className="form-control" type="text" id="storagePath" readOnly />
                             </label>
-                            <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)}>Выбрать файл</button>
+                            <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)} style={{marginLeft:'5px',marginTop:'0px',borderRadius:'2px'}}>Выбрать файл</button>
                           </div>
                           <div className="form-group">
                             <label className="control-label">Пароль ЭЦП
                               <input className="form-control" id="inpPassword" type="password" />
                             </label>
                             {this.state.inviseBtn &&
-                              <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}>Загрузить ЭЦП</button>
+                              <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)} style={{marginLeft:'5px',marginTop:'0px',borderRadius:'2px'}}>Загрузить ЭЦП</button>
                             }
 
                           </div>

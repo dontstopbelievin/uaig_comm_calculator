@@ -199,31 +199,32 @@ export default class NavBar extends React.Component {
       );
     }else if (this.props.panelTrue) {
       let auth = (sessionStorage.getItem('tokenInfo')) ? true : false;
-      return (
-        <nav className='navbar navbar-expand-lg navbar-light' style={{backgroundColor:'#B0BFC5'}}>
-		  <div className='container' style={{marginBottom:'0px',paddingBottom:'5px',paddingLeft:'0px',paddingRight:'0px'}} >
+	  if (sessionStorage.getItem('logStatus')){
+        return (
+          <nav className='navbar navbar-expand-lg navbar-light' style={{backgroundColor:'#B0BFC5'}}>
+	  	    <div className='container' style={{marginBottom:'0px',paddingBottom:'5px',paddingLeft:'0px',paddingRight:'0px'}} >
+	  		  <LogoutBtn logout={this.props.logout.bind(this)} history={this.props.history}/>
+			  {/*Кнопка расскрытия меню для маленького дисплея*/}
+			  <button type="button" className="navbar-toggler collapsed" data-toggle="collapse" aria-expanded='false'
+			  aria-labelledby='Toggle navigation' data-target="#navbarSupportedContent" aria-controls='navbarSupportedContent'>
+			    <span className="navbar-toggler-icon"></span>
+			  </button>
 
-			{/*Кнопка расскрытия меню для маленького дисплея*/}
-			<button type="button" className="navbar-toggler collapsed" data-toggle="collapse" aria-expanded='false'
-			aria-labelledby='Toggle navigation' data-target="#navbarSupportedContent" aria-controls='navbarSupportedContent'>
-			  <span className="navbar-toggler-icon"></span>
-			</button>
+			  {/*Меню*/}
+			  <div className="collapse navbar-collapse" id="navbarSupportedContent">
 
-			{/*Меню*/}
-			<div className="collapse navbar-collapse" id="navbarSupportedContent">
+			    <ul className='navbar-nav'>
+				  <li className="nav-item active">
+				    <a className="nav-link" href="#">Главная <span className="sr-only">(current)</span></a>
+				  </li>
+				  <li className="nav-item dropdown">
+                    <a className="nav-link dropdown-toggle" data-toggle='dropdown' aria-haspopup='true' aria-expanded='true' id='navbarDropdown' href="#">
+				  	  Услуги
+                    </a>
+				    <div className="dropdown-menu" aria-labelledby='navbarDropdown'>
 
-			  <ul className='navbar-nav'>
-				<li className="nav-item active">
-				  <a className="nav-link" href="#">Главная <span className="sr-only">(current)</span></a>
-				</li>
-				<li className="nav-item dropdown">
-                  <a className="nav-link dropdown-toggle" data-toggle='dropdown' aria-haspopup='true' aria-expanded='true' id='navbarDropdown' href="#">
-					Услуги
-                  </a>
-				  <div className="dropdown-menu" aria-labelledby='navbarDropdown'>
-
-                    {/*  Ссылки используемые роуты  */}
-                    {sessionStorage.getItem('tokenInfo') ?
+                      {/*  Ссылки используемые роуты  */}
+                      {sessionStorage.getItem('tokenInfo') ?
                         (() => {
                           switch(JSON.parse(sessionStorage.getItem('userRoles'))[0]) {
                             case 'Admin': return <AdminMenu />;
@@ -265,52 +266,154 @@ export default class NavBar extends React.Component {
                           :
                           (<DefaultMenu />)
                         }
-                    {/*  Ссылки используемые роуты  */}
+                      {/*  Ссылки используемые роуты  */}
 
-				  </div>
-                </li> {/*dropdown*/}
-                <li className="nav-item dropdown">
-                  <a className="nav-link dropdown-toggle" data-toggle='dropdown' href="#">
-			  		Справочная информация
-                  </a>
-                  <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li><a className="dropdown-item" target="_blank" href="/docs/InstructionGetAPZ.pdf">Инструкция по руководству АПЗ</a></li>
-					{/*<NavLink to={"/panel/example-second"} replace className="dropdown-item" activeClassName="active">Место для справочной информации 2</NavLink>
-					<NavLink to={"/panel/example-third"} replace className="dropdown-item" activeClassName="active">Место для справочной информации 3</NavLink>*/}
-                  </div>
-                </li>{/*dropdown*/}
-                <li className="nav-item dropdown">
-                  <a className="nav-link dropdown-toggle" data-toggle='dropdown' href="#">
-					Карта
-                  </a>
-			      <div className="dropdown-menu " aria-labelledby="navbarDropdown">
-                    <a className='dropdown-item' target='_blank' href="http://3d.uaig.kz/" >3D Карта</a>
-                    <a className='dropdown-item' target='_blank' href="http://2d.uaig.kz/" >2D Карта</a>
-			      </div>
-                </li>{/*dropdown*/}
-                <li className="nav-item dropdown">
-                  <a className="nav-link goSite" href="https://almaty.uaig.kz/ru/" id="navbarDropdown" role="button">
-                    Вернуться на сайт
-                  </a>
-                </li>{/*dropdown*/}
-			  </ul>
-			</div>
+				    </div>
+                  </li> {/*dropdown*/}
+                  <li className="nav-item dropdown">
+                    <a className="nav-link dropdown-toggle" data-toggle='dropdown' href="#">
+			  		  Справочная информация
+                    </a>
+                    <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+					              <li><a className="dropdown-item" target="_blank" href="/docs/InstructionGetAPZ.pdf">Инструкция по руководству АПЗ</a></li>
+					  {/*<NavLink to={"/panel/example-second"} replace className="dropdown-item" activeClassName="active">Место для справочной информации 2</NavLink>
+					  <NavLink to={"/panel/example-third"} replace className="dropdown-item" activeClassName="active">Место для справочной информации 3</NavLink>*/}
+                    </div>
+                  </li>{/*dropdown*/}
+                  <li className="nav-item dropdown">
+                    <a className="nav-link dropdown-toggle" data-toggle='dropdown' href="#">
+					  Карта
+                    </a>
+			        <div className="dropdown-menu " aria-labelledby="navbarDropdown">
+                      <a className='dropdown-item' target='_blank' href="http://3d.uaig.kz/" >3D Карта</a>
+                      <a className='dropdown-item' target='_blank' href="http://2d.uaig.kz/" >2D Карта</a>
+			        </div>
+                  </li>{/*dropdown*/}
+                  <li className="nav-item dropdown">
+                    <a className="nav-link goSite" href="https://almaty.uaig.kz/ru/" id="navbarDropdown" role="button">
+                      Вернуться на сайт
+                    </a>
+                  </li>{/*dropdown*/}
+			    </ul>
+			  </div>
 			   {/* collapse */}
 				{/*<div className="col-md-3 ml-0 regist pr-0">*/}
 				{/*<div className='login_buttons pull-right'>*/}
 			{/*Статус*/}
-			<div className=''>
-			{
-			  (sessionStorage.getItem('logStatus') ?
-			    (<LogoutBtn logout={this.props.logout.bind(this)} history={this.props.history}/>) :
-			    (<LoginBtn handler={this.handler}/>)
-			   )
-			}
-			</div>
-		  </div> {/* container */}
-        </nav>
-      );
-    }
+
+		    </div> {/* container */}
+          </nav>
+        );
+      }
+	  else {
+	    return (
+          <nav className='navbar navbar-expand-lg navbar-light' style={{backgroundColor:'#B0BFC5'}}>
+		    <div className='container' style={{marginBottom:'0px',paddingBottom:'5px',paddingLeft:'0px',paddingRight:'0px'}} >
+
+			  {/*Кнопка расскрытия меню для маленького дисплея*/}
+			  <button type="button" className="navbar-toggler collapsed" data-toggle="collapse" aria-expanded='false'
+			  aria-labelledby='Toggle navigation' data-target="#navbarSupportedContent" aria-controls='navbarSupportedContent'>
+			    <span className="navbar-toggler-icon"></span>
+			  </button>
+
+			  {/*Меню*/}
+			  <div className="collapse navbar-collapse" id="navbarSupportedContent">
+
+			    <ul className='navbar-nav'>
+				  <li className="nav-item active">
+				    <a className="nav-link" href="#">Главная <span className="sr-only">(current)</span></a>
+				  </li>
+				  <li className="nav-item dropdown">
+                    <a className="nav-link dropdown-toggle" data-toggle='dropdown' aria-haspopup='true' aria-expanded='true' id='navbarDropdown' href="#">
+				      Услуги
+                    </a>
+				    <div className="dropdown-menu" aria-labelledby='navbarDropdown'>
+
+                      {/*  Ссылки используемые роуты  */}
+                      {sessionStorage.getItem('tokenInfo') ?
+                        (() => {
+                          switch(JSON.parse(sessionStorage.getItem('userRoles'))[0]) {
+                            case 'Admin': return <AdminMenu />;
+                            case 'Reporter': return <ReporterMenu />;
+                            case 'Urban':
+                              if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Head') {
+                                return <HeadMenu />
+                              }
+                              else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Engineer') {
+                                return <EngineerMenu />
+                              }
+                              else{
+                                return <UrbanMenu />;
+                              }
+                            case 'Provider':
+                              if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Electricity') {
+                                return <ElectroProviderMenu />;
+                              }
+                              else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Gas'){
+                                return <GasProviderMenu />;
+                              }
+                              else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Heat'){
+                                return <HeatProviderMenu />;
+                              }
+                              else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Phone'){
+                                return <PhoneProviderMenu />;
+                              }
+                              else{
+                                return <WaterProviderMenu />;
+                              }
+                            case 'Citizen': return <CitizenMenu />;
+                            case 'PhotoReporter': return <PhotoReportMenu />;
+                            case 'Temporary': return <TemporaryMenu />;
+                            case 'ApzDepartment': return <ApzDepartmentMenu />;
+                            case 'Office': return <OfficeMenu />;
+                            default: return null;
+                          }
+                        })()
+                          :
+                          (<DefaultMenu />)
+                      }
+                      {/*  Ссылки используемые роуты  */}
+
+				    </div>
+                  </li> {/*dropdown*/}
+                  <li className="nav-item dropdown">
+                    <a className="nav-link dropdown-toggle" data-toggle='dropdown' href="#">
+			  		  Справочная информация
+                    </a>
+                    <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+					  <NavLink to={"/panel/example-first"} replace className="dropdown-item" activeClassName="active">Данный раздел в разработке</NavLink>
+					  {/*<NavLink to={"/panel/example-second"} replace className="dropdown-item" activeClassName="active">Место для справочной информации 2</NavLink>
+					  <NavLink to={"/panel/example-third"} replace className="dropdown-item" activeClassName="active">Место для справочной информации 3</NavLink>*/}
+                    </div>
+                  </li>{/*dropdown*/}
+                  <li className="nav-item dropdown">
+                    <a className="nav-link dropdown-toggle" data-toggle='dropdown' href="#">
+					  Карта
+                   </a>
+			        <div className="dropdown-menu " aria-labelledby="navbarDropdown">
+                      <a className='dropdown-item' target='_blank' href="http://3d.uaig.kz/" >3D Карта</a>
+                      <a className='dropdown-item' target='_blank' href="http://2d.uaig.kz/" >2D Карта</a>
+			        </div>
+                  </li>{/*dropdown*/}
+                  <li className="nav-item dropdown">
+                    <a className="nav-link goSite" href="https://almaty.uaig.kz/ru/" id="navbarDropdown" role="button">
+                      Вернуться на сайт
+                    </a>
+                  </li>{/*dropdown*/}
+			    </ul>
+			  </div>
+			   {/* collapse */}
+				{/*<div className="col-md-3 ml-0 regist pr-0">*/}
+				{/*<div className='login_buttons pull-right'>*/}
+			{/*Статус*/}
+			  <div>
+			    <LoginBtn handler={this.handler}/>
+			  </div>
+		    </div> {/* container */}
+          </nav>
+        );
+	  }
+	}
   }
 } // end of main Class NavBar
 
@@ -336,14 +439,14 @@ class LogoutBtn extends Component {
   render() {
     return(
 
-	  <ul style={{marginBottom:'0px'}}>
+	  <ul style={{marginBottom:'0px',paddingLeft:'0px'}}>
 	    <li className='nav-item dropdown'>
           <button className="btn btn-light" href="#" id="cabinetDropdownMenuLink" data-toggle="dropdown"
 		  aria-haspopup="true" aria-expanded="false">
 		    <span>{sessionStorage.getItem('userName')} <i className="glyphicon glyphicon-menu-hamburger"></i></span>
 		  </button>
 
-          <div className="dropdown-menu dropdown-menu-right">
+          <div className="dropdown-menu dropdown-menu">
             <NavLink to={"/panel/common/edit-personal-data"} replace className="dropdown-item" activeClassName="active">Личные данные</NavLink>
             <NavLink to={"/panel/common/edit-password"} replace className="dropdown-item" activeClassName="active">Изменить пароль</NavLink>
             <button onClick={this.onLogout.bind(this)} className="dropdown-item" style={{cursor: 'pointer'}}>Выйти</button>
