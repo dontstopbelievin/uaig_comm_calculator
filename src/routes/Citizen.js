@@ -3242,13 +3242,13 @@ class ShowMap extends React.Component {
             onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap, webMercatorUtils, dom, Map,
               MapImageLayer, Graphic, esriConfig], containerNode}) => {
               esriConfig.portalUrl = "https://gis.uaig.kz/arcgis";
-              /*var map = new WebMap({
+              var map = new WebMap({
                 basemap: "streets",
                 portalItem: {
-                  id: "0e8ae8f43ea94d358673e749f9a5e147"
+                  id: "b5a3c97bd18442c1949ba5aefc4c1835"
                 }
-              });*/
-              var map = new Map("map",{
+              });
+              /*var map = new Map("map",{
                 scale: 250000,
                 maxScale: 500,
                 minScale: 250000,
@@ -3258,7 +3258,7 @@ class ShowMap extends React.Component {
               layer = new MapImageLayer("http://gis.uaig.kz/server/rest/services/Map2d/Базовая_карта_MIL1/MapServer");
               layer2 = new MapImageLayer("http://gis.uaig.kz/server/rest/services/Map2d/объекты_города/MapServer");
               map.layers.add(layer2);
-              map.layers.add(layer);
+              map.layers.add(layer);*/
 
               if (coordinates) {
                 var coordinatesArray = coordinates.split(", ");
@@ -3456,7 +3456,7 @@ class ShowMap extends React.Component {
                 });
 
                 // Add widget to the bottom right corner of the view
-                //view.ui.add(layerList, "bottom-right");
+                view.ui.add(layerList, "bottom-right");
 
               }, function(error) {
                 console.log('MapView promise rejected! Message: ', error);

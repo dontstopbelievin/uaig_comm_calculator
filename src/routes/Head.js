@@ -334,8 +334,17 @@ class ShowApz extends React.Component {
         if ( pack2IdFile.length > 0 ) {
           this.setState({pack2IdFile: pack2IdFile[0]});
         }
-        if(data.state_history.length > 0 && data.state_history[data.state_history.length-1].comment != null){
-            this.setState({lastDecisionIsMO: true});
+        for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
+          switch (data.state_history[data_index].state_id) {
+            case 2:
+              break;
+            case 3:
+              this.setState({lastDecisionIsMO: true});
+              break;
+            default:
+              continue;
+          }
+          break;
         }
 
         if (commission) {
@@ -369,29 +378,27 @@ class ShowApz extends React.Component {
           this.setState({headResponseFile: data.apz_head_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
         }*/
 
-        if (data.apz_head_response && data.apz_head_response.files) {
-          this.setState({xmlFile: data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0]});
-          this.setState({headResponse: data.apz_head_response.response});
-        }
-
         if (data.status_id === 7 && !data.apz_head_response) {
           this.setState({showButtons: true});
         }
 
-        if (data.apz_head_response && data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0]) {
-          this.setState({isSigned: true});
+        if (data.status_id === 7 && data.apz_head_response && data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0] == null) {
+          this.setState({showButtons: true});
         }
 
-        if (data.apz_head_response && data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0] && data.status_id === 7) {
+        if (data.apz_head_response && data.apz_head_response && data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0] != null) {
+          this.setState({isSigned: true});
+          this.setState({xmlFile: data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0]});
+          this.setState({headResponse: data.apz_head_response.response});
+        }
+
+        if (data.apz_head_response && data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0] != null && data.status_id === 7) {
           this.setState({showSendButton: true});
         }
 
         /*if (!this.state.xmlFile && this.state.headResponseFile && data.status_id === 7) {
           this.setState({showSignButtons: true});
         }*/
-        if (data.apz_head_response && !data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0] && data.status_id === 7) {
-          this.setState({showSignButtons: true});
-        }
 
         this.setState({loaderHidden: true});
 
@@ -2152,7 +2159,7 @@ class ShowMap extends React.Component {
               esriConfig.portalUrl = "https://gis.uaig.kz/arcgis";
               var map = new WebMap({
                 portalItem: {
-                  id: "0e8ae8f43ea94d358673e749f9a5e147"
+                  id: "b5a3c97bd18442c1949ba5aefc4c1835"
                 }
               });
 

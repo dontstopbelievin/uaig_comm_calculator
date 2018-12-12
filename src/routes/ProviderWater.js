@@ -734,43 +734,55 @@ class ShowApz extends React.Component {
 
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + 'api/file/downloadAll/' + id, true);
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          var data = JSON.parse(xhr.responseText);
-          //console.log(data.my_files[0]);return;
-          var base64ToArrayBuffer = (function () {
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    var progressbar = $('.progress[data-category=1]');
+    progressbar.css('display', 'flex');
+    xhr.onprogress = function(event) {
+      $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
+    }
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        //console.log(data.my_files[0]);return;
+        var base64ToArrayBuffer = (function () {
 
-            return function (base64) {
-              var binaryString = window.atob(base64);
-              var binaryLen = binaryString.length;
-              var bytes = new Uint8Array(binaryLen);
+          return function (base64) {
+            var binaryString = window.atob(base64);
+            var binaryLen = binaryString.length;
+            var bytes = new Uint8Array(binaryLen);
 
-              for (var i = 0; i < binaryLen; i++) {
-                var ascii = binaryString.charCodeAt(i);
-                bytes[i] = ascii;
-              }
-
-              return bytes;
+            for (var i = 0; i < binaryLen; i++) {
+              var ascii = binaryString.charCodeAt(i);
+              bytes[i] = ascii;
             }
 
-          }());
-
-          var JSZip = require("jszip");
-          var zip = new JSZip();
-          for(var i=0; i<data.my_files.length;i++){
-            zip.file(data.my_files[i].file_name, base64ToArrayBuffer(data.my_files[i].file), {binary:true});
+            return bytes;
           }
-          zip.generateAsync({type:"blob"})
-          .then(function (content) {
-              // see FileSaver.js
-              saveAs(content, data.zip_name);
-          });
-        } else {
-          alert('Не удалось скачать файл');
+
+        }());
+
+        var JSZip = require("jszip");
+        var zip = new JSZip();
+        for(var i=0; i<data.my_files.length;i++){
+          zip.file(data.my_files[i].file_name, base64ToArrayBuffer(data.my_files[i].file), {binary:true});
         }
+        zip.generateAsync({type:"blob"})
+        .then(function (content) {
+            // see FileSaver.js
+            saveAs(content, data.zip_name);
+        });
+        setTimeout(function() {
+          progressbar.css('display', 'none');
+          alert("Файлы успешно загружены");
+          $('div', progressbar).css('width', 0);
+        }.bind(this), '2000');
+      } else {
+        alert('Не удалось скачать файл');
+        progressbar.css('display', 'none');
+        $('div', progressbar).css('width', 0);
       }
+    }
     xhr.send();
   }
 
@@ -1474,7 +1486,11 @@ handleObjTypeChange(event){
               }
               {(this.state.personalIdFile || this.state.confirmedTaskFile || this.state.titleDocumentFile || this.state.additionalFile || this.state.surveyFile) &&
                 <tr className="shukichi">
-                  <td colspan="2"><a className="text-info pointer" onClick={this.downloadAllFile.bind(this, this.state.apz.id)}><img style={{height:'16px'}} src="./images/download.png"/>Скачать одним архивом</a></td>
+                  <td><a className="text-info pointer" onClick={this.downloadAllFile.bind(this, this.state.apz.id)}><img style={{height:'16px'}} src="./images/download.png"/>Скачать одним архивом</a>
+                  <div className="progress mb-2" data-category="1" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  </td><td></td>
                 </tr>
               }
             </tbody>

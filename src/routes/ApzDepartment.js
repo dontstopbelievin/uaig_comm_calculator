@@ -545,22 +545,30 @@ class ShowApz extends React.Component {
         this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
         this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 18})[0]});
         this.setState({response: data.apz_department_response ? true : false });
-        var states = data.state_history.filter(function(obj) { return obj.state_id === 33 });
-        this.setState({backFromHead: states[states.length-1]});
+        for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
+          switch (data.state_history[data_index].state_id) {
+            case 33:
+              this.setState({backFromHead: data.state_history[data_index]});
+              break;
+            default:
+              continue;
+          }
+          break;
+        }
 
         if (!data.apz_department_response && data.status_id === 6) {
           this.setState({showButtons: true});
         }
 
-        if (data.files.filter(function(obj) { return obj.category_id === 18})[0]) {
+        if (data.files.filter(function(obj) { return obj.category_id === 18})[0] != null) {
           this.setState({isSigned: true});
         }
 
-        if (data.files.filter(function(obj) { return obj.category_id === 18})[0] && data.status_id === 6) {
+        if (data.files.filter(function(obj) { return obj.category_id === 18})[0] != null && data.status_id === 6) {
           this.setState({showSendButton: true});
         }
 
-        if (data.apz_department_response && !data.files.filter(function(obj) { return obj.category_id === 18})[0] && data.status_id === 6) {
+        if (data.apz_department_response && data.files.filter(function(obj) { return obj.category_id === 18})[0] == null && data.status_id === 6) {
           this.setState({showSignButtons: true});
         }
 

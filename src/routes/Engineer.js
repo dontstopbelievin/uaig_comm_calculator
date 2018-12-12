@@ -1081,6 +1081,10 @@ class ShowApz extends React.Component {
       }else{
         console.log(JSON.parse(xhr.responseText));
       }
+
+      if (!status) {
+        $('#ReturnApzForm').modal('hide');
+      }
     }.bind(this);
     xhr.send(formData);
   }
@@ -2540,7 +2544,8 @@ class ShowMap extends React.Component {
               esriConfig.portalUrl = "https://gis.uaig.kz/arcgis";
               var map = new WebMap({
                 portalItem: {
-                  id: "0e8ae8f43ea94d358673e749f9a5e147"
+                  //id: "0e8ae8f43ea94d358673e749f9a5e147"
+                  id: "b5a3c97bd18442c1949ba5aefc4c1835"
                 }
               });
 

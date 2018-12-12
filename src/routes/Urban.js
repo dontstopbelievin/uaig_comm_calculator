@@ -238,7 +238,7 @@ class ShowApz extends React.Component {
       confirmedTaskFile: false,
       titleDocumentFile: false,
       additionalFile: false,
-      returnedState: false,
+      engineerReturnedState: false,
       needSign: false,
       response: true,
       storageAlias: "PKCS12",
@@ -316,11 +316,18 @@ class ShowApz extends React.Component {
         this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
         this.setState({additionalFile: apz.files.filter(function(obj) { return obj.category_id === 27 })[0]});
         this.setState({showButtons: false});
-        var states = apz.state_history.filter(function(obj) { return obj.state_id === 33 });
-        this.setState({backFromHead: states[states.length-1]});
-        this.setState({returnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null })[0]});
+        for(var data_index = apz.state_history.length-1; data_index >= 0; data_index--){
+          switch (apz.state_history[data_index].state_id) {
+            case 33:
+              this.setState({backFromHead: apz.state_history[data_index]});
+              break;
+            default:
+              continue;
+          }
+          break;
+        }
+        this.setState({engineerReturnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null })[0]});
         this.setState({needSign: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
-        this.setState({backFromHead: states[states.length-1]});
         this.setState({engineerSign: apz.files.filter(function(obj) { return obj.category_id === 28 })[0]});
         if(apz.apz_head_id){this.setState({apz_head_id: apz.apz_head_id});}
 
@@ -328,7 +335,7 @@ class ShowApz extends React.Component {
           this.setState({showButtons: true});
         }
 
-        if (apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null })[0]) {
+        if (apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null })[0] != null) {
           this.setState({response: false});
         }
 
@@ -336,7 +343,7 @@ class ShowApz extends React.Component {
         // BE CAREFUL OF category_id should be xml регионального архитектора
         this.setState({xmlFile: apz.files.filter(function(obj) { return obj.category_id === 21})[0]});
         this.setState({needSign: apz.files.filter(function(obj) { return obj.category_id === 21})[0]});
-        if(apz.state_history.filter(function(obj) { return obj.state_id === 33 })[0]){
+        if(apz.state_history.filter(function(obj) { return obj.state_id === 33 })[0] != null){
             this.setState({needSign: false});
         }
         //use instead new columns from table
@@ -1290,9 +1297,9 @@ class ShowApz extends React.Component {
               {this.state.showMapText}
             </button>
 
-            {this.state.returnedState &&
+            {this.state.engineerReturnedState &&
               <div className="alert alert-danger">
-                Комментарий инженера: {this.state.returnedState.comment}
+                Комментарий инженера: {this.state.engineerReturnedState.comment}
               </div>
             }
             {apz.status_id === 1 &&
