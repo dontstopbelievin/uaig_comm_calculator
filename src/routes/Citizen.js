@@ -262,7 +262,7 @@ class AddApz extends React.Component {
       electricAllowedPower: '',
       electricRequiredPower: '',
       electricityPhase: 'Однофазная',
-      electricSafetyCategory: 5,
+      electricSafetyCategory: 3,
       peopleCount: 0,
       waterRequirement: '',
       waterSewage: '',
@@ -1424,8 +1424,6 @@ class AddApz extends React.Component {
                               <option value="1">1</option>
                               <option value="2">2</option>
                               <option value="3">3</option>
-                              <option value="4">4</option>
-                              <option value="5">5</option>
                             </select>
                           </div>
                           <div className="form-group">
@@ -3132,11 +3130,19 @@ console.log(apz.files);
                 <h5 className="block-title-2 mb-3 mt-3">Логи</h5>
                 <div className="border px-3 py-2">
                   {apz.state_history.map(function(state, index) {
-                    return(
-                      <div key={index}>
-                        <p className="mb-0">{state.created_at}&emsp;{state.state.name}</p>
-                      </div>
-                    );
+                    if(state.state_id == 21){
+                      return(
+                        <div key={index}>
+                          <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
+                        </div>
+                      );
+                    }else{
+                      return(
+                        <div key={index}>
+                          <p className="mb-0">{state.created_at}&emsp;{state.state.name}</p>
+                        </div>
+                      );
+                    }
                   }.bind(this))}
                 </div>
               </div>

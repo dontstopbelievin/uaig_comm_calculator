@@ -1510,7 +1510,7 @@ handleDirectorIDChange(event){
               {apz.state_history.map(function(state, index) {
                 return(
                   <div key={index}>
-                    <p className="mb-0">{state.created_at}&emsp;{state.state.name}</p>
+                    <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
                   </div>
                 );
               }.bind(this))}

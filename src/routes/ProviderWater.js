@@ -1698,11 +1698,11 @@ handleObjTypeChange(event){
                     <div>
                       <div className="form-group">
                         <label>Давление в сети городского водопровода в точке подключения</label>
-                        <input type="number" step="any" className="form-control" placeholder="" value={this.state.waterPressure} onChange={this.onWaterPressureChange} />
+                        <input disabled='disabled' title="Пожалуйста заполните этот пункт в тексте ТУ ВОДОПОТРЕБЛЕНИЕ" type="number" step="any" className="form-control" placeholder="" value={this.state.waterPressure} onChange={this.onWaterPressureChange} />
                       </div>
                       <div className="form-group">
                         <label>Для подключения к городским сетям и сооружениям водопотребление Заказчик обязан:</label>
-                        <textarea rows="5" className="form-control" value={this.state.waterCustomerDuties} onChange={this.onWaterCustomerDutiesChange} placeholder="Описание"></textarea>
+                        <textarea disabled='disabled' title="Пожалуйста заполните этот пункт в тексте ТУ ВОДОПОТРЕБЛЕНИЕ" rows="5" className="form-control" value={this.state.waterCustomerDuties} onChange={this.onWaterCustomerDutiesChange} placeholder="Описание"></textarea>
                       </div>
                     </div>
                   }
@@ -1732,7 +1732,7 @@ handleObjTypeChange(event){
                   {this.state.apz.object_type != "ИЖС" &&
                     <div className="form-group">
                       <label>Для присоединения к городским сетям и сооружениям водоотведения Заказчик обязан:</label>
-                      <textarea rows="5" className="form-control" value={this.state.sewageCustomerDuties} onChange={this.onSewageCustomerDutiesChange} placeholder="Описание"></textarea>
+                      <textarea disabled='disabled' title="Пожалуйста заполните этот пункт в тексте ТУ ВОДООТВЕДЕНИЕ" rows="5" className="form-control" value={this.state.sewageCustomerDuties} onChange={this.onSewageCustomerDutiesChange} placeholder="Описание"></textarea>
                     </div>
                   }
 
@@ -2096,7 +2096,7 @@ handleObjTypeChange(event){
               {apz.state_history.map(function(state, index) {
                 return(
                   <div key={index}>
-                    <p className="mb-0">{state.created_at}&emsp;{state.state.name}</p>
+                    <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
                   </div>
                 );
               }.bind(this))}
