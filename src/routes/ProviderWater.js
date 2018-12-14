@@ -8,7 +8,7 @@ import Loader from 'react-loader-spinner';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import saveAs from 'file-saver';
-
+import '../assets/css/visited.css'
 export default class ProviderWater extends React.Component {
   render() {
     return (
