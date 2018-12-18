@@ -1299,6 +1299,19 @@ class ShowApz extends React.Component {
     return formated_date;
   }
 
+  printMainInfo()
+  {
+      var divToPrint=document.getElementById("printTable");
+      var newWin= window.open("");
+      newWin.document.write(divToPrint.outerHTML);
+      var elements = newWin.document.getElementsByClassName('shukichi');
+      while(elements.length > 0){
+          elements[0].parentNode.removeChild(elements[0]);
+      }
+      newWin.print();
+      newWin.close();
+  }
+
   printData()
 {
    var divToPrint=document.getElementById("printTable");
@@ -1424,6 +1437,8 @@ handleObjTypeChange(event){
               </tr>
             </tbody>
           </table>
+            <button className="btn btn-raised btn-success" onClick={this.printMainInfo}>Печать общей информации</button>
+
         </div>
 
         <div className="col-sm-6">
@@ -1495,8 +1510,7 @@ handleObjTypeChange(event){
               }
             </tbody>
           </table>
-        </div>
-
+       </div>
         <div className={apz.apz_sewage ? 'col-sm-6' : 'col-sm-12'}>
           <h5 className="block-title-2 mt-3 mb-3">Детали водоснабжения</h5>
 
@@ -1549,6 +1563,7 @@ handleObjTypeChange(event){
             </tbody>
           </table>
           <button className="btn btn-raised btn-success" onClick={this.printData}>Печать</button>
+
         </div>
 
         {apz.apz_sewage &&
