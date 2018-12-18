@@ -260,7 +260,7 @@ class ShowApz extends React.Component {
       additionalFile: false,
       paymentPhotoFile: false,
       showMapText: 'Показать карту',
-      accept: 'accept',
+      accept: 'answer',
       callSaveFromSend: false,
       phoneStatus: 2,
       storageAlias: "PKCS12",
@@ -409,7 +409,7 @@ class ShowApz extends React.Component {
           data.commission.apz_phone_response.phone_director_id ? this.setState({ty_director_id: data.commission.apz_phone_response.phone_director_id}) : this.setState({ty_director_id: "" });
 
           if(data.PhoneResponseId !== -1){
-            this.setState({accept: this.state.customTcFile ? 'answer' : data.commission.apz_phone_response.response ? 'accept' : 'decline'});
+            this.setState({accept: data.commission.apz_phone_response.response ? 'answer' : 'decline'});
           }
 
           this.setState({responseFile: data.commission.apz_phone_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12})[0]});
@@ -817,7 +817,7 @@ class ShowApz extends React.Component {
         this.setState({responseId: data.id});
         data.response ? this.setState({response: data.response}) : this.setState({response: ""});
         data.files ? this.setState({customTcFile: data.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: null});
-        data.response ? this.setState({accept: this.state.customTcFile ? 'answer' : data.response ? 'accept' : 'decline'}) : this.setState({accept: "accept"});
+        data.response ? this.setState({accept: data.response ? 'answer' : 'decline'}) : this.setState({accept: "answer"});
         data.response_text ? this.setState({description: data.response_text}) : this.setState({description: ""});
         data.files ? this.setState({responseFile: data.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]}) : this.setState({responseFile: null});
         data.service_num ? this.setState({responseServiceNum: data.service_num}) : this.setState({responseServiceNum: ""});
@@ -1159,11 +1159,8 @@ handleDirectorIDChange(event){
             <div className="col-sm-6 pr-0">
               {this.state.showButtons && !this.state.isSigned && this.state.isPerformer &&
                 <div className="btn-group" style={{float: 'right', margin: '0'}}>
-                  <button className={'btn btn-raised ' + (this.state.accept === 'accept' ? 'btn-success' : 'btn-secondary')} style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, 'accept')}>
-                    Одобрить
-                  </button>
                   <button className={'btn btn-raised ' + (this.state.accept === 'answer' ? 'btn-success' : 'btn-secondary')} style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, 'answer')}>
-                    Ответ
+                    Одобрить
                   </button>
                   <button className={'btn btn-raised ' + (this.state.accept === 'decline' ? 'btn-danger' : 'btn-secondary')} onClick={this.toggleAcceptDecline.bind(this, 'decline')}>
                     Отклонить
@@ -1296,6 +1293,14 @@ handleDirectorIDChange(event){
           {this.state.accept === 'answer' && this.state.phoneStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
             <div className="provider_answer_body" style={{border: 'solid 1px #46A149', padding: '20px'}}>
               <div className="form-group">
+                <label>Номер документа</label>
+                <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+              </div>
+              <div className="form-group">
+                <label htmlFor="responseClientWishes">Пожелания заказчика (тип оборудования, тип кабеля и др.)</label>
+                <textarea rows="5" id="responseClientWishes" className="form-control" value={this.state.responseClientWishes} onChange={this.onResponseClientWishesChange}></textarea>
+              </div>
+              <div className="form-group">
                 <label htmlFor="custom_tc_file">
                   Прикрепить файл
 
@@ -1330,6 +1335,14 @@ handleDirectorIDChange(event){
           {this.state.accept === 'answer' && this.state.responseId != 0 && (this.state.phoneStatus === 1 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
             <table className="table table-bordered table-striped">
               <tbody>
+                <tr>
+                  <td>Номер документа</td>
+                  <td>{this.state.docNumber}</td>
+                </tr>
+                <tr>
+                  <td>Пожелания заказчика (тип оборудования, тип кабеля и др.)</td>
+                  <td>{this.state.responseClientWishes}</td>
+                </tr>
               {this.state.customTcFile &&
                 <tr>
                   <td>Технические условия</td>

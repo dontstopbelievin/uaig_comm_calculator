@@ -1902,6 +1902,14 @@ class ShowApz extends React.Component {
                       {this.state.electroCustomTcFile && apz.commission.apz_electricity_response.response &&
                         <tbody>
                           <tr>
+                            <td><b>Номер документа</b></td>
+                            <td>{apz.commission.apz_electricity_response.doc_number}</td>
+                          </tr>
+                          <tr>
+                            <td><b>Рекомендация</b></td>
+                            <td>{apz.commission.apz_electricity_response.recommendation}</td>
+                          </tr>
+                          <tr>
                             <td style={{width: '50%'}}><b>Техническое условие</b></td>
                             <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.electroCustomTcFile.id)}>Скачать</a></td>
                           </tr>
@@ -1988,6 +1996,14 @@ class ShowApz extends React.Component {
                       {this.state.gasCustomTcFile && apz.commission.apz_gas_response.response &&
                         <tbody>
                           <tr>
+                            <td><b>Номер документа</b></td>
+                            <td>{apz.commission.apz_gas_response.doc_number}</td>
+                          </tr>
+                          <tr>
+                            <td><b>Предусмотрение</b></td>
+                            <td>{apz.commission.apz_gas_response.reconsideration}</td>
+                          </tr>
+                          <tr>
                             <td style={{width: '50%'}}><b>Техническое условие</b></td>
                             <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.gasCustomTcFile.id)}>Скачать</a></td>
                           </tr>
@@ -2070,6 +2086,14 @@ class ShowApz extends React.Component {
                     <table className="table table-bordered table-striped">
                       {this.state.phoneCustomTcFile && apz.commission.apz_phone_response.response &&
                         <tbody>
+                          <tr>
+                            <td><b>Номер документа</b></td>
+                            <td>{apz.commission.apz_phone_response.doc_number}</td>
+                          </tr>
+                          <tr>
+                            <td><b>Пожелания заказчика (тип оборудования, тип кабеля и др.)</b></td>
+                            <td>{apz.commission.apz_phone_response.client_wishes}</td>
+                          </tr>
                           <tr>
                             <td style={{width: '50%'}}><b>Техническое условие</b></td>
                             <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.phoneCustomTcFile.id)}>Скачать</a></td>

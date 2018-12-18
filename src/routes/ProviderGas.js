@@ -259,7 +259,7 @@ class ShowApz extends React.Component {
       titleDocumentFile: false,
       additionalFile: false,
       showMapText: 'Показать карту',
-      accept: 'accept',
+      accept: 'answer',
       callSaveFromSend: false,
       gasStatus: 2,
       storageAlias: "PKCS12",
@@ -403,11 +403,11 @@ class ShowApz extends React.Component {
           data.commission.apz_gas_response.doc_number ? this.setState({docNumber: data.commission.apz_gas_response.doc_number}) : this.setState({docNumber: ""});
           data.commission.apz_gas_response.id ? this.setState({responseId: data.commission.apz_gas_response.id}) : this.setState({responseId: ""});
           data.commission.apz_gas_response.response ? this.setState({response: data.commission.apz_gas_response.response}) : this.setState({response: ""});
-          data.commission.apz_heat_response.heat_director_id ? this.setState({ty_director_id: data.commission.apz_heat_response.heat_director_id}) : this.setState({ty_director_id: "" });
+          data.commission.apz_gas_response.gas_director_id ? this.setState({ty_director_id: data.commission.apz_gas_response.gas_director_id}) : this.setState({ty_director_id: "" });
           data.commission.apz_gas_response.files ? this.setState({customTcFile: data.commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: null});;
 
           if(data.commission.apz_gas_response.id !== -1){
-            this.setState({accept: this.state.customTcFile ? 'answer' : data.commission.apz_gas_response.response ? 'accept' : 'decline'});
+            this.setState({accept: data.commission.apz_gas_response.response ? 'answer' : 'decline'});
           }
 
           this.setState({responseFile: data.commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12})[0]});
@@ -1156,11 +1156,8 @@ handleDirectorIDChange(event){
             <div className="col-sm-6 pr-0">
               {this.state.showButtons && !this.state.isSigned && this.state.isPerformer &&
                 <div className="btn-group" style={{float: 'right', margin: '0'}}>
-                  <button className={'btn btn-raised ' + (this.state.accept === 'accept' ? 'btn-success' : 'btn-secondary')} style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, 'accept')}>
-                    Одобрить
-                  </button>
                   <button className={'btn btn-raised ' + (this.state.accept === 'answer' ? 'btn-success' : 'btn-secondary')} style={{marginRight: '5px'}} onClick={this.toggleAcceptDecline.bind(this, 'answer')}>
-                    Ответ
+                    Одобрить
                   </button>
                   <button className={'btn btn-raised ' + (this.state.accept === 'decline' ? 'btn-danger' : 'btn-secondary')} onClick={this.toggleAcceptDecline.bind(this, 'decline')}>
                     Отклонить
@@ -1293,6 +1290,14 @@ handleDirectorIDChange(event){
           {this.state.accept === 'answer' && this.state.gasStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
             <div className="provider_answer_body" style={{border: 'solid 1px #46A149', padding: '20px'}}>
               <div className="form-group">
+                <label htmlFor="docNumber">Номер документа</label>
+                <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+              </div>
+              <div className="form-group">
+                <label htmlFor="reconsideration">Предусмотреть</label>
+                <textarea rows="8" id="reconsideration" className="form-control" value={this.state.reconsideration} onChange={this.onReconsiderationChange} placeholder="Описание"></textarea>
+              </div>
+              <div className="form-group">
                 <label htmlFor="custom_tc_file">
                   Прикрепить файл
 
@@ -1319,7 +1324,6 @@ handleDirectorIDChange(event){
                   </button>
                 </div>
               }
-              <p style={{color:'#777777', marginBottom:'0px'}}>Если есть сканированное техническое условие. Сканированный ТУ заменяет ТУ созданный сайтом.</p>
               <p style={{color:'#777777'}}>Сохранение перезаписывает предыдущий файл.</p>
             </div>
           }
@@ -1327,6 +1331,14 @@ handleDirectorIDChange(event){
           {this.state.accept === 'answer' && this.state.responseId != 0 && (this.state.gasStatus === 1 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
             <table className="table table-bordered table-striped">
               <tbody>
+                <tr>
+                  <td>Номер документа</td>
+                  <td>{this.state.docNumber}</td>
+                </tr>
+                <tr>
+                  <td>Предусмотрение</td>
+                  <td>{this.state.reconsideration}</td>
+                </tr>
               {this.state.customTcFile &&
                 <tr>
                   <td>Технические условия</td>
