@@ -3486,7 +3486,7 @@ class ShowMap extends React.Component {
                 });
 
                 // Add widget to the bottom right corner of the view
-                view.ui.add(layerList, "bottom-right");
+                //view.ui.add(layerList, "bottom-right");
 
               }, function(error) {
                 console.log('MapView promise rejected! Message: ', error);
