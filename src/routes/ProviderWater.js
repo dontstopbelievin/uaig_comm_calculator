@@ -1321,8 +1321,9 @@ class ShowApz extends React.Component {
   printMainInfo()
   {
       var divToPrint=document.getElementById("printTable");
+      var divToRightPrint=document.getElementById("rightMainTable");
       var newWin= window.open("");
-      newWin.document.write(divToPrint.outerHTML);
+      newWin.document.write(divToPrint.outerHTML+divToRightPrint.outerHTML);
       var elements = newWin.document.getElementsByClassName('shukichi');
       while(elements.length > 0){
           elements[0].parentNode.removeChild(elements[0]);
@@ -1335,8 +1336,10 @@ class ShowApz extends React.Component {
 {
    var divToPrint=document.getElementById("printTable");
    var divToPrints=document.getElementById("detail_table");
+   var divToRightPrint=document.getElementById("rightMainTable");
+   var divToWaterDisposalPrint =document.getElementById("detailWaterDisposal");
    var newWin= window.open("");
-   newWin.document.write(divToPrint.outerHTML + divToPrints.outerHTML);
+   newWin.document.write(divToPrint.outerHTML + divToRightPrint.outerHTML+divToPrints.outerHTML+divToWaterDisposalPrint.outerHTML);
     var elements = newWin.document.getElementsByClassName('shukichi');
     while(elements.length > 0){
         elements[0].parentNode.removeChild(elements[0]);
@@ -1454,6 +1457,7 @@ handleObjTypeChange(event){
                   }
                 </td>
               </tr>
+
             </tbody>
           </table>
             <button className="btn btn-raised btn-success" onClick={this.printMainInfo}>Печать общей информации</button>
@@ -1461,7 +1465,7 @@ handleObjTypeChange(event){
         </div>
 
         <div className="col-sm-6">
-          <table className="table table-bordered table-striped" style={{textAlign: 'left'}}>
+          <table className="table table-bordered table-striped" style={{textAlign: 'left'}} id={"rightMainTable"}>
             <tbody>
               <tr>
                 <td><b>Срок строительства</b></td>
@@ -1609,7 +1613,7 @@ handleObjTypeChange(event){
           <div className="col-sm-6">
             <h5 className="block-title-2 mt-3 mb-3">Детали водоотведения</h5>
 
-            <table className="table table-bordered table-striped" style={{textAlign: 'left'}}>
+            <table className="table table-bordered table-striped" style={{textAlign: 'left'}} id={"detailWaterDisposal"}>
               <tbody>
                 <tr>
                   <td>Общее количество сточных вод (м<sup>3</sup>/сутки)</td>
