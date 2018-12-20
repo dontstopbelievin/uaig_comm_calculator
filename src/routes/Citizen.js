@@ -568,7 +568,9 @@ class AddApz extends React.Component {
         confirmedTaskFile: 'Утвержденное задание на проектирование',
         titleDocumentFile: 'Госакт и правоустанавливающий документ на земельный участок, договор о купли-продажи',
         objectType: 'Тип объекта',
-        customer: 'Заказчик'
+        customer: 'Заказчик',
+        waterRequirement: 'Общая потребность в воде',
+        waterSewage: 'Канализация '
       };
 
       if (this.state.phoneServiceNum) {
@@ -1468,7 +1470,7 @@ class AddApz extends React.Component {
                           </div>
                           <div className="form-group">
                             <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
-                            <input type="number" onChange={this.onInputChange} step="any" className="form-control" name="WaterRequirement" value={this.state.waterRequirement} placeholder="" />
+                            <input type="number" onChange={this.onInputChange} step="any" className="form-control" name="waterRequirement" value={this.state.waterRequirement} />
                           </div>
                           <div className="form-group">
                             <label htmlFor="WaterFireFighting">Потребные расходы наружного пожаротушения (л/сек)</label>
