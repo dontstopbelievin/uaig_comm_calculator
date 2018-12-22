@@ -1484,7 +1484,7 @@ class AddApz extends React.Component {
                         <div className="col-md-6">
                           <div className="form-group">
                             <label htmlFor="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
-                            <input data-rh="На хозпитьевые нужды (м3/сутки)" data-rh-at="right" type="number" onChange={this.onInputChange} step="any" className="form-control" name="WaterDrinking" value={this.state.WaterDrinking} placeholder="" />
+                            <input data-rh="На хозпитьевые нужды (м3/сутки)" data-rh-at="right" type="number" onChange={this.onInputChange} step="any" className="form-control" name="waterDrinking" value={this.state.waterDrinking} placeholder="" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="WaterSewage">Канализация (м<sup>3</sup>/сутки)</label>

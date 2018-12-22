@@ -365,6 +365,7 @@ class ShowApz extends React.Component {
     this.onperenos_TcTextWaterRequirementsChange = this.onperenos_TcTextWaterRequirementsChange.bind(this);
     this.onperenos_TcTextWaterGeneralChange = this.onperenos_TcTextWaterGeneralChange.bind(this);
     this.toggleFormTabs = this.toggleFormTabs.bind(this);
+    this.printQuestionnaire = this.printQuestionnaire.bind(this);
   }
   componentDidMount() {
     this.props.breadCrumbs();
@@ -1318,6 +1319,23 @@ class ShowApz extends React.Component {
     return formated_date;
   }
 
+  printQuestionnaire() {
+    var id = this.props.match.params.id;
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/print/questionnaire/" + id, true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        var newWin = window.open("");
+        newWin.document.write(xhr.responseText);
+        newWin.print();
+        newWin.close();
+      }
+    }
+    xhr.send();
+  }
+
   printMainInfo()
   {
       var divToPrint=document.getElementById("printTable");
@@ -1606,6 +1624,7 @@ handleObjTypeChange(event){
             </tbody>
           </table>
           <button className="btn btn-raised btn-success" onClick={this.printData}>Печать</button>
+          <button className="btn btn-raised btn-success ml-2" onClick={this.printQuestionnaire}>Печать опросного листа</button>
 
         </div>
 
