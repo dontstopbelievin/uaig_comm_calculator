@@ -573,7 +573,7 @@ class AddApz extends React.Component {
         waterSewage: 'Канализация '
       };
 
-      if (this.state.phoneServiceNum) {
+      if (this.state.phoneServiceNum || this.state.phoneSewage || this.state.phoneCapacity || this.state.phoneClientWishes) {
         requiredFields['paymentPhotoFile'] = 'Сканированный файл оплаты';
       }
 
