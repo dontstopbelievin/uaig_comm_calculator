@@ -6,6 +6,7 @@ import Loader from 'react-loader-spinner';
 import $ from 'jquery';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import CommissionAnswersList from '../components/CommissionAnswersList';
 
 export default class Urban extends React.Component {
   render() {
@@ -896,36 +897,36 @@ class ShowApz extends React.Component {
               <tbody>
                 {apz.apz_water &&
                   <tr>
-                    <td><b>Водоснабжение</b></td>
-                    <td><a className="text-info pointer" data-toggle="modal" data-target="#water_modal">Открыть</a></td>
+                    <td style={{width: '40%'}}><b>Водоснабжение</b></td>
+                    <td><a className="text-info pointer" data-toggle="modal" data-target="#water_modal">Просмотр</a></td>
                   </tr>
                 }
 
                 {apz.apz_heat &&
                   <tr>
-                    <td><b>Теплоснабжение</b></td>
-                    <td><a className="text-info pointer" data-toggle="modal" data-target="#heat_modal">Открыть</a></td>
+                    <td style={{width: '40%'}}><b>Теплоснабжение</b></td>
+                    <td><a className="text-info pointer" data-toggle="modal" data-target="#heat_modal">Просмотр</a></td>
                   </tr>
                 }
 
                 {apz.apz_electricity &&
                   <tr>
-                    <td><b>Электроснабжение</b></td>
-                    <td><a className="text-info pointer" data-toggle="modal" data-target="#electro_modal">Открыть</a></td>
+                    <td style={{width: '40%'}}><b>Электроснабжение</b></td>
+                    <td><a className="text-info pointer" data-toggle="modal" data-target="#electro_modal">Просмотр</a></td>
                   </tr>
                 }
 
                 {apz.apz_gas &&
                   <tr>
-                    <td><b>Газоснабжение</b></td>
-                    <td><a className="text-info pointer" data-toggle="modal" data-target="#gas_modal">Открыть</a></td>
+                    <td style={{width: '40%'}}><b>Газоснабжение</b></td>
+                    <td><a className="text-info pointer" data-toggle="modal" data-target="#gas_modal">Просмотр</a></td>
                   </tr>
                 }
 
                 {apz.apz_phone &&
                   <tr>
-                    <td><b>Телефонизация</b></td>
-                    <td><a className="text-info pointer" data-toggle="modal" data-target="#phone_modal">Открыть</a></td>
+                    <td style={{width: '40%'}}><b>Телефонизация</b></td>
+                    <td><a className="text-info pointer" data-toggle="modal" data-target="#phone_modal">Просмотр</a></td>
                   </tr>
                 }
               </tbody>
@@ -1288,6 +1289,13 @@ class ShowApz extends React.Component {
                     </div>
                   </div>
                 </div>
+              </div>
+            }
+
+            {apz.commission && (Object.keys(apz.commission).length > 0) &&
+              <div>
+                <h5 className="block-title-2 mb-3">Ответы от служб</h5>
+                <CommissionAnswersList apz={apz} />
               </div>
             }
 
