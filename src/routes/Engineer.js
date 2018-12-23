@@ -350,7 +350,7 @@ class ShowApz extends React.Component {
           this.setState({showButtons: true});
         }
 
-        if (hasReponse.length == 0) {
+        if (hasReponse.length == 0 || commission) {
           this.setState({showCommission: true});
         }
 
@@ -1070,8 +1070,6 @@ class ShowApz extends React.Component {
           alert("Заявление отклонено!");
           this.setState({ showButtons: false });
         }
-
-        this.setState({ showCommission: false });
       } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
