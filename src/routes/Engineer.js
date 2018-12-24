@@ -1042,7 +1042,7 @@ class ShowApz extends React.Component {
     xhr.send(JSON.stringify(data));
   }
 
-  acceptDeclineApzForm(apzId, status, comment, direct) {
+  acceptDeclineApzForm(apzId, status, comment) {
     var token = sessionStorage.getItem('tokenInfo');
     var file = this.state.file;
 
@@ -1054,7 +1054,6 @@ class ShowApz extends React.Component {
     }else{
       formData.append('file_id', '');
     }
-    formData.append('direct', direct.length > 0 ? direct : 'region');
 
     var xhr = new XMLHttpRequest();
     xhr.open("post", window.url + "api/apz/engineer/status/" + apzId, true);
@@ -1630,13 +1629,8 @@ class ShowApz extends React.Component {
                     :
                     <div>
                       <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
-                              onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", 'apz')}>
-                        В отдел АПЗ
-                      </button>
-
-                      <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
                               onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>
-                        Отправить архитектору
+                        В отдел АПЗ
                       </button>
                     </div>
                   }

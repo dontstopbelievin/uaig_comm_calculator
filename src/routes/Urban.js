@@ -149,8 +149,9 @@ class AllApzs extends React.Component {
             <table className="table">
               <thead>
                 <tr>
-                  <th style={{width: '23%'}}>Название</th>
-                  <th style={{width: '23%'}}>Заявитель</th>
+                  <th style={{width: '5%'}}>ИД</th>
+                  <th style={{width: '21%'}}>Название</th>
+                  <th style={{width: '20%'}}>Заявитель</th>
                   <th style={{width: '20%'}}>Адрес</th>
                   <th style={{width: '20%'}}>Дата заявления</th>
                   <th></th>
@@ -160,6 +161,7 @@ class AllApzs extends React.Component {
                 {apzs.map(function(apz, index) {
                   return(
                     <tr key={index}>
+                      <td>{apz.id}</td>
                       <td>
                         {apz.project_name}
 
@@ -1349,9 +1351,11 @@ class ShowApz extends React.Component {
                   :
                   <div>
                     {!this.state.needSign ?
-                      <div>
-                        {!this.state.backFromHead && !this.state.engineerSign && <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>Отправить инженеру</button>}
-                        <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>В отдел АПЗ</button>
+                      <div style={{margin: 'auto', display: 'table'}}>
+                        {!this.state.backFromHead && !this.state.engineerSign ?
+                        <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>Отправить инженеру</button>
+                        :
+                        <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>Одобрить</button>}
                         <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
                           Отклонить
                         </button>
@@ -1380,7 +1384,7 @@ class ShowApz extends React.Component {
                           :
                           <div>
                             <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", "apz")}>
-                              Отправить в отдел АПЗ
+                              Отправить главному архитектору
                             </button>
                           </div>
                         }

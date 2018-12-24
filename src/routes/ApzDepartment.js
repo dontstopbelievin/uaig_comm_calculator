@@ -123,8 +123,9 @@ class AllApzs extends React.Component {
             <table className="table">
               <thead>
                 <tr>
-                  <th style={{width: '23%'}}>Название</th>
-                  <th style={{width: '23%'}}>Заявитель</th>
+                  <th style={{width: '5%'}}>ИД</th>
+                  <th style={{width: '21%'}}>Название</th>
+                  <th style={{width: '20%'}}>Заявитель</th>
                   <th style={{width: '20%'}}>Адрес</th>
                   <th style={{width: '20%'}}>Дата заявления</th>
                   <th></th>
@@ -134,6 +135,7 @@ class AllApzs extends React.Component {
                 {apzs.map(function(apz, index) {
                   return(
                     <tr key={index}>
+                      <td>{apz.id}</td>
                       <td>
                         {apz.project_name}
 
@@ -933,9 +935,7 @@ class ShowApz extends React.Component {
 
       return true;
     }
-
     var token = sessionStorage.getItem('tokenInfo');
-
     var formData = new FormData();
     formData.append('response', status);
     formData.append('message', comment);
@@ -1563,7 +1563,7 @@ class ShowApz extends React.Component {
 
               {this.state.showSendButton &&
                 <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', display: 'table'}}>
-                  <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "")}>Отправить к глав. архитектору</button>
+                  <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "")}>Отправить районному архитектору</button>
                 </div>
               }
 
