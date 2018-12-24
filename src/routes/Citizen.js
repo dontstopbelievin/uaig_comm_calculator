@@ -1679,8 +1679,8 @@ class AddApz extends React.Component {
                       <div className="row">
                         <div className="col-md-6">
                           <div className="form-group">
-                            <label htmlFor="PhoneServiceNum">Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</label>
-                            <input data-rh="Количество ОТА и услуг в разбивке физ.лиц и юр.лиц" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.phoneServiceNum} step="any" className="form-control" name="phoneServiceNum" placeholder="" />
+                            <label htmlFor="PhoneServiceNum">Количество телефонных аппаратов и услуг в разбивке физ.лиц и юр.лиц</label>
+                            <input data-rh="Количество телефонных аппаратов и услуг в разбивке физ.лиц и юр.лиц" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.phoneServiceNum} step="any" className="form-control" name="phoneServiceNum" placeholder="" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="PhoneCapacity">Телефонная емкость</label>
