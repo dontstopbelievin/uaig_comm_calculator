@@ -244,6 +244,7 @@ class AddApz extends React.Component {
       claimedCapacityJustification: null,
 
       applicant: '',
+      applicantAddress: '',
       type: 1,
       phone: '',
       region: 'Наурызбай',
@@ -435,6 +436,7 @@ class AddApz extends React.Component {
         var apz = JSON.parse(xhr.responseText);
 
         this.setState({applicant: apz.applicant ? apz.applicant : '' });
+        this.setState({applicantAddress: apz.applicantAddress ? apz.applicantAddress : '' });
         this.setState({phone: apz.phone ? apz.phone : '' });
         this.setState({region: apz.region ? apz.region : '' });
         this.setState({designer: apz.designer ? apz.designer : '' });
@@ -577,6 +579,7 @@ class AddApz extends React.Component {
     if (publish) {
       var requiredFields = {
         applicant: 'Заявитель',
+        applicantAddress: 'Адрес жительства',
         personalIdFile: 'Уд.личности/Реквизиты',
         projectName: 'Наименование проектируемого объекта',
         projectAddress: 'Адрес проектируемого объекта',
@@ -1061,8 +1064,8 @@ class AddApz extends React.Component {
                     <div className="row">
                       <div className="col-md-12" style={{verticalAlign: 'top'}}>
                         <table style={{border:'1px solid #ced4da', borderRadius:'5px', display: 'inline-block'}}><tbody>
-                        <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td colSpan={2}>Для зданий строительства до 1995 г.</td></tr>
-                        <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>Этажность жилой<br/>постройки</td><td>Вт в час на 1 м2<br/> общей площади(q<sub>уд</sub>)</td></tr>
+                        <tr style={{background:'rgba(0, 0, 255, 0.05)', borderBottom: '1pt solid #ced4da'}}><td colSpan={2}>Для зданий строительства до 1995 г.</td></tr>
+                        <tr style={{background: 'rgba(0, 255, 0, 0.05)', borderBottom: '1pt solid #ced4da'}}><td>Этажность жилой<br/>постройки</td><td>Вт в час на 1 м<sup>2</sup><br/> общей площади(q<sub>уд</sub>)</td></tr>
                         <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>1-3 этажные одноквартирные<br/>отдельностоящие</td><td>185</td></tr>
                         <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>2-3 этажные одноквартирные<br/>облокированные</td><td>135</td></tr>
                         <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>4-6 этажные кирпичные</td><td>80</td></tr>
@@ -1072,8 +1075,8 @@ class AddApz extends React.Component {
                         <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>Более 10 этажей</td><td>85</td></tr></tbody></table>
 
                         <table style={{verticalAlign: 'top', border:'1px solid #ced4da', borderRadius:'5px', display: 'inline-block'}}><tbody>
-                        <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td colSpan={2}>Для зданий строительства после 2000 г.</td></tr>
-                        <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>Этажность жилой<br/>постройки</td><td>Вт в час на 1 м2<br/> общей площади(q<sub>уд</sub>)</td></tr>
+                        <tr style={{background:'rgba(0, 0, 255, 0.05)', borderBottom: '1pt solid #ced4da'}}><td colSpan={2}>Для зданий строительства после 2000 г.</td></tr>
+                        <tr style={{background: 'rgba(0, 255, 0, 0.05)', borderBottom: '1pt solid #ced4da'}}><td>Этажность жилой<br/>постройки</td><td>Вт в час на 1 м<sup>2</sup><br/> общей площади(q<sub>уд</sub>)</td></tr>
                         <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>1-3 этажные одноквартирные<br/>отдельностоящие</td><td>85</td></tr>
                         <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>2-3 этажные одноквартирные<br/>облокированные</td><td>65</td></tr>
                         <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>4-6 этажные кирпичные</td><td>55</td></tr>
@@ -1085,8 +1088,8 @@ class AddApz extends React.Component {
                     <div className="row">
                       <div className="col-md-12">
                         <table style={{border:'1px solid #ced4da', borderRadius:'5px', display: 'inline-block'}}><tbody>
-                        <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td colSpan={2}>Для зданий строительства после 2010 г.</td></tr>
-                        <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>Этажность жилой<br/>постройки</td><td>Вт в час на 1 м2<br/> общей площади(q<sub>уд</sub>)</td></tr>
+                        <tr style={{background:'rgba(0, 0, 255, 0.05)', borderBottom: '1pt solid #ced4da'}}><td colSpan={2}>Для зданий строительства после 2010 г.</td></tr>
+                        <tr style={{background: 'rgba(0, 255, 0, 0.05)', borderBottom: '1pt solid #ced4da'}}><td>Этажность жилой<br/>постройки</td><td>Вт в час на 1 м<sup>2</sup><br/> общей площади(q<sub>уд</sub>)</td></tr>
                         <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>1-3 этажные одноквартирные<br/>отдельностоящие</td><td>73</td></tr>
                         <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>2-3 этажные одноквартирные<br/>облокированные</td><td>58</td></tr>
                         <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>4-6 этажные кирпичные</td><td>49</td></tr>
@@ -1095,8 +1098,8 @@ class AddApz extends React.Component {
                         <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>Более 15 этажей</td><td>38</td></tr></tbody></table>
 
                         <table style={{border:'1px solid #ced4da', borderRadius:'5px', display: 'inline-block'}}><tbody>
-                        <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td colSpan={2}>Для зданий строительства после 2015 г.</td></tr>
-                        <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>Этажность жилой<br/>постройки</td><td>Вт в час на 1 м2<br/> общей площади(q<sub>уд</sub>)</td></tr>
+                        <tr style={{background:'rgba(0, 0, 255, 0.05)', borderBottom: '1pt solid #ced4da'}}><td colSpan={2}>Для зданий строительства после 2015 г.</td></tr>
+                        <tr style={{background: 'rgba(0, 255, 0, 0.05)', borderBottom: '1pt solid #ced4da'}}><td>Этажность жилой<br/>постройки</td><td>Вт в час на 1 м<sup>2</sup><br/> общей площади(q<sub>уд</sub>)</td></tr>
                         <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>1-3 этажные одноквартирные<br/>отдельностоящие</td><td>67</td></tr>
                         <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>2-3 этажные одноквартирные<br/>облокированные</td><td>55</td></tr>
                         <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>4-6 этажные кирпичные</td><td>45</td></tr>
@@ -1185,6 +1188,10 @@ class AddApz extends React.Component {
                             <label htmlFor="Applicant">Заявитель:</label>
                             <input data-rh="Заявитель" data-rh-at="right" type="text" className="form-control" onChange={this.onNameChange} name="applicant" value={this.state.applicant=this.state.company_name==' ' ?this.state.last_name+" "+this.state.first_name+" "+this.state.middle_name:this.state.company_name } required />
                             {/*<span className="help-block"></span>*/}
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="applicantAddress">Адрес жительства:</label>
+                            <input data-rh="Адрес жительства" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} name="applicantAddress" value={this.state.applicantAddress} required />
                           </div>
                           <div className="form-group">
                             <label htmlFor="Phone">Телефон</label>
@@ -2590,6 +2597,10 @@ console.log(apz.files);
                 <tr>
                   <td><b>Заявитель</b></td>
                   <td>{apz.applicant}</td>
+                </tr>
+                <tr>
+                  <td><b>Адрес жительства</b></td>
+                  <td>{apz.address}</td>
                 </tr>
                 <tr>
                   <td><b>Телефон</b></td>

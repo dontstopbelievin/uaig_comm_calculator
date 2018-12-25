@@ -1575,6 +1575,10 @@ handleDirectorIDChange(event){
                   <td>{apz.applicant}</td>
                 </tr>
                 <tr>
+                  <td><b>Адрес жительства</b></td>
+                  <td>{apz.address}</td>
+                </tr>
+                <tr>
                   <td><b>Телефон</b></td>
                   <td>{apz.phone}</td>
                 </tr>
