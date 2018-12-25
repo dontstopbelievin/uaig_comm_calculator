@@ -146,8 +146,9 @@ class AllApzs extends React.Component {
             <table className="table">
               <thead>
                 <tr>
-                  <th style={{width: '23%'}}>Название</th>
-                  <th style={{width: '23%'}}>Заявитель</th>
+                  <th style={{width: '5%'}}>ИД</th>
+                  <th style={{width: '21%'}}>Название</th>
+                  <th style={{width: '20%'}}>Заявитель</th>
                   <th style={{width: '20%'}}>Адрес</th>
                   <th style={{width: '20%'}}>Дата заявления</th>
 
@@ -161,6 +162,7 @@ class AllApzs extends React.Component {
                 {apzs.map(function(apz, index) {
                   return(
                     <tr key={index}>
+                      <td>{apz.id}</td>
                       <td>
                         {apz.project_name}
 
@@ -1665,6 +1667,22 @@ handleDirectorIDChange(event){
                 <td>{apz.apz_heat.general}</td>
               </tr>
               <tr>
+                <td>Отопление (Гкал/ч)</td>
+                <td>{apz.apz_heat.main_heat}</td>
+              </tr>
+              <tr>
+                <td>Вентиляция (Гкал/ч)</td>
+                <td>{apz.apz_heat.main_ven}</td>
+              </tr>
+              <tr>
+                <td>Горячее водоснабжение, ср (Гкал/ч)</td>
+                <td>{apz.apz_heat.main_water}</td>
+              </tr>
+              <tr>
+                <td>Горячее водоснабжение, макс (Гкал/ч)</td>
+                <td>{apz.apz_heat.main_water_max}</td>
+              </tr>
+              <tr>
                 <td>Энергосб. мероприятие</td>
                 <td>{apz.apz_heat.saving}</td>
               </tr>
@@ -1672,15 +1690,25 @@ handleDirectorIDChange(event){
                 <td>Технолог. нужды(пар) (Т/ч)</td>
                 <td>{apz.apz_heat.tech}</td>
               </tr>
-              <tr>
-                <td>Разделить нагрузку</td>
-                <td>{apz.apz_heat.distribution}</td>
-              </tr>
 
               {apz.apz_heat.contract_num &&
                 <tr>
                   <td>Номер договора</td>
                   <td>{apz.apz_heat.contract_num}</td>
+                </tr>
+              }
+
+              {apz.apz_heat.general_in_contract &&
+                <tr>
+                  <td>Общая тепловая нагрузка по договору (Гкал/ч)</td>
+                  <td>{apz.apz_heat.general_in_contract}</td>
+                </tr>
+              }
+
+              {apz.apz_heat.tech_in_contract &&
+                <tr>
+                  <td>Технологическая нагрузка(пар) по договору (Гкал/ч)</td>
+                  <td>{apz.apz_heat.tech_in_contract}</td>
                 </tr>
               }
 
@@ -1714,8 +1742,9 @@ handleDirectorIDChange(event){
             </tbody>
           </table>
 
-          {apz.apz_heat.blocks &&
+          {apz.apz_heat.heatDistribution && apz.apz_heat.blocks &&
             <div>
+              <div>Разделение нагрузки</div>
               {apz.apz_heat.blocks.map(function(item, index) {
                 return(
                   <div key={index}>
