@@ -271,8 +271,8 @@ class AddApz extends React.Component {
       waterSewage: '',
       waterProduction: '',
       waterDrinking: '',
-      waterFireFighting: 10,
-      waterFireFightingIn: 10,
+      waterFireFighting: '',
+      waterFireFightingIn: '',
       sewageAmount: '',
       sewageFeksal: '',
       sewageProduction: '',
@@ -330,7 +330,7 @@ class AddApz extends React.Component {
     this.companySearch = this.companySearch.bind(this);
     this.onApplicantChange = this.onApplicantChange.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
-    this.onInputChangeLevel = this.onInputChangeLevel.bind(this);
+    //this.onInputChangeLevel = this.onInputChangeLevel.bind(this);
     this.Calculate_teplo = this.Calculate_teplo.bind(this);
     this.onBlockChange = this.onBlockChange.bind(this);
     this.downloadFile = this.downloadFile.bind(this);
@@ -355,7 +355,7 @@ class AddApz extends React.Component {
     const name = e.target.name;
     this.setState({ [name] : value });
   }
-  onInputChangeLevel(e) {
+  /*onInputChangeLevel(e) {
     const { value, name } = e.target;
     this.setState({ [name] : value });
     var unorma;
@@ -377,7 +377,7 @@ class AddApz extends React.Component {
       var heatGeneral = unorma * this.state.obshayaPloshad / 1.163 * (this.state.tempVnutri + 25)/(this.state.tempVnutri + 20.1) / 1000000;
       this.setState({heatGeneral: heatGeneral});
     }
-  }
+  }*/
 
   componentDidMount() {
     console.log(sessionStorage.getItem('userId'));
@@ -588,8 +588,12 @@ class AddApz extends React.Component {
         titleDocumentFile: 'Госакт и правоустанавливающий документ на земельный участок, договор о купли-продажи',
         objectType: 'Тип объекта',
         customer: 'Заказчик',
+<<<<<<< HEAD
         // waterRequirement: 'Общая потребность в воде',
         // waterSewage: 'Канализация '
+=======
+        waterRequirement: 'Общая потребность в воде'
+>>>>>>> 5d8cc9eda3f41e21488604b72f4f7041320841e8
       };
 
       if (this.state.phoneServiceNum || this.state.phoneSewage || this.state.phoneCapacity || this.state.phoneClientWishes) {
@@ -1062,41 +1066,7 @@ class AddApz extends React.Component {
           }else{
             return <div className="react-hint__content">
                     <div className="row">
-                      <div className="col-md-12" style={{verticalAlign: 'top'}}>
-                        <table style={{border:'1px solid #ced4da', borderRadius:'5px', display: 'inline-block'}}><tbody>
-                        <tr style={{background:'rgba(0, 0, 255, 0.05)', borderBottom: '1pt solid #ced4da'}}><td colSpan={2}>Для зданий строительства до 1995 г.</td></tr>
-                        <tr style={{background: 'rgba(0, 255, 0, 0.05)', borderBottom: '1pt solid #ced4da'}}><td>Этажность жилой<br/>постройки</td><td>Вт в час на 1 м<sup>2</sup><br/> общей площади(q<sub>уд</sub>)</td></tr>
-                        <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>1-3 этажные одноквартирные<br/>отдельностоящие</td><td>185</td></tr>
-                        <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>2-3 этажные одноквартирные<br/>облокированные</td><td>135</td></tr>
-                        <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>4-6 этажные кирпичные</td><td>80</td></tr>
-                        <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>4-6 этажные панельные</td><td>70</td></tr>
-                        <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>7-10 этажные кирпичные</td><td>75</td></tr>
-                        <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>7-10 этажные панельные</td><td>65</td></tr>
-                        <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>Более 10 этажей</td><td>85</td></tr></tbody></table>
-
-                        <table style={{verticalAlign: 'top', border:'1px solid #ced4da', borderRadius:'5px', display: 'inline-block'}}><tbody>
-                        <tr style={{background:'rgba(0, 0, 255, 0.05)', borderBottom: '1pt solid #ced4da'}}><td colSpan={2}>Для зданий строительства после 2000 г.</td></tr>
-                        <tr style={{background: 'rgba(0, 255, 0, 0.05)', borderBottom: '1pt solid #ced4da'}}><td>Этажность жилой<br/>постройки</td><td>Вт в час на 1 м<sup>2</sup><br/> общей площади(q<sub>уд</sub>)</td></tr>
-                        <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>1-3 этажные одноквартирные<br/>отдельностоящие</td><td>85</td></tr>
-                        <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>2-3 этажные одноквартирные<br/>облокированные</td><td>65</td></tr>
-                        <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>4-6 этажные кирпичные</td><td>55</td></tr>
-                        <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>7-10 этажные</td><td>50</td></tr>
-                        <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>11-14 этажные</td><td>45</td></tr>
-                        <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>Более 15 этажей</td><td>40</td></tr></tbody></table>
-                      </div>
-                    </div>
-                    <div className="row">
                       <div className="col-md-12">
-                        <table style={{border:'1px solid #ced4da', borderRadius:'5px', display: 'inline-block'}}><tbody>
-                        <tr style={{background:'rgba(0, 0, 255, 0.05)', borderBottom: '1pt solid #ced4da'}}><td colSpan={2}>Для зданий строительства после 2010 г.</td></tr>
-                        <tr style={{background: 'rgba(0, 255, 0, 0.05)', borderBottom: '1pt solid #ced4da'}}><td>Этажность жилой<br/>постройки</td><td>Вт в час на 1 м<sup>2</sup><br/> общей площади(q<sub>уд</sub>)</td></tr>
-                        <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>1-3 этажные одноквартирные<br/>отдельностоящие</td><td>73</td></tr>
-                        <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>2-3 этажные одноквартирные<br/>облокированные</td><td>58</td></tr>
-                        <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>4-6 этажные кирпичные</td><td>49</td></tr>
-                        <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>7-10 этажные</td><td>43</td></tr>
-                        <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>11-14 этажные</td><td>41</td></tr>
-                        <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>Более 15 этажей</td><td>38</td></tr></tbody></table>
-
                         <table style={{border:'1px solid #ced4da', borderRadius:'5px', display: 'inline-block'}}><tbody>
                         <tr style={{background:'rgba(0, 0, 255, 0.05)', borderBottom: '1pt solid #ced4da'}}><td colSpan={2}>Для зданий строительства после 2015 г.</td></tr>
                         <tr style={{background: 'rgba(0, 255, 0, 0.05)', borderBottom: '1pt solid #ced4da'}}><td>Этажность жилой<br/>постройки</td><td>Вт в час на 1 м<sup>2</sup><br/> общей площади(q<sub>уд</sub>)</td></tr>
@@ -1405,7 +1375,7 @@ class AddApz extends React.Component {
                         <div className="col-md-6">
                         <div className="form-group">
                           <label htmlFor="ObjectLevel">Этажность</label>
-                          <input data-rh="Этажность" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChangeLevel} value={this.state.objectLevel} name="objectLevel" placeholder="" />
+                          <input data-rh="Этажность" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChange} value={this.state.objectLevel} name="objectLevel" placeholder="" />
                         </div>
                         <div className="form-group">
                           <label htmlFor="ObjectArea">Площадь здания (кв.м)</label>
@@ -1643,9 +1613,12 @@ class AddApz extends React.Component {
                             <label>q<sub>уд</sub> <img data-custom data-custom-at="bottom" data-custom-id="2" src="./images/info.png" width="20px"/></label>
                             <select className="form-control" onChange={this.Calculate_teplo} value={this.state.udelnayaNorma} name="udelnayaNorma" data-rh="Нормируемый удельный расход тепловой энергии на отопление многоквартирного или индивидуального жилого дома на 1 м2 общей площади" data-rh-at="right">
                               <option></option>
-                              <option>173</option>
-                              <option>97</option>
-                              <option>81</option>
+                              <option>67</option>
+                              <option>55</option>
+                              <option>45</option>
+                              <option>40</option>
+                              <option>37</option>
+                              <option>36</option>
                             </select>
                           </div>
                           <div className="form-group">
@@ -3473,15 +3446,16 @@ class ShowMap extends React.Component {
                 sources: [{
                   featureLayer: new FeatureLayer({
                     //url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-                    url: "https://gis.uaig.kz/server/rest/services/Map2d/объекты_города/MapServer/20",
+                    url: "https://gis.uaig.kz/server/rest/services/Map2d/объекты_города3/MapServer/14",
                     popupTemplate: { // autocasts as new PopupTemplate()
                       title: `<table>
-                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Кадастровый номер:</td>  <td class="attrValue">`+"{kad_n}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Код района:</td>  <td class="attrValue">`+"{coder}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Адрес:</td>  <td class="attrValue">`+"{adress}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Целевое назначение</td>  <td class="attrValue">`+"{funk}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Площадь зу:</td>  <td class="attrValue">`+"{s}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Право:</td>  <td class="attrValue">`+"{right_}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Кадастровый номер:</td>  <td class="attrValue">`+"{cadastre_number}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Код административного района:</td>  <td class="attrValue">`+"{id_admraiona}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Адрес:</td>  <td class="attrValue">`+"{address}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Наименование</td>  <td class="attrValue">`+"{name}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Общая площадь:</td>  <td class="attrValue">`+"{obsch_area}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Площадь жил. помещения:</td>  <td class="attrValue">`+"{zhil_area}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Год постройки:</td>  <td class="attrValue">`+"{year_of_foundation}"+`</td></tr>
                       </table>`
                     }
                   }),
@@ -3498,7 +3472,7 @@ class ShowMap extends React.Component {
                 },{
                   featureLayer: new FeatureLayer({
                     //url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-                    url: "https://gis.uaig.kz/server/rest/services/Map2d/объекты_города/MapServer/27",
+                    url: "https://gis.uaig.kz/server/rest/services/Map2d/объекты_города3/MapServer/27",
                     popupTemplate: { // autocasts as new PopupTemplate()
                       title: `<table>
                         <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Кадастровый номер:</td>  <td class="attrValue">`+"{cadastre_n}"+`</td></tr>
@@ -3523,7 +3497,7 @@ class ShowMap extends React.Component {
                 },
                 {
                   featureLayer: new FeatureLayer({
-                    url: "https://gis.uaig.kz/server/rest/services/Map2d/Базовая_карта_MIL1/MapServer/16",
+                    url: "https://gis.uaig.kz/server/rest/services/Map2d/объекты_города3/MapServer/14",
                     popupTemplate: {
                       title: `<table>
                         <tr style="background-color: rgba(0, 0, 255, 0.05);width:100%"><td class="attrName">Адресный массив:</td>  <td class="attrValue">`+"{id_adr_massive}"+`</td></tr>
@@ -3535,43 +3509,16 @@ class ShowMap extends React.Component {
                         <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Площадь застройки, м2:</td>  <td class="attrValue">`+"{zastr_area}"+`</td></tr>
                         <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Наименование первичной улицы:</td>  <td class="attrValue">`+"{street_name_1}"+`</td></tr>
                         <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Основной номер дома:</td>  <td class="attrValue">`+"{number_1}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Второстепенный номер дома:</td>  <td class="attrValue">`+"{number_2}"+`</td></tr>
                       </table>`
                     }
                   }),
-                  searchFields: ["street_name_1","id_adr_massive"],
+                  searchFields: ["street_name_1","id_adr_massive", "address"],
                   displayField: "street_name_1" ,
                   exactMatch: false,
                   outFields: ["*"],
                   name: "Здания и сооружения",
                   placeholder: "введите улицу",
-                  maxResults: 6,
-                  maxSuggestions: 6,
-                  enableSuggestions: true,
-                  minCharacters: 0
-                },
-                {
-                  featureLayer: new FeatureLayer({
-                    url: "https://gis.uaig.kz/server/rest/services/Map2d/Базовая_карта_MIL1/MapServer/16",
-                    popupTemplate: {
-                      title: `<table>
-                        <tr style="background-color: rgba(0, 0, 255, 0.05);width:100%"><td class="attrName">Адресный массив:</td>  <td class="attrValue">`+"{id_adr_massive}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Количество этажей:</td>  <td class="attrValue">`+"{floor}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Год постройки:</td>  <td class="attrValue">`+"{year_of_foundation}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Общая площадь:</td>  <td class="attrValue">`+"{obsch_area}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Объем здания, м3:</td>  <td class="attrValue">`+"{volume_build}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Площадь жил. помещения:</td>  <td class="attrValue">`+"{zhil_area}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Площадь застройки, м2:</td>  <td class="attrValue">`+"{zastr_area}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Наименование первичной улицы:</td>  <td class="attrValue">`+"{street_name_1}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Основной номер дома:</td>  <td class="attrValue">`+"{number_1}"+`</td></tr>
-                      </table>`
-                    }
-                  }),
-                  searchFields: ["id_adr_massive"],
-                  displayField: "id_adr_massive",
-                  exactMatch: false,
-                  outFields: ["*"],
-                  name: "Микрорайон",
-                  placeholder: "введите название",
                   maxResults: 6,
                   maxSuggestions: 6,
                   enableSuggestions: true,
@@ -3583,6 +3530,7 @@ class ShowMap extends React.Component {
                 var layerList = new LayerList({
                   view: view
                 });
+                console.log(view.allLayerViews);
 
                 // Add the search widget to the top right corner of the view
                 view.ui.add(searchWidget, {
