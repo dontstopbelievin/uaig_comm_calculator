@@ -588,12 +588,8 @@ class AddApz extends React.Component {
         titleDocumentFile: 'Госакт и правоустанавливающий документ на земельный участок, договор о купли-продажи',
         objectType: 'Тип объекта',
         customer: 'Заказчик',
-<<<<<<< HEAD
         // waterRequirement: 'Общая потребность в воде',
         // waterSewage: 'Канализация '
-=======
-        waterRequirement: 'Общая потребность в воде'
->>>>>>> 5d8cc9eda3f41e21488604b72f4f7041320841e8
       };
 
       if (this.state.phoneServiceNum || this.state.phoneSewage || this.state.phoneCapacity || this.state.phoneClientWishes) {
