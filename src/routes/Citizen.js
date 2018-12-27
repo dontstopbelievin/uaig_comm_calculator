@@ -463,8 +463,10 @@ class AddApz extends React.Component {
         this.setState({objectRooms: apz.object_rooms ? apz.object_rooms : '' });
 
         if (apz.apz_electricity) {
-          this.setState({electricAllowedPower: apz.apz_electricity.allowed_power ? apz.apz_electricity.allowed_power : '' });
+          this.setState({n_lamp: apz.apz_electricity.number_lamps ? apz.apz_electricity.number_lamps : '' });
+          this.setState({n_rozetka: apz.apz_electricity.number_sockets ? apz.apz_electricity.number_sockets : '' });
           this.setState({electricRequiredPower: apz.apz_electricity.required_power ? apz.apz_electricity.required_power : '' });
+          this.setState({electricAllowedPower: apz.apz_electricity.allowed_power ? apz.apz_electricity.allowed_power : '' });
           this.setState({electricityPhase: apz.apz_electricity.phase ? apz.apz_electricity.phase : '' });
           this.setState({electricSafetyCategory: apz.apz_electricity.safety_category ? apz.apz_electricity.safety_category : '' });
         }
@@ -488,23 +490,28 @@ class AddApz extends React.Component {
         }
 
         if (apz.apz_heat) {
+          this.setState({udelnayaNorma: apz.apz_heat.udelnayaNorma ? apz.apz_heat.udelnayaNorma : '' });
+          this.setState({tempVnutri: apz.apz_heat.tempVnutri ? apz.apz_heat.tempVnutri : '' });
+          this.setState({obshayaPloshad: apz.apz_heat.obshayaPloshad ? apz.apz_heat.obshayaPloshad : '' });
           this.setState({heatGeneral: apz.apz_heat.general ? apz.apz_heat.general : '' });
           this.setState({heatTech: apz.apz_heat.tech ? apz.apz_heat.tech : '' });
-          this.setState({mainHeatMain: apz.apz_heat.mainHeatMain ? apz.apz_heat.mainHeatMain : '' });
-          this.setState({mainHeatVen: apz.apz_heat.mainHeatVen ? apz.apz_heat.mainHeatVen : '' });
-          this.setState({mainHeatWater: apz.apz_heat.mainHeatWater ? apz.apz_heat.mainHeatWater : '' });
-          this.setState({mainHeatWaterMax: apz.apz_heat.mainHeatWaterMax ? apz.apz_heat.mainHeatWaterMax : '' });
-          this.setState({heatDistribution: apz.apz_heat.distribution ? apz.apz_heat.distribution : false });
+          this.setState({mainHeatMain: apz.apz_heat.main_heat ? apz.apz_heat.main_heat : '' });
+          this.setState({mainHeatVen: apz.apz_heat.main_ven ? apz.apz_heat.main_ven : '' });
+          this.setState({mainHeatWater: apz.apz_heat.main_water ? apz.apz_heat.main_water : '' });
+          this.setState({mainHeatWaterMax: apz.apz_heat.main_water_max ? apz.apz_heat.main_water_max : '' });
+          if(apz.apz_heat.distribution != 0 && apz.apz_heat.distribution != null){
+              this.setState({heatDistribution: true});
+          }else {
+              this.setState({heatDistribution: false});
+          }
           this.setState({heatSaving: apz.apz_heat.saving ? apz.apz_heat.saving : '' });
-
           this.setState({contractNum: apz.apz_heat.contract_num ? apz.apz_heat.contract_num : '' });
-          this.setState({heatGeneralInContract: apz.apz_heat.heatGeneralInContract ? apz.apz_heat.heatGeneralInContract : '' });
-          this.setState({heatTechInContract: apz.apz_heat.heatTechInContract ? apz.apz_heat.heatTechInContract : '' });
+          this.setState({heatGeneralInContract: apz.apz_heat.general_in_contract ? apz.apz_heat.general_in_contract : '' });
+          this.setState({heatTechInContract: apz.apz_heat.tech_in_contract ? apz.apz_heat.tech_in_contract : '' });
           this.setState({heatMainInContract: apz.apz_heat.main_in_contract ? apz.apz_heat.main_in_contract : '' });
           this.setState({heatVenInContract: apz.apz_heat.ven_in_contract ? apz.apz_heat.ven_in_contract : '' });
           this.setState({heatWaterInContract: apz.apz_heat.water_in_contract ? apz.apz_heat.water_in_contract : '' });
           this.setState({heatWaterMaxInContract: apz.apz_heat.water_in_contract_max ? apz.apz_heat.water_in_contract_max : '' });
-
           if (apz.apz_heat.blocks) {
             for (var i = 0; i < apz.apz_heat.blocks.length; i++) {
               var blocks = this.state.blocks;
@@ -1398,10 +1405,7 @@ class AddApz extends React.Component {
                           P<sub>л</sub> - мощность 1 лампы, P<sub>л</sub> = 0,06 кВт; N<sub>л</sub> - количество ламп</p>
                         </div>
                         <div className="col-md-6">
-                          <div className="form-group">
-                            <label htmlFor="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)</label>
-                            <input data-rh="Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)" data-rh-at="right" type="number" step="any" name="electricAllowedPower" onChange={this.ObjectArea.bind(this)} value={this.state.electricAllowedPower} className="form-control" />
-                          </div>
+                          <div style={{borderRadius: '10px', background: 'rgb(239, 239, 239)', paddingLeft: '15px', paddingRight: '15px', paddingBottom: '5px'}}>
                           <div className="form-group">
                             <label>Количество ламп <img data-custom data-custom-at="bottom" data-custom-id="1" src="./images/info.png" width="20px"/></label>
                             <input data-rh="Количество ламп" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.Calculate_lamp.bind(this)} value={this.state.n_lamp} name="electricRequiredPower" placeholder="" />
@@ -1409,22 +1413,12 @@ class AddApz extends React.Component {
                           <div className="form-group">
                             <label>Количество розеток</label>
                             <input data-rh="Количество розеток" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.Calculate_rozetka.bind(this)} value={this.state.n_rozetka} name="electricRequiredPower" placeholder="" />
-                          </div>
+                          </div><hr/>
                           <div className="form-group">
                             <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
                             {/*<input data-rh="Требуемая мощность (кВт)" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} value={this.state.electricRequiredPower} name="electricRequiredPower" placeholder="" />*/}
                             <input data-rh="Требуемая мощность (кВт)" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} value={this.state.electricRequiredPower} name="electricRequiredPower" placeholder="" />
                           </div>
-                          <div className="form-group">
-                            <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
-                            <select className="form-control" onChange={this.onInputChange} value={this.state.electricityPhase} name="electricityPhase">
-                              <option>Однофазная</option>
-                              <option>Двухфазная</option>
-                              <option>Трехфазная</option>
-                              <option>Постоянная</option>
-                              <option>Временная</option>
-                              <option>Сезонная</option>
-                            </select>
                           </div>
                         </div>
                         <div className="col-md-6">
@@ -1453,6 +1447,21 @@ class AddApz extends React.Component {
                           <label htmlFor="ElectricMaxLoad">Существующая максимальная нагрузка (кВА)</label>
                           <input type="number" className="form-control" name="ElectricMaxLoad" />
                         </div>*/}
+                          <div className="form-group">
+                            <label htmlFor="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)</label>
+                            <input data-rh="Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)" data-rh-at="right" type="number" step="any" name="electricAllowedPower" onChange={this.ObjectArea.bind(this)} value={this.state.electricAllowedPower} className="form-control" />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
+                            <select className="form-control" onChange={this.onInputChange} value={this.state.electricityPhase} name="electricityPhase">
+                              <option>Однофазная</option>
+                              <option>Двухфазная</option>
+                              <option>Трехфазная</option>
+                              <option>Постоянная</option>
+                              <option>Временная</option>
+                              <option>Сезонная</option>
+                            </select>
+                          </div>
                           <div className="form-group">
                             <label htmlFor="ElectricSafetyCategory">Категория по надежности (кВт)</label>
                             <select required className="form-control" onChange={this.onInputChange} value={this.state.electricSafetyCategory} name="electricSafetyCategory">
@@ -1595,7 +1604,7 @@ class AddApz extends React.Component {
                     <form id="tab5-form" data-tab="5" onSubmit={this.saveApz.bind(this, false)}>
                       <div className="row">
                         <div className="col-md-12" style={{fontSize:'15px'}}>
-                          <p>Расчет по типовым правилам расчета норм потребления коммунальных услуг по теплоснабжению(<a target="_blank" href="http://online.zakon.kz/m/Document/?doc_id=31676321">см. Приказ</a>)</p>
+                          <p>Расчет по типовым правилам расчета норм потребления коммунальных услуг по теплоснабжению(<a target="_blank" href="http://online.zakon.kz/m/Document/?doc_id=31676321">см. Приказ</a> и <a target="_blank" href="https://online.zakon.kz/Document/?doc_id=35945475">СП РК 4.02-104-2013</a>)</p>
                           <p>Q = q<sub>уд</sub> * S/1.163 * (t<sub>вн</sub> - t<sub>сро</sub>)/(t<sub>вн</sub> - t<sub>ро</sub>) * 10<sup>-6</sup>- Общая тепловая нагрузка (Гкал/ч)<br/>
                           q<sub>уд</sub> - нормируемый удельный расход тепловой энергии; S - общая площадь<br/>
                           t<sub>вн</sub> - температура внутреннего воздуха (°С)<br/>
@@ -1703,7 +1712,7 @@ class AddApz extends React.Component {
                       <div style={{color:'#D8A82D !important'}}>
                         <label><input type="checkbox" onChange={this.onInputChange} checked={this.state.heatDistribution} name="heatDistribution" /> Разделить нагрузку по жилью и по встроенным помещениям</label>
                       </div>
-                      {this.state.heatDistribution &&
+                      {this.state.heatDistribution != 0 &&
                         <div>
                           <div className="block_list">
                             {this.state.blocks.map(function(item, index) {
