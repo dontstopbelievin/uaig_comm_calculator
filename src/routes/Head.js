@@ -604,14 +604,21 @@ class ShowApz extends React.Component {
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
-        if (xhr.status === 200) {
-          this.setState({ isSigned: true });
-          this.setState({ showSendButton: true });
-          alert('Успешно подписан.');
-        } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
-          alert(JSON.parse(xhr.responseText).message);
-        } else {
-          alert("Не удалось подписать файл");
+        switch (xhr.status) {
+          case 200:
+              this.setState({ isSigned: true });
+              this.setState({ showSendButton: true });
+              alert('Успешно подписан.');
+              break;
+          case 403:
+              if(JSON.parse(xhr.responseText).message){
+                  alert(JSON.parse(xhr.responseText).message);
+              }else{
+                alert("Не удалось подписать файл");
+              }
+              break;
+              default:
+                alert(xhr.status + " - для этого статуса не определена ошибка");
         }
       }.bind(this);
       xhr.send(JSON.stringify(data));

@@ -305,6 +305,11 @@ class AddApz extends React.Component {
       mainHeatWater: '',
       mainHeatWaterMax: '',
       hasHeatContract: false,
+      need_electro_provider: false,
+      need_water_provider: false,
+      need_phone_provider: false,
+      need_heat_provider: false,
+      need_gas_provider: false,
 
       showMap: false,
       hasCoordinates: false,
@@ -436,6 +441,11 @@ class AddApz extends React.Component {
         var apz = JSON.parse(xhr.responseText);
 
         this.setState({applicant: apz.applicant ? apz.applicant : '' });
+        this.setState({need_gas_provider: apz.need_gas_provider ? apz.need_gas_provider : false });
+        this.setState({need_heat_provider: apz.need_heat_provider ? apz.need_heat_provider : false });
+        this.setState({need_water_provider: apz.need_water_provider ? apz.need_water_provider : false });
+        this.setState({need_phone_provider: apz.need_phone_provider ? apz.need_phone_provider : false });
+        this.setState({need_electro_provider: apz.need_electro_provider ? apz.need_electro_provider : false });
         this.setState({applicantAddress: apz.applicantAddress ? apz.applicantAddress : '' });
         this.setState({phone: apz.phone ? apz.phone : '' });
         this.setState({region: apz.region ? apz.region : '' });
@@ -916,7 +926,6 @@ class AddApz extends React.Component {
 
         setTimeout(function() {
           progressbar.css('display', 'none');
-
           switch (category) {
             case 3:
               this.setState({personalIdFile: data});
@@ -946,7 +955,6 @@ class AddApz extends React.Component {
               this.setState({claimedCapacityJustification: data});
               break;
           }
-
           alert("Файл успешно загружен");
         }.bind(this), '1000')
       }.bind(this),
@@ -1398,105 +1406,110 @@ class AddApz extends React.Component {
                   </div>
                   <div className="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-link">
                     <form id="tab2-form" data-tab="2" onSubmit={this.saveApz.bind(this, false)}>
-                      <div className="row">
-                        <div className="col-md-12" style={{fontSize:'15px'}}>
-                          <p>Расчет по типовым правилам расчета норм потребления коммунальных услуг по электроснабжению(<a target="_blank" href="http://online.zakon.kz/m/Document/?doc_id=31676321">см. Приказ</a>)</p>
-                          <p>P = N<sub>л</sub> * P<sub>л</sub> + N<sub>р</sub> * P<sub>р</sub> - Требуемая мощность (кВт)<br/>
-                          P<sub>р</sub> - мощность 1 электрической розетки, P<sub>р</sub> = 0,6 кВт; N<sub>р</sub> - количество розеток<br/>
-                          P<sub>л</sub> - мощность 1 лампы, P<sub>л</sub> = 0,06 кВт; N<sub>л</sub> - количество ламп</p>
+                      <div className="col-md-12">
+                        <div style={{color:'#D8A82D !important'}}>
+                          <label><input type="checkbox" onChange={this.onInputChange} checked={this.state.need_electro_provider} name="need_electro_provider" /> Подать заявление на выдачу технического условия электроснабжения</label>
                         </div>
-                        <div className="col-md-6">
-                          <div style={{borderRadius: '10px', background: 'rgb(239, 239, 239)', paddingLeft: '15px', paddingRight: '15px', paddingBottom: '5px'}}>
-                          <div className="form-group">
-                            <label>Количество ламп <img data-custom data-custom-at="bottom" data-custom-id="1" src="./images/info.png" width="20px"/></label>
-                            <input data-rh="Количество ламп" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.Calculate_lamp.bind(this)} value={this.state.n_lamp} name="electricRequiredPower" placeholder="" />
-                          </div>
-                          <div className="form-group">
-                            <label>Количество розеток</label>
-                            <input data-rh="Количество розеток" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.Calculate_rozetka.bind(this)} value={this.state.n_rozetka} name="electricRequiredPower" placeholder="" />
-                          </div><hr/>
-                          <div className="form-group">
-                            <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
-                            {/*<input data-rh="Требуемая мощность (кВт)" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} value={this.state.electricRequiredPower} name="electricRequiredPower" placeholder="" />*/}
-                            <input data-rh="Требуемая мощность (кВт)" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} value={this.state.electricRequiredPower} name="electricRequiredPower" placeholder="" />
-                          </div>
-                          </div>
-                        </div>
-                        <div className="col-md-6">
-                        {/*<div className="form-group">
-                          <label htmlFor="">Предполагается установить</label>
-                          <br />
+                        <hr style={{marginTop:'5px'}}/>
+                      </div>
+                      {this.state.need_electro_provider &&
+                        <div className="row">
                           <div className="col-md-6">
-                          <ul style="list-style-type: none; padding-left: 3px">
-                            <li><input type="checkbox" id="CB1"><span style="padding-left: 3px" htmlFor="CB1">электрокотлы</span><input type="text" className="form-control" placeholder=""></li>
-                            <li><input type="checkbox" id="CB2"><span style="padding-left: 3px" htmlFor="CB2">электрокалориферы</span><input type="text" className="form-control" placeholder=""></li>
-                            <li><input type="checkbox" id="CB3"><span style="padding-left: 3px" htmlFor="CB3">электроплитки</span><input type="text" className="form-control" placeholder=""></li>
-                          </ul>
-                          </div>
-                          <div className="col-md-6">
-                          <ul style="list-style-type: none; padding-left: 3px">
-                            <li><input type="checkbox" id="CB4"><span style="padding-left: 3px" htmlFor="CB4">электропечи</span><input type="text" className="form-control" placeholder=""></li>
-                            <li><input type="checkbox" id="CB5"><span style="padding-left: 3px" htmlFor="CB5">электроводонагреватели</span><input type="text" className="form-control" placeholder=""></li>
-                          </ul>
-                          </div>
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="ElectricMaxLoadDevice">Из указанной макс. нагрузки относятся к электроприемникам (кВА):</label>
-                          <input type="number" className="form-control" name="ElectricMaxLoadDevice" placeholder="" />
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="ElectricMaxLoad">Существующая максимальная нагрузка (кВА)</label>
-                          <input type="number" className="form-control" name="ElectricMaxLoad" />
-                        </div>*/}
-                          <div className="form-group">
-                            <label htmlFor="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)</label>
-                            <input data-rh="Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)" data-rh-at="right" type="number" step="any" name="electricAllowedPower" onChange={this.ObjectArea.bind(this)} value={this.state.electricAllowedPower} className="form-control" />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
-                            <select className="form-control" onChange={this.onInputChange} value={this.state.electricityPhase} name="electricityPhase">
-                              <option>Однофазная</option>
-                              <option>Двухфазная</option>
-                              <option>Трехфазная</option>
-                              <option>Постоянная</option>
-                              <option>Временная</option>
-                              <option>Сезонная</option>
-                            </select>
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="ElectricSafetyCategory">Категория по надежности (кВт)</label>
-                            <select required className="form-control" onChange={this.onInputChange} value={this.state.electricSafetyCategory} name="electricSafetyCategory">
-                              <option value="1">1</option>
-                              <option value="2">2</option>
-                              <option value="3">3</option>
-                            </select>
-                          </div>
-                          <div className="form-group">
-                            <label>Расчет-обоснование заявленной мощности</label>
-                            <div className="file_container">
-                              <div className="progress mb-2" data-category="24" style={{height: '20px', display: 'none'}}>
-                                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                              </div>
-
-                              {this.state.claimedCapacityJustification &&
-                                <div className="file_block mb-2">
-                                  <div>
-                                    {this.state.claimedCapacityJustification.name}
-                                    <a className="pointer" onClick={(e) => this.setState({claimedCapacityJustification: false}) }>×</a>
-                                  </div>
-                                </div>
-                              }
-
-                              <div className="file_buttons btn-group btn-group-justified d-table mt-0">
-                                <label htmlFor="ClaimedCapacityJustification" className="btn btn-success" style={{marginRight: '2px'}}>Загрузить</label>
-                                <input type="file" id="ClaimedCapacityJustification" name="ClaimedCapacityJustification" className="form-control" onChange={this.uploadFile.bind(this, 24)} style={{display: 'none'}} />
-                                <label onClick={this.selectFromList.bind(this, 24)} className="btn btn-info">Выбрать из списка</label>
-                              </div>
-                              <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
+                           <div style={{borderRadius: '10px', background: 'rgb(239, 239, 239)', paddingLeft: '15px', paddingRight: '15px', paddingBottom: '5px'}}>
+                            <div className="text-center" style={{fontSize:'15px'}}>
+                            <p>Расчет по типовым правилам расчета норм потребления коммунальных услуг по электроснабжению(<a target="_blank" href="http://online.zakon.kz/m/Document/?doc_id=31676321">см. Приказ</a>)</p>
+                            </div><hr/>
+                            <div className="form-group">
+                              <label>Количество ламп <img data-custom data-custom-at="bottom" data-custom-id="1" src="./images/info.png" width="20px"
+                              style={{borderRadius: '10px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'}}/></label>
+                              <input data-rh="Количество ламп" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.Calculate_lamp.bind(this)} value={this.state.n_lamp} name="electricRequiredPower" placeholder="" />
+                            </div>
+                            <div className="form-group">
+                              <label>Количество розеток</label>
+                              <input data-rh="Количество розеток" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.Calculate_rozetka.bind(this)} value={this.state.n_rozetka} name="electricRequiredPower" placeholder="" />
+                            </div><hr/>
+                            <div className="form-group">
+                              <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
+                              {/*<input data-rh="Требуемая мощность (кВт)" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} value={this.state.electricRequiredPower} name="electricRequiredPower" placeholder="" />*/}
+                              <input data-rh="Требуемая мощность (кВт)" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} value={this.state.electricRequiredPower} name="electricRequiredPower" placeholder="" />
+                            </div>
                             </div>
                           </div>
-                        </div>
-                      </div>
+                          <div className="col-md-6">
+                          {/*<div className="form-group">
+                            <label htmlFor="">Предполагается установить</label>
+                            <br />
+                            <div className="col-md-6">
+                            <ul style="list-style-type: none; padding-left: 3px">
+                              <li><input type="checkbox" id="CB1"><span style="padding-left: 3px" htmlFor="CB1">электрокотлы</span><input type="text" className="form-control" placeholder=""></li>
+                              <li><input type="checkbox" id="CB2"><span style="padding-left: 3px" htmlFor="CB2">электрокалориферы</span><input type="text" className="form-control" placeholder=""></li>
+                              <li><input type="checkbox" id="CB3"><span style="padding-left: 3px" htmlFor="CB3">электроплитки</span><input type="text" className="form-control" placeholder=""></li>
+                            </ul>
+                            </div>
+                            <div className="col-md-6">
+                            <ul style="list-style-type: none; padding-left: 3px">
+                              <li><input type="checkbox" id="CB4"><span style="padding-left: 3px" htmlFor="CB4">электропечи</span><input type="text" className="form-control" placeholder=""></li>
+                              <li><input type="checkbox" id="CB5"><span style="padding-left: 3px" htmlFor="CB5">электроводонагреватели</span><input type="text" className="form-control" placeholder=""></li>
+                            </ul>
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="ElectricMaxLoadDevice">Из указанной макс. нагрузки относятся к электроприемникам (кВА):</label>
+                            <input type="number" className="form-control" name="ElectricMaxLoadDevice" placeholder="" />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="ElectricMaxLoad">Существующая максимальная нагрузка (кВА)</label>
+                            <input type="number" className="form-control" name="ElectricMaxLoad" />
+                          </div>*/}
+                            <div className="form-group">
+                              <label htmlFor="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)</label>
+                              <input data-rh="Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)" data-rh-at="right" type="number" step="any" name="electricAllowedPower" onChange={this.ObjectArea.bind(this)} value={this.state.electricAllowedPower} className="form-control" />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
+                              <select className="form-control" onChange={this.onInputChange} value={this.state.electricityPhase} name="electricityPhase">
+                                <option>Однофазная</option>
+                                <option>Двухфазная</option>
+                                <option>Трехфазная</option>
+                                <option>Постоянная</option>
+                                <option>Временная</option>
+                                <option>Сезонная</option>
+                              </select>
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="ElectricSafetyCategory">Категория по надежности (кВт)</label>
+                              <select required className="form-control" onChange={this.onInputChange} value={this.state.electricSafetyCategory} name="electricSafetyCategory">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                              </select>
+                            </div>
+                            <div className="form-group">
+                              <label>Расчет-обоснование заявленной мощности</label>
+                              <div className="file_container">
+                                <div className="progress mb-2" data-category="24" style={{height: '20px', display: 'none'}}>
+                                  <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+
+                                {this.state.claimedCapacityJustification &&
+                                  <div className="file_block mb-2">
+                                    <div>
+                                      {this.state.claimedCapacityJustification.name}
+                                      <a className="pointer" onClick={(e) => this.setState({claimedCapacityJustification: false}) }>×</a>
+                                    </div>
+                                  </div>
+                                }
+
+                                <div className="file_buttons btn-group btn-group-justified d-table mt-0">
+                                  <label htmlFor="ClaimedCapacityJustification" className="btn btn-success" style={{marginRight: '2px'}}>Загрузить</label>
+                                  <input type="file" id="ClaimedCapacityJustification" name="ClaimedCapacityJustification" className="form-control" onChange={this.uploadFile.bind(this, 24)} style={{display: 'none'}} />
+                                  <label onClick={this.selectFromList.bind(this, 24)} className="btn btn-info">Выбрать из списка</label>
+                                </div>
+                                <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>}
                       <div>
                         <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                       </div>
@@ -1505,6 +1518,13 @@ class AddApz extends React.Component {
                   </div>
                   <div className="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-link">
                     <form id="tab3-form" data-tab="3" onSubmit={this.saveApz.bind(this, false)}>
+                      <div className="col-md-12">
+                        <div style={{color:'#D8A82D !important'}}>
+                          <label><input type="checkbox" onChange={this.onInputChange} checked={this.state.need_water_provider} name="need_water_provider" /> Подать заявление на выдачу технического условия водоснабжения</label>
+                        </div>
+                        <hr style={{marginTop:'5px'}}/>
+                      </div>
+                      {this.state.need_water_provider &&
                       <div className="row">
                         <div className="col-md-6">
                           <div className="form-group">
@@ -1562,7 +1582,7 @@ class AddApz extends React.Component {
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </div>}
                       <div>
                         <div className="form-group">
                           <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
@@ -1603,19 +1623,23 @@ class AddApz extends React.Component {
                   </div>
                   <div className="tab-pane fade" id="tab5" role="tabpanel" aria-labelledby="tab5-link">
                     <form id="tab5-form" data-tab="5" onSubmit={this.saveApz.bind(this, false)}>
-                      <div className="row">
-                        <div className="col-md-12" style={{fontSize:'15px'}}>
-                          <p>Расчет по типовым правилам расчета норм потребления коммунальных услуг по теплоснабжению(<a target="_blank" href="http://online.zakon.kz/m/Document/?doc_id=31676321">см. Приказ</a> и <a target="_blank" href="https://online.zakon.kz/Document/?doc_id=35945475">СП РК 4.02-104-2013</a>)</p>
-                          <p>Q = q<sub>уд</sub> * S/1.163 * (t<sub>вн</sub> - t<sub>сро</sub>)/(t<sub>вн</sub> - t<sub>ро</sub>) * 10<sup>-6</sup>- Общая тепловая нагрузка (Гкал/ч)<br/>
-                          q<sub>уд</sub> - нормируемый удельный расход тепловой энергии; S - общая площадь<br/>
-                          t<sub>вн</sub> - температура внутреннего воздуха (°С)<br/>
-                          t<sub>сро</sub> - среднесуточная темп. наружного воздуха за расчетный период (°С), t<sub>сро</sub> = -25<br/>
-                          t<sub>ро</sub> - расч. темп. наружного воздуха в целях проектирования отопления (°С), t<sub>ро</sub> = -20.1</p>
+                      <div className="col-md-12">
+                        <div style={{color:'#D8A82D !important'}}>
+                          <label><input type="checkbox" onChange={this.onInputChange} checked={this.state.need_heat_provider} name="need_heat_provider" /> Подать заявление на выдачу технического условия теплоснабжения</label>
                         </div>
+                        <hr style={{marginTop:'5px'}}/>
+                      </div>
+                      {this.state.need_heat_provider &&
+                      <div>
+                      <div className="row">
                         <div className="col-md-6" style={{padding: '0px'}}>
-                          <div style={{borderRadius: '10px', background: 'rgb(239, 239, 239)', paddingLeft: '15px', paddingRight: '15px', paddingBottom: '5px'}}>
+                         <div style={{borderRadius: '10px', background: 'rgb(239, 239, 239)', paddingLeft: '15px', paddingRight: '15px', paddingBottom: '5px'}}>
+                          <div className="text-center" style={{fontSize:'15px'}}>
+                          <p>Расчет по типовым правилам расчета норм потребления коммунальных услуг по теплоснабжению(<a target="_blank" href="http://online.zakon.kz/m/Document/?doc_id=31676321">см. Приказ</a> и <br/> <a target="_blank" href="https://online.zakon.kz/Document/?doc_id=35945475">СП РК 4.02-104-2013</a>)</p>
+                          </div><hr/>
                           <div className="form-group">
-                            <label>q<sub>уд</sub> <img data-custom data-custom-at="bottom" data-custom-id="2" src="./images/info.png" width="20px"/></label>
+                            <label>q<sub>уд</sub> <img data-custom data-custom-at="bottom" data-custom-id="2" src="./images/info.png" width="20px"
+                            style={{borderRadius: '10px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'}}/></label>
                             <select className="form-control" onChange={this.Calculate_teplo} value={this.state.udelnayaNorma} name="udelnayaNorma" data-rh="Нормируемый удельный расход тепловой энергии на отопление многоквартирного или индивидуального жилого дома на 1 м2 общей площади" data-rh-at="right">
                               <option></option>
                               <option>67</option>
@@ -1638,13 +1662,13 @@ class AddApz extends React.Component {
                             <label htmlFor="HeatGeneral">Общая тепловая нагрузка (Гкал/ч)</label>
                             <input data-rh="Общая тепловая нагрузка (Гкал/ч)" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.heatGeneral} step="any" className="form-control" name="heatGeneral" placeholder="" />
                           </div>
-                          </div>
-                          <div className="form-group" style={{padding: '0px 15px'}}>
+                         </div>
+                        </div>
+                        <div className="col-md-6">
+                          <div className="form-group">
                             <label htmlFor="HeatTech">Отопление (Гкал/ч)</label>
                             <input data-rh="Отопление (Гкал/ч)" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.onInputChange} value={this.state.mainHeatMain} name="mainHeatMain" placeholder="" />
                           </div>
-                        </div>
-                        <div className="col-md-6">
                           <div className="form-group">
                             <label htmlFor="HeatTech">Вентиляция (Гкал/ч)</label>
                             <input data-rh="Вентиляция (Гкал/ч)" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.onInputChange} value={this.state.mainHeatVen} name="mainHeatVen" placeholder="" />
@@ -1727,7 +1751,7 @@ class AddApz extends React.Component {
                           </div>
                         </div>
                       }
-
+                      </div>}
                       <div>
                         <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                       </div>
@@ -1752,6 +1776,13 @@ class AddApz extends React.Component {
                   </div>
                   <div className="tab-pane fade" id="tab7" role="tabpanel" aria-labelledby="tab7-link">
                     <form id="tab7-form" data-tab="7" onSubmit={this.saveApz.bind(this, false)}>
+                      <div className="col-md-12">
+                        <div style={{color:'#D8A82D !important'}}>
+                          <label><input type="checkbox" onChange={this.onInputChange} checked={this.state.need_phone_provider} name="need_phone_provider" /> Подать заявление на выдачу технического условия телефонизации</label>
+                        </div>
+                        <hr style={{marginTop:'5px'}}/>
+                      </div>
+                      {this.state.need_phone_provider &&
                       <div className="row">
                         <div className="col-md-6">
                           <div className="form-group">
@@ -1797,7 +1828,7 @@ class AddApz extends React.Component {
                             <input data-rh="Пожелания заказчика" data-rh-at="right" type="text" onChange={this.onInputChange} value={this.state.phoneClientWishes} className="form-control" name="phoneClientWishes" placeholder="Тип оборудования, тип кабеля и др." />
                           </div>
                         </div>
-                      </div>
+                      </div>}
                       <div>
                         <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                       </div>
@@ -1806,9 +1837,16 @@ class AddApz extends React.Component {
                   </div>
                   <div className="tab-pane fade" id="tab8" role="tabpanel" aria-labelledby="tab8-link">
                     <form id="tab8-form" data-tab="8" onSubmit={this.saveApz.bind(this, false)}>
+                      <div className="col-md-12">
+                        <div style={{color:'#D8A82D !important'}}>
+                          <label><input type="checkbox" onChange={this.onInputChange} checked={this.state.need_gas_provider} name="need_gas_provider" /> Подать заявление на выдачу технического условия газоснабжения</label>
+                        </div>
+                        <hr style={{marginTop:'5px'}}/>
+                      </div>
+                      {this.state.need_gas_provider &&
                       <div className="row">
                         <div className="col-md-12" style={{fontSize:'15px'}}>
-                          <p>Расчета и утверждения норм потребления газа на отопление(<a target="_blank" href="http://online.zakon.kz/Document/?doc_id=32782895">см. Приказ</a>)</p>
+                          {/*<p>Расчета и утверждения норм потребления газа на отопление(<a target="_blank" href="http://online.zakon.kz/Document/?doc_id=32782895">см. Приказ</a>)</p>*/}
                         </div>
                         <div className="col-md-6">
                           <div className="form-group">
@@ -1838,7 +1876,7 @@ class AddApz extends React.Component {
                             <input data-rh="Горячее водоснабжение при газификации многоэтажных домов (м3/час)" data-rh-at="right" type="number" step="any" onChange={this.onInputChange} value={this.state.gasWater} className="form-control" name="gasWater" />
                           </div>
                         </div>
-                      </div>
+                      </div>}
                       <div>
                         <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                       </div>
