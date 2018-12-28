@@ -1092,6 +1092,22 @@ class ShowApz extends React.Component {
                             <td>{apz.apz_heat.general}</td>
                           </tr>
                           <tr>
+                            <td>Отопление (Гкал/ч)</td>
+                            <td>{apz.apz_heat.main_heat}</td>
+                          </tr>
+                          <tr>
+                            <td>Вентиляция (Гкал/ч)</td>
+                            <td>{apz.apz_heat.main_ven}</td>
+                          </tr>
+                          <tr>
+                            <td>Горячее водоснабжение, ср (Гкал/ч)</td>
+                            <td>{apz.apz_heat.main_water}</td>
+                          </tr>
+                          <tr>
+                            <td>Горячее водоснабжение, макс (Гкал/ч)</td>
+                            <td>{apz.apz_heat.main_water_max}</td>
+                          </tr>
+                          <tr>
                             <td>Энергосб. мероприятие</td>
                             <td>{apz.apz_heat.saving}</td>
                           </tr>
@@ -1099,15 +1115,25 @@ class ShowApz extends React.Component {
                             <td>Технолог. нужды(пар) (Т/ч)</td>
                             <td>{apz.apz_heat.tech}</td>
                           </tr>
-                          <tr>
-                            <td>Разделить нагрузку</td>
-                            <td>{apz.apz_heat.distribution}</td>
-                          </tr>
 
                           {apz.apz_heat.contract_num &&
                             <tr>
                               <td>Номер договора</td>
                               <td>{apz.apz_heat.contract_num}</td>
+                            </tr>
+                          }
+
+                          {apz.apz_heat.general_in_contract &&
+                            <tr>
+                              <td>Общая тепловая нагрузка по договору (Гкал/ч)</td>
+                              <td>{apz.apz_heat.general_in_contract}</td>
+                            </tr>
+                          }
+
+                          {apz.apz_heat.tech_in_contract &&
+                            <tr>
+                              <td>Технологическая нагрузка(пар) по договору (Гкал/ч)</td>
+                              <td>{apz.apz_heat.tech_in_contract}</td>
                             </tr>
                           }
 
@@ -1141,8 +1167,9 @@ class ShowApz extends React.Component {
                         </tbody>
                       </table>
 
-                      {apz.apz_heat.blocks &&
+                      {apz.apz_heat.heatDistribution && apz.apz_heat.blocks &&
                         <div>
+                          <div>Разделение нагрузки</div>
                           {apz.apz_heat.blocks.map(function(item, index) {
                             return(
                               <div key={index}>

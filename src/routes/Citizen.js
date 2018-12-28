@@ -160,8 +160,9 @@ class AllApzs extends React.Component {
             <table className="table">
               <thead>
                 <tr>
-                  <th style={{width: '23%'}}>Название</th>
-                  <th style={{width: '23%'}}>Заявитель</th>
+                  <th style={{width: '5%'}}>ИД</th>
+                  <th style={{width: '21%'}}>Название</th>
+                  <th style={{width: '20%'}}>Заявитель</th>
                   <th style={{width: '20%'}}>Адрес</th>
                   <th style={{width: '20%'}}>Дата заявления</th>
                   <th></th>
@@ -171,6 +172,7 @@ class AllApzs extends React.Component {
                 {apzs.map(function(apz, index) {
                   return(
                     <tr key={index}>
+                      <td>{apz.id}</td>
                       <td>
                         {apz.project_name}
 
@@ -245,6 +247,7 @@ class AddApz extends React.Component {
       claimedCapacityJustification: null,
 
       applicant: '',
+      applicantAddress: '',
       type: 1,
       phone: '',
       region: 'Наурызбай',
@@ -271,15 +274,15 @@ class AddApz extends React.Component {
       waterSewage: '',
       waterProduction: '',
       waterDrinking: '',
-      waterFireFighting: 10,
-      waterFireFightingIn: 10,
+      waterFireFighting: '',
+      waterFireFightingIn: '',
       sewageAmount: '',
       sewageFeksal: '',
       sewageProduction: '',
       sewageToCity: '',
       heatGeneral: '',
       heatTech: '',
-      heatDistribution: '',
+      heatDistribution: false,
       heatSaving: '',
       sewageClientWishes: '',
       phoneServiceNum: '',
@@ -294,11 +297,22 @@ class AddApz extends React.Component {
       gasConditioner: '',
       gasWater: '',
       contractNum: '',
+      heatGeneralInContract: '',
+      heatTechInContract: '',
       heatMainInContract: '',
       heatVenInContract: '',
       heatWaterInContract: '',
       heatWaterMaxInContract: '',
+      mainHeatMain: '',
+      mainHeatVen: '',
+      mainHeatWater: '',
+      mainHeatWaterMax: '',
       hasHeatContract: false,
+      need_electro_provider: false,
+      need_water_provider: false,
+      need_phone_provider: false,
+      need_heat_provider: false,
+      need_gas_provider: false,
 
       showMap: false,
       hasCoordinates: false,
@@ -324,7 +338,7 @@ class AddApz extends React.Component {
     this.companySearch = this.companySearch.bind(this);
     this.onApplicantChange = this.onApplicantChange.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
-    this.onInputChangeLevel = this.onInputChangeLevel.bind(this);
+    //this.onInputChangeLevel = this.onInputChangeLevel.bind(this);
     this.Calculate_teplo = this.Calculate_teplo.bind(this);
     this.onBlockChange = this.onBlockChange.bind(this);
     this.downloadFile = this.downloadFile.bind(this);
@@ -345,10 +359,11 @@ class AddApz extends React.Component {
   }
 
   onInputChange(e) {
-    const { value, name } = e.target;
+    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    const name = e.target.name;
     this.setState({ [name] : value });
   }
-  onInputChangeLevel(e) {
+  /*onInputChangeLevel(e) {
     const { value, name } = e.target;
     this.setState({ [name] : value });
     var unorma;
@@ -370,7 +385,7 @@ class AddApz extends React.Component {
       var heatGeneral = unorma * this.state.obshayaPloshad / 1.163 * (this.state.tempVnutri + 25)/(this.state.tempVnutri + 20.1) / 1000000;
       this.setState({heatGeneral: heatGeneral});
     }
-  }
+  }*/
 
   componentDidMount() {
     console.log(sessionStorage.getItem('userId'));
@@ -429,6 +444,12 @@ class AddApz extends React.Component {
         var apz = JSON.parse(xhr.responseText);
 
         this.setState({applicant: apz.applicant ? apz.applicant : '' });
+        this.setState({need_gas_provider: apz.need_gas_provider ? apz.need_gas_provider : false });
+        this.setState({need_heat_provider: apz.need_heat_provider ? apz.need_heat_provider : false });
+        this.setState({need_water_provider: apz.need_water_provider ? apz.need_water_provider : false });
+        this.setState({need_phone_provider: apz.need_phone_provider ? apz.need_phone_provider : false });
+        this.setState({need_electro_provider: apz.need_electro_provider ? apz.need_electro_provider : false });
+        this.setState({applicantAddress: apz.applicantAddress ? apz.applicantAddress : '' });
         this.setState({phone: apz.phone ? apz.phone : '' });
         this.setState({region: apz.region ? apz.region : '' });
         this.setState({designer: apz.designer ? apz.designer : '' });
@@ -455,8 +476,10 @@ class AddApz extends React.Component {
         this.setState({objectRooms: apz.object_rooms ? apz.object_rooms : '' });
 
         if (apz.apz_electricity) {
-          this.setState({electricAllowedPower: apz.apz_electricity.allowed_power ? apz.apz_electricity.allowed_power : '' });
+          this.setState({n_lamp: apz.apz_electricity.number_lamps ? apz.apz_electricity.number_lamps : '' });
+          this.setState({n_rozetka: apz.apz_electricity.number_sockets ? apz.apz_electricity.number_sockets : '' });
           this.setState({electricRequiredPower: apz.apz_electricity.required_power ? apz.apz_electricity.required_power : '' });
+          this.setState({electricAllowedPower: apz.apz_electricity.allowed_power ? apz.apz_electricity.allowed_power : '' });
           this.setState({electricityPhase: apz.apz_electricity.phase ? apz.apz_electricity.phase : '' });
           this.setState({electricSafetyCategory: apz.apz_electricity.safety_category ? apz.apz_electricity.safety_category : '' });
         }
@@ -480,17 +503,28 @@ class AddApz extends React.Component {
         }
 
         if (apz.apz_heat) {
+          this.setState({udelnayaNorma: apz.apz_heat.udelnayaNorma ? apz.apz_heat.udelnayaNorma : '' });
+          this.setState({tempVnutri: apz.apz_heat.tempVnutri ? apz.apz_heat.tempVnutri : '' });
+          this.setState({obshayaPloshad: apz.apz_heat.obshayaPloshad ? apz.apz_heat.obshayaPloshad : '' });
           this.setState({heatGeneral: apz.apz_heat.general ? apz.apz_heat.general : '' });
           this.setState({heatTech: apz.apz_heat.tech ? apz.apz_heat.tech : '' });
-          this.setState({heatDistribution: apz.apz_heat.distribution ? apz.apz_heat.distribution : '' });
+          this.setState({mainHeatMain: apz.apz_heat.main_heat ? apz.apz_heat.main_heat : '' });
+          this.setState({mainHeatVen: apz.apz_heat.main_ven ? apz.apz_heat.main_ven : '' });
+          this.setState({mainHeatWater: apz.apz_heat.main_water ? apz.apz_heat.main_water : '' });
+          this.setState({mainHeatWaterMax: apz.apz_heat.main_water_max ? apz.apz_heat.main_water_max : '' });
+          if(apz.apz_heat.distribution != 0 && apz.apz_heat.distribution != null){
+              this.setState({heatDistribution: true});
+          }else {
+              this.setState({heatDistribution: false});
+          }
           this.setState({heatSaving: apz.apz_heat.saving ? apz.apz_heat.saving : '' });
-
           this.setState({contractNum: apz.apz_heat.contract_num ? apz.apz_heat.contract_num : '' });
+          this.setState({heatGeneralInContract: apz.apz_heat.general_in_contract ? apz.apz_heat.general_in_contract : '' });
+          this.setState({heatTechInContract: apz.apz_heat.tech_in_contract ? apz.apz_heat.tech_in_contract : '' });
           this.setState({heatMainInContract: apz.apz_heat.main_in_contract ? apz.apz_heat.main_in_contract : '' });
           this.setState({heatVenInContract: apz.apz_heat.ven_in_contract ? apz.apz_heat.ven_in_contract : '' });
           this.setState({heatWaterInContract: apz.apz_heat.water_in_contract ? apz.apz_heat.water_in_contract : '' });
           this.setState({heatWaterMaxInContract: apz.apz_heat.water_in_contract_max ? apz.apz_heat.water_in_contract_max : '' });
-
           if (apz.apz_heat.blocks) {
             for (var i = 0; i < apz.apz_heat.blocks.length; i++) {
               var blocks = this.state.blocks;
@@ -507,7 +541,8 @@ class AddApz extends React.Component {
             }
           }
 
-          if (this.state.heatMainInContract || this.state.heatVenInContract || this.state.heatWaterInContract || this.state.heatWaterMaxInContract) {
+          if (this.state.heatMainInContract || this.state.heatVenInContract || this.state.heatWaterInContract || this.state.heatWaterMaxInContract
+          || this.state.heatTechInContract || this.state.heatGeneralInContract) {
             this.setState({ hasHeatContract: true });
           }
         }
@@ -564,6 +599,7 @@ class AddApz extends React.Component {
     if (publish) {
       var requiredFields = {
         applicant: 'Заявитель',
+        applicantAddress: 'Адрес жительства',
         personalIdFile: 'Уд.личности/Реквизиты',
         projectName: 'Наименование проектируемого объекта',
         projectAddress: 'Адрес проектируемого объекта',
@@ -572,8 +608,8 @@ class AddApz extends React.Component {
         titleDocumentFile: 'Госакт и правоустанавливающий документ на земельный участок, договор о купли-продажи',
         objectType: 'Тип объекта',
         customer: 'Заказчик',
-        waterRequirement: 'Общая потребность в воде',
-        waterSewage: 'Канализация '
+        // waterRequirement: 'Общая потребность в воде',
+        // waterSewage: 'Канализация '
       };
 
       if (this.state.phoneServiceNum || this.state.phoneSewage || this.state.phoneCapacity || this.state.phoneClientWishes) {
@@ -658,6 +694,8 @@ class AddApz extends React.Component {
   onHeatContractChange(value) {
     if (!value) {
       this.setState({
+        heatGeneralInContract: '',
+        heatTechInContract: '',
         heatMainInContract: '',
         heatVenInContract: '',
         heatWaterInContract: '',
@@ -907,7 +945,6 @@ class AddApz extends React.Component {
 
         setTimeout(function() {
           progressbar.css('display', 'none');
-
           switch (category) {
             case 3:
               this.setState({personalIdFile: data});
@@ -937,7 +974,6 @@ class AddApz extends React.Component {
               this.setState({claimedCapacityJustification: data});
               break;
           }
-
           alert("Файл успешно загружен");
         }.bind(this), '1000')
       }.bind(this),
@@ -1059,10 +1095,19 @@ class AddApz extends React.Component {
                   </div>
           }else{
             return <div className="react-hint__content">
-                    <table><thead><tr><td>Этажность жилой<br/>постройки</td><td>Вт в час на 1 м2<br/> общей площади(q<sub>уд</sub>)</td></tr></thead><tbody>
-                    <tr><td>1-2</td><td>173</td></tr>
-                    <tr><td>3-4</td><td>97</td></tr>
-                    <tr><td>5 и более</td><td>81</td></tr></tbody></table>
+                    <div className="row">
+                      <div className="col-md-12">
+                        <table style={{border:'1px solid #ced4da', borderRadius:'5px', display: 'inline-block'}}><tbody>
+                        <tr style={{background:'rgba(0, 0, 255, 0.05)', borderBottom: '1pt solid #ced4da'}}><td colSpan={2}>Для зданий строительства после 2015 г.</td></tr>
+                        <tr style={{background: 'rgba(0, 255, 0, 0.05)', borderBottom: '1pt solid #ced4da'}}><td>Этажность жилой<br/>постройки</td><td>Вт в час на 1 м<sup>2</sup><br/> общей площади(q<sub>уд</sub>)</td></tr>
+                        <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>1-3 этажные одноквартирные<br/>отдельностоящие</td><td>67</td></tr>
+                        <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>2-3 этажные одноквартирные<br/>облокированные</td><td>55</td></tr>
+                        <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>4-6 этажные кирпичные</td><td>45</td></tr>
+                        <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>7-10 этажные</td><td>40</td></tr>
+                        <tr style={{background:'rgba(0, 0, 255, 0.05)'}}><td>11-14 этажные</td><td>37</td></tr>
+                        <tr style={{background: 'rgba(0, 255, 0, 0.05)'}}><td>Более 15 этажей</td><td>36</td></tr></tbody></table>
+                      </div>
+                    </div>
                   </div>
           }
   }
@@ -1072,7 +1117,7 @@ class AddApz extends React.Component {
     return (
       <div className="container" id="apzFormDiv">
       <ReactHint autoPosition events delay={100} />
-      <ReactHint autoPosition attribute="data-custom" events onRenderContent={this.onRenderContent} ref={(ref) => this.instance = ref} delay={100}/>
+      <ReactHint attribute="data-custom" events onRenderContent={this.onRenderContent} ref={(ref) => this.instance = ref} delay={100}/>
         {this.state.loaderHidden &&
           <div className="tab-pane">
             <div className="row">
@@ -1143,6 +1188,10 @@ class AddApz extends React.Component {
                             <label htmlFor="Applicant">Заявитель:</label>
                             <input data-rh="Заявитель" data-rh-at="right" type="text" className="form-control" onChange={this.onNameChange} name="applicant" value={this.state.applicant=this.state.company_name==' ' ?this.state.last_name+" "+this.state.first_name+" "+this.state.middle_name:this.state.company_name } required />
                             {/*<span className="help-block"></span>*/}
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="applicantAddress">Адрес жительства:</label>
+                            <input data-rh="Адрес жительства" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} name="applicantAddress" value={this.state.applicantAddress} required />
                           </div>
                           <div className="form-group">
                             <label htmlFor="Phone">Телефон</label>
@@ -1356,7 +1405,7 @@ class AddApz extends React.Component {
                         <div className="col-md-6">
                         <div className="form-group">
                           <label htmlFor="ObjectLevel">Этажность</label>
-                          <input data-rh="Этажность" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChangeLevel} value={this.state.objectLevel} name="objectLevel" placeholder="" />
+                          <input data-rh="Этажность" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChange} value={this.state.objectLevel} name="objectLevel" placeholder="" />
                         </div>
                         <div className="form-group">
                           <label htmlFor="ObjectArea">Площадь здания (кв.м)</label>
@@ -1376,103 +1425,110 @@ class AddApz extends React.Component {
                   </div>
                   <div className="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-link">
                     <form id="tab2-form" data-tab="2" onSubmit={this.saveApz.bind(this, false)}>
-                      <div className="row">
-                        <div className="col-md-12" style={{fontSize:'15px'}}>
-                          <p>Расчет по типовым правилам расчета норм потребления коммунальных услуг по электроснабжению(<a target="_blank" href="http://online.zakon.kz/m/Document/?doc_id=31676321">см. Приказ</a>)</p>
-                          <p>P = N<sub>л</sub> * P<sub>л</sub> + N<sub>р</sub> * P<sub>р</sub> - Требуемая мощность (кВт)<br/>
-                          P<sub>р</sub> - мощность 1 электрической розетки, P<sub>р</sub> = 0,6 кВт; N<sub>р</sub> - количество розеток<br/>
-                          P<sub>л</sub> - мощность 1 лампы, P<sub>л</sub> = 0,06 кВт; N<sub>л</sub> - количество ламп</p>
+                      <div className="col-md-12">
+                        <div style={{color:'#D8A82D !important'}}>
+                          <label><input type="checkbox" onChange={this.onInputChange} checked={this.state.need_electro_provider} name="need_electro_provider" /> Подать заявление на выдачу технического условия электроснабжения</label>
                         </div>
-                        <div className="col-md-6">
-                          <div className="form-group">
-                            <label htmlFor="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)</label>
-                            <input data-rh="Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)" data-rh-at="right" type="number" step="any" name="electricAllowedPower" onChange={this.ObjectArea.bind(this)} value={this.state.electricAllowedPower} className="form-control" />
-                          </div>
-                          <div className="form-group">
-                            <label>Количество ламп <img data-custom data-custom-at="bottom" data-custom-id="1" src="./images/info.png" width="20px"/></label>
-                            <input data-rh="Количество ламп" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.Calculate_lamp.bind(this)} value={this.state.n_lamp} name="electricRequiredPower" placeholder="" />
-                          </div>
-                          <div className="form-group">
-                            <label>Количество розеток</label>
-                            <input data-rh="Количество розеток" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.Calculate_rozetka.bind(this)} value={this.state.n_rozetka} name="electricRequiredPower" placeholder="" />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
-                            {/*<input data-rh="Требуемая мощность (кВт)" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} value={this.state.electricRequiredPower} name="electricRequiredPower" placeholder="" />*/}
-                            <input data-rh="Требуемая мощность (кВт)" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} value={this.state.electricRequiredPower} name="electricRequiredPower" placeholder="" />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
-                            <select className="form-control" onChange={this.onInputChange} value={this.state.electricityPhase} name="electricityPhase">
-                              <option>Однофазная</option>
-                              <option>Двухфазная</option>
-                              <option>Трехфазная</option>
-                              <option>Постоянная</option>
-                              <option>Временная</option>
-                              <option>Сезонная</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div className="col-md-6">
-                        {/*<div className="form-group">
-                          <label htmlFor="">Предполагается установить</label>
-                          <br />
+                        <hr style={{marginTop:'5px'}}/>
+                      </div>
+                      {this.state.need_electro_provider &&
+                        <div className="row">
                           <div className="col-md-6">
-                          <ul style="list-style-type: none; padding-left: 3px">
-                            <li><input type="checkbox" id="CB1"><span style="padding-left: 3px" htmlFor="CB1">электрокотлы</span><input type="text" className="form-control" placeholder=""></li>
-                            <li><input type="checkbox" id="CB2"><span style="padding-left: 3px" htmlFor="CB2">электрокалориферы</span><input type="text" className="form-control" placeholder=""></li>
-                            <li><input type="checkbox" id="CB3"><span style="padding-left: 3px" htmlFor="CB3">электроплитки</span><input type="text" className="form-control" placeholder=""></li>
-                          </ul>
-                          </div>
-                          <div className="col-md-6">
-                          <ul style="list-style-type: none; padding-left: 3px">
-                            <li><input type="checkbox" id="CB4"><span style="padding-left: 3px" htmlFor="CB4">электропечи</span><input type="text" className="form-control" placeholder=""></li>
-                            <li><input type="checkbox" id="CB5"><span style="padding-left: 3px" htmlFor="CB5">электроводонагреватели</span><input type="text" className="form-control" placeholder=""></li>
-                          </ul>
-                          </div>
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="ElectricMaxLoadDevice">Из указанной макс. нагрузки относятся к электроприемникам (кВА):</label>
-                          <input type="number" className="form-control" name="ElectricMaxLoadDevice" placeholder="" />
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="ElectricMaxLoad">Существующая максимальная нагрузка (кВА)</label>
-                          <input type="number" className="form-control" name="ElectricMaxLoad" />
-                        </div>*/}
-                          <div className="form-group">
-                            <label htmlFor="ElectricSafetyCategory">Категория по надежности (кВт)</label>
-                            <select required className="form-control" onChange={this.onInputChange} value={this.state.electricSafetyCategory} name="electricSafetyCategory">
-                              <option value="1">1</option>
-                              <option value="2">2</option>
-                              <option value="3">3</option>
-                            </select>
-                          </div>
-                          <div className="form-group">
-                            <label>Расчет-обоснование заявленной мощности</label>
-                            <div className="file_container">
-                              <div className="progress mb-2" data-category="24" style={{height: '20px', display: 'none'}}>
-                                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                              </div>
-
-                              {this.state.claimedCapacityJustification &&
-                                <div className="file_block mb-2">
-                                  <div>
-                                    {this.state.claimedCapacityJustification.name}
-                                    <a className="pointer" onClick={(e) => this.setState({claimedCapacityJustification: false}) }>×</a>
-                                  </div>
-                                </div>
-                              }
-
-                              <div className="file_buttons btn-group btn-group-justified d-table mt-0">
-                                <label htmlFor="ClaimedCapacityJustification" className="btn btn-success" style={{marginRight: '2px'}}>Загрузить</label>
-                                <input type="file" id="ClaimedCapacityJustification" name="ClaimedCapacityJustification" className="form-control" onChange={this.uploadFile.bind(this, 24)} style={{display: 'none'}} />
-                                <label onClick={this.selectFromList.bind(this, 24)} className="btn btn-info">Выбрать из списка</label>
-                              </div>
-                              <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
+                           <div style={{borderRadius: '10px', background: 'rgb(239, 239, 239)', paddingLeft: '15px', paddingRight: '15px', paddingBottom: '5px'}}>
+                            <div className="text-center" style={{fontSize:'15px'}}>
+                            <p>Расчет по типовым правилам расчета норм потребления коммунальных услуг по электроснабжению(<a target="_blank" href="http://online.zakon.kz/m/Document/?doc_id=31676321">см. Приказ</a>)</p>
+                            </div><hr/>
+                            <div className="form-group">
+                              <label>Количество ламп <img data-custom data-custom-at="bottom" data-custom-id="1" src="./images/info.png" width="20px"
+                              style={{borderRadius: '10px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'}}/></label>
+                              <input data-rh="Количество ламп" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.Calculate_lamp.bind(this)} value={this.state.n_lamp} name="electricRequiredPower" placeholder="" />
+                            </div>
+                            <div className="form-group">
+                              <label>Количество розеток</label>
+                              <input data-rh="Количество розеток" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.Calculate_rozetka.bind(this)} value={this.state.n_rozetka} name="electricRequiredPower" placeholder="" />
+                            </div><hr/>
+                            <div className="form-group">
+                              <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
+                              {/*<input data-rh="Требуемая мощность (кВт)" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} value={this.state.electricRequiredPower} name="electricRequiredPower" placeholder="" />*/}
+                              <input data-rh="Требуемая мощность (кВт)" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} value={this.state.electricRequiredPower} name="electricRequiredPower" placeholder="" />
+                            </div>
                             </div>
                           </div>
-                        </div>
-                      </div>
+                          <div className="col-md-6">
+                          {/*<div className="form-group">
+                            <label htmlFor="">Предполагается установить</label>
+                            <br />
+                            <div className="col-md-6">
+                            <ul style="list-style-type: none; padding-left: 3px">
+                              <li><input type="checkbox" id="CB1"><span style="padding-left: 3px" htmlFor="CB1">электрокотлы</span><input type="text" className="form-control" placeholder=""></li>
+                              <li><input type="checkbox" id="CB2"><span style="padding-left: 3px" htmlFor="CB2">электрокалориферы</span><input type="text" className="form-control" placeholder=""></li>
+                              <li><input type="checkbox" id="CB3"><span style="padding-left: 3px" htmlFor="CB3">электроплитки</span><input type="text" className="form-control" placeholder=""></li>
+                            </ul>
+                            </div>
+                            <div className="col-md-6">
+                            <ul style="list-style-type: none; padding-left: 3px">
+                              <li><input type="checkbox" id="CB4"><span style="padding-left: 3px" htmlFor="CB4">электропечи</span><input type="text" className="form-control" placeholder=""></li>
+                              <li><input type="checkbox" id="CB5"><span style="padding-left: 3px" htmlFor="CB5">электроводонагреватели</span><input type="text" className="form-control" placeholder=""></li>
+                            </ul>
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="ElectricMaxLoadDevice">Из указанной макс. нагрузки относятся к электроприемникам (кВА):</label>
+                            <input type="number" className="form-control" name="ElectricMaxLoadDevice" placeholder="" />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="ElectricMaxLoad">Существующая максимальная нагрузка (кВА)</label>
+                            <input type="number" className="form-control" name="ElectricMaxLoad" />
+                          </div>*/}
+                            <div className="form-group">
+                              <label htmlFor="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)</label>
+                              <input data-rh="Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)" data-rh-at="right" type="number" step="any" name="electricAllowedPower" onChange={this.ObjectArea.bind(this)} value={this.state.electricAllowedPower} className="form-control" />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
+                              <select className="form-control" onChange={this.onInputChange} value={this.state.electricityPhase} name="electricityPhase">
+                                <option>Однофазная</option>
+                                <option>Двухфазная</option>
+                                <option>Трехфазная</option>
+                                <option>Постоянная</option>
+                                <option>Временная</option>
+                                <option>Сезонная</option>
+                              </select>
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="ElectricSafetyCategory">Категория по надежности (кВт)</label>
+                              <select required className="form-control" onChange={this.onInputChange} value={this.state.electricSafetyCategory} name="electricSafetyCategory">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                              </select>
+                            </div>
+                            <div className="form-group">
+                              <label>Расчет-обоснование заявленной мощности</label>
+                              <div className="file_container">
+                                <div className="progress mb-2" data-category="24" style={{height: '20px', display: 'none'}}>
+                                  <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+
+                                {this.state.claimedCapacityJustification &&
+                                  <div className="file_block mb-2">
+                                    <div>
+                                      {this.state.claimedCapacityJustification.name}
+                                      <a className="pointer" onClick={(e) => this.setState({claimedCapacityJustification: false}) }>×</a>
+                                    </div>
+                                  </div>
+                                }
+
+                                <div className="file_buttons btn-group btn-group-justified d-table mt-0">
+                                  <label htmlFor="ClaimedCapacityJustification" className="btn btn-success" style={{marginRight: '2px'}}>Загрузить</label>
+                                  <input type="file" id="ClaimedCapacityJustification" name="ClaimedCapacityJustification" className="form-control" onChange={this.uploadFile.bind(this, 24)} style={{display: 'none'}} />
+                                  <label onClick={this.selectFromList.bind(this, 24)} className="btn btn-info">Выбрать из списка</label>
+                                </div>
+                                <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>}
                       <div>
                         <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                       </div>
@@ -1481,6 +1537,13 @@ class AddApz extends React.Component {
                   </div>
                   <div className="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-link">
                     <form id="tab3-form" data-tab="3" onSubmit={this.saveApz.bind(this, false)}>
+                      <div className="col-md-12">
+                        <div style={{color:'#D8A82D !important'}}>
+                          <label><input type="checkbox" onChange={this.onInputChange} checked={this.state.need_water_provider} name="need_water_provider" /> Подать заявление на выдачу технического условия водоснабжения</label>
+                        </div>
+                        <hr style={{marginTop:'5px'}}/>
+                      </div>
+                      {this.state.need_water_provider &&
                       <div className="row">
                         <div className="col-md-6">
                           <div className="form-group">
@@ -1538,7 +1601,7 @@ class AddApz extends React.Component {
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </div>}
                       <div>
                         <div className="form-group">
                           <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
@@ -1579,23 +1642,31 @@ class AddApz extends React.Component {
                   </div>
                   <div className="tab-pane fade" id="tab5" role="tabpanel" aria-labelledby="tab5-link">
                     <form id="tab5-form" data-tab="5" onSubmit={this.saveApz.bind(this, false)}>
-                      <div className="row">
-                        <div className="col-md-12" style={{fontSize:'15px'}}>
-                          <p>Расчет по типовым правилам расчета норм потребления коммунальных услуг по теплоснабжению(<a target="_blank" href="http://online.zakon.kz/m/Document/?doc_id=31676321">см. Приказ</a>)</p>
-                          <p>Q = q<sub>уд</sub> * S/1.163 * (t<sub>вн</sub> - t<sub>сро</sub>)/(t<sub>вн</sub> - t<sub>ро</sub>) * 10<sup>-6</sup>- Общая тепловая нагрузка (Гкал/ч)<br/>
-                          q<sub>уд</sub> - нормируемый удельный расход тепловой энергии; S - общая площадь<br/>
-                          t<sub>вн</sub> - температура внутреннего воздуха (°С)<br/>
-                          t<sub>сро</sub> - среднесуточная темп. наружного воздуха за расчетный период (°С), t<sub>сро</sub> = -25<br/>
-                          t<sub>ро</sub> - расч. темп. наружного воздуха в целях проектирования отопления (°С), t<sub>ро</sub> = -20.1</p>
+                      <div className="col-md-12">
+                        <div style={{color:'#D8A82D !important'}}>
+                          <label><input type="checkbox" onChange={this.onInputChange} checked={this.state.need_heat_provider} name="need_heat_provider" /> Подать заявление на выдачу технического условия теплоснабжения</label>
                         </div>
-                        <div className="col-md-6">
+                        <hr style={{marginTop:'5px'}}/>
+                      </div>
+                      {this.state.need_heat_provider &&
+                      <div>
+                      <div className="row">
+                        <div className="col-md-6" style={{padding: '0px'}}>
+                         <div style={{borderRadius: '10px', background: 'rgb(239, 239, 239)', paddingLeft: '15px', paddingRight: '15px', paddingBottom: '5px'}}>
+                          <div className="text-center" style={{fontSize:'15px'}}>
+                          <p>Расчет по типовым правилам расчета норм потребления коммунальных услуг по теплоснабжению(<a target="_blank" href="http://online.zakon.kz/m/Document/?doc_id=31676321">см. Приказ</a> и <br/> <a target="_blank" href="https://online.zakon.kz/Document/?doc_id=35945475">СП РК 4.02-104-2013</a>)</p>
+                          </div><hr/>
                           <div className="form-group">
-                            <label>q<sub>уд</sub> <img data-custom data-custom-at="bottom" data-custom-id="2" src="./images/info.png" width="20px"/></label>
+                            <label>q<sub>уд</sub> <img data-custom data-custom-at="bottom" data-custom-id="2" src="./images/info.png" width="20px"
+                            style={{borderRadius: '10px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'}}/></label>
                             <select className="form-control" onChange={this.Calculate_teplo} value={this.state.udelnayaNorma} name="udelnayaNorma" data-rh="Нормируемый удельный расход тепловой энергии на отопление многоквартирного или индивидуального жилого дома на 1 м2 общей площади" data-rh-at="right">
                               <option></option>
-                              <option>173</option>
-                              <option>97</option>
-                              <option>81</option>
+                              <option>67</option>
+                              <option>55</option>
+                              <option>45</option>
+                              <option>40</option>
+                              <option>37</option>
+                              <option>36</option>
                             </select>
                           </div>
                           <div className="form-group">
@@ -1605,20 +1676,33 @@ class AddApz extends React.Component {
                           <div className="form-group">
                             <label>Общая площадь (кв. м)</label>
                             <input data-rh="Общая площадь жилых и нежилых помещений многоквартирного или индивидуального жилого дома (кв. м)" data-rh-at="right" type="number" onChange={this.Calculate_teplo} value={this.state.obshayaPloshad} step="any" className="form-control" name="obshayaPloshad" placeholder="" />
-                          </div>
+                          </div><hr/>
                           <div className="form-group">
                             <label htmlFor="HeatGeneral">Общая тепловая нагрузка (Гкал/ч)</label>
                             <input data-rh="Общая тепловая нагрузка (Гкал/ч)" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.heatGeneral} step="any" className="form-control" name="heatGeneral" placeholder="" />
                           </div>
+                         </div>
                         </div>
                         <div className="col-md-6">
                           <div className="form-group">
-                            <label htmlFor="HeatTech">Технологические нужды(пар) (Т/ч)</label>
-                            <input data-rh="Технологические нужды(пар) (Т/ч)" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.heatTech} step="any" className="form-control" name="heatTech" placeholder="" />
+                            <label htmlFor="HeatTech">Отопление (Гкал/ч)</label>
+                            <input data-rh="Отопление (Гкал/ч)" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.onInputChange} value={this.state.mainHeatMain} name="mainHeatMain" placeholder="" />
                           </div>
                           <div className="form-group">
-                            <label htmlFor="HeatDistribution">Разделить нагрузку по жилью и по встроенным помещениям</label>
-                            <input data-rh="Разделить нагрузку по жилью и по встроенным помещениям" data-rh-at="right" type="text" onChange={this.onInputChange} value={this.state.heatDistribution} className="form-control" name="heatDistribution" />
+                            <label htmlFor="HeatTech">Вентиляция (Гкал/ч)</label>
+                            <input data-rh="Вентиляция (Гкал/ч)" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.onInputChange} value={this.state.mainHeatVen} name="mainHeatVen" placeholder="" />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="HeatDistribution">Горячее водоснабжение, ср (Гкал/ч)</label>
+                            <input data-rh="Горячее водоснабжение, ср (Гкал/ч)" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChange} value={this.state.mainHeatWater} name="mainHeatWater" />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="mainHeatWaterMax">Горячее водоснабжение, макс (Гкал/ч)</label>
+                            <input data-rh="Горячее водоснабжение, макс (Гкал/ч)" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChange} value={this.state.mainHeatWaterMax} name="mainHeatWaterMax" />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="HeatTech">Технологическая нагрузка(пар) (Т/ч)</label>
+                            <input data-rh="Технологическая нагрузка(пар) (Т/ч)" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.heatTech} step="any" className="form-control" name="heatTech" placeholder="" />
                           </div>
                           <div className="form-group">
                             <label htmlFor="HeatSaving">Энергосберегающее мероприятие</label>
@@ -1636,11 +1720,15 @@ class AddApz extends React.Component {
                         <div className="row">
                           <div className="col-sm-6">
                             <div className="form-group">
-                              <label htmlFor="HeatMain">Отопление по договору<br />(Гкал/ч)</label>
+                              <label htmlFor="HeatGeneral">Общая тепловая нагрузка по договору(Гкал/ч)</label>
+                              <input data-rh="Общая тепловая нагрузка (Гкал/ч)" data-rh-at="right" type="number" step="any" className="form-control" value={this.state.heatGeneralInContract} onChange={this.onInputChange} name="heatGeneralInContract" placeholder="" />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="HeatMain">Отопление по договору (Гкал/ч)</label>
                               <input data-rh="Отопление по договору (Гкал/ч)" data-rh-at="right" type="number" step="any" className="form-control" name="heatMainInContract" value={this.state.heatMainInContract} onChange={this.onInputChange} />
                             </div>
                             <div className="form-group">
-                              <label htmlFor="HeatWater">Горячее водоснабжение по договору<br />(ср/ч)</label>
+                              <label htmlFor="HeatWater">Горячее водоснабжение по договору, ср (Гкал/ч)</label>
                               <input data-rh="Горячее водоснабжение по договору (ср/ч)" data-rh-at="right" type="number" step="any" className="form-control" name="heatWaterInContract" value={this.state.heatWaterInContract} onChange={this.onInputChange} />
                             </div>
                             <div className="form-group">
@@ -1650,27 +1738,39 @@ class AddApz extends React.Component {
                           </div>
                           <div className="col-sm-6">
                             <div className="form-group">
-                              <label htmlFor="HeatVentilation">Вентиляция по договору<br />(Гкал/ч)</label>
+                              <label htmlFor="HeatVentilation">Вентиляция по договору (Гкал/ч)</label>
                               <input data-rh="Вентиляция по договору (Гкал/ч)" data-rh-at="right" type="number" step="any" className="form-control" name="heatVenInContract" value={this.state.heatVenInContract} onChange={this.onInputChange} />
                             </div>
                             <div className="form-group">
-                              <label htmlFor="HeatWater">Горячее водоснабжение по договору<br />(макс/ч)</label>
+                              <label htmlFor="HeatTech">Технологическая нагрузка(пар) по договору (Т/ч)</label>
+                              <input data-rh="Технологическая нагрузка(пар) (Т/ч)" data-rh-at="right" type="number" step="any" className="form-control" value={this.state.heatTechInContract} onChange={this.onInputChange} name="heatTechInContract" placeholder="" />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="HeatWater">Горячее водоснабжение по договору, макс (Гкал/ч)</label>
                               <input data-rh="Горячее водоснабжение по договору (макс/ч)" data-rh-at="right" type="number" step="any" className="form-control" name="heatWaterMaxInContract" value={this.state.heatWaterMaxInContract} onChange={this.onInputChange} />
                             </div>
                           </div>
                         </div>
                       }
 
-                      <div className="block_list">
-                        {this.state.blocks.map(function(item, index) {
-                          return(
-                            <div id={'heatBlock_' + item.num} className="row" key={index}><AddHeatBlock item={item} deleteBlock={this.deleteBlock} num={item.num} onBlockChange={this.onBlockChange} /></div>
-                          );
-                        }.bind(this))}
+                      <div style={{color:'#D8A82D !important'}}>
+                        <label><input type="checkbox" onChange={this.onInputChange} checked={this.state.heatDistribution} name="heatDistribution" /> Разделить нагрузку по жилью и по встроенным помещениям</label>
                       </div>
-                      <div style={{display: 'table', width: '100%'}}>
-                        <button type="button" className="btn btn-outline-info pull-right" onClick={this.addBlock.bind(this)}>Добавить здания</button>
-                      </div>
+                      {this.state.heatDistribution != 0 &&
+                        <div>
+                          <div className="block_list">
+                            {this.state.blocks.map(function(item, index) {
+                              return(
+                                <div id={'heatBlock_' + item.num} className="row" key={index}><AddHeatBlock item={item} deleteBlock={this.deleteBlock} num={item.num} onBlockChange={this.onBlockChange} /></div>
+                              );
+                            }.bind(this))}
+                          </div>
+                          <div style={{display: 'table', width: '100%'}}>
+                            <button type="button" className="btn btn-outline-info pull-right" onClick={this.addBlock.bind(this)}>Добавить здания</button>
+                          </div>
+                        </div>
+                      }
+                      </div>}
                       <div>
                         <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                       </div>
@@ -1695,6 +1795,13 @@ class AddApz extends React.Component {
                   </div>
                   <div className="tab-pane fade" id="tab7" role="tabpanel" aria-labelledby="tab7-link">
                     <form id="tab7-form" data-tab="7" onSubmit={this.saveApz.bind(this, false)}>
+                      <div className="col-md-12">
+                        <div style={{color:'#D8A82D !important'}}>
+                          <label><input type="checkbox" onChange={this.onInputChange} checked={this.state.need_phone_provider} name="need_phone_provider" /> Подать заявление на выдачу технического условия телефонизации</label>
+                        </div>
+                        <hr style={{marginTop:'5px'}}/>
+                      </div>
+                      {this.state.need_phone_provider &&
                       <div className="row">
                         <div className="col-md-6">
                           <div className="form-group">
@@ -1740,7 +1847,7 @@ class AddApz extends React.Component {
                             <input data-rh="Пожелания заказчика" data-rh-at="right" type="text" onChange={this.onInputChange} value={this.state.phoneClientWishes} className="form-control" name="phoneClientWishes" placeholder="Тип оборудования, тип кабеля и др." />
                           </div>
                         </div>
-                      </div>
+                      </div>}
                       <div>
                         <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                       </div>
@@ -1749,9 +1856,16 @@ class AddApz extends React.Component {
                   </div>
                   <div className="tab-pane fade" id="tab8" role="tabpanel" aria-labelledby="tab8-link">
                     <form id="tab8-form" data-tab="8" onSubmit={this.saveApz.bind(this, false)}>
+                      <div className="col-md-12">
+                        <div style={{color:'#D8A82D !important'}}>
+                          <label><input type="checkbox" onChange={this.onInputChange} checked={this.state.need_gas_provider} name="need_gas_provider" /> Подать заявление на выдачу технического условия газоснабжения</label>
+                        </div>
+                        <hr style={{marginTop:'5px'}}/>
+                      </div>
+                      {this.state.need_gas_provider &&
                       <div className="row">
                         <div className="col-md-12" style={{fontSize:'15px'}}>
-                          <p>Расчета и утверждения норм потребления газа на отопление(<a target="_blank" href="http://online.zakon.kz/Document/?doc_id=32782895">см. Приказ</a>)</p>
+                          {/*<p>Расчета и утверждения норм потребления газа на отопление(<a target="_blank" href="http://online.zakon.kz/Document/?doc_id=32782895">см. Приказ</a>)</p>*/}
                         </div>
                         <div className="col-md-6">
                           <div className="form-group">
@@ -1781,7 +1895,7 @@ class AddApz extends React.Component {
                             <input data-rh="Горячее водоснабжение при газификации многоэтажных домов (м3/час)" data-rh-at="right" type="number" step="any" onChange={this.onInputChange} value={this.state.gasWater} className="form-control" name="gasWater" />
                           </div>
                         </div>
-                      </div>
+                      </div>}
                       <div>
                         <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                       </div>
@@ -2534,6 +2648,10 @@ console.log(apz.files);
                 <tr>
                   <td><b>Заявитель</b></td>
                   <td>{apz.applicant}</td>
+                </tr>
+                <tr>
+                  <td><b>Адрес жительства</b></td>
+                  <td>{apz.address}</td>
                 </tr>
                 <tr>
                   <td><b>Телефон</b></td>
@@ -3498,15 +3616,16 @@ class ShowMap extends React.Component {
                 sources: [{
                   featureLayer: new FeatureLayer({
                     //url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-                    url: "https://gis.uaig.kz/server/rest/services/Map2d/объекты_города/MapServer/20",
+                    url: "https://gis.uaig.kz/server/rest/services/Map2d/объекты_города3/MapServer/14",
                     popupTemplate: { // autocasts as new PopupTemplate()
                       title: `<table>
-                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Кадастровый номер:</td>  <td class="attrValue">`+"{kad_n}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Код района:</td>  <td class="attrValue">`+"{coder}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Адрес:</td>  <td class="attrValue">`+"{adress}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Целевое назначение</td>  <td class="attrValue">`+"{funk}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Площадь зу:</td>  <td class="attrValue">`+"{s}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Право:</td>  <td class="attrValue">`+"{right_}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Кадастровый номер:</td>  <td class="attrValue">`+"{cadastre_number}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Код административного района:</td>  <td class="attrValue">`+"{id_admraiona}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Адрес:</td>  <td class="attrValue">`+"{address}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Наименование</td>  <td class="attrValue">`+"{name}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Общая площадь:</td>  <td class="attrValue">`+"{obsch_area}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Площадь жил. помещения:</td>  <td class="attrValue">`+"{zhil_area}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Год постройки:</td>  <td class="attrValue">`+"{year_of_foundation}"+`</td></tr>
                       </table>`
                     }
                   }),
@@ -3523,7 +3642,7 @@ class ShowMap extends React.Component {
                 },{
                   featureLayer: new FeatureLayer({
                     //url: "https://gis.uaig.kz/server/rest/services/Hosted/%D0%97%D0%B0%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B3%D0%BE%D1%81%D1%83%D0%B4%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B0%D0%BA%D1%82%D1%8B/FeatureServer",
-                    url: "https://gis.uaig.kz/server/rest/services/Map2d/объекты_города/MapServer/27",
+                    url: "https://gis.uaig.kz/server/rest/services/Map2d/объекты_города3/MapServer/27",
                     popupTemplate: { // autocasts as new PopupTemplate()
                       title: `<table>
                         <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Кадастровый номер:</td>  <td class="attrValue">`+"{cadastre_n}"+`</td></tr>
@@ -3548,7 +3667,7 @@ class ShowMap extends React.Component {
                 },
                 {
                   featureLayer: new FeatureLayer({
-                    url: "https://gis.uaig.kz/server/rest/services/Map2d/Базовая_карта_MIL1/MapServer/16",
+                    url: "https://gis.uaig.kz/server/rest/services/Map2d/объекты_города3/MapServer/14",
                     popupTemplate: {
                       title: `<table>
                         <tr style="background-color: rgba(0, 0, 255, 0.05);width:100%"><td class="attrName">Адресный массив:</td>  <td class="attrValue">`+"{id_adr_massive}"+`</td></tr>
@@ -3560,43 +3679,16 @@ class ShowMap extends React.Component {
                         <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Площадь застройки, м2:</td>  <td class="attrValue">`+"{zastr_area}"+`</td></tr>
                         <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Наименование первичной улицы:</td>  <td class="attrValue">`+"{street_name_1}"+`</td></tr>
                         <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Основной номер дома:</td>  <td class="attrValue">`+"{number_1}"+`</td></tr>
+                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Второстепенный номер дома:</td>  <td class="attrValue">`+"{number_2}"+`</td></tr>
                       </table>`
                     }
                   }),
-                  searchFields: ["street_name_1","id_adr_massive"],
+                  searchFields: ["street_name_1","id_adr_massive", "address"],
                   displayField: "street_name_1" ,
                   exactMatch: false,
                   outFields: ["*"],
                   name: "Здания и сооружения",
                   placeholder: "введите улицу",
-                  maxResults: 6,
-                  maxSuggestions: 6,
-                  enableSuggestions: true,
-                  minCharacters: 0
-                },
-                {
-                  featureLayer: new FeatureLayer({
-                    url: "https://gis.uaig.kz/server/rest/services/Map2d/Базовая_карта_MIL1/MapServer/16",
-                    popupTemplate: {
-                      title: `<table>
-                        <tr style="background-color: rgba(0, 0, 255, 0.05);width:100%"><td class="attrName">Адресный массив:</td>  <td class="attrValue">`+"{id_adr_massive}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Количество этажей:</td>  <td class="attrValue">`+"{floor}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Год постройки:</td>  <td class="attrValue">`+"{year_of_foundation}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Общая площадь:</td>  <td class="attrValue">`+"{obsch_area}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Объем здания, м3:</td>  <td class="attrValue">`+"{volume_build}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Площадь жил. помещения:</td>  <td class="attrValue">`+"{zhil_area}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Площадь застройки, м2:</td>  <td class="attrValue">`+"{zastr_area}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 255, 0, 0.05);"><td class="attrName">Наименование первичной улицы:</td>  <td class="attrValue">`+"{street_name_1}"+`</td></tr>
-                        <tr style="background-color: rgba(0, 0, 255, 0.05);"><td class="attrName">Основной номер дома:</td>  <td class="attrValue">`+"{number_1}"+`</td></tr>
-                      </table>`
-                    }
-                  }),
-                  searchFields: ["id_adr_massive"],
-                  displayField: "id_adr_massive",
-                  exactMatch: false,
-                  outFields: ["*"],
-                  name: "Микрорайон",
-                  placeholder: "введите название",
                   maxResults: 6,
                   maxSuggestions: 6,
                   enableSuggestions: true,
@@ -3608,6 +3700,7 @@ class ShowMap extends React.Component {
                 var layerList = new LayerList({
                   view: view
                 });
+                console.log(view.allLayerViews);
 
                 // Add the search widget to the top right corner of the view
                 view.ui.add(searchWidget, {
@@ -3655,25 +3748,25 @@ class AddHeatBlock extends React.Component {
         <div className="row" style={{background: '#efefef', margin: '0 0 20px', padding: '20px 0 10px'}}>
           <div className="col-md-6">
             <div className="form-group">
-              <label htmlFor="HeatMain">Отопление<br />(Гкал/ч)</label>
+              <label htmlFor="HeatMain">Отопление (Гкал/ч)</label>
               <input type="number" step="any" className="form-control" value={this.props.item.heatMain} onChange={this.onBlockChange.bind(this)} name="heatMain" placeholder="" />
             </div>
           </div>
           <div className="col-md-6">
             <div className="form-group">
-              <label htmlFor="HeatVentilation">Вентиляция<br />(Гкал/ч)</label>
+              <label htmlFor="HeatVentilation">Вентиляция (Гкал/ч)</label>
               <input type="number" step="any" className="form-control" value={this.props.item.heatVentilation} onChange={this.onBlockChange.bind(this)} name="heatVentilation" placeholder="" />
             </div>
           </div>
           <div className="col-md-6">
             <div className="form-group">
-              <label htmlFor="HeatWater">Горячее водоснабжение<br />(ср/ч)</label>
+              <label htmlFor="HeatWater">Горячее водоснабжение, ср (Гкал/ч)</label>
               <input type="number" step="any" className="form-control" value={this.props.item.heatWater} onChange={this.onBlockChange.bind(this)} name="heatWater" placeholder="" />
             </div>
           </div>
           <div className="col-md-6">
             <div className="form-group">
-              <label htmlFor="HeatWaterMax">Горячее водоснабжение<br />(макс/ч)</label>
+              <label htmlFor="HeatWaterMax">Горячее водоснабжение, макс (Гкал/ч)</label>
               <input type="number" step="any" className="form-control" value={this.props.item.heatWaterMax} onChange={this.onBlockChange.bind(this)} name="heatWaterMax" placeholder="" />
             </div>
           </div>

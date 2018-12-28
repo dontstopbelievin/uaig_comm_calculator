@@ -145,8 +145,9 @@ class AllApzs extends React.Component {
             <table className="table">
               <thead>
                 <tr>
-                  <th style={{width: '23%'}}>Название</th>
-                  <th style={{width: '23%'}}>Заявитель</th>
+                  <th style={{width: '5%'}}>ИД</th>
+                  <th style={{width: '21%'}}>Название</th>
+                  <th style={{width: '20%'}}>Заявитель</th>
                   <th style={{width: '20%'}}>Адрес</th>
                   <th style={{width: '20%'}}>Дата заявления</th>
 
@@ -160,6 +161,7 @@ class AllApzs extends React.Component {
                 {apzs.map(function(apz, index) {
                   return(
                     <tr key={index}>
+                      <td>{apz.id}</td>
                       <td>
                         {apz.project_name}
 

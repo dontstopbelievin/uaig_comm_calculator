@@ -2095,7 +2095,7 @@ handleObjTypeChange(event){
                   </div>
 
                   <div className="form-group">
-                    <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                    <button className="btn btn-raised btn-success" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
                   </div>
                 </div>
               }
@@ -2109,7 +2109,7 @@ handleObjTypeChange(event){
                 <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
               </div>
               <div className="form-group">
-                <button type="button" className="btn btn-primary" onClick={this.sendWaterResponse.bind(this, apz.id, true, "")}>
+                <button type="button" className="btn btn-raised btn-success" onClick={this.sendWaterResponse.bind(this, apz.id, true, "")}>
                   Отправить инженеру
                 </button>
               </div>

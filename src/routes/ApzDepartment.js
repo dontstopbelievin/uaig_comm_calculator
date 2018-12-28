@@ -586,6 +586,7 @@ class ShowApz extends React.Component {
             this.setState({isSigned: false});
             this.setState({showButtons: true});
             this.setState({showSendButton: false});
+            this.setState({showSignButtons: false});
         }
       }
     }.bind(this)
@@ -943,6 +944,11 @@ class ShowApz extends React.Component {
       }
     }.bind(this);
     xhr.send(JSON.stringify(data));
+  }
+
+  hideSignBtns() {
+    this.setState({ showButtons: true});
+    this.setState({ showSignButtons: false });
   }
 
   sendForm(apzId, status, comment) {
@@ -1581,6 +1587,7 @@ class ShowApz extends React.Component {
 
                   <div className="form-group">
                     <button className="btn btn-raised btn-success" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                    <button className="btn btn-primary" type="button" style={{marginLeft: '5px'}} onClick={this.hideSignBtns.bind(this)}>Назад</button>
                   </div>
                 </div>
               }
