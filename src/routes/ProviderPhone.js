@@ -2,6 +2,7 @@ import React from 'react';
 //import * as esriLoader from 'esri-loader';
 import EsriLoaderReact from 'esri-loader-react';
 //import { NavLink } from 'react-router-dom';
+import $ from 'jquery';
 import { Route, NavLink, Link, Switch, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import saveAs from 'file-saver';
@@ -441,13 +442,20 @@ class ShowApz extends React.Component {
     xhr.send();
   }
 
-  downloadFile(id) {
+  downloadFile(id, progbarId = null) {
     var token = sessionStorage.getItem('tokenInfo');
 
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + 'api/file/download/' + id, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      var vision = $('.text-info[data-category='+progbarId+']');
+      var progressbar = $('.progress[data-category='+progbarId+']');
+      vision.css('display', 'none');
+      progressbar.css('display', 'flex');
+      xhr.onprogress = function(event) {
+        $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
+      }
       xhr.onload = function() {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
@@ -479,13 +487,22 @@ class ShowApz extends React.Component {
               a.href = url;
               a.download = name;
               a.click();
-              setTimeout(function() {window.URL.revokeObjectURL(url);},1000);
+              setTimeout(function() {
+                window.URL.revokeObjectURL(url);
+                $('div', progressbar).css('width', 0);
+                progressbar.css('display', 'none');
+                vision.css('display','inline');
+                alert("Файлы успешно загружены");
+              },1000);
             };
 
           }());
 
           saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
         } else {
+          $('div', progressbar).css('width', 0);
+          progressbar.css('display', 'none');
+          vision.css('display','inline');
           alert('Не удалось скачать файл');
         }
       }
@@ -498,6 +515,13 @@ class ShowApz extends React.Component {
     xhr.open("get", window.url + 'api/file/downloadAll/' + id, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      var vision = $('.text-info[data-category=1]');
+      var progressbar = $('.progress[data-category=1]');
+      vision.css('display', 'none');
+      progressbar.css('display', 'flex');
+      xhr.onprogress = function(event) {
+        $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
+      }
       xhr.onload = function() {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
@@ -529,7 +553,16 @@ class ShowApz extends React.Component {
               // see FileSaver.js
               saveAs(content, data.zip_name);
           });
+          setTimeout(function() {
+            $('div', progressbar).css('width', 0);
+            progressbar.css('display', 'none');
+            vision.css('display','inline');
+            alert("Файлы успешно загружены");
+          },1000);
         } else {
+          $('div', progressbar).css('width', 0);
+          progressbar.css('display', 'none');
+          vision.css('display','inline');
           alert('Не удалось скачать файл');
         }
       }
@@ -1102,39 +1135,63 @@ handleDirectorIDChange(event){
               {this.state.personalIdFile &&
                 <tr className="shukichi">
                   <td><b>Уд. лич./ Реквизиты</b></td>
-                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id)}>Скачать</a></td>
+                  <td><a className="text-info pointer" data-category="2" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id, 2)}>Скачать</a>
+                    <div className="progress mb-2" data-category="2" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                      <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </td>
                 </tr>
               }
 
               {this.state.confirmedTaskFile &&
                 <tr className="shukichi">
                   <td><b>Утвержденное задание</b></td>
-                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.confirmedTaskFile.id)}>Скачать</a></td>
+                  <td><a className="text-info pointer" data-category="3" onClick={this.downloadFile.bind(this, this.state.confirmedTaskFile.id, 3)}>Скачать</a>
+                    <div className="progress mb-2" data-category="3" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                      <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </td>
                 </tr>
               }
 
               {this.state.titleDocumentFile &&
                 <tr className="shukichi">
                   <td><b>Правоустанавл. документ</b></td>
-                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>Скачать</a></td>
+                  <td><a className="text-info pointer" data-category="4" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id, 4)}>Скачать</a>
+                    <div className="progress mb-2" data-category="4" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                      <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </td>
                 </tr>
               }
 
               {this.state.additionalFile &&
                 <tr className="shukichi">
                   <td><b>Дополнительно</b></td>
-                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.additionalFile.id)}>Скачать</a></td>
+                  <td><a className="text-info pointer" data-category="5" onClick={this.downloadFile.bind(this, this.state.additionalFile.id, 5)}>Скачать</a>
+                    <div className="progress mb-2" data-category="5" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                      <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </td>
                 </tr>
               }
               {this.state.paymentPhotoFile &&
                 <tr className="shukichi">
                   <td><b>Сканированный файл оплаты</b></td>
-                  <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.paymentPhotoFile.id)}>Скачать</a></td>
+                  <td><a className="text-info pointer" data-category="6" onClick={this.downloadFile.bind(this, this.state.paymentPhotoFile.id, 6)}>Скачать</a>
+                    <div className="progress mb-2" data-category="6" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                      <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </td>
                 </tr>
               }
               {(this.state.personalIdFile || this.state.confirmedTaskFile || this.state.titleDocumentFile || this.state.additionalFile || this.state.paymentPhotoFile) &&
                 <tr className="shukichi">
-                  <td colspan="2"><a className="text-info pointer" onClick={this.downloadAllFile.bind(this, this.state.apz.id)}><img style={{height:'16px'}} src="./images/download.png"/>Скачать одним архивом</a></td>
+                  <td colspan="2"><a className="text-info pointer" data-category="1" onClick={this.downloadAllFile.bind(this, this.state.apz.id)}><img style={{height:'16px'}} src="./images/download.png"/>Скачать одним архивом</a>
+                  <div className="progress mb-2" data-category="1" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  </td>
                 </tr>
               }
             </tbody>
@@ -1219,9 +1276,12 @@ handleDirectorIDChange(event){
                   {(this.state.response === true && this.state.responseFile) &&
                     <div className="form-group">
                       <label style={{display: 'block'}}>Прикрепленный файл</label>
-                      <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
+                      <a className="pointer text-info" title="Скачать" data-category="7" onClick={this.downloadFile.bind(this, this.state.responseFile.id, 7)}>
                         Скачать
                       </a>
+                      <div className="progress mb-2" data-category="7" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
                     </div>
                   }
                   <div className="form-group">
@@ -1287,9 +1347,12 @@ handleDirectorIDChange(event){
                     <tr>
                       <td>Прикрепленный файл</td>
                       <td>
-                        <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>
+                        <a className="pointer text-info" title="Скачать" data-category="8" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id, 8)}>
                           Скачать
                         </a>
+                        <div className="progress mb-2" data-category="8" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
                       </td>
                     </tr>
                   }
@@ -1325,7 +1388,10 @@ handleDirectorIDChange(event){
 
                   {this.state.customTcFile &&
                     <span style={{paddingLeft: '5px'}}>
-                      (текущий файл: <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.customTcFile.id)}>{this.state.customTcFile.name}</a>)
+                      (текущий файл: <a className="pointer text-info" title="Скачать" data-category="9" onClick={this.downloadFile.bind(this, this.state.customTcFile.id, 9)}>{this.state.customTcFile.name}</a>)
+                      <div className="progress mb-2" data-category="9" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
                     </span>
                   }
                 </label>
@@ -1365,7 +1431,11 @@ handleDirectorIDChange(event){
               {this.state.customTcFile &&
                 <tr>
                   <td>Технические условия</td>
-                  <td><a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.customTcFile.id)}>Скачать</a></td>
+                  <td><a className="pointer text-info" title="Скачать" data-category="10" onClick={this.downloadFile.bind(this, this.state.customTcFile.id, 10)}>Скачать</a>
+                    <div className="progress mb-2" data-category="10" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                      <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </td>
                 </tr>}
               </tbody>
             </table>
@@ -1384,9 +1454,12 @@ handleDirectorIDChange(event){
               {(this.state.response === false && this.state.responseFile) &&
                 <div className="form-group">
                   <label style={{display: 'block'}}>Прикрепленный файл</label>
-                  <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
+                  <a className="pointer text-info" title="Скачать" data-category="11" onClick={this.downloadFile.bind(this, this.state.responseFile.id, 11)}>
                     Скачать
                   </a>
+                  <div className="progress mb-2" data-category="11" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
                 </div>
               }
               <div className="form-group">
@@ -1417,9 +1490,12 @@ handleDirectorIDChange(event){
                     <tr>
                       <td>Прикрепленный файл</td>
                       <td>
-                        <a className="pointer text-info" title="Скачать" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>
+                        <a className="pointer text-info" title="Скачать" data-category="12" onClick={this.downloadFile.bind(this, this.state.responseFile.id, 12)}>
                           Скачать
                         </a>
+                        <div className="progress mb-2" data-category="12" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
                       </td>
                     </tr>
                   }
