@@ -604,11 +604,16 @@ class AddApz extends React.Component {
         confirmedTaskFile: 'Утвержденное задание на проектирование',
         titleDocumentFile: 'Госакт и правоустанавливающий документ на земельный участок, договор о купли-продажи',
         objectType: 'Тип объекта',
-        customer: 'Заказчик',
-        // waterRequirement: 'Общая потребность в воде',
-        // waterSewage: 'Канализация '
+        customer: 'Заказчик'
       };
 
+      if(this.state.need_water_provider){
+        requiredFields['waterRequirement'] = 'Общая потребность в воде';
+        requiredFields['waterSewage'] = 'Канализация';
+      }
+      /*if(this.state.need_electro_provider){
+        requiredFields['electricRequiredPower'] = 'Требуемая мощность (кВт)';
+      }*/
       if (this.state.phoneServiceNum || this.state.phoneSewage || this.state.phoneCapacity || this.state.phoneClientWishes) {
         requiredFields['paymentPhotoFile'] = 'Сканированный файл оплаты';
       }

@@ -1443,46 +1443,50 @@ class ShowApz extends React.Component {
                   </tbody>
                   :
                   <tbody>
-                    <tr>
+                    {!!apz.need_water_provider && <tr>
                       <td>
                         <input className="form-control" type="checkbox" name="commission_users[]" value="Water" />
                       </td>
                       <td>Водоснабжение</td>
                       <td></td>
                       <td></td>
-                    </tr>
-                    <tr>
+                    </tr>}
+                    {!!apz.need_electro_provider && <tr>
                       <td>
                         <input className="form-control" type="checkbox" name="commission_users[]" value="Electricity" />
                       </td>
                       <td>Электроснабжение</td>
                       <td></td>
                       <td></td>
-                    </tr>
-                    <tr>
+                    </tr>}
+                    {!!apz.need_gas_provider && <tr>
                       <td>
                         <input className="form-control" type="checkbox" name="commission_users[]" value="Gas" />
                       </td>
                       <td>Газоснабжение</td>
                       <td></td>
                       <td></td>
-                    </tr>
-                    <tr>
+                    </tr>}
+                    {!!apz.need_heat_provider && <tr>
                       <td>
                         <input className="form-control" type="checkbox" name="commission_users[]" value="Heat" />
                       </td>
                       <td>Теплоснабжение</td>
                       <td></td>
                       <td></td>
-                    </tr>
-                    <tr>
+                    </tr>}
+                    {!!apz.need_phone_provider && <tr>
                       <td>
                         <input className="form-control" type="checkbox" name="commission_users[]" value="Phone" />
                       </td>
                       <td>Телефонизация</td>
                       <td></td>
                       <td></td>
-                    </tr>
+                    </tr>}
+                    {!apz.need_phone_provider && !apz.need_electro_provider && !apz.need_water_provider && !apz.need_gas_provider
+                    && !apz.need_heat_provider &&
+                      <tr>Заявитель не выбрал подачу заявления на службы</tr>
+                    }
                   </tbody>
                 }
               </table>
