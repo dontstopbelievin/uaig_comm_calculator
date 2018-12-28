@@ -11,6 +11,9 @@ import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../languages/header.json';
 import ReactHintFactory from 'react-hint'
 import '../assets/css/reacthint.css';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import saveAs from 'file-saver';
 const ReactHint = ReactHintFactory(React)
 
 let e = new LocalizedStrings({ru,kk});
@@ -836,7 +839,7 @@ class AddApz extends React.Component {
     //document.getElementsByName('WaterSewage')[0].value = document.getElementsByName('WaterRequirement')[0].value;
   }
 
-  downloadFile(id) {
+  downloadFile(id, progbarId = null) {
     var token = sessionStorage.getItem('tokenInfo');
     var url = window.url + 'api/file/download/' + id;
 
@@ -844,6 +847,13 @@ class AddApz extends React.Component {
     xhr.open("get", url, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      var vision = $('.text-info[data-category='+progbarId+']');
+      var progressbar = $('.progress[data-category='+progbarId+']');
+      vision.css('display', 'none');
+      progressbar.css('display', 'flex');
+      xhr.onprogress = function(event) {
+        $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
+      }
       xhr.onload = function() {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
@@ -875,13 +885,22 @@ class AddApz extends React.Component {
               a.href = url;
               a.download = name;
               a.click();
-              setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+              setTimeout(function() {
+                window.URL.revokeObjectURL(url);
+                $('div', progressbar).css('width', 0);
+                progressbar.css('display', 'none');
+                vision.css('display','inline');
+                alert("Файлы успешно загружены");
+              },1000);
             };
 
           }());
 
           saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
         } else {
+          $('div', progressbar).css('width', 0);
+          progressbar.css('display', 'none');
+          vision.css('display','inline');
           alert('Не удалось скачать файл');
         }
       }
@@ -2056,7 +2075,7 @@ console.log(apz.files);
     xhr.send();
   }
 
-  downloadFile(id) {
+  downloadFile(id, progbarId = null) {
     var token = sessionStorage.getItem('tokenInfo');
     var url = window.url + 'api/file/download/' + id;
 
@@ -2064,6 +2083,13 @@ console.log(apz.files);
     xhr.open("get", url, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      var vision = $('.text-info[data-category='+progbarId+']');
+      var progressbar = $('.progress[data-category='+progbarId+']');
+      vision.css('display', 'none');
+      progressbar.css('display', 'flex');
+      xhr.onprogress = function(event) {
+        $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
+      }
       xhr.onload = function() {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
@@ -2095,13 +2121,22 @@ console.log(apz.files);
               a.href = url;
               a.download = name;
               a.click();
-              setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+              setTimeout(function() {
+                window.URL.revokeObjectURL(url);
+                $('div', progressbar).css('width', 0);
+                progressbar.css('display', 'none');
+                vision.css('display','inline');
+                alert("Файлы успешно загружены");
+              },1000);
             };
 
           }());
 
           saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
         } else {
+          $('div', progressbar).css('width', 0);
+          progressbar.css('display', 'none');
+          vision.css('display','inline');
           alert('Не удалось скачать файл');
         }
       }
@@ -2657,35 +2692,55 @@ console.log(apz.files);
                 {this.state.personalIdFile &&
                   <tr>
                     <td><b>Уд. лич./ Реквизиты</b></td>
-                    <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id)}>Скачать</a></td>
+                    <td><a className="text-info pointer" data-category="1" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id, 1)}>Скачать</a>
+                      <div className="progress mb-2" data-category="1" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </td>
                   </tr>
                 }
 
                 {this.state.confirmedTaskFile &&
                   <tr>
                     <td><b>Утвержденное задание</b></td>
-                    <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.confirmedTaskFile.id)}>Скачать</a></td>
+                    <td><a className="text-info pointer" data-category="2" onClick={this.downloadFile.bind(this, this.state.confirmedTaskFile.id, 2)}>Скачать</a>
+                      <div className="progress mb-2" data-category="2" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </td>
                   </tr>
                 }
 
                 {this.state.titleDocumentFile &&
                   <tr>
                     <td><b>Правоустанавл. документ</b></td>
-                    <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id)}>Скачать</a></td>
+                    <td><a className="text-info pointer" data-category="3" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id, 3)}>Скачать</a>
+                      <div className="progress mb-2" data-category="3" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </td>
                   </tr>
                 }
 
                 {this.state.additionalFile &&
                   <tr>
                     <td><b>Дополнительно</b></td>
-                    <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.additionalFile.id)}>Скачать</a></td>
+                    <td><a className="text-info pointer" data-category="4" onClick={this.downloadFile.bind(this, this.state.additionalFile.id, 4)}>Скачать</a>
+                      <div className="progress mb-2" data-category="4" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </td>
                   </tr>
                 }
 
                 {this.state.paymentPhotoFile &&
                   <tr>
                     <td><b>Сканированный файл оплаты</b></td>
-                    <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.paymentPhotoFile.id)}>Скачать</a></td>
+                    <td><a className="text-info pointer" data-category="5" onClick={this.downloadFile.bind(this, this.state.paymentPhotoFile.id, 5)}>Скачать</a>
+                      <div className="progress mb-2" data-category="5" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </td>
                   </tr>
                 }
 
@@ -2699,7 +2754,11 @@ console.log(apz.files);
                       профили дорог и улиц, технические условия, схемы трасс наружных инженерных
                       сетей</span>
                     </td>
-                    <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.pack2IdFile.id)}>Скачать</a></td>
+                    <td><a className="text-info pointer" data-category="6" onClick={this.downloadFile.bind(this, this.state.pack2IdFile.id, 6)}>Скачать</a>
+                      <div className="progress mb-2" data-category="6" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </td>
                   </tr>
                 }
               </tbody>
@@ -2721,7 +2780,11 @@ console.log(apz.files);
                       {this.state.headResponseFile &&
                         <tr>
                           <td style={{width: '22%'}}><b>Загруженный АПЗ</b></td>
-                          <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.headResponseFile.id)}>Скачать</a></td>
+                          <td><a className="text-info pointer" data-category="7" onClick={this.downloadFile.bind(this, this.state.headResponseFile.id, 7)}>Скачать</a>
+                            <div className="progress mb-2" data-category="7" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                              <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                          </td>
                         </tr>
                       }
 
@@ -2739,7 +2802,11 @@ console.log(apz.files);
                       <tr>
                         <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
                           {this.state.headResponseFile ?
-                            <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.headResponseFile.id)}>Скачать</a></td>
+                            <td><a className="text-info pointer" data-category="8" onClick={this.downloadFile.bind(this, this.state.headResponseFile.id, 8)}>Скачать</a>
+                              <div className="progress mb-2" data-category="8" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                              </div>
+                            </td>
                           :
                             <td><a className="text-info pointer" onClick={this.printRegionAnswer.bind(this, apz.id)}>Скачать</a></td>
                           }
@@ -2815,7 +2882,11 @@ console.log(apz.files);
                                   <tbody>
                                     <tr>
                                       <td style={{width: '50%'}}><b>Техническое условие</b></td>
-                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.waterCustomTcFile.id)}>Скачать</a></td>
+                                      <td><a className="text-info pointer" data-category="9" onClick={this.downloadFile.bind(this, this.state.waterCustomTcFile.id, 9)}>Скачать</a>
+                                        <div className="progress mb-2" data-category="9" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                      </td>
                                     </tr>
                                   </tbody>
                                 }
@@ -2858,7 +2929,11 @@ console.log(apz.files);
                                     {this.state.waterResponseFile &&
                                       <tr>
                                         <td><b>Загруженный ТУ</b></td>
-                                        <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.waterResponseFile.id)}>Скачать</a></td>
+                                        <td><a className="text-info pointer" data-category="10" onClick={this.downloadFile.bind(this, this.state.waterResponseFile.id, 10)}>Скачать</a>
+                                          <div className="progress mb-2" data-category="10" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                          </div>
+                                        </td>
                                       </tr>
                                     }
 
@@ -2873,7 +2948,11 @@ console.log(apz.files);
                                   <tbody>
                                     <tr>
                                       <td style={{width: '50%'}}><b>МО Вода</b></td>
-                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.waterResponseFile.id)}>Скачать</a></td>
+                                      <td><a className="text-info pointer" data-category="11" onClick={this.downloadFile.bind(this, this.state.waterResponseFile.id, 11)}>Скачать</a>
+                                        <div className="progress mb-2" data-category="11" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                      </td>
                                     </tr>
                                   </tbody>
                                 }
@@ -2903,7 +2982,11 @@ console.log(apz.files);
                                   <tbody>
                                     <tr>
                                       <td style={{width: '50%'}}><b>Техническое условие</b></td>
-                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.heatCustomTcFile.id)}>Скачать</a></td>
+                                      <td><a className="text-info pointer" data-category="12" onClick={this.downloadFile.bind(this, this.state.heatCustomTcFile.id, 12)}>Скачать</a>
+                                        <div className="progress mb-2" data-category="12" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                      </td>
                                     </tr>
                                   </tbody>
                                 }
@@ -2950,7 +3033,11 @@ console.log(apz.files);
                                     {this.state.heatResponseFile &&
                                       <tr>
                                         <td><b>Загруженный ТУ</b>:</td>
-                                        <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.heatResponseFile.id)}>Скачать</a></td>
+                                        <td><a className="text-info pointer" data-category="13" onClick={this.downloadFile.bind(this, this.state.heatResponseFile.id, 13)}>Скачать</a>
+                                          <div className="progress mb-2" data-category="13" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                          </div>
+                                        </td>
                                       </tr>
                                     }
 
@@ -2965,7 +3052,11 @@ console.log(apz.files);
                                   <tbody>
                                     <tr>
                                       <td style={{width: '50%'}}><b>МО Тепло</b></td>
-                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.heatResponseFile.id)}>Скачать</a></td>
+                                      <td><a className="text-info pointer" data-category="14" onClick={this.downloadFile.bind(this, this.state.heatResponseFile.id, 14)}>Скачать</a>
+                                        <div className="progress mb-2" data-category="14" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                      </td>
                                     </tr>
                                   </tbody>
                                 }
@@ -3038,7 +3129,11 @@ console.log(apz.files);
                                     </tr>
                                     <tr>
                                       <td style={{width: '50%'}}><b>Техническое условие</b></td>
-                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.electroCustomTcFile.id)}>Скачать</a></td>
+                                      <td><a className="text-info pointer" data-category="15" onClick={this.downloadFile.bind(this, this.state.electroCustomTcFile.id, 15)}>Скачать</a>
+                                        <div className="progress mb-2" data-category="15" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                      </td>
                                     </tr>
                                   </tbody>
                                 }
@@ -3073,7 +3168,11 @@ console.log(apz.files);
                                     {this.state.electroResponseFile &&
                                       <tr>
                                         <td><b>Загруженный ТУ</b>:</td>
-                                        <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.electroResponseFile.id)}>Скачать</a></td>
+                                        <td><a className="text-info pointer" data-category="16" onClick={this.downloadFile.bind(this, this.state.electroResponseFile.id, 16)}>Скачать</a>
+                                          <div className="progress mb-2" data-category="16" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                          </div>
+                                        </td>
                                       </tr>
                                     }
 
@@ -3088,7 +3187,11 @@ console.log(apz.files);
                                   <tbody>
                                     <tr>
                                       <td style={{width: '50%'}}><b>МО Электро</b></td>
-                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.electroResponseFile.id)}>Скачать</a></td>
+                                      <td><a className="text-info pointer" data-category="17" onClick={this.downloadFile.bind(this, this.state.electroResponseFile.id, 17)}>Скачать</a>
+                                        <div className="progress mb-2" data-category="17" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                      </td>
                                     </tr>
                                   </tbody>
                                 }
@@ -3126,7 +3229,11 @@ console.log(apz.files);
                                     </tr>
                                     <tr>
                                       <td style={{width: '50%'}}><b>Техническое условие</b></td>
-                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.gasCustomTcFile.id)}>Скачать</a></td>
+                                      <td><a className="text-info pointer" data-category="18" onClick={this.downloadFile.bind(this, this.state.gasCustomTcFile.id, 18)}>Скачать</a>
+                                        <div className="progress mb-2" data-category="18" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                      </td>
                                     </tr>
                                   </tbody>
                                 }
@@ -3157,7 +3264,11 @@ console.log(apz.files);
                                     {this.state.gasResponseFile &&
                                       <tr>
                                         <td><b>Загруженный ТУ</b></td>
-                                        <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.gasResponseFile.id)}>Скачать</a></td>
+                                        <td><a className="text-info pointer" data-category="19" onClick={this.downloadFile.bind(this, this.state.gasResponseFile.id, 19)}>Скачать</a>
+                                          <div className="progress mb-2" data-category="19" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                          </div>
+                                        </td>
                                       </tr>
                                     }
 
@@ -3172,7 +3283,11 @@ console.log(apz.files);
                                   <tbody>
                                     <tr>
                                       <td style={{width: '50%'}}><b>МО Газ</b></td>
-                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.gasResponseFile.id)}>Скачать</a></td>
+                                      <td><a className="text-info pointer" data-category="20" onClick={this.downloadFile.bind(this, this.state.gasResponseFile.id, 20)}>Скачать</a>
+                                        <div className="progress mb-2" data-category="20" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                      </td>
                                     </tr>
                                   </tbody>
                                 }
@@ -3210,7 +3325,11 @@ console.log(apz.files);
                                     </tr>
                                     <tr>
                                       <td style={{width: '50%'}}><b>Техническое условие</b></td>
-                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.phoneCustomTcFile.id)}>Скачать</a></td>
+                                      <td><a className="text-info pointer" data-category="21" onClick={this.downloadFile.bind(this, this.state.phoneCustomTcFile.id, 21)}>Скачать</a>
+                                        <div className="progress mb-2" data-category="21" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                      </td>
                                     </tr>
                                   </tbody>
                                 }
@@ -3241,7 +3360,11 @@ console.log(apz.files);
                                     {this.state.phoneResponseFile &&
                                       <tr>
                                         <td><b>Загруженный ТУ</b></td>
-                                        <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.phoneResponseFile.id)}>Скачать</a></td>
+                                        <td><a className="text-info pointer" data-category="22" onClick={this.downloadFile.bind(this, this.state.phoneResponseFile.id, 22)}>Скачать</a>
+                                          <div className="progress mb-2" data-category="22" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                          </div>
+                                        </td>
                                       </tr>
                                     }
 
@@ -3256,7 +3379,11 @@ console.log(apz.files);
                                   <tbody>
                                     <tr>
                                       <td style={{width: '50%'}}><b>МО Газ</b></td>
-                                      <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.phoneResponseFile.id)}>Скачать</a></td>
+                                      <td><a className="text-info pointer" data-category="23" onClick={this.downloadFile.bind(this, this.state.phoneResponseFile.id, 23)}>Скачать</a>
+                                        <div className="progress mb-2" data-category="23" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                      </td>
                                     </tr>
                                   </tbody>
                                 }
