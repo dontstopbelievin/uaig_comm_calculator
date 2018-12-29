@@ -1440,14 +1440,16 @@ handleDirectorIDChange(event){
                   {this.state.electricity_directors_id}
                 </select>
               </div>
-
-              {!this.state.xmlFile &&
-                <div className="form-group style={{marginBottom:'5px'}}">
-                  <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
-                    Сохранить
-                  </button>
-                </div>
-              }
+              <div className="form-group" style={{marginBottom:'5px'}}>
+                {!this.state.xmlFile &&
+                    <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, true, "")}>
+                      Сохранить
+                    </button>
+                }
+                <button type="button" style={{ marginLeft: '5px' }} className="btn btn-secondary" onClick={this.sendElectroResponse.bind(this, apz.id, true, "")}>
+                  Отправить без ЭЦП
+                </button>
+              </div>
               <p style={{color:'#777777', marginBottom:'0px'}}>Если есть сканированное техническое условие. Сканированный ТУ заменяет ТУ созданный сайтом.</p>
               <p style={{color:'#777777'}}>Сохранение перезаписывает предыдущий файл.</p>
             </div>
@@ -1477,7 +1479,7 @@ handleDirectorIDChange(event){
             </table>
           }
 
-          {this.state.isDirector && this.state.elecStatus != 0 &&
+          {this.state.isDirector && this.state.elecStatus == 2 &&
             <div>
               {!this.state.xmlFile && !this.state.isSigned && apz.status_id === 5 &&
                 <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
@@ -1494,7 +1496,7 @@ handleDirectorIDChange(event){
                   </div>
 
                   <div className="form-group">
-                    <button className="btn btn-secondary" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                    <button className="btn btn-raised btn-success" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
                   </div>
                 </div>
               }
@@ -1516,7 +1518,7 @@ handleDirectorIDChange(event){
           }
 
           {this.state.accept === 'decline' && this.state.elecStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
-            <form className="provider_answer_body" style={{border: 'solid 1px #f44336', padding: '20px'}}>
+            <div className="provider_answer_body" style={{border: 'solid 1px #f44336', padding: '20px'}}>
               <div className="form-group">
                 <label>Номер документа</label>
                 <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
@@ -1541,12 +1543,28 @@ handleDirectorIDChange(event){
                 <input type="file" id="upload_file" className="form-control" onChange={this.onFileChange} />
               </div>
               <div className="form-group">
-                <button type="button" className="btn btn-secondary" onClick={this.sendElectroResponse.bind(this, apz.id, false, this.state.description)}>
-                  Вернуть архитектору
-                </button>
+                <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">Отклонить</button>
               </div>
-            </form>
+            </div>
           }
+          <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Вы уверены что хотите отколнить заявление?</h5>
+                  <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div className="modal-footer" style={{margin:'auto'}}>
+                  <button type="button" className="btn btn-secondary" onClick={this.sendElectroResponse.bind(this, apz.id, false, this.state.description)}>
+                    Да
+                  </button>
+                  <button type="button" className="btn btn-secondary" data-dismiss="modal" style={{marginLeft:'5px'}}>Нет</button>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {this.state.accept === 'decline' && this.state.responseId != 0 && (this.state.elecStatus === 0 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
             <div>

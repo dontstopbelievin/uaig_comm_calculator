@@ -596,6 +596,13 @@ class AddApz extends React.Component {
   saveApz(publish, elem) {
     elem.preventDefault();
 
+    if((this.state.heatGeneral == parseFloat(this.state.mainHeatMain) + parseFloat(this.state.mainHeatVen) + parseFloat(this.state.mainHeatWater)) ||
+        (this.state.heatGeneral == parseFloat(this.state.mainHeatMain) + parseFloat(this.state.mainHeatVen) + parseFloat(this.state.mainHeatWaterMax))) {
+    }else{
+      alert("Сумма нагрузки отопления, вентиляции и горячего водоснабженияне не совпадает с общей тепловой нагрузкой");
+      return;
+    }
+
     if (publish) {
       var requiredFields = {
         applicant: 'Заявитель',
@@ -1066,19 +1073,19 @@ class AddApz extends React.Component {
       case 'udelnayaNorma':
         if(this.state.tempVnutri != '' && this.state.tempVnutri != ' ' && this.state.obshayaPloshad != '' && this.state.obshayaPloshad != ' '){
           var heatGeneral = value * this.state.obshayaPloshad / 1.163 * (this.state.tempVnutri + 25)/(this.state.tempVnutri + 20.1) / 1000000;
-          this.setState({heatGeneral: heatGeneral});
+          this.setState({heatGeneral: Math.round(heatGeneral*1000)/1000});
         }
         break;
       case 'tempVnutri':
         if(this.state.udelnayaNorma != '' && this.state.udelnayaNorma != ' ' && this.state.obshayaPloshad != '' && this.state.obshayaPloshad != ' '){
           var heatGeneral = this.state.udelnayaNorma * this.state.obshayaPloshad / 1.163 * (value + 25)/(value + 20.1) / 1000000;
-          this.setState({heatGeneral: heatGeneral});
+          this.setState({heatGeneral: Math.round(heatGeneral*1000)/1000});
         }
         break;
       case 'obshayaPloshad':
         if(this.state.tempVnutri != '' && this.state.tempVnutri != ' ' && this.state.udelnayaNorma != '' && this.state.udelnayaNorma != ' '){
           var heatGeneral = this.state.udelnayaNorma * value / 1.163 * (this.state.tempVnutri + 25)/(this.state.tempVnutri + 20.1) / 1000000;
-          this.setState({heatGeneral: heatGeneral});
+          this.setState({heatGeneral: Math.round(heatGeneral*1000)/1000});
         }
         break;
     }
