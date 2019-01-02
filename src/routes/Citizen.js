@@ -275,7 +275,6 @@ class AddApz extends React.Component {
       waterProduction: '',
       waterDrinking: '',
       waterFireFighting: '',
-      waterFireFightingIn: '',
       sewageAmount: '',
       sewageFeksal: '',
       sewageProduction: '',
@@ -491,7 +490,6 @@ class AddApz extends React.Component {
           this.setState({waterProduction: apz.apz_water.production ? apz.apz_water.production : '' });
           this.setState({waterDrinking: apz.apz_water.drinking ? apz.apz_water.drinking : '' });
           this.setState({waterFireFighting: apz.apz_water.fire_fighting ? apz.apz_water.fire_fighting : '' });
-          this.setState({waterFireFightingIn: apz.apz_water.fire_fighting_in ? apz.apz_water.fire_fighting_in : '' });
         }
 
         if (apz.apz_sewage) {
@@ -775,7 +773,7 @@ class AddApz extends React.Component {
     //ИЖС if selected
     if(document.getElementById('ObjectType').value === 'ИЖС')
     {
-      if(document.getElementsByName('objectArea')[0].value !== '')
+      if(document.getElementsByName('objectArea')[0].value !== '' && document.getElementsByName('gasGeneral')[0] != null)
       {
         var ObjectArea = parseInt(document.getElementsByName('objectArea')[0].value, 3);
         switch (true)
@@ -791,7 +789,7 @@ class AddApz extends React.Component {
         }
       }
 
-      if(document.getElementsByName('electricAllowedPower')[0].value !== '')
+      if(document.getElementsByName('electricAllowedPower')[0] !=null && document.getElementsByName('electricAllowedPower')[0].value !== '')
       {
         //console.log(1);
         document.getElementsByName("electricRequiredPower")[0].required = false;
@@ -1583,10 +1581,6 @@ class AddApz extends React.Component {
                           <div className="form-group">
                             <label htmlFor="WaterSewage">Канализация (м<sup>3</sup>/сутки)</label>
                             <input data-rh="Канализация (м/3)" data-rh-at="right" type="number" onChange={this.onInputChange} className="form-control" name="waterSewage" value={this.state.waterSewage} />
-                          </div>
-                          <div className="form-group">
-                            <label>Потребные расходы внутреннего пожаротушения (л/сек)</label>
-                            <input data-rh="Потребные расходы внутреннего пожаротушения (л/сек)" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChange} name="waterFireFightingIn" value={this.state.waterFireFightingIn}/>
                           </div>
                           <div className="form-group">
                             <label>Топографическая съемка</label>
