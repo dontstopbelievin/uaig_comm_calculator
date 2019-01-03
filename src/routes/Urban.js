@@ -243,6 +243,7 @@ class ShowApz extends React.Component {
       titleDocumentFile: false,
       additionalFile: false,
       engineerReturnedState: false,
+      apzReturnedState: false,
       needSign: false,
       response: true,
       storageAlias: "PKCS12",
@@ -330,7 +331,8 @@ class ShowApz extends React.Component {
           }
           break;
         }
-        this.setState({engineerReturnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null })[0]});
+        this.setState({engineerReturnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null && obj.sender == 'engineer'})[0]});
+        this.setState({apzReturnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null && obj.sender == 'apz'})[0]});
         this.setState({needSign: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
         this.setState({engineerSign: apz.files.filter(function(obj) { return obj.category_id === 28 })[0]});
         if(apz.apz_head_id){this.setState({apz_head_id: apz.apz_head_id});}
@@ -1376,6 +1378,11 @@ class ShowApz extends React.Component {
                 Комментарий инженера: {this.state.engineerReturnedState.comment}
               </div>
             }
+            {this.state.apzReturnedState &&
+              <div className="alert alert-danger">
+                Комментарий апз отдела: {this.state.apzReturnedState.comment}
+              </div>
+            }
             {apz.status_id === 1 &&
               <table className="table table-bordered">
                 <tbody>
@@ -1410,7 +1417,7 @@ class ShowApz extends React.Component {
                   </div>
                 }
                 {!this.state.response ?
-                  <div>
+                  <div className="text-center">
                     <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled="disabled">Одобрить</button>
                     <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
                       Отклонить

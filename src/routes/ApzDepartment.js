@@ -236,6 +236,7 @@ class ShowApz extends React.Component {
       isSigned: false,
       templateType: '',
       backFromHead: false,
+      apzReturnedState: false,
 
       basisForDevelopmentApz: 'Постановление акимата города (района) №_____ от __________ (число, месяц, год)',
       buildingPresence: 'Строений нет',
@@ -547,6 +548,7 @@ class ShowApz extends React.Component {
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
         this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
         this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 18})[0]});
+        this.setState({apzReturnedState: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null && obj.sender == 'apz'})[0]});
         this.setState({response: data.apz_department_response ? true : false });
         for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
           switch (data.state_history[data_index].state_id) {
@@ -581,13 +583,13 @@ class ShowApz extends React.Component {
             this.setState({ [key]: (data.apz_department_response[k] === null) ? '' : data.apz_department_response[k] });
           }.bind(this));
         }
-        if(!data.apz_sign_returned){
+        /*if(!data.apz_sign_returned){
             this.setState({xmlFile: false});
             this.setState({isSigned: false});
             this.setState({showButtons: true});
             this.setState({showSendButton: false});
             this.setState({showSignButtons: false});
-        }
+        }*/
       }
     }.bind(this)
     xhr.send();
@@ -1223,7 +1225,7 @@ class ShowApz extends React.Component {
           {this.state.showMapText}
         </button>
 
-        {((apz.status_id === 7 || apz.status_id === 1 || apz.status_id === 2) && this.state.response) &&
+        {((apz.status_id != 6 && !this.state.apzReturnedState) && this.state.response) &&
           <div>
             <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
             <table className="table table-bordered table-striped">
@@ -1234,6 +1236,11 @@ class ShowApz extends React.Component {
                 </tr>
               </tbody>
             </table>
+          </div>
+        }
+        {this.state.apzReturnedState &&
+          <div className="alert alert-danger">
+            Причина отказа: {this.state.apzReturnedState.comment}
           </div>
         }
 
@@ -1597,7 +1604,7 @@ class ShowApz extends React.Component {
                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.saveForm.bind(this, apz.id, true, "")}>
                     Сохранить
                   </button>
-                  <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#declined_modal">Вернуть архитектору</button>
+                  <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#declined_modal">Отклонить</button>
                 </div>
               }
 
@@ -1611,7 +1618,7 @@ class ShowApz extends React.Component {
                 <div className="modal-dialog" role="document">
                   <div className="modal-content">
                     <div className="modal-header">
-                      <h5 className="modal-title">Вернуть архитектору</h5>
+                      <h5 className="modal-title">Отклонить</h5>
                       <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
