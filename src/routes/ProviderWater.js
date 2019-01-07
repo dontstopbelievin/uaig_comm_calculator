@@ -47,7 +47,7 @@ class AllApzs extends React.Component {
   }
 
   componentDidMount() {
-    console.log('1');
+    //console.log('1');
     this.props.breadCrumbs();
     this.getApzs();
   }
@@ -2221,7 +2221,7 @@ handleObjTypeChange(event){
 
         <div className="col-sm-12">
           <hr />
-          <Link className="btn btn-outline-secondary pull-right" to={'/panel/water-provider/apz/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+          <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
         </div>
       </div>
     )

@@ -1961,10 +1961,13 @@ class AddApz extends React.Component {
 
         <div>
           <hr />
-          <Link className="btn btn-outline-secondary pull-right" to={'/panel/citizen/apz'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+          <button className="btn btn-outline-secondary pull-right" onClick={this.routeChange.bind(this)}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
         </div>
       </div>
     )
+  }
+  routeChange(){
+    this.props.history.goBack();
   }
 }
 
@@ -3430,7 +3433,7 @@ console.log(apz.files);
 
             <div className="col-sm-12">
               <hr />
-              <Link className="btn btn-outline-secondary pull-right" to={'/panel/citizen/apz/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+              <button className="btn btn-outline-secondary pull-right" onClick={this.routeChange.bind(this)}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
             </div>
           </div>
         }
@@ -3442,6 +3445,9 @@ console.log(apz.files);
         }
       </div>
     )
+  }
+  routeChange(){
+    this.props.history.goBack();
   }
 }
 
