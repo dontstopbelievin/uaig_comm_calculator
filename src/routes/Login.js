@@ -105,7 +105,7 @@ export default class Login extends Component {
         if (xhr.status === 200) {
           this.setState({loaderHidden: true});
           console.log("loggedIn");
-          console.log(JSON.parse(e.target.response).roles);
+          //console.log(JSON.parse(e.target.response).roles);
           var roles = [];
           for(var index = 0; index < JSON.parse(e.target.response).roles.length; index++){
             roles.push(JSON.parse(e.target.response).roles[index].name);
@@ -118,8 +118,8 @@ export default class Login extends Component {
           sessionStorage.setItem(userBinKey, JSON.parse(e.target.response).bin ? JSON.parse(e.target.response).bin : '');
           sessionStorage.setItem(userRoleKey, JSON.stringify(roles));
           sessionStorage.setItem(logStatusKey, true);
-          console.log(roles);
-          console.log(this.props.location);
+          //console.log(roles);
+          //console.log(this.props.location);
           switch (roles[0]) {
             case "Citizen":
               if(this.props.location.state != null && this.props.location.state.url_apz_id){

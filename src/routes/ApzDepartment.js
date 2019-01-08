@@ -236,6 +236,7 @@ class ShowApz extends React.Component {
       isSigned: false,
       templateType: '',
       backFromHead: false,
+      apzReturnedState: false,
 
       basisForDevelopmentApz: 'Постановление акимата города (района) №_____ от __________ (число, месяц, год)',
       buildingPresence: 'Строений нет',
@@ -288,6 +289,7 @@ class ShowApz extends React.Component {
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.sendForm = this.sendForm.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
+    this.uploadFile = this.uploadFile.bind(this);
   }
   componentDidMount() {
     this.props.breadCrumbs();
@@ -546,7 +548,9 @@ class ShowApz extends React.Component {
         this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
         this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
+        this.setState({reglamentFile: data.files.filter(function(obj) { return obj.category_id === 29 })[0]});
         this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 18})[0]});
+        this.setState({apzReturnedState: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null && obj.sender == 'apz'})[0]});
         this.setState({response: data.apz_department_response ? true : false });
         for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
           switch (data.state_history[data_index].state_id) {
@@ -581,13 +585,13 @@ class ShowApz extends React.Component {
             this.setState({ [key]: (data.apz_department_response[k] === null) ? '' : data.apz_department_response[k] });
           }.bind(this));
         }
-        if(!data.apz_sign_returned){
+        /*if(!data.apz_sign_returned){
             this.setState({xmlFile: false});
             this.setState({isSigned: false});
             this.setState({showButtons: true});
             this.setState({showSendButton: false});
             this.setState({showSignButtons: false});
-        }
+        }*/
       }
     }.bind(this)
     xhr.send();
@@ -658,6 +662,64 @@ class ShowApz extends React.Component {
         }
       }
     xhr.send();
+  }
+
+  uploadFile(category, e) {
+    if(e.target.files[0] == null){ return;}
+    var file = e.target.files[0];
+    var name = file.name.replace(/\.[^/.]+$/, "");
+    var progressbar = $('.progress[data-category=' + category + ']');
+    if (!file || !category) {
+      alert('Не удалось загрузить файл');
+
+      return false;
+    }
+
+    var formData = new FormData();
+    formData.append('file', file);
+    formData.append('name', name);
+    formData.append('category', category);
+    progressbar.css('display', 'flex');
+    $.ajax({
+      type: 'POST',
+      url: window.url + 'api/file/upload',
+      contentType: false,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
+      },
+      processData: false,
+      data: formData,
+      xhr: function() {
+        var xhr = new window.XMLHttpRequest();
+
+        xhr.upload.addEventListener("progress", function(evt) {
+          if (evt.lengthComputable) {
+            var percentComplete = evt.loaded / evt.total;
+            percentComplete = parseInt(percentComplete * 100);
+            $('div', progressbar).css('width', percentComplete + '%');
+          }
+        }, false);
+
+        return xhr;
+      },
+      success: function (response) {
+        var data = {id: response.id, name: response.name};
+
+        setTimeout(function() {
+          progressbar.css('display', 'none');
+          switch (category) {
+            case 29:
+              this.setState({reglamentFile: data});
+              break;
+          }
+          alert("Файл успешно загружен");
+        }.bind(this), '1000')
+      }.bind(this),
+      error: function (response) {
+        progressbar.css('display', 'none');
+        alert("Не удалось загрузить файл");
+      }
+    });
   }
 
   setMissedHeartbeatsLimitToMax() {
@@ -1223,7 +1285,7 @@ class ShowApz extends React.Component {
           {this.state.showMapText}
         </button>
 
-        {((apz.status_id === 7 || apz.status_id === 1 || apz.status_id === 2) && this.state.response) &&
+        {((apz.status_id != 6 && !this.state.apzReturnedState) && this.state.response) &&
           <div>
             <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
             <table className="table table-bordered table-striped">
@@ -1232,8 +1294,21 @@ class ShowApz extends React.Component {
                   <td style={{width: '22%'}}><b>Сформированный АПЗ</b></td>
                   <td><a className="text-info pointer" onClick={this.printApz.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
                 </tr>
+                {this.state.reglamentFile &&<tr>
+                  <td style={{width: '22%'}}><b>Регламент</b></td>
+                  <td><a className="text-info pointer" data-category="6" onClick={this.downloadFile.bind(this, this.state.reglamentFile.id, 6)}>Скачать</a>
+                    <div className="progress mb-2" data-category="6" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                      <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </td>
+                </tr>}
               </tbody>
             </table>
+          </div>
+        }
+        {this.state.apzReturnedState &&
+          <div className="alert alert-danger">
+            Причина отказа: {this.state.apzReturnedState.comment}
           </div>
         }
 
@@ -1563,6 +1638,32 @@ class ShowApz extends React.Component {
                   <input type="text" value={this.state.docNumber} className="form-control" onChange={(e) => this.setState({ docNumber: e.target.value })} />
                 </div>
               </div>
+
+              <div className="form-group">
+                <div className="file_container">
+                  <div className="col-md-4">
+                    <div className="progress mb-2" data-category="5" style={{height: '20px', display: 'none'}}>
+                      <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+
+                  {this.state.reglamentFile &&
+                    <div className="file_block mb-2">
+                      <div>
+                        {this.state.reglamentFile.name}
+                        <a className="pointer" onClick={(e) => this.setState({reglamentFile: false}) }>×</a>
+                      </div>
+                    </div>
+                  }
+
+                  <div className="file_buttons btn-group btn-group-justified d-table mt-0">
+                    <label><h6>Регламент</h6></label>
+                    <label htmlFor="reglamentFile" className="btn btn-success" style={{marginLeft: '5px'}}>Загрузить</label>
+                    <input type="file" id="reglamentFile" name="reglamentFile" className="form-control" onChange={this.uploadFile.bind(this, 5)} style={{display: 'none'}} />
+                  </div>
+                  <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
+                </div>
+              </div>
             </form>
 
             {this.state.backFromHead &&
@@ -1597,7 +1698,7 @@ class ShowApz extends React.Component {
                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.saveForm.bind(this, apz.id, true, "")}>
                     Сохранить
                   </button>
-                  <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#declined_modal">Вернуть архитектору</button>
+                  <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#declined_modal">Отклонить</button>
                 </div>
               }
 
@@ -1611,7 +1712,7 @@ class ShowApz extends React.Component {
                 <div className="modal-dialog" role="document">
                   <div className="modal-content">
                     <div className="modal-header">
-                      <h5 className="modal-title">Вернуть архитектору</h5>
+                      <h5 className="modal-title">Отклонить</h5>
                       <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
@@ -1651,9 +1752,12 @@ class ShowApz extends React.Component {
         }
 
         <hr />
-        <Link className="btn btn-outline-secondary pull-right" to={'/panel/apz-department/apz/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+        <button className="btn btn-outline-secondary pull-right" onClick={this.routeChange.bind(this)}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
       </div>
     )
+  }
+  routeChange(){
+    this.props.history.goBack();
   }
 }
 

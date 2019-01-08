@@ -243,6 +243,7 @@ class ShowApz extends React.Component {
       titleDocumentFile: false,
       additionalFile: false,
       engineerReturnedState: false,
+      apzReturnedState: false,
       needSign: false,
       response: true,
       storageAlias: "PKCS12",
@@ -319,6 +320,7 @@ class ShowApz extends React.Component {
         this.setState({confirmedTaskFile: apz.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
         this.setState({additionalFile: apz.files.filter(function(obj) { return obj.category_id === 27 })[0]});
+        this.setState({reglamentFile: apz.files.filter(function(obj) { return obj.category_id === 29 })[0]});
         this.setState({showButtons: false});
         for(var data_index = apz.state_history.length-1; data_index >= 0; data_index--){
           switch (apz.state_history[data_index].state_id) {
@@ -330,7 +332,8 @@ class ShowApz extends React.Component {
           }
           break;
         }
-        this.setState({engineerReturnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null })[0]});
+        this.setState({engineerReturnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null && obj.sender == 'engineer'})[0]});
+        this.setState({apzReturnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null && obj.sender == 'apz'})[0]});
         this.setState({needSign: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
         this.setState({engineerSign: apz.files.filter(function(obj) { return obj.category_id === 28 })[0]});
         if(apz.apz_head_id){this.setState({apz_head_id: apz.apz_head_id});}
@@ -500,7 +503,7 @@ class ShowApz extends React.Component {
     }
 
     let alias = "";
-    console.log(result);
+    //console.log(result);
     if (result && result.result) {
       let keys = result.result.split('/n');
       if (keys && keys.length > 0) {
@@ -769,6 +772,70 @@ class ShowApz extends React.Component {
     var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
 
     return formated_date;
+  }
+
+  printApz(apzId, project) {
+    var token = sessionStorage.getItem('tokenInfo');
+    if (token) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/print/apz/" + apzId, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          //test of IE
+          if (typeof window.navigator.msSaveBlob === "function") {
+            window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
+          } else {
+            var data = JSON.parse(xhr.responseText);
+            var today = new Date();
+            var curr_date = today.getDate();
+            var curr_month = today.getMonth() + 1;
+            var curr_year = today.getFullYear();
+            var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+
+            var base64ToArrayBuffer = (function () {
+
+              return function (base64) {
+                var binaryString =  window.atob(base64);
+                var binaryLen = binaryString.length;
+                var bytes = new Uint8Array(binaryLen);
+
+                for (var i = 0; i < binaryLen; i++) {
+                  var ascii = binaryString.charCodeAt(i);
+                  bytes[i] = ascii;
+                }
+
+                return bytes;
+              }
+
+            }());
+
+            var saveByteArray = (function () {
+              var a = document.createElement("a");
+              document.body.appendChild(a);
+              a.style = "display: none";
+
+              return function (data, name) {
+                var blob = new Blob(data, {type: "octet/stream"}),
+                    url = window.URL.createObjectURL(blob);
+                a.href = url;
+                a.download = name;
+                a.click();
+                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+              };
+
+            }());
+
+            saveByteArray([base64ToArrayBuffer(data.file)], "апз-" + project + formated_date + ".pdf");
+          }
+        } else {
+          alert('Не удалось скачать файл');
+        }
+      }
+      xhr.send();
+    } else {
+      console.log('session expired');
+    }
   }
 
   printRegionAnswer(apzId) {
@@ -1365,6 +1432,29 @@ class ShowApz extends React.Component {
               </div>
             }
 
+            {apz.apz_department_response &&
+              <div>
+                <h5 className="block-title-2 mb-3">Ответ от АПЗ отдела</h5>
+                <table className="table table-bordered table-striped">
+                  <tbody>
+                    <tr>
+                      <td style={{width: '22%'}}><b>Сформированный АПЗ</b></td>
+                      <td><a className="text-info pointer" onClick={this.printApz.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
+                    </tr>
+                    {this.state.reglamentFile &&
+                      <tr>
+                        <td style={{width: '22%'}}><b>Регламент</b></td>
+                        <td><a className="text-info pointer" data-category="6" onClick={this.downloadFile.bind(this, this.state.reglamentFile.id, 6)}>Скачать</a>
+                          <div className="progress mb-2" data-category="6" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </td>
+                      </tr>}
+                  </tbody>
+                </table>
+              </div>
+            }
+
             {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
 
             <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
@@ -1374,6 +1464,11 @@ class ShowApz extends React.Component {
             {this.state.engineerReturnedState &&
               <div className="alert alert-danger">
                 Комментарий инженера: {this.state.engineerReturnedState.comment}
+              </div>
+            }
+            {this.state.apzReturnedState &&
+              <div className="alert alert-danger">
+                Комментарий апз отдела: {this.state.apzReturnedState.comment}
               </div>
             }
             {apz.status_id === 1 &&
@@ -1410,7 +1505,7 @@ class ShowApz extends React.Component {
                   </div>
                 }
                 {!this.state.response ?
-                  <div>
+                  <div className="text-center">
                     <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled="disabled">Одобрить</button>
                     <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
                       Отклонить
@@ -1530,7 +1625,7 @@ class ShowApz extends React.Component {
     )
   }
   routeChange(){
-    this.props.history.push('/panel/urban/apz');
+    this.props.history.goBack();
   }
 }
 

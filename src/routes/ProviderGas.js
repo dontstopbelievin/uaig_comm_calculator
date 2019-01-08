@@ -175,11 +175,7 @@ class AllApzs extends React.Component {
 
                       {(status === 'active' || status === 'awaiting') &&
                         <td>
-                          {apz.term > 1 ?
-                            apz.term === 3 ? '2 д. (начиная со следующего дня)' : apz.term - 1 + ' д.'
-                            :
-                            apz.term === 1 ? 'Последний день (до 16:00)' : 'Просрочено'
-                          }
+                          {this.toDate(apz.term.date)}
                         </td>
                       }
                       <td>
@@ -1125,8 +1121,8 @@ handleDirectorIDChange(event){
                 </td>
               </tr>
               <tr>
-                <td><b>Дата заявления</b></td>
-                <td>{apz.created_at && this.toDate(apz.created_at)}</td>
+                <td><b>Дата поступления</b></td>
+                <td>{this.toDate(apz.commission.created_at)}</td>
               </tr>
 
               {this.state.personalIdFile &&
@@ -1641,7 +1637,7 @@ handleDirectorIDChange(event){
 
         <div className="col-sm-12">
           <hr />
-          <Link className="btn btn-outline-secondary pull-right" to={'/panel/gas-provider/apz/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+          <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
         </div>
       </div>
     )

@@ -333,6 +333,7 @@ class ShowApz extends React.Component {
         this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
         this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
         this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
+        this.setState({reglamentFile: data.files.filter(function(obj) { return obj.category_id === 29 })[0]});
         //this.setState({returnedState: data.state_history.filter(function(obj) { return obj.state_id === 3 && obj.comment != null })[0]});
         var pack2IdFile = data.files.filter(function(obj) { return obj.category_id === 25 }) ?
           data.files.filter(function(obj) { return obj.category_id === 25 }) : [];
@@ -1462,6 +1463,15 @@ class ShowApz extends React.Component {
                         <td style={{width: '40%'}}><b>Отдел АПЗ</b></td>
                         <td><a className="text-info pointer" onClick={this.printApz.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
                       </tr>
+                      {this.state.reglamentFile &&
+                        <tr>
+                          <td style={{width: '40%'}}><b>Регламент</b></td>
+                          <td><a className="text-info pointer" data-category="21" onClick={this.downloadFile.bind(this, this.state.reglamentFile.id, 6)}>Скачать</a>
+                            <div className="progress mb-2" data-category="21" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                              <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                          </td>
+                        </tr>}
                     </tbody>
                   </table>
                 </div>

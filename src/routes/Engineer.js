@@ -132,7 +132,8 @@ class AllApzs extends React.Component {
           <div>
             <ul className="nav nav-tabs mb-2 pull-right">
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/engineer/apz/status/active/1" replace>Активные</NavLink></li>
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'awaiting'} to="/panel/engineer/apz/status/awaiting/1" replace>В ожидании</NavLink></li>
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'awaiting'} to="/panel/engineer/apz/status/awaiting/1" replace>Комм. службы в процессе</NavLink></li>
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'complete'} to="/panel/engineer/apz/status/complete/1" replace>Комм. службы выполнены</NavLink></li>
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/engineer/apz/status/accepted/1" replace>Принятые</NavLink></li>
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/engineer/apz/status/declined/1" replace>Отказанные</NavLink></li>
             </ul>
@@ -259,6 +260,7 @@ class ShowApz extends React.Component {
       response: null,
       storageAlias: "PKCS12",
       needSign: false,
+      engineerReturnedState: false,
       comment: null
     };
 
@@ -357,6 +359,7 @@ class ShowApz extends React.Component {
           this.setState({showCommission: true});
         }
 
+        this.setState({engineerReturnedState: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null && obj.sender == 'engineer'})[0]});
         this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 28})[0]});
         this.setState({needSign: data.files.filter(function(obj) { return obj.category_id === 28})[0]});
       }
@@ -1268,7 +1271,6 @@ class ShowApz extends React.Component {
 
   render() {
     var apz = this.state.apz;
-    console.log(apz);
     if (apz.length === 0) {
       return false;
     }
@@ -1629,27 +1631,27 @@ class ShowApz extends React.Component {
                 <div>
                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>Одобрить</button>
                   <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">
-                    Вернуть архитектору
+                    Отклонить
                   </button>
                   <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
                     <div className="modal-dialog" role="document">
                       <div className="modal-content">
                         <div className="modal-header">
-                          <h5 className="modal-title">Вернуть архитектору</h5>
+                          <h5 className="modal-title">Отклонить</h5>
                           <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                           </button>
                         </div>
                         <div className="modal-body">
                           <div className="form-group">
-                            <label htmlFor="docNumber">Комментарий:</label>
+                            <label htmlFor="docNumber">Причина отклонения:</label>
                             <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                               <textarea style={{marginBottom: '10px'}} placeholder="Комментарий" rows="7" cols="50" className="form-control" defaultValue={this.state.comment} onChange={this.onCommentChange}></textarea>
                             </div>
                           </div>
                         </div>
                         <div className="modal-footer">
-                          <button type="button" className="btn btn-raised btn-danger" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.comment)}>Вернуть архитектору</button>
+                          <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.comment)}>Отправить</button>
                           <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                         </div>
                       </div>
@@ -1701,6 +1703,12 @@ class ShowApz extends React.Component {
               }
             </div>
           </div>
+
+          {this.state.engineerReturnedState &&
+            <div className="alert alert-danger">
+              Комментарий инженера: {this.state.engineerReturnedState.comment}
+            </div>
+          }
 
           <h5 className="block-title-2 mb-3">Логи</h5>
           <div className="border px-3 py-2">
@@ -2672,11 +2680,14 @@ class ShowApz extends React.Component {
 
           <div className="col-sm-12">
             <hr />
-            <Link className="btn btn-outline-secondary pull-right" to={'/panel/engineer/apz/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+            <button className="btn btn-outline-secondary pull-right" onClick={this.routeChange.bind(this)}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
           </div>
         </div>
       </div>
     )
+  }
+  routeChange(){
+    this.props.history.goBack();
   }
 }
 

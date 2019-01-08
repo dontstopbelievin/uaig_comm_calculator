@@ -275,7 +275,6 @@ class AddApz extends React.Component {
       waterProduction: '',
       waterDrinking: '',
       waterFireFighting: '',
-      waterFireFightingIn: '',
       sewageAmount: '',
       sewageFeksal: '',
       sewageProduction: '',
@@ -491,7 +490,6 @@ class AddApz extends React.Component {
           this.setState({waterProduction: apz.apz_water.production ? apz.apz_water.production : '' });
           this.setState({waterDrinking: apz.apz_water.drinking ? apz.apz_water.drinking : '' });
           this.setState({waterFireFighting: apz.apz_water.fire_fighting ? apz.apz_water.fire_fighting : '' });
-          this.setState({waterFireFightingIn: apz.apz_water.fire_fighting_in ? apz.apz_water.fire_fighting_in : '' });
         }
 
         if (apz.apz_sewage) {
@@ -596,12 +594,12 @@ class AddApz extends React.Component {
   saveApz(publish, elem) {
     elem.preventDefault();
 
-    if((this.state.heatGeneral == parseFloat(this.state.mainHeatMain) + parseFloat(this.state.mainHeatVen) + parseFloat(this.state.mainHeatWater)) ||
-        (this.state.heatGeneral == parseFloat(this.state.mainHeatMain) + parseFloat(this.state.mainHeatVen) + parseFloat(this.state.mainHeatWaterMax))) {
-    }else{
-      alert("Сумма нагрузки отопления, вентиляции и горячего водоснабженияне не совпадает с общей тепловой нагрузкой");
-      return;
-    }
+    // if((this.state.heatGeneral == parseFloat(this.state.mainHeatMain) + parseFloat(this.state.mainHeatVen) + parseFloat(this.state.mainHeatWater)) ||
+    //     (this.state.heatGeneral == parseFloat(this.state.mainHeatMain) + parseFloat(this.state.mainHeatVen) + parseFloat(this.state.mainHeatWaterMax))) {
+    // }else{
+    //   alert("Сумма нагрузки отопления, вентиляции и горячего водоснабженияне не совпадает с общей тепловой нагрузкой");
+    //   return;
+    // }
 
     if (publish) {
       var requiredFields = {
@@ -678,7 +676,7 @@ class AddApz extends React.Component {
           }
         }
       } else {
-        alert(xhr.status+"При сохранении заявки произошла ошибка!");
+        alert(xhr.getMessages+" "+xhr.status+"При сохранении заявки произошла ошибка!");
       }
     }.bind(this);
     xhr.send(JSON.stringify(data));
@@ -775,7 +773,7 @@ class AddApz extends React.Component {
     //ИЖС if selected
     if(document.getElementById('ObjectType').value === 'ИЖС')
     {
-      if(document.getElementsByName('objectArea')[0].value !== '')
+      if(document.getElementsByName('objectArea')[0].value !== '' && document.getElementsByName('gasGeneral')[0] != null)
       {
         var ObjectArea = parseInt(document.getElementsByName('objectArea')[0].value, 3);
         switch (true)
@@ -791,7 +789,7 @@ class AddApz extends React.Component {
         }
       }
 
-      if(document.getElementsByName('electricAllowedPower')[0].value !== '')
+      if(document.getElementsByName('electricAllowedPower')[0] !=null && document.getElementsByName('electricAllowedPower')[0].value !== '')
       {
         //console.log(1);
         document.getElementsByName("electricRequiredPower")[0].required = false;
@@ -1585,10 +1583,6 @@ class AddApz extends React.Component {
                             <input data-rh="Канализация (м/3)" data-rh-at="right" type="number" onChange={this.onInputChange} className="form-control" name="waterSewage" value={this.state.waterSewage} />
                           </div>
                           <div className="form-group">
-                            <label>Потребные расходы внутреннего пожаротушения (л/сек)</label>
-                            <input data-rh="Потребные расходы внутреннего пожаротушения (л/сек)" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChange} name="waterFireFightingIn" value={this.state.waterFireFightingIn}/>
-                          </div>
-                          <div className="form-group">
                             <label>Топографическая съемка</label>
                             <div className="file_container">
                               <div className="progress mb-2" data-category="22" style={{height: '20px', display: 'none'}}>
@@ -1967,10 +1961,13 @@ class AddApz extends React.Component {
 
         <div>
           <hr />
-          <Link className="btn btn-outline-secondary pull-right" to={'/panel/citizen/apz'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+          <button className="btn btn-outline-secondary pull-right" onClick={this.routeChange.bind(this)}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
         </div>
       </div>
     )
+  }
+  routeChange(){
+    this.props.history.goBack();
   }
 }
 
@@ -3436,7 +3433,7 @@ console.log(apz.files);
 
             <div className="col-sm-12">
               <hr />
-              <Link className="btn btn-outline-secondary pull-right" to={'/panel/citizen/apz/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+              <button className="btn btn-outline-secondary pull-right" onClick={this.routeChange.bind(this)}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
             </div>
           </div>
         }
@@ -3448,6 +3445,9 @@ console.log(apz.files);
         }
       </div>
     )
+  }
+  routeChange(){
+    this.props.history.goBack();
   }
 }
 
