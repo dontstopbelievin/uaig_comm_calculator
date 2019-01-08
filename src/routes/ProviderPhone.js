@@ -1,4 +1,4 @@
-import React from 'react';
+  import React from 'react';
 //import * as esriLoader from 'esri-loader';
 import EsriLoaderReact from 'esri-loader-react';
 //import { NavLink } from 'react-router-dom';
@@ -277,7 +277,8 @@ class ShowApz extends React.Component {
       headComment: "",
       ty_director_id: "",
       phone_directors_id: [],
-      customTcFile: null
+      customTcFile: null,
+      loaderHidden:true
     };
 
     this.onResponseServiceNumChange = this.onResponseServiceNumChange.bind(this);
@@ -613,6 +614,7 @@ class ShowApz extends React.Component {
   }
 
   signMessage() {
+    this.setState({loaderHidden: false});
     let password = document.getElementById("inpPassword").value;
     let path = document.getElementById("storagePath").value;
     let keyType = "SIGN";
@@ -621,15 +623,20 @@ class ShowApz extends React.Component {
         this.getKeys(this.state.storageAlias, path, password, keyType, "loadKeysBack");
       } else {
         alert("Введите пароль к хранилищу");
+        this.setState({loaderHidden: true});
+
       }
     } else {
       alert("Не выбран хранилище!");
+      this.setState({loaderHidden: true});
+
     }
   }
 
   loadKeysBack(result) {
     if (result.errorCode === "WRONG_PASSWORD") {
       alert("Неверный пароль!");
+      this.setState({loaderHidden: true});
       return false;
     }
 
@@ -644,6 +651,7 @@ class ShowApz extends React.Component {
     }
     if (!alias) {
       alert('Нет ключа подписания');
+      this.setState({loaderHidden: true});
     }
   }
 
@@ -1554,9 +1562,16 @@ handleDirectorIDChange(event){
                     <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
                   </div>
 
+                  {!this.state.loaderHidden &&
+                  <div style={{margin: '0 auto'}}>
+                      <Loader type="Ball-Triangle" color="#46B3F2" height="70" width="70" />
+                  </div>
+                  }
+                  {this.state.loaderHidden &&
                   <div className="form-group">
                     <button className="btn btn-raised btn-success" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
                   </div>
+                  }
                 </div>
               }
             </div>

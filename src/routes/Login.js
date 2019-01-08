@@ -236,13 +236,17 @@ export default class Login extends Component {
     let keyType = "AUTH";
     if (path !== null && path !== "" && this.state.storageAlias !== null && this.state.storageAlias !== "") {
       if (password !== null && password !== "") {
-        this.getKeys(this.state.storageAlias, path, password, keyType, "loadKeysBack");
+          this.getKeys(this.state.storageAlias, path, password, keyType, "loadKeysBack");
         //console.log(this.state.resultIIN);
       } else {
-        alert("Введите пароль к хранилищу");
+          this.setState({loaderHidden: true});
+          alert("Введите пароль к хранилищу");
       }
     } else {
-      alert("Не выбран хранилище!");
+        this.setState({loaderHidden: true});
+        alert("Не выбран хранилище!");
+        // this.setState({loaderHidden: true});
+
     }
   }
   openecp(){
@@ -540,7 +544,6 @@ export default class Login extends Component {
                     <p>&nbsp;</p>
                     <form id="loginForm" onSubmit={this.login}>
                       <div className="form-group">
-                        <label className="control-label">ИИН/БИН:</label>
                         <input type="text" className="form-control" id="userName" value={this.state.username} onChange={this.onUsernameChange} required />
                       </div>
                       <div className="form-group">
@@ -590,17 +593,24 @@ export default class Login extends Component {
                                 &nbsp;
                             </p>
                           <label className="control-label">Путь к ЭЦП
-                            <input className="form-control" type="text" id="storagePath" readOnly />
+                            <input className="form-control" type="text" id="storagePath" readOnly required />
                           </label>
                           <button className="btn btn-secondary btn-xs" type="button" onClick={this.btnChooseFile.bind(this)} style={{marginLeft:'5px',marginTop:'0px',borderRadius:'2px'}}>Выбрать файл</button>
                         </div>
                         <div className="form-group">
-                          <label className="control-label">Пароль от ЭЦП
-                            <input className="form-control" id="inpPassword" type="password" />
+                          <label className="control-label" >Пароль от ЭЦП
+                            <input className="form-control" id="inpPassword" type="password" required/>
                           </label>
-                          {this.state.inviseBtn &&
-                            <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)} style={{marginLeft:'5px',marginTop:'0px'}}>Загрузить ЭЦП</button>
-                          }
+                            {!this.state.loaderHidden &&
+                            <div style={{margin: '0 auto', display: 'table'}}>
+                                <Loader type="Ball-Triangle" color="#46B3F2" height="100" width="100" />
+                            </div>
+                            }
+                            {this.state.loaderHidden &&
+                              this.state.inviseBtn &&
+                              <button className="btn btn-primary" id="btnLogin" onClick={this.btnLogin.bind(this)}
+                                style={{marginLeft: '5px', marginTop: '0px'}}>Загрузить ЭЦП</button>
+                            }
                         </div>
                       </div>
                     }

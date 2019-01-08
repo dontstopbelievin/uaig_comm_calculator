@@ -678,7 +678,7 @@ class AddApz extends React.Component {
           }
         }
       } else {
-        alert("При сохранении заявки произошла ошибка!");
+        alert(xhr.status+"При сохранении заявки произошла ошибка!");
       }
     }.bind(this);
     xhr.send(JSON.stringify(data));

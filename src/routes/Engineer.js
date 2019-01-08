@@ -365,10 +365,12 @@ class ShowApz extends React.Component {
   }
 
   sendToApz() {
-    this.setState({needSign: true });
+      this.setState({loaderHidden: true});
+      this.setState({needSign: true });
   }
   hideSignBtns(){
-    this.setState({ needSign: false });
+      this.setState({loaderHidden: false});
+      this.setState({ needSign: false });
   }
 
   downloadFile(id, progbarId = null) {
@@ -480,6 +482,7 @@ class ShowApz extends React.Component {
     this.webSocket.send(JSON.stringify(browseKeyStore));
   }
   signMessage() {
+    this.setState({loaderHidden: false});
     let password = document.getElementById("inpPassword").value;
     let path = document.getElementById("storagePath").value;
     let keyType = "SIGN";
@@ -489,16 +492,20 @@ class ShowApz extends React.Component {
           this.getKeys(this.state.storageAlias, path, password, keyType, "loadKeysBack");
       } else {
         alert("Введите пароль к хранилищу");
+        this.setState({loaderHidden: true});
       }
     } else {
       alert("Не выбран хранилище!");
+      this.setState({loaderHidden: true});
+
     }
   }
 
   loadKeysBack(result) {
     if (result.errorCode === "WRONG_PASSWORD") {
       alert("Неверный пароль!");
-      return false;
+        this.setState({loaderHidden: true});
+        return false;
     }
 
     let alias = "";
@@ -513,7 +520,10 @@ class ShowApz extends React.Component {
     }
     if (!alias) {
       alert('Нет ключа подписания');
+      this.setState({loaderHidden: true});
+
     }
+
   }
   getTokenXml(alias) {
     let password = document.getElementById("inpPassword").value;
@@ -574,8 +584,12 @@ class ShowApz extends React.Component {
         if (xhr.status === 200) {
           this.setState({ xmlFile: true });
           alert("Успешно подписан!");
+            this.setState({loaderHidden: true});
+
         } else {
           alert("Не удалось подписать файл");
+          this.setState({loaderHidden: true});
+
         }
       }.bind(this);
       xhr.send(JSON.stringify(data));
@@ -1658,11 +1672,21 @@ class ShowApz extends React.Component {
                           <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
                           <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
                         </div>
+                          {!this.state.loaderHidden &&
+                          <div style={{margin: '0 auto'}}>
+                              <Loader type="Ball-Triangle" color="#46B3F2" height="70" width="70" />
+                          </div>
+                          }
 
-                        <div className="form-group">
-                          <button className="btn btn-raised btn-success" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
-                          <button className="btn btn-primary" type="button" style={{marginLeft: '5px'}} onClick={this.hideSignBtns.bind(this)}>Назад</button>
-                        </div>
+                          {this.state.loaderHidden &&
+                          <div className="form-group">
+
+                              <button className="btn btn-raised btn-success" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                              <button className="btn btn-primary" type="button" style={{marginLeft: '5px'}}
+                                      onClick={this.hideSignBtns.bind(this)}>Назад
+                              </button>
+                          </div>
+                          }
                       </div>
                     </div>
                     :
