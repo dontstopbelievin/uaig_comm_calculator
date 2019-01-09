@@ -593,12 +593,21 @@ class AddApz extends React.Component {
 
   saveApz(publish, elem) {
     elem.preventDefault();
-
-    if((this.state.heatGeneral == parseFloat(this.state.mainHeatMain) + parseFloat(this.state.mainHeatVen) + parseFloat(this.state.mainHeatWater)) ||
-        (this.state.heatGeneral == parseFloat(this.state.mainHeatMain) + parseFloat(this.state.mainHeatVen) + parseFloat(this.state.mainHeatWaterMax))) {
-    }else{
-      alert("Сумма нагрузки отопления, вентиляции и горячего водоснабженияне не совпадает с общей тепловой нагрузкой");
-      return;
+    //console.log(this.state.need_heat_provider);
+    if(this.state.need_heat_provider != false){
+      if((this.state.heatGeneral == parseFloat(this.state.mainHeatMain) + parseFloat(this.state.mainHeatVen) + parseFloat(this.state.mainHeatWater)) ||
+          (this.state.heatGeneral == parseFloat(this.state.mainHeatMain) + parseFloat(this.state.mainHeatVen) + parseFloat(this.state.mainHeatWaterMax)) ||
+          (this.state.heatGeneral == parseFloat(this.state.mainHeatMain) + parseFloat(this.state.mainHeatVen)) ||
+          (this.state.heatGeneral == parseFloat(this.state.mainHeatMain) + parseFloat(this.state.mainHeatWater)) ||
+          (this.state.heatGeneral == parseFloat(this.state.mainHeatVen) + parseFloat(this.state.mainHeatWater)) ||
+          (this.state.heatGeneral == parseFloat(this.state.mainHeatMain)) ||
+          (this.state.heatGeneral == parseFloat(this.state.mainHeatVen)) ||
+          (this.state.heatGeneral == parseFloat(this.state.mainHeatWater))
+        ) {
+      }else{
+        alert("Сумма нагрузки отопления, вентиляции и горячего водоснабженияне не совпадает с общей тепловой нагрузкой");
+        return;
+      }
     }
 
     if (publish) {
