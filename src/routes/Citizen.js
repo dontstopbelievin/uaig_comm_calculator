@@ -593,15 +593,6 @@ class AddApz extends React.Component {
 
   saveApz(publish, elem) {
     elem.preventDefault();
-<<<<<<< HEAD
-
-    // if((this.state.heatGeneral == parseFloat(this.state.mainHeatMain) + parseFloat(this.state.mainHeatVen) + parseFloat(this.state.mainHeatWater)) ||
-    //     (this.state.heatGeneral == parseFloat(this.state.mainHeatMain) + parseFloat(this.state.mainHeatVen) + parseFloat(this.state.mainHeatWaterMax))) {
-    // }else{
-    //   alert("Сумма нагрузки отопления, вентиляции и горячего водоснабженияне не совпадает с общей тепловой нагрузкой");
-    //   return;
-    // }
-=======
     //console.log(this.state.need_heat_provider);
     if(this.state.need_heat_provider != false){
       if(
@@ -622,7 +613,6 @@ class AddApz extends React.Component {
         return;
       }
     }
->>>>>>> 46b20d1589b289f29236e7433e50de72684924b7
 
     if (publish) {
       var requiredFields = {

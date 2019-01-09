@@ -282,7 +282,8 @@ class ShowApz extends React.Component {
       temporaryFencingConstructionObligation: 'Указать в проекте',
       additionalRequirements: '1. При проектировании системы кондиционирования в здании (в том случае, когда проектом не предусмотрено централизованное холодоснабжение и кондиционирование) необходимо предусмотреть размещение наружных элементов локальных систем в соответствии с архитектурным решением фасадов здания. На фасадах проектируемого здания предусмотреть места (ниши, выступы, балконы и т.д.) для размещения наружных элементов локальных систем кондиционирования.<br />2. Приненить материалы по ресурсосбережению и современных энергосберегающих технологий.',
       generalRequirements: '1. При разработке проекта (рабочего проекта) необходимо руководствоваться нормами действующего законодательства Республики Казахстан в сфере архитектурной, градостроительной и строительной деятельности.<br />2. Согласовать с главным архитектором города (района):<br />- Эскизный проект',
-      notes: '1. АПЗ и ТУ действуют в течение всего срока нормативной продолжительности строительства, утвержденного в составе проектной (проектно-сметной) документации.<br />2. В случае возникновения обстоятельств, требующих пересмотра условий АПЗ, изменения в него могут быть внесены по согласованию с заказчиком.<br />3. Требования и условия, изложенные в АПЗ, обязательны для всех участников инвестиционного процесса независимо от форм собственности и источников финансирования. АПЗ по просьбе заказчика или местного органа архитектуры и градостроительства может быть предметом обсуждения градостроительного совета, архитектурной общественности, рассмотрено в независимой экспертизе.<br />4. Несогласие заказчика с требованиями, содержащимися в АПЗ, может быть обжаловано в судебном порядке.'
+      notes: '1. АПЗ и ТУ действуют в течение всего срока нормативной продолжительности строительства, утвержденного в составе проектной (проектно-сметной) документации.<br />2. В случае возникновения обстоятельств, требующих пересмотра условий АПЗ, изменения в него могут быть внесены по согласованию с заказчиком.<br />3. Требования и условия, изложенные в АПЗ, обязательны для всех участников инвестиционного процесса независимо от форм собственности и источников финансирования. АПЗ по просьбе заказчика или местного органа архитектуры и градостроительства может быть предметом обсуждения градостроительного совета, архитектурной общественности, рассмотрено в независимой экспертизе.<br />4. Несогласие заказчика с требованиями, содержащимися в АПЗ, может быть обжаловано в судебном порядке.',
+      loaderHidden:true
     };
 
     this.onFileChange = this.onFileChange.bind(this);
@@ -764,6 +765,7 @@ class ShowApz extends React.Component {
   }
 
   signMessage() {
+    this.setState({loaderHidden: false});
     let password = document.getElementById("inpPassword").value;
     let path = document.getElementById("storagePath").value;
     let keyType = "SIGN";
@@ -772,9 +774,11 @@ class ShowApz extends React.Component {
         this.getKeys(this.state.storageAlias, path, password, keyType, "loadKeysBack");
       } else {
         alert("Введите пароль к хранилищу");
+        this.setState({loaderHidden: true});
       }
     } else {
       alert("Не выбран хранилище!");
+      this.setState({loaderHidden: true});
     }
   }
 
@@ -865,6 +869,7 @@ class ShowApz extends React.Component {
           alert(JSON.parse(xhr.responseText).message);
         } else {
           alert("Не удалось подписать файл");
+          this.setState({loaderHidden: true});
         }
       }.bind(this);
       xhr.send(JSON.stringify(data));
@@ -1685,11 +1690,21 @@ class ShowApz extends React.Component {
                     <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
                     <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
                   </div>
-
-                  <div className="form-group">
-                    <button className="btn btn-raised btn-success" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
-                    <button className="btn btn-primary" type="button" style={{marginLeft: '5px'}} onClick={this.hideSignBtns.bind(this)}>Назад</button>
+                  {!this.state.loaderHidden &&
+                  <div style={{margin: '0 auto'}}>
+                      <Loader type="Ball-Triangle" color="#46B3F2" height="70" width="70" />
                   </div>
+                  }
+                  {this.state.loaderHidden &&
+                  <div className="form-group">
+                      <button className="btn btn-raised btn-success" type="button"
+                              onClick={this.signMessage.bind(this)}>Подписать
+                      </button>
+                      <button className="btn btn-primary" type="button" style={{marginLeft: '5px'}}
+                              onClick={this.hideSignBtns.bind(this)}>Назад
+                      </button>
+                  </div>
+                  }
                 </div>
               }
 

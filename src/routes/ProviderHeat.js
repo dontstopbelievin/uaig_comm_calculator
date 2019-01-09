@@ -315,7 +315,8 @@ class ShowApz extends React.Component {
       headComment: "",
       ty_director_id: "",
       heat_directors_id: [],
-      customTcFile: null
+      customTcFile: null,
+      loaderHidden:true
     };
 
     this.onHeatResourceChange = this.onHeatResourceChange.bind(this);
@@ -998,6 +999,7 @@ class ShowApz extends React.Component {
   }
 
   signMessage() {
+    this.setState({ loaderHidden: false });
     let password = document.getElementById("inpPassword").value;
     let path = document.getElementById("storagePath").value;
     let keyType = "SIGN";
@@ -1015,6 +1017,7 @@ class ShowApz extends React.Component {
   loadKeysBack(result) {
     if (result.errorCode === "WRONG_PASSWORD") {
       alert("Неверный пароль!");
+      this.setState({ loaderHidden: true });
       return false;
     }
 
@@ -1029,6 +1032,8 @@ class ShowApz extends React.Component {
     }
     if (!alias) {
       alert('Нет ключа подписания');
+      this.setState({ loaderHidden: true });
+
     }
   }
 
@@ -1097,6 +1102,8 @@ class ShowApz extends React.Component {
           alert(JSON.parse(xhr.responseText).message);
         } else {
           alert("Не удалось подписать файл");
+          this.setState({ loaderHidden: true });
+
         }
       }.bind(this);
       xhr.send(JSON.stringify(data));
@@ -2433,10 +2440,18 @@ handleDirectorIDChange(event){
                     <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
                     <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
                   </div>
-
-                  <div className="form-group">
-                    <button className="btn btn-raised btn-success" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                  {!this.state.loaderHidden &&
+                  <div style={{margin: '0 auto'}}>
+                      <Loader type="Ball-Triangle" color="#46B3F2" height="70" width="70" />
                   </div>
+                  }
+                  {this.state.loaderHidden &&
+                  <div className="form-group">
+                      <button className="btn btn-raised btn-success" type="button"
+                              onClick={this.signMessage.bind(this)}>Подписать
+                      </button>
+                  </div>
+                  }
                 </div>
               }
             </div>

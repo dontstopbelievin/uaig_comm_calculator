@@ -252,7 +252,8 @@ class ShowApz extends React.Component {
       apz_head_id: '',
       apz_heads_id: [],
       engineerSign: false,
-      xmlFile: false
+      xmlFile: false,
+      loaderHiddenSign:true
     };
 
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
@@ -481,6 +482,7 @@ class ShowApz extends React.Component {
   }
 
   signMessage() {
+    this.setState({loaderHiddenSign: false});
     let password = document.getElementById("inpPassword").value;
     let path = document.getElementById("storagePath").value;
     let keyType = "SIGN";
@@ -490,15 +492,18 @@ class ShowApz extends React.Component {
           this.getKeys(this.state.storageAlias, path, password, keyType, "loadKeysBack");
       } else {
         alert("Введите пароль к хранилищу");
+        this.setState({loaderHiddenSign: true});
       }
     } else {
       alert("Не выбран хранилище!");
+      this.setState({loaderHiddenSign: true});
     }
   }
 
   loadKeysBack(result) {
     if (result.errorCode === "WRONG_PASSWORD") {
       alert("Неверный пароль!");
+      this.setState({loaderHiddenSign: true});
       return false;
     }
 
@@ -580,6 +585,7 @@ class ShowApz extends React.Component {
           alert("Успешно подписан!");
         } else {
           alert("Не удалось подписать файл");
+          this.setState({loaderHiddenSign: true})
         }
       }.bind(this);
       xhr.send(JSON.stringify(data));
@@ -1538,11 +1544,21 @@ class ShowApz extends React.Component {
                               <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
                               <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
                             </div>
-
-                            <div className="form-group">
-                              <button className="btn btn-raised btn-success" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
-                              <button className="btn btn-primary" type="button" style={{marginLeft: '5px'}} onClick={this.hideSignBtns.bind(this)}>Назад</button>
+                            {!this.state.loaderHiddenSign &&
+                            <div style={{margin: '0 auto'}}>
+                                <Loader type="Ball-Triangle" color="#46B3F2" height="70" width="70" />
                             </div>
+                            }
+                            {this.state.loaderHiddenSign &&
+                            <div className="form-group">
+                                <button className="btn btn-raised btn-success" type="button"
+                                        onClick={this.signMessage.bind(this)}>Подписать
+                                </button>
+                                <button className="btn btn-primary" type="button" style={{marginLeft: '5px'}}
+                                        onClick={this.hideSignBtns.bind(this)}>Назад
+                                </button>
+                            </div>
+                            }
                           </div>
                           :
                           <div>
