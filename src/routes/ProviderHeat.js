@@ -1546,6 +1546,10 @@ class ShowApz extends React.Component {
     xhr.onload = function () {
       if (xhr.status === 200) {
         var newWin = window.open("");
+        if(newWin == null){
+          alert('Для печати страницы разрешите открытие дополнительных окон.');
+          return;
+        }
         newWin.document.write(xhr.responseText);
         newWin.print();
         newWin.close();

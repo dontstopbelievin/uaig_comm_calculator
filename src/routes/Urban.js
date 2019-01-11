@@ -333,8 +333,8 @@ class ShowApz extends React.Component {
           }
           break;
         }
-        this.setState({engineerReturnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null && obj.sender == 'engineer'})[0]});
-        this.setState({apzReturnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null && obj.sender == 'apz'})[0]});
+        this.setState({engineerReturnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender == 'engineer'})[0]});
+        this.setState({apzReturnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender == 'apz'})[0]});
         this.setState({needSign: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
         this.setState({engineerSign: apz.files.filter(function(obj) { return obj.category_id === 28 })[0]});
         if(apz.apz_head_id){this.setState({apz_head_id: apz.apz_head_id});}
@@ -343,7 +343,7 @@ class ShowApz extends React.Component {
           this.setState({showButtons: true});
         }
 
-        if (apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null })[0] != null) {
+        if (apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender != null })[0] != null) {
           this.setState({response: false});
         }
 
@@ -1520,8 +1520,8 @@ class ShowApz extends React.Component {
                   :
                   <div>
                     {!this.state.needSign ?
-                      <div style={{margin: 'auto', display: 'table'}}>
-                        {!this.state.backFromHead && !this.state.engineerSign ?
+                      <div style={{margin: 'auto', display: 'table'}}>{console.log(this.state.engineerReturnedState)}
+                        {!this.state.backFromHead && !this.state.engineerSign  && !this.state.engineerReturnedState ?
                         <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>Отправить инженеру</button>
                         :
                         <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>Одобрить</button>}
