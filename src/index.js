@@ -96,140 +96,125 @@ require('./assets/css/common.css');
 require('./assets/css/animate.css');
 
 export default class Main extends React.Component {
-    setLang() {
-        return localStorage.getItem('lang') ? true : localStorage.setItem('lang', 'ru');
-    }
+  setLang() {
+    return localStorage.getItem('lang') ? true : localStorage.setItem('lang', 'ru');
+  }
 
-    componentWillMount() {
-        this.setLang();
+  componentWillMount() {
+    this.setLang();
 
-<<<<<<< Updated upstream
-     window.url = 'https://api.uaig.kz:8843/';
+    window.url = 'https://api.uaig.kz:8843/';
     // window.url = 'http://192.168.0.231/';
     // window.url = 'http://shymkentback.uaig.kz/';
-     window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
+    window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
 
-    //window.url = 'http://uaig/';
-    // window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
-    // window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
+    // window.url = 'http://uaig/';
+    //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
+    //window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
     //window.clientSecret = 'B5BCHoPxj4VhKUqs7WHi2HHx6f24xoIK8065tc4s'; // aman
-    // window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
+    //window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
     // window.clientSecret = '7zdU2XDblqORFq8wbQHlNRaIgEBR90qbMYnnVWDg'; // yernar
   }
-=======
-        window.url = 'https://api.uaig.kz:8843/';
-        // window.url = 'http://192.168.0.231/';
-        // window.url = 'http://shymkentback.uaig.kz/';
-        window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
 
-        // window.url = 'http://uaig/';
-        // window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
-        // window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
-        //window.clientSecret = 'B5BCHoPxj4VhKUqs7WHi2HHx6f24xoIK8065tc4s'; // aman
-        // window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
-        // window.clientSecret = '7zdU2XDblqORFq8wbQHlNRaIgEBR90qbMYnnVWDg'; // yernar
-    }
->>>>>>> Stashed changes
+  componentDidMount() {
+    //console.log("MainComponent did mount");
+  }
 
-    componentDidMount() {
-        //console.log("MainComponent did mount");
-    }
-
-    componentWillUnmount() {
-        //console.log("MainComponent will unmount");
-    }
+  componentWillUnmount() {
+    //console.log("MainComponent will unmount");
+  }
 
 
-    render() {
-        //console.log("rendering the MainComponent");
-        //console.log(this.props);
-        return (
-            <HashRouter>
-                <div>
-                    <Route render={(props) => (<Header {...props} />)} />
-                    <Switch>
-                        <Route exact path="/" render={(props) => (<PanelBase {...props} />)} />
-                        <Route path="/map" render={(props) => (<MapView {...props} />)} />
-                        <Route path="/map2d" render={(props) => (<Map2dView {...props} />)} />
-                        <Route path="/forgotPassword" render={(props) => (<ForgotPassword {...props} />)} />
-                        <Route path="/password/reset/:token" render={(props) => (<ResetForm {...props} />)} />
-                        <Route path="/editPersonalData" render={(props) => (<EditPersonalData {...props} />)} />
-                        <Route path="/editPassword" render={(props) => (<EditPassword {...props} />)} />
-                        <Route path="/photos" render={(props) => (<Photos {...props} />)} />
-                        <Route path="/login" render={(props) => (<Login {...props} />)} />
-                        <Route path="/register" render={(props) => (<Register {...props} />)} />
-                        <Route path="/temporary" render={(props) => (<Temporary {...props} />)} />
-                        <Route path="/panel" render={(props) => (<PanelBase {...props} />)} />
-                        <Route path="/urban" render={(props) => (<Urban {...props} />)} />
-                        <Route path="/urbanreport" render={(props) => (<UrbanReport {...props} />)} />
-                        <Route path="/head" render={(props) => (<Head {...props} />)} />
-                        <Route path="/headreport" render={(props) => (<HeadReport {...props} />)} />
-                        <Route path="/citizen" render={(props) => (<Citizen {...props} />)} />
-                        <Route path="/adminApzMonitor" render={(props) => (<AdminApzMonitor {...props} />)} />
-                        <Route path="/providerelectro" render={(props) => (<ProviderElectro {...props} />)} />
-                        <Route path="/providergas" render={(props) => (<ProviderGas {...props} />)} />
-                        <Route path="/providerphone" render={(props) => (<ProviderPhone {...props} />)} />
-                        <Route path="/providerheat" render={(props) => (<ProviderHeat {...props} />)} />
-                        <Route path="/providerwater" render={(props) => (<ProviderWater {...props} />)} />
-                        <Route path="/project" render={(props) => (<Project {...props} />)} />
-                        <Route path="/photoreports" render={(props) => (<PhotoReports {...props} />)} />
-                        <Route path="/photoreportsManage" render={(props) => (<PhotoReportsManage {...props} />)} />
-                        <Route path="/admin" render={(props) => (<Admin {...props} />)} />
-                        <Route path="/files" render={(props) => (<Files {...props} />)} />
-                        <Route path="/sketch" render={(props) => (<Sketch {...props} />)} />
-                        <Route path="/panel/sketch/apz_department" render={(props) => (<SketchApzDepartment {...props} />)} />
-                        <Route path="/reviews" render={(props) => (<Review {...props} />)} />
-                        <Route path="/polls" render={(props) => (<Polls {...props} />)} />
-                        <Route path="/designCode" render={(props) => (<DesignCode {...props} />)} />
-                        <Route path="/councilMaterials" render={(props) => (<CouncilMaterials {...props} />)} />
-                        <Route path="/reports" render={(props) => (<Reports {...props} />)} />
-                        <Route path="/stats" render={(props) => (<Stats {...props} />)} />
-                        <Route path="/budget_plan" render={(props) => (<BudgetPlan {...props} />)} />
-                        <Route path="/tutorials" render={(props) => (<VideoTutorials {...props} />)} />
-                        <Route path="/news" render={(props) => (<News {...props}/>)}/>
-                        <Route path="/newsPanel" render={(props) => (<NewsPanel {...props}/>)}/>
-                        <Route path="/answertemplate" render={(props) => (<AnswerTemplate {...props}/>)}/>
-                        <Route path="/addPages" render={(props) => (<AddPages {...props}/>)}/>
-                        <Route path="/public_services" render={(props) => (<public_services {...props}/>)}/>
-                        <Route path="/permission_and_covoting" render={(props) => (<permission_and_covoting {...props}/>)}/>
-                        <Route path="/npm" render={(props) => (<Npm {...props}/>)}/>
-                        <Route path="/legalpurchese" render={(props) => (<legalpurchese {...props}/>)}/>
-                        <Route path="/counteraction" render={(props) => (<Counteraction {...props}/>)}/>
-                        <Route path="/control" render={(props) => (<Control {...props}/>)}/>
-                        <Route path="/contacts" render={(props) => (<Contacts {...props}/>)}/>
-                        <Route path="/timeOfReception" render={(props) => (<TimeOfReception {...props}/>)}/>
-                        <Route path="/architectural_and_town_planning_activity" render={(props) => (<architectural_and_town_planning_activity {...props}/>)}/>
-                        <Route path="/engineer" render={(props) => (<Engineer {...props}/>)}/>
-                        <Route path="/apz" render={(props) => (<Apz {...props}/>)}/>
-                        <Route path="/doingBusiness" render={(props) => (<DoingBusiness {...props}/>)}/>
-                        <Route path="/apz_department" render={(props) => (<ApzDepartment {...props}/>)}/>
-                        <Route path="/businessbuilding" render={(props) => (<BisunessBuilding {...props}/>)}/>
-                        <Route path="/infoaboutdepartment" render={(props) => (<InfoAboutDepartment {...props}/>)}/>
-                        <Route path="/govermentservices" render={(props) => (<GovermentServices {...props}/>)}/>
-                        <Route path="/population" render={(props) => (<Population {...props}/>)}/>
-                        <Route path="/staff" render={(props) => (<Staff {...props}/>)}/>
-                        <Route path="/entrepreneurialsupport" render={(props) => (<EntrepreneurSupport {...props}/>)}/>
-                        <Route path="/executiveagency" render={(props) => (<ExecutiveAgency {...props}/>)}/>
-                        <Route path="/newsAll" render={(props) => (<NewsAll {...props}/>)}/>
-                        <Route path="/newsArticle/:id" render={(props) => (<NewsArticle {...props}/>)}/>
-                        <Route path="/vacancies" render={(props) => (<Vacancies {...props}/>)}/>
-                        <Route path="/dayNews/:date" render={(props) => (<NewsByDay {...props}/>)}/>
-                        <Route path="/typeofpublicservice" render={(props) => (<TypeOfPublicService {...props}/>)}/>
-                        <Route path="/statesymbols" render={(props) => (<StateSymbols {...props}/>)}/>
-                        <Route path="/page/:id" render={(props) => (<Page {...props}/>)}/>
-                        <Route path="/menuEdit" render={(props) => (<Menu {...props}/>)}/>
-                        <Route path="/usersQuestions" render={(props) => (<UsersQuestions {...props}/>)}/>
-                        <Route path="/search/:query" render={(props) => (<Search {...props}/>)}/>
-                        <Route path="/allQuestions" render={(props) => (<AllQuestions {...props}/>)}/>
-                        <Route path="/guest/vacancies-view" render={(props) => (<VacanciesView {...props}/>)}/>
-                    </Switch>
-                    <Footer />
-                </div>
-            </HashRouter>
-        )
-    }
+  render() {
+    //console.log("rendering the MainComponent");
+    //console.log(this.props);
+    return (
+        <HashRouter>
+          <div>
+            <Route render={(props) => (<Header {...props} />)} />
+            <Switch>
+              <Route exact path="/" render={(props) => (<PanelBase {...props} />)} />
+              <Route path="/map" render={(props) => (<MapView {...props} />)} />
+              <Route path="/map2d" render={(props) => (<Map2dView {...props} />)} />
+              <Route path="/forgotPassword" render={(props) => (<ForgotPassword {...props} />)} />
+              <Route path="/password/reset/:token" render={(props) => (<ResetForm {...props} />)} />
+              <Route path="/editPersonalData" render={(props) => (<EditPersonalData {...props} />)} />
+              <Route path="/editPassword" render={(props) => (<EditPassword {...props} />)} />
+              <Route path="/photos" render={(props) => (<Photos {...props} />)} />
+              <Route path="/login" render={(props) => (<Login {...props} />)} />
+              <Route path="/register" render={(props) => (<Register {...props} />)} />
+              <Route path="/temporary" render={(props) => (<Temporary {...props} />)} />
+              <Route path="/panel" render={(props) => (<PanelBase {...props} />)} />
+              <Route path="/urban" render={(props) => (<Urban {...props} />)} />
+              <Route path="/urbanreport" render={(props) => (<UrbanReport {...props} />)} />
+              <Route path="/head" render={(props) => (<Head {...props} />)} />
+              <Route path="/headreport" render={(props) => (<HeadReport {...props} />)} />
+              <Route path="/citizen" render={(props) => (<Citizen {...props} />)} />
+              <Route path="/adminApzMonitor" render={(props) => (<AdminApzMonitor {...props} />)} />
+              <Route path="/providerelectro" render={(props) => (<ProviderElectro {...props} />)} />
+              <Route path="/providergas" render={(props) => (<ProviderGas {...props} />)} />
+              <Route path="/providerphone" render={(props) => (<ProviderPhone {...props} />)} />
+              <Route path="/providerheat" render={(props) => (<ProviderHeat {...props} />)} />
+              <Route path="/providerwater" render={(props) => (<ProviderWater {...props} />)} />
+              <Route path="/project" render={(props) => (<Project {...props} />)} />
+              <Route path="/photoreports" render={(props) => (<PhotoReports {...props} />)} />
+              <Route path="/photoreportsManage" render={(props) => (<PhotoReportsManage {...props} />)} />
+              <Route path="/admin" render={(props) => (<Admin {...props} />)} />
+              <Route path="/files" render={(props) => (<Files {...props} />)} />
+              <Route path="/sketch" render={(props) => (<Sketch {...props} />)} />
+              <Route path="/panel/sketch/apz_department" render={(props) => (<SketchApzDepartment {...props} />)} />
+              <Route path="/reviews" render={(props) => (<Review {...props} />)} />
+              <Route path="/polls" render={(props) => (<Polls {...props} />)} />
+              <Route path="/designCode" render={(props) => (<DesignCode {...props} />)} />
+              <Route path="/councilMaterials" render={(props) => (<CouncilMaterials {...props} />)} />
+              <Route path="/reports" render={(props) => (<Reports {...props} />)} />
+              <Route path="/stats" render={(props) => (<Stats {...props} />)} />
+              <Route path="/budget_plan" render={(props) => (<BudgetPlan {...props} />)} />
+              <Route path="/tutorials" render={(props) => (<VideoTutorials {...props} />)} />
+              <Route path="/news" render={(props) => (<News {...props}/>)}/>
+              <Route path="/newsPanel" render={(props) => (<NewsPanel {...props}/>)}/>
+              <Route path="/answertemplate" render={(props) => (<AnswerTemplate {...props}/>)}/>
+              <Route path="/addPages" render={(props) => (<AddPages {...props}/>)}/>
+              <Route path="/public_services" render={(props) => (<public_services {...props}/>)}/>
+              <Route path="/permission_and_covoting" render={(props) => (<permission_and_covoting {...props}/>)}/>
+              <Route path="/npm" render={(props) => (<Npm {...props}/>)}/>
+              <Route path="/legalpurchese" render={(props) => (<legalpurchese {...props}/>)}/>
+              <Route path="/counteraction" render={(props) => (<Counteraction {...props}/>)}/>
+              <Route path="/control" render={(props) => (<Control {...props}/>)}/>
+              <Route path="/contacts" render={(props) => (<Contacts {...props}/>)}/>
+              <Route path="/timeOfReception" render={(props) => (<TimeOfReception {...props}/>)}/>
+              <Route path="/architectural_and_town_planning_activity" render={(props) => (<architectural_and_town_planning_activity {...props}/>)}/>
+              <Route path="/engineer" render={(props) => (<Engineer {...props}/>)}/>
+              <Route path="/apz" render={(props) => (<Apz {...props}/>)}/>
+              <Route path="/doingBusiness" render={(props) => (<DoingBusiness {...props}/>)}/>
+              <Route path="/apz_department" render={(props) => (<ApzDepartment {...props}/>)}/>
+              <Route path="/businessbuilding" render={(props) => (<BisunessBuilding {...props}/>)}/>
+              <Route path="/infoaboutdepartment" render={(props) => (<InfoAboutDepartment {...props}/>)}/>
+              <Route path="/govermentservices" render={(props) => (<GovermentServices {...props}/>)}/>
+              <Route path="/population" render={(props) => (<Population {...props}/>)}/>
+              <Route path="/staff" render={(props) => (<Staff {...props}/>)}/>
+              <Route path="/entrepreneurialsupport" render={(props) => (<EntrepreneurSupport {...props}/>)}/>
+              <Route path="/executiveagency" render={(props) => (<ExecutiveAgency {...props}/>)}/>
+              <Route path="/newsAll" render={(props) => (<NewsAll {...props}/>)}/>
+              <Route path="/newsArticle/:id" render={(props) => (<NewsArticle {...props}/>)}/>
+              <Route path="/vacancies" render={(props) => (<Vacancies {...props}/>)}/>
+              <Route path="/dayNews/:date" render={(props) => (<NewsByDay {...props}/>)}/>
+              <Route path="/typeofpublicservice" render={(props) => (<TypeOfPublicService {...props}/>)}/>
+              <Route path="/statesymbols" render={(props) => (<StateSymbols {...props}/>)}/>
+              <Route path="/page/:id" render={(props) => (<Page {...props}/>)}/>
+              <Route path="/menuEdit" render={(props) => (<Menu {...props}/>)}/>
+              <Route path="/usersQuestions" render={(props) => (<UsersQuestions {...props}/>)}/>
+              <Route path="/search/:query" render={(props) => (<Search {...props}/>)}/>
+              <Route path="/allQuestions" render={(props) => (<AllQuestions {...props}/>)}/>
+              <Route path="/guest/vacancies-view" render={(props) => (<VacanciesView {...props}/>)}/>
+            </Switch>
+            <Footer />
+          </div>
+        </HashRouter>
+      )
+  }
 }
 
 ReactDOM.render(
-    <Main />, document.getElementById('root')
+  <Main />, document.getElementById('root')
 );
