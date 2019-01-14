@@ -712,10 +712,16 @@ class ShowApz extends React.Component {
         if (xhr.status === 200) {
           this.setState({ isSigned: true });
           alert("Успешно подписан.");
+          this.setState({ loaderHidden: true });
+
         } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
           alert(JSON.parse(xhr.responseText).message);
+          this.setState({ loaderHidden: true });
+
         } else {
           alert("Не удалось подписать файл");
+          this.setState({ loaderHidden: true });
+
         }
       }.bind(this);
       xhr.send(JSON.stringify(data));
