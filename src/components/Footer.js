@@ -45,7 +45,7 @@ export default class Footer extends React.Component {
                                 <a><img src="./images/email.png" alt="contact" /><b>u.aig@almaty.gov.kz</b></a>
                             </div>
                             <div className="address col-md-9">
-                                <p><img src="./images/maps.png" alt="map" />{e.adress}</p>
+                                <p><img src="./images/maps.png" alt="map" />Алматы пр. Абая, д. 90</p>
                             </div>
                             <div className="col-md-2 text-right">
                                 <span id="_zero_70316">
