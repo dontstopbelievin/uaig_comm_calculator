@@ -557,9 +557,33 @@ class AddSketch extends React.Component {
 
       this.state = {
           applicant: '',
+          customer:'',
+          address:'',
+          phone:'',
+          projectName:'',
+          projectAddress:'',
+          landArea:'',
+          coverArea:'',
+          greenArea:'',
+          objectLevel:'',
+          commonArea:'',
+          buildArea:'',
+          objectType:'',
+          basementFacade:'',
+          basementColor:'',
+          wallsFacade:'',
+          wallsColor:'',
           region: 'Наурызбай',
           categoryFiles: [],
           hasCoordinates:false,
+          personalIdFile: null,
+          sketchFile: '',
+          apzFile:'',
+          additionalFile: '',
+          paymentPhotoFile: '',
+          survey: null,
+          claimedCapacityJustification: null,
+
           checkboxes: ['1'
   :
       false, '2'
@@ -580,6 +604,7 @@ class AddSketch extends React.Component {
       this.onInputChange=this.onInputChange.bind(this);
       this.uploadFile=this.uploadFile.bind(this);
       this.saveApz=this.saveApz.bind(this);
+      this.onAreaCheck=this.onAreaCheck.bind(this);
   }
 
   toggleMap(value) {
@@ -619,6 +644,13 @@ class AddSketch extends React.Component {
       const name = e.target.name;
       this.setState({ [name] : value });
   }
+
+  onAreaCheck(e){
+      const name =e.target.name;
+      const value=e.target.value;
+      var check=value>0?this.setState({[name]:value}):alert("error");
+  }
+
 
   uploadFile(category, e) {
         var file = e.target.files[0];
@@ -669,11 +701,11 @@ class AddSketch extends React.Component {
                             break;
 
                         case 9:
-                            this.setState({confirmedTaskFile: data});
+                            this.setState({sketchFile: data});
                             break;
 
                         case 10:
-                            this.setState({titleDocumentFile: data});
+                            this.setState({apzFile: data});
                             break;
 
                         case 27:
@@ -789,24 +821,65 @@ class AddSketch extends React.Component {
       xhr.send();
   }
   
-  saveApz(e) {
+  saveApz(publish,e) {
     e.preventDefault();
 
-    var formData = $('#sketch-form').serializeJSON();
+    var sketchId = this.props.match.params.id;
+    var link = sketchId > 0 ? ("api/sketch/citizen/save/" + sketchId) : "api/sketch/citizen/save";
 
-    $.ajax({
-      type: 'POST',
-      url: window.url + 'api/sketch/citizen/create',
-      contentType: 'application/json; charset=utf-8',
-      beforeSend: function (xhr) {
-        xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
-      },
-      data: JSON.stringify(formData),
-      success: function (data) {
-        this.resetForm();
-        alert("Заявка отправлена");
-      }.bind(this)
-    });
+    var data={
+        publish:publish?true:false
+    }
+
+      Object.keys(this.state).forEach(function(k) {
+          data[k] = this.state[k]
+      }.bind(this));
+
+      this.setState({loaderHidden: false});
+      console.log(data);
+      var token = sessionStorage.getItem('tokenInfo');
+      var xhr = new XMLHttpRequest();
+      xhr.open("post", window.url + link, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+          this.setState({loaderHidden: true});
+
+          if (xhr.status === 200) {
+              var data = JSON.parse(xhr.responseText);
+
+              if (publish) {
+                  alert("Заявка успешно подана.\nЗаявка будет рассматриваться завтра.");
+                  this.props.history.replace('/panel/citizen/sketch');
+              } else {
+                  alert('Заявка успешно сохранена');
+
+                  if (!sketchId) {
+                      this.props.history.push('/panel/citizen/sketch/edit/' + data.id);
+                  }
+              }
+          } else {
+              alert("При сохранении заявки произошла ошибка!"+xhr.status);
+          }
+      }.bind(this);
+      xhr.send(JSON.stringify(data));
+
+
+    // var formData = $('#sketch-form').serializeJSON();
+    //
+    // $.ajax({
+    //   type: 'POST',
+    //   url: window.url + 'api/sketch/citizen/create',
+    //   contentType: 'application/json; charset=utf-8',
+    //   beforeSend: function (xhr) {
+    //     xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
+    //   },
+    //   data: JSON.stringify(formData),
+    //   success: function (data) {
+    //     this.resetForm();
+    //     alert("Заявка отправлена");
+    //   }.bind(this)
+    // });
   };
 
   routeChange(){
@@ -824,8 +897,9 @@ class AddSketch extends React.Component {
                     <div className="col-4">
                         <div className="nav flex-column nav-pills container-fluid" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                             <a className="nav-link active" id="tab0-link" data-toggle="pill" href="#tab0" role="tab" aria-controls="tab0" aria-selected="true">Заявление <span id="tabIcon"></span></a>
-                            <a className="nav-link" id="tab1-link" data-toggle="pill" href="#tab1" role="tab" aria-controls="tab1" aria-selected="false">Объект <span id="tabIcon"></span></a>
-                            <a className="nav-link" id="tab2-link" data-toggle="pill" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">Электроснабжение <span id="tabIcon"></span></a>
+                            <a className="nav-link" id="tab1-link" data-toggle="pill" href="#tab1" role="tab" aria-controls="tab1" aria-selected="false">Показатели по генеральному плану <span id="tabIcon"></span></a>
+                            <a className="nav-link" id="tab2-link" data-toggle="pill" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">Показатели по проекту<span id="tabIcon"></span></a>
+                            <a className="nav-link" id="tab3-link" data-toggle="pill" href="#tab3" role="tab" aria-controls="tab3" aria-selected="false">Архитектурные решения по отделки фасада здания и сооружения<span id="tabIcon"></span></a>
                         </div>
                     </div>
                     <div className="col-8">
@@ -840,8 +914,8 @@ class AddSketch extends React.Component {
                                                 {/*<span className="help-block"></span>*/}
                                             </div>
                                             <div className="form-group">
-                                                <label htmlFor="applicantAddress">Адрес жительства:</label>
-                                                <input data-rh="Адрес жительства" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} name="applicantAddress" value={this.state.applicantAddress} required />
+                                                <label htmlFor="address">Адрес жительства:</label>
+                                                <input data-rh="Адрес жительства" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} name="address" value={this.state.address} required />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="Phone">Телефон</label>
@@ -878,20 +952,12 @@ class AddSketch extends React.Component {
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
+                                                <input data-rh="Адрес проектируемого объекта" data-rh-at="right" type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectAddress} name="projectAddress" />
                                                 <div className="row coordinates_block pt-0">
-                                                    <div className="col-sm-7">
-                                                        <input data-rh="Адрес проектируемого объекта" data-rh-at="right" type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectAddress} name="projectAddress" />
-                                                        <input type="hidden" onChange={this.onInputChange} value={this.state.projectAddressCoordinates} id="ProjectAddressCoordinates" name="projectAddressCoordinates" />
-                                                    </div>
-                                                    <div className="col-sm-5 p-0">
-                                                        <a className="btn btn-secondary btn-sm mark_btn" onClick={() => this.toggleMap(true)}>
-                                                            {this.state.hasCoordinates &&
-                                                            <i className="glyphicon glyphicon-ok coordinateIcon mr-1"></i>
-                                                            }
-
-                                                            Отметить на карте
-                                                        </a>
-                                                    </div>
+                                                    {/*<div className="col-md-6">*/}
+                                                        {/*<input data-rh="Адрес проектируемого объекта" data-rh-at="right" type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectAddress} name="projectAddress" />*/}
+                                                        {/*<input type="hidden" onChange={this.onInputChange} value={this.state.projectAddressCoordinates} id="ProjectAddressCoordinates" name="projectAddressCoordinates" />*/}
+                                                    {/*</div>*/}
                                                 </div>
                                             </div>
                                         </div>
@@ -921,24 +987,24 @@ class AddSketch extends React.Component {
                                                 </div>
                                             </div>
                                             <div className="form-group">
-                                                <label>Утвержденное задание на проектирование</label>
+                                                <label>Эскиз (эскизный проект)</label>
                                                 <div className="file_container">
                                                     <div className="progress mb-2" data-category="9" style={{height: '20px', display: 'none'}}>
                                                         <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                                     </div>
 
-                                                    {this.state.confirmedTaskFile &&
+                                                    {this.state.sketchFile &&
                                                     <div className="file_block mb-2">
                                                         <div>
-                                                            {this.state.confirmedTaskFile.name}
-                                                            <a className="pointer" onClick={(e) => this.setState({confirmedTaskFile: false}) }>×</a>
+                                                            {this.state.sketchFile.name}
+                                                            <a className="pointer" onClick={(e) => this.setState({sketchFile: false}) }>×</a>
                                                         </div>
                                                     </div>
                                                     }
 
                                                     <div className="file_buttons btn-group btn-group-justified d-table mt-0">
-                                                        <label htmlFor="ConfirmedTaskFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
-                                                        <input type="file" id="ConfirmedTaskFile" name="ConfirmedTaskFile" className="form-control" onChange={this.uploadFile.bind(this, 9)} style={{display: 'none'}} />
+                                                        <label htmlFor="sketchFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
+                                                        <input type="file" id="SketchFile" name="sketchFile" className="form-control" onChange={this.uploadFile.bind(this, 1)} style={{display: 'none'}} />
                                                         <label onClick={this.selectFromList.bind(this, 9)} className="btn btn-info btn-sm">Выбрать из списка</label>
                                                     </div>
                                                     <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
@@ -946,54 +1012,30 @@ class AddSketch extends React.Component {
                                             </div>
 
                                             <div className="form-group">
-                                                <label>Госакт и правоустанавливающий документ на земельный участок, договор о купли-продажи</label>
+                                                <label>Архитектурно-планировочное задание (копия)</label>
                                                 <div className="file_container">
                                                     <div className="progress mb-2" data-category="10" style={{height: '20px', display: 'none'}}>
                                                         <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                                     </div>
 
-                                                    {this.state.titleDocumentFile &&
+                                                    {this.state.apzFile &&
                                                     <div className="file_block mb-2">
                                                         <div>
-                                                            {this.state.titleDocumentFile.name}
-                                                            <a className="pointer" onClick={(e) => this.setState({titleDocumentFile: false}) }>×</a>
+                                                            {this.state.apzFile.name}
+                                                            <a className="pointer" onClick={(e) => this.setState({apzFile: false}) }>×</a>
                                                         </div>
                                                     </div>
                                                     }
 
                                                     <div className="file_buttons btn-group btn-group-justified d-table mt-0">
-                                                        <label htmlFor="TitleDocumentFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
-                                                        <input type="file" id="TitleDocumentFile" name="TitleDocumentFile" className="form-control" onChange={this.uploadFile.bind(this, 10)} style={{display: 'none'}} />
+                                                        <label htmlFor="ApzFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
+                                                        <input type="file" id="ApzFile" name="ApzFile" className="form-control" onChange={this.uploadFile.bind(this, 2)} style={{display: 'none'}} />
                                                         <label onClick={this.selectFromList.bind(this, 10)} className="btn btn-info btn-sm">Выбрать из списка</label>
                                                     </div>
                                                     <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
                                                 </div>
                                             </div>
 
-                                            <div className="form-group">
-                                                <label>Дополнительно (нотариальное согласие долевика, распоряжение с акимата на временное пользование)</label>
-                                                <div className="file_container">
-                                                    <div className="progress mb-2" data-category="27" style={{height: '20px', display: 'none'}}>
-                                                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    </div>
-
-                                                    {this.state.additionalFile &&
-                                                    <div className="file_block mb-2">
-                                                        <div>
-                                                            {this.state.additionalFile.name}
-                                                            <a className="pointer" onClick={(e) => this.setState({additionalFile: false}) }>×</a>
-                                                        </div>
-                                                    </div>
-                                                    }
-
-                                                    <div className="file_buttons btn-group btn-group-justified d-table mt-0">
-                                                        <label htmlFor="AdditionalFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
-                                                        <input type="file" id="AdditionalFile" name="AdditionalFile" className="form-control" onChange={this.uploadFile.bind(this, 27)} style={{display: 'none'}} />
-                                                        <label onClick={this.selectFromList.bind(this, 27)} className="btn btn-info btn-sm">Выбрать из списка</label>
-                                                    </div>
-                                                    <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
-                                                </div>
-                                            </div>
 
                                             {/*<div className="form-group">
                             <label htmlFor="ApzDate">Дата</label>
@@ -1018,52 +1060,22 @@ class AddSketch extends React.Component {
                                     <div className="row">
                                         <div className="col-md-6">
                                             <div className="form-group">
-                                                <label htmlFor="ObjectType">Тип объекта</label>
-                                                <select required className="form-control" name="objectType" id="ObjectType" onChange={this.onInputChange} value={this.state.objectType}>
-                                                    <option value="null" disabled>Выберите тип объекта</option>
-                                                    <option>ИЖС</option>
-                                                    <option>МЖК</option>
-                                                    <option>КомБыт</option>
-                                                    <option>ПромПред</option>
-                                                </select>
-                                            </div>
-                                            {/*<div className="form-group">
-                            <label htmlFor="ObjectClient">Заказчик</label>
-                            <input type="text" required className="form-control" name="ObjectClient" placeholder="" />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="ObjectName">Наименование объекта:</label>
-                            <input type="text" required className="form-control" name="ObjectName" placeholder="наименование" />
-                          </div>*/}
-
-                                            <div className="form-group">
-                                                <label htmlFor="CadastralNumber">Кадастровый номер:</label>
-                                                <input data-rh="Кадастровый номер:" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.cadastralNumber} name="cadastralNumber" placeholder="" />
+                                                <div className="form-group">
+                                                    <label htmlFor="landArea">Площадь земельного участка(кв.м):</label>
+                                                    <input data-rh="Площадь земельного участка(кв.м)" data-rh-at="right" type="number" min="0" className="form-control" onChange={this.onInputChange} value={this.state.landArea} name="landArea" placeholder="" />
+                                                </div>
                                             </div>
                                             <div className="form-group">
-                                                <label htmlFor="ObjectTerm">Срок строительства по нормам</label>
-                                                <input data-rh="Срок строительства по нормам" data-rh-at="right" type="text" name="objectTerm" onChange={this.onInputChange} value={this.state.objectTerm} className="form-control" id="ObjectTerm" placeholder="" />
+                                                <div className="form-group">
+                                                    <label htmlFor="coverArea">Площадь покрытия (кв.м):</label>
+                                                    <input data-rh="Площадь земельного участка(кв.м)" data-rh-at="right" type="number" min="0" className="form-control" onChange={this.onInputChange} value={this.state.coverArea} name="coverArea" placeholder="" />
+                                                </div>
                                             </div>
-                                            {/* <div className="form-group">
-                            <label htmlFor="">Правоустанавливающие документы на объект (реконструкция)</label>
-                            <div className="fileinput fileinput-new" data-provides="fileinput">
-                            <span className="btn btn-default btn-file"><span></span><input type="file" multiple /></span>
-                            <span className="fileinput-filename"></span><span className="fileinput-new"></span>
-                            </div>
-                          </div> */}
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-group">
-                                                <label htmlFor="ObjectLevel">Этажность</label>
-                                                <input data-rh="Этажность" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChange} value={this.state.objectLevel} name="objectLevel" placeholder="" />
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="ObjectArea">Площадь здания (кв.м)</label>
-                                                <input data-rh="Площадь здания (кв.м)" data-rh-at="right" type="number" step="any" className="form-control" name="objectArea" onChange={this.ObjectArea.bind(this)} value={this.state.objectArea} />
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="ObjectRooms">Количество квартир (номеров, кабинетов)</label>
-                                                <input data-rh="Количество квартир (номеров, кабинетов)" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChange} value={this.state.objectRooms} name="objectRooms" />
+                                                <label htmlFor="GreenArea">Площадь озеленения (кв.м):</label>
+                                                <input data-rh="Площадь озеленения (кв.м)" data-rh-at="right" type="number" min={0} step="any" className="form-control" name="greenArea" onChange={this.onInputChange} value={this.state.greenArea} />
                                             </div>
                                         </div>
                                     </div>
@@ -1075,115 +1087,76 @@ class AddSketch extends React.Component {
                             </div>
                             <div className="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-link">
                                 <form id="tab2-form" data-tab="2" onSubmit={this.saveApz.bind(this, false)}>
-                                    <div className="col-md-12">
-                                        <div style={{color:'#D8A82D !important'}}>
-                                            <label><input type="checkbox" onChange={this.onInputChange} checked={this.state.need_electro_provider} name="need_electro_provider" /> Подать заявление на выдачу технического условия электроснабжения</label>
-                                        </div>
-                                        <hr style={{marginTop:'5px'}}/>
-                                    </div>
-                                    {this.state.need_electro_provider &&
                                     <div className="row">
                                         <div className="col-md-6">
-                                            <div style={{borderRadius: '10px', background: 'rgb(239, 239, 239)', paddingLeft: '15px', paddingRight: '15px', paddingBottom: '5px'}}>
-                                                <div className="text-center" style={{fontSize:'15px'}}>
-                                                    <p>Расчет по типовым правилам расчета норм потребления коммунальных услуг по электроснабжению(<a target="_blank" href="http://online.zakon.kz/m/Document/?doc_id=31676321">см. Приказ</a>)</p>
-                                                </div><hr/>
+                                            <div className="form-group">
                                                 <div className="form-group">
-                                                    <label>Количество ламп <img data-custom data-custom-at="bottom" data-custom-id="1" src="./images/info.png" width="20px"
-                                                                                style={{borderRadius: '10px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'}}/></label>
-                                                    <input data-rh="Количество ламп" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.Calculate_lamp.bind(this)} value={this.state.n_lamp} name="electricRequiredPower" placeholder="" />
+                                                    <label htmlFor="ObjectType">Тип объекта:</label>
+                                                    <input data-rh="Тип объекта" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.objectType} name="objectType" placeholder="" />
+                                                    <small>Пример: строительства индивидуального жилого дома со сносом существующего жилого дома</small>
                                                 </div>
-                                                <div className="form-group">
-                                                    <label>Количество розеток</label>
-                                                    <input data-rh="Количество розеток" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.Calculate_rozetka.bind(this)} value={this.state.n_rozetka} name="electricRequiredPower" placeholder="" />
-                                                </div><hr/>
-                                                <div className="form-group">
-                                                    <label htmlFor="ElectricRequiredPower">Требуемая мощность (кВт)</label>
-                                                    {/*<input data-rh="Требуемая мощность (кВт)" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} value={this.state.electricRequiredPower} name="electricRequiredPower" placeholder="" />*/}
-                                                    <input data-rh="Требуемая мощность (кВт)" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.ObjectArea.bind(this)} value={this.state.electricRequiredPower} name="electricRequiredPower" placeholder="" />
-                                                </div>
+                                            </div>
+                                            <div className="form-group">
+                                                <label htmlFor="CommonArea">Общая площадь (кв.м):</label>
+                                                <input data-rh="Общая площадь" data-rh-at="right" type="number" min="0" name="commonArea" onChange={this.onInputChange} value={this.state.commonArea} className="form-control" id="commonArea" placeholder="" />
+                                            </div>
+                                            <div className="form-group">
+                                                <label htmlFor="ObjectLevel">Этажность :</label>
+                                                <input data-rh="Этажность" data-rh-at="right" type="number" min="0" className="form-control" onChange={this.onInputChange} value={this.state.objectLevel} name="objectLevel" placeholder="" />
                                             </div>
                                         </div>
                                         <div className="col-md-6">
-                                            {/*<div className="form-group">
-                            <label htmlFor="">Предполагается установить</label>
-                            <br />
-                            <div className="col-md-6">
-                            <ul style="list-style-type: none; padding-left: 3px">
-                              <li><input type="checkbox" id="CB1"><span style="padding-left: 3px" htmlFor="CB1">электрокотлы</span><input type="text" className="form-control" placeholder=""></li>
-                              <li><input type="checkbox" id="CB2"><span style="padding-left: 3px" htmlFor="CB2">электрокалориферы</span><input type="text" className="form-control" placeholder=""></li>
-                              <li><input type="checkbox" id="CB3"><span style="padding-left: 3px" htmlFor="CB3">электроплитки</span><input type="text" className="form-control" placeholder=""></li>
-                            </ul>
-                            </div>
-                            <div className="col-md-6">
-                            <ul style="list-style-type: none; padding-left: 3px">
-                              <li><input type="checkbox" id="CB4"><span style="padding-left: 3px" htmlFor="CB4">электропечи</span><input type="text" className="form-control" placeholder=""></li>
-                              <li><input type="checkbox" id="CB5"><span style="padding-left: 3px" htmlFor="CB5">электроводонагреватели</span><input type="text" className="form-control" placeholder=""></li>
-                            </ul>
-                            </div>
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="ElectricMaxLoadDevice">Из указанной макс. нагрузки относятся к электроприемникам (кВА):</label>
-                            <input type="number" className="form-control" name="ElectricMaxLoadDevice" placeholder="" />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="ElectricMaxLoad">Существующая максимальная нагрузка (кВА)</label>
-                            <input type="number" className="form-control" name="ElectricMaxLoad" />
-                          </div>*/}
                                             <div className="form-group">
-                                                <label htmlFor="ElectricAllowedPower">Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)</label>
-                                                <input data-rh="Разрешенная по договору мощность трансформаторов (кВА) (Лицевой счет)" data-rh-at="right" type="number" step="any" name="electricAllowedPower" onChange={this.ObjectArea.bind(this)} value={this.state.electricAllowedPower} className="form-control" />
+                                                <label htmlFor="ObjectTerm">Срок строительства по нормам :</label>
+                                                <input data-rh="Срок строительства по нормам" data-rh-at="right" type="text" name="objectTerm" onChange={this.onInputChange} value={this.state.objectTerm} className="form-control" id="ObjectTerm" placeholder="" />
+                                            </div>
+                                            <div>
+                                                <br></br>
+                                                <br></br>
                                             </div>
                                             <div className="form-group">
-                                                <label htmlFor="ElectricityPhase">Характер нагрузки (фаза)</label>
-                                                <select className="form-control" onChange={this.onInputChange} value={this.state.electricityPhase} name="electricityPhase">
-                                                    <option>Однофазная</option>
-                                                    <option>Двухфазная</option>
-                                                    <option>Трехфазная</option>
-                                                    <option>Постоянная</option>
-                                                    <option>Временная</option>
-                                                    <option>Сезонная</option>
-                                                </select>
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="ElectricSafetyCategory">Категория по надежности (кВт)</label>
-                                                <select required className="form-control" onChange={this.onInputChange} value={this.state.electricSafetyCategory} name="electricSafetyCategory">
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="3">3</option>
-                                                </select>
-                                            </div>
-                                            <div className="form-group">
-                                                <label>Расчет-обоснование заявленной мощности</label>
-                                                <div className="file_container">
-                                                    <div className="progress mb-2" data-category="24" style={{height: '20px', display: 'none'}}>
-                                                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    </div>
-
-                                                    {this.state.claimedCapacityJustification &&
-                                                    <div className="file_block mb-2">
-                                                        <div>
-                                                            {this.state.claimedCapacityJustification.name}
-                                                            <a className="pointer" onClick={(e) => this.setState({claimedCapacityJustification: false}) }>×</a>
-                                                        </div>
-                                                    </div>
-                                                    }
-
-                                                    <div className="file_buttons btn-group btn-group-justified d-table mt-0">
-                                                        <label htmlFor="ClaimedCapacityJustification" className="btn btn-success" style={{marginRight: '2px'}}>Загрузить</label>
-                                                        <input type="file" id="ClaimedCapacityJustification" name="ClaimedCapacityJustification" className="form-control" onChange={this.uploadFile.bind(this, 24)} style={{display: 'none'}} />
-                                                        <label onClick={this.selectFromList.bind(this, 24)} className="btn btn-info">Выбрать из списка</label>
-                                                    </div>
-                                                    <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
-                                                </div>
+                                                <label htmlFor="BuildArea">Площадь застройки (кв.м):</label>
+                                                <input data-rh="Площадь застройки" data-rh-at="right" type="number" min="0" name="buildArea" onChange={this.onInputChange} value={this.state.buildArea} className="form-control" id="buildArea" placeholder="" />
                                             </div>
                                         </div>
-                                    </div>}
+                                    </div>
                                     <div>
                                         <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                                     </div>
                                 </form>
                                 <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
+                            </div>
+                            <div className="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-link">
+                                <form id="tab3-form" data-tab="3" onSubmit={this.saveApz.bind(this, false)}>
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label htmlFor="BasementFacade">Цоколь здания (облицовка):</label>
+                                                <input data-rh="Облицовка" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.basementFacade} name="basementFacade" placeholder="" />
+                                                <small>Пример: облицовочная плитка</small>
+                                            </div>
+                                            <div className="form-group">
+                                            <label htmlFor="WallsFacade">Стены здания (облицовка):</label>
+                                                <input data-rh="Облицовка" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.wallsFacade} name="wallsFacade" placeholder="" />
+                                                <small>Пример: штукатурка</small>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label htmlFor="BasementColor">Цоколь здания (цвет):</label>
+                                                <input data-rh="Цвет" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.basementColor} name="basementColor" placeholder="" />
+                                            </div>
+                                            <br></br>
+                                            <div className="form-group">
+                                                <label htmlFor="WallsColor">Стены здания (цвет):</label>
+                                                <input data-rh="Цвет" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.wallsColor} name="wallsColor" placeholder="" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>

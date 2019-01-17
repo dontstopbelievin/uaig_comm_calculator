@@ -2153,7 +2153,7 @@ class ShowApz extends React.Component {
                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.saveForm.bind(this, apz.id, true, "")}>
                     Сохранить
                   </button>
-                  <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#declined_modal">Отклонить</button>
+                  <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#declined_modal">Отклонить и отправить на доработку архитектору</button>
                 </div>
               }
 
@@ -2167,7 +2167,7 @@ class ShowApz extends React.Component {
                 <div className="modal-dialog" role="document">
                   <div className="modal-content">
                     <div className="modal-header">
-                      <h5 className="modal-title">Отклонить</h5>
+                      <h5 className="modal-title">Отправить на доработку</h5>
                       <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
