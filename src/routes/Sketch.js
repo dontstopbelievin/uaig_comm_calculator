@@ -5,9 +5,6 @@ import 'jquery-validation';
 import 'jquery-serializejson';
 import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
-import ReactHintFactory from "react-hint";
-
-const ReactHint = ReactHintFactory(React)
 
 export default class Sketch extends React.Component {
   render() {
@@ -553,223 +550,19 @@ class ShowMap extends React.Component {
 
 class AddSketch extends React.Component {
   constructor() {
-      super();
+    super();
 
-      this.state = {
-          applicant: '',
-          customer:'',
-          address:'',
-          phone:'',
-          projectName:'',
-          projectAddress:'',
-          landArea:'',
-          coverArea:'',
-          greenArea:'',
-          objectLevel:'',
-          commonArea:'',
-          buildArea:'',
-          objectType:'',
-          basementFacade:'',
-          basementColor:'',
-          wallsFacade:'',
-          wallsColor:'',
-          region: 'Наурызбай',
-          categoryFiles: [],
-          hasCoordinates:false,
-          personalIdFile: null,
-          sketchFile: '',
-          apzFile:'',
-          additionalFile: '',
-          paymentPhotoFile: '',
-          survey: null,
-          claimedCapacityJustification: null,
-
-          checkboxes: ['1'
-  :
-      false, '2'
-  :
-      false, '3'
-  :
-      false, '4'
-  :
-      false
-  ]
-  }
-      this.hasCoordinates=this.hasCoordinates.bind(this);
-      this.toggleMap=this.toggleMap.bind(this);
-      this.onCheckboxChange = this.onCheckboxChange.bind(this);
-      this.resetForm = this.resetForm.bind(this);
-      this.onNameChange = this.onNameChange.bind(this);
-      this.onCustomerChange = this.onCustomerChange.bind(this);
-      this.onInputChange=this.onInputChange.bind(this);
-      this.uploadFile=this.uploadFile.bind(this);
-      this.saveApz=this.saveApz.bind(this);
-      this.onAreaCheck=this.onAreaCheck.bind(this);
-  }
-
-  toggleMap(value) {
-      this.setState({
-          showMap: value
-      })
-
-      if (value) {
-          $('#tab0-form').slideUp();
-      } else {
-          $('#tab0-form').slideDown();
-      }
-  }
-
-  hasCoordinates(value) {
-
-      if (value) {
-          $('.coordinates_block div:eq(0)').removeClass('col-sm-7').addClass('col-sm-6');
-          $('.coordinates_block div:eq(1)').removeClass('col-sm-5').addClass('col-sm-6');
-      } else {
-          $('.coordinates_block div:eq(0)').removeClass('col-sm-6').addClass('col-sm-7');
-          $('.coordinates_block div:eq(1)').removeClass('col-sm-6').addClass('col-sm-5');
-      }
-      this.setState({ hasCoordinates: value });
-  }
-
-  onCustomerChange(e){
-      this.setState({customer:e.target.value});
-  }
-
-  onNameChange(e){
-    this.setState({applicant:e.target.value});
-  }
-
-  onInputChange(e) {
-      const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-      const name = e.target.name;
-      this.setState({ [name] : value });
-  }
-
-  onAreaCheck(e){
-      const name =e.target.name;
-      const value=e.target.value;
-      var check=value>0?this.setState({[name]:value}):alert("error");
-  }
-
-
-  uploadFile(category, e) {
-        var file = e.target.files[0];
-        var name = file.name.replace(/\.[^/.]+$/, "");
-        var progressbar = $('.progress[data-category=' + category + ']');
-
-        if (!file || !category) {
-            alert('Не удалось загрузить файл');
-
-            return false;
-        }
-
-        var formData = new FormData();
-        formData.append('file', file);
-        formData.append('name', name);
-        formData.append('category', category);
-        progressbar.css('display', 'flex');
-        $.ajax({
-            type: 'POST',
-            url: window.url + 'api/file/upload',
-            contentType: false,
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
-            },
-            processData: false,
-            data: formData,
-            xhr: function() {
-                var xhr = new window.XMLHttpRequest();
-
-                xhr.upload.addEventListener("progress", function(evt) {
-                    if (evt.lengthComputable) {
-                        var percentComplete = evt.loaded / evt.total;
-                        percentComplete = parseInt(percentComplete * 100);
-                        $('div', progressbar).css('width', percentComplete + '%');
-                    }
-                }, false);
-
-                return xhr;
-            },
-            success: function (response) {
-                var data = {id: response.id, name: response.name};
-
-                setTimeout(function() {
-                    progressbar.css('display', 'none');
-                    switch (category) {
-                        case 3:
-                            this.setState({personalIdFile: data});
-                            break;
-
-                        case 9:
-                            this.setState({sketchFile: data});
-                            break;
-
-                        case 10:
-                            this.setState({apzFile: data});
-                            break;
-
-                        case 27:
-                            this.setState({additionalFile: data});
-                            break;
-
-                        case 20:
-                            this.setState({paymentPhotoFile: data});
-                            break;
-
-                        case 22:
-                            this.setState({survey: data});
-                            break;
-
-                        case 24:
-                            this.setState({claimedCapacityJustification: data});
-                            break;
-                    }
-                    alert("Файл успешно загружен");
-                }.bind(this), '1000')
-            }.bind(this),
-            error: function (response) {
-                progressbar.css('display', 'none');
-                alert("Не удалось загрузить файл");
-            }
-        });
+    this.state = {
+      checkboxes: ['1': false, '2': false, '3': false, '4': false]
     }
 
+    this.onCheckboxChange = this.onCheckboxChange.bind(this);
+    this.resetForm = this.resetForm.bind(this);
+  }
 
   componentDidMount() {
-    console.log(sessionStorage.getItem('userId'));
-    var userId = sessionStorage.getItem('userId');
-    var token = sessionStorage.getItem('tokenInfo');
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/personalData/edit/"+userId, true);
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            var data = JSON.parse(xhr.responseText);
-            data = data.userData;
-            console.log(data);
-            this.setState({first_name: data.first_name});
-            this.setState({last_name: data.last_name});
-            this.setState({middle_name: data.middle_name ?data.middle_name:" "});
-            this.setState({company_name:data.company_name ?data.company_name:" "});
-            if (data.bin !== null){
-                this.setState({bin: data.bin});
-            }else{
-                this.setState({bin: false});
-                this.setState({iin: data.iin});
-            }
-            this.setState({ loaderHidden: true });
-        } else if (xhr.status === 401) {
-            sessionStorage.clear();
-            alert("Время сессии истекло. Пожалуйста войдите заново!");
-            this.props.history.replace("/login");
-        } else if (xhr.status === 500) {
-            alert('Пользователь не найден в базе данных. Попробуйте еще раз!')
-        }
-    }.bind(this);
-    xhr.send();
     this.props.breadCrumbs();
-}
+  }
 
   onCheckboxChange(e) {
     var checkbox = $(e.target);
@@ -797,423 +590,155 @@ class AddSketch extends React.Component {
       $('.file_block', parent).remove();
     });
   }
-
-  ObjectArea(e) {
-      if(e.target.name === 'objectArea') {
-          this.setState({objectArea: e.target.value});
-      }
-  }
-
-  selectFromList(category, e) {
-      var token = sessionStorage.getItem('tokenInfo');
-      var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/file/category/" + category, true);
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-      xhr.onload = function() {
-          if (xhr.status === 200) {
-              var data = JSON.parse(xhr.responseText);
-              this.setState({categoryFiles: data});
-
-              $('#selectFileModal').modal('show');
-          }
-      }.bind(this)
-      xhr.send();
-  }
   
-  saveApz(publish,e) {
+  sendForm(e) {
     e.preventDefault();
 
-    var sketchId = this.props.match.params.id;
-    var link = sketchId > 0 ? ("api/sketch/citizen/save/" + sketchId) : "api/sketch/citizen/save";
+    var formData = $('#sketch-form').serializeJSON();
 
-    var data={
-        publish:publish?true:false
-    }
-
-      Object.keys(this.state).forEach(function(k) {
-          data[k] = this.state[k]
-      }.bind(this));
-
-      this.setState({loaderHidden: false});
-      console.log(data);
-      var token = sessionStorage.getItem('tokenInfo');
-      var xhr = new XMLHttpRequest();
-      xhr.open("post", window.url + link, true);
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-      xhr.onload = function() {
-          this.setState({loaderHidden: true});
-
-          if (xhr.status === 200) {
-              var data = JSON.parse(xhr.responseText);
-
-              if (publish) {
-                  alert("Заявка успешно подана.\nЗаявка будет рассматриваться завтра.");
-                  this.props.history.replace('/panel/citizen/sketch');
-              } else {
-                  alert('Заявка успешно сохранена');
-
-                  if (!sketchId) {
-                      this.props.history.push('/panel/citizen/sketch/edit/' + data.id);
-                  }
-              }
-          } else {
-              alert("При сохранении заявки произошла ошибка!"+xhr.status);
-          }
-      }.bind(this);
-      xhr.send(JSON.stringify(data));
-
-
-    // var formData = $('#sketch-form').serializeJSON();
-    //
-    // $.ajax({
-    //   type: 'POST',
-    //   url: window.url + 'api/sketch/citizen/create',
-    //   contentType: 'application/json; charset=utf-8',
-    //   beforeSend: function (xhr) {
-    //     xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
-    //   },
-    //   data: JSON.stringify(formData),
-    //   success: function (data) {
-    //     this.resetForm();
-    //     alert("Заявка отправлена");
-    //   }.bind(this)
-    // });
+    $.ajax({
+      type: 'POST',
+      url: window.url + 'api/sketch/citizen/create',
+      contentType: 'application/json; charset=utf-8',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
+      },
+      data: JSON.stringify(formData),
+      success: function (data) {
+        this.resetForm();
+        alert("Заявка отправлена");
+      }.bind(this)
+    });
   };
-
-  routeChange(){
-      this.props.history.goBack();
-  }
 
   render() {
     return (
-        <div className="container" id="apzFormDiv">
-            <ReactHint autoPosition events delay={100} />
-            <ReactHint attribute="data-custom" events onRenderContent={this.onRenderContent} ref={(ref) => this.instance = ref} delay={100}/>
-            {this.state.loaderHidden &&
-            <div className="tab-pane">
+      <div>
+        <div className="content container sketch-page mb-0">
+          <form onSubmit={this.sendForm.bind(this)} id="sketch-form" className="mb-0">
+            <div className="row pt-0">
+              <div className="col-sm-8">
+                <div className="row pt-0">
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="Applicant">Наименование заявителя:</label>
+                      <input type="text" className="form-control" required name="applicant" placeholder="Наименование" />
+                      <small className="form-text text-muted help-block">Ф.И.О. (при его наличии) физического лица или наименование юридического лица</small>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="Customer">Заказчик</label>
+                      <input type="text" className="form-control" name="customer" placeholder="Заказчик" />
+                    </div>
+                  </div>
+                </div>
                 <div className="row">
-                    <div className="col-4">
-                        <div className="nav flex-column nav-pills container-fluid" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                            <a className="nav-link active" id="tab0-link" data-toggle="pill" href="#tab0" role="tab" aria-controls="tab0" aria-selected="true">Заявление <span id="tabIcon"></span></a>
-                            <a className="nav-link" id="tab1-link" data-toggle="pill" href="#tab1" role="tab" aria-controls="tab1" aria-selected="false">Показатели по генеральному плану <span id="tabIcon"></span></a>
-                            <a className="nav-link" id="tab2-link" data-toggle="pill" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">Показатели по проекту<span id="tabIcon"></span></a>
-                            <a className="nav-link" id="tab3-link" data-toggle="pill" href="#tab3" role="tab" aria-controls="tab3" aria-selected="false">Архитектурные решения по отделки фасада здания и сооружения<span id="tabIcon"></span></a>
-                        </div>
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="Address">Адрес:</label>
+                      <input type="text" className="form-control" required id="PhotoRepAddressForm" name="address" placeholder="Адрес" />
                     </div>
-                    <div className="col-8">
-                        <div className="tab-content" id="v-pills-tabContent">
-                            <div className="tab-pane fade show active" id="tab0" role="tabpanel" aria-labelledby="tab0-link">
-                                <form id="tab0-form" data-tab="0" onSubmit={this.saveApz.bind(this, false)}>
-                                    <div className="row">
-                                        <div className="col-md-7">
-                                            <div className="form-group">
-                                                <label htmlFor="Applicant">Наименование заявителя:</label>
-                                                <input data-rh="Заявитель" data-rh-at="right" type="text" className="form-control" onChange={this.onNameChange} name="applicant" value={this.state.applicant=this.state.company_name==' ' ?this.state.last_name+" "+this.state.first_name+" "+this.state.middle_name:this.state.company_name } required />
-                                                {/*<span className="help-block"></span>*/}
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="address">Адрес жительства:</label>
-                                                <input data-rh="Адрес жительства" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} name="address" value={this.state.address} required />
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="Phone">Телефон</label>
-                                                <input data-rh="Телефон" data-rh-at="right" type="tel" className="form-control" onChange={this.onInputChange} value={this.state.phone} name="phone" placeholder="8 (7xx) xxx xx xx" />
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="Customer">Заказчик</label>
-                                                <input data-rh="Заказчик" data-rh-at="right" type="text" required onChange={this.onCustomerChange} value={this.state.customer=this.state.company_name==' ' ?this.state.last_name+" "+this.state.first_name+" "+this.state.middle_name:this.state.company_name} className="form-control customer_field" name="customer" placeholder="ФИО / Наименование компании" />
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="Region">Район</label>
-                                                <select className="form-control" onChange={this.onInputChange} value={this.state.region} name="region">
-                                                    <option>Наурызбай</option>
-                                                    <option>Алатау</option>
-                                                    <option>Алмалы</option>
-                                                    <option>Ауезов</option>
-                                                    <option>Бостандық</option>
-                                                    <option>Жетісу</option>
-                                                    <option>Медеу</option>
-                                                    <option>Турксиб</option>
-                                                </select>
-                                            </div>
-                                            {/*<div className="form-group">
-                            <label htmlFor="Address">Адрес:</label>
-                            <input type="text" className="form-control" required id="ApzAddressForm" name="Address" placeholder="ул. Абая, д.25" />
-                          </div>*/}
-                                            <div className="form-group">
-                                                <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
-                                                <input data-rh="Проектировщик №ГСЛ, категория" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.designer} name="designer" />
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="ProjectName">Наименование проектируемого объекта</label>
-                                                <input data-rh="Наименование проектируемого объекта" data-rh-at="right" type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectName} id="ProjectName" name="projectName" />
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
-                                                <input data-rh="Адрес проектируемого объекта" data-rh-at="right" type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectAddress} name="projectAddress" />
-                                                <div className="row coordinates_block pt-0">
-                                                    {/*<div className="col-md-6">*/}
-                                                        {/*<input data-rh="Адрес проектируемого объекта" data-rh-at="right" type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectAddress} name="projectAddress" />*/}
-                                                        {/*<input type="hidden" onChange={this.onInputChange} value={this.state.projectAddressCoordinates} id="ProjectAddressCoordinates" name="projectAddressCoordinates" />*/}
-                                                    {/*</div>*/}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-5">
-                                            <div className="form-group">
-                                                <label>Уд.личности/Реквизиты</label>
-                                                <div className="file_container">
-                                                    <div className="progress mb-2" data-category="3" style={{height: '20px', display: 'none'}}>
-                                                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    </div>
-
-                                                    {this.state.personalIdFile &&
-                                                    <div className="file_block mb-2">
-                                                        <div>
-                                                            {this.state.personalIdFile.name}
-                                                            <a className="pointer" onClick={(e) => this.setState({personalIdFile: false}) }>×</a>
-                                                        </div>
-                                                    </div>
-                                                    }
-
-                                                    <div className="file_buttons btn-group btn-group-justified d-table mt-0">
-                                                        <label htmlFor="PersonalIdFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
-                                                        <input type="file" id="PersonalIdFile" name="PersonalIdFile" className="form-control" onChange={this.uploadFile.bind(this, 3)} style={{display: 'none'}} />
-                                                        <label onClick={this.selectFromList.bind(this, 3)} className="btn btn-info btn-sm">Выбрать из списка</label>
-                                                    </div>
-                                                    <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
-                                                </div>
-                                            </div>
-                                            <div className="form-group">
-                                                <label>Эскиз (эскизный проект)</label>
-                                                <div className="file_container">
-                                                    <div className="progress mb-2" data-category="9" style={{height: '20px', display: 'none'}}>
-                                                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    </div>
-
-                                                    {this.state.sketchFile &&
-                                                    <div className="file_block mb-2">
-                                                        <div>
-                                                            {this.state.sketchFile.name}
-                                                            <a className="pointer" onClick={(e) => this.setState({sketchFile: false}) }>×</a>
-                                                        </div>
-                                                    </div>
-                                                    }
-
-                                                    <div className="file_buttons btn-group btn-group-justified d-table mt-0">
-                                                        <label htmlFor="sketchFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
-                                                        <input type="file" id="SketchFile" name="sketchFile" className="form-control" onChange={this.uploadFile.bind(this, 1)} style={{display: 'none'}} />
-                                                        <label onClick={this.selectFromList.bind(this, 9)} className="btn btn-info btn-sm">Выбрать из списка</label>
-                                                    </div>
-                                                    <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
-                                                </div>
-                                            </div>
-
-                                            <div className="form-group">
-                                                <label>Архитектурно-планировочное задание (копия)</label>
-                                                <div className="file_container">
-                                                    <div className="progress mb-2" data-category="10" style={{height: '20px', display: 'none'}}>
-                                                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    </div>
-
-                                                    {this.state.apzFile &&
-                                                    <div className="file_block mb-2">
-                                                        <div>
-                                                            {this.state.apzFile.name}
-                                                            <a className="pointer" onClick={(e) => this.setState({apzFile: false}) }>×</a>
-                                                        </div>
-                                                    </div>
-                                                    }
-
-                                                    <div className="file_buttons btn-group btn-group-justified d-table mt-0">
-                                                        <label htmlFor="ApzFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
-                                                        <input type="file" id="ApzFile" name="ApzFile" className="form-control" onChange={this.uploadFile.bind(this, 2)} style={{display: 'none'}} />
-                                                        <label onClick={this.selectFromList.bind(this, 10)} className="btn btn-info btn-sm">Выбрать из списка</label>
-                                                    </div>
-                                                    <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
-                                                </div>
-                                            </div>
-
-
-                                            {/*<div className="form-group">
-                            <label htmlFor="ApzDate">Дата</label>
-                            <input type="date" required className="form-control" name="ApzDate" />
-                          </div>*/}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
-                                    </div>
-                                </form>
-                                {this.state.showMap &&
-                                <div className="mb-4">
-                                    <ShowMap point={true} changeFunction={this.onInputChange} mapFunction={this.toggleMap} hasCoordinates={this.hasCoordinates}/>
-                                </div>
-                                }
-
-                                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
-                            </div>
-                            <div className="tab-pane fade" id="tab1" role="tabpanel" aria-labelledby="tab1-link">
-                                <form id="tab1-form" data-tab="1" onSubmit={this.saveApz.bind(this, false)}>
-                                    <div className="row">
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <div className="form-group">
-                                                    <label htmlFor="landArea">Площадь земельного участка(кв.м):</label>
-                                                    <input data-rh="Площадь земельного участка(кв.м)" data-rh-at="right" type="number" min="0" className="form-control" onChange={this.onInputChange} value={this.state.landArea} name="landArea" placeholder="" />
-                                                </div>
-                                            </div>
-                                            <div className="form-group">
-                                                <div className="form-group">
-                                                    <label htmlFor="coverArea">Площадь покрытия (кв.м):</label>
-                                                    <input data-rh="Площадь земельного участка(кв.м)" data-rh-at="right" type="number" min="0" className="form-control" onChange={this.onInputChange} value={this.state.coverArea} name="coverArea" placeholder="" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <label htmlFor="GreenArea">Площадь озеленения (кв.м):</label>
-                                                <input data-rh="Площадь озеленения (кв.м)" data-rh-at="right" type="number" min={0} step="any" className="form-control" name="greenArea" onChange={this.onInputChange} value={this.state.greenArea} />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
-                                    </div>
-                                </form>
-                                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
-                            </div>
-                            <div className="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-link">
-                                <form id="tab2-form" data-tab="2" onSubmit={this.saveApz.bind(this, false)}>
-                                    <div className="row">
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <div className="form-group">
-                                                    <label htmlFor="ObjectType">Тип объекта:</label>
-                                                    <input data-rh="Тип объекта" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.objectType} name="objectType" placeholder="" />
-                                                    <small>Пример: строительства индивидуального жилого дома со сносом существующего жилого дома</small>
-                                                </div>
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="CommonArea">Общая площадь (кв.м):</label>
-                                                <input data-rh="Общая площадь" data-rh-at="right" type="number" min="0" name="commonArea" onChange={this.onInputChange} value={this.state.commonArea} className="form-control" id="commonArea" placeholder="" />
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="ObjectLevel">Этажность :</label>
-                                                <input data-rh="Этажность" data-rh-at="right" type="number" min="0" className="form-control" onChange={this.onInputChange} value={this.state.objectLevel} name="objectLevel" placeholder="" />
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <label htmlFor="ObjectTerm">Срок строительства по нормам :</label>
-                                                <input data-rh="Срок строительства по нормам" data-rh-at="right" type="text" name="objectTerm" onChange={this.onInputChange} value={this.state.objectTerm} className="form-control" id="ObjectTerm" placeholder="" />
-                                            </div>
-                                            <div>
-                                                <br></br>
-                                                <br></br>
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="BuildArea">Площадь застройки (кв.м):</label>
-                                                <input data-rh="Площадь застройки" data-rh-at="right" type="number" min="0" name="buildArea" onChange={this.onInputChange} value={this.state.buildArea} className="form-control" id="buildArea" placeholder="" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
-                                    </div>
-                                </form>
-                                <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
-                            </div>
-                            <div className="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-link">
-                                <form id="tab3-form" data-tab="3" onSubmit={this.saveApz.bind(this, false)}>
-                                    <div className="row">
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <label htmlFor="BasementFacade">Цоколь здания (облицовка):</label>
-                                                <input data-rh="Облицовка" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.basementFacade} name="basementFacade" placeholder="" />
-                                                <small>Пример: облицовочная плитка</small>
-                                            </div>
-                                            <div className="form-group">
-                                            <label htmlFor="WallsFacade">Стены здания (облицовка):</label>
-                                                <input data-rh="Облицовка" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.wallsFacade} name="wallsFacade" placeholder="" />
-                                                <small>Пример: штукатурка</small>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <label htmlFor="BasementColor">Цоколь здания (цвет):</label>
-                                                <input data-rh="Цвет" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.basementColor} name="basementColor" placeholder="" />
-                                            </div>
-                                            <br></br>
-                                            <div className="form-group">
-                                                <label htmlFor="WallsColor">Стены здания (цвет):</label>
-                                                <input data-rh="Цвет" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.wallsColor} name="wallsColor" placeholder="" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
+                      <input type="text" className="form-control" name="designer" />
                     </div>
+                  </div>
                 </div>
-
-                <div className="modal fade" id="selectFileModal" tabIndex="-1" role="dialog" aria-hidden="true">
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Выбрать файл</h5>
-                                <button type="button" id="selectFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                                <table className="table">
-                                    <thead>
-                                    <tr>
-                                        <th style={{width: '80%'}}>Название</th>
-                                        <th style={{width: '10%'}}>Формат</th>
-                                        <th style={{width: '10%'}}></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {this.state.categoryFiles.map(function(file, index){
-                                            return(
-                                                <tr key={index}>
-                                                    <td>{file.name}</td>
-                                                    <td>{file.extension}</td>
-                                                    <td><button onClick={this.selectFile} data-category={file.category_id} data-id={file.id} data-name={file.name} className="btn btn-success">Выбрать</button></td>
-                                                </tr>
-                                            );
-                                        }.bind(this)
-                                    )}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                            </div>
-                        </div>
+                <div className="row">
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="Phone">Телефон</label>
+                      <input type="tel" className="form-control" required id="PhotoRepPhone" name="phone" placeholder="Телефон" />
                     </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="ProjectName">Наименование проектируемого объекта</label>
+                      <input type="text" className="form-control" id="ProjectName" name="project_name" />
+                    </div>
+                  </div>
                 </div>
-            </div>
-            }
+                <div className="row">
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
+                      <input type="text" className="form-control" name="project_address" />
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label>Дата</label>
+                      <input type="date" name="sketch_date" className="form-control" required />
+                      <small className="form-text text-muted help-block">до</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-sm-4">
+                <div className="row pt-0">
+                  <div className="col-12">
+                    <p>Прилагается:</p>
 
-            {!this.state.loaderHidden &&
-            <div style={{textAlign: 'center'}}>
-                <Loader type="Oval" color="#46B3F2" height="200" width="200" />
-            </div>
-            }
+                    <div className="list-group">
+                      <label>
+                        <div className="list-group-item list-group-item-action">
+                          <input data-type="1" onClick={this.onCheckboxChange} type="checkbox" value="" />   Эскиз (эскизный проект)
+                          <div className="progress mt-3" data-category="1" style={{height: '20px', display: 'none'}}>
+                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                          <div className="file_block"></div>
+                          {this.state.checkboxes[1] === true ? <FilesForm category = '1' type = '1' /> : ''}
+                        </div>
+                      </label>
+                      <label>
+                        <div className="list-group-item list-group-item-action">
+                          <input data-type="2" onClick={this.onCheckboxChange} type="checkbox" value="" />   Архитектурно-планировочное задание (копия)
+                          <div className="progress mt-3" data-category="2" style={{height: '20px', display: 'none'}}>
+                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                          <div className="file_block"></div>
+                          {this.state.checkboxes[2] === true ? <FilesForm category = '2' type = '2' /> : ''}
+                        </div>
+                      </label>
+                      <label>
+                        <div className="list-group-item list-group-item-action">
+                          <input data-type="3" onClick={this.onCheckboxChange} type="checkbox" value="" />   Удостверение личности (копия)
+                          <div className="progress mt-3" data-category="3" style={{height: '20px', display: 'none'}}>
+                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                          <div className="file_block"></div>
+                          {this.state.checkboxes[3] === true ? <FilesForm category = '3' type = '3' /> : ''}
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-            <div>
-                <hr />
-                <button className="btn btn-outline-secondary pull-right" onClick={this.routeChange.bind(this)}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
+              <div className="col-sm-12">
+                <div className="mx-auto d-table">
+                  <button type="submit" className="btn btn-outline-success">Отправить заявку</button>
+                </div>
+              </div>
             </div>
+          </form>
+          <div id="modal_block">
+            {this.state.checkboxes[1] === true ? <FileModal category = '1' type = '1' /> : ''}
+            {this.state.checkboxes[2] === true ? <FileModal category = '2' type = '2' /> : ''}
+            {this.state.checkboxes[3] === true ? <FileModal category = '3' type = '3' /> : ''}
+            {this.state.checkboxes[4] === true ? <FileModal category = '3' type = '4' /> : ''}
+            {this.state.checkboxes[5] === true ? <FileModal category = '4' type = '5' /> : ''}
+          </div>
         </div>
+
+        <div className="col-sm-12">
+          <hr />
+          <Link className="btn btn-outline-secondary pull-right" to={'/panel/citizen/sketch/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+        </div>
+      </div>
     )
   }
 }
