@@ -90,7 +90,7 @@ oscrypto-ca-bundle.crt
 bh_unicode_properties.cache
 
 # main index file config
-./src/index.js
+/src/index.js
 
 # Sublime-github package stores a github token in this file
 # https://packagecontrol.io/packages/sublime-github
