@@ -314,6 +314,7 @@ class ShowApz extends React.Component {
       head_accepted: true,
       headComment: "",
       ty_director_id: "",
+      fileDescription: "",
       heat_directors_id: [],
       customTcFile: null,
       loaderHidden:true
@@ -371,6 +372,7 @@ class ShowApz extends React.Component {
     this.onFinalPercentageIncreaseChange = this.onFinalPercentageIncreaseChange.bind(this);
     this.calculateIncrease = this.calculateIncrease.bind(this);
     this.printQuestionnaire = this.printQuestionnaire.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
   }
 
   onMainIncreaseChange(e) {
@@ -438,7 +440,11 @@ class ShowApz extends React.Component {
       this.getDirectors();
     }
   }
-
+  onInputChange(e) {
+    const value = e.target.value;
+    const name = e.target.name;
+    this.setState({ [name] : value });
+  }
   onHeatResourceChange(e) {
     this.setState({ heatResource: e.target.value });
   }
@@ -766,6 +772,7 @@ class ShowApz extends React.Component {
           this.setState({responseFile: data.commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12})[0]});
           this.setState({xmlFile: data.commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 16})[0]});
           this.setState({customTcFile: data.commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 23})[0]});
+          this.setState({fileDescription: data.commission.apz_heat_response.fileDescription});
           this.setState({accept: this.state.customTcFile ? 'answer' : data.commission.apz_heat_response.response ? 'accept' : 'decline'});
         } else {
           this.setState({heatMainInContract: data.apz_heat.main_in_contract ? data.apz_heat.main_in_contract : ''});
@@ -1217,6 +1224,7 @@ class ShowApz extends React.Component {
     var formData = new FormData();
     formData.append('file', file);
     formData.append('customTcFile', customTcFile);
+    formData.append('fileDescription', this.state.fileDescription);
     formData.append('Response', status);
     formData.append('Message', comment);
     if(status === 0){
@@ -2353,6 +2361,10 @@ handleDirectorIDChange(event){
                 </label>
                 <input type="file" id="custom_tc_file" className="form-control" onChange={this.onCustomTcFileChange} />
               </div>
+              <div className="form-group">
+                <label htmlFor="fileDescription">Описание файла:</label>
+                <input data-rh="Описание файла" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} name="fileDescription" value={this.state.fileDescription} required />
+              </div>
 
               <div style={{paddingLeft:'5px', fontSize: '18px', margin: '10px 0px'}}>
                 <b>Выберите директора:</b>
@@ -2386,6 +2398,7 @@ handleDirectorIDChange(event){
                   </div>
                   </td>
                 </tr>
+                <tr><td>Описание технического условия</td><td>{this.state.fileDescription}</td></tr>
               </tbody>
             </table>
           }

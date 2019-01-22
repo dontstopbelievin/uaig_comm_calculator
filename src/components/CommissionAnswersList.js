@@ -18,6 +18,7 @@ export default class CommissionAnswersList extends React.Component {
       electroCustomTcFile: null,
       heatCustomTcFile: null,
       gasCustomTcFile: null,
+      fileDescription: "",
     };
   }
 
@@ -47,6 +48,7 @@ export default class CommissionAnswersList extends React.Component {
       if (commission.apz_heat_response && commission.apz_heat_response.files) {
         this.setState({heatResponseFile: commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
         this.setState({heatCustomTcFile: commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
+        this.setState({fileDescription: commission.apz_heat_response.fileDescription});
       }
 
       if (commission.apz_gas_response && commission.apz_gas_response.files) {
@@ -631,6 +633,7 @@ export default class CommissionAnswersList extends React.Component {
                           </div>
                           </td>
                         </tr>
+                        <tr><td>Описание технического условия</td><td>{this.state.fileDescription}</td></tr>
                       </tbody>
                     }
 
