@@ -22,7 +22,9 @@ export default class Urban extends React.Component {
               <Route path="/panel/urban/apz/show/:id" exact render={(props) =>(
                 <ShowApz {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
               )} />
+
               <Redirect from="/panel/urban/apz" to="/panel/urban/apz/status/active/1" />
+
             </Switch>
           </div>
         </div>
@@ -33,7 +35,7 @@ export default class Urban extends React.Component {
 
 class AllApzs extends React.Component {
   constructor(props) {
-    super(props);
+          super(props);
 
     this.state = {
       loaderHidden: false,
@@ -1827,3 +1829,5 @@ class ShowMap extends React.Component {
     )
   }
 }
+
+

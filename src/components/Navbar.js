@@ -397,6 +397,7 @@ class UrbanMenu extends Component {
     return (
       <div>
         <NavLink to={"/panel/urban/apz"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/panel/urban/sketch"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
         <NavLink to={"/panel/common/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         {/*<NavLink to={"/panel/urban/urbanreport"} replace className="dropdown-item" activeClassName="active">Фильтр</NavLink>*/}
         <NavLink to={"/panel/urban/answer-template"} replace className="dropdown-item" activeClassName="active">Шаблоны отказов</NavLink>

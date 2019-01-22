@@ -212,12 +212,58 @@ class ShowSketch extends React.Component {
       showMapText: 'Показать карту',
       loaderHidden: false,
       responseFile: false,
+      personalIdFile:false,
+      apzFile:false,
+      sketchFile:false
+
     };
   }
 
   componentDidMount() {
     this.props.breadCrumbs();
   }
+
+  // componentWillMount() {
+  //     if (this.props.match.params.id) {
+  //         this.getSketchInfo();
+  //     }
+  //   }
+  //
+  //   getSketchInfo() {
+  //       var id = this.props.match.params.id;
+  //       var token = sessionStorage.getItem('tokenInfo');
+  //
+  //       this.setState({ loaderHidden: false });
+  //
+  //       var xhr = new XMLHttpRequest();
+  //       xhr.open("get", window.url + "api/sketch/detail/" + id, true);
+  //       xhr.setRequestHeader("Authorization", "Bearer " + token);
+  //       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  //       xhr.onload = function() {
+  //           if (xhr.status === 200) {
+  //               var sketch = JSON.parse(xhr.responseText);
+  //               var commission = sketch.commission;
+  //               console.log(sketch.files);
+  //               this.setState({sketch: sketch});
+  //               this.setState({personalIdFile: sketch.files.filter(function(obj) { return obj.files.category_id === 3 })[0]});
+  //               this.setState({apzFile: sketch.files.filter(function(obj) { return obj.category_id === 2 })[0]});
+  //               this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
+  //               // this.setState({additionalFile: sketch.files.filter(function(obj) { return obj.category_id === 27 })[0]});
+  //               // this.setState({paymentPhotoFile: sketch.files.filter(function(obj) { return obj.category_id === 20 })[0]});
+  //               // var pack2IdFile = sketch.files.filter(function(obj) { return obj.category_id === 25 }) ?
+  //               //     sketch.files.filter(function(obj) { return obj.category_id === 25 }) : [];
+  //               // if ( pack2IdFile.length > 0 ) {
+  //               //     this.setState({pack2IdFile: pack2IdFile[0]});
+  //               // }
+  //               this.setState({loaderHidden: true});
+  //           } else if (xhr.status === 401) {
+  //               sessionStorage.clear();
+  //               alert("Время сессии истекло. Пожалуйста войдите заново!");
+  //               this.props.history.replace("/login");
+  //           }
+  //       }.bind(this)
+  //       xhr.send();
+  //   }
 
   componentWillMount() {
     this.getSketchInfo();
@@ -238,6 +284,10 @@ class ShowSketch extends React.Component {
         var sketch = JSON.parse(xhr.responseText);
         this.setState({sketch: sketch});
         this.setState({loaderHidden: true});
+
+        this.setState({personalIdFile: sketch.files.filter(function(obj) {return obj.files.category_id === 3 })[0]});
+        this.setState({apzFile: sketch.files.filter(function(obj) { return obj.category_id === 2 })[0]});
+        this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
 
         if (sketch.apz_department_response && sketch.apz_department_response.files) {
           this.setState({responseFile: sketch.apz_department_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
@@ -267,59 +317,128 @@ class ShowSketch extends React.Component {
     }
   }
 
-  downloadFile(id) {
-    var token = sessionStorage.getItem('tokenInfo');
-    var url = window.url + 'api/file/download/' + id;
+  // downloadFile(id) {
+  //   var token = sessionStorage.getItem('tokenInfo');
+  //   var url = window.url + 'api/file/download/' + id;
+  //
+  //   var xhr = new XMLHttpRequest();
+  //   xhr.open("get", url, true);
+  //     xhr.setRequestHeader("Authorization", "Bearer " + token);
+  //     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  //     xhr.onload = function() {
+  //       if (xhr.status === 200) {
+  //         var data = JSON.parse(xhr.responseText);
+  //         var base64ToArrayBuffer = (function () {
+  //
+  //           return function (base64) {
+  //             var binaryString =  window.atob(base64);
+  //             var binaryLen = binaryString.length;
+  //             var bytes = new Uint8Array(binaryLen);
+  //
+  //             for (var i = 0; i < binaryLen; i++) {
+  //               var ascii = binaryString.charCodeAt(i);
+  //               bytes[i] = ascii;
+  //             }
+  //
+  //             return bytes;
+  //           }
+  //
+  //         }());
+  //
+  //         var saveByteArray = (function () {
+  //           var a = document.createElement("a");
+  //           document.body.appendChild(a);
+  //           a.style = "display: none";
+  //
+  //           return function (data, name) {
+  //             var blob = new Blob(data, {type: "octet/stream"}),
+  //                 url = window.URL.createObjectURL(blob);
+  //             a.href = url;
+  //             a.download = name;
+  //             a.click();
+  //             setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+  //           };
+  //
+  //         }());
+  //
+  //         saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
+  //       } else {
+  //         alert('Не удалось скачать файл');
+  //       }
+  //     }
+  //   xhr.send();
+  // }
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", url, true);
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          var data = JSON.parse(xhr.responseText);
-          var base64ToArrayBuffer = (function () {
-        
-            return function (base64) {
-              var binaryString =  window.atob(base64);
-              var binaryLen = binaryString.length;
-              var bytes = new Uint8Array(binaryLen);
-              
-              for (var i = 0; i < binaryLen; i++) {
-                var ascii = binaryString.charCodeAt(i);
-                bytes[i] = ascii;
-              }
-              
-              return bytes; 
-            }
-            
-          }());
+    downloadFile(id, progbarId = null) {
+        var token = sessionStorage.getItem('tokenInfo');
+        var url = window.url + 'api/file/download/' + id;
 
-          var saveByteArray = (function () {
-            var a = document.createElement("a");
-            document.body.appendChild(a);
-            a.style = "display: none";
-            
-            return function (data, name) {
-              var blob = new Blob(data, {type: "octet/stream"}),
-                  url = window.URL.createObjectURL(blob);
-              a.href = url;
-              a.download = name;
-              a.click();
-              setTimeout(function() {window.URL.revokeObjectURL(url);},0);
-            };
-
-          }());
-
-          saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
-        } else {
-          alert('Не удалось скачать файл');
+        var xhr = new XMLHttpRequest();
+        xhr.open("get", url, true);
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
+        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+        var vision = $('.text-info[data-category='+progbarId+']');
+        var progressbar = $('.progress[data-category='+progbarId+']');
+        vision.css('display', 'none');
+        progressbar.css('display', 'flex');
+        xhr.onprogress = function(event) {
+            $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
         }
-      }
-    xhr.send();
-  }
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText);
+                var base64ToArrayBuffer = (function () {
 
-  toDate(date) {
+                    return function (base64) {
+                        var binaryString =  window.atob(base64);
+                        var binaryLen = binaryString.length;
+                        var bytes = new Uint8Array(binaryLen);
+
+                        for (var i = 0; i < binaryLen; i++) {
+                            var ascii = binaryString.charCodeAt(i);
+                            bytes[i] = ascii;
+                        }
+
+                        return bytes;
+                    }
+
+                }());
+
+                var saveByteArray = (function () {
+                    var a = document.createElement("a");
+                    document.body.appendChild(a);
+                    a.style = "display: none";
+
+                    return function (data, name) {
+                        var blob = new Blob(data, {type: "octet/stream"}),
+                            url = window.URL.createObjectURL(blob);
+                        a.href = url;
+                        a.download = name;
+                        a.click();
+                        setTimeout(function() {
+                            window.URL.revokeObjectURL(url);
+                            $('div', progressbar).css('width', 0);
+                            progressbar.css('display', 'none');
+                            vision.css('display','inline');
+                            alert("Файлы успешно загружены");
+                        },1000);
+                    };
+
+                }());
+
+                saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
+            } else {
+                $('div', progressbar).css('width', 0);
+                progressbar.css('display', 'none');
+                vision.css('display','inline');
+                alert('Не удалось скачать файл');
+            }
+        }
+        xhr.send();
+    }
+
+
+    toDate(date) {
     if(date === null) {
       return date;
     }
@@ -390,6 +509,16 @@ class ShowSketch extends React.Component {
                   <td><b>Дата заявления</b></td>
                   <td>{sketch.created_at && this.toDate(sketch.created_at)}</td>
                 </tr>
+                {this.state.personalIdFile &&
+                <tr>
+                    <td><b>Уд. лич./ Реквизиты</b></td>
+                    <td><a className="text-info pointer" data-category="1" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id, 1)}>Скачать</a>
+                        <div className="progress mb-2" data-category="1" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </td>
+                </tr>
+                }
               </tbody>
             </table>
 
@@ -575,15 +704,15 @@ class AddSketch extends React.Component {
           wallsColor:'',
           region: 'Наурызбай',
           categoryFiles: [],
-          hasCoordinates:false,
+          // hasCoordinates:false,
           personalIdFile: null,
-          sketchFile: '',
-          apzFile:'',
+          sketchFile: null,
+          apzFile:null,
           additionalFile: '',
           paymentPhotoFile: '',
           survey: null,
           claimedCapacityJustification: null,
-
+          loaderHidden : true,
           checkboxes: ['1'
   :
       false, '2'
@@ -652,6 +781,76 @@ class AddSketch extends React.Component {
   }
 
 
+
+  downloadFile(id, progbarId = null) {
+        var token = sessionStorage.getItem('tokenInfo');
+        var url = window.url + 'api/file/download/' + id;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("get", url, true);
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
+        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+        var vision = $('.text-info[data-category='+progbarId+']');
+        var progressbar = $('.progress[data-category='+progbarId+']');
+        vision.css('display', 'none');
+        progressbar.css('display', 'flex');
+        xhr.onprogress = function(event) {
+            $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
+        }
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText);
+                var base64ToArrayBuffer = (function () {
+
+                    return function (base64) {
+                        var binaryString =  window.atob(base64);
+                        var binaryLen = binaryString.length;
+                        var bytes = new Uint8Array(binaryLen);
+
+                        for (var i = 0; i < binaryLen; i++) {
+                            var ascii = binaryString.charCodeAt(i);
+                            bytes[i] = ascii;
+                        }
+
+                        return bytes;
+                    }
+
+                }());
+
+                var saveByteArray = (function () {
+                    var a = document.createElement("a");
+                    document.body.appendChild(a);
+                    a.style = "display: none";
+
+                    return function (data, name) {
+                        var blob = new Blob(data, {type: "octet/stream"}),
+                            url = window.URL.createObjectURL(blob);
+                        a.href = url;
+                        a.download = name;
+                        a.click();
+                        setTimeout(function() {
+                            window.URL.revokeObjectURL(url);
+                            $('div', progressbar).css('width', 0);
+                            progressbar.css('display', 'none');
+                            vision.css('display','inline');
+                            alert("Файлы успешно загружены");
+                        },1000);
+                    };
+
+                }());
+
+                saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
+            } else {
+                $('div', progressbar).css('width', 0);
+                progressbar.css('display', 'none');
+                vision.css('display','inline');
+                alert('Не удалось скачать файл');
+            }
+        }
+        xhr.send();
+    }
+
+
   uploadFile(category, e) {
         var file = e.target.files[0];
         var name = file.name.replace(/\.[^/.]+$/, "");
@@ -691,39 +890,36 @@ class AddSketch extends React.Component {
                 return xhr;
             },
             success: function (response) {
-                var data = {id: response.id, name: response.name};
+                switch (category) {
+                    case 1:
+                        this.setState({sketchFile: data});
+                        break;
+                    case 2:
+                        this.setState({apzFile: data});
+                        break;
+                    case 3:
+                        this.setState({personalIdFile: data});
+                        break;
+                    case 27:
+                        this.setState({additionalFile: data});
+                        break;
 
+                    case 20:
+                        this.setState({paymentPhotoFile: data});
+                        break;
+
+                    case 22:
+                        this.setState({survey: data});
+                        break;
+
+                    case 24:
+                        this.setState({claimedCapacityJustification: data});
+                        break;
+                }
+
+                var data = {id: response.id, name: response.name};
                 setTimeout(function() {
                     progressbar.css('display', 'none');
-                    switch (category) {
-                        case 3:
-                            this.setState({personalIdFile: data});
-                            break;
-
-                        case 9:
-                            this.setState({sketchFile: data});
-                            break;
-
-                        case 10:
-                            this.setState({apzFile: data});
-                            break;
-
-                        case 27:
-                            this.setState({additionalFile: data});
-                            break;
-
-                        case 20:
-                            this.setState({paymentPhotoFile: data});
-                            break;
-
-                        case 22:
-                            this.setState({survey: data});
-                            break;
-
-                        case 24:
-                            this.setState({claimedCapacityJustification: data});
-                            break;
-                    }
                     alert("Файл успешно загружен");
                 }.bind(this), '1000')
             }.bind(this),
@@ -820,6 +1016,64 @@ class AddSketch extends React.Component {
       }.bind(this)
       xhr.send();
   }
+
+    componentWillMount() {
+        if (this.props.match.params.id) {
+            this.getSketchInfo();
+        }
+    }
+
+        getSketchInfo() {
+        this.setState({loaderHidden: false});
+
+        var id = this.props.match.params.id;
+        var token = sessionStorage.getItem('tokenInfo');
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("get", window.url + "api/sketch/citizen/detail/" + id, true);
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
+        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var sketch = JSON.parse(xhr.responseText);
+
+                this.setState({applicant: sketch.applicant ? sketch.applicant : '' });
+                this.setState({address: sketch.address ? sketch.address : '' });
+                this.setState({phone: sketch.phone ? sketch.phone : '' });
+                this.setState({region: sketch.region ? sketch.region : '' });
+                this.setState({designer: sketch.designer ? sketch.designer : '' });
+                this.setState({type: sketch.type ? sketch.type : '' });
+                this.setState({projectName: sketch.project_name ? sketch.project_name : '' });
+                this.setState({projectAddress: sketch.project_address ? sketch.project_address : '' });
+                // this.setState({projectAddressCoordinates: sketch.project_address_coordinates ? sketch.project_address_coordinates : '' });
+                // this.setState({hasCoordinates: sketch.project_address_coordinates ? true : false });
+
+                this.setState({personalIdFile: sketch.files.filter(function(obj) { return obj.category_id === 3 })[0]});
+                this.setState({apzFile: sketch.files.filter(function(obj) { return obj.category_id === 2 })[0]});
+                this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
+
+                this.setState({objectType: sketch.object_type ? sketch.object_type : '' });
+                this.setState({customer: sketch.customer ? sketch.customer : '' });
+                // this.setState({cadastralNumber: sketch.cadastral_number ? sketch.cadastral_number : '' });
+                this.setState({objectTerm: sketch.object_term ? sketch.object_term : '' });
+                this.setState({objectLevel: sketch.object_level ? sketch.object_level : '' });
+                this.setState({commonArea: sketch.common_area ? sketch.common_area : '' });
+                this.setState({buildArea: sketch.build_area ? sketch.build_area : '' });
+                this.setState({landArea: sketch.land_area ? sketch.land_area : '' });
+                this.setState({coverArea: sketch.cover_area ? sketch.cover_area : '' });
+                this.setState({greenArea: sketch.green_area ? sketch.green_area : '' });
+                this.setState({basementFacade: sketch.basement_facade ? sketch.basement_facade : '' });
+                this.setState({basementColor: sketch.basement_color ? sketch.basement_color : '' });
+                this.setState({wallsFacade: sketch.walls_facade ? sketch.walls_facade : '' });
+                this.setState({wallsColor: sketch.walls_color ? sketch.walls_color : '' });
+
+            }
+
+            this.setState({loaderHidden: true});
+        }.bind(this)
+        xhr.send();
+    }
+
   
   saveApz(publish,e) {
     e.preventDefault();
@@ -989,7 +1243,7 @@ class AddSketch extends React.Component {
                                             <div className="form-group">
                                                 <label>Эскиз (эскизный проект)</label>
                                                 <div className="file_container">
-                                                    <div className="progress mb-2" data-category="9" style={{height: '20px', display: 'none'}}>
+                                                    <div className="progress mb-2" data-category="1" style={{height: '20px', display: 'none'}}>
                                                         <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                                     </div>
 
@@ -1003,9 +1257,9 @@ class AddSketch extends React.Component {
                                                     }
 
                                                     <div className="file_buttons btn-group btn-group-justified d-table mt-0">
-                                                        <label htmlFor="sketchFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
-                                                        <input type="file" id="SketchFile" name="sketchFile" className="form-control" onChange={this.uploadFile.bind(this, 1)} style={{display: 'none'}} />
-                                                        <label onClick={this.selectFromList.bind(this, 9)} className="btn btn-info btn-sm">Выбрать из списка</label>
+                                                        <label htmlFor="SketchFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
+                                                        <input type="file" id="SketchFile" name="SketchFile" className="form-control" onChange={this.uploadFile.bind(this, 1)} style={{display: 'none'}} />
+                                                        <label onClick={this.selectFromList.bind(this, 1)} className="btn btn-info btn-sm">Выбрать из списка</label>
                                                     </div>
                                                     <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
                                                 </div>
@@ -1014,7 +1268,7 @@ class AddSketch extends React.Component {
                                             <div className="form-group">
                                                 <label>Архитектурно-планировочное задание (копия)</label>
                                                 <div className="file_container">
-                                                    <div className="progress mb-2" data-category="10" style={{height: '20px', display: 'none'}}>
+                                                    <div className="progress mb-2" data-category="2" style={{height: '20px', display: 'none'}}>
                                                         <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                                     </div>
 
@@ -1030,7 +1284,7 @@ class AddSketch extends React.Component {
                                                     <div className="file_buttons btn-group btn-group-justified d-table mt-0">
                                                         <label htmlFor="ApzFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
                                                         <input type="file" id="ApzFile" name="ApzFile" className="form-control" onChange={this.uploadFile.bind(this, 2)} style={{display: 'none'}} />
-                                                        <label onClick={this.selectFromList.bind(this, 10)} className="btn btn-info btn-sm">Выбрать из списка</label>
+                                                        <label onClick={this.selectFromList.bind(this, 2)} className="btn btn-info btn-sm">Выбрать из списка</label>
                                                     </div>
                                                     <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
                                                 </div>
@@ -1156,6 +1410,7 @@ class AddSketch extends React.Component {
                                     <div>
                                         <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                                     </div>
+                                    <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
                                 </form>
                             </div>
                         </div>
