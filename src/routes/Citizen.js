@@ -359,6 +359,17 @@ class AddApz extends React.Component {
   }
 
   onInputChange(e) {
+    if(e.target.name == 'objectType'){
+      this.setState({waterFireFighting: ''});
+      this.setState({waterProduction: ''});
+      this.setState({waterDrinking: ''});
+      this.setState({waterSewage: ''});
+      this.setState({waterFireFightingIn: ''});
+      this.setState({sewageAmount: ''});
+      this.setState({sewageFeksal: ''});
+      this.setState({sewageProduction: ''});
+      this.setState({sewageToCity: ''});
+    }
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
     const name = e.target.name;
     this.setState({ [name] : value });
@@ -1567,16 +1578,19 @@ class AddApz extends React.Component {
                             <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
                             <input type="number" onChange={this.onInputChange} step="any" className="form-control" name="waterRequirement" value={this.state.waterRequirement} />
                           </div>
-                          <div className="form-group">
-                            <label htmlFor="WaterFireFighting">Потребные расходы наружного пожаротушения (л/сек)</label>
-                            <input data-rh="Потребные расходы наружного пожаротушения (л/сек)" data-rh-at="right" type="number" onChange={this.onInputChange} step="any" min="10" className="form-control" name="waterFireFighting" value={this.state.waterFireFighting} />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="WaterProduction">На производственные нужды (м<sup>3</sup>/сутки)</label>
-                            <input data-rh="На производственные нужды (м3/сутки)" data-rh-at="right" type="number" onChange={this.onInputChange} step="any" className="form-control" name="waterProduction" value={this.state.waterProduction} placeholder="" />
-                          </div>
+                          {this.state.objectType != 'ИЖС' && <span>
+                            <div className="form-group">
+                              <label htmlFor="WaterFireFighting">Потребные расходы наружного пожаротушения (л/сек)</label>
+                              <input data-rh="Потребные расходы наружного пожаротушения (л/сек)" data-rh-at="right" type="number" onChange={this.onInputChange} step="any" min="10" className="form-control" name="waterFireFighting" value={this.state.waterFireFighting} />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="WaterProduction">На производственные нужды (м<sup>3</sup>/сутки)</label>
+                              <input data-rh="На производственные нужды (м3/сутки)" data-rh-at="right" type="number" onChange={this.onInputChange} step="any" className="form-control" name="waterProduction" value={this.state.waterProduction} placeholder="" />
+                            </div></span>
+                          }
                         </div>
                         <div className="col-md-6">
+                        {this.state.objectType != 'ИЖС' && <span>
                           <div className="form-group">
                             <label htmlFor="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
                             <input data-rh="На хозпитьевые нужды (м3/сутки)" data-rh-at="right" type="number" onChange={this.onInputChange} step="any" className="form-control" name="waterDrinking" value={this.state.waterDrinking} placeholder="" />
@@ -1588,7 +1602,8 @@ class AddApz extends React.Component {
                           <div className="form-group">
                             <label>Потребные расходы внутреннего пожаротушения (л/сек)</label>
                             <input data-rh="Потребные расходы внутреннего пожаротушения (л/сек)" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChange} name="waterFireFightingIn" value={this.state.waterFireFightingIn}/>
-                          </div>
+                          </div></span>
+                        }
                           <div className="form-group">
                             <label>Топографическая съемка</label>
                             <div className="file_container">
@@ -1625,6 +1640,7 @@ class AddApz extends React.Component {
                   </div>
                   <div className="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-link">
                     <form id="tab4-form" data-tab="4" onSubmit={this.saveApz.bind(this, false)}>
+                    {this.state.objectType != 'ИЖС' &&
                       <div className="row">
                         <div className="col-md-6">
                         <div className="form-group">
@@ -1647,6 +1663,7 @@ class AddApz extends React.Component {
                         </div>
                         </div>
                       </div>
+                    }
                       <div>
                         <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                       </div>
