@@ -3,6 +3,11 @@
     "electron-architecture":"ЭЛЕКТРОННАЯ АРХИТЕКТУРА",
     "base-page":"Информационная страница",
     "admin":{
+      "users":{
+        "name":"Панель управления ролями",
+        "link":"/panel/admin/user-roles",
+        "add": "Добавить пользователя"
+      },
       "apz":{
         "name":"Архитектурно-планировочное задание",
         "link":"/panel/admin/apz",

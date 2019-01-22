@@ -290,14 +290,14 @@ class ShowApz extends React.Component {
       tcTextWaterRequirements: "",
       tcTextWaterGeneral: "",
       tcTextSewage: "",
-      tcTextSewageRequirements: "",
-      tcTextSewageGeneral: "",
+      // tcTextSewageRequirements: "",
+      // tcTextSewageGeneral: "",
       zhk_tcTextWater: "",
       zhk_tcTextWaterRequirements: "",
       zhk_tcTextWaterGeneral: "",
-      zhk_tcTextSewageRequirements: "",
+      // zhk_tcTextSewageRequirements: "",
       zhk_tcTextSewage: "",
-      zhk_tcTextSewageGeneral: "",
+      // zhk_tcTextSewageGeneral: "",
       perenos_tcTextWater: "",
       perenos_tcTextWaterRequirements: "",
       perenos_tcTextWaterGeneral: "",
@@ -305,14 +305,14 @@ class ShowApz extends React.Component {
       ks_tcTextWaterRequirements: "",
       ks_tcTextWaterGeneral: "",
       ks_tcTextSewage: "",
-      ks_tcTextSewageRequirements: "",
-      ks_tcTextSewageGeneral: "",
+      // ks_tcTextSewageRequirements: "",
+      // ks_tcTextSewageGeneral: "",
       tab_tcTextWater: "",
       tab_tcTextWaterRequirements: "",
       tab_tcTextWaterGeneral: "",
       tab_tcTextSewage: "",
-      tab_tcTextSewageRequirements: "",
-      tab_tcTextSewageGeneral: "",
+      // tab_tcTextSewageRequirements: "",
+      // tab_tcTextSewageGeneral: "",
       waterTab: true,
       sewageTab: false,
       ty_director_id: "",
@@ -345,24 +345,24 @@ class ShowApz extends React.Component {
     this.onTcTextWaterRequirementsChange = this.onTcTextWaterRequirementsChange.bind(this);
     this.onTcTextWaterGeneralChange = this.onTcTextWaterGeneralChange.bind(this);
     this.onTcTextSewageChange = this.onTcTextSewageChange.bind(this);
-    this.onTcTextSewageRequirementsChange = this.onTcTextSewageRequirementsChange.bind(this);
-    this.onTcTextSewageGeneralChange = this.onTcTextSewageGeneralChange.bind(this);
+    // this.onTcTextSewageRequirementsChange = this.onTcTextSewageRequirementsChange.bind(this);
+    // this.onTcTextSewageGeneralChange = this.onTcTextSewageGeneralChange.bind(this);
     this.onzhk_TcTextWaterChange = this.onzhk_TcTextWaterChange.bind(this);
     this.onzhk_TcTextWaterRequirementsChange = this.onzhk_TcTextWaterRequirementsChange.bind(this);
     this.onzhk_TcTextWaterGeneralChange = this.onzhk_TcTextWaterGeneralChange.bind(this);
     this.onzhk_TcTextSewageChange = this.onzhk_TcTextSewageChange.bind(this);
-    this.onzhk_TcTextSewageRequirementsChange = this.onzhk_TcTextSewageRequirementsChange.bind(this);
-    this.onzhk_TcTextSewageGeneralChange = this.onzhk_TcTextSewageGeneralChange.bind(this);
+    // this.onzhk_TcTextSewageRequirementsChange = this.onzhk_TcTextSewageRequirementsChange.bind(this);
+    // this.onzhk_TcTextSewageGeneralChange = this.onzhk_TcTextSewageGeneralChange.bind(this);
     this.onks_TcTextWaterChange = this.onks_TcTextWaterChange.bind(this);
     this.onks_TcTextWaterRequirementsChange = this.onks_TcTextWaterRequirementsChange.bind(this);
     this.onks_TcTextWaterGeneralChange = this.onks_TcTextWaterGeneralChange.bind(this);
     this.onks_TcTextSewageChange = this.onks_TcTextSewageChange.bind(this);
-    this.onks_TcTextSewageRequirementsChange = this.onks_TcTextSewageRequirementsChange.bind(this);
-    this.onks_TcTextSewageGeneralChange = this.onks_TcTextSewageGeneralChange.bind(this);
+    // this.onks_TcTextSewageRequirementsChange = this.onks_TcTextSewageRequirementsChange.bind(this);
+    // this.onks_TcTextSewageGeneralChange = this.onks_TcTextSewageGeneralChange.bind(this);
     this.onperenos_TcTextWaterChange = this.onperenos_TcTextWaterChange.bind(this);
     this.onperenos_TcTextWaterRequirementsChange = this.onperenos_TcTextWaterRequirementsChange.bind(this);
     this.onperenos_TcTextWaterGeneralChange = this.onperenos_TcTextWaterGeneralChange.bind(this);
-    this.toggleFormTabs = this.toggleFormTabs.bind(this);
+    //this.toggleFormTabs = this.toggleFormTabs.bind(this);
     this.printQuestionnaire = this.printQuestionnaire.bind(this);
   }
   componentDidMount() {
@@ -463,12 +463,12 @@ class ShowApz extends React.Component {
   onTcTextSewageChange(value) {
     this.setState({ tab_tcTextSewage: value });
   }
-  onTcTextSewageRequirementsChange(value) {
-    this.setState({ tab_tcTextSewageRequirements: value });
-  }
-  onTcTextSewageGeneralChange(value) {
-    this.setState({ tab_tcTextSewageGeneral: value });
-  }
+  // onTcTextSewageRequirementsChange(value) {
+  //   this.setState({ tab_tcTextSewageRequirements: value });
+  // }
+  // onTcTextSewageGeneralChange(value) {
+  //   this.setState({ tab_tcTextSewageGeneral: value });
+  // }
 
   onzhk_TcTextWaterChange(value) {
     this.setState({ zhk_tcTextWater: value });
@@ -482,12 +482,12 @@ class ShowApz extends React.Component {
   onzhk_TcTextSewageChange(value) {
     this.setState({ zhk_tcTextSewage: value });
   }
-  onzhk_TcTextSewageRequirementsChange(value) {
-    this.setState({ zhk_tcTextSewageRequirements: value });
-  }
-  onzhk_TcTextSewageGeneralChange(value) {
-    this.setState({ zhk_tcTextSewageGeneral: value });
-  }
+  // onzhk_TcTextSewageRequirementsChange(value) {
+  //   this.setState({ zhk_tcTextSewageRequirements: value });
+  // }
+  // onzhk_TcTextSewageGeneralChange(value) {
+  //   this.setState({ zhk_tcTextSewageGeneral: value });
+  // }
 
   onks_TcTextWaterChange(value) {
     this.setState({ ks_tcTextWater: value });
@@ -501,12 +501,12 @@ class ShowApz extends React.Component {
   onks_TcTextSewageChange(value) {
     this.setState({ ks_tcTextSewage: value });
   }
-  onks_TcTextSewageRequirementsChange(value) {
-    this.setState({ ks_tcTextSewageRequirements: value });
-  }
-  onks_TcTextSewageGeneralChange(value) {
-    this.setState({ ks_tcTextSewageGeneral: value });
-  }
+  // onks_TcTextSewageRequirementsChange(value) {
+  //   this.setState({ ks_tcTextSewageRequirements: value });
+  // }
+  // onks_TcTextSewageGeneralChange(value) {
+  //   this.setState({ ks_tcTextSewageGeneral: value });
+  // }
 
   onperenos_TcTextWaterChange(value) {
     this.setState({ perenos_tcTextWater: value });
@@ -518,21 +518,21 @@ class ShowApz extends React.Component {
     this.setState({ perenos_tcTextWaterGeneral: value });
   }
 
-  toggleFormTabs(tab) {
-    if (tab === 'water') {
-      this.setState({ waterTab: true });
-      this.setState({ sewageTab: false });
-
-      $('.water_tab').removeClass('active').addClass('active');
-      $('.sewage_tab').removeClass('active');
-    } else {
-      this.setState({ waterTab: false });
-      this.setState({ sewageTab: true });
-
-      $('.sewage_tab').removeClass('active').addClass('active');
-      $('.water_tab').removeClass('active');
-    }
-  }
+  // toggleFormTabs(tab) {
+  //   if (tab === 'water') {
+  //     this.setState({ waterTab: true });
+  //     this.setState({ sewageTab: false });
+  //
+  //     $('.water_tab').removeClass('active').addClass('active');
+  //     $('.sewage_tab').removeClass('active');
+  //   } else {
+  //     this.setState({ waterTab: false });
+  //     this.setState({ sewageTab: true });
+  //
+  //     $('.sewage_tab').removeClass('active').addClass('active');
+  //     $('.water_tab').removeClass('active');
+  //   }
+  // }
 
   // this function to show one of the forms Accept/Decline
   toggleAcceptDecline(value) {
@@ -601,26 +601,43 @@ class ShowApz extends React.Component {
         this.setState({tcTextWaterRequirements: data.tc_text_water_requirements});
         this.setState({tcTextWaterGeneral: data.tc_text_water_general});
         this.setState({tcTextSewage: data.tc_text_sewage});
-        this.setState({tcTextSewageRequirements: data.tc_text_sewage_requirements});
-        this.setState({tcTextSewageGeneral: data.tc_text_sewage_general});
-        this.setState({tab_tcTextWater: data.tc_text_water});
-        this.setState({tab_tcTextWaterRequirements: data.tc_text_water_requirements});
-        this.setState({tab_tcTextWaterGeneral: data.tc_text_water_general});
-        this.setState({tab_tcTextSewage: data.tc_text_sewage});
-        this.setState({tab_tcTextSewageRequirements: data.tc_text_sewage_requirements});
-        this.setState({tab_tcTextSewageGeneral: data.tc_text_sewage_general});
+        console.log(data.tc_text_sewage);
+        //this.setState({tcTextSewageRequirements: data.tc_text_sewage_requirements});
+        // this.setState({tcTextSewageGeneral: data.tc_text_sewage_general});
+        if(data.resp_tc_text_water !=null){
+          this.setState({tab_tcTextWater: data.resp_tc_text_water});
+        }else{
+          this.setState({tab_tcTextWater: data.tc_text_water});
+        }
+        if(data.resp_tc_text_water_requirements !=null){
+          this.setState({tab_tcTextWaterRequirements: data.resp_tc_text_water_requirements});
+        }else{
+          this.setState({tab_tcTextWaterRequirements: data.tc_text_water_requirements});
+        }
+        if(data.resp_tc_text_water_general !=null){
+          this.setState({tab_tcTextWaterGeneral: data.resp_tc_text_water_general});
+        }else{
+          this.setState({tab_tcTextWaterGeneral: data.tc_text_water_general});
+        }
+        if(data.resp_tc_text_sewage !=null){
+          this.setState({tab_tcTextSewage: data.resp_tc_text_sewage});
+        }else{
+          this.setState({tab_tcTextSewage: data.tc_text_sewage});
+        }
+        //this.setState({tab_tcTextSewageRequirements: data.tc_text_sewage_requirements});
+        // this.setState({tab_tcTextSewageGeneral: data.tc_text_sewage_general});
         this.setState({zhk_tcTextWater: data.tc_text_water_zhk});
         this.setState({zhk_tcTextWaterRequirements: data.tc_text_water_requirements_zhk});
         this.setState({zhk_tcTextWaterGeneral: data.tc_text_water_general_zhk});
         this.setState({zhk_tcTextSewage: data.tc_text_sewage_zhk});
-        this.setState({zhk_tcTextSewageRequirements: data.tc_text_sewage_requirements_zhk});
-        this.setState({zhk_tcTextSewageGeneral: data.tc_text_sewage_general_zhk});
+        //this.setState({zhk_tcTextSewageRequirements: data.tc_text_sewage_requirements_zhk});
+        // this.setState({zhk_tcTextSewageGeneral: data.tc_text_sewage_general_zhk});
         this.setState({ks_tcTextWater: data.tc_text_water_ks});
         this.setState({ks_tcTextWaterRequirements: data.tc_text_water_requirements_ks});
         this.setState({ks_tcTextWaterGeneral: data.tc_text_water_general_ks});
         this.setState({ks_tcTextSewage: data.tc_text_sewage_ks});
-        this.setState({ks_tcTextSewageRequirements: data.tc_text_sewage_requirements_ks});
-        this.setState({ks_tcTextSewageGeneral: data.tc_text_sewage_general_ks});
+        //this.setState({ks_tcTextSewageRequirements: data.tc_text_sewage_requirements_ks});
+        //this.setState({ks_tcTextSewageGeneral: data.tc_text_sewage_general_ks});
         this.setState({perenos_tcTextWater: data.tc_text_water_perenos});
         this.setState({perenos_tcTextWaterRequirements: data.tc_text_water_requirements_perenos});
         this.setState({perenos_tcTextWaterGeneral: data.tc_text_water_general_perenos});
@@ -1114,8 +1131,8 @@ class ShowApz extends React.Component {
       formData.append('TcTextWaterRequirements', this.state.tab_tcTextWaterRequirements);
       formData.append('TcTextWaterGeneral', this.state.tab_tcTextWaterGeneral);
       formData.append('TcTextSewage', this.state.tab_tcTextSewage);
-      formData.append('TcTextSewageRequirements', this.state.tab_tcTextSewageRequirements);
-      formData.append('TcTextSewageGeneral', this.state.tab_tcTextSewageGeneral);
+      // formData.append('TcTextSewageRequirements', this.state.tab_tcTextSewageRequirements);
+      // formData.append('TcTextSewageGeneral', this.state.tab_tcTextSewageGeneral);
     }
     formData.append('DocNumber', this.state.docNumber);
     formData.append('ty_object_type', this.state.ty_object_type);
@@ -1393,40 +1410,40 @@ handleObjTypeChange(event){
             this.setState({tab_tcTextWaterRequirements: this.state.tcTextWaterRequirements});
             this.setState({tab_tcTextWaterGeneral: this.state.tcTextWaterGeneral});
             this.setState({tab_tcTextSewage: this.state.tcTextSewage});
-            this.setState({tab_tcTextSewageRequirements: this.state.tcTextSewageRequirements});
-            this.setState({tab_tcTextSewageGeneral: this.state.tcTextSewageGeneral});
+            //this.setState({tab_tcTextSewageRequirements: this.state.tcTextSewageRequirements});
+            //this.setState({tab_tcTextSewageGeneral: this.state.tcTextSewageGeneral});
             break;
         case 'ЖК':
             this.setState({tab_tcTextWater: this.state.zhk_tcTextWater});
             this.setState({tab_tcTextWaterRequirements: this.state.zhk_tcTextWaterRequirements});
             this.setState({tab_tcTextWaterGeneral: this.state.zhk_tcTextWaterGeneral});
             this.setState({tab_tcTextSewage: this.state.zhk_tcTextSewage});
-            this.setState({tab_tcTextSewageRequirements: this.state.zhk_tcTextSewageRequirements});
-            this.setState({tab_tcTextSewageGeneral: this.state.zhk_tcTextSewageGeneral});
+            // this.setState({tab_tcTextSewageRequirements: this.state.zhk_tcTextSewageRequirements});
+            // this.setState({tab_tcTextSewageGeneral: this.state.zhk_tcTextSewageGeneral});
             break;
         case 'КоммСтр':
             this.setState({tab_tcTextWater: this.state.ks_tcTextWater});
             this.setState({tab_tcTextWaterRequirements: this.state.ks_tcTextWaterRequirements});
             this.setState({tab_tcTextWaterGeneral: this.state.ks_tcTextWaterGeneral});
             this.setState({tab_tcTextSewage: this.state.ks_tcTextSewage});
-            this.setState({tab_tcTextSewageRequirements: this.state.ks_tcTextSewageRequirements});
-            this.setState({tab_tcTextSewageGeneral: this.state.ks_tcTextSewageGeneral});
+            // this.setState({tab_tcTextSewageRequirements: this.state.ks_tcTextSewageRequirements});
+            // this.setState({tab_tcTextSewageGeneral: this.state.ks_tcTextSewageGeneral});
             break;
         case 'Перенос':
             this.setState({tab_tcTextWater: this.state.perenos_tcTextWater});
             this.setState({tab_tcTextWaterRequirements: this.state.perenos_tcTextWaterRequirements});
             this.setState({tab_tcTextWaterGeneral: this.state.perenos_tcTextWaterGeneral});
             this.setState({tab_tcTextSewage: ""});
-            this.setState({tab_tcTextSewageRequirements: ""});
-            this.setState({tab_tcTextSewageGeneral: ""});
+            // this.setState({tab_tcTextSewageRequirements: ""});
+            // this.setState({tab_tcTextSewageGeneral: ""});
             break;
         default:
             this.setState({tab_tcTextWater: this.state.tcTextWater});
             this.setState({tab_tcTextWaterRequirements: this.state.tcTextWaterRequirements});
             this.setState({tab_tcTextWaterGeneral: this.state.tcTextWaterGeneral});
             this.setState({tab_tcTextSewage: this.state.tcTextSewage});
-            this.setState({tab_tcTextSewageRequirements: this.state.tcTextSewageRequirements});
-            this.setState({tab_tcTextSewageGeneral: this.state.tcTextSewageGeneral});
+            // this.setState({tab_tcTextSewageRequirements: this.state.tcTextSewageRequirements});
+            // this.setState({tab_tcTextSewageGeneral: this.state.tcTextSewageGeneral});
     }
 }
 
@@ -1852,14 +1869,12 @@ handleObjTypeChange(event){
                       <option value="Перенос">Перенос сетей</option>
                     </select>
                   </div>
-                  <ul className="nav nav-tabs mb-3">
+                  {/*<ul className="nav nav-tabs mb-3">
                     <li className="nav-item">
                       <a className="water_tab nav-link pointer active" onClick={this.toggleFormTabs.bind(this, 'water')}>Водопотребление</a>
+                      Водопотребление
                     </li>
-                    <li className="nav-item">
-                      <a className="sewage_tab nav-link pointer" onClick={this.toggleFormTabs.bind(this, 'sewage')}>Водоотведение</a>
-                    </li>
-                  </ul>
+                  </ul>*/}
 
                   {this.state.waterTab &&
                     <div>
@@ -1868,29 +1883,16 @@ handleObjTypeChange(event){
                         <ReactQuill value={this.state.tab_tcTextWater} onChange={this.onTcTextWaterChange} />
                       </div>
                       <div className="form-group">
-                        <label><b>2. Другие требования</b></label>
-                        <ReactQuill value={this.state.tab_tcTextWaterRequirements} onChange={this.onTcTextWaterRequirementsChange} />
-                      </div>
-                      <div className="form-group">
-                        <label><b>3. Общие положения</b></label>
-                        <ReactQuill value={this.state.tab_tcTextWaterGeneral} onChange={this.onTcTextWaterGeneralChange} />
-                      </div>
-                    </div>
-                  }
-
-                  {this.state.sewageTab &&
-                    <div>
-                      <div className="form-group">
-                        <label><b>1. Водопотребление</b></label>
+                        <label><b>2. Водоотведение</b></label>
                         <ReactQuill value={this.state.tab_tcTextSewage} onChange={this.onTcTextSewageChange} />
                       </div>
                       <div className="form-group">
-                        <label><b>2. Другие требования</b></label>
-                        <ReactQuill value={this.state.tab_tcTextSewageRequirements} onChange={this.onTcTextSewageRequirementsChange} />
+                        <label><b>3. Другие требования</b></label>
+                        <ReactQuill value={this.state.tab_tcTextWaterRequirements} onChange={this.onTcTextWaterRequirementsChange} />
                       </div>
                       <div className="form-group">
-                        <label><b>3. Общие положения</b></label>
-                        <ReactQuill value={this.state.tab_tcTextSewageGeneral} onChange={this.onTcTextSewageGeneralChange} />
+                        <label><b>4. Общие положения</b></label>
+                        <ReactQuill value={this.state.tab_tcTextWaterGeneral} onChange={this.onTcTextWaterGeneralChange} />
                       </div>
                     </div>
                   }

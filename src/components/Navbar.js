@@ -358,8 +358,8 @@ class AdminMenu extends Component {
   render() {
     return (
       <div>
-        {/*<NavLink to={"/panel/admin/user-roles"} replace className="dropdown-item" activeClassName="active">Пользователи</NavLink>
-        <NavLink to={"/panel/admin/addPages"} replace className="dropdown-item" activeClassName="active">Добавить страницу</NavLink>
+        <NavLink to={"/panel/admin/user-roles"} replace className="dropdown-item" activeClassName="active">Пользователи</NavLink>
+        {/*<NavLink to={"/panel/admin/addPages"} replace className="dropdown-item" activeClassName="active">Добавить страницу</NavLink>
         <NavLink to={"/panel/admin/menuEdit"} replace className="dropdown-item" activeClassName="active">Пункты меню</NavLink>
         <NavLink to={"/panel/admin/newsPanel"} replace className="dropdown-item" activeClassName="active">Добавить новость</NavLink>
         <NavLink to={"/panel/common/vacancies"} replace className="dropdown-item" activeClassName="active">Добавить вакансии</NavLink>*/}

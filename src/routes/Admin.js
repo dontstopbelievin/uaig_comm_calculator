@@ -1,6 +1,7 @@
 import React from 'react';
 import '../assets/css/adminDropDown.css';
 import Loader from 'react-loader-spinner';
+import { Link } from 'react-router-dom';
 
 var columnStyle = {
   textAlign: 'center'
@@ -70,7 +71,7 @@ export default class Admin extends React.Component {
         alert('Ошибка во время удалении!');
       }
     }.bind(this);
-    xhr.send(); 
+    xhr.send();
   }
 
   // получить список ролей
@@ -183,6 +184,9 @@ export default class Admin extends React.Component {
     var roleUser = this.state.roleUser;
     return (
       <div className="body-content container">
+        <div className="col-sm-12">
+          <Link className="btn btn-outline-primary mb-3" to="/panel/admin/users/add">Добавить пользователя</Link>
+        </div>
         <h3 style={{fontSize: '40px', color: 'dodgerblue'}}>Пользователи</h3>
         <div>
           <div className="container">
@@ -229,7 +233,7 @@ export default class Admin extends React.Component {
                         <div className="col-xs-5 col-sm-5 col-md-5" style={columnStyle}>
                           <div className="btn-group" style={{margin: '0 5px 5px 0'}}>
                             <button type="button" className="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              Изменить 
+                              Изменить
                             </button>
                               <ul className="dropdown-menu">
                               {
@@ -406,7 +410,7 @@ export default class Admin extends React.Component {
                           }
                         </div>
                         <div className="col-xs-2 col-sm-2 col-md-2" style={columnStyle}>
-                          <a title="Удалить" style={{cursor: 'pointer'}}>
+                          <a title="Удалить роли" style={{cursor: 'pointer'}}>
                             <i className="glyphicon glyphicon-remove text-danger" onClick={this.removeUser.bind(this, user.id)}></i>
                           </a>
                         </div>

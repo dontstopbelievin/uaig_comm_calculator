@@ -39,6 +39,7 @@ import EditPassword from "./EditPassword";
 import ResetForm from "./ResetForm";
 import Vacancies from "./Vacancies";
 import AdminApzMonitor from "./AdminApzMonitor";
+import AddUsers from "./AddUsers";
 
 let e = new LocalizedStrings({ru,kk});
 
@@ -63,6 +64,7 @@ export default class PanelBase extends React.Component{
     let fullLoc = window.location.href.split('/');
     let breadCrumbs = document.getElementById('breadCrumbs');
     breadCrumbs.innerHTML = "";
+    console.log(fullLoc);
 
     if (fullLoc[4] === 'panel')
     {
@@ -167,6 +169,7 @@ export default class PanelBase extends React.Component{
                 {/*  the routes is using for role: Admin  */}
                 <Route path="/panel/admin/apz" render={(props) => ( <AdminApzMonitor breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/admin/user-roles" render={(props) => ( <Admin breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                <Route path="/panel/admin/users/add" render={(props) => ( <AddUsers breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/admin/addPages" render={(props) => ( <AddPages breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/admin/menuEdit" render={(props) => ( <Menu breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/admin/newsPanel" render={(props) => ( <NewsPanel breadCrumbs={this.breadCrumbs.bind(this)}/> )} />

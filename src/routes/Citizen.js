@@ -629,16 +629,17 @@ class AddApz extends React.Component {
       }
 
       var errors = 0;
-
+      var err_msgs = "";
       Object.keys(requiredFields).forEach(function(key){
         if (!this.state[key]) {
-          alert('Заполните поле "' + requiredFields[key] + '"');
+          err_msgs += 'Заполните поле ' + requiredFields[key] + '\n';
           errors++;
           return false;
         }
       }.bind(this));
 
       if (errors > 0) {
+        alert(err_msgs);
         return false;
       }
     }
