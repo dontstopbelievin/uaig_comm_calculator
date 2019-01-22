@@ -148,7 +148,7 @@ export default class Main extends React.Component {
               <Route path="/panel" render={(props) => (<PanelBase {...props} />)} />
               <Route path="/urban" render={(props) => (<Urban {...props} />)} />
               <Route path="/panel/sketch/urban" render={(props) => (<SketchUrban {...props} />)} />
-              <Route path="/panel/sketch/engineer" render={(props) => (<SketchEngineer {...props} />)} />
+              {/*<Route path="/panel/engineer/sketch" render={(props) => (<SketchEngineer {...props} />)} />*/}
               <Route path="/urbanreport" render={(props) => (<UrbanReport {...props} />)} />
               <Route path="/head" render={(props) => (<Head {...props} />)} />
               <Route path="/headreport" render={(props) => (<HeadReport {...props} />)} />

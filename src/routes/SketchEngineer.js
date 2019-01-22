@@ -152,7 +152,7 @@ class AllSketch extends React.Component {
                         <tbody className="tbody">
                         {sketches.map(function(sketch, index) {
                             return(
-                                <tr style={{background: !sketch.commission ? '#e1e7ef' : ''}} key={index} className="cursor" onClick={this.toSketch().bind(this, sketch.id)}>
+                                <tr style={{background: !sketch.commission ? '#e1e7ef' : ''}} key={index} className="cursor" onClick={this.toSketch.bind(this, sketch.id)}>
                                     <td>
                                         {sketch.id}
                                     </td>
@@ -249,7 +249,8 @@ class ShowSketch  extends React.Component {
             storageAlias: "PKCS12",
             needSign: false,
             engineerReturnedState: false,
-            comment: null
+            comment: null,
+            xmlFile:false
         };
 
         this.onDocNumberChange = this.onDocNumberChange.bind(this);
@@ -295,8 +296,8 @@ class ShowSketch  extends React.Component {
             if (xhr.status === 200) {
                 var data = JSON.parse(xhr.responseText);
                 var commission = data.commission;
-                var hasReponse = data.state_history.filter(function(obj) { return obj.state_id === 5 || obj.state_id === 6 });
-                //console.log("______________________________");console.log(data);
+                // var hasReponse = data.state_history.filter(function(obj) { return obj.state_id === 5 || obj.state_id === 6 });
+                // console.log("______________________________");console.log(data);
                 this.setState({sketch: data});
                 this.setState({showButtons: false});
                 this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
@@ -339,15 +340,15 @@ class ShowSketch  extends React.Component {
                 //     }
                 // }
 
-                if ((data.status_id === 4 || data.status_id === 5) && hasReponse.length == 0) {
-                    this.setState({showButtons: true});
-                }
+                // if ((data.status_id === 4 || data.status_id === 5) && hasReponse.length == 0) {
+                //     this.setState({showButtons: true});
+                // }
+                //
+                // if (hasReponse.length == 0 || commission) {
+                //     this.setState({showCommission: true});
+                // }
 
-                if (hasReponse.length == 0 || commission) {
-                    this.setState({showCommission: true});
-                }
-
-                this.setState({engineerReturnedState: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null && obj.sender == 'engineer'})[0]});
+                // this.setState({engineerReturnedState: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null && obj.sender == 'engineer'})[0]});
                 this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 28})[0]});
                 this.setState({needSign: data.files.filter(function(obj) { return obj.category_id === 28})[0]});
             }
@@ -522,7 +523,7 @@ class ShowSketch  extends React.Component {
         var token = sessionStorage.getItem('tokenInfo');
 
         var xhr = new XMLHttpRequest();
-        xhr.open("get", window.url + 'api/apz/engineer/get_xml/' + this.state.apz.id, true);
+        xhr.open("get", window.url + 'api/sketch/engineer/get_xml/' + this.state.sketch.id, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         xhr.onload = function() {
@@ -568,7 +569,7 @@ class ShowSketch  extends React.Component {
             console.log("SIGNED XML ------> \n", signedXml);
 
             var xhr = new XMLHttpRequest();
-            xhr.open("post", window.url + 'api/apz/engineer/save_xml/' + this.state.apz.id, true);
+            xhr.open("post", window.url + 'api/sketch/engineer/save_xml/' + this.state.sketch.id, true);
             xhr.setRequestHeader("Authorization", "Bearer " + token);
             xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
             xhr.onload = function() {
@@ -681,330 +682,6 @@ class ShowSketch  extends React.Component {
         }
     }
 
-    // print technical condition of waterProvider
-    printWaterTechCon(apzId, project) {
-        var token = sessionStorage.getItem('tokenInfo');
-        if (token) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("get", window.url + "api/print/tc/water/" + apzId, true);
-            xhr.setRequestHeader("Authorization", "Bearer " + token);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    //test of IE
-                    if (typeof window.navigator.msSaveBlob === "function") {
-                        window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
-                    } else {
-                        var data = JSON.parse(xhr.responseText);
-                        var today = new Date();
-                        var curr_date = today.getDate();
-                        var curr_month = today.getMonth() + 1;
-                        var curr_year = today.getFullYear();
-                        var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
-
-                        var base64ToArrayBuffer = (function () {
-
-                            return function (base64) {
-                                var binaryString =  window.atob(base64);
-                                var binaryLen = binaryString.length;
-                                var bytes = new Uint8Array(binaryLen);
-
-                                for (var i = 0; i < binaryLen; i++) {
-                                    var ascii = binaryString.charCodeAt(i);
-                                    bytes[i] = ascii;
-                                }
-
-                                return bytes;
-                            }
-
-                        }());
-
-                        var saveByteArray = (function () {
-                            var a = document.createElement("a");
-                            document.body.appendChild(a);
-                            a.style = "display: none";
-
-                            return function (data, name) {
-                                var blob = new Blob(data, {type: "octet/stream"}),
-                                    url = window.URL.createObjectURL(blob);
-                                a.href = url;
-                                a.download = name;
-                                a.click();
-                                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
-                            };
-
-                        }());
-
-                        saveByteArray([base64ToArrayBuffer(data.file)], "ТУ-Вода-" + project + formated_date + ".pdf");
-                    }
-                } else {
-                    alert('Не удалось скачать файл');
-                }
-            }
-            xhr.send();
-        } else {
-            console.log('Время сессии истекло.');
-        }
-    }
-
-    // print technical condition of gasProvider
-    printGasTechCon(apzId, project) {
-        var token = sessionStorage.getItem('tokenInfo');
-        if (token) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("get", window.url + "api/print/tc/gas/" + apzId, true);
-            xhr.setRequestHeader("Authorization", "Bearer " + token);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    //test of IE
-                    if (typeof window.navigator.msSaveBlob === "function") {
-                        window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
-                    } else {
-                        var data = JSON.parse(xhr.responseText);
-                        var today = new Date();
-                        var curr_date = today.getDate();
-                        var curr_month = today.getMonth() + 1;
-                        var curr_year = today.getFullYear();
-                        var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
-
-                        var base64ToArrayBuffer = (function () {
-
-                            return function (base64) {
-                                var binaryString =  window.atob(base64);
-                                var binaryLen = binaryString.length;
-                                var bytes = new Uint8Array(binaryLen);
-
-                                for (var i = 0; i < binaryLen; i++) {
-                                    var ascii = binaryString.charCodeAt(i);
-                                    bytes[i] = ascii;
-                                }
-
-                                return bytes;
-                            }
-
-                        }());
-
-                        var saveByteArray = (function () {
-                            var a = document.createElement("a");
-                            document.body.appendChild(a);
-                            a.style = "display: none";
-
-                            return function (data, name) {
-                                var blob = new Blob(data, {type: "octet/stream"}),
-                                    url = window.URL.createObjectURL(blob);
-                                a.href = url;
-                                a.download = name;
-                                a.click();
-                                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
-                            };
-
-                        }());
-
-                        saveByteArray([base64ToArrayBuffer(data.file)], "ТУ-Газ-" + project + formated_date + ".pdf");
-                    }
-                } else {
-                    alert('Не удалось скачать файл');
-                }
-            }
-            xhr.send();
-        } else {
-            console.log('Время сессии истекло.');
-        }
-    }
-
-    // print technical condition of electroProvider
-    printElectroTechCon(apzId, project) {
-        var token = sessionStorage.getItem('tokenInfo');
-        if (token) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("get", window.url + "api/print/tc/electro/" + apzId, true);
-            xhr.setRequestHeader("Authorization", "Bearer " + token);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    //test of IE
-                    if (typeof window.navigator.msSaveBlob === "function") {
-                        window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
-                    } else {
-                        var data = JSON.parse(xhr.responseText);
-                        var today = new Date();
-                        var curr_date = today.getDate();
-                        var curr_month = today.getMonth() + 1;
-                        var curr_year = today.getFullYear();
-                        var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
-
-                        var base64ToArrayBuffer = (function () {
-
-                            return function (base64) {
-                                var binaryString =  window.atob(base64);
-                                var binaryLen = binaryString.length;
-                                var bytes = new Uint8Array(binaryLen);
-
-                                for (var i = 0; i < binaryLen; i++) {
-                                    var ascii = binaryString.charCodeAt(i);
-                                    bytes[i] = ascii;
-                                }
-
-                                return bytes;
-                            }
-
-                        }());
-
-                        var saveByteArray = (function () {
-                            var a = document.createElement("a");
-                            document.body.appendChild(a);
-                            a.style = "display: none";
-
-                            return function (data, name) {
-                                var blob = new Blob(data, {type: "octet/stream"}),
-                                    url = window.URL.createObjectURL(blob);
-                                a.href = url;
-                                a.download = name;
-                                a.click();
-                                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
-                            };
-
-                        }());
-
-                        saveByteArray([base64ToArrayBuffer(data.file)], "ТУ-Электр-" + project + formated_date + ".pdf");
-                    }
-                } else {
-                    alert('Не удалось скачать файл');
-                }
-            }
-            xhr.send();
-        } else {
-            console.log('Время сессии истекло.');
-        }
-    }
-
-    // print technical condition of heatProvider
-    printHeatTechCon(apzId, project) {
-        var token = sessionStorage.getItem('tokenInfo');
-        if (token) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("get", window.url + "api/print/tc/heat/" + apzId, true);
-            xhr.setRequestHeader("Authorization", "Bearer " + token);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    //test of IE
-                    if (typeof window.navigator.msSaveBlob === "function") {
-                        window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
-                    } else {
-                        var data = JSON.parse(xhr.responseText);
-                        var today = new Date();
-                        var curr_date = today.getDate();
-                        var curr_month = today.getMonth() + 1;
-                        var curr_year = today.getFullYear();
-                        var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
-
-                        var base64ToArrayBuffer = (function () {
-
-                            return function (base64) {
-                                var binaryString =  window.atob(base64);
-                                var binaryLen = binaryString.length;
-                                var bytes = new Uint8Array(binaryLen);
-
-                                for (var i = 0; i < binaryLen; i++) {
-                                    var ascii = binaryString.charCodeAt(i);
-                                    bytes[i] = ascii;
-                                }
-
-                                return bytes;
-                            }
-
-                        }());
-
-                        var saveByteArray = (function () {
-                            var a = document.createElement("a");
-                            document.body.appendChild(a);
-                            a.style = "display: none";
-
-                            return function (data, name) {
-                                var blob = new Blob(data, {type: "octet/stream"}),
-                                    url = window.URL.createObjectURL(blob);
-                                a.href = url;
-                                a.download = name;
-                                a.click();
-                                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
-                            };
-
-                        }());
-
-                        saveByteArray([base64ToArrayBuffer(data.file)], "ТУ-Тепло-" + project + formated_date + ".pdf");
-                    }
-                } else {
-                    alert('Не удалось скачать файл');
-                }
-            }
-            xhr.send();
-        } else {
-            console.log('Время сессии истекло.');
-        }
-    }
-
-    // print technical condition of phoneProvider
-    printPhoneTechCon(apzId, project) {
-        var token = sessionStorage.getItem('tokenInfo');
-        if (token) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("get", window.url + "api/print/tc/phone/" + apzId, true);
-            xhr.setRequestHeader("Authorization", "Bearer " + token);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    //test of IE
-                    if (typeof window.navigator.msSaveBlob === "function") {
-                        window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
-                    } else {
-                        var data = JSON.parse(xhr.responseText);
-                        var today = new Date();
-                        var curr_date = today.getDate();
-                        var curr_month = today.getMonth() + 1;
-                        var curr_year = today.getFullYear();
-                        var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
-
-                        var base64ToArrayBuffer = (function () {
-
-                            return function (base64) {
-                                var binaryString =  window.atob(base64);
-                                var binaryLen = binaryString.length;
-                                var bytes = new Uint8Array(binaryLen);
-
-                                for (var i = 0; i < binaryLen; i++) {
-                                    var ascii = binaryString.charCodeAt(i);
-                                    bytes[i] = ascii;
-                                }
-
-                                return bytes;
-                            }
-
-                        }());
-
-                        var saveByteArray = (function () {
-                            var a = document.createElement("a");
-                            document.body.appendChild(a);
-                            a.style = "display: none";
-
-                            return function (data, name) {
-                                var blob = new Blob(data, {type: "octet/stream"}),
-                                    url = window.URL.createObjectURL(blob);
-                                a.href = url;
-                                a.download = name;
-                                a.click();
-                                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
-                            };
-
-                        }());
-
-                        saveByteArray([base64ToArrayBuffer(data.file)], "ТУ-Телефон-" + project + formated_date + ".pdf");
-                    }
-                } else {
-                    alert('Не удалось скачать файл');
-                }
-            }
-            xhr.send();
-        } else {
-            console.log('session expired');
-        }
-    }
 
     toggleMap(value) {
         this.setState({
@@ -1038,35 +715,9 @@ class ShowSketch  extends React.Component {
         return formated_date;
     }
 
-    createCommission(id) {
-        var data = $('.commission_users_table input').serializeJSON();
 
-        if (Object.keys(data).length == 0) {
-            alert('Не выбраны провайдеры');
-            return false;
-        }
 
-        data["comment"]= this.state.comment;
-
-        var token = sessionStorage.getItem('tokenInfo');
-        var xhr = new XMLHttpRequest();
-        xhr.open("post", window.url + "api/apz/engineer/create_commission/" + id, true);
-        xhr.setRequestHeader("Authorization", "Bearer " + token);
-        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                alert('Заявка успешно отправлена');
-                this.getApzInfo();
-            } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
-                alert(JSON.parse(xhr.responseText).message);
-            } else {
-                alert('Не удалось отправить заявку');
-            }
-        }.bind(this)
-        xhr.send(JSON.stringify(data));
-    }
-
-    acceptDeclineApzForm(apzId, status, comment) {
+    acceptDeclineSketchForm(sketchId, status, comment) {
         var token = sessionStorage.getItem('tokenInfo');
         var file = this.state.file;
 
@@ -1080,7 +731,7 @@ class ShowSketch  extends React.Component {
         }
 
         var xhr = new XMLHttpRequest();
-        xhr.open("post", window.url + "api/apz/engineer/status/" + apzId, true);
+        xhr.open("post", window.url + "api/sketch/engineer/status/" + sketchId, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.onload = function () {
             if (xhr.status === 200) {
@@ -1104,7 +755,7 @@ class ShowSketch  extends React.Component {
             }
 
             if (!status) {
-                $('#ReturnApzForm').modal('hide');
+                $('#ReturnSketchForm').modal('hide');
             }
         }.bind(this);
         xhr.send(formData);
@@ -1159,32 +810,14 @@ class ShowSketch  extends React.Component {
                             this.setState({personalIdFile: data});
                             break;
 
-                        case 9:
-                            this.setState({confirmedTaskFile: data});
+                        case 2:
+                            this.setState({apzFile: data});
                             break;
 
-                        case 10:
-                            this.setState({titleDocumentFile: data});
+                        case 1:
+                            this.setState({sketchFile: data});
                             break;
 
-                        case 27:
-                            this.setState({additionalFile: data});
-                            break;
-
-                        case 20:
-                            this.setState({paymentPhotoFile: data});
-                            break;
-
-                        case 22:
-                            this.setState({survey: data});
-                            break;
-
-                        case 24:
-                            this.setState({claimedCapacityJustification: data});
-
-                        case 25:
-                            this.setState({pack2IdFile: data});
-                            break;
                     }
 
                     alert("Файл успешно загружен");
@@ -1225,41 +858,22 @@ class ShowSketch  extends React.Component {
                 this.setState({personalIdFile: data});
                 break;
 
-            case '9':
-                this.setState({confirmedTaskFile: data});
+            case '2':
+                this.setState({apzFile: data});
                 break;
 
-            case '10':
-                this.setState({titleDocumentFile: data});
+            case '1':
+                this.setState({sketchFile: data});
                 break;
 
-            case '27':
-                this.setState({additionalFile: data});
-                break;
-
-            case '20':
-                this.setState({paymentPhotoFile: data});
-                break;
-
-            case '22':
-                this.setState({survey: data});
-                break;
-
-            case '24':
-                this.setState({claimedCapacityJustification: data});
-                break;
-
-            case '24':
-                this.setState({pack2IdFile: data});
-                break;
         }
 
         $('#selectFileModal').modal('hide');
     }
 
     render() {
-        var apz = this.state.apz;
-        if (apz.length === 0) {
+        var sketch = this.state.sketch;
+        if (sketch.length === 0) {
             return false;
         }
 
@@ -1268,16 +882,16 @@ class ShowSketch  extends React.Component {
                 <div className="col-sm-6">
                     <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
 
-                    <table className="table table-bordered table-striped">
-                        <tbody>
-                        <tr>
-                            <td style={{width: '100%'}}><b>Тип заявки</b></td>
-                        </tr>
-                        <tr>
-                            <td>{apz.type === 1 ? 'Пакет 1': (apz.type === 2 ? 'Пакет 2': 'Не определенный тип')}</td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    {/*<table className="table table-bordered table-striped">*/}
+                        {/*<tbody>*/}
+                        {/*<tr>*/}
+                            {/*<td style={{width: '100%'}}><b>Тип заявки</b></td>*/}
+                        {/*</tr>*/}
+                        {/*<tr>*/}
+                            {/*<td>{sketch.type === 1 ? 'Пакет 1': (sketch.type === 2 ? 'Пакет 2': 'Не определенный тип')}</td>*/}
+                        {/*</tr>*/}
+                        {/*</tbody>*/}
+                    {/*</table>*/}
 
                     <table className="table table-bordered table-striped">
                         <tbody>
@@ -1286,8 +900,8 @@ class ShowSketch  extends React.Component {
                             <td><b>Заявитель</b></td>
                         </tr>
                         <tr>
-                            <td>{apz.id}</td>
-                            <td>{apz.applicant}</td>
+                            <td>{sketch.id}</td>
+                            <td>{sketch.applicant}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -1299,8 +913,8 @@ class ShowSketch  extends React.Component {
                             <td><b>Название проекта</b></td>
                         </tr>
                         <tr>
-                            <td>{apz.designer}</td>
-                            <td>{apz.project_name}</td>
+                            <td>{sketch.designer}</td>
+                            <td>{sketch.project_name}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -1312,11 +926,11 @@ class ShowSketch  extends React.Component {
                             <td><b>Адрес проектируемого объекта</b></td>
                         </tr>
                         <tr>
-                            <td>{apz.phone}</td>
+                            <td>{sketch.phone}</td>
                             <td>
-                                {apz.project_address}
+                                {sketch.project_address}
 
-                                {apz.project_address_coordinates &&
+                                {sketch.project_address_coordinates &&
                                 <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
                                 }
                             </td>
@@ -1331,8 +945,8 @@ class ShowSketch  extends React.Component {
                             <td><b>Дата заявления</b></td>
                         </tr>
                         <tr>
-                            <td>{apz.customer}</td>
-                            <td>{apz.created_at && this.toDate(apz.created_at)}</td>
+                            <td>{sketch.customer}</td>
+                            <td>{sketch.created_at && this.toDate(sketch.created_at)}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -1354,10 +968,10 @@ class ShowSketch  extends React.Component {
                         </tr>
                         }
 
-                        {this.state.confirmedTaskFile &&
+                        {this.state.apzFile &&
                         <tr>
-                            <td><b>Утвержденное задание</b></td>
-                            <td><a className="text-info pointer" data-category="2" onClick={this.downloadFile.bind(this, this.state.confirmedTaskFile.id, 2)}>Скачать</a>
+                            <td><b>Архитектурно-планировочное задание</b></td>
+                            <td><a className="text-info pointer" data-category="2" onClick={this.downloadFile.bind(this, this.state.apzFile.id, 2)}>Скачать</a>
                                 <div className="progress mb-2" data-category="2" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                                     <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
@@ -1365,263 +979,212 @@ class ShowSketch  extends React.Component {
                         </tr>
                         }
 
-                        {this.state.titleDocumentFile &&
+                        {this.state.sketchFile &&
                         <tr>
-                            <td><b>Правоустанавл. документ</b></td>
-                            <td><a className="text-info pointer" data-category="3" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id, 3)}>Скачать</a>
+                            <td><b>Эскиз</b></td>
+                            <td><a className="text-info pointer" data-category="3" onClick={this.downloadFile.bind(this, this.state.sketchFile.id, 3)}>Скачать</a>
                                 <div className="progress mb-2" data-category="3" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                                     <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </td>
                         </tr>
                         }
-
-                        {this.state.additionalFile &&
-                        <tr>
-                            <td><b>Дополнительно</b></td>
-                            <td><a className="text-info pointer" data-category="4" onClick={this.downloadFile.bind(this, this.state.additionalFile.id, 4)}>Скачать</a>
-                                <div className="progress mb-2" data-category="4" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </td>
-                        </tr>
-                        }
                         </tbody>
                     </table>
 
-                    <h5 className="block-title-2 mb-3">Службы</h5>
-
-                    <table className="table table-bordered table-striped">
-                        <tbody>
-                        {apz.apz_water &&
-                        <tr>
-                            <td><b>Водоснабжение</b></td>
-                            <td><a className="text-info pointer" data-toggle="modal" data-target="#water_modal">Открыть</a></td>
-                        </tr>
-                        }
-
-                        {apz.apz_heat &&
-                        <tr>
-                            <td><b>Теплоснабжение</b></td>
-                            <td><a className="text-info pointer" data-toggle="modal" data-target="#heat_modal">Открыть</a></td>
-                        </tr>
-                        }
-
-                        {apz.apz_electricity &&
-                        <tr>
-                            <td><b>Электроснабжение</b></td>
-                            <td><a className="text-info pointer" data-toggle="modal" data-target="#electro_modal">Открыть</a></td>
-                        </tr>
-                        }
-
-                        {apz.apz_gas &&
-                        <tr>
-                            <td><b>Газоснабжение</b></td>
-                            <td><a className="text-info pointer" data-toggle="modal" data-target="#gas_modal">Открыть</a></td>
-                        </tr>
-                        }
-
-                        {apz.apz_phone &&
-                        <tr>
-                            <td><b>Телефонизация</b></td>
-                            <td><a className="text-info pointer" data-toggle="modal" data-target="#phone_modal">Открыть</a></td>
-                        </tr>
-                        }
-                        </tbody>
-                    </table>
                 </div>
 
                 <div className="col-sm-12">
-                    {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
+                    {this.state.showMap && <ShowMap coordinates={sketch.project_address_coordinates} />}
 
                     <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                         {this.state.showMapText}
                     </button>
                 </div>
 
-                <div className="col-sm-12">
-                    {this.state.showCommission &&
-                    <div>
-                        <h5 className="block-title-2 mt-3 mb-3">Решение</h5>
+                {/*<div className="col-sm-12">*/}
+                    {/*{this.state.showCommission &&*/}
+                    {/*<div>*/}
+                        {/*<h5 className="block-title-2 mt-3 mb-3">Решение</h5>*/}
 
-                        <div className="alert alert-info" role="alert">
-                            Отправляя данную заявку коммунальным службам, вы подтверждаете достоверность данных, заполненные заявителем
-                        </div>
+                        {/*<div className="alert alert-info" role="alert">*/}
+                            {/*Отправляя данную заявку коммунальным службам, вы подтверждаете достоверность данных, заполненные заявителем*/}
+                        {/*</div>*/}
 
-                        <table className="table table-bordered commission_users_table">
-                            <thead>
-                            <tr>
-                                <th></th>
-                                <th>Название провайдера</th>
-                                <th>Оставшееся время</th>
-                                <th>Статус</th>
-                            </tr>
-                            </thead>
+                        {/*<table className="table table-bordered commission_users_table">*/}
+                            {/*<thead>*/}
+                            {/*<tr>*/}
+                                {/*<th></th>*/}
+                                {/*<th>Название провайдера</th>*/}
+                                {/*<th>Оставшееся время</th>*/}
+                                {/*<th>Статус</th>*/}
+                            {/*</tr>*/}
+                            {/*</thead>*/}
 
-                            {apz.commission && Object.keys(apz.commission).length > 0 ?
-                                <tbody>
-                                {apz.commission.users.map(function(item, index) {
-                                    return(
-                                        <tr key={index}>
-                                            <td>{index + 1}</td>
-                                            <td>
-                                                <a className="text-info pointer" data-toggle="modal" data-target={'#' + item.role.name.toLowerCase() + '_provider_modal'}>{item.role.description}</a>
-                                            </td>
-                                            <td>
-                                                {item.days > 1 ?
-                                                    item.days === 3 ? '2 д. (начиная со следующего дня)' : item.days - 1 + ' д.'
-                                                    :
-                                                    item.days === 1 ? 'Последний день (до 16:00)' : 'Просрочено'
-                                                }
-                                            </td>
-                                            <td>{item.status.name}</td>
-                                        </tr>
-                                    );
-                                }.bind(this))
-                                }
-                                </tbody>
-                                :
-                                <tbody>
-                                {!!apz.need_water_provider && <tr>
-                                    <td>
-                                        <input className="form-control" type="checkbox" name="commission_users[]" value="Water" />
-                                    </td>
-                                    <td>Водоснабжение</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>}
-                                {!!apz.need_electro_provider && <tr>
-                                    <td>
-                                        <input className="form-control" type="checkbox" name="commission_users[]" value="Electricity" />
-                                    </td>
-                                    <td>Электроснабжение</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>}
-                                {!!apz.need_gas_provider && <tr>
-                                    <td>
-                                        <input className="form-control" type="checkbox" name="commission_users[]" value="Gas" />
-                                    </td>
-                                    <td>Газоснабжение</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>}
-                                {!!apz.need_heat_provider && <tr>
-                                    <td>
-                                        <input className="form-control" type="checkbox" name="commission_users[]" value="Heat" />
-                                    </td>
-                                    <td>Теплоснабжение</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>}
-                                {!!apz.need_phone_provider && <tr>
-                                    <td>
-                                        <input className="form-control" type="checkbox" name="commission_users[]" value="Phone" />
-                                    </td>
-                                    <td>Телефонизация</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>}
-                                {!apz.need_phone_provider && !apz.need_electro_provider && !apz.need_water_provider && !apz.need_gas_provider
-                                && !apz.need_heat_provider &&
-                                <tr>Заявитель не выбрал подачу заявления на службы</tr>
-                                }
-                                </tbody>
-                            }
-                        </table>
-                    </div>
-                    }
-                    {apz.commission != null && apz.commission.status_id === 2 && apz.type === 2 &&
-                    <div className={'row'}>
-                        <div className={'col-md-6'}>
+                            {/*{apz.commission && Object.keys(apz.commission).length > 0 ?*/}
+                                {/*<tbody>*/}
+                                {/*{apz.commission.users.map(function(item, index) {*/}
+                                    {/*return(*/}
+                                        {/*<tr key={index}>*/}
+                                            {/*<td>{index + 1}</td>*/}
+                                            {/*<td>*/}
+                                                {/*<a className="text-info pointer" data-toggle="modal" data-target={'#' + item.role.name.toLowerCase() + '_provider_modal'}>{item.role.description}</a>*/}
+                                            {/*</td>*/}
+                                            {/*<td>*/}
+                                                {/*{item.days > 1 ?*/}
+                                                    {/*item.days === 3 ? '2 д. (начиная со следующего дня)' : item.days - 1 + ' д.'*/}
+                                                    {/*:*/}
+                                                    {/*item.days === 1 ? 'Последний день (до 16:00)' : 'Просрочено'*/}
+                                                {/*}*/}
+                                            {/*</td>*/}
+                                            {/*<td>{item.status.name}</td>*/}
+                                        {/*</tr>*/}
+                                    {/*);*/}
+                                {/*}.bind(this))*/}
+                                {/*}*/}
+                                {/*</tbody>*/}
+                                {/*:*/}
+                                {/*<tbody>*/}
+                                {/*{!!apz.need_water_provider && <tr>*/}
+                                    {/*<td>*/}
+                                        {/*<input className="form-control" type="checkbox" name="commission_users[]" value="Water" />*/}
+                                    {/*</td>*/}
+                                    {/*<td>Водоснабжение</td>*/}
+                                    {/*<td></td>*/}
+                                    {/*<td></td>*/}
+                                {/*</tr>}*/}
+                                {/*{!!apz.need_electro_provider && <tr>*/}
+                                    {/*<td>*/}
+                                        {/*<input className="form-control" type="checkbox" name="commission_users[]" value="Electricity" />*/}
+                                    {/*</td>*/}
+                                    {/*<td>Электроснабжение</td>*/}
+                                    {/*<td></td>*/}
+                                    {/*<td></td>*/}
+                                {/*</tr>}*/}
+                                {/*{!!apz.need_gas_provider && <tr>*/}
+                                    {/*<td>*/}
+                                        {/*<input className="form-control" type="checkbox" name="commission_users[]" value="Gas" />*/}
+                                    {/*</td>*/}
+                                    {/*<td>Газоснабжение</td>*/}
+                                    {/*<td></td>*/}
+                                    {/*<td></td>*/}
+                                {/*</tr>}*/}
+                                {/*{!!apz.need_heat_provider && <tr>*/}
+                                    {/*<td>*/}
+                                        {/*<input className="form-control" type="checkbox" name="commission_users[]" value="Heat" />*/}
+                                    {/*</td>*/}
+                                    {/*<td>Теплоснабжение</td>*/}
+                                    {/*<td></td>*/}
+                                    {/*<td></td>*/}
+                                {/*</tr>}*/}
+                                {/*{!!apz.need_phone_provider && <tr>*/}
+                                    {/*<td>*/}
+                                        {/*<input className="form-control" type="checkbox" name="commission_users[]" value="Phone" />*/}
+                                    {/*</td>*/}
+                                    {/*<td>Телефонизация</td>*/}
+                                    {/*<td></td>*/}
+                                    {/*<td></td>*/}
+                                {/*</tr>}*/}
+                                {/*{!apz.need_phone_provider && !apz.need_electro_provider && !apz.need_water_provider && !apz.need_gas_provider*/}
+                                {/*&& !apz.need_heat_provider &&*/}
+                                {/*<tr>Заявитель не выбрал подачу заявления на службы</tr>*/}
+                                {/*}*/}
+                                {/*</tbody>*/}
+                            {/*}*/}
+                        {/*</table>*/}
+                    {/*</div>*/}
+                    {/*}*/}
+                    {/*{apz.commission != null && apz.commission.status_id === 2 && apz.type === 2 &&*/}
+                    {/*<div className={'row'}>*/}
+                        {/*<div className={'col-md-6'}>*/}
 
-                            <div className="form-group">
-                                <label>Вложения по Пакету 2</label>
-                                <div className="file_container">
-                                    <div className="progress mb-2" data-category="25" style={{height: '20px', display: 'none'}}>
-                                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
+                            {/*<div className="form-group">*/}
+                                {/*<label>Вложения по Пакету 2</label>*/}
+                                {/*<div className="file_container">*/}
+                                    {/*<div className="progress mb-2" data-category="25" style={{height: '20px', display: 'none'}}>*/}
+                                        {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                                    {/*</div>*/}
 
-                                    {this.state.pack2IdFile &&
-                                    <div className="file_block mb-2">
-                                        <div>
-                                            {this.state.pack2IdFile.name}
-                                            <a className="pointer" onClick={(e) => this.setState({pack2IdFile: false}) }>×</a>
-                                        </div>
-                                    </div>
-                                    }
+                                    {/*{this.state.pack2IdFile &&*/}
+                                    {/*<div className="file_block mb-2">*/}
+                                        {/*<div>*/}
+                                            {/*{this.state.pack2IdFile.name}*/}
+                                            {/*<a className="pointer" onClick={(e) => this.setState({pack2IdFile: false}) }>×</a>*/}
+                                        {/*</div>*/}
+                                    {/*</div>*/}
+                                    {/*}*/}
 
-                                    <div className="file_buttons btn-group btn-group-justified d-table mt-0">
-                                        <label htmlFor="pack2IdFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
-                                        <input type="file" id="pack2IdFile" name="pack2IdFile" className="form-control" onChange={this.uploadFile.bind(this, 25)} style={{display: 'none'}} />
-                                        <label onClick={this.selectFromList.bind(this, 25)} className="btn btn-info btn-sm">Выбрать из списка</label>
-                                    </div>
-                                    <span className="help-block text-muted">
-                      (архитектурно-планировочное задание, вертикальные планировочные
-                      отметки, выкопировку из проекта детальной планировки, типовые поперечные
-                      профили дорог и улиц, технические условия, схемы трасс наружных инженерных
-                      сетей)
-                    </span>
-                                </div>
-                                <div className="modal fade" id="selectFileModal" tabIndex="-1" role="dialog" aria-hidden="true">
-                                    <div className="modal-dialog" role="document">
-                                        <div className="modal-content">
-                                            <div className="modal-header">
-                                                <h5 className="modal-title">Выбрать файл</h5>
-                                                <button type="button" id="selectFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div className="modal-body">
-                                                <table className="table">
-                                                    <thead>
-                                                    <tr>
-                                                        <th style={{width: '80%'}}>Название</th>
-                                                        <th style={{width: '10%'}}>Формат</th>
-                                                        <th style={{width: '10%'}}></th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    {this.state.categoryFiles.map(function(file, index){
-                                                            return(
-                                                                <tr key={index}>
-                                                                    <td>{file.name}</td>
-                                                                    <td>{file.extension}</td>
-                                                                    <td><button onClick={this.selectFile} data-category={file.category_id} data-id={file.id} data-name={file.name} className="btn btn-success">Выбрать</button></td>
-                                                                </tr>
-                                                            );
-                                                        }.bind(this)
-                                                    )}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div className="modal-footer">
-                                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                    {/*<div className="file_buttons btn-group btn-group-justified d-table mt-0">*/}
+                                        {/*<label htmlFor="pack2IdFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>*/}
+                                        {/*<input type="file" id="pack2IdFile" name="pack2IdFile" className="form-control" onChange={this.uploadFile.bind(this, 25)} style={{display: 'none'}} />*/}
+                                        {/*<label onClick={this.selectFromList.bind(this, 25)} className="btn btn-info btn-sm">Выбрать из списка</label>*/}
+                                    {/*</div>*/}
+                                    {/*<span className="help-block text-muted">*/}
+                      {/*(архитектурно-планировочное задание, вертикальные планировочные*/}
+                      {/*отметки, выкопировку из проекта детальной планировки, типовые поперечные*/}
+                      {/*профили дорог и улиц, технические условия, схемы трасс наружных инженерных*/}
+                      {/*сетей)*/}
+                    {/*</span>*/}
+                                {/*</div>*/}
+                                {/*<div className="modal fade" id="selectFileModal" tabIndex="-1" role="dialog" aria-hidden="true">*/}
+                                    {/*<div className="modal-dialog" role="document">*/}
+                                        {/*<div className="modal-content">*/}
+                                            {/*<div className="modal-header">*/}
+                                                {/*<h5 className="modal-title">Выбрать файл</h5>*/}
+                                                {/*<button type="button" id="selectFileModalClose" className="close" data-dismiss="modal" aria-label="Close">*/}
+                                                    {/*<span aria-hidden="true">&times;</span>*/}
+                                                {/*</button>*/}
+                                            {/*</div>*/}
+                                            {/*<div className="modal-body">*/}
+                                                {/*<table className="table">*/}
+                                                    {/*<thead>*/}
+                                                    {/*<tr>*/}
+                                                        {/*<th style={{width: '80%'}}>Название</th>*/}
+                                                        {/*<th style={{width: '10%'}}>Формат</th>*/}
+                                                        {/*<th style={{width: '10%'}}></th>*/}
+                                                    {/*</tr>*/}
+                                                    {/*</thead>*/}
+                                                    {/*<tbody>*/}
+                                                    {/*{this.state.categoryFiles.map(function(file, index){*/}
+                                                            {/*return(*/}
+                                                                {/*<tr key={index}>*/}
+                                                                    {/*<td>{file.name}</td>*/}
+                                                                    {/*<td>{file.extension}</td>*/}
+                                                                    {/*<td><button onClick={this.selectFile} data-category={file.category_id} data-id={file.id} data-name={file.name} className="btn btn-success">Выбрать</button></td>*/}
+                                                                {/*</tr>*/}
+                                                            {/*);*/}
+                                                        {/*}.bind(this)*/}
+                                                    {/*)}*/}
+                                                    {/*</tbody>*/}
+                                                {/*</table>*/}
+                                            {/*</div>*/}
+                                            {/*<div className="modal-footer">*/}
+                                                {/*<button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>*/}
+                                            {/*</div>*/}
+                                        {/*</div>*/}
+                                    {/*</div>*/}
+                                {/*</div>*/}
 
-                            </div>
+                            {/*</div>*/}
 
-                        </div>
-                    </div>
-                    }
+                        {/*</div>*/}
+                    {/*</div>*/}
+                    {/*}*/}
 
-                    <div className={this.state.showButtons ? '' : 'invisible'}>
-                        <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px', display: 'table'}}>
-                            {!apz.commission &&
-                            <button className="btn btn-raised btn-info" onClick={this.createCommission.bind(this, apz.id)} style={{marginRight: '5px'}}>
-                                Создать комиссию
-                            </button>
-                            }
+                    {/*<div className={this.state.showButtons ? '' : 'invisible'}>*/}
+                        {/*<div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px', display: 'table'}}>*/}
+                            {/*{!apz.commission &&*/}
+                            {/*<button className="btn btn-raised btn-info" onClick={this.createCommission.bind(this, apz.id)} style={{marginRight: '5px'}}>*/}
+                                {/*Создать комиссию*/}
+                            {/*</button>*/}
+                            {/*}*/}
                             {!this.state.needSign ?
                                 <div>
                                     <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>Одобрить</button>
-                                    <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">
+                                    <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnSketchForm">
                                         Отклонить
                                     </button>
-                                    <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                                    <div className="modal fade" id="ReturnSketchForm" tabIndex="-1" role="dialog" aria-hidden="true">
                                         <div className="modal-dialog" role="document">
                                             <div className="modal-content">
                                                 <div className="modal-header">
@@ -1639,7 +1202,7 @@ class ShowSketch  extends React.Component {
                                                     </div>
                                                 </div>
                                                 <div className="modal-footer">
-                                                    <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.comment)}>Отправить</button>
+                                                    <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, false, this.state.comment)}>Отправить</button>
                                                     <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                                                 </div>
                                             </div>
@@ -1682,15 +1245,15 @@ class ShowSketch  extends React.Component {
                                         :
                                         <div>
                                             <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
-                                                    onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>
+                                                    onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted")}>
                                                 В отдел АПЗ
                                             </button>
                                         </div>
                                     }
                                 </div>
                             }
-                        </div>
-                    </div>
+                        {/*</div>*/}
+                    {/*</div>*/}
 
                     {this.state.engineerReturnedState &&
                     <div className="alert alert-danger">
@@ -1698,979 +1261,979 @@ class ShowSketch  extends React.Component {
                     </div>
                     }
 
-                    <h5 className="block-title-2 mb-3">Логи</h5>
-                    <div className="border px-3 py-2">
-                        {apz.state_history.map(function(state, index) {
-                            return(
-                                <div key={index}>
-                                    <p className="mb-0">{state.created_at}&emsp;{state.state.name}  {state.receiver && '('+state.receiver+')'}</p>
-                                </div>
-                            );
-                        }.bind(this))}
-                    </div>
+                    {/*<h5 className="block-title-2 mb-3">Логи</h5>*/}
+                    {/*<div className="border px-3 py-2">*/}
+                        {/*{apz.state_history.map(function(state, index) {*/}
+                            {/*return(*/}
+                                {/*<div key={index}>*/}
+                                    {/*<p className="mb-0">{state.created_at}&emsp;{state.state.name}  {state.receiver && '('+state.receiver+')'}</p>*/}
+                                {/*</div>*/}
+                            {/*);*/}
+                        {/*}.bind(this))}*/}
+                    {/*</div>*/}
 
-                    {apz.commission &&  apz.commission.apz_water_response &&
-                    <div className="modal fade" id="water_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                        <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title">Решение водоснабжения</h5>
-                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div className="modal-body">
-                                    <table className="table table-bordered table-striped">
-                                        {this.state.waterCustomTcFile && apz.commission.apz_water_response.response &&
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>Техническое условие</b></td>
-                                            <td><a className="text-info pointer" data-category="5" onClick={this.downloadFile.bind(this, this.state.waterCustomTcFile.id, 5)}>Скачать</a>
-                                                <div className="progress mb-2" data-category="5" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                        }
+                    {/*{apz.commission &&  apz.commission.apz_water_response &&*/}
+                    {/*<div className="modal fade" id="water_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">*/}
+                        {/*<div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>*/}
+                            {/*<div className="modal-content">*/}
+                                {/*<div className="modal-header">*/}
+                                    {/*<h5 className="modal-title">Решение водоснабжения</h5>*/}
+                                    {/*<button type="button" className="close" data-dismiss="modal" aria-label="Close">*/}
+                                        {/*<span aria-hidden="true">&times;</span>*/}
+                                    {/*</button>*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-body">*/}
+                                    {/*<table className="table table-bordered table-striped">*/}
+                                        {/*{this.state.waterCustomTcFile && apz.commission.apz_water_response.response &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>Техническое условие</b></td>*/}
+                                            {/*<td><a className="text-info pointer" data-category="5" onClick={this.downloadFile.bind(this, this.state.waterCustomTcFile.id, 5)}>Скачать</a>*/}
+                                                {/*<div className="progress mb-2" data-category="5" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
+                                                    {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                                                {/*</div>*/}
+                                            {/*</td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
 
-                                        {Boolean(!this.state.waterCustomTcFile) && Boolean(apz.commission.apz_water_response.response) &&
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>Общая потребность (м<sup>3</sup>/сутки)</b></td>
-                                            <td>{apz.commission.apz_water_response.gen_water_req}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Хозпитьевые нужды (м<sup>3</sup>/сутки)</b></td>
-                                            <td>{apz.commission.apz_water_response.drinking_water}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Производственные нужды (м<sup>3</sup>/сутки)</b></td>
-                                            <td>{apz.commission.apz_water_response.prod_water}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Расходы пожаротушения внутренные (л/сек)</b></td>
-                                            <td>{apz.commission.apz_water_response.fire_fighting_water_in}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Расходы пожаротушения внешные (л/сек)</b></td>
-                                            <td>{apz.commission.apz_water_response.fire_fighting_water_out}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Точка подключения</b></td>
-                                            <td>{apz.commission.apz_water_response.connection_point}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Рекомендация</b></td>
-                                            <td>{apz.commission.apz_water_response.recommendation}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Номер документа</b></td>
-                                            <td>{apz.commission.apz_water_response.doc_number}</td>
-                                        </tr>
+                                        {/*{Boolean(!this.state.waterCustomTcFile) && Boolean(apz.commission.apz_water_response.response) &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>Общая потребность (м<sup>3</sup>/сутки)</b></td>*/}
+                                            {/*<td>{apz.commission.apz_water_response.gen_water_req}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Хозпитьевые нужды (м<sup>3</sup>/сутки)</b></td>*/}
+                                            {/*<td>{apz.commission.apz_water_response.drinking_water}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Производственные нужды (м<sup>3</sup>/сутки)</b></td>*/}
+                                            {/*<td>{apz.commission.apz_water_response.prod_water}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Расходы пожаротушения внутренные (л/сек)</b></td>*/}
+                                            {/*<td>{apz.commission.apz_water_response.fire_fighting_water_in}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Расходы пожаротушения внешные (л/сек)</b></td>*/}
+                                            {/*<td>{apz.commission.apz_water_response.fire_fighting_water_out}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Точка подключения</b></td>*/}
+                                            {/*<td>{apz.commission.apz_water_response.connection_point}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Рекомендация</b></td>*/}
+                                            {/*<td>{apz.commission.apz_water_response.recommendation}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Номер документа</b></td>*/}
+                                            {/*<td>{apz.commission.apz_water_response.doc_number}</td>*/}
+                                        {/*</tr>*/}
 
-                                        {this.state.waterResponseFile &&
-                                        <tr>
-                                            <td><b>Загруженный ТУ</b></td>
-                                            <td><a className="text-info pointer" data-category="6" onClick={this.downloadFile.bind(this, this.state.waterResponseFile.id, 6)}>Скачать</a>
-                                                <div className="progress mb-2" data-category="6" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        }
+                                        {/*{this.state.waterResponseFile &&*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Загруженный ТУ</b></td>*/}
+                                            {/*<td><a className="text-info pointer" data-category="6" onClick={this.downloadFile.bind(this, this.state.waterResponseFile.id, 6)}>Скачать</a>*/}
+                                                {/*<div className="progress mb-2" data-category="6" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
+                                                    {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                                                {/*</div>*/}
+                                            {/*</td>*/}
+                                        {/*</tr>*/}
+                                        {/*}*/}
 
-                                        <tr>
-                                            <td><b>Сформированный ТУ</b></td>
-                                            <td><a className="text-info pointer" onClick={this.printWaterTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
-                                        </tr>
-                                        </tbody>
-                                        }
-                                        {!apz.commission.apz_water_response.response && !this.state.waterResponseFile &&
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>Причина отказа</b></td>
-                                            <td>{apz.commission.apz_water_response.response_text}</td>
-                                        </tr>
-                                        </tbody>
-                                        }
-                                        {!apz.commission.apz_water_response.response && this.state.waterResponseFile &&
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>МО Вода</b></td>
-                                            <td><a className="text-info pointer" data-category="7" onClick={this.downloadFile.bind(this, this.state.waterResponseFile.id, 7)}>Скачать</a>
-                                                <div className="progress mb-2" data-category="7" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                        }
-                                    </table>
-                                </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    }
+                                        {/*<tr>*/}
+                                            {/*<td><b>Сформированный ТУ</b></td>*/}
+                                            {/*<td><a className="text-info pointer" onClick={this.printWaterTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
+                                        {/*{!apz.commission.apz_water_response.response && !this.state.waterResponseFile &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>Причина отказа</b></td>*/}
+                                            {/*<td>{apz.commission.apz_water_response.response_text}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
+                                        {/*{!apz.commission.apz_water_response.response && this.state.waterResponseFile &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>МО Вода</b></td>*/}
+                                            {/*<td><a className="text-info pointer" data-category="7" onClick={this.downloadFile.bind(this, this.state.waterResponseFile.id, 7)}>Скачать</a>*/}
+                                                {/*<div className="progress mb-2" data-category="7" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
+                                                    {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                                                {/*</div>*/}
+                                            {/*</td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
+                                    {/*</table>*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-footer">*/}
+                                    {/*<button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>*/}
+                                {/*</div>*/}
+                            {/*</div>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
+                    {/*}*/}
 
-                    {apz.commission && apz.commission.apz_heat_response &&
-                    <div className="modal fade" id="heat_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                        <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title">Решение теплоснабжения</h5>
-                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div className="modal-body">
-                                    <table className="table table-bordered table-striped">
-                                        {Boolean(this.state.heatCustomTcFile) && Boolean(apz.commission.apz_heat_response.response) &&
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>Техническое условие</b></td>
-                                            <td><a className="text-info pointer" data-category="8" onClick={this.downloadFile.bind(this, this.state.heatCustomTcFile.id, 8)}>Скачать</a>
-                                                <div className="progress mb-2" data-category="8" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                        }
+                    {/*{apz.commission && apz.commission.apz_heat_response &&*/}
+                    {/*<div className="modal fade" id="heat_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">*/}
+                        {/*<div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>*/}
+                            {/*<div className="modal-content">*/}
+                                {/*<div className="modal-header">*/}
+                                    {/*<h5 className="modal-title">Решение теплоснабжения</h5>*/}
+                                    {/*<button type="button" className="close" data-dismiss="modal" aria-label="Close">*/}
+                                        {/*<span aria-hidden="true">&times;</span>*/}
+                                    {/*</button>*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-body">*/}
+                                    {/*<table className="table table-bordered table-striped">*/}
+                                        {/*{Boolean(this.state.heatCustomTcFile) && Boolean(apz.commission.apz_heat_response.response) &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>Техническое условие</b></td>*/}
+                                            {/*<td><a className="text-info pointer" data-category="8" onClick={this.downloadFile.bind(this, this.state.heatCustomTcFile.id, 8)}>Скачать</a>*/}
+                                                {/*<div className="progress mb-2" data-category="8" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
+                                                    {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                                                {/*</div>*/}
+                                            {/*</td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
 
-                                        {Boolean(!this.state.heatCustomTcFile) && Boolean(apz.commission.apz_heat_response.response) &&
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>Источник теплоснабжения</b></td>
-                                            <td>{apz.commission.apz_heat_response.resource}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Точка подключения</b></td>
-                                            <td>{apz.commission.apz_heat_response.connection_point}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Тепловые нагрузки по договору</b></td>
-                                            <td>{apz.commission.apz_heat_response.load_contract_num}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Отопление по договору</b></td>
-                                            <td>{apz.commission.apz_heat_response.main_in_contract}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Вентиляция по договору</b></td>
-                                            <td>{apz.commission.apz_heat_response.ven_in_contract}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Горячее водоснабжение по договору (ср/ч)</b></td>
-                                            <td>{apz.commission.apz_heat_response.water_in_contract}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Горячее водоснабжение по договору (макс/ч)</b></td>
-                                            <td>{apz.commission.apz_heat_response.water_in_contract_max}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Дополнительное</b></td>
-                                            <td>{apz.commission.apz_heat_response.addition}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Номер документа</b></td>
-                                            <td>{apz.commission.apz_heat_response.doc_number}</td>
-                                        </tr>
+                                        {/*{Boolean(!this.state.heatCustomTcFile) && Boolean(apz.commission.apz_heat_response.response) &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>Источник теплоснабжения</b></td>*/}
+                                            {/*<td>{apz.commission.apz_heat_response.resource}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Точка подключения</b></td>*/}
+                                            {/*<td>{apz.commission.apz_heat_response.connection_point}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Тепловые нагрузки по договору</b></td>*/}
+                                            {/*<td>{apz.commission.apz_heat_response.load_contract_num}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Отопление по договору</b></td>*/}
+                                            {/*<td>{apz.commission.apz_heat_response.main_in_contract}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Вентиляция по договору</b></td>*/}
+                                            {/*<td>{apz.commission.apz_heat_response.ven_in_contract}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Горячее водоснабжение по договору (ср/ч)</b></td>*/}
+                                            {/*<td>{apz.commission.apz_heat_response.water_in_contract}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Горячее водоснабжение по договору (макс/ч)</b></td>*/}
+                                            {/*<td>{apz.commission.apz_heat_response.water_in_contract_max}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Дополнительное</b></td>*/}
+                                            {/*<td>{apz.commission.apz_heat_response.addition}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Номер документа</b></td>*/}
+                                            {/*<td>{apz.commission.apz_heat_response.doc_number}</td>*/}
+                                        {/*</tr>*/}
 
-                                        {this.state.heatResponseFile &&
-                                        <tr>
-                                            <td><b>Загруженный ТУ</b>:</td>
-                                            <td><a className="text-info pointer" data-category="9" onClick={this.downloadFile.bind(this, this.state.heatResponseFile.id, 9)}>Скачать</a>
-                                                <div className="progress mb-2" data-category="9" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        }
+                                        {/*{this.state.heatResponseFile &&*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Загруженный ТУ</b>:</td>*/}
+                                            {/*<td><a className="text-info pointer" data-category="9" onClick={this.downloadFile.bind(this, this.state.heatResponseFile.id, 9)}>Скачать</a>*/}
+                                                {/*<div className="progress mb-2" data-category="9" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
+                                                    {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                                                {/*</div>*/}
+                                            {/*</td>*/}
+                                        {/*</tr>*/}
+                                        {/*}*/}
 
-                                        <tr>
-                                            <td><b>Сформированный ТУ</b></td>
-                                            <td><a className="text-info pointer" onClick={this.printHeatTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
-                                        </tr>
-                                        </tbody>
-                                        }
-                                        {!apz.commission.apz_heat_response.response && !this.state.heatResponseFile &&
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>Причина отказа</b></td>
-                                            <td>{apz.commission.apz_heat_response.response_text}</td>
-                                        </tr>
-                                        </tbody>
-                                        }
-                                        {!apz.commission.apz_heat_response.response && this.state.heatResponseFile &&
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>МО Тепло</b></td>
-                                            <td><a className="text-info pointer" data-category="10" onClick={this.downloadFile.bind(this, this.state.heatResponseFile.id, 10)}>Скачать</a>
-                                                <div className="progress mb-2" data-category="10" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                        }
-                                    </table>
+                                        {/*<tr>*/}
+                                            {/*<td><b>Сформированный ТУ</b></td>*/}
+                                            {/*<td><a className="text-info pointer" onClick={this.printHeatTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
+                                        {/*{!apz.commission.apz_heat_response.response && !this.state.heatResponseFile &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>Причина отказа</b></td>*/}
+                                            {/*<td>{apz.commission.apz_heat_response.response_text}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
+                                        {/*{!apz.commission.apz_heat_response.response && this.state.heatResponseFile &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>МО Тепло</b></td>*/}
+                                            {/*<td><a className="text-info pointer" data-category="10" onClick={this.downloadFile.bind(this, this.state.heatResponseFile.id, 10)}>Скачать</a>*/}
+                                                {/*<div className="progress mb-2" data-category="10" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
+                                                    {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                                                {/*</div>*/}
+                                            {/*</td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
+                                    {/*</table>*/}
 
-                                    {Boolean(!this.state.heatCustomTcFile) && Boolean(apz.commission.apz_heat_response.response) && Boolean(apz.commission.apz_heat_response.blocks) &&
-                                    <div>
-                                        {apz.commission.apz_heat_response.blocks.map(function(item, index) {
-                                            return(
-                                                <div key={index}>
-                                                    {apz.commission.apz_heat_response.blocks.length > 1 &&
-                                                    <h5>Здание №{index + 1}</h5>
-                                                    }
+                                    {/*{Boolean(!this.state.heatCustomTcFile) && Boolean(apz.commission.apz_heat_response.response) && Boolean(apz.commission.apz_heat_response.blocks) &&*/}
+                                    {/*<div>*/}
+                                        {/*{apz.commission.apz_heat_response.blocks.map(function(item, index) {*/}
+                                            {/*return(*/}
+                                                {/*<div key={index}>*/}
+                                                    {/*{apz.commission.apz_heat_response.blocks.length > 1 &&*/}
+                                                    {/*<h5>Здание №{index + 1}</h5>*/}
+                                                    {/*}*/}
 
-                                                    <table className="table table-bordered table-striped">
-                                                        <tbody>
-                                                        <tr>
-                                                            <td style={{width: '50%'}}><b>Отопление (Гкал/ч)</b></td>
-                                                            <td>{item.main}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><b>Вентиляция (Гкал/ч)</b></td>
-                                                            <td>{item.ven}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><b>Горячее водоснабжение (ср/ч)</b></td>
-                                                            <td>{item.water}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><b>Горячее водоснабжение (макс/ч)</b></td>
-                                                            <td>{item.water_max}</td>
-                                                        </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            );
-                                        }.bind(this))}
-                                    </div>
-                                    }
-                                </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    }
+                                                    {/*<table className="table table-bordered table-striped">*/}
+                                                        {/*<tbody>*/}
+                                                        {/*<tr>*/}
+                                                            {/*<td style={{width: '50%'}}><b>Отопление (Гкал/ч)</b></td>*/}
+                                                            {/*<td>{item.main}</td>*/}
+                                                        {/*</tr>*/}
+                                                        {/*<tr>*/}
+                                                            {/*<td><b>Вентиляция (Гкал/ч)</b></td>*/}
+                                                            {/*<td>{item.ven}</td>*/}
+                                                        {/*</tr>*/}
+                                                        {/*<tr>*/}
+                                                            {/*<td><b>Горячее водоснабжение (ср/ч)</b></td>*/}
+                                                            {/*<td>{item.water}</td>*/}
+                                                        {/*</tr>*/}
+                                                        {/*<tr>*/}
+                                                            {/*<td><b>Горячее водоснабжение (макс/ч)</b></td>*/}
+                                                            {/*<td>{item.water_max}</td>*/}
+                                                        {/*</tr>*/}
+                                                        {/*</tbody>*/}
+                                                    {/*</table>*/}
+                                                {/*</div>*/}
+                                            {/*);*/}
+                                        {/*}.bind(this))}*/}
+                                    {/*</div>*/}
+                                    {/*}*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-footer">*/}
+                                    {/*<button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>*/}
+                                {/*</div>*/}
+                            {/*</div>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
+                    {/*}*/}
 
-                    {apz.commission && apz.commission.apz_electricity_response &&
-                    <div className="modal fade" id="electricity_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                        <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title">Решение электроснабжения</h5>
-                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div className="modal-body">
-                                    <table className="table table-bordered table-striped">
-                                        {this.state.electroCustomTcFile && apz.commission.apz_electricity_response.response &&
-                                        <tbody>
-                                        <tr>
-                                            <td><b>Номер документа</b></td>
-                                            <td>{apz.commission.apz_electricity_response.doc_number}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Рекомендация</b></td>
-                                            <td>{apz.commission.apz_electricity_response.recommendation}</td>
-                                        </tr>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>Техническое условие</b></td>
-                                            <td><a className="text-info pointer" data-category="11" onClick={this.downloadFile.bind(this, this.state.electroCustomTcFile.id, 11)}>Скачать</a>
-                                                <div className="progress mb-2" data-category="11" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                        }
-                                        {Boolean(!this.state.electroCustomTcFile) && Boolean(apz.commission.apz_electricity_response.response) &&
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>Требуемая мощность (кВт)</b></td>
-                                            <td>{apz.commission.apz_electricity_response.req_power}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Характер нагрузки (фаза)</b></td>
-                                            <td>{apz.commission.apz_electricity_response.phase}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Категория по надежности (кВт)</b></td>
-                                            <td>{apz.commission.apz_electricity_response.safe_category}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Точка подключения</b></td>
-                                            <td>{apz.commission.apz_electricity_response.connection_point}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Рекомендация</b></td>
-                                            <td>{apz.commission.apz_electricity_response.recommendation}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Номер документа</b></td>
-                                            <td>{apz.commission.apz_electricity_response.doc_number}</td>
-                                        </tr>
+                    {/*{apz.commission && apz.commission.apz_electricity_response &&*/}
+                    {/*<div className="modal fade" id="electricity_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">*/}
+                        {/*<div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>*/}
+                            {/*<div className="modal-content">*/}
+                                {/*<div className="modal-header">*/}
+                                    {/*<h5 className="modal-title">Решение электроснабжения</h5>*/}
+                                    {/*<button type="button" className="close" data-dismiss="modal" aria-label="Close">*/}
+                                        {/*<span aria-hidden="true">&times;</span>*/}
+                                    {/*</button>*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-body">*/}
+                                    {/*<table className="table table-bordered table-striped">*/}
+                                        {/*{this.state.electroCustomTcFile && apz.commission.apz_electricity_response.response &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Номер документа</b></td>*/}
+                                            {/*<td>{apz.commission.apz_electricity_response.doc_number}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Рекомендация</b></td>*/}
+                                            {/*<td>{apz.commission.apz_electricity_response.recommendation}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>Техническое условие</b></td>*/}
+                                            {/*<td><a className="text-info pointer" data-category="11" onClick={this.downloadFile.bind(this, this.state.electroCustomTcFile.id, 11)}>Скачать</a>*/}
+                                                {/*<div className="progress mb-2" data-category="11" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
+                                                    {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                                                {/*</div>*/}
+                                            {/*</td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
+                                        {/*{Boolean(!this.state.electroCustomTcFile) && Boolean(apz.commission.apz_electricity_response.response) &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>Требуемая мощность (кВт)</b></td>*/}
+                                            {/*<td>{apz.commission.apz_electricity_response.req_power}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Характер нагрузки (фаза)</b></td>*/}
+                                            {/*<td>{apz.commission.apz_electricity_response.phase}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Категория по надежности (кВт)</b></td>*/}
+                                            {/*<td>{apz.commission.apz_electricity_response.safe_category}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Точка подключения</b></td>*/}
+                                            {/*<td>{apz.commission.apz_electricity_response.connection_point}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Рекомендация</b></td>*/}
+                                            {/*<td>{apz.commission.apz_electricity_response.recommendation}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Номер документа</b></td>*/}
+                                            {/*<td>{apz.commission.apz_electricity_response.doc_number}</td>*/}
+                                        {/*</tr>*/}
 
-                                        {this.state.electroResponseFile &&
-                                        <tr>
-                                            <td><b>Загруженный ТУ</b>:</td>
-                                            <td><a className="text-info pointer" data-category="12" onClick={this.downloadFile.bind(this, this.state.electroResponseFile.id, 12)}>Скачать</a>
-                                                <div className="progress mb-2" data-category="12" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        }
+                                        {/*{this.state.electroResponseFile &&*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Загруженный ТУ</b>:</td>*/}
+                                            {/*<td><a className="text-info pointer" data-category="12" onClick={this.downloadFile.bind(this, this.state.electroResponseFile.id, 12)}>Скачать</a>*/}
+                                                {/*<div className="progress mb-2" data-category="12" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
+                                                    {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                                                {/*</div>*/}
+                                            {/*</td>*/}
+                                        {/*</tr>*/}
+                                        {/*}*/}
 
-                                        <tr>
-                                            <td><b>Сформированный ТУ</b></td>
-                                            <td><a className="text-info pointer" onClick={this.printElectroTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
-                                        </tr>
-                                        </tbody>
-                                        }
-                                        {!apz.commission.apz_electricity_response.response && !this.state.electroResponseFile &&
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>Причина отказа</b></td>
-                                            <td>{apz.commission.apz_electricity_response.response_text}</td>
-                                        </tr>
-                                        </tbody>
-                                        }
-                                        {!apz.commission.apz_electricity_response.response && this.state.electroResponseFile &&
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>МО Электро</b></td>
-                                            <td><a className="text-info pointer" data-category="13" onClick={this.downloadFile.bind(this, this.state.electroResponseFile.id, 13)}>Скачать</a>
-                                                <div className="progress mb-2" data-category="13" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                        }
-                                    </table>
-                                </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    }
+                                        {/*<tr>*/}
+                                            {/*<td><b>Сформированный ТУ</b></td>*/}
+                                            {/*<td><a className="text-info pointer" onClick={this.printElectroTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
+                                        {/*{!apz.commission.apz_electricity_response.response && !this.state.electroResponseFile &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>Причина отказа</b></td>*/}
+                                            {/*<td>{apz.commission.apz_electricity_response.response_text}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
+                                        {/*{!apz.commission.apz_electricity_response.response && this.state.electroResponseFile &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>МО Электро</b></td>*/}
+                                            {/*<td><a className="text-info pointer" data-category="13" onClick={this.downloadFile.bind(this, this.state.electroResponseFile.id, 13)}>Скачать</a>*/}
+                                                {/*<div className="progress mb-2" data-category="13" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
+                                                    {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                                                {/*</div>*/}
+                                            {/*</td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
+                                    {/*</table>*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-footer">*/}
+                                    {/*<button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>*/}
+                                {/*</div>*/}
+                            {/*</div>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
+                    {/*}*/}
 
-                    {apz.commission && apz.commission.apz_gas_response &&
-                    <div className="modal fade" id="gas_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                        <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title">Решение газоснабжения</h5>
-                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div className="modal-body">
-                                    <table className="table table-bordered table-striped">
-                                        {this.state.gasCustomTcFile && apz.commission.apz_gas_response.response &&
-                                        <tbody>
-                                        <tr>
-                                            <td><b>Номер документа</b></td>
-                                            <td>{apz.commission.apz_gas_response.doc_number}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Предусмотрение</b></td>
-                                            <td>{apz.commission.apz_gas_response.reconsideration}</td>
-                                        </tr>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>Техническое условие</b></td>
-                                            <td><a className="text-info pointer" data-category="14" onClick={this.downloadFile.bind(this, this.state.gasCustomTcFile.id, 14)}>Скачать</a>
-                                                <div className="progress mb-2" data-category="14" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                        }
+                    {/*{apz.commission && apz.commission.apz_gas_response &&*/}
+                    {/*<div className="modal fade" id="gas_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">*/}
+                        {/*<div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>*/}
+                            {/*<div className="modal-content">*/}
+                                {/*<div className="modal-header">*/}
+                                    {/*<h5 className="modal-title">Решение газоснабжения</h5>*/}
+                                    {/*<button type="button" className="close" data-dismiss="modal" aria-label="Close">*/}
+                                        {/*<span aria-hidden="true">&times;</span>*/}
+                                    {/*</button>*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-body">*/}
+                                    {/*<table className="table table-bordered table-striped">*/}
+                                        {/*{this.state.gasCustomTcFile && apz.commission.apz_gas_response.response &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Номер документа</b></td>*/}
+                                            {/*<td>{apz.commission.apz_gas_response.doc_number}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Предусмотрение</b></td>*/}
+                                            {/*<td>{apz.commission.apz_gas_response.reconsideration}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>Техническое условие</b></td>*/}
+                                            {/*<td><a className="text-info pointer" data-category="14" onClick={this.downloadFile.bind(this, this.state.gasCustomTcFile.id, 14)}>Скачать</a>*/}
+                                                {/*<div className="progress mb-2" data-category="14" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
+                                                    {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                                                {/*</div>*/}
+                                            {/*</td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
 
-                                        {Boolean(!this.state.gasCustomTcFile) && Boolean(apz.commission.apz_gas_response.response) &&
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>Точка подключения</b></td>
-                                            <td>{apz.commission.apz_gas_response.connection_point}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Диаметр газопровода (мм)</b></td>
-                                            <td>{apz.commission.apz_gas_response.gas_pipe_diameter}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Предполагаемый объем (м<sup>3</sup>/час)</b></td>
-                                            <td>{apz.commission.apz_gas_response.assumed_capacity}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Предусмотрение</b></td>
-                                            <td>{apz.commission.apz_gas_response.GasReconsideration}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Номер документа</b></td>
-                                            <td>{apz.commission.apz_gas_response.doc_number}</td>
-                                        </tr>
+                                        {/*{Boolean(!this.state.gasCustomTcFile) && Boolean(apz.commission.apz_gas_response.response) &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>Точка подключения</b></td>*/}
+                                            {/*<td>{apz.commission.apz_gas_response.connection_point}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Диаметр газопровода (мм)</b></td>*/}
+                                            {/*<td>{apz.commission.apz_gas_response.gas_pipe_diameter}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Предполагаемый объем (м<sup>3</sup>/час)</b></td>*/}
+                                            {/*<td>{apz.commission.apz_gas_response.assumed_capacity}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Предусмотрение</b></td>*/}
+                                            {/*<td>{apz.commission.apz_gas_response.GasReconsideration}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Номер документа</b></td>*/}
+                                            {/*<td>{apz.commission.apz_gas_response.doc_number}</td>*/}
+                                        {/*</tr>*/}
 
-                                        {this.state.gasResponseFile &&
-                                        <tr>
-                                            <td><b>Загруженный ТУ</b></td>
-                                            <td><a className="text-info pointer" data-category="15" onClick={this.downloadFile.bind(this, this.state.gasResponseFile.id, 15)}>Скачать</a>
-                                                <div className="progress mb-2" data-category="15" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        }
+                                        {/*{this.state.gasResponseFile &&*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Загруженный ТУ</b></td>*/}
+                                            {/*<td><a className="text-info pointer" data-category="15" onClick={this.downloadFile.bind(this, this.state.gasResponseFile.id, 15)}>Скачать</a>*/}
+                                                {/*<div className="progress mb-2" data-category="15" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
+                                                    {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                                                {/*</div>*/}
+                                            {/*</td>*/}
+                                        {/*</tr>*/}
+                                        {/*}*/}
 
-                                        <tr>
-                                            <td><b>Сформированный ТУ</b></td>
-                                            <td><a className="text-info pointer" onClick={this.printGasTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
-                                        </tr>
-                                        </tbody>
-                                        }
-                                        {!apz.commission.apz_gas_response.response && !this.state.gasResponseFile &&
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>Причина отказа</b></td>
-                                            <td>{apz.commission.apz_gas_response.response_text}</td>
-                                        </tr>
-                                        </tbody>
-                                        }
-                                        {!apz.commission.apz_gas_response.response && this.state.gasResponseFile &&
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>МО Газ</b></td>
-                                            <td><a className="text-info pointer" data-category="16" onClick={this.downloadFile.bind(this, this.state.gasResponseFile.id, 16)}>Скачать</a>
-                                                <div className="progress mb-2" data-category="16" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                        }
-                                    </table>
-                                </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    }
+                                        {/*<tr>*/}
+                                            {/*<td><b>Сформированный ТУ</b></td>*/}
+                                            {/*<td><a className="text-info pointer" onClick={this.printGasTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
+                                        {/*{!apz.commission.apz_gas_response.response && !this.state.gasResponseFile &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>Причина отказа</b></td>*/}
+                                            {/*<td>{apz.commission.apz_gas_response.response_text}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
+                                        {/*{!apz.commission.apz_gas_response.response && this.state.gasResponseFile &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>МО Газ</b></td>*/}
+                                            {/*<td><a className="text-info pointer" data-category="16" onClick={this.downloadFile.bind(this, this.state.gasResponseFile.id, 16)}>Скачать</a>*/}
+                                                {/*<div className="progress mb-2" data-category="16" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
+                                                    {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                                                {/*</div>*/}
+                                            {/*</td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
+                                    {/*</table>*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-footer">*/}
+                                    {/*<button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>*/}
+                                {/*</div>*/}
+                            {/*</div>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
+                    {/*}*/}
 
-                    {apz.commission && apz.commission.apz_phone_response &&
-                    <div className="modal fade" id="phone_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                        <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title">Решение телефонизации</h5>
-                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div className="modal-body">
-                                    <table className="table table-bordered table-striped">
-                                        {this.state.phoneCustomTcFile && apz.commission.apz_phone_response.response &&
-                                        <tbody>
-                                        <tr>
-                                            <td><b>Номер документа</b></td>
-                                            <td>{apz.commission.apz_phone_response.doc_number}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Пожелания заказчика (тип оборудования, тип кабеля и др.)</b></td>
-                                            <td>{apz.commission.apz_phone_response.client_wishes}</td>
-                                        </tr>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>Техническое условие</b></td>
-                                            <td><a className="text-info pointer" data-category="17" onClick={this.downloadFile.bind(this, this.state.phoneCustomTcFile.id, 17)}>Скачать</a>
-                                                <div className="progress mb-2" data-category="17" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                        }
+                    {/*{apz.commission && apz.commission.apz_phone_response &&*/}
+                    {/*<div className="modal fade" id="phone_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">*/}
+                        {/*<div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>*/}
+                            {/*<div className="modal-content">*/}
+                                {/*<div className="modal-header">*/}
+                                    {/*<h5 className="modal-title">Решение телефонизации</h5>*/}
+                                    {/*<button type="button" className="close" data-dismiss="modal" aria-label="Close">*/}
+                                        {/*<span aria-hidden="true">&times;</span>*/}
+                                    {/*</button>*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-body">*/}
+                                    {/*<table className="table table-bordered table-striped">*/}
+                                        {/*{this.state.phoneCustomTcFile && apz.commission.apz_phone_response.response &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Номер документа</b></td>*/}
+                                            {/*<td>{apz.commission.apz_phone_response.doc_number}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Пожелания заказчика (тип оборудования, тип кабеля и др.)</b></td>*/}
+                                            {/*<td>{apz.commission.apz_phone_response.client_wishes}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>Техническое условие</b></td>*/}
+                                            {/*<td><a className="text-info pointer" data-category="17" onClick={this.downloadFile.bind(this, this.state.phoneCustomTcFile.id, 17)}>Скачать</a>*/}
+                                                {/*<div className="progress mb-2" data-category="17" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
+                                                    {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                                                {/*</div>*/}
+                                            {/*</td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
 
-                                        {Boolean(!this.state.phoneCustomTcFile) && Boolean(apz.commission.apz_phone_response.response) &&
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</b></td>
-                                            <td>{apz.commission.apz_phone_response.service_num}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Телефонная емкость</b></td>
-                                            <td>{apz.commission.apz_phone_response.capacity}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Планируемая телефонная канализация</b></td>
-                                            <td>{apz.commission.apz_phone_response.sewage}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Пожелания заказчика (тип оборудования, тип кабеля и др.)</b></td>
-                                            <td>{apz.commission.apz_phone_response.client_wishes}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Номер документа</b></td>
-                                            <td>{apz.commission.apz_phone_response.doc_number}</td>
-                                        </tr>
+                                        {/*{Boolean(!this.state.phoneCustomTcFile) && Boolean(apz.commission.apz_phone_response.response) &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</b></td>*/}
+                                            {/*<td>{apz.commission.apz_phone_response.service_num}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Телефонная емкость</b></td>*/}
+                                            {/*<td>{apz.commission.apz_phone_response.capacity}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Планируемая телефонная канализация</b></td>*/}
+                                            {/*<td>{apz.commission.apz_phone_response.sewage}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Пожелания заказчика (тип оборудования, тип кабеля и др.)</b></td>*/}
+                                            {/*<td>{apz.commission.apz_phone_response.client_wishes}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Номер документа</b></td>*/}
+                                            {/*<td>{apz.commission.apz_phone_response.doc_number}</td>*/}
+                                        {/*</tr>*/}
 
-                                        {this.state.phoneResponseFile &&
-                                        <tr>
-                                            <td><b>Загруженный ТУ</b></td>
-                                            <td><a className="text-info pointer" data-category="18" onClick={this.downloadFile.bind(this, this.state.phoneResponseFile.id, 18)}>Скачать</a>
-                                                <div className="progress mb-2" data-category="18" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        }
+                                        {/*{this.state.phoneResponseFile &&*/}
+                                        {/*<tr>*/}
+                                            {/*<td><b>Загруженный ТУ</b></td>*/}
+                                            {/*<td><a className="text-info pointer" data-category="18" onClick={this.downloadFile.bind(this, this.state.phoneResponseFile.id, 18)}>Скачать</a>*/}
+                                                {/*<div className="progress mb-2" data-category="18" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
+                                                    {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                                                {/*</div>*/}
+                                            {/*</td>*/}
+                                        {/*</tr>*/}
+                                        {/*}*/}
 
-                                        <tr>
-                                            <td><b>Сформированный ТУ</b></td>
-                                            <td><a className="text-info pointer" onClick={this.printPhoneTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
-                                        </tr>
-                                        </tbody>
-                                        }
-                                        {!apz.commission.apz_phone_response.response && !this.state.phoneResponseFile &&
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>Причина отказа</b></td>
-                                            <td>{apz.commission.apz_phone_response.response_text}</td>
-                                        </tr>
-                                        </tbody>
-                                        }
-                                        {!apz.commission.apz_phone_response.response && this.state.phoneResponseFile &&
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '50%'}}><b>МО Газ</b></td>
-                                            <td><a className="text-info pointer" data-category="19" onClick={this.downloadFile.bind(this, this.state.phoneResponseFile.id, 19)}>Скачать</a>
-                                                <div className="progress mb-2" data-category="19" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                        }
-                                    </table>
-                                </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    }
+                                        {/*<tr>*/}
+                                            {/*<td><b>Сформированный ТУ</b></td>*/}
+                                            {/*<td><a className="text-info pointer" onClick={this.printPhoneTechCon.bind(this, apz.id, apz.project_name)}>Скачать</a></td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
+                                        {/*{!apz.commission.apz_phone_response.response && !this.state.phoneResponseFile &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>Причина отказа</b></td>*/}
+                                            {/*<td>{apz.commission.apz_phone_response.response_text}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
+                                        {/*{!apz.commission.apz_phone_response.response && this.state.phoneResponseFile &&*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '50%'}}><b>МО Газ</b></td>*/}
+                                            {/*<td><a className="text-info pointer" data-category="19" onClick={this.downloadFile.bind(this, this.state.phoneResponseFile.id, 19)}>Скачать</a>*/}
+                                                {/*<div className="progress mb-2" data-category="19" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
+                                                    {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                                                {/*</div>*/}
+                                            {/*</td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                        {/*}*/}
+                                    {/*</table>*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-footer">*/}
+                                    {/*<button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>*/}
+                                {/*</div>*/}
+                            {/*</div>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
+                    {/*}*/}
 
 
-                    {apz.apz_water &&
-                    <div className="modal fade" id="water_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                        <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title">Водоснабжение</h5>
-                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div className="modal-body">
-                                    <table className="table table-bordered table-striped" style={{textAlign: 'left'}}>
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '70%'}}>Общая потребность (м<sup>3</sup>/сутки)</td>
-                                            <td>{apz.apz_water.requirement}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Общая потребность питьевой воды (м<sup>3</sup>/час)</td>
-                                            <td>{apz.apz_water.requirement_hour}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Общая потребность (л/сек макс)</td>
-                                            <td>{apz.apz_water.requirement_sec}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Хозпитьевые нужды (м<sup>3</sup>/сутки)</td>
-                                            <td>{apz.apz_water.drinking}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Хозпитьевые нужды (м<sup>3</sup>/час)</td>
-                                            <td>{apz.apz_water.drinking_hour}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Хозпитьевые нужды (л/сек макс)</td>
-                                            <td>{apz.apz_water.drinking_sec}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Производственные нужды (м<sup>3</sup>/сутки)</td>
-                                            <td>{apz.apz_water.production}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Производственные нужды (м<sup>3</sup>/час)</td>
-                                            <td>{apz.apz_water.production_hour}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Производственные нужды (л/сек макс)</td>
-                                            <td>{apz.apz_water.production_sec}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Расходы пожаротушения (л/сек наружное)</td>
-                                            <td>{apz.apz_water.fire_fighting}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Расходы пожаротушения (л/сек внутреннее)</td>
-                                            <td>{apz.apz_water.fire_fighting}</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                    {/*{apz.apz_water &&*/}
+                    {/*<div className="modal fade" id="water_modal" tabIndex="-1" role="dialog" aria-hidden="true">*/}
+                        {/*<div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>*/}
+                            {/*<div className="modal-content">*/}
+                                {/*<div className="modal-header">*/}
+                                    {/*<h5 className="modal-title">Водоснабжение</h5>*/}
+                                    {/*<button type="button" className="close" data-dismiss="modal" aria-label="Close">*/}
+                                        {/*<span aria-hidden="true">&times;</span>*/}
+                                    {/*</button>*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-body">*/}
+                                    {/*<table className="table table-bordered table-striped" style={{textAlign: 'left'}}>*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '70%'}}>Общая потребность (м<sup>3</sup>/сутки)</td>*/}
+                                            {/*<td>{apz.apz_water.requirement}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Общая потребность питьевой воды (м<sup>3</sup>/час)</td>*/}
+                                            {/*<td>{apz.apz_water.requirement_hour}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Общая потребность (л/сек макс)</td>*/}
+                                            {/*<td>{apz.apz_water.requirement_sec}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Хозпитьевые нужды (м<sup>3</sup>/сутки)</td>*/}
+                                            {/*<td>{apz.apz_water.drinking}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Хозпитьевые нужды (м<sup>3</sup>/час)</td>*/}
+                                            {/*<td>{apz.apz_water.drinking_hour}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Хозпитьевые нужды (л/сек макс)</td>*/}
+                                            {/*<td>{apz.apz_water.drinking_sec}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Производственные нужды (м<sup>3</sup>/сутки)</td>*/}
+                                            {/*<td>{apz.apz_water.production}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Производственные нужды (м<sup>3</sup>/час)</td>*/}
+                                            {/*<td>{apz.apz_water.production_hour}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Производственные нужды (л/сек макс)</td>*/}
+                                            {/*<td>{apz.apz_water.production_sec}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Расходы пожаротушения (л/сек наружное)</td>*/}
+                                            {/*<td>{apz.apz_water.fire_fighting}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Расходы пожаротушения (л/сек внутреннее)</td>*/}
+                                            {/*<td>{apz.apz_water.fire_fighting}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                    {/*</table>*/}
 
-                                    {apz.apz_sewage &&
-                                    <table className="table table-bordered table-striped" style={{textAlign: 'left'}}>
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '70%'}}>Общее количество сточных вод (м<sup>3</sup>/сутки)</td>
-                                            <td>{apz.apz_sewage.amount}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Общее количество сточных вод (м<sup>3</sup>/час макс)</td>
-                                            <td>{apz.apz_sewage.amount_hour}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Фекальных (м<sup>3</sup>/сутки)</td>
-                                            <td>{apz.apz_sewage.feksal}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Фекальных (м<sup>3</sup>/час макс)</td>
-                                            <td>{apz.apz_sewage.feksal_hour}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Производственно-загрязненных (м<sup>3</sup>/сутки)</td>
-                                            <td>{apz.apz_sewage.production}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Производственно-загрязненных (м<sup>3</sup>/час макс)</td>
-                                            <td>{apz.apz_sewage.production_hour}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Условно-чистых сбрасываемых на городскую сеть (м<sup>3</sup>/сутки)</td>
-                                            <td>{apz.apz_sewage.to_city}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Условно-чистых сбрасываемых на городскую сеть (м<sup>3</sup>/час макс)</td>
-                                            <td>{apz.apz_sewage.to_city_hour}</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    }
-                                </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    }
+                                    {/*{apz.apz_sewage &&*/}
+                                    {/*<table className="table table-bordered table-striped" style={{textAlign: 'left'}}>*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '70%'}}>Общее количество сточных вод (м<sup>3</sup>/сутки)</td>*/}
+                                            {/*<td>{apz.apz_sewage.amount}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Общее количество сточных вод (м<sup>3</sup>/час макс)</td>*/}
+                                            {/*<td>{apz.apz_sewage.amount_hour}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Фекальных (м<sup>3</sup>/сутки)</td>*/}
+                                            {/*<td>{apz.apz_sewage.feksal}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Фекальных (м<sup>3</sup>/час макс)</td>*/}
+                                            {/*<td>{apz.apz_sewage.feksal_hour}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Производственно-загрязненных (м<sup>3</sup>/сутки)</td>*/}
+                                            {/*<td>{apz.apz_sewage.production}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Производственно-загрязненных (м<sup>3</sup>/час макс)</td>*/}
+                                            {/*<td>{apz.apz_sewage.production_hour}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Условно-чистых сбрасываемых на городскую сеть (м<sup>3</sup>/сутки)</td>*/}
+                                            {/*<td>{apz.apz_sewage.to_city}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Условно-чистых сбрасываемых на городскую сеть (м<sup>3</sup>/час макс)</td>*/}
+                                            {/*<td>{apz.apz_sewage.to_city_hour}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                    {/*</table>*/}
+                                    {/*}*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-footer">*/}
+                                    {/*<button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>*/}
+                                {/*</div>*/}
+                            {/*</div>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
+                    {/*}*/}
 
-                    {apz.apz_heat &&
-                    <div className="modal fade" id="heat_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                        <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title">Теплоснабжение</h5>
-                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div className="modal-body">
-                                    <table className="table table-bordered table-striped">
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '70%'}}>Общая нагрузка (Гкал/ч)</td>
-                                            <td>{apz.apz_heat.general}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Отопление (Гкал/ч)</td>
-                                            <td>{apz.apz_heat.main_heat}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Вентиляция (Гкал/ч)</td>
-                                            <td>{apz.apz_heat.main_ven}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Горячее водоснабжение, ср (Гкал/ч)</td>
-                                            <td>{apz.apz_heat.main_water}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Горячее водоснабжение, макс (Гкал/ч)</td>
-                                            <td>{apz.apz_heat.main_water_max}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Энергосб. мероприятие</td>
-                                            <td>{apz.apz_heat.saving}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Технолог. нужды(пар) (Т/ч)</td>
-                                            <td>{apz.apz_heat.tech}</td>
-                                        </tr>
+                    {/*{apz.apz_heat &&*/}
+                    {/*<div className="modal fade" id="heat_modal" tabIndex="-1" role="dialog" aria-hidden="true">*/}
+                        {/*<div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>*/}
+                            {/*<div className="modal-content">*/}
+                                {/*<div className="modal-header">*/}
+                                    {/*<h5 className="modal-title">Теплоснабжение</h5>*/}
+                                    {/*<button type="button" className="close" data-dismiss="modal" aria-label="Close">*/}
+                                        {/*<span aria-hidden="true">&times;</span>*/}
+                                    {/*</button>*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-body">*/}
+                                    {/*<table className="table table-bordered table-striped">*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '70%'}}>Общая нагрузка (Гкал/ч)</td>*/}
+                                            {/*<td>{apz.apz_heat.general}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Отопление (Гкал/ч)</td>*/}
+                                            {/*<td>{apz.apz_heat.main_heat}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Вентиляция (Гкал/ч)</td>*/}
+                                            {/*<td>{apz.apz_heat.main_ven}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Горячее водоснабжение, ср (Гкал/ч)</td>*/}
+                                            {/*<td>{apz.apz_heat.main_water}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Горячее водоснабжение, макс (Гкал/ч)</td>*/}
+                                            {/*<td>{apz.apz_heat.main_water_max}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Энергосб. мероприятие</td>*/}
+                                            {/*<td>{apz.apz_heat.saving}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Технолог. нужды(пар) (Т/ч)</td>*/}
+                                            {/*<td>{apz.apz_heat.tech}</td>*/}
+                                        {/*</tr>*/}
 
-                                        {apz.apz_heat.contract_num &&
-                                        <tr>
-                                            <td>Номер договора</td>
-                                            <td>{apz.apz_heat.contract_num}</td>
-                                        </tr>
-                                        }
+                                        {/*{apz.apz_heat.contract_num &&*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Номер договора</td>*/}
+                                            {/*<td>{apz.apz_heat.contract_num}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*}*/}
 
-                                        {apz.apz_heat.general_in_contract &&
-                                        <tr>
-                                            <td>Общая тепловая нагрузка по договору (Гкал/ч)</td>
-                                            <td>{apz.apz_heat.general_in_contract}</td>
-                                        </tr>
-                                        }
+                                        {/*{apz.apz_heat.general_in_contract &&*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Общая тепловая нагрузка по договору (Гкал/ч)</td>*/}
+                                            {/*<td>{apz.apz_heat.general_in_contract}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*}*/}
 
-                                        {apz.apz_heat.tech_in_contract &&
-                                        <tr>
-                                            <td>Технологическая нагрузка(пар) по договору (Гкал/ч)</td>
-                                            <td>{apz.apz_heat.tech_in_contract}</td>
-                                        </tr>
-                                        }
+                                        {/*{apz.apz_heat.tech_in_contract &&*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Технологическая нагрузка(пар) по договору (Гкал/ч)</td>*/}
+                                            {/*<td>{apz.apz_heat.tech_in_contract}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*}*/}
 
-                                        {apz.apz_heat.main_in_contract &&
-                                        <tr>
-                                            <td>Отопление по договору (Гкал/ч)</td>
-                                            <td>{apz.apz_heat.main_in_contract}</td>
-                                        </tr>
-                                        }
+                                        {/*{apz.apz_heat.main_in_contract &&*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Отопление по договору (Гкал/ч)</td>*/}
+                                            {/*<td>{apz.apz_heat.main_in_contract}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*}*/}
 
-                                        {apz.apz_heat.water_in_contract &&
-                                        <tr>
-                                            <td>Горячее водоснабжение по договору (ср/ч)</td>
-                                            <td>{apz.apz_heat.water_in_contract}</td>
-                                        </tr>
-                                        }
+                                        {/*{apz.apz_heat.water_in_contract &&*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Горячее водоснабжение по договору (ср/ч)</td>*/}
+                                            {/*<td>{apz.apz_heat.water_in_contract}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*}*/}
 
-                                        {apz.apz_heat.ven_in_contract &&
-                                        <tr>
-                                            <td>Вентиляция по договору (Гкал/ч)</td>
-                                            <td>{apz.apz_heat.ven_in_contract}</td>
-                                        </tr>
-                                        }
+                                        {/*{apz.apz_heat.ven_in_contract &&*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Вентиляция по договору (Гкал/ч)</td>*/}
+                                            {/*<td>{apz.apz_heat.ven_in_contract}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*}*/}
 
-                                        {apz.apz_heat.water_in_contract_max &&
-                                        <tr>
-                                            <td>Горячее водоснабжение по договору (макс/ч)</td>
-                                            <td>{apz.apz_heat.water_in_contract_max}</td>
-                                        </tr>
-                                        }
-                                        </tbody>
-                                    </table>
+                                        {/*{apz.apz_heat.water_in_contract_max &&*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Горячее водоснабжение по договору (макс/ч)</td>*/}
+                                            {/*<td>{apz.apz_heat.water_in_contract_max}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*}*/}
+                                        {/*</tbody>*/}
+                                    {/*</table>*/}
 
-                                    {apz.apz_heat.heatDistribution && apz.apz_heat.blocks &&
-                                    <div>
-                                        <div>Разделение нагрузки</div>
-                                        {apz.apz_heat.blocks.map(function(item, index) {
-                                            return(
-                                                <div key={index}>
-                                                    {apz.apz_heat.blocks.length > 1 &&
-                                                    <h5 className="block-title-2 mt-4 mb-3">Здание №{index + 1}</h5>
-                                                    }
+                                    {/*{apz.apz_heat.heatDistribution && apz.apz_heat.blocks &&*/}
+                                    {/*<div>*/}
+                                        {/*<div>Разделение нагрузки</div>*/}
+                                        {/*{apz.apz_heat.blocks.map(function(item, index) {*/}
+                                            {/*return(*/}
+                                                {/*<div key={index}>*/}
+                                                    {/*{apz.apz_heat.blocks.length > 1 &&*/}
+                                                    {/*<h5 className="block-title-2 mt-4 mb-3">Здание №{index + 1}</h5>*/}
+                                                    {/*}*/}
 
-                                                    <table className="table table-bordered table-striped">
-                                                        <tbody>
-                                                        <tr>
-                                                            <td style={{width: '70%'}}>Отопление (Гкал/ч)</td>
-                                                            <td>{item.main}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Вентиляция (Гкал/ч)</td>
-                                                            <td>{item.ventilation}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Горячее водоснаб. (ср/ч)</td>
-                                                            <td>{item.water}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Горячее водоснаб. (макс/ч)</td>
-                                                            <td>{item.water_max}</td>
-                                                        </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            );
-                                        }.bind(this))}
-                                    </div>
-                                    }
-                                </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    }
+                                                    {/*<table className="table table-bordered table-striped">*/}
+                                                        {/*<tbody>*/}
+                                                        {/*<tr>*/}
+                                                            {/*<td style={{width: '70%'}}>Отопление (Гкал/ч)</td>*/}
+                                                            {/*<td>{item.main}</td>*/}
+                                                        {/*</tr>*/}
+                                                        {/*<tr>*/}
+                                                            {/*<td>Вентиляция (Гкал/ч)</td>*/}
+                                                            {/*<td>{item.ventilation}</td>*/}
+                                                        {/*</tr>*/}
+                                                        {/*<tr>*/}
+                                                            {/*<td>Горячее водоснаб. (ср/ч)</td>*/}
+                                                            {/*<td>{item.water}</td>*/}
+                                                        {/*</tr>*/}
+                                                        {/*<tr>*/}
+                                                            {/*<td>Горячее водоснаб. (макс/ч)</td>*/}
+                                                            {/*<td>{item.water_max}</td>*/}
+                                                        {/*</tr>*/}
+                                                        {/*</tbody>*/}
+                                                    {/*</table>*/}
+                                                {/*</div>*/}
+                                            {/*);*/}
+                                        {/*}.bind(this))}*/}
+                                    {/*</div>*/}
+                                    {/*}*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-footer">*/}
+                                    {/*<button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>*/}
+                                {/*</div>*/}
+                            {/*</div>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
+                    {/*}*/}
 
-                    {apz.apz_electricity &&
-                    <div className="modal fade" id="electro_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                        <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title">Электроснабжение</h5>
-                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div className="modal-body">
-                                    <table className="table table-bordered table-striped">
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '60%'}}>Требуемая мощность (кВт)</td>
-                                            <td>{apz.apz_electricity.required_power}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Характер нагрузки (фаза)</td>
-                                            <td>{apz.apz_electricity.phase}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Категория (кВт)</td>
-                                            <td>{apz.apz_electricity.safety_category}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Из указ. макс. нагрузки относ. к э-приемникам (кВА)</td>
-                                            <td>{apz.apz_electricity.max_load_device}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Сущ. макс. нагрузка (кВА)</td>
-                                            <td>{apz.apz_electricity.max_load}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Мощность трансформаторов (кВА)</td>
-                                            <td>{apz.apz_electricity.allowed_power}</td>
-                                        </tr>
+                    {/*{apz.apz_electricity &&*/}
+                    {/*<div className="modal fade" id="electro_modal" tabIndex="-1" role="dialog" aria-hidden="true">*/}
+                        {/*<div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>*/}
+                            {/*<div className="modal-content">*/}
+                                {/*<div className="modal-header">*/}
+                                    {/*<h5 className="modal-title">Электроснабжение</h5>*/}
+                                    {/*<button type="button" className="close" data-dismiss="modal" aria-label="Close">*/}
+                                        {/*<span aria-hidden="true">&times;</span>*/}
+                                    {/*</button>*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-body">*/}
+                                    {/*<table className="table table-bordered table-striped">*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '60%'}}>Требуемая мощность (кВт)</td>*/}
+                                            {/*<td>{apz.apz_electricity.required_power}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Характер нагрузки (фаза)</td>*/}
+                                            {/*<td>{apz.apz_electricity.phase}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Категория (кВт)</td>*/}
+                                            {/*<td>{apz.apz_electricity.safety_category}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Из указ. макс. нагрузки относ. к э-приемникам (кВА)</td>*/}
+                                            {/*<td>{apz.apz_electricity.max_load_device}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Сущ. макс. нагрузка (кВА)</td>*/}
+                                            {/*<td>{apz.apz_electricity.max_load}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Мощность трансформаторов (кВА)</td>*/}
+                                            {/*<td>{apz.apz_electricity.allowed_power}</td>*/}
+                                        {/*</tr>*/}
 
-                                        {this.state.claimedCapacityJustification &&
-                                        <tr>
-                                            <td>Расчет-обоснование заявленной мощности</td>
-                                            <td><a className="text-info pointer" data-category="20" onClick={this.downloadFile.bind(this, this.state.claimedCapacityJustification.id, 20)}>Скачать</a>
-                                                <div className="progress mb-2" data-category="20" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        }
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    }
+                                        {/*{this.state.claimedCapacityJustification &&*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Расчет-обоснование заявленной мощности</td>*/}
+                                            {/*<td><a className="text-info pointer" data-category="20" onClick={this.downloadFile.bind(this, this.state.claimedCapacityJustification.id, 20)}>Скачать</a>*/}
+                                                {/*<div className="progress mb-2" data-category="20" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
+                                                    {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                                                {/*</div>*/}
+                                            {/*</td>*/}
+                                        {/*</tr>*/}
+                                        {/*}*/}
+                                        {/*</tbody>*/}
+                                    {/*</table>*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-footer">*/}
+                                    {/*<button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>*/}
+                                {/*</div>*/}
+                            {/*</div>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
+                    {/*}*/}
 
-                    {apz.apz_gas &&
-                    <div className="modal fade" id="gas_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                        <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title">Газоснабжение</h5>
-                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div className="modal-body">
-                                    <table className="table table-bordered table-striped">
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '60%'}}>Общ. потребность (м<sup>3</sup>/час)</td>
-                                            <td>{apz.apz_gas.general}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>На приготов. пищи (м<sup>3</sup>/час)</td>
-                                            <td>{apz.apz_gas.cooking}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Отопление (м<sup>3</sup>/час)</td>
-                                            <td>{apz.apz_gas.heat}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Вентиляция (м<sup>3</sup>/час)</td>
-                                            <td>{apz.apz_gas.ventilation}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Кондиционирование (м<sup>3</sup>/час)</td>
-                                            <td>{apz.apz_gas.conditionaer}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Горячее водоснаб. (м<sup>3</sup>/час)</td>
-                                            <td>{apz.apz_gas.water}</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    }
+                    {/*{apz.apz_gas &&*/}
+                    {/*<div className="modal fade" id="gas_modal" tabIndex="-1" role="dialog" aria-hidden="true">*/}
+                        {/*<div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>*/}
+                            {/*<div className="modal-content">*/}
+                                {/*<div className="modal-header">*/}
+                                    {/*<h5 className="modal-title">Газоснабжение</h5>*/}
+                                    {/*<button type="button" className="close" data-dismiss="modal" aria-label="Close">*/}
+                                        {/*<span aria-hidden="true">&times;</span>*/}
+                                    {/*</button>*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-body">*/}
+                                    {/*<table className="table table-bordered table-striped">*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '60%'}}>Общ. потребность (м<sup>3</sup>/час)</td>*/}
+                                            {/*<td>{apz.apz_gas.general}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>На приготов. пищи (м<sup>3</sup>/час)</td>*/}
+                                            {/*<td>{apz.apz_gas.cooking}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Отопление (м<sup>3</sup>/час)</td>*/}
+                                            {/*<td>{apz.apz_gas.heat}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Вентиляция (м<sup>3</sup>/час)</td>*/}
+                                            {/*<td>{apz.apz_gas.ventilation}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Кондиционирование (м<sup>3</sup>/час)</td>*/}
+                                            {/*<td>{apz.apz_gas.conditionaer}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Горячее водоснаб. (м<sup>3</sup>/час)</td>*/}
+                                            {/*<td>{apz.apz_gas.water}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                    {/*</table>*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-footer">*/}
+                                    {/*<button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>*/}
+                                {/*</div>*/}
+                            {/*</div>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
+                    {/*}*/}
 
-                    {apz.apz_phone &&
-                    <div className="modal fade" id="phone_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                        <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title">Телефонизация</h5>
-                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div className="modal-body">
-                                    <table className="table table-bordered table-striped">
-                                        <tbody>
-                                        <tr>
-                                            <td style={{width: '60%'}}>Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</td>
-                                            <td>{apz.apz_phone.service_num}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Телефонная емкость</td>
-                                            <td>{apz.apz_phone.capacity}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Планируемая телефонная канализация</td>
-                                            <td>{apz.apz_phone.sewage}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Пожелания заказчика (тип оборудования, тип кабеля и др.)</td>
-                                            <td>{apz.apz_phone.client_wishes}</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    }
+                    {/*{apz.apz_phone &&*/}
+                    {/*<div className="modal fade" id="phone_modal" tabIndex="-1" role="dialog" aria-hidden="true">*/}
+                        {/*<div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>*/}
+                            {/*<div className="modal-content">*/}
+                                {/*<div className="modal-header">*/}
+                                    {/*<h5 className="modal-title">Телефонизация</h5>*/}
+                                    {/*<button type="button" className="close" data-dismiss="modal" aria-label="Close">*/}
+                                        {/*<span aria-hidden="true">&times;</span>*/}
+                                    {/*</button>*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-body">*/}
+                                    {/*<table className="table table-bordered table-striped">*/}
+                                        {/*<tbody>*/}
+                                        {/*<tr>*/}
+                                            {/*<td style={{width: '60%'}}>Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</td>*/}
+                                            {/*<td>{apz.apz_phone.service_num}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Телефонная емкость</td>*/}
+                                            {/*<td>{apz.apz_phone.capacity}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Планируемая телефонная канализация</td>*/}
+                                            {/*<td>{apz.apz_phone.sewage}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>Пожелания заказчика (тип оборудования, тип кабеля и др.)</td>*/}
+                                            {/*<td>{apz.apz_phone.client_wishes}</td>*/}
+                                        {/*</tr>*/}
+                                        {/*</tbody>*/}
+                                    {/*</table>*/}
+                                {/*</div>*/}
+                                {/*<div className="modal-footer">*/}
+                                    {/*<button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>*/}
+                                {/*</div>*/}
+                            {/*</div>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
+                    {/*}*/}
 
-                    <div className="col-sm-12">
-                        <hr />
-                        <button className="btn btn-outline-secondary pull-right" onClick={this.routeChange.bind(this)}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
-                    </div>
-                </div>
+                    {/*<div className="col-sm-12">*/}
+                        {/*<hr />*/}
+                        {/*<button className="btn btn-outline-secondary pull-right" onClick={this.routeChange.bind(this)}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>*/}
+                    {/*</div>*/}
+                {/*</div>*/}
             </div>
         )
     }

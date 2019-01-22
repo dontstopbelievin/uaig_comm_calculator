@@ -40,6 +40,7 @@ import ResetForm from "./ResetForm";
 import Vacancies from "./Vacancies";
 import AdminApzMonitor from "./AdminApzMonitor";
 import SketchUrban from "./SketchUrban";
+import SketchEngineer from "./SketchEngineer";
 
 let e = new LocalizedStrings({ru,kk});
 
