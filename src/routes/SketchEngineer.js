@@ -255,11 +255,6 @@ class ShowSketch  extends React.Component {
 
         this.onDocNumberChange = this.onDocNumberChange.bind(this);
         this.onCommentChange = this.onCommentChange.bind(this);
-        this.onFileChange = this.onFileChange.bind(this);
-        //
-        this.selectFromList = this.selectFromList.bind(this);
-        this.uploadFile = this.uploadFile.bind(this);
-        this.selectFile = this.selectFile.bind(this);
     }
     componentDidMount() {
         this.props.breadCrumbs();
@@ -270,10 +265,6 @@ class ShowSketch  extends React.Component {
     }
     onCommentChange(e) {
         this.setState({ comment: e.target.value });
-    }
-
-    onFileChange(e) {
-        this.setState({ file: e.target.files[0] });
     }
 
     componentWillMount() {
@@ -528,6 +519,7 @@ class ShowSketch  extends React.Component {
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         xhr.onload = function() {
             var tokenXml = xhr.responseText;
+            console.log(tokenXml);
 
             if (storagePath !== null && storagePath !== "" && this.state.storageAlias !== null && this.state.storageAlias !== "") {
                 if (password !== null && password !== "") {
@@ -681,8 +673,6 @@ class ShowSketch  extends React.Component {
             window.location.reload();
         }
     }
-
-
     toggleMap(value) {
         this.setState({
             showMap: value
@@ -715,20 +705,12 @@ class ShowSketch  extends React.Component {
         return formated_date;
     }
 
-
-
     acceptDeclineSketchForm(sketchId, status, comment) {
         var token = sessionStorage.getItem('tokenInfo');
-        var file = this.state.file;
 
         var formData = new FormData();
         formData.append('response', status);
         formData.append('message', comment);
-        if ( this.state.pack2IdFile != null ) {
-            formData.append('file_id', this.state.pack2IdFile.id);
-        }else{
-            formData.append('file_id', '');
-        }
 
         var xhr = new XMLHttpRequest();
         xhr.open("post", window.url + "api/sketch/engineer/status/" + sketchId, true);
@@ -759,116 +741,6 @@ class ShowSketch  extends React.Component {
             }
         }.bind(this);
         xhr.send(formData);
-    }
-
-    uploadFile(category, e) {
-        var file = e.target.files[0];
-        var name = file.name.replace(/\.[^/.]+$/, "");
-        var progressbar = $('.progress[data-category=' + category + ']');
-
-        if (!file || !category) {
-            alert('Не удалось загрузить файл');
-
-            return false;
-        }
-
-        var formData = new FormData();
-        formData.append('file', file);
-        formData.append('name', name);
-        formData.append('category', category);
-        progressbar.css('display', 'flex');
-        $.ajax({
-            type: 'POST',
-            url: window.url + 'api/file/upload',
-            contentType: false,
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
-            },
-            processData: false,
-            data: formData,
-            xhr: function() {
-                var xhr = new window.XMLHttpRequest();
-
-                xhr.upload.addEventListener("progress", function(evt) {
-                    if (evt.lengthComputable) {
-                        var percentComplete = evt.loaded / evt.total;
-                        percentComplete = parseInt(percentComplete * 100);
-                        $('div', progressbar).css('width', percentComplete + '%');
-                    }
-                }, false);
-
-                return xhr;
-            },
-            success: function (response) {
-                var data = {id: response.id, name: response.name};
-
-                setTimeout(function() {
-                    progressbar.css('display', 'none');
-
-                    switch (category) {
-                        case 3:
-                            this.setState({personalIdFile: data});
-                            break;
-
-                        case 2:
-                            this.setState({apzFile: data});
-                            break;
-
-                        case 1:
-                            this.setState({sketchFile: data});
-                            break;
-
-                    }
-
-                    alert("Файл успешно загружен");
-                }.bind(this), '1000')
-            }.bind(this),
-            error: function (response) {
-                progressbar.css('display', 'none');
-                alert("Не удалось загрузить файл");
-            }
-        });
-    }
-
-    selectFromList(category, e) {
-        var token = sessionStorage.getItem('tokenInfo');
-        var xhr = new XMLHttpRequest();
-        xhr.open("get", window.url + "api/file/category/" + category, true);
-        xhr.setRequestHeader("Authorization", "Bearer " + token);
-        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                var data = JSON.parse(xhr.responseText);
-                this.setState({categoryFiles: data});
-
-                $('#selectFileModal').modal('show');
-            }
-        }.bind(this)
-        xhr.send();
-    }
-
-    selectFile(e) {
-        var fileName = e.target.dataset.name;
-        var id = e.target.dataset.id;
-        var category = e.target.dataset.category;
-        var data = {id: id, name: fileName};
-
-        switch (category) {
-            case '3':
-                this.setState({personalIdFile: data});
-                break;
-
-            case '2':
-                this.setState({apzFile: data});
-                break;
-
-            case '1':
-                this.setState({sketchFile: data});
-                break;
-
-        }
-
-        $('#selectFileModal').modal('hide');
     }
 
     render() {
@@ -1171,13 +1043,8 @@ class ShowSketch  extends React.Component {
                     {/*</div>*/}
                     {/*}*/}
 
-                    {/*<div className={this.state.showButtons ? '' : 'invisible'}>*/}
-                        {/*<div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px', display: 'table'}}>*/}
-                            {/*{!apz.commission &&*/}
-                            {/*<button className="btn btn-raised btn-info" onClick={this.createCommission.bind(this, apz.id)} style={{marginRight: '5px'}}>*/}
-                                {/*Создать комиссию*/}
-                            {/*</button>*/}
-                            {/*}*/}
+                    <div className={this.state.showButtons ? '' : 'invisible'}>
+                        <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px', display: 'table'}}>
                             {!this.state.needSign ?
                                 <div>
                                     <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>Одобрить</button>
@@ -1252,8 +1119,8 @@ class ShowSketch  extends React.Component {
                                     }
                                 </div>
                             }
-                        {/*</div>*/}
-                    {/*</div>*/}
+                          </div>
+                        </div>
 
                     {this.state.engineerReturnedState &&
                     <div className="alert alert-danger">
