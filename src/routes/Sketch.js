@@ -14,7 +14,7 @@ export default class Sketch extends React.Component {
     return (
       <div className="content container body-content citizen-sketch-list-page">
         <div>
-          
+
           <div className="card-body">
             <Switch>
                 <Route path="/panel/citizen/sketch/status/:status/:page" exact render={(props) =>(
@@ -30,7 +30,7 @@ export default class Sketch extends React.Component {
             </Switch>
           </div>
         </div>
-        
+
       </div>
     )
   }
@@ -78,7 +78,7 @@ class AllSketch extends React.Component {
         var pageNumbers = [];
         var start = (response.current_page - 4) > 0 ? (response.current_page - 4) : 1;
         var end = (response.current_page + 4) < response.last_page ? (response.current_page + 4) : response.last_page;
-        
+
         for (start; start <= end; start++) {
           pageNumbers.push(start);
         }
@@ -108,7 +108,7 @@ class AllSketch extends React.Component {
     var curr_hour = jDate.getHours() < 10 ? "0" + jDate.getHours() : jDate.getHours();
     var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
     var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-    
+
     return formated_date;
   }
 
@@ -120,7 +120,7 @@ class AllSketch extends React.Component {
     return (
       <div>
         {this.state.loaderHidden &&
-          <div>  
+          <div>
             <div className="row">
               <div className="col-sm-8">
                 <Link className="btn btn-outline-primary mb-3" to="/panel/citizen/sketch/add">Создать заявление</Link>
@@ -282,10 +282,11 @@ class ShowSketch extends React.Component {
     xhr.onload = function() {
       if (xhr.status === 200) {
         var sketch = JSON.parse(xhr.responseText);
+        console.log(sketch);
         this.setState({sketch: sketch});
         this.setState({loaderHidden: true});
 
-        this.setState({personalIdFile: sketch.files.filter(function(obj) {return obj.files.category_id === 3 })[0]});
+        this.setState({personalIdFile: sketch.files.filter(function(obj) {return obj.category_id === 3 })[0]});
         this.setState({apzFile: sketch.files.filter(function(obj) { return obj.category_id === 2 })[0]});
         this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
 
@@ -442,7 +443,7 @@ class ShowSketch extends React.Component {
     if(date === null) {
       return date;
     }
-    
+
     var jDate = new Date(date);
     var curr_date = jDate.getDate();
     var curr_month = jDate.getMonth() + 1;
@@ -450,10 +451,10 @@ class ShowSketch extends React.Component {
     var curr_hour = jDate.getHours();
     var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
     var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-    
+
     return formated_date;
   }
-  
+
   render() {
     var sketch = this.state.sketch;
 
@@ -474,7 +475,7 @@ class ShowSketch extends React.Component {
         {this.state.loaderHidden &&
           <div>
             <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
-            
+
             <table className="table table-bordered table-striped">
               <tbody>
                 <tr>
@@ -509,16 +510,6 @@ class ShowSketch extends React.Component {
                   <td><b>Дата заявления</b></td>
                   <td>{sketch.created_at && this.toDate(sketch.created_at)}</td>
                 </tr>
-                {this.state.personalIdFile &&
-                <tr>
-                    <td><b>Уд. лич./ Реквизиты</b></td>
-                    <td><a className="text-info pointer" data-category="1" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id, 1)}>Скачать</a>
-                        <div className="progress mb-2" data-category="1" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    </td>
-                </tr>
-                }
               </tbody>
             </table>
 
@@ -527,10 +518,17 @@ class ShowSketch extends React.Component {
                 <tbody>
                   {sketch.files.map(function(file, index) {
                     return(
-                      <tr key={index}>
-                        <td style={{width: '22%'}}>{file.category.name_ru} </td>
-                        <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, file.id)}>Скачать</a></td>
-                      </tr>
+                      <React.Fragment>
+                        {(file.category_id == 1 || file.category_id == 2 || file.category_id == 3) &&
+                          <tr key={index}>
+                            <td style={{width: '22%'}}>{file.category.name_ru} </td>
+                            <td><a className="text-info pointer" data-category={file.id} onClick={this.downloadFile.bind(this, file.id, file.id)}>Скачать</a>
+                              <div className="progress mb-2" data-category={file.id} style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                  <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                              </div>
+                            </td>
+                          </tr>}
+                        </React.Fragment>
                       );
                     }.bind(this))
                   }
@@ -538,7 +536,7 @@ class ShowSketch extends React.Component {
               </table>
             }
 
-            {this.state.showMap && <ShowMap />} 
+            {this.state.showMap && <ShowMap />}
 
             <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
               {this.state.showMapText}
@@ -553,7 +551,7 @@ class ShowSketch extends React.Component {
                     <tbody>
                       {sketch.status_id === 2 ?
                         <tr>
-                          <td style={{width: '22%'}}><b>Решение на эскизный проект</b></td> 
+                          <td style={{width: '22%'}}><b>Решение на эскизный проект</b></td>
                           <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>Скачать</a></td>
                         </tr>
                         :
@@ -574,7 +572,7 @@ class ShowSketch extends React.Component {
             </div>
           </div>
         }
-          
+
         {!this.state.loaderHidden &&
           <div style={{textAlign: 'center'}}>
             <Loader type="Oval" color="#46B3F2" height="200" width="200" />
@@ -605,11 +603,11 @@ class ShowMap extends React.Component {
       <div>
         <h5 className="block-title-2 mt-5 mb-3">Карта</h5>
         <div id="coordinates" style={{display: 'none'}}></div>
-        <div className="col-md-12 viewDiv"> 
-          <EsriLoaderReact options={options} 
+        <div className="col-md-12 viewDiv">
+          <EsriLoaderReact options={options}
             modulesToLoad={[
               'esri/views/MapView',
-              
+
               'esri/widgets/LayerList',
 
               'esri/WebScene',
@@ -621,8 +619,8 @@ class ShowMap extends React.Component {
               'dojo/dom',
               'esri/Graphic',
               'dojo/domReady!'
-            ]}    
-            
+            ]}
+
             onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap, webMercatorUtils, dom, Graphic], containerNode}) => {
               var map = new WebMap({
                 basemap: "streets",
@@ -630,11 +628,11 @@ class ShowMap extends React.Component {
                   id: "caa580cafc1449dd9aa4fd8eafd3a14d"
                 }
               });
-              
+
               var view = new MapView({
                 container: containerNode,
                 map: map,
-                center: [76.886, 43.250], 
+                center: [76.886, 43.250],
                 scale: 10000
               });
 
@@ -655,7 +653,7 @@ class ShowMap extends React.Component {
                   placeholder: "Кадастровый поиск"
                 }]
               });
-    
+
               view.when( function(callback){
                 var layerList = new LayerList({
                   view: view
@@ -673,7 +671,7 @@ class ShowMap extends React.Component {
                 console.log('MapView promise rejected! Message: ', error);
               });
             }}
-          /> 
+          />
         </div>
       </div>
     )
@@ -734,6 +732,7 @@ class AddSketch extends React.Component {
       this.uploadFile=this.uploadFile.bind(this);
       this.saveApz=this.saveApz.bind(this);
       this.onAreaCheck=this.onAreaCheck.bind(this);
+      this.selectFile = this.selectFile.bind(this);
   }
 
   toggleMap(value) {
@@ -850,86 +849,70 @@ class AddSketch extends React.Component {
         xhr.send();
     }
 
+    uploadFile(category, e) {
+      var file = e.target.files[0];
+      var name = file.name.replace(/\.[^/.]+$/, "");
+      var progressbar = $('.progress[data-category=' + category + ']');
 
-  uploadFile(category, e) {
-        var file = e.target.files[0];
-        var name = file.name.replace(/\.[^/.]+$/, "");
-        var progressbar = $('.progress[data-category=' + category + ']');
+      if (!file || !category) {
+        alert('Не удалось загрузить файл');
+        return false;
+      }
 
-        if (!file || !category) {
-            alert('Не удалось загрузить файл');
+      var formData = new FormData();
+      formData.append('file', file);
+      formData.append('name', name);
+      formData.append('category', category);
+      progressbar.css('display', 'flex');
+      $.ajax({
+        type: 'POST',
+        url: window.url + 'api/file/upload',
+        contentType: false,
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
+        },
+        processData: false,
+        data: formData,
+        xhr: function() {
+          var xhr = new window.XMLHttpRequest();
 
-            return false;
-        }
-
-        var formData = new FormData();
-        formData.append('file', file);
-        formData.append('name', name);
-        formData.append('category', category);
-        progressbar.css('display', 'flex');
-        $.ajax({
-            type: 'POST',
-            url: window.url + 'api/file/upload',
-            contentType: false,
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
-            },
-            processData: false,
-            data: formData,
-            xhr: function() {
-                var xhr = new window.XMLHttpRequest();
-
-                xhr.upload.addEventListener("progress", function(evt) {
-                    if (evt.lengthComputable) {
-                        var percentComplete = evt.loaded / evt.total;
-                        percentComplete = parseInt(percentComplete * 100);
-                        $('div', progressbar).css('width', percentComplete + '%');
-                    }
-                }, false);
-
-                return xhr;
-            },
-            success: function (response) {
-                switch (category) {
-                    case 1:
-                        this.setState({sketchFile: data});
-                        break;
-                    case 2:
-                        this.setState({apzFile: data});
-                        break;
-                    case 3:
-                        this.setState({personalIdFile: data});
-                        break;
-                    case 27:
-                        this.setState({additionalFile: data});
-                        break;
-
-                    case 20:
-                        this.setState({paymentPhotoFile: data});
-                        break;
-
-                    case 22:
-                        this.setState({survey: data});
-                        break;
-
-                    case 24:
-                        this.setState({claimedCapacityJustification: data});
-                        break;
-                }
-
-                var data = {id: response.id, name: response.name};
-                setTimeout(function() {
-                    progressbar.css('display', 'none');
-                    alert("Файл успешно загружен");
-                }.bind(this), '1000')
-            }.bind(this),
-            error: function (response) {
-                progressbar.css('display', 'none');
-                alert("Не удалось загрузить файл");
+          xhr.upload.addEventListener("progress", function(evt) {
+            if (evt.lengthComputable) {
+              var percentComplete = evt.loaded / evt.total;
+              percentComplete = parseInt(percentComplete * 100);
+              $('div', progressbar).css('width', percentComplete + '%');
             }
-        });
-    }
+          }, false);
 
+          return xhr;
+        },
+        success: function (response) {
+          var data = {id: response.id, name: response.name};
+
+          setTimeout(function() {
+            progressbar.css('display', 'none');
+            switch (category) {
+              case 3:
+                this.setState({personalIdFile: data});
+                break;
+
+              case 2:
+                this.setState({apzFile: data});
+                break;
+
+              case 1:
+                this.setState({sketchFile: data});
+                break;
+            }
+            alert("Файл успешно загружен");
+          }.bind(this), '1000')
+        }.bind(this),
+        error: function (response) {
+          progressbar.css('display', 'none');
+          alert("Не удалось загрузить файл");
+        }
+      });
+    }
 
   componentDidMount() {
     console.log(sessionStorage.getItem('userId'));
@@ -972,7 +955,7 @@ class AddSketch extends React.Component {
     var type = checkbox.attr('data-type');
     var stateCopy = Object.assign({}, this.state);
     stateCopy.checkboxes[type] = checkbox.prop('checked');
-    
+
     if (checkbox.prop('checked')) {
       checkbox.parent().addClass('active');
     } else {
@@ -1017,64 +1000,88 @@ class AddSketch extends React.Component {
       xhr.send();
   }
 
+  selectFile(e) {
+    var fileName = e.target.dataset.name;
+    var id = e.target.dataset.id;
+    var category = e.target.dataset.category;
+    var data = {id: id, name: fileName};
+
+    switch (category) {
+      case '3':
+        this.setState({personalIdFile: data});
+        break;
+
+      case '1':
+        this.setState({sketchFile: data});
+        break;
+
+      case '2':
+        this.setState({apzFile: data});
+        break;
+    }
+
+    $('#selectFileModal').modal('hide');
+  }
+
+
     componentWillMount() {
         if (this.props.match.params.id) {
             this.getSketchInfo();
         }
     }
 
-        getSketchInfo() {
-        this.setState({loaderHidden: false});
+    getSketchInfo() {
+    this.setState({loaderHidden: false});
 
-        var id = this.props.match.params.id;
-        var token = sessionStorage.getItem('tokenInfo');
+    var id = this.props.match.params.id;
+    var token = sessionStorage.getItem('tokenInfo');
 
-        var xhr = new XMLHttpRequest();
-        xhr.open("get", window.url + "api/sketch/citizen/detail/" + id, true);
-        xhr.setRequestHeader("Authorization", "Bearer " + token);
-        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                var sketch = JSON.parse(xhr.responseText);
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/sketch/citizen/detail/" + id, true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            var sketch = JSON.parse(xhr.responseText);
 
-                this.setState({applicant: sketch.applicant ? sketch.applicant : '' });
-                this.setState({address: sketch.address ? sketch.address : '' });
-                this.setState({phone: sketch.phone ? sketch.phone : '' });
-                this.setState({region: sketch.region ? sketch.region : '' });
-                this.setState({designer: sketch.designer ? sketch.designer : '' });
-                this.setState({type: sketch.type ? sketch.type : '' });
-                this.setState({projectName: sketch.project_name ? sketch.project_name : '' });
-                this.setState({projectAddress: sketch.project_address ? sketch.project_address : '' });
-                // this.setState({projectAddressCoordinates: sketch.project_address_coordinates ? sketch.project_address_coordinates : '' });
-                // this.setState({hasCoordinates: sketch.project_address_coordinates ? true : false });
+            this.setState({applicant: sketch.applicant ? sketch.applicant : '' });
+            this.setState({address: sketch.address ? sketch.address : '' });
+            this.setState({phone: sketch.phone ? sketch.phone : '' });
+            this.setState({region: sketch.region ? sketch.region : '' });
+            this.setState({designer: sketch.designer ? sketch.designer : '' });
+            this.setState({type: sketch.type ? sketch.type : '' });
+            this.setState({projectName: sketch.project_name ? sketch.project_name : '' });
+            this.setState({projectAddress: sketch.project_address ? sketch.project_address : '' });
+            // this.setState({projectAddressCoordinates: sketch.project_address_coordinates ? sketch.project_address_coordinates : '' });
+            // this.setState({hasCoordinates: sketch.project_address_coordinates ? true : false });
 
-                this.setState({personalIdFile: sketch.files.filter(function(obj) { return obj.category_id === 3 })[0]});
-                this.setState({apzFile: sketch.files.filter(function(obj) { return obj.category_id === 2 })[0]});
-                this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
+            this.setState({personalIdFile: sketch.files.filter(function(obj) { return obj.category_id === 3 })[0]});
+            this.setState({apzFile: sketch.files.filter(function(obj) { return obj.category_id === 2 })[0]});
+            this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
 
-                this.setState({objectType: sketch.object_type ? sketch.object_type : '' });
-                this.setState({customer: sketch.customer ? sketch.customer : '' });
-                // this.setState({cadastralNumber: sketch.cadastral_number ? sketch.cadastral_number : '' });
-                this.setState({objectTerm: sketch.object_term ? sketch.object_term : '' });
-                this.setState({objectLevel: sketch.object_level ? sketch.object_level : '' });
-                this.setState({commonArea: sketch.common_area ? sketch.common_area : '' });
-                this.setState({buildArea: sketch.build_area ? sketch.build_area : '' });
-                this.setState({landArea: sketch.land_area ? sketch.land_area : '' });
-                this.setState({coverArea: sketch.cover_area ? sketch.cover_area : '' });
-                this.setState({greenArea: sketch.green_area ? sketch.green_area : '' });
-                this.setState({basementFacade: sketch.basement_facade ? sketch.basement_facade : '' });
-                this.setState({basementColor: sketch.basement_color ? sketch.basement_color : '' });
-                this.setState({wallsFacade: sketch.walls_facade ? sketch.walls_facade : '' });
-                this.setState({wallsColor: sketch.walls_color ? sketch.walls_color : '' });
+            this.setState({objectType: sketch.object_type ? sketch.object_type : '' });
+            this.setState({customer: sketch.customer ? sketch.customer : '' });
+            // this.setState({cadastralNumber: sketch.cadastral_number ? sketch.cadastral_number : '' });
+            this.setState({objectTerm: sketch.object_term ? sketch.object_term : '' });
+            this.setState({objectLevel: sketch.object_level ? sketch.object_level : '' });
+            this.setState({commonArea: sketch.common_area ? sketch.common_area : '' });
+            this.setState({buildArea: sketch.build_area ? sketch.build_area : '' });
+            this.setState({landArea: sketch.land_area ? sketch.land_area : '' });
+            this.setState({coverArea: sketch.cover_area ? sketch.cover_area : '' });
+            this.setState({greenArea: sketch.green_area ? sketch.green_area : '' });
+            this.setState({basementFacade: sketch.basement_facade ? sketch.basement_facade : '' });
+            this.setState({basementColor: sketch.basement_color ? sketch.basement_color : '' });
+            this.setState({wallsFacade: sketch.walls_facade ? sketch.walls_facade : '' });
+            this.setState({wallsColor: sketch.walls_color ? sketch.walls_color : '' });
 
-            }
+        }
 
-            this.setState({loaderHidden: true});
-        }.bind(this)
-        xhr.send();
-    }
+        this.setState({loaderHidden: true});
+    }.bind(this)
+    xhr.send();
+}
 
-  
+
   saveApz(publish,e) {
     e.preventDefault();
 

@@ -287,7 +287,7 @@ class ShowSketch  extends React.Component {
             if (xhr.status === 200) {
                 var data = JSON.parse(xhr.responseText);
                 var commission = data.commission;
-                // var hasReponse = data.state_history.filter(function(obj) { return obj.state_id === 5 || obj.state_id === 6 });
+                var hasReponse = data.state_history.filter(function(obj) { return obj.state_id === 5 || obj.state_id === 6 });
                 // console.log("______________________________");console.log(data);
                 this.setState({sketch: data});
                 this.setState({showButtons: false});
@@ -331,9 +331,9 @@ class ShowSketch  extends React.Component {
                 //     }
                 // }
 
-                // if ((data.status_id === 4 || data.status_id === 5) && hasReponse.length == 0) {
-                //     this.setState({showButtons: true});
-                // }
+                if (data.status_id === 4 && hasReponse.length == 0) {
+                    this.setState({showButtons: true});
+                }
                 //
                 // if (hasReponse.length == 0 || commission) {
                 //     this.setState({showCommission: true});
@@ -874,7 +874,7 @@ class ShowSketch  extends React.Component {
                     </button>
                 </div>
 
-                {/*<div className="col-sm-12">*/}
+                <div className="col-sm-12">
                     {/*{this.state.showCommission &&*/}
                     {/*<div>*/}
                         {/*<h5 className="block-title-2 mt-3 mb-3">Решение</h5>*/}
@@ -2096,11 +2096,11 @@ class ShowSketch  extends React.Component {
                     {/*</div>*/}
                     {/*}*/}
 
-                    {/*<div className="col-sm-12">*/}
-                        {/*<hr />*/}
-                        {/*<button className="btn btn-outline-secondary pull-right" onClick={this.routeChange.bind(this)}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>*/}
-                    {/*</div>*/}
-                {/*</div>*/}
+                    <div className="col-sm-12">
+                        <hr />
+                        <button className="btn btn-outline-secondary pull-right" onClick={this.routeChange.bind(this)}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
+                    </div>
+                </div>
             </div>
         )
     }

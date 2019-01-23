@@ -148,10 +148,10 @@ class ShowSketch extends React.Component {
                 //     }
                 //     break;
                 // }
-                // this.setState({engineerReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender == 'engineer'})[0]});
-                // this.setState({apzReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender == 'apz'})[0]});
-                // this.setState({needSign: sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
-                // this.setState({engineerSign: sketch.files.filter(function(obj) { return obj.category_id === 28 })[0]});
+                //this.setState({engineerReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender == 'engineer'})[0]});
+                //this.setState({apzReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender == 'apz'})[0]});
+                this.setState({needSign: sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
+                this.setState({engineerSign: sketch.files.filter(function(obj) { return obj.category_id === 28 })[0]});
                 if(sketch.apz_head_id){this.setState({apz_head_id: sketch.apz_head_id});}
 
                 if (sketch.status_id === 3) {
@@ -802,19 +802,8 @@ class ShowSketch extends React.Component {
                             </td>
                         </tr>
                         }
-
-                        {/*{this.state.additionalFile &&*/}
-                        {/*<tr>*/}
-                            {/*<td><b>Дополнительно</b></td>*/}
-                            {/*<td><a className="text-info pointer" data-category="4" onClick={this.downloadFile.bind(this, this.state.additionalFile.id, 4)}>Скачать</a>*/}
-                                {/*<div className="progress mb-2" data-category="4" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
-                                    {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
-                                {/*</div>*/}
-                            {/*</td>*/}
-                        {/*</tr>*/}
-                        {/*}*/}
                         </tbody>
-                    {/*</table>*/}
+                    </table>
 
                     {/*<h5 className="block-title-2 mb-3">Службы</h5>*/}
 
@@ -1427,26 +1416,25 @@ class ShowSketch extends React.Component {
                         </div>
                     </div>
 
-                    {/*{sketch.state_history.length > 0 &&*/}
-                    {/*<div>*/}
-                        {/*<h5 className="block-title-2 mb-3 mt-3">Логи</h5>*/}
-                        {/*<div className="border px-3 py-2">*/}
-                            {/*{sketch.state_history.map(function(state, index) {*/}
-                                {/*return(*/}
-                                    {/*<div key={index}>*/}
-                                        {/*<p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>*/}
-                                    {/*</div>*/}
-                                {/*);*/}
-                            {/*}.bind(this))}*/}
-                        {/*</div>*/}
-                    {/*</div>*/}
-                    {/*}*/}
+                    {sketch.state_history.length > 0 &&
+                      <div>
+                        <h5 className="block-title-2 mb-3 mt-3">Логи</h5>
+                          <div className="border px-3 py-2">
+                              {sketch.state_history.map(function(state, index) {
+                                  return(
+                                      <div key={index}>
+                                          <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
+                                      </div>
+                                  );
+                              }.bind(this))}
+                          </div>
+                      </div>
+                    }
 
                     <div className="col-sm-12">
                         <hr />
                         <button className="btn btn-outline-secondary pull-right" onClick={this.routeChange.bind(this)}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
                     </div>
-                        </table>
                 </div>
                 }
 
@@ -1831,4 +1819,3 @@ class AllSketch extends React.Component {
         )
     }
 }
-
