@@ -253,11 +253,11 @@ class ShowSketch extends React.Component {
       if (xhr.status === 200) {
         var sketch = JSON.parse(xhr.responseText);
 
-        if (sketch.status_id === 3 && !sketch.apz_department_response) {
+        if (sketch.status_id === 6 && !sketch.apz_department_response) {
           this.setState({showButtons: true});
         }
 
-        if (sketch.status_id === 3 && sketch.apz_department_response && !this.state.xmlFile) {
+        if (sketch.status_id === 6 && sketch.apz_department_response && !this.state.xmlFile) {
           this.setState({showSignButtons: true});
         }
 
@@ -269,7 +269,7 @@ class ShowSketch extends React.Component {
           this.setState({isSigned: true});
         }
 
-        if (sketch.status_id === 3 && this.state.xmlFile) {
+        if (sketch.status_id === 6 && this.state.xmlFile) {
           this.setState({showSendButton: true});
         }
 

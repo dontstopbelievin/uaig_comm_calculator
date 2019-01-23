@@ -41,6 +41,7 @@ import Vacancies from "./Vacancies";
 import AdminApzMonitor from "./AdminApzMonitor";
 import SketchUrban from "./SketchUrban";
 import SketchEngineer from "./SketchEngineer";
+import SketchHead from "./SketchHead";
 
 let e = new LocalizedStrings({ru,kk});
 
@@ -207,6 +208,7 @@ export default class PanelBase extends React.Component{
 
                 {/*  the routes is using for role: Head */}
                 <Route path="/panel/head/apz" render={(props) => ( <Head breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                <Route path="/panel/head/sketch" render={(props) => ( <SketchHead breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/head/headreport" render={(props) => ( <HeadReport breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 {/*  the routes is using for role: Head */}
 

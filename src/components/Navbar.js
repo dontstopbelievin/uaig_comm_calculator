@@ -472,6 +472,7 @@ class HeadMenu extends Component {
     return (
       <div>
         <NavLink to={"/panel/head/apz"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/panel/head/sketch"} replace className="dropdown-item" activeClassName="active">Эскизные проекты</NavLink>
         <NavLink to={"/panel/common/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         <NavLink to={"/panel/head/headreport"} replace className="dropdown-item" activeClassName="active">Фильтр</NavLink>
         <NavLink to={"/panel/common/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
