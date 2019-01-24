@@ -311,7 +311,7 @@ class ShowSketch extends React.Component {
         xhr.onload = function() {
             if (xhr.status === 200) {
                 var data = JSON.parse(xhr.responseText);
-                var commission = data.commission;
+                console.log(data);
                 var hasDeclined = data.state_history.filter(function(obj) {
                     return obj.state_id === 3
                 });

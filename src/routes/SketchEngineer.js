@@ -286,13 +286,11 @@ class ShowSketch  extends React.Component {
         xhr.onload = function() {
             if (xhr.status === 200) {
                 var data = JSON.parse(xhr.responseText);
-                var commission = data.commission;
-
                 var hasReponse = data.state_history.filter(function(obj) { return obj.state_id === 5 || obj.state_id === 6 });
 
                 // console.log("______________________________");console.log(data);
                 this.setState({sketch: data});
-                this.setState({showButtons: true});
+                this.setState({showButtons: false});
                 this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
                 this.setState({apzFile: data.files.filter(function(obj) { return obj.category_id === 2 })[0]});
                 this.setState({sketchFile: data.files.filter(function(obj) { return obj.category_id === 1 })[0]});
@@ -337,10 +335,6 @@ class ShowSketch  extends React.Component {
                 if (data.status_id === 4 && hasReponse.length == 0) {
                     this.setState({showButtons: true});
                 }
-
-                // if ((data.status_id === 4 ) && hasResponse.length == 0) {
-                //     this.setState({showButtons: true});
-                // }
 
                 //
                 // if (hasReponse.length == 0 || commission) {
@@ -1121,7 +1115,7 @@ class ShowSketch  extends React.Component {
                                         <div>
                                             <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
                                                     onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted")}>
-                                                В отдел АПЗ
+                                                Главному архитектору
                                             </button>
                                         </div>
                                     }
@@ -2103,6 +2097,29 @@ class ShowSketch  extends React.Component {
                         {/*</div>*/}
                     {/*</div>*/}
                     {/*}*/}
+
+                    {sketch.state_history.length > 0 &&
+                      <div>
+                        <h5 className="block-title-2 mb-3 mt-3">Логи</h5>
+                        <div className="border px-3 py-2">
+                          {sketch.state_history.map(function(state, index) {
+                            if(state.state_id == 21){
+                              return(
+                                <div key={index}>
+                                  <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
+                                </div>
+                              );
+                            }else{
+                              return(
+                                <div key={index}>
+                                  <p className="mb-0">{state.created_at}&emsp;{state.state.name}</p>
+                                </div>
+                              );
+                            }
+                          }.bind(this))}
+                        </div>
+                      </div>
+                    }
 
                     <div className="col-sm-12">
                         <hr />

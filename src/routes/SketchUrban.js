@@ -1705,7 +1705,6 @@ class AllSketch extends React.Component {
                     </div>
                     <ul className="nav nav-tabs mb-2 pull-right">
                         <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/urban/sketch/status/active/1" replace>Активные</NavLink></li>
-                        <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'awaiting'} to="/panel/urban/sketch/status/awaiting/1" replace>В ожидании</NavLink></li>
                         <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/urban/sketch/status/accepted/1" replace>Принятые</NavLink></li>
                         <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/urban/sketch/status/declined/1" replace>Отказанные</NavLink></li>
                     </ul>
