@@ -805,106 +805,61 @@ class ShowSketch extends React.Component {
                         </tbody>
                     </table>
 
-                    {/*<h5 className="block-title-2 mb-3">Службы</h5>*/}
+                    <h5 className="block-title-2 mb-3">Показатели</h5>
 
-                    {/*<table className="table table-bordered table-striped">*/}
-                        {/*<tbody>*/}
-                        {/*{apz.apz_water &&*/}
-                        {/*<tr>*/}
-                            {/*<td style={{width: '40%'}}><b>Водоснабжение</b></td>*/}
-                            {/*<td><a className="text-info pointer" data-toggle="modal" data-target="#water_modal">Просмотр</a></td>*/}
-                        {/*</tr>*/}
-                        {/*}*/}
+                    <table className="table table-bordered table-striped">
+                        <tbody>
+                        {sketch.gen_plan &&
+                        <tr>
+                            <td style={{width: '40%'}}><b>Показатели по ген плану</b></td>
+                            <td><a className="text-info pointer" data-toggle="modal" data-target="#water_modal">Просмотр</a></td>
+                        </tr>
+                        }
 
-                        {/*{apz.apz_heat &&*/}
-                        {/*<tr>*/}
-                            {/*<td style={{width: '40%'}}><b>Теплоснабжение</b></td>*/}
-                            {/*<td><a className="text-info pointer" data-toggle="modal" data-target="#heat_modal">Просмотр</a></td>*/}
-                        {/*</tr>*/}
-                        {/*}*/}
+                        {sketch.project_value &&
+                        <tr>
+                            <td style={{width: '40%'}}><b>Показатели по проекту</b></td>
+                            <td><a className="text-info pointer" data-toggle="modal" data-target="#heat_modal">Просмотр</a></td>
+                        </tr>
+                        }
 
-                        {/*{apz.apz_electricity &&*/}
-                        {/*<tr>*/}
-                            {/*<td style={{width: '40%'}}><b>Электроснабжение</b></td>*/}
-                            {/*<td><a className="text-info pointer" data-toggle="modal" data-target="#electro_modal">Просмотр</a></td>*/}
-                        {/*</tr>*/}
-                        {/*}*/}
+                        {sketch.architect_decision &&
+                        <tr>
+                            <td style={{width: '40%'}}><b>Архитектурные решения по отделки фасада здания и сооружения</b></td>
+                            <td><a className="text-info pointer" data-toggle="modal" data-target="#electro_modal">Просмотр</a></td>
+                        </tr>
+                        }
 
-                        {/*{apz.apz_gas &&*/}
-                        {/*<tr>*/}
-                            {/*<td style={{width: '40%'}}><b>Газоснабжение</b></td>*/}
-                            {/*<td><a className="text-info pointer" data-toggle="modal" data-target="#gas_modal">Просмотр</a></td>*/}
-                        {/*</tr>*/}
-                        {/*}*/}
+                        </tbody>
+                    </table>
 
-                        {/*{apz.apz_phone &&*/}
-                        {/*<tr>*/}
-                            {/*<td style={{width: '40%'}}><b>Телефонизация</b></td>*/}
-                            {/*<td><a className="text-info pointer" data-toggle="modal" data-target="#phone_modal">Просмотр</a></td>*/}
-                        {/*</tr>*/}
-                        {/*}*/}
-                        {/*</tbody>*/}
-                    {/*</table>*/}
-
-                    {/*{apz.apz_water &&*/}
-                    {/*<div className="modal fade" id="water_modal" tabIndex="-1" role="dialog" aria-hidden="true">*/}
-                        {/*<div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>*/}
-                            {/*<div className="modal-content">*/}
-                                {/*<div className="modal-header">*/}
-                                    {/*<h5 className="modal-title">Водоснабжение</h5>*/}
-                                    {/*<button type="button" className="close" data-dismiss="modal" aria-label="Close">*/}
-                                        {/*<span aria-hidden="true">&times;</span>*/}
-                                    {/*</button>*/}
-                                {/*</div>*/}
-                                {/*<div className="modal-body">*/}
-                                    {/*<table className="table table-bordered table-striped" style={{textAlign: 'left'}}>*/}
-                                        {/*<tbody>*/}
-                                        {/*<tr>*/}
-                                            {/*<td style={{width: '70%'}}>Общая потребность (м<sup>3</sup>/сутки)</td>*/}
-                                            {/*<td>{apz.apz_water.requirement}</td>*/}
-                                        {/*</tr>*/}
-                                        {/*<tr>*/}
-                                            {/*<td>Общая потребность питьевой воды (м<sup>3</sup>/час)</td>*/}
-                                            {/*<td>{apz.apz_water.requirement_hour}</td>*/}
-                                        {/*</tr>*/}
-                                        {/*<tr>*/}
-                                            {/*<td>Общая потребность (л/сек макс)</td>*/}
-                                            {/*<td>{apz.apz_water.requirement_sec}</td>*/}
-                                        {/*</tr>*/}
-                                        {/*<tr>*/}
-                                            {/*<td>Хозпитьевые нужды (м<sup>3</sup>/сутки)</td>*/}
-                                            {/*<td>{apz.apz_water.drinking}</td>*/}
-                                        {/*</tr>*/}
-                                        {/*<tr>*/}
-                                            {/*<td>Хозпитьевые нужды (м<sup>3</sup>/час)</td>*/}
-                                            {/*<td>{apz.apz_water.drinking_hour}</td>*/}
-                                        {/*</tr>*/}
-                                        {/*<tr>*/}
-                                            {/*<td>Хозпитьевые нужды (л/сек макс)</td>*/}
-                                            {/*<td>{apz.apz_water.drinking_sec}</td>*/}
-                                        {/*</tr>*/}
-                                        {/*<tr>*/}
-                                            {/*<td>Производственные нужды (м<sup>3</sup>/сутки)</td>*/}
-                                            {/*<td>{apz.apz_water.production}</td>*/}
-                                        {/*</tr>*/}
-                                        {/*<tr>*/}
-                                            {/*<td>Производственные нужды (м<sup>3</sup>/час)</td>*/}
-                                            {/*<td>{apz.apz_water.production_hour}</td>*/}
-                                        {/*</tr>*/}
-                                        {/*<tr>*/}
-                                            {/*<td>Производственные нужды (л/сек макс)</td>*/}
-                                            {/*<td>{apz.apz_water.production_sec}</td>*/}
-                                        {/*</tr>*/}
-                                        {/*<tr>*/}
-                                            {/*<td>Расходы пожаротушения (л/сек наружное)</td>*/}
-                                            {/*<td>{apz.apz_water.fire_fighting}</td>*/}
-                                        {/*</tr>*/}
-                                        {/*<tr>*/}
-                                            {/*<td>Расходы пожаротушения (л/сек внутреннее)</td>*/}
-                                            {/*<td>{apz.apz_water.fire_fighting}</td>*/}
-                                        {/*</tr>*/}
-                                        {/*</tbody>*/}
-                                    {/*</table>*/}
+                    {sketch.gen_plan &&
+                    <div className="modal fade" id="water_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                        <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">Показатели по ген плану</h5>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    <table className="table table-bordered table-striped" style={{textAlign: 'left'}}>
+                                        <tbody>
+                                        <tr>
+                                            <td style={{width: '70%'}}>Площадь земельного участка (м<sup>2</sup>)</td>
+                                            <td>{sketch.gen_plan.land_area}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Площадь покрытия (м<sup>3</sup>/час)</td>
+                                            <td>{sketch.gen_plan.cover_area}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Площадь озеленения (л/сек макс)</td>
+                                            <td>{sketch.gen_plan.cover_area}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
 
                                     {/*{apz.apz_sewage &&*/}
                                     {/*<table className="table table-bordered table-striped" style={{textAlign: 'left'}}>*/}
@@ -944,14 +899,14 @@ class ShowSketch extends React.Component {
                                         {/*</tbody>*/}
                                     {/*</table>*/}
                                     {/*}*/}
-                                {/*</div>*/}
-                                {/*<div className="modal-footer">*/}
-                                    {/*<button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>*/}
-                                {/*</div>*/}
-                            {/*</div>*/}
-                        {/*</div>*/}
-                    {/*</div>*/}
-                    {/*}*/}
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    }
 
                     {/*{apz.apz_heat &&*/}
                     {/*<div className="modal fade" id="heat_modal" tabIndex="-1" role="dialog" aria-hidden="true">*/}
@@ -1328,7 +1283,12 @@ class ShowSketch extends React.Component {
                                     {!this.state.needSign ?
                                         <div style={{margin: 'auto', display: 'table'}}>{console.log(this.state.engineerReturnedState)}
                                             {!this.state.backFromHead && !this.state.engineerSign  && !this.state.engineerReturnedState ?
-                                                <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted")}>Отправить инженеру</button>
+                                               <div>
+                                                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted")}>Отправить инженеру</button>
+                                                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted", "chief")}>
+                                                       Отправить главному архитектору
+                                                   </button>
+                                               </div>
                                                 :
                                                 <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>Одобрить</button>}
                                             <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
@@ -1368,7 +1328,7 @@ class ShowSketch extends React.Component {
                                                 </div>
                                                 :
                                                 <div>
-                                                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted", "apz")}>
+                                                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted", "chief")}>
                                                         Отправить главному архитектору
                                                     </button>
                                                 </div>
