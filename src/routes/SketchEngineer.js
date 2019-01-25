@@ -783,11 +783,11 @@ class ShowSketch  extends React.Component {
                     <table className="table table-bordered table-striped">
                         <tbody>
                         <tr>
-                            <td style={{width: '50%'}}><b>Разработчик</b></td>
+                            {/*<td style={{width: '50%'}}><b>Разработчик</b></td>*/}
                             <td><b>Название проекта</b></td>
                         </tr>
                         <tr>
-                            <td>{sketch.designer}</td>
+                            {/*<td>{sketch.designer}</td>*/}
                             <td>{sketch.project_name}</td>
                         </tr>
                         </tbody>
@@ -833,7 +833,7 @@ class ShowSketch  extends React.Component {
                         <tbody>
                         {this.state.personalIdFile &&
                         <tr>
-                            <td><b>Уд. лич./ Реквизиты</b></td>
+                            <td style={{width: '70%'}}><b>Уд. лич./ Реквизиты</b></td>
                             <td><a className="text-info pointer" data-category="1" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id, 1)}>Скачать</a>
                                 <div className="progress mb-2" data-category="1" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                                     <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
@@ -844,7 +844,7 @@ class ShowSketch  extends React.Component {
 
                         {this.state.apzFile &&
                         <tr>
-                            <td><b>Архитектурно-планировочное задание</b></td>
+                            <td style={{width: '70%'}}><b>Архитектурно-планировочное задание</b></td>
                             <td><a className="text-info pointer" data-category="2" onClick={this.downloadFile.bind(this, this.state.apzFile.id, 2)}>Скачать</a>
                                 <div className="progress mb-2" data-category="2" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                                     <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
@@ -855,7 +855,7 @@ class ShowSketch  extends React.Component {
 
                         {this.state.sketchFile &&
                         <tr>
-                            <td><b>Эскиз</b></td>
+                            <td style={{width: '70%'}}><b>Эскиз</b></td>
                             <td><a className="text-info pointer" data-category="3" onClick={this.downloadFile.bind(this, this.state.sketchFile.id, 3)}>Скачать</a>
                                 <div className="progress mb-2" data-category="3" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                                     <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
@@ -863,10 +863,160 @@ class ShowSketch  extends React.Component {
                             </td>
                         </tr>
                         }
+
+
                         </tbody>
                     </table>
 
+                    <h5 className="block-title-2 mt-3 mb-3">Показатели</h5>
+                    <table className="table table-bordered table-striped">
+                        <tbody>
+
+                        {sketch &&
+                        <tr>
+                            <td style={{width: '70%'}}><b>Показатели по ген плану</b></td>
+                            <td><a className="text-info pointer" data-toggle="modal" data-target="#gen_modal">Просмотр</a></td>
+                        </tr>
+                        }
+
+                        {sketch &&
+                        <tr>
+                            <td style={{width: '70%'}}><b>Показатели по проекту</b></td>
+                            <td><a className="text-info pointer" data-toggle="modal" data-target="#project_modal">Просмотр</a></td>
+                        </tr>
+                        }
+
+                        {sketch &&
+                        <tr>
+                            <td style={{width: '70%'}}><b>Архитектурные решения по отделки фасада здания и сооружения</b></td>
+                            <td><a className="text-info pointer" data-toggle="modal" data-target="#architect_modal">Просмотр</a></td>
+                        </tr>
+                        }
+
+                        </tbody>
+                    </table>
+
+                    {sketch &&
+                    <div className="modal fade" id="gen_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                        <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">Показатели по ген плану</h5>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    <table className="table table-bordered table-striped" style={{textAlign: 'left'}}>
+                                        <tbody>
+                                        <tr>
+                                            <td style={{width: '70%'}}>Площадь земельного участка (га)</td>
+                                            <td>{sketch.land_area}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Площадь покрытия (м<sup>2</sup>)</td>
+                                            <td>{sketch.cover_area}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Площадь озеленения (м<sup>2</sup>)</td>
+                                            <td>{sketch.green_area}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    }
+
+                    {sketch &&
+                    <div className="modal fade" id="project_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                        <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">Показатели по проекту</h5>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    <table className="table table-bordered table-striped" style={{textAlign: 'left'}}>
+                                        <tbody>
+                                        <tr>
+                                            <td style={{width: '70%'}}>Этажность</td>
+                                            <td>{sketch.object_level}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Общая площадь(м<sup>2</sup>)</td>
+                                            <td>{sketch.common_area}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Площадь застройки(м<sup>2</sup>)</td>
+                                            <td>{sketch.build_area}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Тип проекта</td>
+                                            <td>{sketch.object_type}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Сроки строительства</td>
+                                            <td>{sketch.object_term}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    {sketch &&
+                    <div className="modal fade" id="architect_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+                        <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">Архитектурные решения по отделки фасада здания и сооружения</h5>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    <table className="table table-bordered table-striped" style={{textAlign: 'left'}}>
+                                        <tbody>
+                                        <tr>
+                                            <td style={{width: '70%'}}>Цоколь здания(фасад)</td>
+                                            <td>{sketch.basement_facade}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Цоколь здания(цвет)</td>
+                                            <td>{sketch.basement_color}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Стены здания(фасад)</td>
+                                            <td>{sketch.walls_facade}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Стены здания(цвет)</td>
+                                            <td>{sketch.walls_color}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    }
+
                 </div>
+
 
                 <div className="col-sm-12">
                     {this.state.showMap && <ShowMap coordinates={sketch.project_address_coordinates} />}
@@ -877,6 +1027,7 @@ class ShowSketch  extends React.Component {
                 </div>
 
                 <div className="col-sm-12">
+
                     {/*{this.state.showCommission &&*/}
                     {/*<div>*/}
                         {/*<h5 className="block-title-2 mt-3 mb-3">Решение</h5>*/}
@@ -1130,16 +1281,16 @@ class ShowSketch  extends React.Component {
                     </div>
                     }
 
-                    {/*<h5 className="block-title-2 mb-3">Логи</h5>*/}
-                    {/*<div className="border px-3 py-2">*/}
-                        {/*{apz.state_history.map(function(state, index) {*/}
-                            {/*return(*/}
-                                {/*<div key={index}>*/}
-                                    {/*<p className="mb-0">{state.created_at}&emsp;{state.state.name}  {state.receiver && '('+state.receiver+')'}</p>*/}
-                                {/*</div>*/}
-                            {/*);*/}
-                        {/*}.bind(this))}*/}
-                    {/*</div>*/}
+                    <h5 className="block-title-2 mb-3">Логи</h5>
+                    <div className="border px-3 py-2">
+                        {sketch.state_history.map(function(state, index) {
+                            return(
+                                <div key={index}>
+                                    <p className="mb-0">{state.created_at}&emsp;{state.state.name}  {state.receiver && '('+state.receiver+')'}</p>
+                                </div>
+                            );
+                        }.bind(this))}
+                    </div>
 
                     {/*{apz.commission &&  apz.commission.apz_water_response &&*/}
                     {/*<div className="modal fade" id="water_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">*/}

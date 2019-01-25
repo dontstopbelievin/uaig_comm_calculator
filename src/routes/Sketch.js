@@ -552,12 +552,20 @@ class ShowSketch extends React.Component {
                       {sketch.status_id === 2 ?
                         <tr>
                           <td style={{width: '22%'}}><b>Решение на эскизный проект</b></td>
-                          <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>Скачать</a></td>
+                          <td><a className="text-info pointer" data-category="45" onClick={this.downloadFile.bind(this, this.state.responseFile.id, 45)}>Скачать</a>
+                              <div className="progress mb-2" data-category="45" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                  <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                              </div>
+                          </td>
                         </tr>
                         :
                         <tr>
                           <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
-                          <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.responseFile.id)}>Скачать</a></td>
+                          <td><a className="text-info pointer" data-category="46" onClick={this.downloadFile.bind(this, this.state.responseFile.id, 46)}>Скачать</a>
+                              <div className="progress mb-2" data-category="46" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                  <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                              </div>
+                          </td>
                         </tr>
                       }
                     </tbody>
@@ -1345,20 +1353,20 @@ class AddSketch extends React.Component {
                                         <div className="col-md-6">
                                             <div className="form-group">
                                                 <div className="form-group">
-                                                    <label htmlFor="landArea">Площадь земельного участка(кв.м):</label>
-                                                    <input data-rh="Площадь земельного участка(кв.м)" data-rh-at="right" type="number" min="0" className="form-control" onChange={this.onInputChange} value={this.state.landArea} name="landArea" placeholder="" />
+                                                    <label htmlFor="landArea">Площадь земельного участка(га):</label>
+                                                    <input data-rh="Площадь земельного участка(га)" data-rh-at="right" type="number" min="0" className="form-control" onChange={this.onInputChange} value={this.state.landArea} name="landArea" placeholder="" />
                                                 </div>
                                             </div>
                                             <div className="form-group">
                                                 <div className="form-group">
-                                                    <label htmlFor="coverArea">Площадь покрытия (кв.м):</label>
-                                                    <input data-rh="Площадь земельного участка(кв.м)" data-rh-at="right" type="number" min="0" className="form-control" onChange={this.onInputChange} value={this.state.coverArea} name="coverArea" placeholder="" />
+                                                    <label htmlFor="coverArea">Площадь покрытия (м<sup>2</sup>):</label>
+                                                    <input data-rh="Площадь покрытия(кв.м)" data-rh-at="right" type="number" min="0" className="form-control" onChange={this.onInputChange} value={this.state.coverArea} name="coverArea" placeholder="" />
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-group">
-                                                <label htmlFor="GreenArea">Площадь озеленения (кв.м):</label>
+                                                <label htmlFor="GreenArea">Площадь озеленения (м<sup>2</sup>):</label>
                                                 <input data-rh="Площадь озеленения (кв.м)" data-rh-at="right" type="number" min={0} step="any" className="form-control" name="greenArea" onChange={this.onInputChange} value={this.state.greenArea} />
                                             </div>
                                         </div>
@@ -1381,7 +1389,7 @@ class AddSketch extends React.Component {
                                                 </div>
                                             </div>
                                             <div className="form-group">
-                                                <label htmlFor="CommonArea">Общая площадь (кв.м):</label>
+                                                <label htmlFor="CommonArea">Общая площадь (м<sup>2</sup>):</label>
                                                 <input data-rh="Общая площадь" data-rh-at="right" type="number" min="0" name="commonArea" onChange={this.onInputChange} value={this.state.commonArea} className="form-control" id="commonArea" placeholder="" />
                                             </div>
                                             <div className="form-group">
@@ -1399,7 +1407,7 @@ class AddSketch extends React.Component {
                                                 <br></br>
                                             </div>
                                             <div className="form-group">
-                                                <label htmlFor="BuildArea">Площадь застройки (кв.м):</label>
+                                                <label htmlFor="BuildArea">Площадь застройки (м<sup>2</sup>):</label>
                                                 <input data-rh="Площадь застройки" data-rh-at="right" type="number" min="0" name="buildArea" onChange={this.onInputChange} value={this.state.buildArea} className="form-control" id="buildArea" placeholder="" />
                                             </div>
                                         </div>
