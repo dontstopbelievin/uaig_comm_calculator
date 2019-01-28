@@ -23,6 +23,9 @@ export default class Sketch extends React.Component {
               <Route path="/panel/citizen/sketch/add" exact render={(props) =>(
                 <AddSketch {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
               )} />
+              <Route path="/panel/citizen/sketch/edit/:id" exact render={(props) =>(
+                <AddSketch {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
+              )} />
               <Route path="/panel/citizen/sketch/show/:id" exact render={(props) =>(
                 <ShowSketch {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
               )} />
@@ -122,12 +125,13 @@ class AllSketch extends React.Component {
         {this.state.loaderHidden &&
           <div>
             <div className="row">
-              <div className="col-sm-8">
+              <div className="col-sm-7">
                 <Link className="btn btn-outline-primary mb-3" to="/panel/citizen/sketch/add">Создать заявление</Link>
               </div>
-              <div className="col-sm-4 statusActive">
+              <div className="col-sm-5 statusActive">
                 <ul className="nav nav-tabs mb-2 pull-right">
                   <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'active'} activeStyle={{color:"black"}} to="/panel/citizen/sketch/status/active/1" replace>Активные</NavLink></li>
+                  <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'draft'} activeStyle={{color:"black"}} to="/panel/citizen/sketch/status/draft/1" replace>Черновики</NavLink></li>
                   <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'accepted'} activeStyle={{color:"black"}} to="/panel/citizen/sketch/status/accepted/1" replace>Принятые</NavLink></li>
                   <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'declined'} activeStyle={{color:"black"}} to="/panel/citizen/sketch/status/declined/1" replace>Отказанные</NavLink></li>
                 </ul>
@@ -136,24 +140,26 @@ class AllSketch extends React.Component {
 
             <table className="table">
               <thead>
-                <tr>
-                  <th style={{width: '23%'}}>Название</th>
-                  <th style={{width: '23%'}}>Заявитель</th>
-                  <th style={{width: '20%'}}>Адрес</th>
-                  <th style={{width: '20%'}}>Дата заявления</th>
-                  <th></th>
-                </tr>
+              <tr>
+                <th style={{width: '5%'}}>ИД</th>
+                <th style={{width: '21%'}}>Название</th>
+                <th style={{width: '20%'}}>Заявитель</th>
+                <th style={{width: '20%'}}>Адрес</th>
+                <th style={{width: '20%'}}>Дата заявления</th>
+                <th></th>
+              </tr>
               </thead>
               <tbody>
                 {sketches.map(function(sketch, index) {
                   return(
                     <tr key={index}>
+                      <td>{sketch.id}</td>
                       <td>{sketch.project_name} </td>
                       <td>{sketch.applicant}</td>
                       <td>{sketch.project_address}</td>
                       <td>{this.toDate(sketch.created_at)}</td>
                       <td>
-                        <Link className="btn btn-outline-info" to={'/panel/citizen/sketch/show/' + sketch.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link className="btn btn-outline-info" to={'/panel/citizen/sketch/' + (sketch.status_id === 7 ? 'edit/' : 'show/') + sketch.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
                     </tr>
                     );

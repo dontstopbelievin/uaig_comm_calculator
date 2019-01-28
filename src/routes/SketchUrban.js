@@ -79,9 +79,12 @@ class ShowSketch extends React.Component {
     }
 
     onTemplateListChange(e) {
-        var template = this.state.templates.find(template => template.id == e.target.value);
-
-        this.setState({ description: template.text });
+        if(e.target.value == ''){
+          this.setState({ description: '' });
+        }else{
+          var template = this.state.templates.find(template => template.id == e.target.value);
+          this.setState({ description: template.text });
+        }
     }
     componentDidMount() {
         this.props.breadCrumbs();
@@ -158,9 +161,9 @@ class ShowSketch extends React.Component {
                     this.setState({showButtons: true});
                 }
 
-                // if (sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender != null })[0] != null) {
-                //     this.setState({response: false});
-                // }
+                if (sketch.state_history.filter(function(obj) { return obj.state_id === 3})[0]) {
+                    this.setState({response: false});
+                }
 
                 this.setState({loaderHidden: true});
                 // BE CAREFUL OF category_id should be xml регионального архитектора
@@ -661,11 +664,11 @@ class ShowSketch extends React.Component {
         }
     }
 
-    printRegionAnswer(apzId) {
+    printRegionAnswer(sketchId) {
         var token = sessionStorage.getItem('tokenInfo');
         if (token) {
             var xhr = new XMLHttpRequest();
-            xhr.open("get", window.url + "api/print/region/" + apzId, true);
+            xhr.open("get", window.url + "api/print/region/sketch/" + sketchId, true);
             xhr.setRequestHeader("Authorization", "Bearer " + token);
             xhr.onload = function () {
                 if (xhr.status === 200) {
@@ -997,7 +1000,7 @@ class ShowSketch extends React.Component {
                         Комментарий апз отдела: {this.state.apzReturnedState.comment}
                     </div>
                     }
-                    {sketch.status_id === 1 &&
+                    {!sketch.response &&
                     <table className="table table-bordered">
                         <tbody>
                         <tr>
