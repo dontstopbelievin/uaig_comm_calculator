@@ -2249,28 +2249,28 @@ class ShowSketch  extends React.Component {
                     {/*</div>*/}
                     {/*}*/}
 
-                    {sketch.state_history.length > 0 &&
-                      <div>
-                        <h5 className="block-title-2 mb-3 mt-3">Логи</h5>
-                        <div className="border px-3 py-2">
-                          {sketch.state_history.map(function(state, index) {
-                            if(state.state_id == 21){
-                              return(
-                                <div key={index}>
-                                  <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
-                                </div>
-                              );
-                            }else{
-                              return(
-                                <div key={index}>
-                                  <p className="mb-0">{state.created_at}&emsp;{state.state.name}</p>
-                                </div>
-                              );
-                            }
-                          }.bind(this))}
-                        </div>
-                      </div>
-                    }
+                    {/*{sketch.state_history.length > 0 &&*/}
+                      {/*<div>*/}
+                        {/*<h5 className="block-title-2 mb-3 mt-3">Логи</h5>*/}
+                        {/*<div className="border px-3 py-2">*/}
+                          {/*{sketch.state_history.map(function(state, index) {*/}
+                            {/*if(state.state_id == 21){*/}
+                              {/*return(*/}
+                                {/*<div key={index}>*/}
+                                  {/*<p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>*/}
+                                {/*</div>*/}
+                              {/*);*/}
+                            {/*}else{*/}
+                              {/*return(*/}
+                                {/*<div key={index}>*/}
+                                  {/*<p className="mb-0">{state.created_at}&emsp;{state.state.name}</p>*/}
+                                {/*</div>*/}
+                              {/*);*/}
+                            {/*}*/}
+                          {/*}.bind(this))}*/}
+                        {/*</div>*/}
+                      {/*</div>*/}
+                    {/*}*/}
 
                     <div className="col-sm-12">
                         <hr />
