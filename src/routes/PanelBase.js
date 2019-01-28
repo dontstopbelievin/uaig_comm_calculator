@@ -40,6 +40,9 @@ import ResetForm from "./ResetForm";
 import Vacancies from "./Vacancies";
 import AdminApzMonitor from "./AdminApzMonitor";
 import AddUsers from "./AddUsers";
+import SketchUrban from "./SketchUrban";
+import SketchEngineer from "./SketchEngineer";
+import SketchHead from "./SketchHead";
 
 let e = new LocalizedStrings({ru,kk});
 
@@ -91,25 +94,25 @@ export default class PanelBase extends React.Component{
         {
           let secondElem = document.createElement('span');
           console.log(fullLoc);
-          secondElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
-            '<a href="/#' + e[fullLoc[5]][fullLoc[6]]["link"] + '">' + e[fullLoc[5]][fullLoc[6]]["name"] + '</a>';
-          breadCrumbs.appendChild(secondElem);
-
-          let thirdElem = document.createElement('span');
-          thirdElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
-            '<span style="font-weight: bold;">' + e[fullLoc[5]][fullLoc[6]][fullLoc[7]] + '</span>';
-          breadCrumbs.appendChild(thirdElem);
-
-          if (typeof fullLoc[8] !== 'undefined')
-          {
-            if (fullLoc[7] === 'edit')
-            {
-              let forthElem = document.createElement('span');
-              forthElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
-                '<span style="font-weight: bold;">№ ' + fullLoc[8] + '</span>';
-              breadCrumbs.appendChild(forthElem);
-            }
-          }
+          // secondElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
+          //   '<a href="/#' + e[fullLoc[5]][fullLoc[6]]["link"] + '">' + e[fullLoc[5]][fullLoc[6]]["name"] + '</a>';
+          // breadCrumbs.appendChild(secondElem);
+          //
+          // let thirdElem = document.createElement('span');
+          // thirdElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
+          //   '<span style="font-weight: bold;">' + e[fullLoc[5]][fullLoc[6]][fullLoc[7]] + '</span>';
+          // breadCrumbs.appendChild(thirdElem);
+          //
+          // if (typeof fullLoc[8] !== 'undefined')
+          // {
+          //   if (fullLoc[7] === 'edit')
+          //   {
+          //     let forthElem = document.createElement('span');
+          //     forthElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
+          //       '<span style="font-weight: bold;">№ ' + fullLoc[8] + '</span>';
+          //     breadCrumbs.appendChild(forthElem);
+          //   }
+          // }
 
         }else if (typeof fullLoc[7] === 'undefined')
         {
@@ -182,6 +185,7 @@ export default class PanelBase extends React.Component{
 
                 {/*  the routes is using for role: Urban */}
                 <Route path="/panel/urban/apz" render={(props) => ( <Urban {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                <Route path="/panel/urban/sketch" render={(props) => ( <SketchUrban {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/urban/answer-template" render={(props) => ( <AnswerTemplate breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 {/*  the routes is using for role: Urban */}
 
@@ -207,6 +211,7 @@ export default class PanelBase extends React.Component{
 
                 {/*  the routes is using for role: Head */}
                 <Route path="/panel/head/apz" render={(props) => ( <Head breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                <Route path="/panel/head/sketch" render={(props) => ( <SketchHead breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/head/headreport" render={(props) => ( <HeadReport breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 {/*  the routes is using for role: Head */}
 
@@ -216,6 +221,7 @@ export default class PanelBase extends React.Component{
 
                 {/*  the routes is using for role: Engineer */}
                 <Route path="/panel/engineer/apz" render={(props) => ( <Engineer breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                <Route path="/panel/engineer/sketch" render={(props) => ( <SketchEngineer breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 {/*  the routes is using for role: Engineer */}
 
                 {/*  the routes is using for role: PhotoReporter */}

@@ -16,16 +16,16 @@ export default class AnswerTemplate extends React.Component{
 
           <div>
             <Switch>
-              <Route path="/panel/urban/answer-template/all/:page" exact render={(props) =>(
+              <Route path="/panel/urban/answer-template/all/:type/:page" exact render={(props) =>(
                 <AllTemplates {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
               )} />
-              <Route path="/panel/urban/answer-template/add" exact render={(props) =>(
+              <Route path="/panel/urban/answer-template/:type/add" exact render={(props) =>(
                 <AddTemplate {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
               )} />
-              <Route path="/panel/urban/answer-template/show/:id" exact render={(props) =>(
+              <Route path="/panel/urban/answer-template/show/:type/:id" exact render={(props) =>(
                 <ShowTemplate {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
               )} />
-              <Redirect from="/panel/urban/answer-template" to="/panel/urban/answer-template/all/1" />
+              <Redirect from="/panel/urban/answer-template" to="/panel/urban/answer-template/all/apz/1" />
             </Switch>
           </div>
         </div>
@@ -51,19 +51,22 @@ class AllTemplates extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.getTemplates(nextProps.match.params.page);
+    this.getTemplates(nextProps.match.params.page, nextProps.match.params.type);
   }
 
-  getTemplates(page = null) {
+  getTemplates(page = null, type =null) {
     if (!page) {
       page = this.props.match.params.page;
+    }
+    if(!type){
+      type = this.props.match.params.type;
     }
 
     this.setState({ loaderHidden: false });
 
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/answer_template/all" + '?page=' + page, true);
+    xhr.open("get", window.url + "api/"+type+"/answer_template/all" + '?page=' + page, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
@@ -72,7 +75,7 @@ class AllTemplates extends React.Component {
         var pageNumbers = [];
         var start = (response.current_page - 4) > 0 ? (response.current_page - 4) : 1;
         var end = (response.current_page + 4) < response.last_page ? (response.current_page + 4) : response.last_page;
-        
+
         for (start; start <= end; start++) {
           pageNumbers.push(start);
         }
@@ -87,13 +90,14 @@ class AllTemplates extends React.Component {
   }
 
   deleteTemplate(id, title) {
+    var type = this.props.match.params.type;
     if (!window.confirm('Вы действительно хотите удалить запись "' + title + '"?')) {
       return false;
-    } 
+    }
 
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + "api/apz/answer_template/delete/" + id, true);
+    xhr.open("post", window.url + "api/"+type+"/answer_template/delete/" + id, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
@@ -106,6 +110,7 @@ class AllTemplates extends React.Component {
   }
 
   render() {
+    var type = this.props.match.params.type;
     var page = this.props.match.params.page;
     var templates = this.state.response ? this.state.response.data : [];
 
@@ -115,10 +120,14 @@ class AllTemplates extends React.Component {
           <h4 className="mb-0">Шаблоны отказов</h4>
           <br />
         </div>
-        <Link className="btn btn-outline-primary mb-3" to="/panel/urban/answer-template/add">Создать шаблон</Link>
+        <Link className="btn btn-outline-primary mb-3" to={"/panel/urban/answer-template/"+type+"/add"}>Создать шаблон</Link>
 
         {this.state.loaderHidden &&
           <div>
+            <ul className="nav nav-tabs mb-2 pull-right">
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => type === 'apz'} to="/panel/urban/answer-template/all/apz/1" replace>АПЗ</NavLink></li>
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => type === 'sketch'} to="/panel/urban/answer-template/all/sketch/1" replace>Эскизный проект</NavLink></li>
+            </ul>
             <table className="table">
               <thead>
                 <tr>
@@ -133,7 +142,7 @@ class AllTemplates extends React.Component {
                     <tr key={index}>
                       <td>{template.title} </td>
                       <td>
-                        {template.is_active === 1 ? 
+                        {template.is_active === 1 ?
                           <p className="text-success">Активен</p>
                           :
                           <p className="text-danger">Не активен</p>
@@ -141,7 +150,7 @@ class AllTemplates extends React.Component {
                       </td>
                       <td>
                         <div className="btn-group btn-group-xs" style={{margin: '0'}} role="group">
-                          <Link className="btn btn-outline-info" to={'/panel/urban/answer-template/show/' + template.id}><i className="glyphicon glyphicon-pencil mr-2"></i> Изменить</Link>
+                          <Link className="btn btn-outline-info" to={'/panel/urban/answer-template/show/'+type+"/" + template.id}><i className="glyphicon glyphicon-pencil mr-2"></i> Изменить</Link>
                           <button className="btn btn-outline-danger" onClick={this.deleteTemplate.bind(this, template.id, template.title)}><i className="glyphicon glyphicon-trash mr-2"></i> Удалить</button>
                         </div>
                       </td>
@@ -175,8 +184,8 @@ class AllTemplates extends React.Component {
             }
           </div>
         }
-        
-        {!this.state.loaderHidden && 
+
+        {!this.state.loaderHidden &&
           <div style={{textAlign: 'center'}}>
             <Loader type="Oval" color="#46B3F2" height="200" width="200" />
           </div>
@@ -193,10 +202,18 @@ class AddTemplate extends React.Component {
     this.state = {
       title: '',
       text: '',
+      type: 'apz',
       isActive: '1'
     };
 
     this.onTextChange = this.onTextChange.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
+  }
+
+  onInputChange(e) {
+    const value = e.target.value;
+    const name = e.target.name;
+    this.setState({ [name] : value });
   }
 
   componentDidMount() {
@@ -213,12 +230,14 @@ class AddTemplate extends React.Component {
     formData.append('is_active', this.state.isActive);
 
     var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + 'api/apz/answer_template/create', true);
+    xhr.open("post", window.url + 'api/'+this.state.type+'/answer_template/create', true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function() {
       if (xhr.status === 200) {
         alert('Шаблон успешно создан');
-        this.props.history.push('/panel/urban/answer-template');
+        this.props.history.push('/panel/urban/answer-template/all/'+this.state.type+'/1');
+      }else{
+        alert('Не удалось');
       }
     }.bind(this);
     xhr.send(formData);
@@ -233,6 +252,15 @@ class AddTemplate extends React.Component {
       <div className="container">
         <form method="post" onSubmit={this.requestSubmission.bind(this)}>
           <div className="row">
+            <div className="col-sm-12">
+              <div className="form-group">
+                <label htmlFor="Region">Район</label>
+                <select className="form-control" onChange={this.onInputChange} value={this.state.type} name="type">
+                  <option value="apz">АПЗ</option>
+                  <option value="sketch">Эскизный проект</option>
+                </select>
+              </div>
+            </div>
             <div className="col-sm-10">
               <div className="form-group">
                 <label htmlFor="title">Название</label>
@@ -258,7 +286,7 @@ class AddTemplate extends React.Component {
 
         <div>
           <hr />
-          <Link className="btn btn-outline-secondary pull-right" id="back" to={'/panel/urban/answer-template/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+          <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
         </div>
       </div>
     )
@@ -287,16 +315,17 @@ class ShowTemplate extends React.Component {
   }
 
   getTemplateInfo() {
+    var type = this.props.match.params.type;
     var id = this.props.match.params.id;
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/answer_template/detail/" + id, true);
+    xhr.open("get", window.url + "api/"+type+"/answer_template/detail/" + id, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function() {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-        
+
         this.setState({title: data.title});
         this.setState({text: data.text});
         this.setState({isActive: data.is_active});
@@ -312,8 +341,9 @@ class ShowTemplate extends React.Component {
 
   requestSubmission(e) {
     e.preventDefault();
-    
+
     var id = this.props.match.params.id;
+    var type = this.props.match.params.type;
     var token = sessionStorage.getItem('tokenInfo');
     var formData = new FormData();
     formData.append('title', this.state.title);
@@ -321,11 +351,13 @@ class ShowTemplate extends React.Component {
     formData.append('is_active', this.state.isActive);
 
     var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + 'api/apz/answer_template/update/' + id, true);
+    xhr.open("post", window.url + 'api/'+type+'/answer_template/update/' + id, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function() {
       if (xhr.status === 200) {
         alert('Шаблон успешно сохранен');
+      }else{
+        alert('Не удалось, возможно шаблон не пренадлежит вам.');
       }
     }.bind(this);
     xhr.send(formData);
@@ -334,7 +366,7 @@ class ShowTemplate extends React.Component {
   onTextChange(value){
     this.setState({text: value});
   }
-  
+
   render() {
     return (
       <div>
@@ -367,11 +399,11 @@ class ShowTemplate extends React.Component {
 
             <div>
               <hr />
-              <Link className="btn btn-outline-secondary pull-right" id="back" to={'/panel/urban/answer-template/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+              <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
             </div>
           </div>
         }
-        
+
         {!this.state.loaderHidden &&
           <div style={{textAlign: 'center'}}>
             <Loader type="Oval" color="#46B3F2" height="200" width="200" />

@@ -307,6 +307,7 @@ class ShowApz extends React.Component {
     xhr.onload = function() {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
+        // console.log(data.apz);
         var commission = data.commission;
         var hasReponse = data.state_history.filter(function(obj) { return obj.state_id === 5 || obj.state_id === 6 });
         //console.log("______________________________");console.log(data);
