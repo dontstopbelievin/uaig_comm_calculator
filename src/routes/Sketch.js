@@ -748,6 +748,7 @@ class AddSketch extends React.Component {
           survey: null,
           claimedCapacityJustification: null,
           loaderHidden : true,
+          aktNumber: '',
           checkboxes: ['1'
   :
       false, '2'
@@ -1103,6 +1104,7 @@ class AddSketch extends React.Component {
             this.setState({objectLevel: sketch.object_level ? sketch.object_level : '' });
             this.setState({commonArea: sketch.common_area ? sketch.common_area : '' });
             this.setState({buildArea: sketch.build_area ? sketch.build_area : '' });
+            this.setState({aktNumber: sketch.akt_number ? sketch.akt_number: '' });
             this.setState({landArea: sketch.land_area ? sketch.land_area : '' });
             this.setState({coverArea: sketch.cover_area ? sketch.cover_area : '' });
             this.setState({greenArea: sketch.green_area ? sketch.green_area : '' });
@@ -1415,6 +1417,10 @@ class AddSketch extends React.Component {
                                             <div className="form-group">
                                                 <label htmlFor="BuildArea">Площадь застройки (м<sup>2</sup>):</label>
                                                 <input data-rh="Площадь застройки" data-rh-at="right" type="number" min="0" name="buildArea" onChange={this.onInputChange} value={this.state.buildArea} className="form-control" id="buildArea" placeholder="" />
+                                            </div>
+                                            <div className="form-group">
+                                                <label htmlFor="AktNumber">№ акта на право частной собственности:</label>
+                                                <input data-rh="№ акта на право частной собственности " data-rh-at="right" type="text" name="aktNumber" onChange={this.onInputChange} value={this.state.aktNumber} className="form-control" id="aktNumber" placeholder="№XXXXXXX от dd.mm.YYY" />
                                             </div>
                                         </div>
                                     </div>

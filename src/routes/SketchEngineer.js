@@ -965,6 +965,10 @@ class ShowSketch  extends React.Component {
                                             <td>Сроки строительства</td>
                                             <td>{sketch.object_term}</td>
                                         </tr>
+                                        <tr>
+                                            <td>Акт на право частной собственности</td>
+                                            <td>{sketch.akt_number}</td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>

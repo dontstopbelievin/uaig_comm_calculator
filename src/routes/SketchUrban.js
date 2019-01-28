@@ -161,7 +161,7 @@ class ShowSketch extends React.Component {
                     this.setState({showButtons: true});
                 }
 
-                if (sketch.state_history.filter(function(obj) { return obj.state_id === 3})[0]) {
+                if (sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender != null })[0] != null) {
                     this.setState({response: false});
                 }
 
@@ -1000,7 +1000,7 @@ class ShowSketch extends React.Component {
                         Комментарий апз отдела: {this.state.apzReturnedState.comment}
                     </div>
                     }
-                    {!sketch.response &&
+                    {sketch.status_id == 1 &&
                     <table className="table table-bordered">
                         <tbody>
                         <tr>
@@ -1044,15 +1044,7 @@ class ShowSketch extends React.Component {
                                 <div>
                                     {!this.state.needSign ?
                                         <div style={{margin: 'auto', display: 'table'}}>{console.log(this.state.engineerReturnedState)}
-                                            {!this.state.backFromHead && !this.state.engineerSign  && !this.state.engineerReturnedState ?
-                                               <div>
-                                                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted")}>Отправить инженеру</button>
-                                                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted", "chief")}>
-                                                       Отправить главному архитектору
-                                                   </button>
-                                               </div>
-                                                :
-                                                <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>Одобрить</button>}
+                                            <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>Одобрить</button>
                                             <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
                                                 Отклонить
                                             </button>
@@ -1090,6 +1082,7 @@ class ShowSketch extends React.Component {
                                                 </div>
                                                 :
                                                 <div>
+                                                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted")}>Отправить инженеру</button>
                                                     <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted", "chief")}>
                                                         Отправить главному архитектору
                                                     </button>
