@@ -171,7 +171,7 @@ export default class PanelBase extends React.Component{
 
                 {/*  the routes is using for role: Admin  */}
                 <Route path="/panel/admin/apz" render={(props) => ( <AdminApzMonitor breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
-                <Route path="/panel/admin/user-roles" render={(props) => ( <Admin breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                <Route path="/panel/admin/user-roles/:page" exact render={(props) => ( <Admin {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/admin/users/add" render={(props) => ( <AddUsers breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/admin/addPages" render={(props) => ( <AddPages breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/admin/menuEdit" render={(props) => ( <Menu breadCrumbs={this.breadCrumbs.bind(this)}/> )} />

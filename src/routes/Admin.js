@@ -12,32 +12,50 @@ export default class Admin extends React.Component {
     super(props);
     this.state = {
       users: [],
+      data: [],
       loaderHidden: false,
       roles: [],
       roleUser: [],
       isLoggedIn: true,
+      pageNumbers: [],
       username: ""
     };
   }
+
+  componentWillReceiveProps(nextProps) {
+    this.getUsers(nextProps.match.params.page);
+  }
+
   // получить список пользователей
-  getUsers() {
+  getUsers(page = null) {
+    if (!page) {
+      page = this.props.match.params.page;
+    }
+
     this.setState({loaderHidden: false});
     //console.log("entered getUsers function");
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/userTable/getUsers", true);
+    xhr.open("get", window.url + "api/userTable/getUsers" + '?page=' + page, true);
     //Send the proper header information along with the request
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
       if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
+        var data = JSON.parse(xhr.responseText).users;
+        //console.log(data);
 
-          var users = data.users.filter(function( obj ) {
-          return obj.first_name !== 'admin';
-        });
+        var pageNumbers = [];
+        var start = (data.current_page - 4) > 0 ? (data.current_page - 4) : 1;
+        var end = (data.current_page + 4) < data.last_page ? (data.current_page + 4) : data.last_page;
+        for (start; start <= end; start++) {
+          pageNumbers.push(start);
+        }
+        this.setState({pageNumbers: pageNumbers});
+
         this.setState({loaderHidden: true});
-        this.setState({ users: users });
+        this.setState({ users: data.data });
+        this.setState({ data: data });
       }
     }.bind(this);
     xhr.send();
@@ -98,7 +116,6 @@ export default class Admin extends React.Component {
     xhr.send();
   }
 
-
   // получить список ролей пользователей
   getRoleUser() {
     this.setState({loaderHidden: false});
@@ -119,17 +136,13 @@ export default class Admin extends React.Component {
     xhr.send();
   }
 
-
-
-
-
   // добавить роль к пользователю
   addRoleToUser(userId, roleId, roleLevel) {
     var token = sessionStorage.getItem('tokenInfo');
     //console.log(userId);
-    //console.log(roleId);
     var data = {userid: userId, roleid: roleId};
     var dd = JSON.stringify(data);
+    //console.log(dd);
 
     var usersArray = this.state.users;
     // get the position of the user which role is gonna be added
@@ -151,13 +164,13 @@ export default class Admin extends React.Component {
         // this.setState({users: usersArray});
         console.log('role(s) was(were) added')
       }else {
+        var data = JSON.parse(xhr.responseText);
+        console.log(data);
         alert('Ошибка во время добавления роли!');
       }
     }.bind(this);
     xhr.send(dd);
   }
-
-
 
   componentWillMount() {
     //console.log("AdminComponent will mount");
@@ -175,8 +188,6 @@ export default class Admin extends React.Component {
     this.getRoles();
     this.getRoleUser();
   }
-
-
 
   render() {
     //console.log("rendering the AdminComponent");
@@ -207,8 +218,10 @@ export default class Admin extends React.Component {
                   <Loader type="Oval" color="#46B3F2" height="200" width="200" />
                 </div>
               }
-              {
+              {this.state.loaderHidden && 
                 this.state.users.map(function(user, index){
+
+                  if(user.first_name == 'admin'){return false;}
 
                   var rolesOfUser = [];
 
@@ -222,7 +235,7 @@ export default class Admin extends React.Component {
                     <div key={index} className="panel-body container-fluid">
                       <div className="row" style={{padding: '5px 0'}}>
                         <div className="col-xs-1 col-sm-1 col-md-1" style={columnStyle}>
-                          {index + 1}
+                          {index + 1 + 20*(this.state.data.current_page-1)}
                         </div>
                         <div className="col-xs-2 col-sm-2 col-md-2" style={columnStyle}>
                           {user.first_name}
@@ -271,102 +284,6 @@ export default class Admin extends React.Component {
                                         </li>
                                     )
                                     }
-                                  // if(role.name === 'Urban') {
-                                  //   return(
-                                  //     <li key={i}>
-                                  //       <div className="btn-group">
-                                  //       <button className="btn btn-raised btn-info  dropdown-toggle">{role.name} <span className="expand">»</span></button>
-                                  //       <div className="dropdown-menu">
-                                  //         <ul className="submenu">
-                                  //         {
-                                  //           roles.filter(function(obj) { return (obj.level === '2' && obj.parent_id === role.id); }).map(function(secondLevRole, i){
-                                  //             if(secondLevRole.name === 'Region') {
-                                  //               return(
-                                  //                 <li key={i}><button className="btn btn-raised btn-urban">{secondLevRole.name} <span className="expand">»</span></button>
-                                  //                   <ul className="submenu">
-                                  //                   {
-                                  //                     roles.filter(function(obj) { return (obj.level === '3' && obj.parent_id === secondLevRole.id); }).map(function(thirdLevRole, i){
-                                  //                       return(
-                                  //                         <li key={i}><button className="btn btn-raised btn-region" onClick={this.addRoleToUser.bind(this, user.id, thirdLevRole.id, 3)}>{thirdLevRole.name}</button></li>
-                                  //                       )
-                                  //                     }.bind(this))
-                                  //                   }
-                                  //                   </ul>
-                                  //                 </li>
-                                  //               )
-                                  //             }
-                                  //             else{
-                                  //               return(
-                                  //                 <li key={i}><button className="btn btn-raised btn-urban" onClick={this.addRoleToUser.bind(this, user.id, secondLevRole.id, 2)}>{secondLevRole.name}</button></li>
-                                  //               )
-                                  //             }
-                                  //           }.bind(this))
-                                  //         }
-                                  //       </ul>
-                                  //       </div>
-                                  //       </div>
-                                  //     </li>
-                                  //   )
-                                  // }
-                                  // else if(role.name === 'Citizen') {
-                                  //   return(
-                                  //       <li key={i}><button className="btn btn-raised btn-primary">{role.name} <span className="expand">»</span></button>
-                                  //         <ul className="submenu">
-                                  //         {
-                                  //           roles.map(function(secondLevRole, i){
-                                  //               if(secondLevRole.level === 2 && secondLevRole.parent_id === role.id){
-                                  //                 return(
-                                  //                       <li key={i}><button className="btn btn-raised btn-citizen" onClick={this.addRoleToUser.bind(this, user.id, secondLevRole.id, 2)}>{secondLevRole.name}</button></li>
-                                  //                 )
-                                  //               }
-                                  //           }.bind(this))
-                                  //         }
-                                  //         </ul>
-                                  //       </li>
-                                  //   )
-                                  // }
-                                  // else if(role.name === 'Provider') {
-                                  //   return(
-                                  //       <li key={i}><button className="btn btn-raised btn-danger">{role.name} <span className="expand">»</span></button>
-                                  //         <ul className="submenu">
-                                  //         {
-                                  //           roles.filter(function(obj) { return (obj.level === '2' && obj.parent_id === role.id); }).map(function(secondLevRole, i){
-                                  //             return(
-                                  //               <li key={i}><button className="btn btn-raised btn-provider" onClick={this.addRoleToUser.bind(this, user.id, secondLevRole.id, 2)}>{secondLevRole.name}</button></li>
-                                  //             )
-                                  //           }.bind(this))
-                                  //         }
-                                  //         </ul>
-                                  //       </li>
-                                  //   )
-                                  // }
-                                  // else if(role.name === 'Temporary')  {
-                                  //   return(
-                                  //       <li key={i}>
-                                  //         <button className="btn btn-raised btn-secondary" onClick={this.addRoleToUser.bind(this, user.id, role.id, 1)}>
-                                  //           {role.name}
-                                  //         </button>
-                                  //       </li>
-                                  //   )
-                                  // }
-                                  // else if(role.name === 'PhotoReporter')  {
-                                  //   return(
-                                  //       <li key={i}>
-                                  //         <button className="btn btn-raised btn-secondary" onClick={this.addRoleToUser.bind(this, user.id, role.id, 1)}>
-                                  //           {role.name}
-                                  //         </button>
-                                  //       </li>
-                                  //   )
-                                  // }
-                                  // else if(role.name === 'ApzDepartment')  {
-                                  //   return(
-                                  //       <li key={i}>
-                                  //         <button className="btn btn-raised btn-secondary" onClick={this.addRoleToUser.bind(this, user.id, role.id, 1)}>
-                                  //           {role.name}
-                                  //         </button>
-                                  //       </li>
-                                  //   )
-                                  // }
                                 }.bind(this))
                               }
                               </ul>
@@ -420,6 +337,28 @@ export default class Admin extends React.Component {
                 }.bind(this))
               }
             </div>
+            <hr/>
+            {this.state.data && this.state.data.last_page > 1 &&
+              <nav className="pagination_block">
+                <ul className="pagination justify-content-center">
+                  <li className="page-item">
+                    <Link className="page-link" to={'/panel/admin/user-roles/1'}>В начало</Link>
+                  </li>
+
+                  {this.state.pageNumbers.map(function(num, index) {
+                    return(
+                      <li key={index} className={'page-item ' + (this.state.data.current_page == num ? 'active' : '')}>
+                        <Link className="page-link" to={'/panel/admin/user-roles/' + num}>{num}</Link>
+                      </li>
+                      );
+                    }.bind(this))
+                  }
+                  <li className="page-item">
+                    <Link className="page-link" to={'/panel/admin/user-roles/' + this.state.data.last_page}>В конец</Link>
+                  </li>
+                </ul>
+              </nav>
+            }
           </div>
         </div>
       </div>
