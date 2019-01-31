@@ -74,6 +74,12 @@ export default class EditPassword extends React.Component{
     var newPass = this.state.newPassword;
     var confirm_password = this.state.confirm_password;
 
+    var re = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})");
+    if (re.test(newPass) == false) {
+      $('.help-block3').html('Пароль должен содержать строчную и прописную букву латинского алфавита, цифру и символ(!@#\$%\^&\*).');
+      return  false;
+    }
+
     if (newPass != confirm_password){
       if (this.state.newPassword != ''){
           $('.help-block3').html('');
@@ -143,7 +149,12 @@ export default class EditPassword extends React.Component{
               <div className="dialog" role="document">
                 <div className="content">
                   <div className="row">
-                    <div className="col-md-9">
+                    <div className="col-md-12">
+                      <div style={{background:'rgba(0,0,0,0.1)', fontWeight: 'bold', color:'#D8A82D', padding:'5px'}}>
+                        После первого входа необходимо изменить пароль!<br/>
+                        Рекоменуется изменение паролей каждые 30 дней.<br/>
+                        Не передавайте свой пароль никому.
+                      </div>
                       <div id="menu1" className="tab-pane fade active show">
                         <p>&nbsp;</p>
                         <form id="editPassword">

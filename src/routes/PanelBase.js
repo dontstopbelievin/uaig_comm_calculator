@@ -43,6 +43,7 @@ import AddUsers from "./AddUsers";
 import SketchUrban from "./SketchUrban";
 import SketchEngineer from "./SketchEngineer";
 import SketchHead from "./SketchHead";
+import FirstLogin from "./FirstLogin";
 
 let e = new LocalizedStrings({ru,kk});
 
@@ -156,6 +157,7 @@ export default class PanelBase extends React.Component{
                 <Route path="/panel/base-page" render={(props) => ( <BasePagePanel breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/common/files" render={(props) => ( <Files breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/common/login" render={(props) => ( <Login {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                <Route path="/panel/common/first_login" render={(props) => ( <FirstLogin {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/common/register" render={(props) => ( <Register breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/common/edit-personal-data" render={(props) => ( <EditPersonalData breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/common/edit-password" render={(props) => ( <EditPassword breadCrumbs={this.breadCrumbs.bind(this)}/> )} />

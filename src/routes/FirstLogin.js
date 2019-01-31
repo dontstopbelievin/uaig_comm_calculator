@@ -103,26 +103,25 @@ export default class Login extends Component {
       xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
       xhr.onload = function(e) {
         if (xhr.status === 200) {
-          var data = JSON.parse(e.target.response).user;
           this.setState({loaderHidden: true});
           console.log("loggedIn");
           //console.log(JSON.parse(e.target.response));
           var roles = [];
-          for(var index = 0; index < data.roles.length; index++){
-            roles.push(data.roles[index].name);
+          for(var index = 0; index < JSON.parse(e.target.response).roles.length; index++){
+            roles.push(JSON.parse(e.target.response).roles[index].name);
           }
           // сохраняем в хранилище sessionStorage токен доступа
-          sessionStorage.setItem(tokenKey, data.access_token);
-          sessionStorage.setItem(userIdKey, data.id);
-          sessionStorage.setItem(userNameKey, data.name);
-          sessionStorage.setItem(userIinKey, data.iin ? data.iin : '');
-          sessionStorage.setItem(userBinKey, data.bin ? data.bin : '');
+          sessionStorage.setItem(tokenKey, JSON.parse(e.target.response).access_token);
+          sessionStorage.setItem(userIdKey, JSON.parse(e.target.response).id);
+          sessionStorage.setItem(userNameKey, JSON.parse(e.target.response).name);
+          sessionStorage.setItem(userIinKey, JSON.parse(e.target.response).iin ? JSON.parse(e.target.response).iin : '');
+          sessionStorage.setItem(userBinKey, JSON.parse(e.target.response).bin ? JSON.parse(e.target.response).bin : '');
           sessionStorage.setItem(userRoleKey, JSON.stringify(roles));
           sessionStorage.setItem(logStatusKey, true);
           //console.log(roles);
           //console.log(this.props.location);
-          if(JSON.parse(e.target.response).checkFirstLogin == true){
-            return this.props.history.push("/panel/common/edit-password");
+          if(JSON.parse(e.target.response).is_first_login == 1){
+            return this.props.history.push("/panel/common/first_login");
           }
           switch (roles[0]) {
             case "Citizen":
@@ -552,7 +551,7 @@ export default class Login extends Component {
                       </div>
                       <div className="form-group">
                         <label className="control-label">Пароль:</label>
-                        <input type="password" className="form-control no-bg" autocomplete="off" value={this.state.pwd} onChange={this.onPwdChange} required />
+                        <input type="password" className="form-control no-bg" value={this.state.pwd} onChange={this.onPwdChange} required />
                       </div>
                       <div className="modal-footer">
                         {!this.state.loaderHidden &&
