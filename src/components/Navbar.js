@@ -273,11 +273,11 @@ export default class NavBar extends React.Component {
                   <a className="nav-link dropdown-toggle" data-toggle='dropdown' href="#">
 			  		Справочная информация
                   </a>
-                  <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li><a className="dropdown-item" target="_blank" href="/docs/InstructionGetAPZ.pdf">Инструкция по руководству АПЗ</a></li>
 					{/*<NavLink to={"/panel/example-second"} replace className="dropdown-item" activeClassName="active">Место для справочной информации 2</NavLink>
 					<NavLink to={"/panel/example-third"} replace className="dropdown-item" activeClassName="active">Место для справочной информации 3</NavLink>*/}
-                  </div>
+                  </ul>
                 </li>{/*dropdown*/}
                 <li className="nav-item dropdown">
                   <a className="nav-link dropdown-toggle" data-toggle='dropdown' href="#">

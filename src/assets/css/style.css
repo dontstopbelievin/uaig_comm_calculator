@@ -2,6 +2,16 @@
 @import 'https://js.arcgis.com/4.6/esri/css/main.css';
 @import 'https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700&subset=cyrillic';
 
+.export_image{
+  border-radius: 5px;
+  padding: 2px 6px;
+  border: solid #D8A82D 1px;
+  outline: none;
+  width: 50px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
 .header {
   height: 115px;
   background: url(/images/header.png) left 30% repeat #fff;

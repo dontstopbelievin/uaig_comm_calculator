@@ -44,6 +44,7 @@ import SketchUrban from "./SketchUrban";
 import SketchEngineer from "./SketchEngineer";
 import SketchHead from "./SketchHead";
 import FirstLogin from "./FirstLogin";
+import ExportToExcel from "../components/ExportToExcel";
 
 let e = new LocalizedStrings({ru,kk});
 
@@ -153,8 +154,9 @@ export default class PanelBase extends React.Component{
           <div>
             <div>
               <Switch>
+                <Route path="/panel/common/export_to_excel" render={(props) => (<ExportToExcel {...props} breadCrumbs={this.breadCrumbs.bind(this)} /> )} />
                 {/*  the routes is using for role: ALL  */}
-                <Route path="/panel/base-page" render={(props) => ( <BasePagePanel breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                <Route path="/panel/base-page" render={(props) => ( <BasePagePanel breadCrumbs={this.breadCrumbs.bind(this)} /> )} />
                 <Route path="/panel/common/files" render={(props) => ( <Files breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/common/login" render={(props) => ( <Login {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                 <Route path="/panel/common/first_login" render={(props) => ( <FirstLogin {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />

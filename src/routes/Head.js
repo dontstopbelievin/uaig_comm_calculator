@@ -147,7 +147,9 @@ class AllApzs extends React.Component {
         return (
             <div>
                 <div className="card-header">
-                    <h4 className="mb-0">Архитектурно-планировочное задание</h4>
+                    <h4 className="mb-0">Архитектурно-планировочное задание
+                    <NavLink to="/panel/common/export_to_excel"><img title="Экспорт в excel" src='./images/excelicon.png' className="export_image"/></NavLink>
+                    </h4>
                 </div>
                 {this.state.loaderHidden &&
                 <div>

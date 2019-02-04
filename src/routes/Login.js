@@ -552,7 +552,7 @@ export default class Login extends Component {
                       </div>
                       <div className="form-group">
                         <label className="control-label">Пароль:</label>
-                        <input type="password" className="form-control no-bg" autocomplete="off" value={this.state.pwd} onChange={this.onPwdChange} required />
+                        <input type="password" className="form-control no-bg" autoComplete="off" value={this.state.pwd} onChange={this.onPwdChange} required />
                       </div>
                       <div className="modal-footer">
                         {!this.state.loaderHidden &&
