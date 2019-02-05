@@ -152,7 +152,7 @@ export default class EditPassword extends React.Component{
                     <div className="col-md-12">
                       <div style={{background:'rgba(0,0,0,0.1)', fontWeight: 'bold', color:'#D8A82D', padding:'5px'}}>
                         После первого входа необходимо изменить пароль!<br/>
-                        Рекоменуется изменение паролей каждые 30 дней.<br/>
+                        Рекоменуется изменение пароля каждые 30 дней.<br/>
                         Не передавайте свой пароль никому.
                       </div>
                       <div id="menu1" className="tab-pane fade active show">

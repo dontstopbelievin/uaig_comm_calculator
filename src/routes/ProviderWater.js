@@ -179,7 +179,10 @@ class AllApzs extends React.Component {
                       <td>{apz.project_address}</td>
                       {(status === 'active' || status === 'awaiting') &&
                         <td>
-                          {this.toDate(apz.term.date)}
+                          {apz.provider_deadline ?
+                            this.toDate(apz.provider_deadline)
+                            :
+                            this.toDate(apz.term.date)}
                         </td>
                       }
                       <td>

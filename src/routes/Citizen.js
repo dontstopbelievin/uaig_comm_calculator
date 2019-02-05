@@ -632,9 +632,18 @@ class AddApz extends React.Component {
         requiredFields['waterRequirement'] = 'Общая потребность в воде';
         requiredFields['waterSewage'] = 'Канализация';
       }
-      /*if(this.state.need_electro_provider){
+      if(this.state.need_electro_provider){
         requiredFields['electricRequiredPower'] = 'Требуемая мощность (кВт)';
-      }*/
+      }
+      if(this.state.need_heat_provider){
+        requiredFields['heatGeneral'] = 'Общая тепловая нагрузка (Гкал/ч)';
+      }
+      if(this.state.need_phone_provider){
+        requiredFields['phoneCapacity'] = 'Телефонная емкость';
+      }
+      if(this.state.need_gas_provider){
+        requiredFields['gasGeneral'] = 'Общая потребность (м3/час)';
+      }
       if (this.state.phoneServiceNum || this.state.phoneSewage || this.state.phoneCapacity || this.state.phoneClientWishes) {
         requiredFields['paymentPhotoFile'] = 'Сканированный файл оплаты';
       }

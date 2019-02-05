@@ -262,12 +262,14 @@ class ShowApz extends React.Component {
       storageAlias: "PKCS12",
       needSign: false,
       engineerReturnedState: false,
+      deadline: '',
       comment: null
     };
 
     this.onDocNumberChange = this.onDocNumberChange.bind(this);
     this.onCommentChange = this.onCommentChange.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
   //
     this.selectFromList = this.selectFromList.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
@@ -277,6 +279,11 @@ class ShowApz extends React.Component {
     this.props.breadCrumbs();
   }
 
+  onInputChange(e) {
+    const value = e.target.value;
+    const name = e.target.name;
+    this.setState({ [name] : value });
+  }
   onDocNumberChange(e) {
     this.setState({ docNumber: e.target.value });
   }
@@ -1054,6 +1061,10 @@ class ShowApz extends React.Component {
   }
 
   createCommission(id) {
+    if(this.state.deadline == ''){
+      alert('Укажите сроки обработки заявки для служб');
+      return false;
+    }
     var data = $('.commission_users_table input').serializeJSON();
 
     if (Object.keys(data).length == 0) {
@@ -1062,6 +1073,7 @@ class ShowApz extends React.Component {
     }
 
     data["comment"]= this.state.comment;
+    data["deadline"]= this.state.deadline;
 
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
@@ -1408,35 +1420,35 @@ class ShowApz extends React.Component {
 
           <table className="table table-bordered table-striped">
             <tbody>
-              {apz.apz_water &&
+              {!!apz.need_water_provider && apz.apz_water &&
                 <tr>
                   <td><b>Водоснабжение</b></td>
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#water_modal">Открыть</a></td>
                 </tr>
               }
 
-              {apz.apz_heat &&
+              {!!apz.need_heat_provider && apz.apz_heat &&
                 <tr>
                   <td><b>Теплоснабжение</b></td>
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#heat_modal">Открыть</a></td>
                 </tr>
               }
 
-              {apz.apz_electricity &&
+              {!!apz.need_electro_provider && apz.apz_electricity &&
                 <tr>
                   <td><b>Электроснабжение</b></td>
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#electro_modal">Открыть</a></td>
                 </tr>
               }
 
-              {apz.apz_gas &&
+              {!!apz.need_gas_provider && apz.apz_gas &&
                 <tr>
                   <td><b>Газоснабжение</b></td>
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#gas_modal">Открыть</a></td>
                 </tr>
               }
 
-              {apz.apz_phone &&
+              {!!apz.need_phone_provider && apz.apz_phone &&
                 <tr>
                   <td><b>Телефонизация</b></td>
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#phone_modal">Открыть</a></td>
@@ -1483,11 +1495,12 @@ class ShowApz extends React.Component {
                             <a className="text-info pointer" data-toggle="modal" data-target={'#' + item.role.name.toLowerCase() + '_provider_modal'}>{item.role.description}</a>
                           </td>
                           <td>
-                            {item.days > 1 ?
+                          {apz.provider_deadline}
+                            {/*item.days > 1 ?
                               item.days === 3 ? '2 д. (начиная со следующего дня)' : item.days - 1 + ' д.'
                               :
                               item.days === 1 ? 'Последний день (до 16:00)' : 'Просрочено'
-                            }
+                            */}
                           </td>
                           <td>{item.status.name}</td>
                         </tr>
@@ -1626,9 +1639,15 @@ class ShowApz extends React.Component {
           <div className={this.state.showButtons ? '' : 'invisible'}>
             <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px', display: 'table'}}>
               {!apz.commission &&
-                <button className="btn btn-raised btn-info" onClick={this.createCommission.bind(this, apz.id)} style={{marginRight: '5px'}}>
-                  Создать комиссию
-                </button>
+                <div>
+                  <div className="form-inline">
+                    <label htmlFor="deadline" required style={{paddingRight:'20px'}}>Сроки до : </label>
+                    <input type="datetime-local" className="form-control" id="deadline" name="deadline" onChange={this.onInputChange} value={this.state.deadline} />
+                  </div>
+                  <button className="btn btn-raised btn-info" onClick={this.createCommission.bind(this, apz.id)} style={{marginRight: '5px'}}>
+                    Создать комиссию
+                  </button>
+                </div>
               }
               {!this.state.needSign ?
                 <div>
