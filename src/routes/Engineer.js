@@ -1495,12 +1495,14 @@ class ShowApz extends React.Component {
                             <a className="text-info pointer" data-toggle="modal" data-target={'#' + item.role.name.toLowerCase() + '_provider_modal'}>{item.role.description}</a>
                           </td>
                           <td>
-                          {apz.provider_deadline}
-                            {/*item.days > 1 ?
+                          {apz.provider_deadline ?
+                            this.toDate(apz.provider_deadline)
+                            :
+                            item.days > 1 ?
                               item.days === 3 ? '2 д. (начиная со следующего дня)' : item.days - 1 + ' д.'
                               :
                               item.days === 1 ? 'Последний день (до 16:00)' : 'Просрочено'
-                            */}
+                          }
                           </td>
                           <td>{item.status.name}</td>
                         </tr>
