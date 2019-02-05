@@ -105,7 +105,7 @@ export default class Login extends Component {
         if (xhr.status === 200) {
           this.setState({loaderHidden: true});
           console.log("loggedIn");
-          //console.log(JSON.parse(e.target.response).roles);
+          console.log(JSON.parse(e.target.response));
           var roles = [];
           for(var index = 0; index < JSON.parse(e.target.response).roles.length; index++){
             roles.push(JSON.parse(e.target.response).roles[index].name);
