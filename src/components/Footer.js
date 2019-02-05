@@ -7,7 +7,7 @@ let e = new LocalizedStrings({ru,kk});
 
 export default class Footer extends React.Component {
     constructor() {
-    super();
+        super();
         (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
     }
     render(){
@@ -17,11 +17,11 @@ export default class Footer extends React.Component {
 
         (function () {
             var a = document.getElementsByTagName("script")[0],
-            s = document.createElement("script");
+                s = document.createElement("script");
             s.type = "text/javascript";
             s.async = true;
             s.src = (document.location.protocol === "https:" ? "https:" : "http:")
-            + "//c.zero.kz/z.js";
+                + "//c.zero.kz/z.js";
             a.parentNode.insertBefore(s, a);
         })();
 
@@ -51,6 +51,9 @@ export default class Footer extends React.Component {
                                 <span id="_zero_70316">
                                     <a href="https://zero.kz/catalog/70316_upravlenie-arxitekturi-i-gradostroitelstva-goroda-almati" target="_blank" rel="noopener noreferrer">
                                         <img src="https://c.zero.kz/z.png?u=70316" width="88" height="31" alt="ZERO.kz" />
+                                    </a>
+                                    <a href="https://metrika.yandex.ru/dashboard?id=49388944" target="_blank" rel="noopener noreferrer">
+                                        Статистика посещений
                                     </a>
                                 </span>
 
