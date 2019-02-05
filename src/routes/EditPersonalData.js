@@ -94,6 +94,40 @@ export default class EditPersonalData extends React.Component{
         fail: function (jqXHR) {
             alert("Ошибка " + jqXHR.status + ': ' + jqXHR.statusText);
         },
+        error: function (jqXHR, exception) {
+            var msg = '';
+            switch (jqXHR.status){
+                case 0 :
+                    msg = 'Not connect.\n Verify Network.';
+                    break;
+                case 404:
+                    msg = 'Requested page not found. [404]';
+                    break;
+                case 500:
+                    msg = 'Возможно данный ИИН/БИН или e-mail уже существует';
+                    break;
+                default:
+                    msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                    break;
+            }
+
+            // if (jqXHR.status === 0) {
+            //     msg = 'Not connect.\n Verify Network.';
+            // } else if (jqXHR.status == 404) {
+            //     msg = 'Requested page not found. [404]';
+            // } else if (jqXHR.status == 500) {
+            //     msg = 'Internal Server Error [500].'+jqXHR.text;
+            // } else if (exception === 'parsererror') {
+            //     msg = 'Requested JSON parse failed.';
+            // } else if (exception === 'timeout') {
+            //     msg = 'Time out error.';
+            // } else if (exception === 'abort') {
+            //     msg = 'Ajax request aborted.';
+            // } else {
+            //     msg = 'Uncaught Error.\n' + jqXHR.responseText;
+            // }
+            alert("Ошибка " + msg);
+        },
         complete: function (jqXHR) {
         }
       });
