@@ -1804,7 +1804,7 @@ handleObjTypeChange(event){
                     <input type="number" step="any" className="form-control" placeholder="" value={this.state.existingWaterConsumption} onChange={this.onExistingWaterConsumptionChange} />
                   </div>
 
-                  {this.state.apz.object_type != "ИЖС" &&
+                  {/*this.state.apz.object_type != "ИЖС" &&
                     <div>
                       <div className="form-group">
                         <label>Давление в сети городского водопровода в точке подключения</label>
@@ -1815,7 +1815,7 @@ handleObjTypeChange(event){
                         <textarea disabled='disabled' title="Пожалуйста заполните этот пункт в тексте ТУ ВОДОПОТРЕБЛЕНИЕ" rows="5" className="form-control" value={this.state.waterCustomerDuties} onChange={this.onWaterCustomerDutiesChange} placeholder="Описание"></textarea>
                       </div>
                     </div>
-                  }
+                  */}
                 </div>
                 <div className="col-sm-6">
                   <div className="form-group">
@@ -1839,12 +1839,12 @@ handleObjTypeChange(event){
                     <textarea rows="5" className="form-control" value={this.state.recomendation} onChange={this.onRecomendationChange} placeholder="Описание"></textarea>
                   </div>
 
-                  {this.state.apz.object_type != "ИЖС" &&
+                  {/*this.state.apz.object_type != "ИЖС" &&
                     <div className="form-group">
                       <label>Для присоединения к городским сетям и сооружениям водоотведения Заказчик обязан:</label>
                       <textarea disabled='disabled' title="Пожалуйста заполните этот пункт в тексте ТУ ВОДООТВЕДЕНИЕ" rows="5" className="form-control" value={this.state.sewageCustomerDuties} onChange={this.onSewageCustomerDutiesChange} placeholder="Описание"></textarea>
                     </div>
-                  }
+                  */}
 
                   {(this.state.response === true && this.state.responseFile) &&
                     <div className="form-group">

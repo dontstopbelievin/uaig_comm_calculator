@@ -288,7 +288,7 @@ class ShowSketch extends React.Component {
     xhr.onload = function() {
       if (xhr.status === 200) {
         var sketch = JSON.parse(xhr.responseText);
-        console.log(sketch);
+        //console.log(sketch);
         this.setState({sketch: sketch});
         this.setState({loaderHidden: true});
 
@@ -749,6 +749,9 @@ class AddSketch extends React.Component {
           claimedCapacityJustification: null,
           loaderHidden : true,
           aktNumber: '',
+          objectPyaten: '',
+          objectCarpark: '',
+          objectDOU: '',
           checkboxes: ['1'
   :
       false, '2'
@@ -1098,6 +1101,9 @@ class AddSketch extends React.Component {
             this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
 
             this.setState({objectType: sketch.object_type ? sketch.object_type : '' });
+            this.setState({objectPyaten: sketch.object_pyaten ? sketch.object_pyaten : '' });
+            this.setState({objectCarpark: sketch.object_carpark ? sketch.object_carpark : '' });
+            this.setState({objectDOU: sketch.object_dou ? sketch.object_dou : '' });
             this.setState({customer: sketch.customer ? sketch.customer : '' });
             // this.setState({cadastralNumber: sketch.cadastral_number ? sketch.cadastral_number : '' });
             this.setState({objectTerm: sketch.object_term ? sketch.object_term : '' });
@@ -1123,6 +1129,33 @@ class AddSketch extends React.Component {
 
   saveApz(publish,e) {
     e.preventDefault();
+
+    if (publish) {
+      var requiredFields = {
+      };
+
+      if(this.state.objectType == 'МЖК'){
+        requiredFields['objectLevel'] = 'Этажность';
+        requiredFields['objectRooms'] = 'Количество квартир (номеров, кабинетов)';
+        requiredFields['objectPyaten'] = 'Количество пятен';
+        requiredFields['objectCarpark'] = 'Количество парковочных мест';
+        requiredFields['objectDOU'] = 'Количество мест в детское дошкольное учреждение и детский сад';
+      }
+      var errors = 0;
+      var err_msgs = "";
+      Object.keys(requiredFields).forEach(function(key){
+        if (!this.state[key]) {
+          err_msgs += 'Заполните поле ' + requiredFields[key] + '\n';
+          errors++;
+          return false;
+        }
+      }.bind(this));
+
+      if (errors > 0) {
+        alert(err_msgs);
+        return false;
+      }
+    }
 
     var sketchId = this.props.match.params.id;
     var link = sketchId > 0 ? ("api/sketch/citizen/save/" + sketchId) : "api/sketch/citizen/save";
@@ -1389,12 +1422,22 @@ class AddSketch extends React.Component {
                                 <form id="tab2-form" data-tab="2" onSubmit={this.saveApz.bind(this, false)}>
                                     <div className="row">
                                         <div className="col-md-6">
-                                            <div className="form-group">
+                                            {/*<div className="form-group">
                                                 <div className="form-group">
                                                     <label htmlFor="ObjectType">Тип объекта:</label>
                                                     <input data-rh="Тип объекта" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.objectType} name="objectType" placeholder="" />
                                                     <small>Пример: строительства индивидуального жилого дома со сносом существующего жилого дома</small>
                                                 </div>
+                                            </div>*/}
+                                            <div className="form-group">
+                                              <label htmlFor="ObjectType">Тип объекта:</label>
+                                              <select required className="form-control" name="objectType" id="ObjectType" onChange={this.onInputChange} value={this.state.objectType}>
+                                                <option value="null" disabled>Выберите тип объекта</option>
+                                                <option>ИЖС</option>
+                                                <option>МЖК Общественное задание</option>
+                                                <option>МЖК Производственное задание</option>
+                                                <option>Реконструкция (перепланировка в т.ч)</option>
+                                              </select>
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="CommonArea">Общая площадь (м<sup>2</sup>):</label>
@@ -1404,6 +1447,22 @@ class AddSketch extends React.Component {
                                                 <label htmlFor="ObjectLevel">Этажность :</label>
                                                 <input data-rh="Этажность" data-rh-at="right" type="number" min="0" className="form-control" onChange={this.onInputChange} value={this.state.objectLevel} name="objectLevel" placeholder="" />
                                             </div>
+                                            {(this.state.objectType == 'МЖК Общественное задание' || this.state.objectType == 'МЖК Производственное задание') &&
+                                              <React.Fragment>
+                                              <div className="form-group">
+                                                <label htmlFor="objectPyaten">Количество пятен</label>
+                                                <input data-rh="Количество пятен" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.objectPyaten} name="objectPyaten" />
+                                              </div>
+                                              <div className="form-group">
+                                                <label htmlFor="objectCarpark">Количество парковочных мест</label>
+                                                <input data-rh="Количество парковочных мест" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.objectCarpark} name="objectCarpark" />
+                                              </div>
+                                              <div className="form-group">
+                                                <label htmlFor="objectDOU">Количество мест в детское дошкольное учреждение и детский сад</label>
+                                                <input data-rh="Количество мест в детское дошкольное учреждение и детский сад" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.objectDOU} name="objectDOU" />
+                                              </div>
+                                              </React.Fragment>
+                                            }
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-group">
@@ -1411,8 +1470,6 @@ class AddSketch extends React.Component {
                                                 <input data-rh="Срок строительства по нормам" data-rh-at="right" type="text" name="objectTerm" onChange={this.onInputChange} value={this.state.objectTerm} className="form-control" id="ObjectTerm" placeholder="" />
                                             </div>
                                             <div>
-                                                <br></br>
-                                                <br></br>
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="BuildArea">Площадь застройки (м<sup>2</sup>):</label>

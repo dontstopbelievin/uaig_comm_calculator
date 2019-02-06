@@ -66,9 +66,7 @@ class ShowSketch extends React.Component {
             apz_heads_id: [],
             engineerSign: false,
             xmlFile: false,
-            loaderHiddenSign:true,
-
-
+            loaderHiddenSign:true
         };
 
         this.onDescriptionChange = this.onDescriptionChange.bind(this);
@@ -804,7 +802,7 @@ class ShowSketch extends React.Component {
                                 </div>
                             </td>
                         </tr>
-                        }
+                      }
                         </tbody>
                     </table>
 
@@ -832,7 +830,6 @@ class ShowSketch extends React.Component {
                             <td><a className="text-info pointer" data-toggle="modal" data-target="#architect_modal">Просмотр</a></td>
                         </tr>
                         }
-
                         </tbody>
                     </table>
 
@@ -905,6 +902,22 @@ class ShowSketch extends React.Component {
                                             <td>Сроки строительства</td>
                                             <td>{sketch.object_term}</td>
                                         </tr>
+                                        {(sketch.object_type == 'МЖК Общественное задание' || sketch.object_type == 'МЖК Производственное задание') &&
+                                          <React.Fragment>
+                                          <tr>
+                                            <td>Количество пятен</td>
+                                            <td>{sketch.object_pyaten}</td>
+                                            </tr>
+                                          <tr>
+                                            <td>Количество парковочных мест</td>
+                                            <td>{sketch.object_carpark}</td>
+                                          </tr>
+                                          <tr>
+                                            <td>Количество мест в детское дошкольное учреждение и детский сад</td>
+                                            <td>{sketch.object_dou}</td>
+                                          </tr>
+                                          </React.Fragment>
+                                        }
                                         </tbody>
                                     </table>
                                 </div>

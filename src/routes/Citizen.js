@@ -1415,9 +1415,7 @@ class AddApz extends React.Component {
                               <option value="null" disabled>Выберите тип объекта</option>
                               <option>ИЖС</option>
                               <option>МЖК</option>
-                              <option>Общественное задание  </option>
-                              <option>Производственное задание</option>
-                              <option>Реконструкция</option>
+                              <option>ЛПХ</option>
                               <option>КомБыт</option>
                               <option>ПромПред</option>
                             </select>
@@ -1451,18 +1449,18 @@ class AddApz extends React.Component {
                           </div> */}
                         </div>
                         <div className="col-md-6">
-                        <div className="form-group">
-                          <label htmlFor="ObjectLevel">Этажность</label>
-                          <input data-rh="Этажность" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChange} value={this.state.objectLevel} name="objectLevel" placeholder="" />
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="ObjectArea">Площадь здания (кв.м)</label>
-                          <input data-rh="Площадь здания (кв.м)" data-rh-at="right" type="number" step="any" className="form-control" name="objectArea" onChange={this.ObjectArea.bind(this)} value={this.state.objectArea} />
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="ObjectRooms">Количество квартир (номеров, кабинетов)</label>
-                          <input data-rh="Количество квартир (номеров, кабинетов)" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChange} value={this.state.objectRooms} name="objectRooms" />
-                        </div>
+                          <div className="form-group">
+                            <label htmlFor="ObjectLevel">Этажность</label>
+                            <input data-rh="Этажность" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChange} value={this.state.objectLevel} name="objectLevel" placeholder="" />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="ObjectArea">Площадь здания (кв.м)</label>
+                            <input data-rh="Площадь здания (кв.м)" data-rh-at="right" type="number" step="any" className="form-control" name="objectArea" onChange={this.ObjectArea.bind(this)} value={this.state.objectArea} />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="ObjectRooms">Количество квартир (номеров, кабинетов)</label>
+                            <input data-rh="Количество квартир (номеров, кабинетов)" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChange} value={this.state.objectRooms} name="objectRooms" />
+                          </div>
                         </div>
                       </div>
                       <div>
@@ -3458,19 +3456,11 @@ console.log(apz.files);
                 <h5 className="block-title-2 mb-3 mt-3">Логи</h5>
                 <div className="border px-3 py-2">
                   {apz.state_history.map(function(state, index) {
-                    if(state.state_id == 21){
-                      return(
-                        <div key={index}>
-                          <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
-                        </div>
-                      );
-                    }else{
-                      return(
-                        <div key={index}>
-                          <p className="mb-0">{state.created_at}&emsp;{state.state.name}</p>
-                        </div>
-                      );
-                    }
+                    return(
+                      <div key={index}>
+                        <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
+                      </div>
+                    );
                   }.bind(this))}
                 </div>
               </div>

@@ -64,7 +64,7 @@ class AllApzs extends React.Component {
         xhr.onload = function() {
             if (xhr.status === 200) {
                 var data = JSON.parse(xhr.responseText);
-                //console.log(data);
+                console.log(data);
                 var select_directors = [];
                 for (var i = 0; i < data.length; i++) {
                     select_directors.push(<option value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
