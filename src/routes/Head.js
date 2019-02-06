@@ -58,7 +58,7 @@ class AllApzs extends React.Component {
     getHeads(){
         var token = sessionStorage.getItem('tokenInfo');
         var xhr = new XMLHttpRequest();
-        xhr.open("get", window.url + "api/apz/getheads", true);
+        xhr.open("get", window.url + "api/apz/getsortheads", true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         xhr.onload = function() {

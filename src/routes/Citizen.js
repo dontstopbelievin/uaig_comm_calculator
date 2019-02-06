@@ -848,6 +848,18 @@ class AddApz extends React.Component {
     {
       //rules
     }
+    if(document.getElementById('ObjectType').value === 'Общественное задание') //Общественное задание
+    {
+      //rules
+    }
+    if(document.getElementById('ObjectType').value === 'Производственное задание') //Производственное задание
+    {
+      //rules
+    }
+    if(document.getElementById('ObjectType').value === 'Реконструкция ') //Реконструкция
+    {
+      //rules
+    }
     if(document.getElementById('ObjectType').value === 'КомБыт')
     {
       //rules
@@ -1403,6 +1415,9 @@ class AddApz extends React.Component {
                               <option value="null" disabled>Выберите тип объекта</option>
                               <option>ИЖС</option>
                               <option>МЖК</option>
+                              <option>Общественное задание  </option>
+                              <option>Производственное задание</option>
+                              <option>Реконструкция</option>
                               <option>КомБыт</option>
                               <option>ПромПред</option>
                             </select>
