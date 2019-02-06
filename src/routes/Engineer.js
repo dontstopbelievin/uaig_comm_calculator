@@ -39,6 +39,8 @@ class AllApzs extends React.Component {
     this.state = {
       loaderHidden: false,
       response: null,
+      data: [],
+      data_reserve: [],
       pageNumbers: []
     };
   }
@@ -91,6 +93,8 @@ class AllApzs extends React.Component {
 
         this.setState({pageNumbers: pageNumbers});
         this.setState({response: response});
+        this.setState({data: response.data});
+        this.setState({data_reserve: response.data});
       }
 
       this.setState({ loaderHidden: true });
@@ -118,10 +122,23 @@ class AllApzs extends React.Component {
     this.props.history.push('/panel/engineer/apz/show/' + id);
   }
 
+  handleSearch(e){
+    if(e.target.value.trim() == ''){this.setState({data: this.state.data_reserve}); return;}
+    var items = e.target.value.trim().split(' ');
+    var data = this.state.data_reserve.filter(function(obj) {
+        for(var i = 0; i < items.length; i++){
+          if(obj.applicant.includes(items[i])){continue;}
+          else{return false;}
+        }
+       return true;
+     });
+    this.setState({data: data});
+  }
+
   render() {
     var status = this.props.match.params.status;
     var page = this.props.match.params.page;
-    var apzs = this.state.response ? this.state.response.data : [];
+    var apzs = this.state.data ? this.state.data : [];
 
     return (
       <div>
@@ -130,13 +147,19 @@ class AllApzs extends React.Component {
         </div>
         {this.state.loaderHidden &&
           <div>
-            <ul className="nav nav-tabs mb-2 pull-right">
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/engineer/apz/status/active/1" replace>Активные</NavLink></li>
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'awaiting'} to="/panel/engineer/apz/status/awaiting/1" replace>Комм. службы в процессе</NavLink></li>
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'complete'} to="/panel/engineer/apz/status/complete/1" replace>Комм. службы выполнены</NavLink></li>
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/engineer/apz/status/accepted/1" replace>Принятые</NavLink></li>
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/engineer/apz/status/declined/1" replace>Отказанные</NavLink></li>
-            </ul>
+            <table style={{width:'100%'}}><tbody>
+            <tr><td>
+              <input placeholder="Поиск по ФИО" type="text" className="mb-2" id="filter" onChange={this.handleSearch.bind(this)} style={{padding:'3px'}}/>
+            </td><td>
+              <ul className="nav nav-tabs mb-2 pull-right">
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/engineer/apz/status/active/1" replace>Активные</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'awaiting'} to="/panel/engineer/apz/status/awaiting/1" replace>Комм. службы в процессе</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'complete'} to="/panel/engineer/apz/status/complete/1" replace>Комм. службы выполнены</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/engineer/apz/status/accepted/1" replace>Принятые</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/engineer/apz/status/declined/1" replace>Отказанные</NavLink></li>
+              </ul>
+            </td></tr></tbody>
+            </table>
 
             <table className="table">
               <thead>

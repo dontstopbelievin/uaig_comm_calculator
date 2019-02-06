@@ -40,11 +40,15 @@ class AllApzs extends React.Component {
     this.state = {
       loaderHidden: false,
       response: null,
+      data: [],
+      data_reserve: [],
       pageNumbers: [],
       regions:[],
+      searchApz: '',
       current_region: ""
     };
 
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   componentDidMount() {
@@ -56,7 +60,7 @@ class AllApzs extends React.Component {
     var data = JSON.parse(sessionStorage.getItem('userRoles'));
     var select_regions = [];
     for (var i = 2; i < data.length; i++) {
-      select_regions.push(<option value={data[i]}> {data[i]} </option>);
+      select_regions.push(<option key={i} value={data[i]}> {data[i]} </option>);
     }
     this.setState({regions: select_regions});
     this.setState({current_region: data[2]});
@@ -85,6 +89,7 @@ class AllApzs extends React.Component {
     xhr.onload = function () {
       if (xhr.status === 200) {
         var response = JSON.parse(xhr.responseText);
+        console.log(response);
         var pageNumbers = [];
         var start = (response.current_page - 4) > 0 ? (response.current_page - 4) : 1;
         var end = (response.current_page + 4) < response.last_page ? (response.current_page + 4) : response.last_page;
@@ -95,6 +100,8 @@ class AllApzs extends React.Component {
 
         this.setState({pageNumbers: pageNumbers});
         this.setState({response: response});
+        this.setState({data: response.data});
+        this.setState({data_reserve: response.data});
       }
 
       this.setState({ loaderHidden: true });
@@ -124,10 +131,23 @@ class AllApzs extends React.Component {
     }.bind(this));
   }
 
+  handleSearch(e){
+    if(e.target.value.trim() == ''){this.setState({data: this.state.data_reserve}); return;}
+    var items = e.target.value.trim().split(' ');
+    var data = this.state.data_reserve.filter(function(obj) {
+        for(var i = 0; i < items.length; i++){
+          if(obj.applicant.includes(items[i])){continue;}
+          else{return false;}
+        }
+       return true;
+     });
+    this.setState({data: data});
+  }
+
   render() {
     var status = this.props.match.params.status;
     var page = this.props.match.params.page;
-    var apzs = this.state.response ? this.state.response.data : [];
+    var apzs = this.state.data ? this.state.data : [];
 
     return (
       <div>
@@ -142,13 +162,19 @@ class AllApzs extends React.Component {
                 {this.state.regions}
               </select>
             </div>
-            <ul className="nav nav-tabs mb-2 pull-right">
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/urban/apz/status/active/1" replace>Новые</NavLink></li>
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'processed'} to="/panel/urban/apz/status/processed/1" replace>Обработанные</NavLink></li>
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'awaiting'} to="/panel/urban/apz/status/awaiting/1" replace>В ожидании</NavLink></li>
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/urban/apz/status/accepted/1" replace>Принятые</NavLink></li>
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/urban/apz/status/declined/1" replace>Отказанные</NavLink></li>
-            </ul>
+            <table style={{width:'100%'}}><tbody>
+            <tr><td>
+              <input placeholder="Поиск по ФИО" type="text" className="mb-2" id="filter" onChange={this.handleSearch} style={{padding:'3px'}}/>
+            </td><td>
+              <ul className="nav nav-tabs mb-2 pull-right">
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/urban/apz/status/active/1" replace>Новые</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'processed'} to="/panel/urban/apz/status/processed/1" replace>Обработанные</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'awaiting'} to="/panel/urban/apz/status/awaiting/1" replace>В ожидании</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/urban/apz/status/accepted/1" replace>Принятые</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/urban/apz/status/declined/1" replace>Отказанные</NavLink></li>
+              </ul>
+            </td></tr></tbody>
+            </table>
 
             <table className="table">
               <thead>
@@ -162,7 +188,7 @@ class AllApzs extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {apzs.map(function(apz, index) {
+                {apzs && apzs.map(function(apz, index) {
                   return(
                     <tr key={index}>
                       <td>{apz.id}</td>
@@ -1830,5 +1856,3 @@ class ShowMap extends React.Component {
     )
   }
 }
-
-
