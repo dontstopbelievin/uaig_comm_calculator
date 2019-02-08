@@ -136,7 +136,7 @@ class AllApzs extends React.Component {
     var items = e.target.value.trim().split(' ');
     var data = this.state.data_reserve.filter(function(obj) {
         for(var i = 0; i < items.length; i++){
-          if(obj.applicant.includes(items[i])){continue;}
+          if(obj.applicant.toLowerCase().includes(items[i].toLowerCase())){continue;}
           else{return false;}
         }
        return true;
@@ -281,6 +281,7 @@ class ShowApz extends React.Component {
       apz_head_id: '',
       apz_heads_id: [],
       engineerSign: false,
+      apzSign: false,
       xmlFile: false,
       loaderHiddenSign:true
     };
@@ -322,7 +323,7 @@ class ShowApz extends React.Component {
         //console.log(data);
         var select_directors = [];
         for (var i = 0; i < data.length; i++) {
-          select_directors.push(<option value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
+          select_directors.push(<option key={i} value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
         }
         this.setState({apz_heads_id: select_directors});
         if(this.state.apz_head_id == "" || this.state.apz_head_id == " "){
@@ -366,6 +367,7 @@ class ShowApz extends React.Component {
         this.setState({apzReturnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender == 'apz'})[0]});
         this.setState({needSign: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
         this.setState({engineerSign: apz.files.filter(function(obj) { return obj.category_id === 28 })[0]});
+        this.setState({apzSign: apz.files.filter(function(obj) { return obj.category_id === 18 })[0]});
         if(apz.apz_head_id){this.setState({apz_head_id: apz.apz_head_id});}
 
         if (apz.status_id === 3) {
@@ -1549,11 +1551,15 @@ class ShowApz extends React.Component {
                   :
                   <div>
                     {!this.state.needSign ?
-                      <div style={{margin: 'auto', display: 'table'}}>{console.log(this.state.engineerReturnedState)}
-                        {!this.state.backFromHead && !this.state.engineerSign  && !this.state.engineerReturnedState ?
+                      <div style={{margin: 'auto', display: 'table'}}>
+                        {!this.state.backFromHead && !this.state.engineerSign && !this.state.apzSign  && !this.state.engineerReturnedState ?
+                        <React.Fragment>
                         <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>Отправить инженеру</button>
+                        <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", "apz")}>Отправить отделу АПЗ</button>
+                        </React.Fragment>
                         :
-                        <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>Одобрить</button>}
+                        <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>Одобрить</button>
+                        }
                         <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
                           Отклонить
                         </button>
@@ -1591,7 +1597,7 @@ class ShowApz extends React.Component {
                           </div>
                           :
                           <div>
-                            <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", "apz")}>
+                            <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", "head")}>
                               Отправить главному архитектору
                             </button>
                           </div>

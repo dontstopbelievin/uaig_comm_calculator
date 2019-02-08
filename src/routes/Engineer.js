@@ -127,7 +127,7 @@ class AllApzs extends React.Component {
     var items = e.target.value.trim().split(' ');
     var data = this.state.data_reserve.filter(function(obj) {
         for(var i = 0; i < items.length; i++){
-          if(obj.applicant.includes(items[i])){continue;}
+          if(obj.applicant.toLowerCase().includes(items[i].toLowerCase())){continue;}
           else{return false;}
         }
        return true;
