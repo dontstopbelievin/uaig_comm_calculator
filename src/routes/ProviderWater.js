@@ -8,7 +8,7 @@ import Loader from 'react-loader-spinner';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import saveAs from 'file-saver';
-import '../assets/css/visited.css'
+import '../assets/css/visited.css';
 
 export default class ProviderWater extends React.Component {
   render() {
@@ -558,7 +558,7 @@ class ShowApz extends React.Component {
         //console.log(data);
         var select_directors = [];
         for (var i = 0; i < data.length; i++) {
-          select_directors.push(<option value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
+          select_directors.push(<option key={i} value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
         }
         this.setState({water_directors_id: select_directors});
         if(this.state.ty_director_id == "" || this.state.ty_director_id == " "){
@@ -604,7 +604,7 @@ class ShowApz extends React.Component {
         this.setState({tcTextWaterRequirements: data.tc_text_water_requirements});
         this.setState({tcTextWaterGeneral: data.tc_text_water_general});
         this.setState({tcTextSewage: data.tc_text_sewage});
-        console.log(data.tc_text_sewage);
+        //console.log(data.tc_text_sewage);
         //this.setState({tcTextSewageRequirements: data.tc_text_sewage_requirements});
         // this.setState({tcTextSewageGeneral: data.tc_text_sewage_general});
         if(data.resp_tc_text_water !=null){

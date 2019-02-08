@@ -941,7 +941,7 @@ class ShowApz extends React.Component {
           var JSZip = require("jszip");
           var zip = new JSZip();
           for(var i=0; i<data.my_files.length;i++){
-            zip.file(data.my_files[i].file_name, base64ToArrayBuffer(data.my_files[i].file), {binary:true});
+            zip.file(i+'_'+data.my_files[i].file_name, base64ToArrayBuffer(data.my_files[i].file), {binary:true});
           }
           zip.generateAsync({type:"blob"})
           .then(function (content) {
