@@ -23,7 +23,7 @@ export default class Urban extends React.Component {
                 <ShowApz {...props} breadCrumbs={this.props.breadCrumbs.bind(this)} />
               )} />
 
-              <Redirect from="/panel/urban/apz" to="/panel/urban/apz/status/active/1" />
+              <Redirect from="/panel/urban/apz" to="/panel/urban/apz/status/new/1" />
 
             </Switch>
           </div>
@@ -167,7 +167,7 @@ class AllApzs extends React.Component {
               <input placeholder="Поиск по ФИО" type="text" className="mb-2" id="filter" onChange={this.handleSearch} style={{padding:'3px'}}/>
             </td><td>
               <ul className="nav nav-tabs mb-2 pull-right">
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/urban/apz/status/active/1" replace>Новые</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'new'} to="/panel/urban/apz/status/active/1" replace>Новые</NavLink></li>
                 <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'processed'} to="/panel/urban/apz/status/processed/1" replace>Обработанные</NavLink></li>
                 <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'awaiting'} to="/panel/urban/apz/status/awaiting/1" replace>В ожидании</NavLink></li>
                 <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/urban/apz/status/accepted/1" replace>Принятые</NavLink></li>
@@ -175,7 +175,6 @@ class AllApzs extends React.Component {
               </ul>
             </td></tr></tbody>
             </table>
-
             <table className="table">
               <thead>
                 <tr>
@@ -221,7 +220,7 @@ class AllApzs extends React.Component {
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
-                      <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
+                      <li key={index} className={'page-item ' + (page == num ? 'new' : '')}>
                         <Link className="page-link" to={'/panel/urban/apz/status/' + status + '/' + num}>{num}</Link>
                       </li>
                       );

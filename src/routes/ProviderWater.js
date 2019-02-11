@@ -1172,7 +1172,11 @@ class ShowApz extends React.Component {
         if (this.state.callSaveFromSend) {
           this.setState({callSaveFromSend: false});
           this.sendWaterResponse(apzId, status, comment);
-        } else {
+        }
+        else if(!this.state.docNumber){
+          alert("Ответ не сохранен!");
+        }
+        else  {
           alert("Ответ сохранен!");
 
           this.setState({showSignButtons: true});
@@ -1907,6 +1911,12 @@ handleObjTypeChange(event){
                         <select id="water_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.ty_director_id} onChange={this.handleDirectorIDChange.bind(this)}>
                           {this.state.water_directors_id}
                         </select>
+                      </div>
+                      <div style={{paddingLeft:'5px', fontSize: '18px', margin: '10px 0px'}}>
+                          <div className="form-group">
+                              <b>Номер документа</b>
+                              <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
+                          </div>
                       </div>
                       <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, "accept", "")}>
                         Сохранить
