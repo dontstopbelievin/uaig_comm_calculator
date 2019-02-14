@@ -1,16 +1,10 @@
 import React from 'react';
 import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../languages/guest.json';
-import '../assets/css/NewsArticle.css';
-import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import WOW from 'wowjs';
 import $ from 'jquery';
-import Loader from 'react-loader-spinner';
-import Citizen from "./Citizen";
-import Sketch from "./Sketch";
-import PhotoReports from "./PhotoReports";
-import Files from "./Files";
-import { UncontrolledCarousel, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 let e = new LocalizedStrings({ru,kk});
 
@@ -22,7 +16,6 @@ export default class BasePagePanel extends React.Component{
 
     this.state = {
       tokenExists: false,
-      loaderHidden: true
     };
   }
   componentDidMount() {
@@ -59,18 +52,23 @@ export default class BasePagePanel extends React.Component{
     }
     return(
       <div className="container body-content">
-
+        {!sessionStorage.getItem('tokenInfo') &&
+          <div className="alert alert-danger" role="alert">
+            Для работы в системе необходимо <NavLink to={"/panel/common/login"}>войти </NavLink>
+            или <NavLink to={"/panel/common/register"}>зарегистрироваться</NavLink>.
+          </div>
+        }
         <div className="container home-page col-md-12 wow fadeInUp" data-wow-duration="1.5s">
           <div className="row">
             <div className="col-md-12 col-xs-12 black-main text-center">
               <h4 >{e.public_services}</h4>
-              <span><img src="images/line.png" /></span>
+              <span><img src="/images/line.png" /></span>
 
               <div className="card-deck wow fadeInUp" data-wow-duration="1.5s">
                 <div className="card  mt-4 mb-4 ">
                   <div className="card-image card-color-2">
                     <div className="image-border">
-                      <img src="./images/2.svg" alt="true" />
+                      <img src="/images/2.svg" alt="true" />
                     </div>
                   </div>
 
@@ -81,18 +79,18 @@ export default class BasePagePanel extends React.Component{
                   </div>
                   <div className="card-button">
                     {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
-                    {this.state.tokenExists && this.state.rolename === 'Admin' && <NavLink to={"/panel/admin/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Admin' && <NavLink to={"/panel/admin/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                     {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/panel/citizen/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/panel/urban/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'Head' &&  <NavLink to={"/panel/head/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'Electricity' &&  <NavLink to={"/panel/elector-provider/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'Gas' &&  <NavLink to={"/panel/gas-provider/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'Heat' &&  <NavLink to={"/panel/heat-provider/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'Water' &&  <NavLink to={"/panel/water-provider/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'Phone' &&  <NavLink to={"/panel/phone-provider/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'ApzDepartment' &&  <NavLink to={"/panel/apz-department/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'Engineer' &&  <NavLink to={"/panel/engineer/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'Office' &&  <NavLink to={"/panel/office/apz"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/panel/urban/apz/status/new/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Head' &&  <NavLink to={"/panel/head/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Electricity' &&  <NavLink to={"/panel/elector-provider/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Gas' &&  <NavLink to={"/panel/gas-provider/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Heat' &&  <NavLink to={"/panel/heat-provider/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Water' &&  <NavLink to={"/panel/water-provider/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Phone' &&  <NavLink to={"/panel/phone-provider/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'ApzDepartment' &&  <NavLink to={"/panel/apz-department/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Engineer' &&  <NavLink to={"/panel/engineer/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Office' &&  <NavLink to={"/panel/office/apz/all/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                     {!this.state.tokenExists && <AlertModal />}
                   </div>
                 </div>
@@ -100,7 +98,7 @@ export default class BasePagePanel extends React.Component{
                 <div className="card mt-4 mb-4 info-block">
                   <div className="card-image card-color-1">
                     <div className="image-border">
-                      <img src="./images/7.svg" alt="true" />
+                      <img src="/images/7.svg" alt="true" />
                     </div>
 
                   </div>
@@ -110,16 +108,16 @@ export default class BasePagePanel extends React.Component{
                     </p>
                   </div>
                   <div className="card-button">
-                      {this.state.tokenExists && this.state.rolename === 'Admin' && <NavLink to={"/panel"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                      {/*this.state.tokenExists && this.state.rolename === 'Admin' && <NavLink to={"/panel"} replace className="btn btn-primary">Эскизные проекты</NavLink>*/}
                       {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/panel/citizen/sketch"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/panel/urban/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Head' &&  <NavLink to={"/panel/head/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Electricity' &&  <NavLink to={"/providerelectro"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Gas' &&  <NavLink to={"/providergas"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Heat' &&  <NavLink to={"/providerheat"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Water' &&  <NavLink to={"/providerwater"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'ApzDepartment' &&  <NavLink to={"/panel/apz-department/sketch"} replace className="btn btn-primary">Перейти к эскизным проектам</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Engineer' &&  <NavLink to={"/engineer"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                      {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/panel/urban/sketch"} replace className="btn btn-primary">Эскизные проекты</NavLink>}
+                      {this.state.tokenExists && this.state.rolename === 'Head' &&  <NavLink to={"/panel/head/sketch"} replace className="btn btn-primary">Эскизные проекты</NavLink>}
+                      {/*this.state.tokenExists && this.state.rolename === 'Electricity' &&  <NavLink to={"/providerelectro"} replace className="btn btn-primary">Эскизные проекты</NavLink>*/}
+                      {/*this.state.tokenExists && this.state.rolename === 'Gas' &&  <NavLink to={"/providergas"} replace className="btn btn-primary">Эскизные проекты</NavLink>*/}
+                      {/*this.state.tokenExists && this.state.rolename === 'Heat' &&  <NavLink to={"/providerheat"} replace className="btn btn-primary">Эскизные проекты</NavLink>*/}
+                      {/*this.state.tokenExists && this.state.rolename === 'Water' &&  <NavLink to={"/providerwater"} replace className="btn btn-primary">Эскизные проекты</NavLink>*/}
+                      {/*this.state.tokenExists && this.state.rolename === 'ApzDepartment' &&  <NavLink to={"/panel/apz-department/sketch"} replace className="btn btn-primary">Эскизные проекты</NavLink>*/}
+                      {this.state.tokenExists && this.state.rolename === 'Engineer' &&  <NavLink to={"/panel/engineer/sketch"} replace className="btn btn-primary">Эскизные проекты</NavLink>}
                       {!this.state.tokenExists && <AlertModal />}
                   </div>
                 </div>
@@ -127,7 +125,7 @@ export default class BasePagePanel extends React.Component{
                 <div className="card  mt-4 mb-4 ">
                   <div className="card-image card-color-3">
                     <div className="image-border">
-                      <img src="./images/3.svg" alt="true" />
+                      <img src="/images/3.svg" alt="true" />
                     </div>
                   </div>
                   <div className="card-body">
@@ -147,7 +145,7 @@ export default class BasePagePanel extends React.Component{
                 <div className="card mt-4 mb-4 info-block">
                   <div className="card-image card-color-1">
                     <div className="image-border">
-                      <img src="./images/1.svg" alt="true" />
+                      <img src="/images/1.svg" alt="true" />
                     </div>
 
                   </div>
@@ -166,7 +164,7 @@ export default class BasePagePanel extends React.Component{
                 <div className="card mt-4 mb-4 ">
                   <div className="card-image card-color-4">
                     <div className="image-border">
-                      <img src="./images/4.svg" alt="true" />
+                      <img src="/images/4.svg" alt="true" />
                     </div>
                   </div>
                   <div className="card-body">
@@ -184,7 +182,7 @@ export default class BasePagePanel extends React.Component{
                 <div className="card  mt-4 mb-4 ">
                   <div className="card-image card-color-5">
                     <div className="image-border">
-                      <img src="./images/5.svg" alt="true" />
+                      <img src="/images/5.svg" alt="true" />
                     </div>
                   </div>
                   <div className="card-body">
@@ -202,7 +200,7 @@ export default class BasePagePanel extends React.Component{
                 <div className="card mt-4 mb-4 ">
                   <div className="card-image card-color-6">
                     <div className="image-border">
-                      <img src="./images/6.svg" alt="true" />
+                      <img src="/images/6.svg" alt="true" />
                     </div>
                   </div>
                   <div className="card-body">

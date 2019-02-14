@@ -35,17 +35,17 @@ export default class Footer extends React.Component {
                             </div>
 
                             <div className="social col-md-5 text-right">
-                                <a href="https://www.facebook.com/uaig.almaty.3"><img src="./images/facebook.png" alt="facebook" /></a>
-                                <a href="https://www.instagram.com/uaigalmatykz/"><img src="./images/instagram.png" alt="instagram" /></a>
-                                <a href="https://vk.com/id485151219"><img src="./images/vk.png" alt="vk" /></a>
-                                <a href="https://twitter.com/?logged_out=1&lang=ru"><img src="./images/twitter.png" alt="twitter" /></a>
-                                <a href="https://www.youtube.com/channel/UCCWoXvhrVkN1NAd6IQLghdQ"><img src="./images/youtube.png" alt="youtube" /></a>
+                                <a href="https://www.facebook.com/uaig.almaty.3"><img src="/images/facebook.png" alt="facebook" /></a>
+                                <a href="https://www.instagram.com/uaigalmatykz/"><img src="/images/instagram.png" alt="instagram" /></a>
+                                <a href="https://vk.com/id485151219"><img src="/images/vk.png" alt="vk" /></a>
+                                <a href="https://twitter.com/?logged_out=1&lang=ru"><img src="/images/twitter.png" alt="twitter" /></a>
+                                <a href="https://www.youtube.com/channel/UCCWoXvhrVkN1NAd6IQLghdQ"><img src="/images/youtube.png" alt="youtube" /></a>
                             </div>
                             <div className="email col-md-12" >
-                                <a><img src="./images/email.png" alt="contact" /><b>u.aig@almaty.gov.kz</b></a>
+                                <a><img src="/images/email.png" alt="contact" /><b>u.aig@almaty.gov.kz</b></a>
                             </div>
                             <div className="address col-md-9">
-                                <p><img src="./images/maps.png" alt="map" />Алматы пр. Абая, 90</p>
+                                <p><img src="/images/maps.png" alt="map" />Алматы пр. Абая, 90</p>
                             </div>
                             <div className="col-md-2 text-right">
                                 <span id="_zero_70316">
@@ -60,7 +60,7 @@ export default class Footer extends React.Component {
                                 <YMInitializer accounts={[49388944]} />
                             </div>
                             <div className="contact col-md-8 text-left font-weight-bold">
-                                <p className="text-white"><img src="./images/phone-call.png" />Call center: <b className="underline"> +7 (707) 429-55-39</b></p>
+                                <p className="text-white"><img src="/images/phone-call.png" />Call center: <b className="underline"> +7 (707) 429-55-39</b></p>
                             </div>
                         </div>
                     </div>

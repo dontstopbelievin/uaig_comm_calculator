@@ -5,7 +5,6 @@ import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import $ from 'jquery';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import saveAs from 'file-saver';
 import CommissionAnswersList from '../components/CommissionAnswersList';
 

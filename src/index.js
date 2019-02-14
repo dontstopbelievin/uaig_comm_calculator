@@ -1,103 +1,73 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { HashRouter, Route, Switch } from 'react-router-dom';
-//import LocalizedStrings from 'react-localization';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Header from './components/Header';
-import Guest from './routes/Guest';
-import MapView from './routes/Map';
-import Map2dView from './routes/Map2d';
-import Photos from './routes/Photos';
-import Login from './routes/Login';
-import Register from './routes/Register';
-import Temporary from './routes/Temporary';
+import Login from './routes/authorization/Login';
+import Register from './routes/authorization/Register';
 import Citizen from './routes/Citizen';
-import Urban from './routes/Urban';
-import UrbanReport from './routes/UrbanReport';
-import Head from './routes/Head';
-import HeadReport from './routes/HeadReport';
-import ProviderElectro from './routes/ProviderElectro';
-import ProviderGas from './routes/ProviderGas';
-import ProviderPhone from './routes/ProviderPhone';
-import ProviderHeat from './routes/ProviderHeat';
-import ProviderWater from './routes/ProviderWater';
-import Project from './routes/Project';
-import PhotoReports from './routes/PhotoReports';
-import PhotoReportsManage from './routes/PhotoReportsManage';
-import Admin from './routes/Admin';
-import AdminApzMonitor from './routes/AdminApzMonitor';
-import Files from './routes/Files';
 import Sketch from './routes/Sketch';
 import SketchApzDepartment from './routes/SketchApzDepartment';
-import Review from './routes/Review';
-import BudgetPlan from './routes/BudgetPlan';
-import VideoTutorials from './routes/VideoTutorials';
-import Polls from './routes/Polls';
-import DesignCode from './routes/DesignCode';
-import CouncilMaterials from './routes/CouncilMaterials';
-import Reports from './routes/Reports';
-import Stats from './routes/Stats';
 import Footer from './components/Footer';
-import News from './routes/News';
-import NewsPanel from './routes/NewsPanel';
-import NewsAll from './routes/NewsAll';
-import NewsArticle from './routes/NewsArticle';
-import NewsByDay from './routes/NewsByDay';
-import AnswerTemplate from './routes/AnswerTemplate';
-import EditPersonalData from './routes/EditPersonalData'
-import EditPassword from './routes/EditPassword'
-import ForgotPassword from './routes/ForgotPassword'
-import ResetForm from './routes/ResetForm'
-import Npm from './routes/Npm';
-import public_services from './routes/public_services';
-import permission_and_covoting from './routes/permission_and_covoting';
-import Vacancies from './routes/Vacancies';
-import GovermentServices from './routes/GovermentServices';
-//import legalpurchase from './routes/Legalpurchase';
-import Counteraction from './routes/Counteraction';
-import Contacts from './routes/Contacts';
-import architectural_and_town_planning_activity from './routes/Architectural_and_town_planning_activity';
-import Control from './routes/Control';
-import TimeOfReception from './routes/TimeOfReception';
-import Engineer from './routes/Engineer.js';
-import Apz from './routes/Apz.js';
-import DoingBusiness from './routes/DoingBusiness.js';
-import ApzDepartment from './routes/ApzDepartment.js';
-import BisunessBuilding from './routes/BisunessBuilding';
-import InfoAboutDepartment from './routes/InfoAboutDepartment.js';
-import Population from './routes/Population.js';
-import Staff from './routes/Staff.js';
-import EntrepreneurSupport from './routes/EntrepreneurSupport.js';
-import ExecutiveAgency from './routes/ExecutiveAgency.js';
-import TypeOfPublicService from './routes/TypeOfPublicService.js';
-import StateSymbols from './routes/StateSymbols.js';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.min.js';
-import PopperJs from 'popper.js';
-import AddPages from "./routes/AddPages";
-import Page from "./routes/Page";
-import Menu from "./routes/Menu";
-import Search from "./routes/Search";
-import UsersQuestions from "./routes/UsersQuestions";
-import AllQuestions from "./routes/AllQuestions";
-import PanelBase from "./routes/PanelBase";
-import VacanciesView from "./routes/VacanciesView";
+import EditPersonalData from './routes/authorization/EditPersonalData';
+import EditPassword from './routes/authorization/EditPassword';
+import ForgotPassword from './routes/authorization/ForgotPassword';
+import ResetForm from './routes/authorization/ResetForm';
+import FirstLogin from "./routes/authorization/FirstLogin";
 import SketchUrban from "./routes/SketchUrban";
 
-// import tether from 'tether';
-// global.Tether = tether;
-//import 'bootstrap/dist/css/bootstrap.min.css';
+import './imports/styles';
+import './imports/js';
+import LocalizedStrings from 'react-localization';
+import {ru, kk} from './languages/breadCrumbs.json';
+import { NavLink, Link, Redirect } from 'react-router-dom';
+import WOW from 'wowjs';
+import $ from 'jquery';
 
-window.jQuery = require('jquery');
-// window.Popper = require('popper.js').default;
+import Loader from 'react-loader-spinner';
+import BasePagePanel from "./routes/BasePagePanel";
+import SketchEngineer from "./routes/SketchEngineer";
+import SketchHead from "./routes/SketchHead";
+import ExportToExcel from "./components/ExportToExcel";
+import UrbanAllApzs from "./routes/apz/urban/AllApzs";
+import UrbanSearchAllApzs from "./routes/apz/urban/SearchAllApzs";
+import UrbanShowApz from "./routes/apz/urban/ShowApz";
+import AllTemplates from "./routes/reject_templates/AllTemplates";
+import AddTemplate from "./routes/reject_templates/AddTemplate";
+import ShowTemplate from "./routes/reject_templates/ShowTemplate";
+import EngineerAllApzs from "./routes/apz/engineer/AllApzs";
+import EngineerSearchAllApzs from "./routes/apz/engineer/SearchAllApzs";
+import EngineerShowApz from "./routes/apz/engineer/ShowApz";
+import ApzDepartmentAllApzs from "./routes/apz/apz_department/AllApzs";
+import ApzDepartmentShowApz from "./routes/apz/apz_department/ShowApz";
+import HeadAllApzs from "./routes/apz/head/AllApzs";
+import HeadShowApz from "./routes/apz/head/ShowApz";
+import ProviderElectroAllApzs from "./routes/apz/provider_electro/AllApzs";
+import ProviderElectroShowApz from "./routes/apz/provider_electro/ShowApz";
+import ProviderGasAllApzs from "./routes/apz/provider_gas/AllApzs";
+import ProviderGasShowApz from "./routes/apz/provider_gas/ShowApz";
+import ProviderHeatAllApzs from "./routes/apz/provider_heat/AllApzs";
+import ProviderHeatShowApz from "./routes/apz/provider_heat/ShowApz";
+import ProviderPhoneAllApzs from "./routes/apz/provider_phone/AllApzs";
+import ProviderPhoneShowApz from "./routes/apz/provider_phone/ShowApz";
+import ProviderWaterAllApzs from "./routes/apz/provider_water/AllApzs";
+import ProviderWaterShowApz from "./routes/apz/provider_water/ShowApz";
+import AdminAllApzs from "./routes/admin/AllApzs";
+import AdminShowApz from "./routes/admin/ShowApz";
+import Admin from './routes/admin/Admin';
+import AddUsers from "./routes/admin/AddUsers";
+import OfficeAllApzs from "./routes/office/AllApzs";
+import OfficeShowApz from "./routes/office/ShowApz";
+import FilesAll from "./routes/files/AllFiles";
+import FilesImages from "./routes/files/Images";
 
-//require('bootstrap-material-design');
-//require('./assets/css/style.css');
-//require('bootstrap/dist/css/bootstrap.min.css');
-require('glyphicons-only-bootstrap/css/bootstrap.min.css');
-require('./assets/css/common.css');
-require('./assets/css/animate.css');
+let e = new LocalizedStrings({ru,kk});
 
 export default class Main extends React.Component {
+  constructor() {
+    super();
+    (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
+  }
+
   setLang() {
     return localStorage.getItem('lang') ? true : localStorage.setItem('lang', 'ru');
   }
@@ -115,107 +85,162 @@ export default class Main extends React.Component {
     //window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
      window.clientSecret = 'B5BCHoPxj4VhKUqs7WHi2HHx6f24xoIK8065tc4s'; // aman
     // window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
-
     // window.clientSecret = '7zdU2XDblqORFq8wbQHlNRaIgEBR90qbMYnnVWDg'; // yernar
   }
 
-  componentDidMount() {
-    //console.log("MainComponent did mount");
-  }
+  breadCrumbs() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+    let fullLoc = window.location.href.split('/');
+    let breadCrumbs = document.getElementById('breadCrumbs');
+    breadCrumbs.innerHTML = "";
+    console.log(fullLoc);
 
-  componentWillUnmount() {
-    //console.log("MainComponent will unmount");
-  }
+    if (fullLoc[3] === 'panel')
+    {
+      let firstElem = document.createElement('a');
+      let firstElemAttributeHref = document.createAttribute('href');
+      firstElemAttributeHref.value = "/panel";
+      let firstElemAttributeClass = document.createAttribute('class');
+      firstElemAttributeClass.value = "active";
+      firstElem.innerHTML = e['electron-architecture'];
+      firstElem.setAttributeNode(firstElemAttributeHref);
+      firstElem.setAttributeNode(firstElemAttributeClass);
+      breadCrumbs.appendChild(firstElem);
+      if ( typeof fullLoc[4] !== 'undefined' && typeof fullLoc[5] === 'undefined' )
+      {
+        let secondElem = document.createElement('span');
+        secondElem.innerHTML = ' <span style="color:#e0b431;font-weight: bold;font-size:14px;">></span> ' +
+        '<span style="font-weight: bold;">' + e[fullLoc[4]] + '</span> ';
+        breadCrumbs.appendChild(secondElem);
 
+      }else if (typeof fullLoc[4] !== 'undefined' && typeof fullLoc[5] !== 'undefined')
+      {
+
+        if (typeof fullLoc[6] !== 'undefined')
+        {
+          let secondElem = document.createElement('span');
+          //console.log(fullLoc);
+          secondElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
+            '<Link to="/#' + e[fullLoc[4]][fullLoc[5]]["link"] + '">' + e[fullLoc[4]][fullLoc[5]]["name"] + '</Link>';
+          breadCrumbs.appendChild(secondElem);
+
+          let thirdElem = document.createElement('span');
+          thirdElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
+            '<span style="font-weight: bold;">' + e[fullLoc[4]][fullLoc[5]][fullLoc[6]] + '</span>';
+          breadCrumbs.appendChild(thirdElem);
+
+          if (typeof fullLoc[7] !== 'undefined')
+          {
+            if (fullLoc[6] === 'edit')
+            {
+              let forthElem = document.createElement('span');
+              forthElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
+                '<span style="font-weight: bold;">№ ' + fullLoc[7] + '</span>';
+              breadCrumbs.appendChild(forthElem);
+            }
+          }
+
+        }else if (typeof fullLoc[6] === 'undefined')
+        {
+          let secondElem = document.createElement('span');
+          secondElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
+            '<span style="font-weight: bold;">' + e[fullLoc[4]][fullLoc[5]]["name"] + '</span>';
+          breadCrumbs.appendChild(secondElem);
+        }
+      }
+    }
+  }
 
   render() {
-    //console.log("rendering the MainComponent");
-    //console.log(this.props);
+    var roleIsSet = sessionStorage.getItem('token');
     return (
-        <HashRouter>
+        <BrowserRouter>
           <div>
             <Route render={(props) => (<Header {...props} />)} />
-            <Switch>
-              <Route exact path="/" render={(props) => (<PanelBase {...props} />)} />
-              <Route path="/map" render={(props) => (<MapView {...props} />)} />
-              <Route path="/map2d" render={(props) => (<Map2dView {...props} />)} />
-              <Route path="/forgotPassword" render={(props) => (<ForgotPassword {...props} />)} />
-              <Route path="/password/reset/:token" render={(props) => (<ResetForm {...props} />)} />
-              <Route path="/editPersonalData" render={(props) => (<EditPersonalData {...props} />)} />
-              <Route path="/editPassword" render={(props) => (<EditPassword {...props} />)} />
-              <Route path="/photos" render={(props) => (<Photos {...props} />)} />
-              <Route path="/login" render={(props) => (<Login {...props} />)} />
-              <Route path="/register" render={(props) => (<Register {...props} />)} />
-              <Route path="/temporary" render={(props) => (<Temporary {...props} />)} />
-              <Route path="/panel" render={(props) => (<PanelBase {...props} />)} />
-              <Route path="/urban" render={(props) => (<Urban {...props} />)} />
-              <Route path="/panel/sketch/urban" render={(props) => (<SketchUrban {...props} />)} />
-              {/*<Route path="/panel/engineer/sketch" render={(props) => (<SketchEngineer {...props} />)} />*/}
-              <Route path="/urbanreport" render={(props) => (<UrbanReport {...props} />)} />
-              <Route path="/head" render={(props) => (<Head {...props} />)} />
-              <Route path="/headreport" render={(props) => (<HeadReport {...props} />)} />
-              <Route path="/citizen" render={(props) => (<Citizen {...props} />)} />
-              <Route path="/adminApzMonitor" render={(props) => (<AdminApzMonitor {...props} />)} />
-              <Route path="/providerelectro" render={(props) => (<ProviderElectro {...props} />)} />
-              <Route path="/providergas" render={(props) => (<ProviderGas {...props} />)} />
-              <Route path="/providerphone" render={(props) => (<ProviderPhone {...props} />)} />
-              <Route path="/providerheat" render={(props) => (<ProviderHeat {...props} />)} />
-              <Route path="/providerwater" render={(props) => (<ProviderWater {...props} />)} />
-              <Route path="/project" render={(props) => (<Project {...props} />)} />
-              <Route path="/photoreports" render={(props) => (<PhotoReports {...props} />)} />
-              <Route path="/photoreportsManage" render={(props) => (<PhotoReportsManage {...props} />)} />
-              <Route path="/admin" render={(props) => (<Admin {...props} />)} />
-              <Route path="/files" render={(props) => (<Files {...props} />)} />
-              <Route path="/sketch" render={(props) => (<Sketch {...props} />)} />
-              <Route path="/panel/sketch/apz_department" render={(props) => (<SketchApzDepartment {...props} />)} />
-              <Route path="/reviews" render={(props) => (<Review {...props} />)} />
-              <Route path="/polls" render={(props) => (<Polls {...props} />)} />
-              <Route path="/designCode" render={(props) => (<DesignCode {...props} />)} />
-              <Route path="/councilMaterials" render={(props) => (<CouncilMaterials {...props} />)} />
-              <Route path="/reports" render={(props) => (<Reports {...props} />)} />
-              <Route path="/stats" render={(props) => (<Stats {...props} />)} />
-              <Route path="/budget_plan" render={(props) => (<BudgetPlan {...props} />)} />
-              <Route path="/tutorials" render={(props) => (<VideoTutorials {...props} />)} />
-              <Route path="/news" render={(props) => (<News {...props}/>)}/>
-              <Route path="/newsPanel" render={(props) => (<NewsPanel {...props}/>)}/>
-              <Route path="/answertemplate" render={(props) => (<AnswerTemplate {...props}/>)}/>
-              <Route path="/addPages" render={(props) => (<AddPages {...props}/>)}/>
-              <Route path="/public_services" render={(props) => (<public_services {...props}/>)}/>
-              <Route path="/permission_and_covoting" render={(props) => (<permission_and_covoting {...props}/>)}/>
-              <Route path="/npm" render={(props) => (<Npm {...props}/>)}/>
-              <Route path="/legalpurchese" render={(props) => (<legalpurchese {...props}/>)}/>
-              <Route path="/counteraction" render={(props) => (<Counteraction {...props}/>)}/>
-              <Route path="/control" render={(props) => (<Control {...props}/>)}/>
-              <Route path="/contacts" render={(props) => (<Contacts {...props}/>)}/>
-              <Route path="/timeOfReception" render={(props) => (<TimeOfReception {...props}/>)}/>
-              <Route path="/architectural_and_town_planning_activity" render={(props) => (<architectural_and_town_planning_activity {...props}/>)}/>
-              <Route path="/engineer" render={(props) => (<Engineer {...props}/>)}/>
-              <Route path="/apz" render={(props) => (<Apz {...props}/>)}/>
-              <Route path="/doingBusiness" render={(props) => (<DoingBusiness {...props}/>)}/>
-              <Route path="/apz_department" render={(props) => (<ApzDepartment {...props}/>)}/>
-              <Route path="/businessbuilding" render={(props) => (<BisunessBuilding {...props}/>)}/>
-              <Route path="/infoaboutdepartment" render={(props) => (<InfoAboutDepartment {...props}/>)}/>
-              <Route path="/govermentservices" render={(props) => (<GovermentServices {...props}/>)}/>
-              <Route path="/population" render={(props) => (<Population {...props}/>)}/>
-              <Route path="/staff" render={(props) => (<Staff {...props}/>)}/>
-              <Route path="/entrepreneurialsupport" render={(props) => (<EntrepreneurSupport {...props}/>)}/>
-              <Route path="/executiveagency" render={(props) => (<ExecutiveAgency {...props}/>)}/>
-              <Route path="/newsAll" render={(props) => (<NewsAll {...props}/>)}/>
-              <Route path="/newsArticle/:id" render={(props) => (<NewsArticle {...props}/>)}/>
-              <Route path="/vacancies" render={(props) => (<Vacancies {...props}/>)}/>
-              <Route path="/dayNews/:date" render={(props) => (<NewsByDay {...props}/>)}/>
-              <Route path="/typeofpublicservice" render={(props) => (<TypeOfPublicService {...props}/>)}/>
-              <Route path="/statesymbols" render={(props) => (<StateSymbols {...props}/>)}/>
-              <Route path="/page/:id" render={(props) => (<Page {...props}/>)}/>
-              <Route path="/menuEdit" render={(props) => (<Menu {...props}/>)}/>
-              <Route path="/usersQuestions" render={(props) => (<UsersQuestions {...props}/>)}/>
-              <Route path="/search/:query" render={(props) => (<Search {...props}/>)}/>
-              <Route path="/allQuestions" render={(props) => (<AllQuestions {...props}/>)}/>
-              <Route path="/guest/vacancies-view" render={(props) => (<VacanciesView {...props}/>)}/>
-            </Switch>
+            <div className="container body-content">
+              <div className="container navigational_price" id={'breadCrumbs'}></div>
+              <div className="content container citizen-apz-list-page">
+                <div>
+                  <div>
+                    <Switch>
+                      <Route path="/forgotPassword" render={(props) => (<ForgotPassword {...props} />)} />
+                      <Route path="/password/reset/:token" render={(props) => (<ResetForm {...props} />)} />
+                      <Route path="/editPersonalData" render={(props) => (<EditPersonalData {...props} />)} />
+                      <Route path="/editPassword" render={(props) => (<EditPassword {...props} />)} />
+                      <Route path="/login" render={(props) => (<Login {...props} />)} />
+                      <Route path="/register" render={(props) => (<Register {...props} />)} />
+                      <Route path="/panel/sketch/urban" render={(props) => (<SketchUrban {...props} />)} />
+                      <Route path="/citizen" render={(props) => (<Citizen {...props} />)} />
+                      <Route path="/sketch" render={(props) => (<Sketch {...props} />)} />
+                      <Route path="/panel/sketch/apz_department" render={(props) => (<SketchApzDepartment {...props} />)} />
+
+                      <Route path="/panel/base-page" render={(props) => ( <BasePagePanel breadCrumbs={this.breadCrumbs.bind(this)} /> )} />
+                      <Route path="/panel/common/files/all" exact render={(props) =>(<FilesAll {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/common/files/images" exact render={(props) =>(<FilesImages {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/common/login" render={(props) => ( <Login {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                      <Route path="/panel/common/first_login" render={(props) => ( <FirstLogin {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                      <Route path="/panel/common/register" render={(props) => ( <Register breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                      <Route path="/panel/common/edit-personal-data" render={(props) => ( <EditPersonalData breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                      <Route path="/panel/common/edit-password" render={(props) => ( <EditPassword breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                      <Route path="/panel/common/export_to_excel" render={(props) => (<ExportToExcel {...props} breadCrumbs={this.breadCrumbs.bind(this)} /> )} />
+
+                      <Route path="/panel/citizen/apz" render={(props) => ( <Citizen breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                      <Route path="/panel/citizen/sketch" render={(props) => ( <Sketch breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+
+                      <Route path="/panel/admin/apz/status/:status/:page" exact render={(props) =>(<AdminAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/admin/apz/show/:id" exact render={(props) =>(<AdminShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/admin/user-roles/:page" exact render={(props) => ( <Admin {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                      <Route path="/panel/admin/users/add" render={(props) => ( <AddUsers breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+
+                      <Route path="/panel/urban/apz/status/:status/:page" exact render={(props) =>(<UrbanAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/urban/apz/show/:id" exact render={(props) =>(<UrbanShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/urban/sketch" render={(props) => ( <SketchUrban {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                      <Route path="/panel/urban/answer-template/all/:type/:page" exact render={(props) =>(<AllTemplates {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/urban/answer-template/:type/add" exact render={(props) =>(<AddTemplate {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/urban/answer-template/show/:type/:id" exact render={(props) =>(<ShowTemplate {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+
+                      <Route path="/panel/elector-provider/apz/status/:status/:page" exact render={(props) =>(<ProviderElectroAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/elector-provider/apz/show/:id" exact render={(props) =>(<ProviderElectroShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+
+                      <Route path="/panel/gas-provider/apz/status/:status/:page" exact render={(props) =>(<ProviderGasAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/gas-provider/apz/show/:id" exact render={(props) =>(<ProviderGasShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+
+                      <Route path="/panel/heat-provider/apz/status/:status/:page" exact render={(props) =>(<ProviderHeatAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/heat-provider/apz/show/:id" exact render={(props) =>(<ProviderHeatShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+
+                      <Route path="/panel/water-provider/apz/status/:status/:page" exact render={(props) =>(<ProviderWaterAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/water-provider/apz/show/:id" exact render={(props) =>(<ProviderWaterShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+
+                      <Route path="/panel/phone-provider/apz/status/:status/:page" exact render={(props) =>(<ProviderPhoneAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/phone-provider/apz/show/:id" exact render={(props) =>(<ProviderPhoneShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+
+                      <Route path="/panel/head/apz/status/:status/:page" exact render={(props) =>(<HeadAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/head/apz/show/:id" exact render={(props) =>(<HeadShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/head/sketch" render={(props) => ( <SketchHead breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+
+                      <Route path="/panel/office/apz/all/:page" exact render={(props) =>(<OfficeAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/office/apz/show/:id" exact render={(props) =>(<OfficeShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+
+                      <Route path="/panel/engineer/apz/status/:status/:page" exact render={(props) =>(<EngineerAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/engineer/apz/search/:page" exact render={(props) =>(<EngineerSearchAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/engineer/apz/show/:id" exact render={(props) =>(<EngineerShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/engineer/sketch" render={(props) => ( <SketchEngineer breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+
+                      <Route path="/panel/apz-department/apz/status/:status/:page" exact render={(props) =>(<ApzDepartmentAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/apz-department/apz/show/:id" exact render={(props) =>(<ApzDepartmentShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/apz-department/sketch" render={(props) => ( <SketchApzDepartment breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+
+                      <Redirect from="/" to="/panel/base-page" />
+                    </Switch>
+                  </div>
+                </div>
+              </div>
+
+            </div>
             <Footer />
           </div>
-        </HashRouter>
+        </BrowserRouter>
       )
   }
 }

@@ -5,7 +5,6 @@ import Loader from 'react-loader-spinner';
 import $ from 'jquery';
 import { Route, NavLink, Link, Switch, Redirect } from 'react-router-dom';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import saveAs from 'file-saver';
 
 export default class Head extends React.Component {

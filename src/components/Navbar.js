@@ -214,7 +214,7 @@ export default class NavBar extends React.Component {
 
 			  <ul className='navbar-nav'>
 				<li className="nav-item active">
-				  <a className="nav-link" href="#">Главная <span className="sr-only">(current)</span></a>
+          <NavLink exact className="nav-link"to="/" >Главная<span className="sr-only">(current)</span></NavLink>
 				</li>
 				<li className="nav-item dropdown">
                   <a className="nav-link dropdown-toggle" data-toggle='dropdown' aria-haspopup='true' aria-expanded='true' id='navbarDropdown' href="#">
@@ -227,7 +227,6 @@ export default class NavBar extends React.Component {
                         (() => {
                           switch(JSON.parse(sessionStorage.getItem('userRoles'))[0]) {
                             case 'Admin': return <AdminMenu />;
-                            case 'Reporter': return <ReporterMenu />;
                             case 'Urban':
                               if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Head') {
                                 return <HeadMenu />
@@ -255,7 +254,6 @@ export default class NavBar extends React.Component {
                                 return <WaterProviderMenu />;
                               }
                             case 'Citizen': return <CitizenMenu />;
-                            case 'PhotoReporter': return <PhotoReportMenu />;
                             case 'Temporary': return <TemporaryMenu />;
                             case 'ApzDepartment': return <ApzDepartmentMenu />;
                             case 'Office': return <OfficeMenu />;
@@ -363,8 +361,8 @@ class AdminMenu extends Component {
         <NavLink to={"/panel/admin/menuEdit"} replace className="dropdown-item" activeClassName="active">Пункты меню</NavLink>
         <NavLink to={"/panel/admin/newsPanel"} replace className="dropdown-item" activeClassName="active">Добавить новость</NavLink>
         <NavLink to={"/panel/common/vacancies"} replace className="dropdown-item" activeClassName="active">Добавить вакансии</NavLink>*/}
-        <NavLink to={"/panel/admin/apz"} replace className="dropdown-item" activeClassName="active">Архитектурно-планировочные задания</NavLink>
-        <NavLink to={"/panel/common/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
+        <NavLink to={"/panel/admin/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Архитектурно-планировочные задания</NavLink>
+        <NavLink to={"/panel/common/files/all"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
         {/*<NavLink to={"/panel/admin/usersQuestions"} replace className="dropdown-item" activeClassName="active">Вопросы пользователей</NavLink>*/}
       </div>
     )
@@ -381,27 +379,16 @@ class DefaultMenu extends Component {
   }
 }
 
-class ReporterMenu extends Component {
-  render() {
-    return (
-      <div>
-        <NavLink to={"/panel/admin/newsPanel"} replace className="dropdown-item" activeClassName="active">Добавить новость</NavLink>
-        <NavLink to={"/panel/common/vacancies"} replace className="dropdown-item" activeClassName="active">Добавить вакансии</NavLink>
-      </div>
-    )
-  }
-}
-
 class UrbanMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/panel/urban/apz"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/panel/urban/apz/status/new/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/panel/urban/sketch"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
         <NavLink to={"/panel/common/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         {/*<NavLink to={"/panel/urban/urbanreport"} replace className="dropdown-item" activeClassName="active">Фильтр</NavLink>*/}
-        <NavLink to={"/panel/urban/answer-template"} replace className="dropdown-item" activeClassName="active">Шаблоны отказов</NavLink>
-        <NavLink to={"/panel/common/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
+        <NavLink to={"/panel/urban/answer-template/all/apz/1"} replace className="dropdown-item" activeClassName="active">Шаблоны отказов</NavLink>
+        <NavLink to={"/panel/common/files/all"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
       </div>
     )
   }
@@ -411,9 +398,9 @@ class ElectroProviderMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/panel/elector-provider/apz"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/panel/elector-provider/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/panel/common/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
-        <NavLink to={"/panel/common/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
+        <NavLink to={"/panel/common/files/all"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
       </div>
     )
   }
@@ -423,9 +410,9 @@ class GasProviderMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/panel/gas-provider/apz"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/panel/gas-provider/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/panel/common/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
-        <NavLink to={"/panel/common/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
+        <NavLink to={"/panel/common/files/all"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
       </div>
     )
   }
@@ -435,9 +422,9 @@ class HeatProviderMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/panel/heat-provider/apz"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/panel/heat-provider/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/panel/common/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
-        <NavLink to={"/panel/common/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
+        <NavLink to={"/panel/common/files/all"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
       </div>
     )
   }
@@ -447,9 +434,9 @@ class WaterProviderMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/panel/water-provider/apz"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/panel/water-provider/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/panel/common/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
-        <NavLink to={"/panel/common/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
+        <NavLink to={"/panel/common/files/all"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
       </div>
     )
   }
@@ -459,9 +446,9 @@ class PhoneProviderMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/panel/phone-provider/apz"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/panel/phone-provider/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/panel/common/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
-        <NavLink to={"/panel/common/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
+        <NavLink to={"/panel/common/files/all"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
       </div>
     )
   }
@@ -471,11 +458,11 @@ class HeadMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/panel/head/apz"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/panel/head/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/panel/head/sketch"} replace className="dropdown-item" activeClassName="active">Эскизные проекты</NavLink>
         <NavLink to={"/panel/common/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         <NavLink to={"/panel/head/headreport"} replace className="dropdown-item" activeClassName="active">Фильтр</NavLink>
-        <NavLink to={"/panel/common/files"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
+        <NavLink to={"/panel/common/files/all"} replace className="dropdown-item" activeClassName="active">Файлы</NavLink>
       </div>
     )
   }
@@ -488,17 +475,7 @@ class CitizenMenu extends Component {
         <NavLink to={"/panel/citizen/apz"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/panel/citizen/sketch"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
         <NavLink to={"/panel/citizen/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
-        <NavLink to={"/panel/common/files"} replace className="dropdown-item" activeClassName="active">Мои файлы</NavLink>
-      </div>
-    )
-  }
-}
-
-class PhotoReportMenu extends Component {
-  render() {
-    return (
-      <div>
-        <NavLink to={"/panel/photo-reporter/photoreportsManage"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
+        <NavLink to={"/panel/common/files/all"} replace className="dropdown-item" activeClassName="active">Мои файлы</NavLink>
       </div>
     )
   }
@@ -518,7 +495,7 @@ class EngineerMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/panel/engineer/apz"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/panel/engineer/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/panel/engineer/sketch"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
       </div>
     )
@@ -529,7 +506,7 @@ class ApzDepartmentMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/panel/apz-department/apz"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/panel/apz-department/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/panel/apz-department/sketch"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
       </div>
     )
@@ -540,7 +517,7 @@ class OfficeMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/panel/office/apz"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/panel/office/apz/all/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
       </div>
     )
   }
