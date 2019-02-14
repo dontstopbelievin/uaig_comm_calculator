@@ -49,6 +49,7 @@ class ShowSketch extends React.Component {
             showMap: false,
             showButtons: true,
             description: '',
+            docNumber: "",
             showMapText: 'Показать карту',
             loaderHidden: false,
             personalIdFile: false,
@@ -69,7 +70,12 @@ class ShowSketch extends React.Component {
         };
 
         this.onDescriptionChange = this.onDescriptionChange.bind(this);
+        this.onDocNumberChange = this.onDocNumberChange.bind(this);
     }
+    onDocNumberChange(e) {
+        this.setState({ docNumber: e.target.value });
+    }
+
 
     onDescriptionChange(value) {
         this.setState({ description: value });
@@ -135,7 +141,7 @@ class ShowSketch extends React.Component {
                 this.setState({personalIdFile: sketch.files.filter(function(obj) { return obj.category_id === 3 })[0]});
                 this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
                 this.setState({apzFile: sketch.files.filter(function(obj) { return obj.category_id === 2 })[0]});
-                // this.setState({additionalFile: apz.files.filter(function(obj) { return obj.category_id === 27 })[0]});
+                this.setState({docNumber: sketch.docNumber});
                 // this.setState({reglamentFile: apz.files.filter(function(obj) { return obj.category_id === 29 })[0]});
                 this.setState({showButtons: false});
                 for(var data_index = sketch.state_history.length-1; data_index >= 0; data_index--){
@@ -505,11 +511,32 @@ class ShowSketch extends React.Component {
         }
     }
 
-    sendToApz() {
-        this.setState({needSign: true });
+    sendToApz(publish) {
+        if(publish) {
+            this.setState({needSign: true});
+
+            var requiredFields = {
+                docNumber: 'номер документа'
+            }
+
+            var errors = 0;
+            var err_msgs = "";
+            Object.keys(requiredFields).forEach(function (key) {
+                if (!this.state[key]) {
+                    err_msgs += 'Заполните поле ' + requiredFields[key] + '\n';
+                    errors++;
+                    return false;
+                }
+            }.bind(this));
+
+            if (errors > 0) {
+                alert(err_msgs);
+                return false;
+            }
+        }
     }
 
-    acceptDeclineSketchForm(sketchId, status, comment, direct) {
+    acceptDeclineSketchForm(sketchId, status, comment, direct,docNumber) {
         console.log(this.state.apz_head_id);
         var token = sessionStorage.getItem('tokenInfo');
 
@@ -517,7 +544,8 @@ class ShowSketch extends React.Component {
             response: status,
             message: comment,
             apz_head_id: this.state.apz_head_id,
-            direct: direct.length > 0 ? direct : 'engineer'
+            direct: direct.length > 0 ? direct : 'engineer',
+            docNumber:docNumber
         };
 
         if (!status && !comment) {
@@ -1035,6 +1063,15 @@ class ShowSketch extends React.Component {
                         Комментарий главного архитектора: {this.state.backFromHead.comment}
                     </div>
                     }
+                    {!this.state.xmlFile&&
+                        <div style={{margin: 'auto', marginTop: '20px', display: 'table', width: '30%'}}>
+                            <div className="form-group">
+                                <label>Номер документа</label>
+                                <input type="text" className="form-control" placeholder="" value={this.state.docNumber}
+                                       onChange={this.onDocNumberChange}/>
+                            </div>
+                        </div>
+                    }
                     <div className={this.state.showButtons ? '' : 'invisible'}>
                         <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                             {sketch.status_id == 3 && !this.state.xmlFile &&
@@ -1048,7 +1085,7 @@ class ShowSketch extends React.Component {
                             {!this.state.response ?
                                 <div className="text-center">
                                     <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled="disabled">Одобрить</button>
-                                    <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
+                                    <button className="btn btn-raised btn-danger" data-toggle="modal" disabled={!this.state.docNumber}  data-target="#accDecApzForm">
                                         Отклонить
                                     </button>
                                 </div>
@@ -1056,14 +1093,14 @@ class ShowSketch extends React.Component {
                                 <div>
                                     {!this.state.needSign ?
                                         <div style={{margin: 'auto', display: 'table'}}>{console.log(this.state.engineerReturnedState)}
-                                            <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>Одобрить</button>
+                                            <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled={!this.state.docNumber} onClick={this.sendToApz.bind(this,true)}>Одобрить</button>
                                             <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
                                                 Отклонить
                                             </button>
                                         </div>
                                         :
                                         <div>
-                                            { !this.state.xmlFile ?
+                                            { !this.state.xmlFile  ?
                                                 <div id="MySignForm" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                                                     <div>Выберите хранилище</div>
 
@@ -1094,8 +1131,8 @@ class ShowSketch extends React.Component {
                                                 </div>
                                                 :
                                                 <div>
-                                                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted")}>Отправить инженеру</button>
-                                                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted", "chief")}>
+                                                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted","",this.state.docNumber)}>Отправить инженеру</button>
+                                                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted", "chief",this.state.docNumber)}>
                                                         Отправить главному архитектору
                                                     </button>
                                                 </div>
@@ -1134,7 +1171,7 @@ class ShowSketch extends React.Component {
                                             </div>
                                         </div>
                                         <div className="modal-footer">
-                                            <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, false, this.state.description)}>Отправить</button>
+                                            <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, false, this.state.description,"",this.state.docNumber)} disabled={!this.state.docNumber} >Отправить</button>
                                             <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                                         </div>
                                     </div>
