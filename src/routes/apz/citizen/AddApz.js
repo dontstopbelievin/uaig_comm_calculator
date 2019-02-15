@@ -1,28 +1,14 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import EsriLoaderReact from 'esri-loader-react';
 import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
-import '../../assets/css/citizen.css';
-import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
-import LocalizedStrings from 'react-localization';
-import {ru, kk} from '../../languages/header.json';
-import ReactHintFactory from 'react-hint'
-import '../../assets/css/reacthint.css';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import saveAs from 'file-saver';
-import AllApzs from './AllApzs';
-import ShowApz from './ShowApz';
+import {ru, kk} from '../../../languages/header.json';
 import ShowMap from './ShowMap';
 import AddHeatBlock from './AddHeatBlock';
-import ShowStatusBar from './ShowStatusBar';
+import ReactHintFactory from 'react-hint'
 const ReactHint = ReactHintFactory(React)
-
-
-
 
 export default class AddApz extends React.Component {
     constructor(props) {

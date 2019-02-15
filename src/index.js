@@ -4,7 +4,6 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Header from './components/Header';
 import Login from './routes/authorization/Login';
 import Register from './routes/authorization/Register';
-import Citizen from './routes/Citizen';
 import Sketch from './routes/Sketch';
 import SketchApzDepartment from './routes/SketchApzDepartment';
 import Footer from './components/Footer';
@@ -59,6 +58,10 @@ import OfficeAllApzs from "./routes/office/AllApzs";
 import OfficeShowApz from "./routes/office/ShowApz";
 import FilesAll from "./routes/files/AllFiles";
 import FilesImages from "./routes/files/Images";
+import CitizenAllApzs from "./routes/apz/citizen/AllApzs";
+import CitizenAddApz from "./routes/apz/citizen/AddApz";
+import CitizenShowApz from "./routes/apz/citizen/ShowApz";
+import CitizenActions from "./routes/apz/citizen/CitizenActions";
 
 let e = new LocalizedStrings({ru,kk});
 
@@ -83,10 +86,10 @@ export default class Main extends React.Component {
     window.url = 'http://uaig/';
     //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
     //window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
-    //  window.clientSecret = 'B5BCHoPxj4VhKUqs7WHi2HHx6f24xoIK8065tc4s'; // aman
+     window.clientSecret = 'B5BCHoPxj4VhKUqs7WHi2HHx6f24xoIK8065tc4s'; // aman
     // window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
     // window.clientSecret = '7zdU2XDblqORFq8wbQHlNRaIgEBR90qbMYnnVWDg'; // yernar
-    window.clientSecret = 'ZuW3nP8EUgXgEAqm6j9GxzBfFsOFuQv39NcyHUz3'; // medet
+    // window.clientSecret = 'ZuW3nP8EUgXgEAqm6j9GxzBfFsOFuQv39NcyHUz3'; // medet
   }
 
   breadCrumbs() {
@@ -172,7 +175,6 @@ export default class Main extends React.Component {
                       <Route path="/login" render={(props) => (<Login {...props} />)} />
                       <Route path="/register" render={(props) => (<Register {...props} />)} />
                       <Route path="/panel/sketch/urban" render={(props) => (<SketchUrban {...props} />)} />
-                      <Route path="/citizen" render={(props) => (<Citizen {...props} />)} />
                       <Route path="/sketch" render={(props) => (<Sketch {...props} />)} />
                       <Route path="/panel/sketch/apz_department" render={(props) => (<SketchApzDepartment {...props} />)} />
 
@@ -186,7 +188,11 @@ export default class Main extends React.Component {
                       <Route path="/panel/common/edit-password" render={(props) => ( <EditPassword breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                       <Route path="/panel/common/export_to_excel" render={(props) => (<ExportToExcel {...props} breadCrumbs={this.breadCrumbs.bind(this)} /> )} />
 
-                      <Route path="/panel/citizen/apz" render={(props) => ( <Citizen breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                      <Route path="/panel/citizen/apz" exact render={(props) =>(<CitizenActions {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/citizen/apz/status/:status/:page" exact render={(props) =>(<CitizenAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/citizen/apz/add" exact render={(props) =>(<CitizenAddApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/citizen/apz/edit/:id" exact render={(props) =>(<CitizenAddApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/citizen/apz/show/:id" exact render={(props) =>(<CitizenShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                       <Route path="/panel/citizen/sketch" render={(props) => ( <Sketch breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
 
                       <Route path="/panel/admin/apz/status/:status/:page" exact render={(props) =>(<AdminAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />

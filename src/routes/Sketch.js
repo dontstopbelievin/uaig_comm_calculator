@@ -6,7 +6,6 @@ import 'jquery-serializejson';
 import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import ReactHintFactory from "react-hint";
-import '../assets/css/welcomeText.css';
 
 const ReactHint = ReactHintFactory(React)
 
