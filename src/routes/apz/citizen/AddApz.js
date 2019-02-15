@@ -1784,7 +1784,7 @@ export default class AddApz extends React.Component {
 
           <div>
             <hr />
-            <Link className="btn btn-outline-secondary pull-right" to={'/panel/citizen/apz'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+            <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
           </div>
         </div>
       )

@@ -861,21 +861,21 @@ printData()
 handleDirectorIDChange(event){
   this.setState({ty_director_id: event.target.value});
 }
-  toDate(date) {
-    if(date === null) {
-      return date;
-    }
-
-    var jDate = new Date(date);
-    var curr_date = jDate.getDate();
-    var curr_month = jDate.getMonth() + 1;
-    var curr_year = jDate.getFullYear();
-    var curr_hour = jDate.getHours();
-    var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
-    var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-
-    return formated_date;
+toDate(date) {
+  if(date === null) {
+    return date;
   }
+
+  var jDate = new Date(date);
+  var curr_date = jDate.getDate() < 10 ? "0" + jDate.getDate() : jDate.getDate();
+  var curr_month = (jDate.getMonth() + 1) < 10 ? "0" + (jDate.getMonth() + 1) : jDate.getMonth() + 1;
+  var curr_year = jDate.getFullYear();
+  var curr_hour = jDate.getHours() < 10 ? "0" + jDate.getHours() : jDate.getHours();
+  var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
+  var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
+
+  return formated_date;
+}
 
   render() {
     var apz = this.state.apz;
@@ -975,7 +975,7 @@ handleDirectorIDChange(event){
               }
               {(this.state.personalIdFile || this.state.confirmedTaskFile || this.state.titleDocumentFile || this.state.additionalFile) &&
                 <tr className="shukichi">
-                  <td colspan="2"><a className="text-info pointer" data-category="1" onClick={this.downloadAllFile.bind(this, this.state.apz.id)}><img style={{height:'16px'}} src="./images/download.png"/>Скачать одним архивом</a>
+                  <td colspan="2"><a className="text-info pointer" data-category="1" onClick={this.downloadAllFile.bind(this, this.state.apz.id)}><img style={{height:'16px'}} src="/images/download.png"/>Скачать одним архивом</a>
                     <div className="progress mb-2" data-category="1" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                       <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
