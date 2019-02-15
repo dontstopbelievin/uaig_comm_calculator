@@ -467,7 +467,7 @@ export default class AddApz extends React.Component {
 
           if (publish) {
             alert("Заявка успешно подана.\nЗаявка будет рассматриваться завтра.");
-            this.props.history.replace('/panel/citizen/apz');
+            this.props.history.replace('/panel/citizen/apz/status/active/1');
           } else {
             alert('Заявка успешно сохранена');
 

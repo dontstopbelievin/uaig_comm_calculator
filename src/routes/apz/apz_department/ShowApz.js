@@ -1103,35 +1103,35 @@ export default class ShowApz extends React.Component {
 
           <table className="table table-bordered table-striped">
             <tbody>
-              {apz.apz_water &&
+              {!!apz.need_water_provider && apz.apz_water &&
                 <tr>
                   <td style={{width: '40%'}}><b>Водоснабжение</b></td>
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#water_modal">Просмотр</a></td>
                 </tr>
               }
 
-              {apz.apz_heat &&
+              {!!apz.need_heat_provider && apz.apz_heat &&
                 <tr>
                   <td style={{width: '40%'}}><b>Теплоснабжение</b></td>
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#heat_modal">Просмотр</a></td>
                 </tr>
               }
 
-              {apz.apz_electricity &&
+              {!!apz.need_electro_provider && apz.apz_electricity &&
                 <tr>
                   <td style={{width: '40%'}}><b>Электроснабжение</b></td>
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#electro_modal">Просмотр</a></td>
                 </tr>
               }
 
-              {apz.apz_gas &&
+              {!!apz.need_gas_provider && apz.apz_gas &&
                 <tr>
                   <td style={{width: '40%'}}><b>Газоснабжение</b></td>
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#gas_modal">Просмотр</a></td>
                 </tr>
               }
 
-              {apz.apz_phone &&
+              {!!apz.need_phone_provider && apz.apz_phone &&
                 <tr>
                   <td style={{width: '40%'}}><b>Телефонизация</b></td>
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#phone_modal">Просмотр</a></td>
@@ -1973,7 +1973,7 @@ export default class ShowApz extends React.Component {
 
                 {this.state.showSendButton &&
                   <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', display: 'table'}}>
-                    <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "")}>Отправить районному архитектору</button>
+                    <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "")}>Отправить инженеру</button>
                   </div>
                 }
 

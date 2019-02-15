@@ -1505,7 +1505,7 @@ toDate(date) {
                     <div>
                       <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
                               onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>
-                        В отдел АПЗ
+                        Отправить архитектору
                       </button>
                     </div>
                   }

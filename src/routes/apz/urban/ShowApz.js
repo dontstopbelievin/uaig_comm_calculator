@@ -482,14 +482,13 @@ export default class UrbanShowApz extends React.Component {
       }
     }
 
-    acceptDeclineApzForm(apzId, status, comment, direct) {
+    acceptDeclineApzForm(apzId, status, comment) {
       var token = sessionStorage.getItem('tokenInfo');
 
       var registerData = {
         response: status,
         message: comment,
-        apz_head_id: this.state.apz_head_id,
-        direct: direct.length > 0 ? direct : 'engineer'
+        apz_head_id: this.state.apz_head_id
       };
 
       if (!status && !comment) {
@@ -795,35 +794,35 @@ export default class UrbanShowApz extends React.Component {
 
               <table className="table table-bordered table-striped">
                 <tbody>
-                  {apz.apz_water &&
+                  {!!apz.need_water_provider && apz.apz_water &&
                     <tr>
                       <td style={{width: '40%'}}><b>Водоснабжение</b></td>
                       <td><a className="text-info pointer" data-toggle="modal" data-target="#water_modal">Просмотр</a></td>
                     </tr>
                   }
 
-                  {apz.apz_heat &&
+                  {!!apz.need_heat_provider && apz.apz_heat &&
                     <tr>
                       <td style={{width: '40%'}}><b>Теплоснабжение</b></td>
                       <td><a className="text-info pointer" data-toggle="modal" data-target="#heat_modal">Просмотр</a></td>
                     </tr>
                   }
 
-                  {apz.apz_electricity &&
+                  {!!apz.need_electro_provider && apz.apz_electricity &&
                     <tr>
                       <td style={{width: '40%'}}><b>Электроснабжение</b></td>
                       <td><a className="text-info pointer" data-toggle="modal" data-target="#electro_modal">Просмотр</a></td>
                     </tr>
                   }
 
-                  {apz.apz_gas &&
+                  {!!apz.need_gas_provider && apz.apz_gas &&
                     <tr>
                       <td style={{width: '40%'}}><b>Газоснабжение</b></td>
                       <td><a className="text-info pointer" data-toggle="modal" data-target="#gas_modal">Просмотр</a></td>
                     </tr>
                   }
 
-                  {apz.apz_phone &&
+                  {!!apz.need_phone_provider && apz.apz_phone &&
                     <tr>
                       <td style={{width: '40%'}}><b>Телефонизация</b></td>
                       <td><a className="text-info pointer" data-toggle="modal" data-target="#phone_modal">Просмотр</a></td>
@@ -1313,14 +1312,7 @@ export default class UrbanShowApz extends React.Component {
                     <div>
                       {!this.state.needSign ?
                         <div style={{margin: 'auto', display: 'table'}}>
-                          {!this.state.backFromHead && !this.state.engineerSign && !this.state.apzSign  && !this.state.engineerReturnedState ?
-                          <React.Fragment>
-                          <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>Отправить инженеру</button>
-                          <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", "apz")}>Отправить отделу АПЗ(без ТУ)</button>
-                          </React.Fragment>
-                          :
                           <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>Одобрить</button>
-                          }
                           <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
                             Отклонить
                           </button>
@@ -1358,7 +1350,7 @@ export default class UrbanShowApz extends React.Component {
                             </div>
                             :
                             <div>
-                              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", "head")}>
+                              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>
                                 Отправить главному архитектору
                               </button>
                             </div>
