@@ -1695,7 +1695,7 @@ handleObjTypeChange(event){
                               <input type="text" className="form-control" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
                           </div>
                       </div>
-                      <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, "accept", "")}>
+                      <button type="button" style={{ marginRight: '5px' }} className="btn btn-secondary" disabled={!this.state.docNumber} onClick={this.saveResponseForm.bind(this, apz.id, "accept", "")}>
                         Сохранить
                       </button>
 
