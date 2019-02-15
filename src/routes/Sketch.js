@@ -661,7 +661,7 @@ class ShowSketch extends React.Component {
 
             <div className="col-sm-12">
               <hr />
-              <Link className="btn btn-outline-secondary pull-right" to={'/panel/citizen/sketch'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+              <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
             </div>
           </div>
         }
@@ -1271,10 +1271,6 @@ class AddSketch extends React.Component {
     // });
   };
 
-  routeChange(){
-      this.props.history.goBack();
-  }
-
   render() {
     return (
         <div className="container" id="apzFormDiv">
@@ -1629,7 +1625,7 @@ class AddSketch extends React.Component {
 
             <div>
                 <hr />
-                <button className="btn btn-outline-secondary pull-right" onClick={this.routeChange.bind(this)}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
+                <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
             </div>
         </div>
     )

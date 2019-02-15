@@ -193,7 +193,7 @@ export default class Main extends React.Component {
                       <Route path="/panel/citizen/apz/add" exact render={(props) =>(<CitizenAddApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                       <Route path="/panel/citizen/apz/edit/:id" exact render={(props) =>(<CitizenAddApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                       <Route path="/panel/citizen/apz/show/:id" exact render={(props) =>(<CitizenShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
-                      <Route path="/panel/citizen/sketch" render={(props) => ( <Sketch breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                      <Route path="/panel/citizen/sketch" render={(props) => ( <Sketch {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
 
                       <Route path="/panel/admin/apz/status/:status/:page" exact render={(props) =>(<AdminAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                       <Route path="/panel/admin/apz/show/:id" exact render={(props) =>(<AdminShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />

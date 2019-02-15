@@ -2021,11 +2021,8 @@ export default class ShowApz extends React.Component {
           }
 
           <hr />
-          <button className="btn btn-outline-secondary pull-right" onClick={this.routeChange.bind(this)}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
+          <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
         </div>
       )
-    }
-    routeChange(){
-      this.props.history.goBack();
     }
   }
