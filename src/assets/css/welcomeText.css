@@ -1,0 +1,18 @@
+.time , .application{
+	margin-bottom: 25px;
+  margin-right: 25px;
+}
+.apzinfo{
+  border: 1px solid;
+}
+.apzinfo li{
+	font-style: italic;
+}
+.left-tabs{
+  display: inline-flex;
+  width: 30%;
+}
+.card-body{
+  display: inline-flex;
+  width: 65%;
+}

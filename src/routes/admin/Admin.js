@@ -156,7 +156,7 @@ export default class Admin extends React.Component {
     xhr.onload = function () {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
-        //console.log(data);
+        console.log(data);
         alert('Роли успешно добавлены');
         this.setState({ roleUser: data.roleUser });
         //console.log(usersArray);

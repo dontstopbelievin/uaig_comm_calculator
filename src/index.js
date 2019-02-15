@@ -86,6 +86,7 @@ export default class Main extends React.Component {
     //  window.clientSecret = 'B5BCHoPxj4VhKUqs7WHi2HHx6f24xoIK8065tc4s'; // aman
     // window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
     // window.clientSecret = '7zdU2XDblqORFq8wbQHlNRaIgEBR90qbMYnnVWDg'; // yernar
+    window.clientSecret = 'ZuW3nP8EUgXgEAqm6j9GxzBfFsOFuQv39NcyHUz3'; // medet
   }
 
   breadCrumbs() {
