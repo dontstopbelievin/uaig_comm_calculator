@@ -1,7 +1,6 @@
 import React from 'react';
 import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../../languages/header.json';
-import $ from 'jquery';
 import { Link } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 
@@ -30,9 +29,6 @@ export default class forgotPassword extends React.Component{
   }
   getLink () {
     console.log('getLink() is working');
-    var data = new Object();
-    data.email = this.state.email;
-
     var formData = new FormData();
     formData.append('email', this.state.email);
 
@@ -42,11 +38,9 @@ export default class forgotPassword extends React.Component{
     xhr.onload = function() {
       if (xhr.status === 200) {
         alert('Успешно!');
-        console.log(data);
         this.props.history.replace('/');
       } else {
         alert("Ошибка!");
-        console.log(data);
       }
     }.bind(this);
     xhr.send(JSON.stringify({email: this.state.email}));

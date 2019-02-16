@@ -1,7 +1,6 @@
 import React from 'react';
 import Loader from 'react-loader-spinner';
-import $ from 'jquery';
-import { Route, NavLink, Link } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 
 export default class AllApzs extends React.Component {
     constructor(props) {
@@ -43,7 +42,7 @@ export default class AllApzs extends React.Component {
                     select_directors.push(<option value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
                 }
                 this.setState({apz_heads: select_directors});
-                if(this.state.current_head == "" || this.state.current_head == " "){
+                if(this.state.current_head === "" || this.state.current_head === " "){
                     this.setState({current_head: data[0].user_id}, function stateUpdateComplete() {
                         this.getApzs();
                     }.bind(this));
@@ -121,7 +120,7 @@ export default class AllApzs extends React.Component {
             <div>
                 <div className="card-header">
                     <h4 className="mb-0">Архитектурно-планировочное задание
-                    <NavLink to="/panel/common/export_to_excel"><img title="Экспорт в excel" src='/images/excelicon.png' className="export_image"/></NavLink>
+                    <NavLink to="/panel/common/export_to_excel"><img title="Экспорт в excel" src='/images/excelicon.png' className="export_image" alt="export excel"/></NavLink>
                     </h4>
                 </div>
                 {this.state.loaderHidden &&
@@ -184,11 +183,11 @@ export default class AllApzs extends React.Component {
 
                             {this.state.pageNumbers.map(function(num, index) {
                                 return(
-                                    <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
+                                    <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
                                         <Link className="page-link" to={'/panel/head/apz/status/' + status + '/' + num}>{num}</Link>
                                     </li>
                                 );
-                            }.bind(this))
+                            })
                             }
                             <li className="page-item">
                                 <Link className="page-link" to={'/panel/head/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>

@@ -1,6 +1,5 @@
 import React from 'react';
 import $ from 'jquery';
-import { Link, Switch } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import saveAs from 'file-saver';
 import ShowMap from "./ShowMap";
@@ -49,9 +48,9 @@ export default class ShowApz extends React.Component {
       storageAlias: "PKCS12",
       xmlFile: false,
       isSigned: false,
-      isPerformer: (roles.indexOf('PerformerElectricity') != -1),
-      isHead: (roles.indexOf('HeadElectricity') != -1),
-      isDirector: (roles.indexOf('DirectorElectricity') != -1),
+      isPerformer: (roles.indexOf('PerformerElectricity') !== -1),
+      isHead: (roles.indexOf('HeadElectricity') !== -1),
+      isDirector: (roles.indexOf('DirectorElectricity') !== -1),
       heads_responses: [],
       head_accepted: true,
       headComment: "",
@@ -78,7 +77,7 @@ export default class ShowApz extends React.Component {
   componentDidMount() {
     this.props.breadCrumbs();
     var roles = JSON.parse(sessionStorage.getItem('userRoles'));
-    if(roles[2] == 'PerformerElectricity'){
+    if(roles[2] === 'PerformerElectricity'){
       this.getDirectors();
     }
   }
@@ -147,7 +146,7 @@ export default class ShowApz extends React.Component {
           select_directors.push(<option value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
         }
         this.setState({electricity_directors_id: select_directors});
-        if(this.state.ty_director_id == "" || this.state.ty_director_id == " "){
+        if(this.state.ty_director_id === "" || this.state.ty_director_id === " "){
             this.setState({ty_director_id: data[0].user_id});
         }
       }
@@ -243,7 +242,7 @@ export default class ShowApz extends React.Component {
       vision.css('display', 'none');
       progressbar.css('display', 'flex');
       xhr.onprogress = function(event) {
-        $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
+        $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
       }
       xhr.onload = function() {
         if (xhr.status === 200) {
@@ -309,7 +308,7 @@ export default class ShowApz extends React.Component {
       progressbar.css('display', 'flex');
       vision.css('display', 'none');
       xhr.onprogress = function(event) {
-        $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
+        $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
       }
       xhr.onload = function() {
         if (xhr.status === 200) {
@@ -347,7 +346,7 @@ export default class ShowApz extends React.Component {
             vision.css('display', 'inline');
             alert("Файлы успешно загружены");
             $('div', progressbar).css('width', 0);
-          }.bind(this), '1000');
+          }, '1000');
         } else {
           progressbar.css('display', 'none');
           vision.css('display', 'inline');
@@ -541,7 +540,7 @@ export default class ShowApz extends React.Component {
 
   webSocketFunction() {
     this.webSocket.onopen = function (event) {
-      if (this.heartbeat_interval == "") {
+      if (this.heartbeat_interval === "") {
         this.missed_heartbeats = 0;
         this.heartbeat_interval = setInterval(this.pingLayer, 2000);
       }
@@ -676,7 +675,7 @@ export default class ShowApz extends React.Component {
 
   // this function is to send the final response
   sendElectroResponse(apzId, status, comment) {
-    if(this.state.responseId <= 0 || this.state.responseId > 0 && this.state.response != status){
+    if((this.state.responseId <= 0 || this.state.responseId > 0) && this.state.response !== status){
       this.setState({callSaveFromSend: true});
       this.saveResponseForm(apzId, status, comment);
     }
@@ -975,7 +974,7 @@ toDate(date) {
               }
               {(this.state.personalIdFile || this.state.confirmedTaskFile || this.state.titleDocumentFile || this.state.additionalFile) &&
                 <tr className="shukichi">
-                  <td colspan="2"><a className="text-info pointer" data-category="1" onClick={this.downloadAllFile.bind(this, this.state.apz.id)}><img style={{height:'16px'}} src="/images/download.png"/>Скачать одним архивом</a>
+                  <td colspan="2"><a className="text-info pointer" data-category="1" onClick={this.downloadAllFile.bind(this, this.state.apz.id)}><img style={{height:'16px'}} src="/images/download.png" alt="download"/>Скачать одним архивом</a>
                     <div className="progress mb-2" data-category="1" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                       <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
@@ -1034,7 +1033,7 @@ toDate(date) {
 
         <div className="col-sm-12">
           <div className="row provider_answer_top" style={{margin: '16px 0 0'}}>
-            {(this.state.isPerformer === true || this.state.responseId != 0) &&
+            {(this.state.isPerformer === true || this.state.responseId !== 0) &&
               <div className="col-sm-6">
                 <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ</h5>
               </div>
@@ -1135,7 +1134,7 @@ toDate(date) {
             </form>
           }
 
-          {this.state.accept === 'accept' && this.state.responseId != 0 && (this.state.elecStatus === 1 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
+          {this.state.accept === 'accept' && this.state.responseId !== 0 && (this.state.elecStatus === 1 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
             <div>
               <table className="table table-bordered table-striped">
                 <tbody>
@@ -1241,7 +1240,7 @@ toDate(date) {
             </div>
           }
 
-          {this.state.accept === 'answer' && this.state.responseId != 0 && (this.state.elecStatus === 1 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
+          {this.state.accept === 'answer' && this.state.responseId !== 0 && (this.state.elecStatus === 1 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
             <table className="table table-bordered table-striped">
               <tbody>
                 <tr>
@@ -1265,7 +1264,7 @@ toDate(date) {
             </table>
           }
 
-          {this.state.isDirector && this.state.elecStatus == 2 &&
+          {this.state.isDirector && this.state.elecStatus === 2 &&
             <div>
               {!this.state.xmlFile && !this.state.isSigned && apz.status_id === 5 &&
                 <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
@@ -1359,7 +1358,7 @@ toDate(date) {
             </div>
           </div>
 
-          {this.state.accept === 'decline' && this.state.responseId != 0 && (this.state.elecStatus === 0 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
+          {this.state.accept === 'decline' && this.state.responseId !== 0 && (this.state.elecStatus === 0 || this.state.isSigned || this.state.isHead || this.state.isDirector) &&
             <div>
               <table className="table table-bordered table-striped">
                 <tbody>
@@ -1467,7 +1466,7 @@ toDate(date) {
                     <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
                   </div>
                 );
-              }.bind(this))}
+              })}
             </div>
           </div>
         }

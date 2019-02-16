@@ -1,7 +1,4 @@
 import React from 'react';
-import LocalizedStrings from 'react-localization';
-import {ru, kk} from '../../languages/header.json';
-import $ from 'jquery';
 import Loader from 'react-loader-spinner';
 import ReactQuill from 'react-quill';
 
@@ -71,7 +68,7 @@ export default class ShowTemplate extends React.Component{
       }else{
         alert('Не удалось, возможно шаблон не пренадлежит вам.');
       }
-    }.bind(this);
+    };
     xhr.send(formData);
   }
 

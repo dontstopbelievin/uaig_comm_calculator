@@ -1,5 +1,4 @@
 import React from 'react';
-import saveAs from 'file-saver';
 import $ from 'jquery';
 
 export default class CommissionAnswersList extends React.Component {
@@ -70,7 +69,7 @@ export default class CommissionAnswersList extends React.Component {
       vision.css('display', 'none');
       progressbar.css('display', 'flex');
       xhr.onprogress = function(event) {
-        $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
+        $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
       }
       xhr.onload = function() {
         if (xhr.status === 200) {
@@ -746,7 +745,7 @@ export default class CommissionAnswersList extends React.Component {
                             </table>
                           </div>
                         );
-                      }.bind(this))}
+                      })}
                     </div>
                   }
                 </div>

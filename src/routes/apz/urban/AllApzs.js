@@ -1,7 +1,6 @@
 import React from 'react';
-import { Route, Link, NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
-import $ from 'jquery';
 
 export default class UrbanAllApzs extends React.Component {
   constructor(props) {
@@ -102,7 +101,7 @@ export default class UrbanAllApzs extends React.Component {
   }
 
   handleSearch(e){
-    if(e.target.value.trim() == ''){this.setState({data: this.state.data_reserve}); return;}
+    if(e.target.value.trim() === ''){this.setState({data: this.state.data_reserve}); return;}
     var items = e.target.value.trim().split(' ');
     var data = this.state.data_reserve.filter(function(obj) {
         for(var i = 0; i < items.length; i++){
@@ -189,11 +188,11 @@ export default class UrbanAllApzs extends React.Component {
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
-                      <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
+                      <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
                         <Link className="page-link" to={'/panel/urban/apz/status/' + status + '/' + num}>{num}</Link>
                       </li>
                       );
-                    }.bind(this))
+                    })
                   }
                   <li className="page-item">
                     <Link className="page-link" to={'/panel/urban/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>

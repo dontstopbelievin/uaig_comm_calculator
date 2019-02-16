@@ -18,17 +18,13 @@ import './imports/styles';
 import './imports/js';
 import LocalizedStrings from 'react-localization';
 import {ru, kk} from './languages/breadCrumbs.json';
-import { NavLink, Link, Redirect } from 'react-router-dom';
-import WOW from 'wowjs';
-import $ from 'jquery';
+import { Redirect } from 'react-router-dom';
 
-import Loader from 'react-loader-spinner';
 import BasePagePanel from "./routes/BasePagePanel";
 import SketchEngineer from "./routes/SketchEngineer";
 import SketchHead from "./routes/SketchHead";
 import ExportToExcel from "./components/ExportToExcel";
 import UrbanAllApzs from "./routes/apz/urban/AllApzs";
-import UrbanSearchAllApzs from "./routes/apz/urban/SearchAllApzs";
 import UrbanShowApz from "./routes/apz/urban/ShowApz";
 import AllTemplates from "./routes/reject_templates/AllTemplates";
 import AddTemplate from "./routes/reject_templates/AddTemplate";
@@ -106,7 +102,7 @@ export default class Main extends React.Component {
     {
       let firstElem = document.createElement('a');
       let firstElemAttributeHref = document.createAttribute('href');
-      firstElemAttributeHref.value = "/panel";
+      firstElemAttributeHref.value = "/panel/base-page";
       let firstElemAttributeClass = document.createAttribute('class');
       firstElemAttributeClass.value = "active";
       firstElem.innerHTML = e['electron-architecture'];
@@ -127,8 +123,8 @@ export default class Main extends React.Component {
         {
           let secondElem = document.createElement('span');
           //console.log(fullLoc);
-          secondElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
-            '<Link to="/#' + e[fullLoc[4]][fullLoc[5]]["link"] + '">' + e[fullLoc[4]][fullLoc[5]]["name"] + '</Link>';
+          secondElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;"></span> ' +
+            '<Link to="/' + e[fullLoc[4]][fullLoc[5]]["link"] + '">' + e[fullLoc[4]][fullLoc[5]]["name"] + '</Link>';
           breadCrumbs.appendChild(secondElem);
 
           let thirdElem = document.createElement('span');
@@ -159,7 +155,6 @@ export default class Main extends React.Component {
   }
 
   render() {
-    var roleIsSet = sessionStorage.getItem('token');
     return (
         <BrowserRouter>
           <div>

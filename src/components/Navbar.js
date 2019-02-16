@@ -117,7 +117,7 @@ export default class NavBar extends React.Component {
                 {this.state.categories.map(function (category, index) {
                   return (
                     <li className="nav-item dropdown" key={index}>
-                      <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                      <a className="nav-link dropdown-toggle" id="navbarDropdown" role="button"
                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {lang === 'kk' &&
                         category.name_kk
@@ -163,7 +163,11 @@ export default class NavBar extends React.Component {
                                   }
                                 </a>
                               )
+                            }else{
+                              return(<span></span>)
                             }
+                          }else{
+                            return(<span></span>)
                           }
                         })
                         }
@@ -198,7 +202,6 @@ export default class NavBar extends React.Component {
         </nav>
       );
     }else if (this.props.panelTrue) {
-      let auth = (sessionStorage.getItem('tokenInfo')) ? true : false;
       return (
         <nav className='navbar navbar-expand-lg navbar-light' style={{backgroundColor:'#B0BFC5'}}>
 		  <div className='container' style={{marginBottom:'0px',paddingBottom:'5px',paddingLeft:'0px',paddingRight:'0px'}} >
@@ -217,7 +220,7 @@ export default class NavBar extends React.Component {
           <NavLink exact className="nav-link"to="/" >Главная<span className="sr-only">(current)</span></NavLink>
 				</li>
 				<li className="nav-item dropdown">
-                  <a className="nav-link dropdown-toggle" data-toggle='dropdown' aria-haspopup='true' aria-expanded='true' id='navbarDropdown' href="#">
+                  <a className="nav-link dropdown-toggle" data-toggle='dropdown' aria-haspopup='true' aria-expanded='true' id='navbarDropdown' style={{cursor:'pointer'}}>
 					Услуги
                   </a>
 				  <div className="dropdown-menu" aria-labelledby='navbarDropdown'>
@@ -268,7 +271,7 @@ export default class NavBar extends React.Component {
 				  </div>
                 </li> {/*dropdown*/}
                 <li className="nav-item dropdown">
-                  <a className="nav-link dropdown-toggle" data-toggle='dropdown' href="#">
+                  <a className="nav-link dropdown-toggle" data-toggle='dropdown' style={{cursor:'pointer'}}>
 			  		Справочная информация
                   </a>
                   <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -278,12 +281,12 @@ export default class NavBar extends React.Component {
                   </ul>
                 </li>{/*dropdown*/}
                 <li className="nav-item dropdown">
-                  <a className="nav-link dropdown-toggle" data-toggle='dropdown' href="#">
+                  <a className="nav-link dropdown-toggle" data-toggle='dropdown' style={{cursor:'pointer'}}>
 					Карта
                   </a>
 			      <div className="dropdown-menu " aria-labelledby="navbarDropdown">
-                    <a className='dropdown-item' target='_blank' href="http://3d.uaig.kz/" >3D Карта</a>
-                    <a className='dropdown-item' target='_blank' href="http://2d.uaig.kz/" >2D Карта</a>
+                    <a className='dropdown-item' rel="noopener noreferrer" target='_blank' href="http://3d.uaig.kz/" >3D Карта</a>
+                    <a className='dropdown-item' rel="noopener noreferrer" target='_blank' href="http://2d.uaig.kz/" >2D Карта</a>
 			      </div>
                 </li>{/*dropdown*/}
                 <li className="nav-item dropdown">
@@ -324,10 +327,6 @@ class LoginBtn extends React.Component {
 }
 
 class LogoutBtn extends Component {
-  constructor() {
-    super();
-    // this.onLogout = this.onLogout.bind(this);
-  }
   onLogout() {
     this.props.logout();
   }

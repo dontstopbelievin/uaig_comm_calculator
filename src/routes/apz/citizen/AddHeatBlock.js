@@ -2,7 +2,6 @@ import React from 'react';
 import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
-import {ru, kk} from '../../../languages/header.json';
 
 export default class AddHeatBlock extends React.Component {
   deleteBlock(num) {
@@ -23,7 +22,7 @@ export default class AddHeatBlock extends React.Component {
         <p style={{textTransform: 'uppercase', margin: '10px 0 5px'}}>
           Здание №<span className="block_num">{this.props.num}</span>
 
-          {this.props.num != 1 &&
+          {this.props.num !== 1 &&
             <span style={{cursor: 'pointer', userSelect: 'none'}} className="block_delete pull-right text-secondary" onClick={this.deleteBlock.bind(this, this.props.num)}>Удалить</span>
           }
         </p>

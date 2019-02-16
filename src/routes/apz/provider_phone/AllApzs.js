@@ -1,5 +1,4 @@
 import React from 'react';
-import $ from 'jquery';
 import { NavLink, Link } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 
@@ -11,7 +10,7 @@ export default class AllApzs extends React.Component {
 
     this.state = {
       loaderHidden: false,
-      isPerformer: (roles.indexOf('PerformerPhone') != -1),
+      isPerformer: (roles.indexOf('PerformerPhone') !== -1),
       response: null,
       pageNumbers: []
     };
@@ -50,10 +49,10 @@ export default class AllApzs extends React.Component {
     var directorId = JSON.parse(sessionStorage.getItem('userId'));
     var providerName = roles[1];
     var xhr = new XMLHttpRequest();
-    if(roles[2] == 'DirectorPhone'){
+    if(roles[2] === 'DirectorPhone'){
         xhr.open("get", window.url + "api/apz/provider/" + providerName + "/all/" + status + "/" + directorId + '?page=' + page, true);
     }else{
-        xhr.open("get", window.url + "api/apz/provider/" + providerName + "/all/" + status + "/0" + '?page=' + page, true);
+        xhr.open("get", window.url + "api/apz/provider/" + providerName + "/all/" + status + "/0?page=" + page, true);
     }
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
@@ -171,11 +170,11 @@ export default class AllApzs extends React.Component {
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
-                      <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
+                      <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
                         <Link className="page-link" to={'/panel/phone-provider/apz/status/' + status + '/' + num}>{num}</Link>
                       </li>
                       );
-                    }.bind(this))
+                    })
                   }
                   <li className="page-item">
                     <Link className="page-link" to={'/panel/phone-provider/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>

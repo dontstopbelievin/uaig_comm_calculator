@@ -59,7 +59,6 @@ export default class Login extends Component {
   //user login function
   login(e) {
     e.preventDefault();
-    this.props.handler;
     //console.log("login function started");
     var tokenKey = "tokenInfo";
     var userIdKey = "userId";
@@ -118,7 +117,7 @@ export default class Login extends Component {
           sessionStorage.setItem(logStatusKey, true);
           //console.log(roles);
           //console.log(this.props.location);
-          if(JSON.parse(e.target.response).checkFirstLogin == true){
+          if(JSON.parse(e.target.response).checkFirstLogin === true){
             return this.props.history.push("/panel/common/edit-password");
           }
           switch (roles[0]) {
@@ -128,7 +127,6 @@ export default class Login extends Component {
               }else{
                 return this.props.history.push("/panel/base-page");
               }
-              break;
             case 'Urban':
               switch(roles[1]){
                 case 'Region':
@@ -137,7 +135,6 @@ export default class Login extends Component {
                   }else{
                     return this.props.history.push("/panel/base-page");
                   }
-                break;
 
                 case 'Engineer':
                   if(this.props.location.state != null && this.props.location.state.url_apz_id){
@@ -145,7 +142,6 @@ export default class Login extends Component {
                   }else{
                     return this.props.history.push("/panel/base-page");
                   }
-                break;
 
                 case 'Head':
                   if(this.props.location.state != null && this.props.location.state.url_apz_id){
@@ -153,18 +149,15 @@ export default class Login extends Component {
                   }else{
                     return this.props.history.push("/panel/base-page");
                   }
-                break;
 
                 default: return this.props.history.push("/panel/base-page");
               }
-            break;
           case "ApzDepartment":
             if(this.props.location.state != null && this.props.location.state.url_apz_id){
               return this.props.history.push("/panel/apz-department/apz/show/"+this.props.location.state.url_apz_id);
             }else{
               return this.props.history.push("/panel/base-page");
             }
-            break;
           case 'Provider':
             switch (roles[1]) {
               case 'Water':
@@ -173,35 +166,30 @@ export default class Login extends Component {
                 }else{
                   return this.props.history.push("/panel/base-page");
                 }
-                break;
                 case 'Gas':
                   if(this.props.location.state != null && this.props.location.state.url_apz_id){
                     return this.props.history.push("/panel/gas-provider/apz/show/"+this.props.location.state.url_apz_id);
                   }else{
                     return this.props.history.push("/panel/base-page");
                   }
-                  break;
                 case 'Heat':
                   if(this.props.location.state != null && this.props.location.state.url_apz_id){
                     return this.props.history.push("/panel/heat-provider/apz/show/"+this.props.location.state.url_apz_id);
                   }else{
                     return this.props.history.push("/panel/base-page");
                   }
-                  break;
                 case 'Electricity':
                   if(this.props.location.state != null && this.props.location.state.url_apz_id){
                     return this.props.history.push("/panel/elector-provider/apz/show/"+this.props.location.state.url_apz_id);
                   }else{
                     return this.props.history.push("/panel/base-page");
                   }
-                  break;
                 case 'Phone':
                   if(this.props.location.state != null && this.props.location.state.url_apz_id){
                     return this.props.history.push("/panel/phnone-provider/apz/show/"+this.props.location.state.url_apz_id);
                   }else{
                     return this.props.history.push("/panel/base-page");
                   }
-                  break;
               default:
             }
             break;
@@ -256,7 +244,7 @@ export default class Login extends Component {
 
   webSocketFunction() {
     this.webSocket.onopen = function (event) {
-      if (this.heartbeat_interval == "") {
+      if (this.heartbeat_interval === "") {
         this.missed_heartbeats = 0;
         this.heartbeat_interval = setInterval(this.pingLayer, 2000);
       }
@@ -582,7 +570,7 @@ export default class Login extends Component {
                         на сайте НУЦ РК. <br/>
                         Для установки пройдите по ссылке:&nbsp;
                         <a onClick={() => document.getElementById("alertModalClose").click()}
-                           href="http://pki.gov.kz/index.php/ru/ncalayer" target="_blank">
+                           href="http://pki.gov.kz/index.php/ru/ncalayer" target="_blank" rel="noopener noreferrer">
                           pki.gov.kz
                         </a>
                       </div>

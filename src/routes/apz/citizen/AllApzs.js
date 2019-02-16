@@ -1,10 +1,8 @@
 import React from 'react';
-import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
 import { Link, NavLink } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
-import {ru, kk} from '../../../languages/header.json';
 
 export default class AllApzs extends React.Component {
     constructor(props) {
@@ -17,11 +15,6 @@ export default class AllApzs extends React.Component {
         applicant:''
       };
 
-    }
-    onRequestSubmission() {
-      console.log(JSON.stringify(this.state.userData));
-      var data = new Object();
-      data.applicant=this.state.applicant;
     }
     componentDidMount() {
       this.props.breadCrumbs();
@@ -163,11 +156,11 @@ export default class AllApzs extends React.Component {
 
                     {this.state.pageNumbers.map(function(num, index) {
                       return(
-                        <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
+                        <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
                           <Link className="page-link" to={'/panel/citizen/apz/status/' + status + '/' + num}>{num}</Link>
                         </li>
                         );
-                      }.bind(this))
+                      })
                     }
                     <li className="page-item">
                       <Link className="page-link" to={'/panel/citizen/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>

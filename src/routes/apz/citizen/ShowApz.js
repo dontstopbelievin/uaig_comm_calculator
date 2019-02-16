@@ -2,9 +2,7 @@ import React from 'react';
 import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
-import { Link } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
-import {ru, kk} from '../../../languages/header.json';
 
 export default class ShowApz extends React.Component {
     constructor(props) {
@@ -129,7 +127,7 @@ export default class ShowApz extends React.Component {
         vision.css('display', 'none');
         progressbar.css('display', 'flex');
         xhr.onprogress = function(event) {
-          $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
+          $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
         }
         xhr.onload = function() {
           if (xhr.status === 200) {
@@ -1135,7 +1133,7 @@ export default class ShowApz extends React.Component {
                                           </table>
                                         </div>
                                       );
-                                    }.bind(this))}
+                                    })}
                                   </div>
                                 }
                               </div>
@@ -1453,7 +1451,7 @@ export default class ShowApz extends React.Component {
                           <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
                         </div>
                       );
-                    }.bind(this))}
+                    })}
                   </div>
                 </div>
               }

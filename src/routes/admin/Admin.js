@@ -35,7 +35,7 @@ export default class Admin extends React.Component {
     //console.log("entered getUsers function");
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/userTable/getUsers" + '?page=' + page, true);
+    xhr.open("get", window.url + "api/userTable/getUsers?page=" + page, true);
     //Send the proper header information along with the request
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
@@ -66,7 +66,6 @@ export default class Admin extends React.Component {
   removeUser(userId) {
     //console.log(userId);
     var token = sessionStorage.getItem('tokenInfo');
-    var usersArray = this.state.users;
     // var userPos = usersArray.map(function(x) {return x.UserId; }).indexOf(userId);
     //console.log(userPos);
 
@@ -138,15 +137,8 @@ export default class Admin extends React.Component {
   // добавить роль к пользователю
   addRoleToUser(userId, roleId, roleLevel) {
     var token = sessionStorage.getItem('tokenInfo');
-    //console.log(userId);
-    var data = {userid: userId, roleid: roleId};
-    var dd = JSON.stringify(data);
-    //console.log(dd);
-
-    var usersArray = this.state.users;
-    // get the position of the user which role is gonna be added
-    var userPos = usersArray.map(function(x) {return x.UserId; }).indexOf(userId);
-    //console.log(userPos);
+    var my_data = {userid: userId, roleid: roleId};
+    var dd = JSON.stringify(my_data);
 
     var xhr = new XMLHttpRequest();
     xhr.open("post", window.url + "api/userTable/addRoleToUser", true);
@@ -154,8 +146,8 @@ export default class Admin extends React.Component {
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
+      var data = JSON.parse(xhr.responseText);
       if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
         console.log(data);
         alert('Роли успешно добавлены');
         this.setState({ roleUser: data.roleUser });
@@ -163,7 +155,6 @@ export default class Admin extends React.Component {
         // this.setState({users: usersArray});
         console.log('role(s) was(were) added')
       }else {
-        var data = JSON.parse(xhr.responseText);
         console.log(data);
         alert('Ошибка во время добавления роли!');
       }
@@ -174,8 +165,6 @@ export default class Admin extends React.Component {
   componentWillMount() {
     //console.log("AdminComponent will mount");
     if(sessionStorage.getItem('tokenInfo')){
-      var userRole = JSON.parse(sessionStorage.getItem('userRoles'))[0];
-      // this.props.history.replace('/' + userRole);
     }else {
       this.props.history.replace('/');
     }
@@ -220,7 +209,7 @@ export default class Admin extends React.Component {
               {this.state.loaderHidden &&
                 this.state.users.map(function(user, index){
 
-                  if(user.first_name == 'admin'){return false;}
+                  if(user.first_name === 'admin'){return false;}
 
                   var rolesOfUser = [];
 
@@ -317,12 +306,10 @@ export default class Admin extends React.Component {
                                               </button>
                                           </div>
                                       )
-                                      }
+                                    }
                                   }
                               }
-
-                            }.bind(this))
-
+                            })
                           }
                         </div>
                         <div className="col-xs-2 col-sm-2 col-md-2" style={columnStyle}>
@@ -346,11 +333,11 @@ export default class Admin extends React.Component {
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
-                      <li key={index} className={'page-item ' + (this.state.data.current_page == num ? 'active' : '')}>
+                      <li key={index} className={'page-item ' + (this.state.data.current_page === num ? 'active' : '')}>
                         <Link className="page-link" to={'/panel/admin/user-roles/' + num}>{num}</Link>
                       </li>
                       );
-                    }.bind(this))
+                    })
                   }
                   <li className="page-item">
                     <Link className="page-link" to={'/panel/admin/user-roles/' + this.state.data.last_page}>В конец</Link>

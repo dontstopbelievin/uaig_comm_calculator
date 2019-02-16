@@ -1,12 +1,7 @@
 import React from 'react';
-import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
 import { Link } from 'react-router-dom';
-import LocalizedStrings from 'react-localization';
-import {ru, kk} from '../../../languages/header.json';
-
-let e = new LocalizedStrings({ru,kk});
 
 export default class CitizenActions extends React.Component {
     constructor(props) {
@@ -18,7 +13,7 @@ export default class CitizenActions extends React.Component {
       };
     }
     componentWillMount(){
-      if(this.props.history.location.pathname != "/panel/citizen/apz"){
+      if(this.props.history.location.pathname !== "/panel/citizen/apz"){
         this.setState({welcome_text:false, left_tabs:false});
       }
     }
@@ -33,7 +28,7 @@ export default class CitizenActions extends React.Component {
 
       <div className="content container body-content citizen-apz-list-page">
         <div>
-          <div class="left-tabs">
+          <div className="left-tabs">
             {this.state.left_tabs &&
               <ul>
                  <li>
@@ -50,20 +45,20 @@ export default class CitizenActions extends React.Component {
           </div>
           <div className="card-body">
             {this.state.welcome_text &&
-              <div class="apzinfo">
-                <div class = "time">
+              <div className="apzinfo">
+                <div className="time">
                    <p>Срок рассмотрения заявления:</p>
                    <li>на выдачу архитектурно-планировочного задания и технических условий – 6 (шесть) рабочих дней;</li>
                    <li>Мотивированный отказ – 5 (пять) рабочих дней.</li>
                 </div>
-                <div class="application">
+                <div className="application">
                    <p>Необходимый перечень документов для получения АПЗ и ТУ:</p>
                    <li>заявление о предоставлении АПЗ и ТУ по форме (заполняется онлайн);</li>
                    <li>электронная копия правоустанавливающего документа на земельный участок;</li>
                    <li>электронная копия задания на проектирование;</li>
                    <li>опросный лист для ТУ на подключение к источникам инженерного и коммунального обеспечения по форме (заполняется онлайн);</li>
                 </div>
-                <button class="btn btn-raised btn-success" onClick={this.hide_text.bind(this)}>Перейти к заявкам</button>
+                <button className="btn btn-raised btn-success" onClick={this.hide_text.bind(this)}>Перейти к заявкам</button>
               </div>
             }
           </div>

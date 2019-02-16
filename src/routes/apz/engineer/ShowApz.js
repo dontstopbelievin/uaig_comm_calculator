@@ -1,7 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
 import 'jquery-serializejson';
-import { Route, Link, Switch } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import EngineerShowMap from "./ShowMap";
 
@@ -147,15 +146,15 @@ export default class EngineerShowApz extends React.Component {
           }
         }
 
-        if ((data.status_id === 4 || data.status_id === 5) && hasReponse.length == 0) {
+        if ((data.status_id === 4 || data.status_id === 5) && hasReponse.length === 0) {
           this.setState({showButtons: true});
         }
 
-        if (hasReponse.length == 0 || commission) {
+        if (hasReponse.length === 0 || commission) {
           this.setState({showCommission: true});
         }
 
-        this.setState({engineerReturnedState: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null && obj.sender == 'engineer'})[0]});
+        this.setState({engineerReturnedState: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment !== null && obj.sender === 'engineer'})[0]});
         this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 28})[0]});
         this.setState({needSign: data.files.filter(function(obj) { return obj.category_id === 28})[0]});
       }
@@ -184,7 +183,7 @@ export default class EngineerShowApz extends React.Component {
       vision.css('display', 'none');
       progressbar.css('display', 'flex');
       xhr.onprogress = function(event) {
-        $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
+        $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
       }
       xhr.onload = function() {
         if (xhr.status === 200) {
@@ -422,7 +421,7 @@ export default class EngineerShowApz extends React.Component {
   }
   webSocketFunction() {
     this.webSocket.onopen = function (event) {
-      if (this.heartbeat_interval == "") {
+      if (this.heartbeat_interval === "") {
         this.missed_heartbeats = 0;
         this.heartbeat_interval = setInterval(this.pingLayer, 2000);
       }
@@ -847,13 +846,13 @@ toDate(date) {
 }
 
   createCommission(id) {
-    if(this.state.deadline == ''){
+    if(this.state.deadline === ''){
       alert('Укажите сроки обработки заявки для служб');
       return false;
     }
     var data = $('.commission_users_table input').serializeJSON();
 
-    if (Object.keys(data).length == 0) {
+    if (Object.keys(data).length === 0) {
       alert('Не выбраны провайдеры');
       return false;
     }
@@ -881,7 +880,6 @@ toDate(date) {
 
   acceptDeclineApzForm(apzId, status, comment) {
     var token = sessionStorage.getItem('tokenInfo');
-    var file = this.state.file;
 
     var formData = new FormData();
     formData.append('response', status);
@@ -954,7 +952,7 @@ toDate(date) {
         xhr.upload.addEventListener("progress", function(evt) {
           if (evt.lengthComputable) {
             var percentComplete = evt.loaded / evt.total;
-            percentComplete = parseInt(percentComplete * 100);
+            percentComplete = parseInt(percentComplete * 100, 10);
             $('div', progressbar).css('width', percentComplete + '%');
           }
         }, false);
@@ -994,6 +992,7 @@ toDate(date) {
 
             case 24:
               this.setState({claimedCapacityJustification: data});
+              break;
 
             case 25:
               this.setState({pack2IdFile: data});
@@ -1062,7 +1061,7 @@ toDate(date) {
         this.setState({claimedCapacityJustification: data});
         break;
 
-      case '24':
+      case '25':
         this.setState({pack2IdFile: data});
         break;
     }
@@ -1528,7 +1527,7 @@ toDate(date) {
                   <p className="mb-0">{state.created_at}&emsp;{state.state.name}  {state.receiver && '('+state.receiver+')'}</p>
                 </div>
               );
-            }.bind(this))}
+            })}
           </div>
 
           {apz.commission &&  apz.commission.apz_water_response &&
@@ -1773,7 +1772,7 @@ toDate(date) {
                               </table>
                             </div>
                           );
-                        }.bind(this))}
+                        })}
                       </div>
                     }
                   </div>
@@ -2330,7 +2329,7 @@ toDate(date) {
                               </table>
                             </div>
                           );
-                        }.bind(this))}
+                        })}
                       </div>
                     }
                   </div>
