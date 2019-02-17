@@ -32,8 +32,8 @@ import ShowTemplate from "./routes/reject_templates/ShowTemplate";
 import EngineerAllApzs from "./routes/apz/engineer/AllApzs";
 import EngineerSearchAllApzs from "./routes/apz/engineer/SearchAllApzs";
 import EngineerShowApz from "./routes/apz/engineer/ShowApz";
-import ApzDepartmentAllApzs from "./routes/apz/apz_department/AllApzs";
-import ApzDepartmentShowApz from "./routes/apz/apz_department/ShowApz";
+import StateServicesAllApzs from "./routes/apz/state_services/AllApzs";
+import StateServicesShowApz from "./routes/apz/state_services/ShowApz";
 import HeadAllApzs from "./routes/apz/head/AllApzs";
 import HeadShowApz from "./routes/apz/head/ShowApz";
 import ProviderElectroAllApzs from "./routes/apz/provider_electro/AllApzs";
@@ -58,6 +58,12 @@ import CitizenAllApzs from "./routes/apz/citizen/AllApzs";
 import CitizenAddApz from "./routes/apz/citizen/AddApz";
 import CitizenShowApz from "./routes/apz/citizen/ShowApz";
 import CitizenActions from "./routes/apz/citizen/CitizenActions";
+import LawyerAllApzs from "./routes/apz/lawyer/AllApzs";
+import LawyerShowApz from "./routes/apz/lawyer/ShowApz";
+import GenPlanAllApzs from "./routes/apz/gen_plan/AllApzs";
+import GenPlanShowApz from "./routes/apz/gen_plan/ShowApz";
+import HeadStateServicesAllApzs from "./routes/apz/head_state_services/AllApzs";
+import HeadStateServicesShowApz from "./routes/apz/head_state_services/ShowApz";
 
 let e = new LocalizedStrings({ru,kk});
 
@@ -226,14 +232,23 @@ export default class Main extends React.Component {
                       <Route path="/panel/office/apz/all/:page" exact render={(props) =>(<OfficeAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                       <Route path="/panel/office/apz/show/:id" exact render={(props) =>(<OfficeShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
+                      <Route path="/panel/lawyer/apz/status/:status/:page" exact render={(props) =>(<LawyerAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/lawyer/apz/show/:id" exact render={(props) =>(<LawyerShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+
                       <Route path="/panel/engineer/apz/status/:status/:page" exact render={(props) =>(<EngineerAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                       <Route path="/panel/engineer/apz/search/:page" exact render={(props) =>(<EngineerSearchAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                       <Route path="/panel/engineer/apz/show/:id" exact render={(props) =>(<EngineerShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                       <Route path="/panel/engineer/sketch" render={(props) => ( <SketchEngineer breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
 
-                      <Route path="/panel/apz-department/apz/status/:status/:page" exact render={(props) =>(<ApzDepartmentAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
-                      <Route path="/panel/apz-department/apz/show/:id" exact render={(props) =>(<ApzDepartmentShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/state_services/apz/status/:status/:page" exact render={(props) =>(<StateServicesAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/state_services/apz/show/:id" exact render={(props) =>(<StateServicesShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                       <Route path="/panel/apz-department/sketch" render={(props) => ( <SketchApzDepartment breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+
+                      <Route path="/panel/gen_plan/apz/status/:status/:page" exact render={(props) =>(<GenPlanAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/gen_plan/apz/show/:id" exact render={(props) =>(<GenPlanShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+
+                      <Route path="/panel/head_state_services/apz/status/:status/:page" exact render={(props) =>(<HeadStateServicesAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/head_state_services/apz/show/:id" exact render={(props) =>(<HeadStateServicesShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
                       <Redirect from="/" to="/panel/base-page" />
                     </Switch>

@@ -4,7 +4,7 @@ import 'jquery-serializejson';
 import Loader from 'react-loader-spinner';
 import EngineerShowMap from "./ShowMap";
 
-export default class EngineerShowApz extends React.Component {
+export default class ShowApz extends React.Component {
   constructor(props) {
     super(props);
     this.webSocket = new WebSocket('wss://127.0.0.1:13579/');
@@ -1504,7 +1504,7 @@ toDate(date) {
                     <div>
                       <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
                               onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>
-                        Отправить архитектору
+                        Отправить отделу гос услуг
                       </button>
                     </div>
                   }

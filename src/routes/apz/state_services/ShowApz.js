@@ -20,36 +20,26 @@ export default class ShowApz extends React.Component {
 
       this.state = {
         apz: [],
+        templates: [],
         showMap: false,
         showButtons: false,
         showSendButton: false,
         showSignButtons: false,
-        showTechCon: false,
         file: null,
-        elecReqPower: "",
-        elecPhase: "Однофазная",
-        elecSafeCategory: "",
-        connectionPoint: "",
-        recomendation: "",
         description: "",
         docNumber: "",
-        responseId: 0,
         response: false,
-        responseFile: null,
         personalIdFile: false,
         confirmedTaskFile: false,
         titleDocumentFile: false,
         additionalFile: false,
         showMapText: 'Показать карту',
         accept: true,
-        callSaveFromSend: false,
-        elecStatus: 2,
         storageAlias: "PKCS12",
-        xmlFile: false,
-        isSigned: false,
         templateType: '',
         backFromHead: false,
-        apzReturnedState: false,
+        backFromGP: false,
+        backFromEngineer: false,
 
         basisForDevelopmentApz: 'Постановление акимата города (района) №_____ от __________ (число, месяц, год)',
         buildingPresence: 'Строений нет',
@@ -322,6 +312,11 @@ export default class ShowApz extends React.Component {
       }
     }
 
+    onTemplateListChange(e) {
+      var template = this.state.templates.find(template => template.id === e.target.value);
+      this.setState({ description: template.text });
+    }
+
     onInputChange(state, value) {
       // const { value, name } = e.target
       // this.setState({ [name] : value })
@@ -349,24 +344,22 @@ export default class ShowApz extends React.Component {
       var id = this.props.match.params.id;
       var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/apz_department/detail/" + id, true);
+      xhr.open("get", window.url + "api/apz/stateservices/detail/" + id, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
-          //console.log(data);
           this.setState({apz: data});
-          this.setState({showButtons: false});
-          this.setState({showTechCon: false});
+          this.setState({templates: data.templates});
           this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
           this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
           this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
           this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
           this.setState({reglamentFile: data.files.filter(function(obj) { return obj.category_id === 29 })[0]});
-          this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 18})[0]});
-          this.setState({apzReturnedState: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment !== null && obj.sender === 'apz'})[0]});
           this.setState({response: data.apz_department_response ? true : false });
+          this.setState({backFromGP: data.state_history.filter(function(obj) { return obj.state_id === 41 })[0]});
+          this.setState({backFromEngineer: data.state_history.filter(function(obj) { return obj.state_id === 4 })[0]});
           for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
             switch (data.state_history[data_index].state_id) {
               case 33:
@@ -380,10 +373,6 @@ export default class ShowApz extends React.Component {
 
           if (!data.apz_department_response && data.status_id === 6) {
             this.setState({showButtons: true});
-          }
-
-          if (data.files.filter(function(obj) { return obj.category_id === 18})[0] != null) {
-            this.setState({isSigned: true});
           }
 
           if (data.files.filter(function(obj) { return obj.category_id === 18})[0] != null && data.status_id === 6) {
@@ -400,15 +389,12 @@ export default class ShowApz extends React.Component {
               this.setState({ [key]: (data.apz_department_response[k] === null) ? '' : data.apz_department_response[k] });
             }.bind(this));
           }
-          /*if(!data.apz_sign_returned){
-              this.setState({xmlFile: false});
-              this.setState({isSigned: false});
-              this.setState({showButtons: true});
-              this.setState({showSendButton: false});
-              this.setState({showSignButtons: false});
-          }*/
         }
       }.bind(this)
+      xhr.onerror = function () {
+        alert('Сервер не отвечает');
+        this.setState({ loaderHidden: true });
+      }.bind(this);
       xhr.send();
     }
 
@@ -477,65 +463,6 @@ export default class ShowApz extends React.Component {
           }
         }
       xhr.send();
-    }
-
-    uploadFile(category, e) {
-      if(e.target.files[0] == null){ return;}
-      var file = e.target.files[0];
-      var name = file.name.replace(/\.[^/.]+$/, "");
-      var progressbar = $('.progress[data-category=' + category + ']');
-      if (!file || !category) {
-        alert('Не удалось загрузить файл');
-
-        return false;
-      }
-
-      var formData = new FormData();
-      formData.append('file', file);
-      formData.append('name', name);
-      formData.append('category', category);
-      progressbar.css('display', 'flex');
-      $.ajax({
-        type: 'POST',
-        url: window.url + 'api/file/upload',
-        contentType: false,
-        beforeSend: function (xhr) {
-          xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
-        },
-        processData: false,
-        data: formData,
-        xhr: function() {
-          var xhr = new window.XMLHttpRequest();
-
-          xhr.upload.addEventListener("progress", function(evt) {
-            if (evt.lengthComputable) {
-              var percentComplete = evt.loaded / evt.total;
-              percentComplete = parseInt(percentComplete * 100, 10);
-              $('div', progressbar).css('width', percentComplete + '%');
-            }
-          }, false);
-
-          return xhr;
-        },
-        success: function (response) {
-          var data = {id: response.id, name: response.name};
-
-          setTimeout(function() {
-            progressbar.css('display', 'none');
-            switch (category) {
-              case 29:
-                this.setState({reglamentFile: data});
-                break;
-              default:
-            }
-            alert("Файл успешно загружен");
-          }.bind(this), '1000')
-        }.bind(this),
-        error: function (response) {
-          progressbar.css('display', 'none');
-          alert("Не удалось загрузить файл");
-        }
-      });
     }
 
     setMissedHeartbeatsLimitToMax() {
@@ -623,7 +550,7 @@ export default class ShowApz extends React.Component {
       var token = sessionStorage.getItem('tokenInfo');
 
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + 'api/apz/apz_department/get_xml/' + this.state.apz.id, true);
+      xhr.open("get", window.url + 'api/apz/stateservices/get_xml/' + this.state.apz.id, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
@@ -672,12 +599,11 @@ export default class ShowApz extends React.Component {
         console.log("SIGNED XML ------> \n", signedXml);
 
         var xhr = new XMLHttpRequest();
-        xhr.open("post", window.url + 'api/apz/apz_department/save_xml/' + this.state.apz.id, true);
+        xhr.open("post", window.url + 'api/apz/stateservices/save_xml/' + this.state.apz.id, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         xhr.onload = function() {
           if (xhr.status === 200) {
-            this.setState({ isSigned: true });
             this.setState({ showSendButton: true });
             alert('Успешно подписан.');
           } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
@@ -801,7 +727,7 @@ export default class ShowApz extends React.Component {
       data.message = comment;
 
       var xhr = new XMLHttpRequest();
-      xhr.open("post", window.url + "api/apz/apz_department/save/" + apzId, true);
+      xhr.open("post", window.url + "api/apz/stateservices/save/" + apzId, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function () {
@@ -809,15 +735,9 @@ export default class ShowApz extends React.Component {
           var data = JSON.parse(xhr.responseText);
 
           this.setState({ response: data.response });
-
-          if(this.state.callSaveFromSend){
-            this.setState({callSaveFromSend: false});
-            this.sendForm(apzId, status, comment);
-          } else {
-            alert("Ответ сохранен!");
-            this.setState({ showButtons: false });
-            this.setState({ showSignButtons: true });
-          }
+          alert("Ответ сохранен!");
+          this.setState({ showButtons: false });
+          this.setState({ showSignButtons: true });
         }
         else if(xhr.status === 401){
           sessionStorage.clear();
@@ -833,20 +753,15 @@ export default class ShowApz extends React.Component {
       this.setState({ showSignButtons: false });
     }
 
-    sendForm(apzId, status, comment) {
-      if(this.state.response === null){
-        this.setState({callSaveFromSend: true});
-        this.saveForm(apzId, status, comment);
-
-        return true;
-      }
+    sendForm(apzId, status, comment, direct) {
       var token = sessionStorage.getItem('tokenInfo');
       var formData = new FormData();
       formData.append('response', status);
       formData.append('message', comment);
+      formData.append('direct', direct);
 
       var xhr = new XMLHttpRequest();
-      xhr.open("post", window.url + "api/apz/apz_department/status/" + apzId, true);
+      xhr.open("post", window.url + "api/apz/stateservices/status/" + apzId, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.onload = function () {
         if (xhr.status === 200) {
@@ -1542,7 +1457,7 @@ export default class ShowApz extends React.Component {
             {this.state.showMapText}
           </button>
 
-          {((apz.status_id !== 6 && !this.state.apzReturnedState) && this.state.response) &&
+          {(apz.status_id !== 6 && this.state.response) &&
             <div>
               <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
               <table className="table table-bordered table-striped">
@@ -1561,11 +1476,6 @@ export default class ShowApz extends React.Component {
                   </tr>}
                 </tbody>
               </table>
-            </div>
-          }
-          {this.state.apzReturnedState &&
-            <div className="alert alert-danger">
-              Причина отказа: {this.state.apzReturnedState.comment}
             </div>
           }
 
@@ -1895,32 +1805,6 @@ export default class ShowApz extends React.Component {
                     <input type="text" value={this.state.docNumber} className="form-control" onChange={(e) => this.setState({ docNumber: e.target.value })} />
                   </div>
                 </div>
-
-                <div className="form-group">
-                  <div className="file_container">
-                    <div className="col-md-4">
-                      <div className="progress mb-2" data-category="5" style={{height: '20px', display: 'none'}}>
-                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </div>
-
-                    {this.state.reglamentFile &&
-                      <div className="file_block mb-2">
-                        <div>
-                          {this.state.reglamentFile.name}
-                          <a className="pointer" onClick={(e) => this.setState({reglamentFile: false}) }>×</a>
-                        </div>
-                      </div>
-                    }
-
-                    <div className="file_buttons btn-group btn-group-justified d-table mt-0">
-                      <label><h6>Регламент</h6></label>
-                      <label htmlFor="reglamentFile" className="btn btn-success" style={{marginLeft: '5px'}}>Загрузить</label>
-                      <input type="file" id="reglamentFile" name="reglamentFile" className="form-control" onChange={this.uploadFile.bind(this, 5)} style={{display: 'none'}} />
-                    </div>
-                    <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
-                  </div>
-                </div>
               </form>
 
               {this.state.backFromHead &&
@@ -1929,7 +1813,7 @@ export default class ShowApz extends React.Component {
                 </div>
               }
               <div>
-                {this.state.showSignButtons && !this.state.isSigned &&
+                {this.state.showSignButtons &&
                   <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                     <div>Выберите хранилище</div>
 
@@ -1962,16 +1846,23 @@ export default class ShowApz extends React.Component {
 
                 {this.state.showButtons && !this.state.showSendButton &&
                   <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                  {this.state.backFromEngineer ?
                     <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.saveForm.bind(this, apz.id, true, "")}>
                       Сохранить
                     </button>
-                    <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#declined_modal">Отклонить и отправить на доработку архитектору</button>
+                    :
+                    <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'engineer')}>Отправить инженеру</button>
+                  }
+                  {!this.state.backFromGP &&
+                    <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'gen_plan')}>Отправить отделу ген плана</button>
+                  }
+                    <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#declined_modal">Отклонить</button>
                   </div>
                 }
 
                 {this.state.showSendButton &&
                   <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', display: 'table'}}>
-                    <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "")}>Отправить инженеру</button>
+                    <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'head')}>Отправить начальнику Гос Услуг</button>
                   </div>
                 }
 
@@ -1985,13 +1876,26 @@ export default class ShowApz extends React.Component {
                         </button>
                       </div>
                       <div className="modal-body">
+                        {this.state.templates.length > 0 &&
+                          <div className="form-group">
+                            <select className="form-control" defaultValue="" id="templateList" onChange={this.onTemplateListChange.bind(this)}>
+                              <option value="">Выберите шаблон</option>
+                              {this.state.templates.map(function(template, index) {
+                                return(
+                                  <option key={index} value={template.id}>{template.title}</option>
+                                  );
+                                })
+                              }
+                            </select>
+                          </div>
+                        }
                         <div className="form-group">
                           <label>Причина отклонения</label>
                           <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
                         </div>
                       </div>
                       <div className="modal-footer">
-                        <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} data-dismiss="modal" onClick={this.sendForm.bind(this, apz.id, false, this.state.description)}>
+                        <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} data-dismiss="modal" onClick={this.sendForm.bind(this, apz.id, false, this.state.description, 'lawyer')}>
                           Отправить
                         </button>
                         <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>

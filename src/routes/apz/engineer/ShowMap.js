@@ -2,7 +2,7 @@ import React from 'react';
 import EsriLoaderReact from 'esri-loader-react';
 import 'jquery-serializejson';
 
-export default class EngineerShowMap extends React.Component {
+export default class ShowMap extends React.Component {
   render() {
     const options = {
       url: 'https://js.arcgis.com/4.6/'

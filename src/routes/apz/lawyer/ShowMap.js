@@ -4,7 +4,7 @@ import { Route, Link } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import $ from 'jquery';
 
-export default class UrbanShowMap extends React.Component {
+export default class ShowMap extends React.Component {
     render() {
       const options = {
         url: 'https://js.arcgis.com/4.6/'

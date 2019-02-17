@@ -11,10 +11,7 @@ export default class AllApzs extends React.Component {
       response: null,
       data: [],
       data_reserve: [],
-      pageNumbers: [],
-      regions:[],
-      searchApz: '',
-      current_region: ""
+      pageNumbers: []
     };
 
     this.handleSearch = this.handleSearch.bind(this);
@@ -23,16 +20,6 @@ export default class AllApzs extends React.Component {
   componentDidMount() {
     this.props.breadCrumbs();
     this.getApzs();
-  }
-
-  componentWillMount() {
-    var data = JSON.parse(sessionStorage.getItem('userRoles'));
-    var select_regions = [];
-    for (var i = 2; i < data.length; i++) {
-      select_regions.push(<option key={i} value={data[i]}> {data[i]} </option>);
-    }
-    this.setState({regions: select_regions});
-    this.setState({current_region: data[2]});
   }
 
   componentWillReceiveProps(nextProps) {
@@ -52,7 +39,7 @@ export default class AllApzs extends React.Component {
 
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/region/all/" + status + '/' + this.state.current_region + '?page=' + page, true);
+    xhr.open("get", window.url + "api/apz/generalplan/all/" + status + '?page=' + page, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
@@ -75,6 +62,10 @@ export default class AllApzs extends React.Component {
 
       this.setState({ loaderHidden: true });
     }.bind(this);
+    xhr.onerror = function () {
+      alert('Сервер не отвечает');
+      this.setState({ loaderHidden: true });
+    }.bind(this);
     xhr.send();
   }
 
@@ -92,12 +83,6 @@ export default class AllApzs extends React.Component {
     var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
 
     return formated_date;
-  }
-
-  handleRegionChange(event){
-    this.setState({current_region: event.target.value}, function stateUpdateComplete() {
-      this.getApzs();
-    }.bind(this));
   }
 
   handleSearch(e){
@@ -125,20 +110,14 @@ export default class AllApzs extends React.Component {
             <div>
               <h4 className="mb-0">Архитектурно-планировочное задание</h4>
             </div>
-            <div style={{fontSize: '18px', margin: '10px 0px'}}>
-              <b>Выберите регион:</b>
-              <select style={{padding: '0px 4px', margin: '5px'}} value={this.state.current_region} onChange={this.handleRegionChange.bind(this)}>
-                {this.state.regions}
-              </select>
-            </div>
             <table style={{width:'100%'}}><tbody>
             <tr><td>
               <input placeholder="Поиск по ФИО" type="text" className="mb-2" id="filter" onChange={this.handleSearch} style={{padding:'3px'}}/>
             </td><td>
               <ul className="nav nav-tabs mb-2 pull-right">
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/urban/apz/status/active/1" replace>Активные</NavLink></li>
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/urban/apz/status/accepted/1" replace>Принятые</NavLink></li>
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/urban/apz/status/declined/1" replace>Отказанные</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/gen_plan/apz/status/active/1" replace>Активные</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/gen_plan/apz/status/accepted/1" replace>Принятые</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/gen_plan/apz/status/declined/1" replace>Отказанные</NavLink></li>
               </ul>
             </td></tr></tbody>
             </table>
@@ -170,7 +149,7 @@ export default class AllApzs extends React.Component {
                       <td>{apz.project_address}</td>
                       <td>{this.toDate(apz.created_at)}</td>
                       <td>
-                        <Link className="btn btn-outline-info" to={'/panel/urban/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link className="btn btn-outline-info" to={'/panel/gen_plan/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
                     </tr>
                     );
@@ -183,19 +162,19 @@ export default class AllApzs extends React.Component {
               <nav className="pagination_block">
                 <ul className="pagination justify-content-center">
                   <li className="page-item">
-                    <Link className="page-link" to={'/panel/urban/apz/status/' + status + '/1'}>В начало</Link>
+                    <Link className="page-link" to={'/panel/gen_plan/apz/status/' + status + '/1'}>В начало</Link>
                   </li>
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
                       <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
-                        <Link className="page-link" to={'/panel/urban/apz/status/' + status + '/' + num}>{num}</Link>
+                        <Link className="page-link" to={'/panel/gen_plan/apz/status/' + status + '/' + num}>{num}</Link>
                       </li>
                       );
                     })
                   }
                   <li className="page-item">
-                    <Link className="page-link" to={'/panel/urban/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
+                    <Link className="page-link" to={'/panel/gen_plan/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
                   </li>
                 </ul>
               </nav>

@@ -3,7 +3,7 @@ import Loader from 'react-loader-spinner';
 import $ from 'jquery';
 import { Route, Link} from 'react-router-dom';
 
-export default class UrbanSearchAllApzs extends React.Component {
+export default class SearchAllApzs extends React.Component {
   constructor(props) {
     super(props);
 

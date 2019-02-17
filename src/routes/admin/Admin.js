@@ -337,7 +337,7 @@ export default class Admin extends React.Component {
                         <Link className="page-link" to={'/panel/admin/user-roles/' + num}>{num}</Link>
                       </li>
                       );
-                    })
+                    }.bind(this))
                   }
                   <li className="page-item">
                     <Link className="page-link" to={'/panel/admin/user-roles/' + this.state.data.last_page}>В конец</Link>

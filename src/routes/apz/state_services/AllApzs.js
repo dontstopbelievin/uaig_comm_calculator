@@ -36,7 +36,7 @@ export default class AllApzs extends React.Component {
       var token = sessionStorage.getItem('tokenInfo');
 
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/apz_department/all/" + status + '?page=' + page, true);
+      xhr.open("get", window.url + "api/apz/stateservices/all/" + status + '?page=' + page, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function () {
@@ -56,6 +56,10 @@ export default class AllApzs extends React.Component {
 
         this.setState({ loaderHidden: true });
       }.bind(this);
+      xhr.onerror = function () {
+        alert('Сервер не отвечает');
+        this.setState({ loaderHidden: true });
+      }.bind(this);
       xhr.send();
     }
 
@@ -90,9 +94,9 @@ export default class AllApzs extends React.Component {
           {this.state.loaderHidden &&
             <div>
               <ul className="nav nav-tabs mb-2 pull-right">
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/apz-department/apz/status/active/1" replace>Активные</NavLink></li>
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/apz-department/apz/status/accepted/1" replace>Принятые</NavLink></li>
-                <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/apz-department/apz/status/declined/1" replace>Отказанные</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/state_services/apz/status/active/1" replace>Активные</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/state_services/apz/status/accepted/1" replace>Принятые</NavLink></li>
+                <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/state_services/apz/status/declined/1" replace>Отказанные</NavLink></li>
               </ul>
 
               <table className="table">

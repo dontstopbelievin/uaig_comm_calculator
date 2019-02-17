@@ -3,7 +3,7 @@ import 'jquery-serializejson';
 import { NavLink, Link} from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 
-export default class EngineerAllApzs extends React.Component {
+export default class AllApzs extends React.Component {
   constructor(props) {
     super(props);
 

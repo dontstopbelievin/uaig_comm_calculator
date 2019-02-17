@@ -231,34 +231,26 @@ export default class NavBar extends React.Component {
                           switch(JSON.parse(sessionStorage.getItem('userRoles'))[0]) {
                             case 'Admin': return <AdminMenu />;
                             case 'Urban':
-                              if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Head') {
-                                return <HeadMenu />
-                              }
-                              else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Engineer') {
-                                return <EngineerMenu />
-                              }
-                              else{
-                                return <UrbanMenu />;
+                              switch (JSON.parse(sessionStorage.getItem('userRoles'))[1]) {
+                                case 'Head': return <HeadMenu />;
+                                case 'Engineer': return <EngineerMenu />;
+                                case 'Lawyer': return <LawyerMenu />;
+                                case 'GeneralPlan': return <GenPlanMenu />;
+                                case 'HeadsStateServices': return <HeadsStateServicesMenu />;
+                                default:
                               }
                             case 'Provider':
-                              if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Electricity') {
-                                return <ElectroProviderMenu />;
-                              }
-                              else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Gas'){
-                                return <GasProviderMenu />;
-                              }
-                              else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Heat'){
-                                return <HeatProviderMenu />;
-                              }
-                              else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Phone'){
-                                return <PhoneProviderMenu />;
-                              }
-                              else{
-                                return <WaterProviderMenu />;
+                              switch (JSON.parse(sessionStorage.getItem('userRoles'))[1]) {
+                                case 'Electricity': return <ElectroProviderMenu />;
+                                case 'Gas': return <GasProviderMenu />;
+                                case 'Heat': return <HeatProviderMenu />;
+                                case 'Phone': return <PhoneProviderMenu />;
+                                case 'Water': return <WaterProviderMenu />;
+                                default:
                               }
                             case 'Citizen': return <CitizenMenu />;
                             case 'Temporary': return <TemporaryMenu />;
-                            case 'ApzDepartment': return <ApzDepartmentMenu />;
+                            case 'StateServices': return <StateServicesMenu />;
                             case 'Office': return <OfficeMenu />;
                             default: return null;
                           }
@@ -377,7 +369,6 @@ class DefaultMenu extends Component {
     )
   }
 }
-
 class UrbanMenu extends Component {
   render() {
     return (
@@ -392,7 +383,6 @@ class UrbanMenu extends Component {
     )
   }
 }
-
 class ElectroProviderMenu extends Component {
   render() {
     return (
@@ -404,7 +394,6 @@ class ElectroProviderMenu extends Component {
     )
   }
 }
-
 class GasProviderMenu extends Component {
   render() {
     return (
@@ -416,7 +405,6 @@ class GasProviderMenu extends Component {
     )
   }
 }
-
 class HeatProviderMenu extends Component {
   render() {
     return (
@@ -428,7 +416,6 @@ class HeatProviderMenu extends Component {
     )
   }
 }
-
 class WaterProviderMenu extends Component {
   render() {
     return (
@@ -440,7 +427,6 @@ class WaterProviderMenu extends Component {
     )
   }
 }
-
 class PhoneProviderMenu extends Component {
   render() {
     return (
@@ -452,7 +438,6 @@ class PhoneProviderMenu extends Component {
     )
   }
 }
-
 class HeadMenu extends Component {
   render() {
     return (
@@ -466,7 +451,6 @@ class HeadMenu extends Component {
     )
   }
 }
-
 class CitizenMenu extends Component {
   render() {
     return (
@@ -479,7 +463,6 @@ class CitizenMenu extends Component {
     )
   }
 }
-
 class TemporaryMenu extends Component {
   render() {
     return (
@@ -489,7 +472,6 @@ class TemporaryMenu extends Component {
     )
   }
 }
-
 class EngineerMenu extends Component {
   render() {
     return (
@@ -500,23 +482,48 @@ class EngineerMenu extends Component {
     )
   }
 }
-
-class ApzDepartmentMenu extends Component {
+class StateServicesMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/panel/apz-department/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
-        <NavLink to={"/panel/apz-department/sketch"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
+        <NavLink to={"/panel/state_services/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/panel/state_services/sketch"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
       </div>
     )
   }
 }
-
 class OfficeMenu extends Component {
   render() {
     return (
       <div>
         <NavLink to={"/panel/office/apz/all/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+      </div>
+    )
+  }
+}
+class LawyerMenu extends Component {
+  render() {
+    return (
+      <div>
+        <NavLink to={"/panel/lawyer/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+      </div>
+    )
+  }
+}
+class GenPlanMenu extends Component {
+  render() {
+    return (
+      <div>
+        <NavLink to={"/panel/gen_plan/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+      </div>
+    )
+  }
+}
+class HeadsStateServicesMenu extends Component {
+  render() {
+    return (
+      <div>
+        <NavLink to={"/panel/head_state_services/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
       </div>
     )
   }
