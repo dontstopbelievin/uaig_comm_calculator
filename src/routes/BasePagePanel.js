@@ -1,9 +1,7 @@
 import React from 'react';
 import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../languages/guest.json';
-import { Link, NavLink } from 'react-router-dom';
-import WOW from 'wowjs';
-import $ from 'jquery';
+import { NavLink } from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 let e = new LocalizedStrings({ru,kk});
@@ -38,18 +36,6 @@ export default class BasePagePanel extends React.Component{
   }
 
   render() {
-    var roles = JSON.parse(sessionStorage.getItem('userRoles'));
-    var auth;
-    if (roles){
-      if ( roles[0] === "Admin" && sessionStorage.getItem('tokenInfo') )
-      {
-        auth = false;
-      }else if ( roles[0] !== "Admin" && sessionStorage.getItem('tokenInfo') ) {
-        auth = true;
-      }
-    } else {
-      auth = false;
-    }
     return(
       <div className="container body-content">
         {!sessionStorage.getItem('tokenInfo') &&
@@ -62,7 +48,7 @@ export default class BasePagePanel extends React.Component{
           <div className="row">
             <div className="col-md-12 col-xs-12 black-main text-center">
               <h4 >{e.public_services}</h4>
-              <span><img src="/images/line.png" /></span>
+              <span><img src="/images/line.png" alt="" /></span>
 
               <div className="card-deck wow fadeInUp" data-wow-duration="1.5s">
                 <div className="card  mt-4 mb-4 ">
@@ -81,7 +67,7 @@ export default class BasePagePanel extends React.Component{
                     {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
                     {this.state.tokenExists && this.state.rolename === 'Admin' && <NavLink to={"/panel/admin/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                     {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/panel/citizen/apz"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/panel/urban/apz/status/new/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/panel/urban/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                     {this.state.tokenExists && this.state.rolename === 'Head' &&  <NavLink to={"/panel/head/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                     {this.state.tokenExists && this.state.rolename === 'Electricity' &&  <NavLink to={"/panel/elector-provider/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                     {this.state.tokenExists && this.state.rolename === 'Gas' &&  <NavLink to={"/panel/gas-provider/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
@@ -91,6 +77,7 @@ export default class BasePagePanel extends React.Component{
                     {this.state.tokenExists && this.state.rolename === 'ApzDepartment' &&  <NavLink to={"/panel/apz-department/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                     {this.state.tokenExists && this.state.rolename === 'Engineer' &&  <NavLink to={"/panel/engineer/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                     {this.state.tokenExists && this.state.rolename === 'Office' &&  <NavLink to={"/panel/office/apz/all/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Lawyer' &&  <NavLink to={"/panel/lawyer/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                     {!this.state.tokenExists && <AlertModal />}
                   </div>
                 </div>

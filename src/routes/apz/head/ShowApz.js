@@ -1,7 +1,6 @@
 import React from 'react';
 import Loader from 'react-loader-spinner';
 import $ from 'jquery';
-import { Link, Switch } from 'react-router-dom';
 import ShowMap from "./ShowMap";
 
 export default class ShowApz extends React.Component {
@@ -179,7 +178,7 @@ export default class ShowApz extends React.Component {
 
                 this.setState({loaderHidden: true});
 
-                if (hasDeclined.length != 0) {
+                if (hasDeclined.length !== 0) {
                     this.setState({response: true});
                 }
             } else if (xhr.status === 401) {
@@ -203,7 +202,7 @@ export default class ShowApz extends React.Component {
         vision.css('display', 'none');
         progressbar.css('display', 'flex');
         xhr.onprogress = function(event) {
-            $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
+            $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
         }
         xhr.onload = function() {
             if (xhr.status === 200) {
@@ -451,7 +450,7 @@ export default class ShowApz extends React.Component {
 
     webSocketFunction() {
         this.webSocket.onopen = function (event) {
-            if (this.heartbeat_interval == "") {
+            if (this.heartbeat_interval === "") {
                 this.missed_heartbeats = 0;
                 this.heartbeat_interval = setInterval(this.pingLayer, 2000);
             }
@@ -530,7 +529,7 @@ export default class ShowApz extends React.Component {
         }*/
         formData.append('Response', status);
         formData.append('Message', comment);
-        if(this.state.docNumber == '' || this.state.docNumber == ' '){alert("Введите номер документа"); return;}
+        if(this.state.docNumber === '' || this.state.docNumber === ' '){alert("Введите номер документа"); return;}
         formData.append('DocNumber', this.state.docNumber);
 
         var xhr = new XMLHttpRequest();
@@ -582,7 +581,6 @@ export default class ShowApz extends React.Component {
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.onload = function () {
             if (xhr.status === 200) {
-                var data = JSON.parse(xhr.responseText);
                 this.setState({ showButtons: false });
                 alert("Заявка возвращена!");
             }
@@ -1697,7 +1695,7 @@ export default class ShowApz extends React.Component {
                                                     </table>
                                                 </div>
                                             );
-                                        }.bind(this))}
+                                        })}
                                     </div>
                                     }
                                 </div>
@@ -2032,7 +2030,7 @@ export default class ShowApz extends React.Component {
                                         <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
                                     </div>
                                 );
-                            }.bind(this))}
+                            })}
                         </div>
                     </div>
                     }

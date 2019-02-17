@@ -1,5 +1,4 @@
 import React from 'react';
-import { Route, Link, Switch } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import $ from 'jquery';
 import ReactQuill from 'react-quill';
@@ -55,7 +54,7 @@ export default class UrbanShowApz extends React.Component {
     }
 
     onTemplateListChange(e) {
-      var template = this.state.templates.find(template => template.id == e.target.value);
+      var template = this.state.templates.find(template => template.id === e.target.value);
 
       this.setState({ description: template.text });
     }
@@ -87,7 +86,7 @@ export default class UrbanShowApz extends React.Component {
             select_directors.push(<option key={i} value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
           }
           this.setState({apz_heads_id: select_directors});
-          if((this.state.apz_head_id == "" || this.state.apz_head_id == " ") && data.length > 0){
+          if((this.state.apz_head_id === "" || this.state.apz_head_id === " ") && data.length > 0){
               this.setState({apz_head_id: data[0].user_id});
           }
         }
@@ -124,8 +123,8 @@ export default class UrbanShowApz extends React.Component {
             }
             break;
           }
-          this.setState({engineerReturnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender == 'engineer'})[0]});
-          this.setState({apzReturnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender == 'apz'})[0]});
+          this.setState({engineerReturnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender === 'engineer'})[0]});
+          this.setState({apzReturnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender === 'apz'})[0]});
           this.setState({needSign: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
           this.setState({engineerSign: apz.files.filter(function(obj) { return obj.category_id === 28 })[0]});
           this.setState({apzSign: apz.files.filter(function(obj) { return obj.category_id === 18 })[0]});
@@ -175,7 +174,7 @@ export default class UrbanShowApz extends React.Component {
         vision.css('display', 'none');
         progressbar.css('display', 'flex');
         xhr.onprogress = function(event) {
-          $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
+          $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
         }
         xhr.onload = function() {
           if (xhr.status === 200) {
@@ -414,7 +413,7 @@ export default class UrbanShowApz extends React.Component {
 
     webSocketFunction() {
       this.webSocket.onopen = function (event) {
-        if (this.heartbeat_interval == "") {
+        if (this.heartbeat_interval === "") {
           this.missed_heartbeats = 0;
           this.heartbeat_interval = setInterval(this.pingLayer, 2000);
         }
@@ -482,14 +481,13 @@ export default class UrbanShowApz extends React.Component {
       }
     }
 
-    acceptDeclineApzForm(apzId, status, comment, direct) {
+    acceptDeclineApzForm(apzId, status, comment) {
       var token = sessionStorage.getItem('tokenInfo');
 
       var registerData = {
         response: status,
         message: comment,
-        apz_head_id: this.state.apz_head_id,
-        direct: direct.length > 0 ? direct : 'engineer'
+        apz_head_id: this.state.apz_head_id
       };
 
       if (!status && !comment) {
@@ -795,35 +793,35 @@ export default class UrbanShowApz extends React.Component {
 
               <table className="table table-bordered table-striped">
                 <tbody>
-                  {apz.apz_water &&
+                  {!!apz.need_water_provider && apz.apz_water &&
                     <tr>
                       <td style={{width: '40%'}}><b>Водоснабжение</b></td>
                       <td><a className="text-info pointer" data-toggle="modal" data-target="#water_modal">Просмотр</a></td>
                     </tr>
                   }
 
-                  {apz.apz_heat &&
+                  {!!apz.need_heat_provider && apz.apz_heat &&
                     <tr>
                       <td style={{width: '40%'}}><b>Теплоснабжение</b></td>
                       <td><a className="text-info pointer" data-toggle="modal" data-target="#heat_modal">Просмотр</a></td>
                     </tr>
                   }
 
-                  {apz.apz_electricity &&
+                  {!!apz.need_electro_provider && apz.apz_electricity &&
                     <tr>
                       <td style={{width: '40%'}}><b>Электроснабжение</b></td>
                       <td><a className="text-info pointer" data-toggle="modal" data-target="#electro_modal">Просмотр</a></td>
                     </tr>
                   }
 
-                  {apz.apz_gas &&
+                  {!!apz.need_gas_provider && apz.apz_gas &&
                     <tr>
                       <td style={{width: '40%'}}><b>Газоснабжение</b></td>
                       <td><a className="text-info pointer" data-toggle="modal" data-target="#gas_modal">Просмотр</a></td>
                     </tr>
                   }
 
-                  {apz.apz_phone &&
+                  {!!apz.need_phone_provider && apz.apz_phone &&
                     <tr>
                       <td style={{width: '40%'}}><b>Телефонизация</b></td>
                       <td><a className="text-info pointer" data-toggle="modal" data-target="#phone_modal">Просмотр</a></td>
@@ -1064,7 +1062,7 @@ export default class UrbanShowApz extends React.Component {
                                   </table>
                                 </div>
                               );
-                            }.bind(this))}
+                            })}
                           </div>
                         }
                       </div>
@@ -1294,7 +1292,7 @@ export default class UrbanShowApz extends React.Component {
               }
               <div className={this.state.showButtons ? '' : 'invisible'}>
                 <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                  {apz.status_id == 3 && !this.state.xmlFile &&
+                  {apz.status_id === 3 && !this.state.xmlFile &&
                     <div style={{paddingLeft:'5px', fontSize: '18px', textAlign:'center'}}>
                       <b>Выберите главного архитектора:</b>
                       <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
@@ -1313,14 +1311,7 @@ export default class UrbanShowApz extends React.Component {
                     <div>
                       {!this.state.needSign ?
                         <div style={{margin: 'auto', display: 'table'}}>
-                          {!this.state.backFromHead && !this.state.engineerSign && !this.state.apzSign  && !this.state.engineerReturnedState ?
-                          <React.Fragment>
-                          <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>Отправить инженеру</button>
-                          <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", "apz")}>Отправить отделу АПЗ(без ТУ)</button>
-                          </React.Fragment>
-                          :
                           <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>Одобрить</button>
-                          }
                           <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
                             Отклонить
                           </button>
@@ -1358,7 +1349,7 @@ export default class UrbanShowApz extends React.Component {
                             </div>
                             :
                             <div>
-                              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", "head")}>
+                              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>
                                 Отправить главному архитектору
                               </button>
                             </div>
@@ -1386,7 +1377,7 @@ export default class UrbanShowApz extends React.Component {
                                   return(
                                     <option key={index} value={template.id}>{template.title}</option>
                                     );
-                                  }.bind(this))
+                                  })
                                 }
                               </select>
                             </div>
@@ -1416,7 +1407,7 @@ export default class UrbanShowApz extends React.Component {
                           <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
                         </div>
                       );
-                    }.bind(this))}
+                    })}
                   </div>
                 </div>
               }

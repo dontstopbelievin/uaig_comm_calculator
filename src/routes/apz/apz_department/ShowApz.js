@@ -1,6 +1,5 @@
 import React from 'react';
 import $ from 'jquery';
-import { Route, NavLink, Link, Switch } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import ReactQuill from 'react-quill';
 import CommissionAnswersList from '../../../components/CommissionAnswersList';
@@ -34,7 +33,6 @@ export default class ShowApz extends React.Component {
         recomendation: "",
         description: "",
         docNumber: "",
-        description: '',
         responseId: 0,
         response: false,
         responseFile: null,
@@ -320,13 +318,14 @@ export default class ShowApz extends React.Component {
             notes: '1. АПЗ и ТУ действуют в течение всего срока нормативной продолжительности строительства, утвержденного в составе проектной (проектно-сметной) документации.<br />2. В случае возникновения обстоятельств, требующих пересмотра условий АПЗ, изменения в него могут быть внесены по согласованию с заказчиком.<br />3. Требования и условия, изложенные в АПЗ, обязательны для всех участников инвестиционного процесса независимо от форм собственности и источников финансирования. АПЗ по просьбе заказчика или местного органа архитектуры и градостроительства может быть предметом обсуждения градостроительного совета, архитектурной общественности, рассмотрено в независимой экспертизе.<br />4. Несогласие заказчика с требованиями, содержащимися в АПЗ, может быть обжаловано в судебном порядке.'
           });
           break;
+          default:
       }
     }
 
     onInputChange(state, value) {
       // const { value, name } = e.target
       // this.setState({ [name] : value })
-      value = value.replace(/(style=")([a-zA-Z0-9:;\.\s\(\)\-\,]*)(")/gi, '');
+      value = value.replace(/(style=")([a-zA-Z0-9:;.\s()-,]*)(")/gi, '');
       this.setState({ [state] : value })
     }
 
@@ -366,7 +365,7 @@ export default class ShowApz extends React.Component {
           this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
           this.setState({reglamentFile: data.files.filter(function(obj) { return obj.category_id === 29 })[0]});
           this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 18})[0]});
-          this.setState({apzReturnedState: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null && obj.sender == 'apz'})[0]});
+          this.setState({apzReturnedState: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment !== null && obj.sender === 'apz'})[0]});
           this.setState({response: data.apz_department_response ? true : false });
           for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
             switch (data.state_history[data_index].state_id) {
@@ -425,7 +424,7 @@ export default class ShowApz extends React.Component {
         vision.css('display', 'none');
         progressbar.css('display', 'flex');
         xhr.onprogress = function(event) {
-          $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
+          $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
         }
         xhr.onload = function() {
           if (xhr.status === 200) {
@@ -511,7 +510,7 @@ export default class ShowApz extends React.Component {
           xhr.upload.addEventListener("progress", function(evt) {
             if (evt.lengthComputable) {
               var percentComplete = evt.loaded / evt.total;
-              percentComplete = parseInt(percentComplete * 100);
+              percentComplete = parseInt(percentComplete * 100, 10);
               $('div', progressbar).css('width', percentComplete + '%');
             }
           }, false);
@@ -527,6 +526,7 @@ export default class ShowApz extends React.Component {
               case 29:
                 this.setState({reglamentFile: data});
                 break;
+              default:
             }
             alert("Файл успешно загружен");
           }.bind(this), '1000')
@@ -720,7 +720,7 @@ export default class ShowApz extends React.Component {
 
     webSocketFunction() {
       this.webSocket.onopen = function (event) {
-        if (this.heartbeat_interval == "") {
+        if (this.heartbeat_interval === "") {
           this.missed_heartbeats = 0;
           this.heartbeat_interval = setInterval(this.pingLayer, 2000);
         }
@@ -850,8 +850,6 @@ export default class ShowApz extends React.Component {
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.onload = function () {
         if (xhr.status === 200) {
-          var data = JSON.parse(xhr.responseText);
-
           alert("Заявление отправлено!");
           this.setState({ showButtons: false });
           this.setState({ showSendButton: false });
@@ -1103,35 +1101,35 @@ export default class ShowApz extends React.Component {
 
           <table className="table table-bordered table-striped">
             <tbody>
-              {apz.apz_water &&
+              {!!apz.need_water_provider && apz.apz_water &&
                 <tr>
                   <td style={{width: '40%'}}><b>Водоснабжение</b></td>
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#water_modal">Просмотр</a></td>
                 </tr>
               }
 
-              {apz.apz_heat &&
+              {!!apz.need_heat_provider && apz.apz_heat &&
                 <tr>
                   <td style={{width: '40%'}}><b>Теплоснабжение</b></td>
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#heat_modal">Просмотр</a></td>
                 </tr>
               }
 
-              {apz.apz_electricity &&
+              {!!apz.need_electro_provider && apz.apz_electricity &&
                 <tr>
                   <td style={{width: '40%'}}><b>Электроснабжение</b></td>
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#electro_modal">Просмотр</a></td>
                 </tr>
               }
 
-              {apz.apz_gas &&
+              {!!apz.need_gas_provider && apz.apz_gas &&
                 <tr>
                   <td style={{width: '40%'}}><b>Газоснабжение</b></td>
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#gas_modal">Просмотр</a></td>
                 </tr>
               }
 
-              {apz.apz_phone &&
+              {!!apz.need_phone_provider && apz.apz_phone &&
                 <tr>
                   <td style={{width: '40%'}}><b>Телефонизация</b></td>
                   <td><a className="text-info pointer" data-toggle="modal" data-target="#phone_modal">Просмотр</a></td>
@@ -1372,7 +1370,7 @@ export default class ShowApz extends React.Component {
                               </table>
                             </div>
                           );
-                        }.bind(this))}
+                        })}
                       </div>
                     }
                   </div>
@@ -1544,7 +1542,7 @@ export default class ShowApz extends React.Component {
             {this.state.showMapText}
           </button>
 
-          {((apz.status_id != 6 && !this.state.apzReturnedState) && this.state.response) &&
+          {((apz.status_id !== 6 && !this.state.apzReturnedState) && this.state.response) &&
             <div>
               <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
               <table className="table table-bordered table-striped">
@@ -1599,14 +1597,14 @@ export default class ShowApz extends React.Component {
                     <ReactQuill value={this.state.address} onChange={this.onInputChange.bind(this, 'address')} />
                   </div>
 
-                  {this.state.geodeticStudy != '@hide' &&
+                  {this.state.geodeticStudy !== '@hide' &&
                     <div className="form-group">
                       <label>Геодезическая изученность</label>
                       <ReactQuill value={this.state.geodeticStudy} onChange={this.onInputChange.bind(this, 'geodeticStudy')} />
                     </div>
                   }
 
-                  {this.state.engineeringGeologicalStudy != '@hide' &&
+                  {this.state.engineeringGeologicalStudy !== '@hide' &&
                     <div className="form-group">
                       <label>Инженерно-геологическая изученность</label>
                       <ReactQuill value={this.state.engineeringGeologicalStudy} onChange={this.onInputChange.bind(this, 'engineeringGeologicalStudy')} />
@@ -1626,14 +1624,14 @@ export default class ShowApz extends React.Component {
                     <ReactQuill value={this.state.functionalValueOfObject} onChange={this.onInputChange.bind(this, 'functionalValueOfObject')} />
                   </div>
 
-                  {this.state.floorSum != '@hide' &&
+                  {this.state.floorSum !== '@hide' &&
                     <div className="form-group">
                       <label>Этажность</label>
                       <ReactQuill value={this.state.floorSum} onChange={this.onInputChange.bind(this, 'floorSum')} />
                     </div>
                   }
 
-                  {this.state.structuralScheme != '@hide' &&
+                  {this.state.structuralScheme !== '@hide' &&
                     <div className="form-group">
                       <label>Конструктивная схема</label>
                       <ReactQuill value={this.state.structuralScheme} onChange={this.onInputChange.bind(this, 'structuralScheme')} />
@@ -1645,7 +1643,7 @@ export default class ShowApz extends React.Component {
                     <ReactQuill value={this.state.engineeringSupport} onChange={this.onInputChange.bind(this, 'engineeringSupport')} />
                   </div>
 
-                  {this.state.energyEfficiencyClass != '@hide' &&
+                  {this.state.energyEfficiencyClass !== '@hide' &&
                     <div className="form-group">
                       <label>Класс энергоэффективности</label>
                       <ReactQuill value={this.state.energyEfficiencyClass} onChange={this.onInputChange.bind(this, 'energyEfficiencyClass')} />
@@ -1653,60 +1651,60 @@ export default class ShowApz extends React.Component {
                   }
                 </div>
 
-                {this.state.templateType != 'redevelopment' &&
+                {this.state.templateType !== 'redevelopment' &&
                   <div>
                     <h5>{counter++}. Градостроительные требования</h5>
 
-                    {this.state.spatialSolution != '@hide' &&
+                    {this.state.spatialSolution !== '@hide' &&
                       <div className="form-group">
                         <label>Объемно-пространственное решение</label>
                         <ReactQuill value={this.state.spatialSolution} onChange={this.onInputChange.bind(this, 'spatialSolution')} />
                       </div>
                     }
 
-                    {this.state.draftMasterPlan != '@hide' &&
+                    {this.state.draftMasterPlan !== '@hide' &&
                       <div className="form-group">
                         <label>Проект генерального плана</label>
                         <ReactQuill value={this.state.draftMasterPlan} onChange={this.onInputChange.bind(this, 'draftMasterPlan')} />
                       </div>
                     }
 
-                    {this.state.verticalLayout != '@hide' &&
+                    {this.state.verticalLayout !== '@hide' &&
                       <div className="form-group">
                         <label>Вертикальная планировка</label>
                         <ReactQuill value={this.state.verticalLayout} onChange={this.onInputChange.bind(this, 'verticalLayout')} />
                       </div>
                     }
 
-                    {this.state.landscapingAndGardening != '@hide' &&
+                    {this.state.landscapingAndGardening !== '@hide' &&
                       <div className="form-group">
                         <label>Благоустройство и озеленение</label>
                         <ReactQuill value={this.state.landscapingAndGardening} onChange={this.onInputChange.bind(this, 'landscapingAndGardening')} />
                       </div>
                     }
 
-                    {this.state.parking != '@hide' &&
+                    {this.state.parking !== '@hide' &&
                       <div className="form-group">
                         <label>Парковка автомобилей</label>
                         <ReactQuill value={this.state.parking} onChange={this.onInputChange.bind(this, 'parking')} />
                       </div>
                     }
 
-                    {this.state.useOfFertileSoilLayer != '@hide' &&
+                    {this.state.useOfFertileSoilLayer !== '@hide' &&
                       <div className="form-group">
                         <label>Использование плодородного слоя почвы</label>
                         <ReactQuill value={this.state.useOfFertileSoilLayer} onChange={this.onInputChange.bind(this, 'useOfFertileSoilLayer')} />
                       </div>
                     }
 
-                    {this.state.smallArchitecturalForms != '@hide' &&
+                    {this.state.smallArchitecturalForms !== '@hide' &&
                       <div className="form-group">
                         <label>Малые архитектурные формы</label>
                         <ReactQuill value={this.state.smallArchitecturalForms} onChange={this.onInputChange.bind(this, 'smallArchitecturalForms')} />
                       </div>
                     }
 
-                    {this.state.lighting != '@hide' &&
+                    {this.state.lighting !== '@hide' &&
                       <div className="form-group">
                         <label>Освещение</label>
                         <ReactQuill value={this.state.lighting} onChange={this.onInputChange.bind(this, 'lighting')} />
@@ -1726,42 +1724,42 @@ export default class ShowApz extends React.Component {
                     <ReactQuill value={this.state.natureCombination} onChange={this.onInputChange.bind(this, 'natureCombination')} />
                   </div>
 
-                  {this.state.colorSolution != '@hide' &&
+                  {this.state.colorSolution !== '@hide' &&
                     <div className="form-group">
                       <label>Цветовое решение</label>
                       <ReactQuill value={this.state.colorSolution} onChange={this.onInputChange.bind(this, 'colorSolution')} />
                     </div>
                   }
 
-                  {this.state.advertisingAndInformationSolution != '@hide' &&
+                  {this.state.advertisingAndInformationSolution !== '@hide' &&
                     <div className="form-group">
                       <label>Рекламно-информационное решение</label>
                       <ReactQuill value={this.state.advertisingAndInformationSolution} onChange={this.onInputChange.bind(this, 'advertisingAndInformationSolution')} />
                     </div>
                   }
 
-                  {this.state.nightLighting != '@hide' &&
+                  {this.state.nightLighting !== '@hide' &&
                     <div className="form-group">
                       <label>Ночное световое оформление</label>
                       <ReactQuill value={this.state.nightLighting} onChange={this.onInputChange.bind(this, 'nightLighting')} />
                     </div>
                   }
 
-                  {this.state.inputNodes != '@hide' &&
+                  {this.state.inputNodes !== '@hide' &&
                     <div className="form-group">
                       <label>Входные узлы</label>
                       <ReactQuill value={this.state.inputNodes} onChange={this.onInputChange.bind(this, 'inputNodes')} />
                     </div>
                   }
 
-                  {this.state.conditionsForLowMobileGroups != '@hide' &&
+                  {this.state.conditionsForLowMobileGroups !== '@hide' &&
                     <div className="form-group">
                       <label>Создание условий для жизнедеятельности маломобильных групп населения</label>
                       <ReactQuill value={this.state.conditionsForLowMobileGroups} onChange={this.onInputChange.bind(this, 'conditionsForLowMobileGroups')} />
                     </div>
                   }
 
-                  {this.state.complianceNoiseConditions != '@hide' &&
+                  {this.state.complianceNoiseConditions !== '@hide' &&
                     <div className="form-group">
                       <label>Соблюдение условий по звукошумовым показателям</label>
                       <ReactQuill value={this.state.complianceNoiseConditions} onChange={this.onInputChange.bind(this, 'complianceNoiseConditions')} />
@@ -1769,18 +1767,18 @@ export default class ShowApz extends React.Component {
                   }
                 </div>
 
-                {this.state.templateType != 'redevelopment' &&
+                {this.state.templateType !== 'redevelopment' &&
                   <div>
                     <h5>{counter++}. Требования к наружной отделке</h5>
 
-                    {this.state.plinth != '@hide' &&
+                    {this.state.plinth !== '@hide' &&
                       <div className="form-group">
                         <label>Цоколь</label>
                         <ReactQuill value={this.state.plinth} onChange={this.onInputChange.bind(this, 'plinth')} />
                       </div>
                     }
 
-                    {this.state.facade != '@hide' &&
+                    {this.state.facade !== '@hide' &&
                       <div className="form-group">
                         <label>Фасад. Ограждающие конструкций</label>
                         <ReactQuill value={this.state.facade} onChange={this.onInputChange.bind(this, 'facade')} />
@@ -1816,14 +1814,14 @@ export default class ShowApz extends React.Component {
                     <ReactQuill value={this.state.phoneSupply} onChange={this.onInputChange.bind(this, 'phoneSupply')} />
                   </div>
 
-                  {this.state.drainage != '@hide' &&
+                  {this.state.drainage !== '@hide' &&
                     <div className="form-group">
                       <label>Дренаж (при необходимости) и ливневая канализация</label>
                       <ReactQuill value={this.state.drainage} onChange={this.onInputChange.bind(this, 'drainage')} />
                     </div>
                   }
 
-                  {this.state.irrigationSystems != '@hide' &&
+                  {this.state.irrigationSystems !== '@hide' &&
                     <div className="form-group">
                       <label>Стационарные поливочные системы</label>
                       <ReactQuill value={this.state.irrigationSystems} onChange={this.onInputChange.bind(this, 'irrigationSystems')} />
@@ -1834,14 +1832,14 @@ export default class ShowApz extends React.Component {
                 <div>
                   <h5>{counter++}. Обязательства, возлагаемые на застройщика</h5>
 
-                  {this.state.engineeringSurveysObligation != '@hide' &&
+                  {this.state.engineeringSurveysObligation !== '@hide' &&
                     <div className="form-group">
                       <label>По инженерным изысканиям</label>
                       <ReactQuill value={this.state.engineeringSurveysObligation} onChange={this.onInputChange.bind(this, 'engineeringSurveysObligation')} />
                     </div>
                   }
 
-                  {this.state.demolitionObligation != '@hide' &&
+                  {this.state.demolitionObligation !== '@hide' &&
                     <div className="form-group">
                       <label>По сносу (переносу) существующих строений и сооружений</label>
                       <ReactQuill value={this.state.demolitionObligation} onChange={this.onInputChange.bind(this, 'demolitionObligation')} />
@@ -1853,14 +1851,14 @@ export default class ShowApz extends React.Component {
                     <ReactQuill value={this.state.transferCommunicationsObligation} onChange={this.onInputChange.bind(this, 'transferCommunicationsObligation')} />
                   </div>
 
-                  {this.state.conservationPlantObligation != '@hide' &&
+                  {this.state.conservationPlantObligation !== '@hide' &&
                     <div className="form-group">
                       <label>По сохранению и/или пересадке зеленых насаждений</label>
                       <ReactQuill value={this.state.conservationPlantObligation} onChange={this.onInputChange.bind(this, 'conservationPlantObligation')} />
                     </div>
                   }
 
-                  {this.state.temporaryFencingConstructionObligation != '@hide' &&
+                  {this.state.temporaryFencingConstructionObligation !== '@hide' &&
                     <div className="form-group">
                       <label>По строительству временного ограждения участка</label>
                       <ReactQuill value={this.state.temporaryFencingConstructionObligation} onChange={this.onInputChange.bind(this, 'temporaryFencingConstructionObligation')} />
@@ -1868,7 +1866,7 @@ export default class ShowApz extends React.Component {
                   }
                 </div>
 
-                {this.state.additionalRequirements != '@hide' &&
+                {this.state.additionalRequirements !== '@hide' &&
                   <div>
                     <h5>{counter++}. Дополнительные требования</h5>
                     <div className="form-group">
@@ -1973,7 +1971,7 @@ export default class ShowApz extends React.Component {
 
                 {this.state.showSendButton &&
                   <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', display: 'table'}}>
-                    <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "")}>Отправить районному архитектору</button>
+                    <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "")}>Отправить инженеру</button>
                   </div>
                 }
 
@@ -2015,7 +2013,7 @@ export default class ShowApz extends React.Component {
                       <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
                     </div>
                   );
-                }.bind(this))}
+                })}
               </div>
             </div>
           }

@@ -1,9 +1,7 @@
 import React from 'react';
 import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../../languages/header.json';
-import $ from 'jquery';
 import Loader from 'react-loader-spinner';
-import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
 
 let e = new LocalizedStrings({ru,kk});
 
@@ -40,14 +38,14 @@ export default class AddUsers extends React.Component{
   }
 
   onInputChange2(e){
-    if(e.target.name == 'iin'){
-      if(e.target.value == ''){
+    if(e.target.name === 'iin'){
+      if(e.target.value === ''){
         this.setState({ hide_bin : false});
       }else{
         this.setState({ hide_bin : true});
       }
     }else{
-      if(e.target.value == ''){
+      if(e.target.value === ''){
         this.setState({ hide_iin : false});
       }else{
         this.setState({ hide_iin : true});
@@ -58,7 +56,7 @@ export default class AddUsers extends React.Component{
 
   onRequestSubmission(){
 
-    if(this.state.bin == '' && this.state.iin == '' ){
+    if(this.state.bin === '' && this.state.iin === '' ){
       alert('Заполните поле ИИН или БИН')
       return false;
     }
@@ -122,13 +120,10 @@ export default class AddUsers extends React.Component{
   }
 
   generatePassword(){
-    var length = 6;
     var string = "abcdefghijklmnopqrstuvwxyz"; //to upper
     var numeric = '0123456789';
     var punctuation = '!@#$%^&*()_+`}{[]?><-=';
     var password = "";
-    var character = "";
-    var crunch = true;
     for(var i = 0; i<2; i++) {
       var arr_indexes = [0,1,2];
       var index1 = arr_indexes[Math.floor(Math.random() * Math.random() * 3)];
@@ -139,7 +134,7 @@ export default class AddUsers extends React.Component{
       arr_indexes.splice(index, 1);
       var index3 = arr_indexes[0];
 
-      var letter = (i==0)?(string.charAt(Math.ceil(string.length * Math.random() * Math.random())).toUpperCase()):(string.charAt(Math.ceil(string.length * Math.random() * Math.random())));
+      var letter = (i===0)?(string.charAt(Math.ceil(string.length * Math.random() * Math.random())).toUpperCase()):(string.charAt(Math.ceil(string.length * Math.random() * Math.random())));
       var digit = numeric.charAt(Math.ceil(numeric.length * Math.random()*Math.random()));
       var spec_char = punctuation.charAt(Math.ceil(punctuation.length * Math.random()*Math.random()));
       var arr_chars = [letter, digit, spec_char];

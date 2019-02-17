@@ -167,11 +167,11 @@ class AllSketch extends React.Component {
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
-                      <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
+                      <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
                         <Link className="page-link" to={'/panel/apz-department/sketch/status/' + status + '/' + num}>{num}</Link>
                       </li>
                       );
-                    }.bind(this))
+                    })
                   }
                   <li className="page-item">
                     <Link className="page-link" to={'/panel/apz-department/sketch/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
@@ -528,7 +528,7 @@ class ShowSketch extends React.Component {
 
   webSocketFunction() {
     this.webSocket.onopen = function (event) {
-      if (this.heartbeat_interval == "") {
+      if (this.heartbeat_interval === "") {
         this.missed_heartbeats = 0;
         this.heartbeat_interval = setInterval(this.pingLayer, 2000);
       }
@@ -616,7 +616,6 @@ class ShowSketch extends React.Component {
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function () {
       if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
         alert("Ответ сохранен!");
 
         this.setState({ showButtons: false });
@@ -646,8 +645,6 @@ class ShowSketch extends React.Component {
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function () {
       if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
-
         alert("Заявление отправлено!");
         this.setState({ showSendButton: false });
       } else if(xhr.status === 401){

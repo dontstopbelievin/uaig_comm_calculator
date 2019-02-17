@@ -46,7 +46,7 @@ export default class EditPassword extends React.Component{
         data: JSON.stringify(data),
         success: function (data) {
           console.log(data);
-          if (data.message == 'Пароль верный!'){
+          if (data.message === 'Пароль верный!'){
             this.setState({answer:{oldPassword: '<span style="color: blue">' + data.message + '</span>'}});
             this.setState({checkOldPass: true});
           }else{
@@ -73,14 +73,14 @@ export default class EditPassword extends React.Component{
     var newPass = this.state.newPassword;
     var confirm_password = this.state.confirm_password;
 
-    var re = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})");
-    if (re.test(newPass) == false) {
-      $('.help-block3').html('Пароль должен содержать строчную и прописную букву латинского алфавита, цифру и символ(!@#\$%\^&\*).');
+    var re = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{6,})");
+    if (re.test(newPass) === false) {
+      $('.help-block3').html('Пароль должен содержать строчную и прописную букву латинского алфавита, цифру и символ(!@#$%^&*).');
       return  false;
     }
 
-    if (newPass != confirm_password){
-      if (this.state.newPassword != ''){
+    if (newPass !== confirm_password){
+      if (this.state.newPassword !== ''){
           $('.help-block3').html('');
       }
       $('.help-block2').html('Пароль не совпадает, введите еще раз!');
@@ -91,7 +91,7 @@ export default class EditPassword extends React.Component{
           $('.help-block1').html('Старый пароль не был введен, введите!');
           return false;
       } else {
-        if (this.state.newPassword == ''){
+        if (this.state.newPassword === ''){
           $('.help-block3').html('Введите новый пароль!');
           return false;
         }
@@ -109,7 +109,7 @@ export default class EditPassword extends React.Component{
             data: JSON.stringify(data),
             success: function (data) {
               console.log(data);
-              if (data.message == 'Пароль был сохранен!') {
+              if (data.message === 'Пароль был сохранен!') {
                 alert(data.message);
                 window.location.href = '/panel/';
               } else {
@@ -117,7 +117,7 @@ export default class EditPassword extends React.Component{
                 return false;
               }
 
-            }.bind(this),
+            },
             fail: function (jqXHR) {
               alert("Ошибка " + jqXHR.status + ': ' + jqXHR.statusText);
             },

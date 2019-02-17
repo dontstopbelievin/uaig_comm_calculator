@@ -2,6 +2,7 @@
   "ru":{
     "electron-architecture":"ЭЛЕКТРОННАЯ АРХИТЕКТУРА",
     "base-page":"Информационная страница",
+    "link": "/panel/base-page",
     "admin":{
       "users":{
         "name":"Панель управления ролями",

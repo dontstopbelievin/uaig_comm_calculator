@@ -2,9 +2,7 @@ import React from 'react';
 import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
-import { Link } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
-import {ru, kk} from '../../../languages/header.json';
 import ShowMap from './ShowMap';
 import AddHeatBlock from './AddHeatBlock';
 import ReactHintFactory from 'react-hint'
@@ -16,10 +14,6 @@ export default class AddApz extends React.Component {
 
       this.state = {
         personalIdFile: null,
-        confirmedTaskFile: null,
-        titleDocumentFile: null,
-        additionalFile: null,
-        paymentPhotoFile: null,
         survey: null,
         claimedCapacityJustification: null,
 
@@ -136,7 +130,7 @@ export default class AddApz extends React.Component {
     }
 
     onInputChange(e) {
-      if(e.target.name == 'objectType'){
+      if(e.target.name === 'objectType'){
         this.setState({waterFireFighting: ''});
         this.setState({waterProduction: ''});
         this.setState({waterDrinking: ''});
@@ -300,7 +294,7 @@ export default class AddApz extends React.Component {
             this.setState({mainHeatVen: apz.apz_heat.main_ven ? apz.apz_heat.main_ven : '' });
             this.setState({mainHeatWater: apz.apz_heat.main_water ? apz.apz_heat.main_water : '' });
             this.setState({mainHeatWaterMax: apz.apz_heat.main_water_max ? apz.apz_heat.main_water_max : '' });
-            if(apz.apz_heat.distribution != 0 && apz.apz_heat.distribution != null){
+            if(apz.apz_heat.distribution !== 0 && apz.apz_heat.distribution !== null){
                 this.setState({heatDistribution: true});
             }else {
                 this.setState({heatDistribution: false});
@@ -467,7 +461,7 @@ export default class AddApz extends React.Component {
 
           if (publish) {
             alert("Заявка успешно подана.\nЗаявка будет рассматриваться завтра.");
-            this.props.history.replace('/panel/citizen/apz');
+            this.props.history.replace('/panel/citizen/apz/status/active/1');
           } else {
             alert('Заявка успешно сохранена');
 
@@ -483,7 +477,7 @@ export default class AddApz extends React.Component {
     }
 
     addBlock() {
-      var num = parseInt($('.block_list .col-md-12:last .block_num').html()) + 1;
+      var num = parseInt($('.block_list .col-md-12:last .block_num').html(), 10) + 1;
 
       this.setState({blocks: this.state.blocks.concat([{num: num, heatMain: '', heatVentilation: '', heatWater: '', heatWaterMax: ''}])});
     }
@@ -669,7 +663,7 @@ export default class AddApz extends React.Component {
         vision.css('display', 'none');
         progressbar.css('display', 'flex');
         xhr.onprogress = function(event) {
-          $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
+          $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
         }
         xhr.onload = function() {
           if (xhr.status === 200) {
@@ -755,7 +749,7 @@ export default class AddApz extends React.Component {
           xhr.upload.addEventListener("progress", function(evt) {
             if (evt.lengthComputable) {
               var percentComplete = evt.loaded / evt.total;
-              percentComplete = parseInt(percentComplete * 100);
+              percentComplete = parseInt(percentComplete * 100, 10);
               $('div', progressbar).css('width', percentComplete + '%');
             }
           }, false);
@@ -795,6 +789,7 @@ export default class AddApz extends React.Component {
               case 24:
                 this.setState({claimedCapacityJustification: data});
                 break;
+              default:
             }
             alert("Файл успешно загружен");
           }.bind(this), '1000')
@@ -857,6 +852,7 @@ export default class AddApz extends React.Component {
         case '24':
           this.setState({claimedCapacityJustification: data});
           break;
+        default:
       }
 
       $('#selectFileModal').modal('hide');
@@ -864,14 +860,14 @@ export default class AddApz extends React.Component {
 
     Calculate_lamp(e){console.log(this.state.n_rozetka);
       this.setState({n_lamp: e.target.value});
-      if(this.state.n_rozetka != '' && this.state.n_rozetka != ' '){
+      if(this.state.n_rozetka !== '' && this.state.n_rozetka !== ' '){
         var srp = e.target.value * 0.06 + this.state.n_rozetka * 0.6
         this.setState({electricRequiredPower: srp});
       }
     }
     Calculate_rozetka(e){
       this.setState({n_rozetka: e.target.value});
-      if(this.state.n_lamp != '' && this.state.n_lamp != ' '){
+      if(this.state.n_lamp !== '' && this.state.n_lamp !== ' '){
         var srp = e.target.value * 0.6 + this.state.n_lamp * 0.06
         this.setState({electricRequiredPower: srp});
       }
@@ -879,31 +875,33 @@ export default class AddApz extends React.Component {
     Calculate_teplo(e){
       const { value, name } = e.target;
       this.setState({[name]: value });
+      var heatGeneral
       switch (name) {
         case 'udelnayaNorma':
-          if(this.state.tempVnutri != '' && this.state.tempVnutri != ' ' && this.state.obshayaPloshad != '' && this.state.obshayaPloshad != ' '){
-            var heatGeneral = value * this.state.obshayaPloshad / 1.163 * (this.state.tempVnutri + 25)/(this.state.tempVnutri + 20.1) / 1000000;
+          if(this.state.tempVnutri !== '' && this.state.tempVnutri !== ' ' && this.state.obshayaPloshad !== '' && this.state.obshayaPloshad !== ' '){
+            heatGeneral = value * this.state.obshayaPloshad / 1.163 * (this.state.tempVnutri + 25)/(this.state.tempVnutri + 20.1) / 1000000;
             this.setState({heatGeneral: Math.round(heatGeneral*1000)/1000});
           }
           break;
         case 'tempVnutri':
-          if(this.state.udelnayaNorma != '' && this.state.udelnayaNorma != ' ' && this.state.obshayaPloshad != '' && this.state.obshayaPloshad != ' '){
-            var heatGeneral = this.state.udelnayaNorma * this.state.obshayaPloshad / 1.163 * (value + 25)/(value + 20.1) / 1000000;
+          if(this.state.udelnayaNorma !== '' && this.state.udelnayaNorma !== ' ' && this.state.obshayaPloshad !== '' && this.state.obshayaPloshad !== ' '){
+            heatGeneral = this.state.udelnayaNorma * this.state.obshayaPloshad / 1.163 * (value + 25)/(value + 20.1) / 1000000;
             this.setState({heatGeneral: Math.round(heatGeneral*1000)/1000});
           }
           break;
         case 'obshayaPloshad':
-          if(this.state.tempVnutri != '' && this.state.tempVnutri != ' ' && this.state.udelnayaNorma != '' && this.state.udelnayaNorma != ' '){
-            var heatGeneral = this.state.udelnayaNorma * value / 1.163 * (this.state.tempVnutri + 25)/(this.state.tempVnutri + 20.1) / 1000000;
+          if(this.state.tempVnutri !== '' && this.state.tempVnutri !== ' ' && this.state.udelnayaNorma !== '' && this.state.udelnayaNorma !== ' '){
+            heatGeneral = this.state.udelnayaNorma * value / 1.163 * (this.state.tempVnutri + 25)/(this.state.tempVnutri + 20.1) / 1000000;
             this.setState({heatGeneral: Math.round(heatGeneral*1000)/1000});
           }
           break;
+        default:
       }
     }
 
     onRenderContent = (target, content) => {
             const {customId} = target.dataset;
-            if(customId == 1){
+            if(customId === 1){
               return <div className="react-hint__content">
                       <table><thead><tr><td>Жилище</td><td>Количество ламп</td></tr></thead><tbody>
                       <tr><td>Общежитие 1 комн.</td><td>1 лампа</td></tr>
@@ -934,7 +932,6 @@ export default class AddApz extends React.Component {
             }
     }
     render() {
-      var bin = sessionStorage.getItem('userBin');
 
       return (
         <div className="container" id="apzFormDiv">
@@ -989,7 +986,7 @@ export default class AddApz extends React.Component {
                               <label htmlFor="Region">Вид пакета:</label>
                               <div className="custom-control custom-radio">
                                 <input type="radio" className="custom-control-input" name="type" value="1" id={'apztype1'}
-                                       checked={this.state.type == 1 ? true : false} onChange={this.onInputChange} />
+                                       checked={this.state.type === 1 ? true : false} onChange={this.onInputChange} />
                                 <label htmlFor={"apztype1"} className="custom-control-label" style={{cursor:"pointer"}}>Пакет 1
                                 <br/>
                                 <span className="help-block text-muted">(архитектурно-планировочное задание, технические условия)</span></label>
@@ -997,7 +994,7 @@ export default class AddApz extends React.Component {
                               <hr/>
                               <div className="custom-control custom-radio">
                                 <input type="radio" className="custom-control-input" name="type" value="2" id={'apztype2'}
-                                       checked={this.state.type == 2 ? true : false} onChange={this.onInputChange} />
+                                       checked={this.state.type === 2 ? true : false} onChange={this.onInputChange} />
                                 <label htmlFor="apztype2" className="custom-control-label" style={{cursor:"pointer"}}>Пакет 2
                                 <br/>
                                 <span className="help-block text-muted">(архитектурно-планировочное задание, вертикальные планировочные отметки,
@@ -1008,7 +1005,7 @@ export default class AddApz extends React.Component {
                             </div>
                             <div className="form-group">
                               <label htmlFor="Applicant">Заявитель:</label>
-                              <input data-rh="Заявитель" data-rh-at="right" type="text" className="form-control" onChange={this.onNameChange} name="applicant" value={this.state.applicant=this.state.company_name==' ' ?this.state.last_name+" "+this.state.first_name+" "+this.state.middle_name:this.state.company_name } required />
+                              <input data-rh="Заявитель" data-rh-at="right" type="text" className="form-control" onChange={this.onNameChange} name="applicant" value={this.state.applicant=this.state.company_name ===' ' ?this.state.last_name+" "+this.state.first_name+" "+this.state.middle_name:this.state.company_name } required />
                               {/*<span className="help-block"></span>*/}
                             </div>
                             <div className="form-group">
@@ -1207,7 +1204,7 @@ export default class AddApz extends React.Component {
                             </div>*/}
                             <div className="form-group">
                               <label htmlFor="Customer">Заказчик</label>
-                              <input data-rh="Заказчик" data-rh-at="right" type="text" required onChange={this.onCustomerChange} value={this.state.customer=this.state.company_name==' ' ?this.state.last_name+" "+this.state.first_name+" "+this.state.middle_name:this.state.company_name} className="form-control customer_field" name="customer" placeholder="ФИО / Наименование компании" />
+                              <input data-rh="Заказчик" data-rh-at="right" type="text" required onChange={this.onCustomerChange} value={this.state.customer=this.state.company_name===' ' ?this.state.last_name+" "+this.state.first_name+" "+this.state.middle_name:this.state.company_name} className="form-control customer_field" name="customer" placeholder="ФИО / Наименование компании" />
                             </div>
                             <div className="form-group">
                               <label htmlFor="CadastralNumber">Кадастровый номер:</label>
@@ -1259,11 +1256,11 @@ export default class AddApz extends React.Component {
                             <div className="col-md-6">
                              <div style={{borderRadius: '10px', background: 'rgb(239, 239, 239)', paddingLeft: '15px', paddingRight: '15px', paddingBottom: '5px'}}>
                               <div className="text-center" style={{fontSize:'15px'}}>
-                              <p>Расчет по типовым правилам расчета норм потребления коммунальных услуг по электроснабжению(<a target="_blank" href="http://online.zakon.kz/m/Document/?doc_id=31676321">см. Приказ</a>)</p>
+                              <p>Расчет по типовым правилам расчета норм потребления коммунальных услуг по электроснабжению(<a rel="noopener noreferrer" target="_blank" href="http://online.zakon.kz/m/Document/?doc_id=31676321">см. Приказ</a>)</p>
                               </div><hr/>
                               <div className="form-group">
                                 <label>Количество ламп <img data-custom data-custom-at="bottom" data-custom-id="1" src="./images/info.png" width="20px"
-                                style={{borderRadius: '10px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'}}/></label>
+                                style={{borderRadius: '10px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'}} alt=""/></label>
                                 <input data-rh="Количество ламп" data-rh-at="right" type="number" step="any" className="form-control" onChange={this.Calculate_lamp.bind(this)} value={this.state.n_lamp} name="electricRequiredPower" placeholder="" />
                               </div>
                               <div className="form-group">
@@ -1377,7 +1374,7 @@ export default class AddApz extends React.Component {
                               <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
                               <input type="number" onChange={this.onInputChange} step="any" className="form-control" name="waterRequirement" value={this.state.waterRequirement} />
                             </div>
-                            {this.state.objectType != 'ИЖС' && <span>
+                            {this.state.objectType !== 'ИЖС' && <span>
                               <div className="form-group">
                                 <label htmlFor="WaterFireFighting">Потребные расходы наружного пожаротушения (л/сек)</label>
                                 <input data-rh="Потребные расходы наружного пожаротушения (л/сек)" data-rh-at="right" type="number" onChange={this.onInputChange} step="any" min="10" className="form-control" name="waterFireFighting" value={this.state.waterFireFighting} />
@@ -1389,7 +1386,7 @@ export default class AddApz extends React.Component {
                             }
                           </div>
                           <div className="col-md-6">
-                          {this.state.objectType != 'ИЖС' && <span>
+                          {this.state.objectType !== 'ИЖС' && <span>
                             <div className="form-group">
                               <label htmlFor="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
                               <input data-rh="На хозпитьевые нужды (м3/сутки)" data-rh-at="right" type="number" onChange={this.onInputChange} step="any" className="form-control" name="waterDrinking" value={this.state.waterDrinking} placeholder="" />
@@ -1439,7 +1436,7 @@ export default class AddApz extends React.Component {
                     </div>
                     <div className="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-link">
                       <form id="tab4-form" data-tab="4" onSubmit={this.saveApz.bind(this, false)}>
-                      {this.state.objectType != 'ИЖС' &&
+                      {this.state.objectType !== 'ИЖС' &&
                         <div className="row">
                           <div className="col-md-6">
                           <div className="form-group">
@@ -1483,11 +1480,11 @@ export default class AddApz extends React.Component {
                           <div className="col-md-6" style={{padding: '0px'}}>
                            <div style={{borderRadius: '10px', background: 'rgb(239, 239, 239)', paddingLeft: '15px', paddingRight: '15px', paddingBottom: '5px'}}>
                             <div className="text-center" style={{fontSize:'15px'}}>
-                            <p>Расчет по типовым правилам расчета норм потребления коммунальных услуг по теплоснабжению(<a target="_blank" href="http://online.zakon.kz/m/Document/?doc_id=31676321">см. Приказ</a> и <br/> <a target="_blank" href="https://online.zakon.kz/Document/?doc_id=35945475">СП РК 4.02-104-2013</a>)</p>
+                            <p>Расчет по типовым правилам расчета норм потребления коммунальных услуг по теплоснабжению(<a target="_blank" rel="noopener noreferrer" href="http://online.zakon.kz/m/Document/?doc_id=31676321">см. Приказ</a> и <br/> <a rel="noopener noreferrer" target="_blank" href="https://online.zakon.kz/Document/?doc_id=35945475">СП РК 4.02-104-2013</a>)</p>
                             </div><hr/>
                             <div className="form-group">
                               <label>q<sub>уд</sub> <img data-custom data-custom-at="bottom" data-custom-id="2" src="./images/info.png" width="20px"
-                              style={{borderRadius: '10px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'}}/></label>
+                              style={{borderRadius: '10px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'}} alt=""/></label>
                               <select className="form-control" onChange={this.Calculate_teplo} value={this.state.udelnayaNorma} name="udelnayaNorma" data-rh="Нормируемый удельный расход тепловой энергии на отопление многоквартирного или индивидуального жилого дома на 1 м2 общей площади" data-rh-at="right">
                                 <option></option>
                                 <option>67</option>
@@ -1585,7 +1582,7 @@ export default class AddApz extends React.Component {
                         <div style={{color:'#D8A82D !important'}}>
                           <label><input type="checkbox" onChange={this.onInputChange} checked={this.state.heatDistribution} name="heatDistribution" /> Разделить нагрузку по жилью и по встроенным помещениям</label>
                         </div>
-                        {this.state.heatDistribution != 0 &&
+                        {this.state.heatDistribution !== 0 &&
                           <div>
                             <div className="block_list">
                               {this.state.blocks.map(function(item, index) {

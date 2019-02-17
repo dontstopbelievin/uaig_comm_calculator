@@ -1,13 +1,10 @@
 import React from 'react';
-import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
 import { Link, NavLink } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../../languages/header.json';
-
-let e = new LocalizedStrings({ru,kk});
 
 export default class AllApzs extends React.Component {
   constructor(props) {
@@ -156,11 +153,11 @@ export default class AllApzs extends React.Component {
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
-                      <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
+                      <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
                         <Link className="page-link" to={'/panel/admin/apz/status/' + status + '/' + num}>{num}</Link>
                       </li>
                       );
-                    }.bind(this))
+                    })
                   }
                   <li className="page-item">
                     <Link className="page-link" to={'/panel/admin/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>

@@ -1,6 +1,5 @@
 import React from 'react';
-import $ from 'jquery';
-import { Route, NavLink, Link } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 
 export default class AllApzs extends React.Component {
@@ -85,7 +84,7 @@ export default class AllApzs extends React.Component {
         <div>
           <div className="card-header">
             <h4 className="mb-0">Архитектурно-планировочное задание
-              <NavLink to="/panel/common/export_to_excel"><img title="Экспорт в excel" src='/images/excelicon.png' className="export_image"/></NavLink>
+              <NavLink to="/panel/common/export_to_excel"><img title="Экспорт в excel" alt="export excel" src='/images/excelicon.png' className="export_image"/></NavLink>
             </h4>
           </div>
           {this.state.loaderHidden &&
@@ -141,11 +140,11 @@ export default class AllApzs extends React.Component {
 
                     {this.state.pageNumbers.map(function(num, index) {
                       return(
-                        <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
+                        <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
                           <Link className="page-link" to={'/panel/apz-department/apz/status/' + status + '/' + num}>{num}</Link>
                         </li>
                         );
-                      }.bind(this))
+                      })
                     }
                     <li className="page-item">
                       <Link className="page-link" to={'/panel/apz-department/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>

@@ -3,7 +3,7 @@ import EsriLoaderReact from 'esri-loader-react';
 import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
-import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
+import { Route, Link, NavLink, Switch } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import ReactHintFactory from "react-hint";
 
@@ -19,7 +19,7 @@ export default class Sketch extends React.Component {
     };
   }
   componentWillMount(){
-    if(this.props.history.location.pathname != "/panel/citizen/sketch"){
+    if(this.props.history.location.pathname !== "/panel/citizen/sketch"){
       this.setState({welcome_text:false,left_tabs: false});
     }
   }
