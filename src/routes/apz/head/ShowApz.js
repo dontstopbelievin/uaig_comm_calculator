@@ -120,6 +120,9 @@ export default class ShowApz extends React.Component {
                         case 40:
                             this.setState({lastDecisionIsMO: true});
                             break;
+                        case 6:
+                            this.setState({lastDecisionIsMO: true});
+                            break;
                         default:
                             continue;
                     }
@@ -579,7 +582,11 @@ export default class ShowApz extends React.Component {
     returnApzForm(apzId) {
         var token = sessionStorage.getItem('tokenInfo');
         var formData = new FormData();
-        formData.append('description', this.state.description);
+        if(this.state.description == '' || this.state.description == ' '){
+            alert("Заполните комментарий!");
+            return false;
+        }
+        formData.append('message', this.state.description);
         var xhr = new XMLHttpRequest();
         xhr.open("post", window.url + "api/apz/head/return/" + apzId, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);

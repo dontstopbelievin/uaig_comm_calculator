@@ -370,7 +370,7 @@ export default class ShowApz extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
-          console.log(data.files);
+          //console.log(data.files);
           this.setState({apz: data});
           this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
           this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
@@ -382,7 +382,7 @@ export default class ShowApz extends React.Component {
           this.setState({backFromEngineer: data.state_history.filter(function(obj) { return obj.state_id === 4 })[0]});
           for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
             switch (data.state_history[data_index].state_id) {
-              case 18:
+              case 38:
                 this.setState({backFromHead: data.state_history[data_index]});
                 break;
               default:
@@ -394,7 +394,7 @@ export default class ShowApz extends React.Component {
           if (!data.apz_department_response && data.status_id === 6) {
             this.setState({showButtons: true});
           }
-          {console.log(data.files)}
+
           if (data.files.filter(function(obj) { return obj.category_id === 18})[0] != null && data.status_id === 6) {
             this.setState({showSendButton: true});
           }
@@ -1819,12 +1819,12 @@ export default class ShowApz extends React.Component {
                   </div>
                 </div>
               </form>
+            </div>
+          }
 
-              {this.state.backFromHead &&
-                <div className="alert alert-danger">
-                  Комментарий главного архитектора: {this.state.backFromHead.comment}
-                </div>
-              }
+          {this.state.backFromHead &&
+            <div className="alert alert-danger">
+              Комментарий главного архитектора: {this.state.backFromHead.comment}
             </div>
           }
 
