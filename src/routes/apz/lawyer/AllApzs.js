@@ -39,6 +39,7 @@ export default class AllApzs extends React.Component {
     this.setState({ loaderHidden: false });
 
     var token = sessionStorage.getItem('tokenInfo');
+    console.log(sessionStorage.getItem('userRoles'));
     var xhr = new XMLHttpRequest();
     xhr.open("get", window.url + "api/apz/lawyer/all/" + status + '?page=' + page, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
@@ -46,7 +47,7 @@ export default class AllApzs extends React.Component {
     xhr.onload = function () {
       if (xhr.status === 200) {
         var response = JSON.parse(xhr.responseText);
-        //console.log(response);
+        console.log(response);
         var pageNumbers = [];
         var start = (response.current_page - 4) > 0 ? (response.current_page - 4) : 1;
         var end = (response.current_page + 4) < response.last_page ? (response.current_page + 4) : response.last_page;

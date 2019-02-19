@@ -88,7 +88,8 @@ export default class ShowApz extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
-          var apz = data.apz;
+          console.log(data);
+          var apz = data;
           this.setState({apz: apz});
           this.setState({personalIdFile: apz.files.filter(function(obj) { return obj.category_id === 3 })[0]});
           this.setState({confirmedTaskFile: apz.files.filter(function(obj) { return obj.category_id === 9 })[0]});
@@ -518,22 +519,20 @@ export default class ShowApz extends React.Component {
       }
     }
 
-    acceptDeclineApzForm(apzId, status, comment) {
+    acceptDeclineApzForm(apzId, status, comment, tohead) {
       var token = sessionStorage.getItem('tokenInfo');
 
       var registerData = {
         response: status,
-        message: comment,
-        apz_head_id: this.state.apz_head_id
+        message: comment
       };
 
       if (!status && !this.state.otkazFile) {
         alert('Загрузите файл отказа');
         return false;
       }
-      if(!status){
-        registerData['file'] = this.state.otkazFile;
-      }
+      if(tohead == 'head'){ registerData['apz_head_id'] = this.state.apz_head_id; }
+      if(!status){ registerData['file'] = this.state.otkazFile; }
 
       var data = JSON.stringify(registerData);
 
@@ -1320,7 +1319,7 @@ export default class ShowApz extends React.Component {
                 <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                   {!this.state.response ?
                     <div className="text-center">
-                      <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>
+                      <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", 'nohead')}>
                         Отправить отделу Гос услуг
                       </button>
                       <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
@@ -1372,7 +1371,7 @@ export default class ShowApz extends React.Component {
                                   {this.state.apz_heads_id}
                                 </select>
                               </div>
-                              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>
+                              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", 'head')}>
                                 Отправить главному архитектору
                               </button>
                             </div>
@@ -1423,7 +1422,7 @@ export default class ShowApz extends React.Component {
                           </div>
                         </div>
                         <div className="modal-footer">
-                          <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, 'Отклонено')}>Отправить главному архитектору</button>
+                          <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, 'Отклонено', 'head')}>Отправить главному архитектору</button>
                           <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                         </div>
                       </div>

@@ -232,6 +232,7 @@ export default class NavBar extends React.Component {
                             case 'Admin': return <AdminMenu />;
                             case 'Urban':
                               switch (JSON.parse(sessionStorage.getItem('userRoles'))[1]) {
+                                case 'Region': return <UrbanMenu />;
                                 case 'Head': return <HeadMenu />;
                                 case 'Engineer': return <EngineerMenu />;
                                 case 'Lawyer': return <LawyerMenu />;
@@ -486,8 +487,9 @@ class StateServicesMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/panel/state_services/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/panel/state_services/apz/status/new/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/panel/state_services/sketch"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
+        <NavLink to={"/panel/urban/answer-template/all/apz/1"} replace className="dropdown-item" activeClassName="active">Шаблоны отказов</NavLink>
       </div>
     )
   }

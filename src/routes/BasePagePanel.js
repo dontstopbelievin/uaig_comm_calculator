@@ -74,7 +74,7 @@ export default class BasePagePanel extends React.Component{
                     {this.state.tokenExists && this.state.rolename === 'Heat' &&  <NavLink to={"/panel/heat-provider/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                     {this.state.tokenExists && this.state.rolename === 'Water' &&  <NavLink to={"/panel/water-provider/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                     {this.state.tokenExists && this.state.rolename === 'Phone' &&  <NavLink to={"/panel/phone-provider/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
-                    {this.state.tokenExists && this.state.rolename === 'StateServices' &&  <NavLink to={"/panel/state_services/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'StateServices' &&  <NavLink to={"/panel/state_services/apz/status/new/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                     {this.state.tokenExists && this.state.rolename === 'Engineer' &&  <NavLink to={"/panel/engineer/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                     {this.state.tokenExists && this.state.rolename === 'Office' &&  <NavLink to={"/panel/office/apz/all/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                     {this.state.tokenExists && this.state.rolename === 'Lawyer' &&  <NavLink to={"/panel/lawyer/apz/status/new/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}

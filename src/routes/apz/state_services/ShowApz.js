@@ -93,7 +93,6 @@ export default class ShowApz extends React.Component {
       this.onDescriptionChange = this.onDescriptionChange.bind(this);
       this.sendForm = this.sendForm.bind(this);
       this.onInputChange = this.onInputChange.bind(this);
-      this.uploadFile = this.uploadFile.bind(this);
     }
     componentDidMount() {
       this.props.breadCrumbs();
@@ -313,7 +312,8 @@ export default class ShowApz extends React.Component {
     }
 
     onTemplateListChange(e) {
-      var template = this.state.templates.find(template => template.id === e.target.value);
+      var template = this.state.templates.find(template => template.id == e.target.value);
+      console.log(e.target.value);
       this.setState({ description: template.text });
     }
 
@@ -328,16 +328,35 @@ export default class ShowApz extends React.Component {
       this.setState({ file: e.target.files[0] });
     }
 
-    onDescriptionChange(e) {
-      this.setState({ description: e.target.value });
+    onDescriptionChange(value) {
+      this.setState({ description: value });
     }
 
     componentWillMount() {
       this.getApzInfo();
+      this.getAnswerTemplates();
     }
 
     snakeToCamel(s){
       return s.replace(/_\w/g, (m) => m[1].toUpperCase() );
+    }
+
+    getAnswerTemplates(){
+      var token = sessionStorage.getItem('tokenInfo');
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/apz/answer_template/all", true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          console.log(JSON.parse(xhr.responseText));
+          this.setState({templates: JSON.parse(xhr.responseText).data});
+        }
+      }.bind(this)
+      xhr.onerror = function () {
+        alert('Сервер не отвечает');
+      }.bind(this);
+      xhr.send();
     }
 
     getApzInfo() {
@@ -351,7 +370,6 @@ export default class ShowApz extends React.Component {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
           this.setState({apz: data});
-          this.setState({templates: data.templates});
           this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
           this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
           this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
@@ -375,11 +393,11 @@ export default class ShowApz extends React.Component {
             this.setState({showButtons: true});
           }
 
-          if (data.files.filter(function(obj) { return obj.category_id === 18})[0] != null && data.status_id === 6) {
+          if (data.files.filter(function(obj) { return obj.category_id === 33})[0] != null && data.status_id === 6) {
             this.setState({showSendButton: true});
           }
 
-          if (data.apz_department_response && data.files.filter(function(obj) { return obj.category_id === 18})[0] == null && data.status_id === 6) {
+          if (data.apz_department_response && data.files.filter(function(obj) { return obj.category_id === 33})[0] == null && data.status_id === 6) {
             this.setState({showSignButtons: true});
           }
 
@@ -1479,7 +1497,7 @@ export default class ShowApz extends React.Component {
             </div>
           }
 
-          {(this.state.showButtons || this.state.showSignButtons || this.state.showSendButton) &&
+          {(this.state.showButtons || this.state.showSignButtons || this.state.showSendButton) && this.state.backFromEngineer &&
             <div>
               <form className="apz_department_form">
                 <div className="select_type">
@@ -1812,100 +1830,99 @@ export default class ShowApz extends React.Component {
                   Комментарий главного архитектора: {this.state.backFromHead.comment}
                 </div>
               }
-              <div>
-                {this.state.showSignButtons &&
-                  <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                    <div>Выберите хранилище</div>
+            </div>
+          }
 
-                    <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
-                      <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
-                      <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>eToken</button>
-                    </div>
+          {this.state.showSignButtons &&
+            <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+              <div>Выберите хранилище</div>
 
+              <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
+                <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
+                <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>eToken</button>
+              </div>
+
+              <div className="form-group">
+                <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
+                <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+              </div>
+              {!this.state.loaderHidden &&
+              <div style={{margin: '0 auto'}}>
+                  <Loader type="Ball-Triangle" color="#46B3F2" height="70" width="70" />
+              </div>
+              }
+              {this.state.loaderHidden &&
+              <div className="form-group">
+                  <button className="btn btn-raised btn-success" type="button"
+                          onClick={this.signMessage.bind(this)}>Подписать
+                  </button>
+                  <button className="btn btn-primary" type="button" style={{marginLeft: '5px'}}
+                          onClick={this.hideSignBtns.bind(this)}>Назад
+                  </button>
+              </div>
+              }
+            </div>
+          }
+
+          {this.state.showButtons && !this.state.showSendButton &&
+            <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+            {!this.state.backFromGP &&
+              <button type="button" style={{marginRight:'5px'}} className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'gen_plan')}>Отправить отделу ген плана</button>
+            }
+            {this.state.backFromEngineer ?
+              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.saveForm.bind(this, apz.id, true, "")}>
+                Сохранить
+              </button>
+              :
+              <button type="button" style={{marginRight:'5px'}} className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'engineer')}>Отправить инженеру</button>
+            }
+              <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#declined_modal">Отклонить</button>
+            </div>
+          }
+
+          {this.state.showSendButton &&
+            <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', display: 'table'}}>
+              <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'head')}>Отправить начальнику Гос Услуг</button>
+            </div>
+          }
+
+          <div className="modal fade" id="declined_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Причниа отказа</h5>
+                  <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  {this.state.templates && this.state.templates.length > 0 &&
                     <div className="form-group">
-                      <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
-                      <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
-                    </div>
-                    {!this.state.loaderHidden &&
-                    <div style={{margin: '0 auto'}}>
-                        <Loader type="Ball-Triangle" color="#46B3F2" height="70" width="70" />
-                    </div>
-                    }
-                    {this.state.loaderHidden &&
-                    <div className="form-group">
-                        <button className="btn btn-raised btn-success" type="button"
-                                onClick={this.signMessage.bind(this)}>Подписать
-                        </button>
-                        <button className="btn btn-primary" type="button" style={{marginLeft: '5px'}}
-                                onClick={this.hideSignBtns.bind(this)}>Назад
-                        </button>
-                    </div>
-                    }
-                  </div>
-                }
-
-                {this.state.showButtons && !this.state.showSendButton &&
-                  <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                  {this.state.backFromEngineer ?
-                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.saveForm.bind(this, apz.id, true, "")}>
-                      Сохранить
-                    </button>
-                    :
-                    <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'engineer')}>Отправить инженеру</button>
-                  }
-                  {!this.state.backFromGP &&
-                    <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'gen_plan')}>Отправить отделу ген плана</button>
-                  }
-                    <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#declined_modal">Отклонить</button>
-                  </div>
-                }
-
-                {this.state.showSendButton &&
-                  <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', display: 'table'}}>
-                    <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'head')}>Отправить начальнику Гос Услуг</button>
-                  </div>
-                }
-
-                <div className="modal fade" id="declined_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                  <div className="modal-dialog" role="document">
-                    <div className="modal-content">
-                      <div className="modal-header">
-                        <h5 className="modal-title">Отправить на доработку</h5>
-                        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div className="modal-body">
-                        {this.state.templates.length > 0 &&
-                          <div className="form-group">
-                            <select className="form-control" defaultValue="" id="templateList" onChange={this.onTemplateListChange.bind(this)}>
-                              <option value="">Выберите шаблон</option>
-                              {this.state.templates.map(function(template, index) {
-                                return(
-                                  <option key={index} value={template.id}>{template.title}</option>
-                                  );
-                                })
-                              }
-                            </select>
-                          </div>
+                      <select className="form-control" defaultValue="" id="templateList" onChange={this.onTemplateListChange.bind(this)}>
+                        <option value="">Выберите шаблон</option>
+                        {this.state.templates.map(function(template, index) {
+                          return(
+                            <option key={index} value={template.id}>{template.title}</option>
+                            );
+                          })
                         }
-                        <div className="form-group">
-                          <label>Причина отклонения</label>
-                          <textarea rows="5" className="form-control" value={this.state.description} onChange={this.onDescriptionChange} placeholder="Описание"></textarea>
-                        </div>
-                      </div>
-                      <div className="modal-footer">
-                        <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} data-dismiss="modal" onClick={this.sendForm.bind(this, apz.id, false, this.state.description, 'lawyer')}>
-                          Отправить
-                        </button>
-                        <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                      </div>
+                      </select>
                     </div>
+                  }
+                  <div className="form-group">
+                    <label>Причина отклонения</label>
+                    <ReactQuill value={this.state.description} onChange={this.onDescriptionChange} />
                   </div>
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} data-dismiss="modal" onClick={this.sendForm.bind(this, apz.id, false, this.state.description, 'lawyer')}>
+                    Отправить
+                  </button>
+                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                 </div>
               </div>
             </div>
-          }
+          </div>
 
           {apz.state_history.length > 0 &&
             <div>

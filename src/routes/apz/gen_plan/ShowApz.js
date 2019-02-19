@@ -65,24 +65,19 @@ export default class ShowApz extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
-          var apz = data.apz;
+          var apz = data;
           this.setState({apz: apz});
           this.setState({personalIdFile: apz.files.filter(function(obj) { return obj.category_id === 3 })[0]});
           this.setState({confirmedTaskFile: apz.files.filter(function(obj) { return obj.category_id === 9 })[0]});
           this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
           this.setState({additionalFile: apz.files.filter(function(obj) { return obj.category_id === 27 })[0]});
           this.setState({reglamentFile: apz.files.filter(function(obj) { return obj.category_id === 29 })[0]});
-          this.setState({showButtons: false});
-          this.setState({needSign: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
 
-          if (apz.status_id === 3) {
+          if (apz.status_id === 11) {
             this.setState({showButtons: true});
           }
-
           this.setState({loaderHidden: true});
           // BE CAREFUL OF category_id should be xml регионального архитектора
-          this.setState({xmlFile: apz.files.filter(function(obj) { return obj.category_id === 21})[0]});
-          this.setState({needSign: apz.files.filter(function(obj) { return obj.category_id === 21})[0]});
         } else if (xhr.status === 401) {
           sessionStorage.clear();
           alert("Время сессии истекло. Пожалуйста войдите заново!");
@@ -518,6 +513,8 @@ export default class ShowApz extends React.Component {
         }
       }.bind(this);
       xhr.send(data);
+      $('#ReturnApzForm').modal('hide');
+      $('#AcceptApzForm').modal('hide');
     }
 
     toggleMap(value) {
