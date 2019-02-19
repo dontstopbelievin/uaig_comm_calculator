@@ -94,9 +94,10 @@ export default class AllApzs extends React.Component {
           {this.state.loaderHidden &&
             <div>
               <ul className="nav nav-tabs mb-2 pull-right">
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'new'} to="/panel/state_services/apz/status/new/1" replace>Активные</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/state_services/apz/status/active/1" replace>Активные</NavLink></li>
                 <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'gen_plan'} to="/panel/state_services/apz/status/gen_plan/1" replace>У ген план</NavLink></li>
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'processed'} to="/panel/state_services/apz/status/processed/1" replace>Обработанные</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'engineer'} to="/panel/state_services/apz/status/engineer/1" replace>У инженера</NavLink></li>
+                {/*<li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'processed'} to="/panel/state_services/apz/status/processed/1" replace>Обработанные</NavLink></li>*/}
                 <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/state_services/apz/status/accepted/1" replace>Принятые</NavLink></li>
                 <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/state_services/apz/status/declined/1" replace>Отказанные</NavLink></li>
               </ul>

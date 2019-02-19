@@ -21,7 +21,6 @@ export default class ShowApz extends React.Component {
 
       this.state = {
         apz: [],
-        templates: [],
         showMap: false,
         showButtons: true,
         description: '',
@@ -52,11 +51,6 @@ export default class ShowApz extends React.Component {
       this.setState({ description: value });
     }
 
-    onTemplateListChange(e) {
-      var template = this.state.templates.find(template => template.id === e.target.value);
-
-      this.setState({ description: template.text });
-    }
     componentDidMount() {
       this.props.breadCrumbs();
     }
@@ -102,9 +96,7 @@ export default class ShowApz extends React.Component {
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
         if (xhr.status === 200) {
-          var data = JSON.parse(xhr.responseText);
-          var apz = data.apz;
-          this.setState({templates: data.templates});
+          var apz = JSON.parse(xhr.responseText);
           this.setState({apz: apz});
           this.setState({personalIdFile: apz.files.filter(function(obj) { return obj.category_id === 3 })[0]});
           this.setState({confirmedTaskFile: apz.files.filter(function(obj) { return obj.category_id === 9 })[0]});
@@ -1287,14 +1279,6 @@ export default class ShowApz extends React.Component {
               }
               <div className={this.state.showButtons ? '' : 'invisible'}>
                 <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                  {apz.status_id === 3 && !this.state.xmlFile &&
-                    <div style={{paddingLeft:'5px', fontSize: '18px', textAlign:'center'}}>
-                      <b>Выберите главного архитектора:</b>
-                      <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
-                        {this.state.apz_heads_id}
-                      </select>
-                    </div>
-                  }
                   {!this.state.needSign ?
                     <div style={{margin: 'auto', display: 'table'}}>
                       <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>Поставить подпись</button>
@@ -1334,9 +1318,15 @@ export default class ShowApz extends React.Component {
                           }
                         </div>
                         :
-                        <div>
-                          <button type="button" className="btn btn-raised btn-success" onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "")}>Отправить главному архитектору</button>
-                        </div>
+                          <div style={{paddingLeft:'5px', fontSize: '18px', textAlign:'center'}}>
+                            <b>Выберите главного архитектора:</b>
+                            <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
+                              {this.state.apz_heads_id}
+                            </select>
+                            <div>
+                              <button type="button" className="btn btn-raised btn-success" onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "")}>Отправить главному архитектору</button>
+                            </div>
+                          </div>
                       }
                     </div>
                   }

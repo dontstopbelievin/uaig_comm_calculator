@@ -312,9 +312,10 @@ export default class ShowApz extends React.Component {
     }
 
     onTemplateListChange(e) {
-      var template = this.state.templates.find(template => template.id == e.target.value);
-      console.log(e.target.value);
-      this.setState({ description: template.text });
+      if(e.target.value != ''){
+        var template = this.state.templates.find(template => template.id == e.target.value);
+        this.setState({ description: template.text });
+      }
     }
 
     onInputChange(state, value) {
@@ -349,7 +350,7 @@ export default class ShowApz extends React.Component {
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
         if (xhr.status === 200) {
-          console.log(JSON.parse(xhr.responseText));
+          //console.log(JSON.parse(xhr.responseText));
           this.setState({templates: JSON.parse(xhr.responseText).data});
         }
       }.bind(this)
@@ -369,6 +370,7 @@ export default class ShowApz extends React.Component {
       xhr.onload = function() {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
+          console.log(data.files);
           this.setState({apz: data});
           this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
           this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
@@ -380,7 +382,7 @@ export default class ShowApz extends React.Component {
           this.setState({backFromEngineer: data.state_history.filter(function(obj) { return obj.state_id === 4 })[0]});
           for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
             switch (data.state_history[data_index].state_id) {
-              case 33:
+              case 18:
                 this.setState({backFromHead: data.state_history[data_index]});
                 break;
               default:
@@ -392,12 +394,12 @@ export default class ShowApz extends React.Component {
           if (!data.apz_department_response && data.status_id === 6) {
             this.setState({showButtons: true});
           }
-
-          if (data.files.filter(function(obj) { return obj.category_id === 33})[0] != null && data.status_id === 6) {
+          {console.log(data.files)}
+          if (data.files.filter(function(obj) { return obj.category_id === 18})[0] != null && data.status_id === 6) {
             this.setState({showSendButton: true});
           }
 
-          if (data.apz_department_response && data.files.filter(function(obj) { return obj.category_id === 33})[0] == null && data.status_id === 6) {
+          if (data.apz_department_response && data.files.filter(function(obj) { return obj.category_id === 18})[0] == null && data.status_id === 6) {
             this.setState({showSignButtons: true});
           }
 
@@ -559,6 +561,7 @@ export default class ShowApz extends React.Component {
       }
       if (!alias) {
         alert('Нет ключа подписания');
+        this.setState({loaderHidden: true});
       }
     }
 
@@ -628,8 +631,8 @@ export default class ShowApz extends React.Component {
             alert(JSON.parse(xhr.responseText).message);
           } else {
             alert("Не удалось подписать файл");
-            this.setState({loaderHidden: true});
           }
+          this.setState({loaderHidden: true});
         }.bind(this);
         xhr.send(JSON.stringify(data));
       }
@@ -1484,20 +1487,12 @@ export default class ShowApz extends React.Component {
                     <td style={{width: '22%'}}><b>Сформированный АПЗ</b></td>
                     <td><a className="text-info pointer" onClick={this.printApz.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
                   </tr>
-                  {this.state.reglamentFile &&<tr>
-                    <td style={{width: '22%'}}><b>Регламент</b></td>
-                    <td><a className="text-info pointer" data-category="6" onClick={this.downloadFile.bind(this, this.state.reglamentFile.id, 6)}>Скачать</a>
-                      <div className="progress mb-2" data-category="6" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </td>
-                  </tr>}
                 </tbody>
               </table>
             </div>
           }
 
-          {(this.state.showButtons || this.state.showSignButtons || this.state.showSendButton) && this.state.backFromEngineer &&
+          {((this.state.showButtons || this.state.showSignButtons) && !this.state.showSendButton) && this.state.backFromEngineer &&
             <div>
               <form className="apz_department_form">
                 <div className="select_type">
@@ -1833,7 +1828,21 @@ export default class ShowApz extends React.Component {
             </div>
           }
 
-          {this.state.showSignButtons &&
+          {this.state.reglamentFile &&
+            <div className="col-md-4 offset-4">
+              <div className="row" style={{paddingTop:'5px',paddingBottom:'5px',backgroundColor:'#eeeeff'}}>
+                <div className="col-md-6"><b>Регламент</b></div>
+                <div className="col-md-6">
+                  <a className="text-info pointer" data-category="6" onClick={this.downloadFile.bind(this, this.state.reglamentFile.id, 6)}><b>Скачать</b></a>
+                  <div className="progress mb-2" data-category="6" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+
+          {this.state.showSignButtons && !this.state.showSendButton &&
             <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
               <div>Выберите хранилище</div>
 
@@ -1869,7 +1878,7 @@ export default class ShowApz extends React.Component {
             {!this.state.backFromGP &&
               <button type="button" style={{marginRight:'5px'}} className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'gen_plan')}>Отправить отделу ген плана</button>
             }
-            {this.state.backFromEngineer ?
+            {(this.state.backFromEngineer && apz.apz_department_response) ?
               <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.saveForm.bind(this, apz.id, true, "")}>
                 Сохранить
               </button>
@@ -1890,7 +1899,7 @@ export default class ShowApz extends React.Component {
             <div className="modal-dialog" role="document">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">Причниа отказа</h5>
+                  <h5 className="modal-title">Мотивированный отказ</h5>
                   <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
@@ -1916,7 +1925,7 @@ export default class ShowApz extends React.Component {
                 </div>
                 <div className="modal-footer">
                   <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} data-dismiss="modal" onClick={this.sendForm.bind(this, apz.id, false, this.state.description, 'lawyer')}>
-                    Отправить
+                    Отправить Юристу
                   </button>
                   <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                 </div>

@@ -103,6 +103,7 @@ export default class ShowApz extends React.Component {
                 this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
                 this.setState({reglamentFile: data.files.filter(function(obj) { return obj.category_id === 29 })[0]});
                 //this.setState({returnedState: data.state_history.filter(function(obj) { return obj.state_id === 3 && obj.comment != null })[0]});
+                //console.log(data);
                 var pack2IdFile = data.files.filter(function(obj) { return obj.category_id === 25 }) ?
                     data.files.filter(function(obj) { return obj.category_id === 25 }) : [];
                 if ( pack2IdFile.length > 0 ) {
@@ -110,9 +111,9 @@ export default class ShowApz extends React.Component {
                 }
                 for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
                     switch (data.state_history[data_index].state_id) {
-                        case 19:
+                        case 39:
                             break;
-                        case 20:
+                        case 40:
                             this.setState({lastDecisionIsMO: true});
                             break;
                         default:
@@ -149,7 +150,7 @@ export default class ShowApz extends React.Component {
                     }
                 }
 
-                if (data.status_id === 12 && data.state_history.filter(function(obj) { return obj.state_id === 1 }) == null) {
+                if (data.status_id === 12) {
                     this.setState({showButtons: true});
                 }
 
@@ -286,7 +287,6 @@ export default class ShowApz extends React.Component {
 
     signMessage() {
         this.setState({loaderHiddenSign: false});
-        this.saveApzForm(this.state.apz.id, this.state.lastDecisionIsMO ? false : true, "");
         this.setState({ loaderHidden: false });
         let password = document.getElementById("inpPassword").value;
         let path = document.getElementById("storagePath").value;

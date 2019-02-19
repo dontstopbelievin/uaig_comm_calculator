@@ -143,7 +143,7 @@ export default class ShowApz extends React.Component {
         //console.log(data);
         var select_directors = [];
         for (var i = 0; i < data.length; i++) {
-          select_directors.push(<option value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
+          select_directors.push(<option key={i}   value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
         }
         this.setState({electricity_directors_id: select_directors});
         if(this.state.ty_director_id === "" || this.state.ty_director_id === " "){
@@ -197,7 +197,7 @@ export default class ShowApz extends React.Component {
           data.commission.apz_electricity_response.response ? this.setState({response: data.commission.apz_electricity_response.response}) : this.setState({response: ""});
           data.commission.apz_electricity_response.electricity_director_id ? this.setState({ty_director_id: data.commission.apz_electricity_response.electricity_director_id}) : this.setState({ty_director_id: "" });
           data.commission.apz_electricity_response.files ? this.setState({customTcFile: data.commission.apz_electricity_response.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: ""});;
-
+          console.log(data.commission);
           if(data.commission.apz_electricity_response.id !== -1){
             this.setState({accept: data.commission.apz_electricity_response.response ? 'answer' : 'decline'});
           }
@@ -205,7 +205,8 @@ export default class ShowApz extends React.Component {
           this.setState({responseFile: data.commission.apz_electricity_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12})[0]});
           this.setState({xmlFile: data.commission.apz_electricity_response.files.filter(function(obj) { return obj.category_id === 15})[0]});
         }
-
+        console.log(data.apz_electricity);
+        console.log("ASDFASDFASD");
         this.setState({elecStatus: data.apz_electricity.status});
 
         if(data.apz_electricity.status === 1){
@@ -974,7 +975,7 @@ toDate(date) {
               }
               {(this.state.personalIdFile || this.state.confirmedTaskFile || this.state.titleDocumentFile || this.state.additionalFile) &&
                 <tr className="shukichi">
-                  <td colspan="2"><a className="text-info pointer" data-category="1" onClick={this.downloadAllFile.bind(this, this.state.apz.id)}><img style={{height:'16px'}} src="/images/download.png" alt="download"/>Скачать одним архивом</a>
+                  <td colSpan="2"><a className="text-info pointer" data-category="1" onClick={this.downloadAllFile.bind(this, this.state.apz.id)}><img style={{height:'16px'}} src="/images/download.png" alt="download"/>Скачать одним архивом</a>
                     <div className="progress mb-2" data-category="1" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                       <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
@@ -1051,7 +1052,7 @@ toDate(date) {
               }
             </div>
           </div>
-
+{console.log(this.state.elecStatus)}{console.log(this.state.accept)}
           {this.state.accept === 'accept' && this.state.elecStatus === 2 && !this.state.xmlFile && !this.state.isSigned && this.state.isPerformer &&
             <form className="provider_answer_body" style={{border: 'solid 1px #46A149', padding: '20px'}}>
               <div className="row pt-0">

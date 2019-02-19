@@ -116,14 +116,14 @@ export default class ShowApz extends React.Component {
             this.setState({showButtons: true});
           }
 
-          if (apz.state_history.filter(function(obj) { return obj.state_id === 35})[0] != null) {
+          if (apz.state_history.filter(function(obj) { return obj.state_id === 38})[0] != null) {
             this.setState({response: true});
           }
 
           this.setState({loaderHidden: true});
           // BE CAREFUL OF category_id should be xml регионального архитектора
-          this.setState({xmlFile: apz.files.filter(function(obj) { return obj.category_id === 21})[0]});
-          this.setState({needSign: apz.files.filter(function(obj) { return obj.category_id === 21})[0]});
+          this.setState({xmlFile: apz.files.filter(function(obj) { return obj.category_id === 31})[0]});
+          this.setState({needSign: apz.files.filter(function(obj) { return obj.category_id === 31})[0]});
         } else if (xhr.status === 401) {
           sessionStorage.clear();
           alert("Время сессии истекло. Пожалуйста войдите заново!");
@@ -357,7 +357,7 @@ export default class ShowApz extends React.Component {
       var token = sessionStorage.getItem('tokenInfo');
 
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + 'api/apz/region/get_xml/' + this.state.apz.id, true);
+      xhr.open("get", window.url + 'api/apz/lawyer/get_xml/' + this.state.apz.id, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
@@ -405,7 +405,7 @@ export default class ShowApz extends React.Component {
         console.log("SIGNED XML ------> \n", signedXml);
 
         var xhr = new XMLHttpRequest();
-        xhr.open("post", window.url + 'api/apz/region/save_xml/' + this.state.apz.id, true);
+        xhr.open("post", window.url + 'api/apz/lawyer/save_xml/' + this.state.apz.id, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         xhr.onload = function() {
@@ -527,12 +527,12 @@ export default class ShowApz extends React.Component {
         message: comment
       };
 
-      if (!status && !this.state.otkazFile) {
+      if (comment == 'otkaz' && !this.state.otkazFile) {
         alert('Загрузите файл отказа');
         return false;
       }
       if(tohead == 'head'){ registerData['apz_head_id'] = this.state.apz_head_id; }
-      if(!status){ registerData['file'] = this.state.otkazFile; }
+      if(comment == 'otkaz'){ registerData['otkazFile'] = this.state.otkazFile; }
 
       var data = JSON.stringify(registerData);
 
@@ -1292,7 +1292,7 @@ export default class ShowApz extends React.Component {
                 {this.state.showMapText}
               </button>
 
-              {apz.status_id === 1 &&
+              {this.state.response &&
                 <table className="table table-bordered">
                   <tbody>
                     <tr>
@@ -1371,7 +1371,7 @@ export default class ShowApz extends React.Component {
                                   {this.state.apz_heads_id}
                                 </select>
                               </div>
-                              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", 'head')}>
+                              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, "mo", 'head')}>
                                 Отправить главному архитектору
                               </button>
                             </div>
@@ -1422,7 +1422,7 @@ export default class ShowApz extends React.Component {
                           </div>
                         </div>
                         <div className="modal-footer">
-                          <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, 'Отклонено', 'head')}>Отправить главному архитектору</button>
+                          <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, 'oktaz', 'head')}>Отправить главному архитектору</button>
                           <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                         </div>
                       </div>

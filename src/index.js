@@ -81,6 +81,7 @@ export default class Main extends React.Component {
     this.setLang();
 
     // window.url = 'https://api.uaig.kz:8843/';
+    // window.url = 'http://api.uaig.kz:8880/';
     // window.url = 'http://192.168.0.231/';
     // window.url = 'http://shymkentback.uaig.kz/';
     // window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
@@ -89,7 +90,7 @@ export default class Main extends React.Component {
     //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
     //window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
     // window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
-     window.clientSecret = 'B5BCHoPxj4VhKUqs7WHi2HHx6f24xoIK8065tc4s'; // aman
+    window.clientSecret = 'B5BCHoPxj4VhKUqs7WHi2HHx6f24xoIK8065tc4s'; // aman
     // window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
     // window.clientSecret = '7zdU2XDblqORFq8wbQHlNRaIgEBR90qbMYnnVWDg'; // yernar
     // window.clientSecret = 'ZuW3nP8EUgXgEAqm6j9GxzBfFsOFuQv39NcyHUz3'; // medet

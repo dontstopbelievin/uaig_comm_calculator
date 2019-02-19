@@ -56,13 +56,14 @@ export default class ShowApz extends React.Component {
         if (xhr.status === 200) {
           var apz = JSON.parse(xhr.responseText);
           var commission = apz.commission;
-  console.log(apz.files);
+          //console.log(apz.files);
           this.setState({apz: apz});
           this.setState({personalIdFile: apz.files.filter(function(obj) { return obj.category_id === 3 })[0]});
           this.setState({confirmedTaskFile: apz.files.filter(function(obj) { return obj.category_id === 9 })[0]});
           this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
           this.setState({additionalFile: apz.files.filter(function(obj) { return obj.category_id === 27 })[0]});
           this.setState({paymentPhotoFile: apz.files.filter(function(obj) { return obj.category_id === 20 })[0]});
+          this.setState({otkazFile: apz.files.filter(function(obj) { return obj.category_id === 30 })[0]});
           var pack2IdFile = apz.files.filter(function(obj) { return obj.category_id === 25 }) ?
             apz.files.filter(function(obj) { return obj.category_id === 25 }) : [];
           if ( pack2IdFile.length > 0 ) {
@@ -836,22 +837,32 @@ export default class ShowApz extends React.Component {
                   }
 
                   {apz.status_id === 1 &&
-                    <table className="table table-bordered">
-                      <tbody>
-                        <tr>
-                          <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
-                            {this.state.headResponseFile ?
-                              <td><a className="text-info pointer" data-category="8" onClick={this.downloadFile.bind(this, this.state.headResponseFile.id, 8)}>Скачать</a>
-                                <div className="progress mb-2" data-category="8" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                  <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div>
+                      {this.state.otkazFile ?
+                      <table className="table table-bordered">
+                          <tbody>
+                          <tr>
+                              <td style={{width: '22%'}}><b>Запрос</b></td>
+                              <td>
+                                <a className="text-info pointer" data-category="22" onClick={this.downloadFile.bind(this, this.state.otkazFile.id, 22)}>Скачать</a>
+                                <div className="progress mb-2" data-category="22" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                               </td>
-                            :
-                              <td><a className="text-info pointer" onClick={this.printRegionAnswer.bind(this, apz.id)}>Скачать</a></td>
-                            }
-                        </tr>
-                      </tbody>
-                    </table>
+                          </tr>
+                          </tbody>
+                      </table>
+                      :
+                      <table className="table table-bordered">
+                        <tbody>
+                          <tr>
+                            <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
+                            <td><a className="text-info pointer" onClick={this.printRegionAnswer.bind(this, apz.id)}>Скачать</a></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    }
+                  </div>
                   }
 
                   {apz.commission &&

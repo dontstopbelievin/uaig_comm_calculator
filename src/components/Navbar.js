@@ -479,6 +479,7 @@ class EngineerMenu extends Component {
       <div>
         <NavLink to={"/panel/engineer/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/panel/engineer/sketch"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
+        <NavLink to={"/panel/urban/answer-template/all/apz/1"} replace className="dropdown-item" activeClassName="active">Шаблоны отказов</NavLink>
       </div>
     )
   }
@@ -487,7 +488,7 @@ class StateServicesMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/panel/state_services/apz/status/new/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/panel/state_services/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/panel/state_services/sketch"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
         <NavLink to={"/panel/urban/answer-template/all/apz/1"} replace className="dropdown-item" activeClassName="active">Шаблоны отказов</NavLink>
       </div>

@@ -125,12 +125,12 @@ export default class AllApzs extends React.Component {
             <div>
               <h4 className="mb-0">Архитектурно-планировочное задание</h4>
             </div>
-            <div style={{fontSize: '18px', margin: '10px 0px'}}>
+            {/*<div style={{fontSize: '18px', margin: '10px 0px'}}>
               <b>Выберите регион:</b>
               <select style={{padding: '0px 4px', margin: '5px'}} value={this.state.current_region} onChange={this.handleRegionChange.bind(this)}>
                 {this.state.regions}
               </select>
-            </div>
+            </div>*/}
             <table style={{width:'100%'}}><tbody>
             <tr><td>
               <input placeholder="Поиск по ФИО" type="text" className="mb-2" id="filter" onChange={this.handleSearch} style={{padding:'3px'}}/>
