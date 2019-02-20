@@ -15,7 +15,8 @@ export default class Sketch extends React.Component {
 
     this.state = {
       welcome_text: true,
-      left_tabs: true
+      left_tabs: true,
+      active: false
     };
   }
   componentWillMount(){
@@ -28,6 +29,9 @@ export default class Sketch extends React.Component {
     this.setState({welcome_text:false, left_tabs: false});
     this.props.history.push("/panel/citizen/sketch/status/active/1");
   }
+  toggle(){
+    this.setState({active: true})
+  }
 
 
   render() {
@@ -36,19 +40,40 @@ export default class Sketch extends React.Component {
 
         <div>
         <div class="left-tabs">
-          {this.state.left_tabs &&
-            <ul>
-               <li>
-                 <Link to="/panel/citizen/apz">Выдача архитектурно-планировочного задания</Link>
-               </li>
-               <li>
-                 <Link to="/panel/citizen/sketch">Выдача решения на эскизный проект</Link>
-               </li>
-               <li>
-                 <Link to="/panel/citizen/photoreports">Выдача решения на фотоотчет</Link>
-               </li>
-             </ul>
-          }
+        {this.state.left_tabs &&
+          <div className="buttons">
+              <Link to="/panel/citizen/apz"><button class="tab1">Выдача архитектурно-планировочного задания</button></Link>
+              <Link to="/panel/citizen/sketch"><button onClick="toggle()" className={this.state.active === false ? 'isactive2' : 'tab2'}>Выдача решения на эскизный проект</button></Link>
+              <Link to="/panel/citizen/photoreports"><button className="tab3">Выдача решения на фотоотчет</button></Link>
+              <Link to="/"><button className="tab4">Выдача справки по определению адреса объектов недвижимости</button></Link>
+              <Link to="/"><button className="tab5">Выдача решения о строительстве культовых зданий (сооружений), определении их месторасположения</button></Link>
+              <Link to="/"><button className="tab6">Выдача решения о перепрофилировании (изменении функционального назначения) зданий (сооружений) в культовые здания (сооружения)</button></Link>
+              <Link to="/"><button className="tab7">Предоставление земельного участка для строительства объекта в черте населенного пункта</button></Link>
+          </div>
+        }
+        </div>
+        <div className="right-side">
+        {this.state.welcome_text &&
+          <div class="apzinfo">
+            <div class = "time">
+               <p><strong>Эскизный проект</strong> – это набор документов, схем и чертежей, который содержит данные о разрабатываемом объекте, его назначении, основные технические, архитектурные и конструктивные параметры. Это упрощенный вид проектного решения, объясняющий его замысел и позволяющий составить представление о дальнейших работах.</p>
+            </div>
+            <div class="application">
+               <p><strong>Срок рассмотрения заявления:</strong></p>
+               <li>1.	Срок рассмотрения заявления и согласования эскиза (эскизного проекта) технически и (или) технологически несложных объектов – 10 (десять) рабочих дней.</li>
+               <li>2.	Срок рассмотрения заявления и согласования эскиза (эскизного проекта) технически и (или) технологически сложных объектов – 15 (пятнадцать) рабочих дней.</li>
+               <li>3.	Срок рассмотрения заявления и согласования эскиза (эскизного проекта) при изменении внешнего облика (фасадов) существующего объекта – 15 (пятнадцать) рабочих дней.</li>
+               <div>Мотивированный отказ – 5 (пять) рабочих дней</div>
+               <br></br>
+               <p><strong>Необходимый перечень документов для получения услуги:</strong></p>
+               <li>1.	заявление о предоставлении государственной услуги (заполняется онлайн);</li>
+               <li>2.	электронная копия документа удостоверяющего личность;</li>
+               <li>3.	электронная копия эскиза (эскизный проект);</li>
+               <li>4.	копия архитектурно-планировочного задания;</li>
+            </div>
+            <button class="btn btn-raised btn-success" onClick={this.hide_text.bind(this)}>Перейти к заявкам</button>
+          </div>
+        }
         </div>
 
           <div className="card-body">
@@ -68,26 +93,10 @@ export default class Sketch extends React.Component {
               )} />
               {/*<Redirect from="/panel/citizen/sketch" to="/panel/citizen/sketch/status/active/1" />*/}
             </Switch>
-            {this.state.welcome_text &&
-              <div class="apzinfo">
-                <div class = "time">
-                   <p>Срок рассмотрения заявления:</p>
-                   <li>Срок рассмотрения заявления и согласования эскиза (эскизного проекта) технически и (или) технологически несложных объектов – 10 (десять) рабочих дней.</li>
-                   <li>Срок рассмотрения заявления и согласования эскиза (эскизного проекта) технически и (или) технологически сложных объектов – 15 (пятнадцать) рабочих дней</li>
-                   <li>Срок рассмотрения заявления и согласования эскиза (эскизного проекта) при изменении внешнего облика (фасадов) существующего объекта – 15 (пятнадцать) рабочих дней.</li>
-                </div>
-                <div class="application">
-                   <p>Необходимый перечень документов для получения услуги:</p>
-                   <li>заявление о предоставлении государственной услуги (заполняется онлайн);</li>
-                   <li>электронная копия документа удостоверяющего личность;</li>
-                   <li>электронная копия эскиза (эскизный проект);</li>
-                   <li>копия архитектурно-планировочного задания;</li>
-                </div>
-                <button class="btn btn-raised btn-success" onClick={this.hide_text.bind(this)}>Перейти к заявкам</button>
-              </div>
-            }
 
           </div>
+
+
         </div>
 
       </div>

@@ -13,3 +13,4 @@ require('../assets/css/stateSymbols.css');
 require('bootstrap/dist/css/bootstrap.min.css');
 require('../assets/css/common.css');
 require('../assets/css/animate.css');
+require('../assets/css/welcomeText.css');
