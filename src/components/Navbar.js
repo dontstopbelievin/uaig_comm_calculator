@@ -117,7 +117,7 @@ export default class NavBar extends React.Component {
                 {this.state.categories.map(function (category, index) {
                   return (
                     <li className="nav-item dropdown" key={index}>
-                      <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                      <a className="nav-link dropdown-toggle" id="navbarDropdown" role="button"
                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {lang === 'kk' &&
                         category.name_kk
@@ -163,7 +163,11 @@ export default class NavBar extends React.Component {
                                   }
                                 </a>
                               )
+                            }else{
+                              return(<span></span>)
                             }
+                          }else{
+                            return(<span></span>)
                           }
                         })
                         }
@@ -198,7 +202,6 @@ export default class NavBar extends React.Component {
         </nav>
       );
     }else if (this.props.panelTrue) {
-      let auth = (sessionStorage.getItem('tokenInfo')) ? true : false;
       return (
         <nav className='navbar navbar-expand-lg navbar-light' style={{backgroundColor:'#B0BFC5'}}>
 		  <div className='container' style={{marginBottom:'0px',paddingBottom:'5px',paddingLeft:'0px',paddingRight:'0px'}} >
@@ -217,7 +220,7 @@ export default class NavBar extends React.Component {
           <NavLink exact className="nav-link"to="/" >Главная<span className="sr-only">(current)</span></NavLink>
 				</li>
 				<li className="nav-item dropdown">
-                  <a className="nav-link dropdown-toggle" data-toggle='dropdown' aria-haspopup='true' aria-expanded='true' id='navbarDropdown' href="#">
+                  <a className="nav-link dropdown-toggle" data-toggle='dropdown' aria-haspopup='true' aria-expanded='true' id='navbarDropdown' style={{cursor:'pointer'}}>
 					Услуги
                   </a>
 				  <div className="dropdown-menu" aria-labelledby='navbarDropdown'>
@@ -228,34 +231,27 @@ export default class NavBar extends React.Component {
                           switch(JSON.parse(sessionStorage.getItem('userRoles'))[0]) {
                             case 'Admin': return <AdminMenu />;
                             case 'Urban':
-                              if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Head') {
-                                return <HeadMenu />
-                              }
-                              else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Engineer') {
-                                return <EngineerMenu />
-                              }
-                              else{
-                                return <UrbanMenu />;
+                              switch (JSON.parse(sessionStorage.getItem('userRoles'))[1]) {
+                                case 'Region': return <UrbanMenu />;
+                                case 'Head': return <HeadMenu />;
+                                case 'Engineer': return <EngineerMenu />;
+                                case 'Lawyer': return <LawyerMenu />;
+                                case 'GeneralPlan': return <GenPlanMenu />;
+                                case 'HeadsStateServices': return <HeadsStateServicesMenu />;
+                                default:
                               }
                             case 'Provider':
-                              if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Electricity') {
-                                return <ElectroProviderMenu />;
-                              }
-                              else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Gas'){
-                                return <GasProviderMenu />;
-                              }
-                              else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Heat'){
-                                return <HeatProviderMenu />;
-                              }
-                              else if(JSON.parse(sessionStorage.getItem('userRoles'))[1] === 'Phone'){
-                                return <PhoneProviderMenu />;
-                              }
-                              else{
-                                return <WaterProviderMenu />;
+                              switch (JSON.parse(sessionStorage.getItem('userRoles'))[1]) {
+                                case 'Electricity': return <ElectroProviderMenu />;
+                                case 'Gas': return <GasProviderMenu />;
+                                case 'Heat': return <HeatProviderMenu />;
+                                case 'Phone': return <PhoneProviderMenu />;
+                                case 'Water': return <WaterProviderMenu />;
+                                default:
                               }
                             case 'Citizen': return <CitizenMenu />;
                             case 'Temporary': return <TemporaryMenu />;
-                            case 'ApzDepartment': return <ApzDepartmentMenu />;
+                            case 'StateServices': return <StateServicesMenu />;
                             case 'Office': return <OfficeMenu />;
                             default: return null;
                           }
@@ -268,7 +264,7 @@ export default class NavBar extends React.Component {
 				  </div>
                 </li> {/*dropdown*/}
                 <li className="nav-item dropdown">
-                  <a className="nav-link dropdown-toggle" data-toggle='dropdown' href="#">
+                  <a className="nav-link dropdown-toggle" data-toggle='dropdown' style={{cursor:'pointer'}}>
 			  		Справочная информация
                   </a>
                   <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -278,12 +274,12 @@ export default class NavBar extends React.Component {
                   </ul>
                 </li>{/*dropdown*/}
                 <li className="nav-item dropdown">
-                  <a className="nav-link dropdown-toggle" data-toggle='dropdown' href="#">
+                  <a className="nav-link dropdown-toggle" data-toggle='dropdown' style={{cursor:'pointer'}}>
 					Карта
                   </a>
 			      <div className="dropdown-menu " aria-labelledby="navbarDropdown">
-                    <a className='dropdown-item' target='_blank' href="http://3d.uaig.kz/" >3D Карта</a>
-                    <a className='dropdown-item' target='_blank' href="http://2d.uaig.kz/" >2D Карта</a>
+                    <a className='dropdown-item' rel="noopener noreferrer" target='_blank' href="http://3d.uaig.kz/" >3D Карта</a>
+                    <a className='dropdown-item' rel="noopener noreferrer" target='_blank' href="http://2d.uaig.kz/" >2D Карта</a>
 			      </div>
                 </li>{/*dropdown*/}
                 <li className="nav-item dropdown">
@@ -324,10 +320,6 @@ class LoginBtn extends React.Component {
 }
 
 class LogoutBtn extends Component {
-  constructor() {
-    super();
-    // this.onLogout = this.onLogout.bind(this);
-  }
   onLogout() {
     this.props.logout();
   }
@@ -378,12 +370,11 @@ class DefaultMenu extends Component {
     )
   }
 }
-
 class UrbanMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/panel/urban/apz/status/new/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/panel/urban/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/panel/urban/sketch"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
         <NavLink to={"/panel/common/photoreports"} replace className="dropdown-item" activeClassName="active">Заявления на фотоотчет</NavLink>
         {/*<NavLink to={"/panel/urban/urbanreport"} replace className="dropdown-item" activeClassName="active">Фильтр</NavLink>*/}
@@ -393,7 +384,6 @@ class UrbanMenu extends Component {
     )
   }
 }
-
 class ElectroProviderMenu extends Component {
   render() {
     return (
@@ -405,7 +395,6 @@ class ElectroProviderMenu extends Component {
     )
   }
 }
-
 class GasProviderMenu extends Component {
   render() {
     return (
@@ -417,7 +406,6 @@ class GasProviderMenu extends Component {
     )
   }
 }
-
 class HeatProviderMenu extends Component {
   render() {
     return (
@@ -429,7 +417,6 @@ class HeatProviderMenu extends Component {
     )
   }
 }
-
 class WaterProviderMenu extends Component {
   render() {
     return (
@@ -441,7 +428,6 @@ class WaterProviderMenu extends Component {
     )
   }
 }
-
 class PhoneProviderMenu extends Component {
   render() {
     return (
@@ -453,7 +439,6 @@ class PhoneProviderMenu extends Component {
     )
   }
 }
-
 class HeadMenu extends Component {
   render() {
     return (
@@ -467,7 +452,6 @@ class HeadMenu extends Component {
     )
   }
 }
-
 class CitizenMenu extends Component {
   render() {
     return (
@@ -480,7 +464,6 @@ class CitizenMenu extends Component {
     )
   }
 }
-
 class TemporaryMenu extends Component {
   render() {
     return (
@@ -490,34 +473,60 @@ class TemporaryMenu extends Component {
     )
   }
 }
-
 class EngineerMenu extends Component {
   render() {
     return (
       <div>
         <NavLink to={"/panel/engineer/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
         <NavLink to={"/panel/engineer/sketch"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
+        <NavLink to={"/panel/urban/answer-template/all/apz/1"} replace className="dropdown-item" activeClassName="active">Шаблоны отказов</NavLink>
       </div>
     )
   }
 }
-
-class ApzDepartmentMenu extends Component {
+class StateServicesMenu extends Component {
   render() {
     return (
       <div>
-        <NavLink to={"/panel/apz-department/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
-        <NavLink to={"/panel/apz-department/sketch"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
+        <NavLink to={"/panel/state_services/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+        <NavLink to={"/panel/state_services/sketch"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
+        <NavLink to={"/panel/urban/answer-template/all/apz/1"} replace className="dropdown-item" activeClassName="active">Шаблоны отказов</NavLink>
       </div>
     )
   }
 }
-
 class OfficeMenu extends Component {
   render() {
     return (
       <div>
         <NavLink to={"/panel/office/apz/all/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+      </div>
+    )
+  }
+}
+class LawyerMenu extends Component {
+  render() {
+    return (
+      <div>
+        <NavLink to={"/panel/lawyer/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+      </div>
+    )
+  }
+}
+class GenPlanMenu extends Component {
+  render() {
+    return (
+      <div>
+        <NavLink to={"/panel/gen_plan/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+      </div>
+    )
+  }
+}
+class HeadsStateServicesMenu extends Component {
+  render() {
+    return (
+      <div>
+        <NavLink to={"/panel/head_state_services/apz/status/active/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
       </div>
     )
   }

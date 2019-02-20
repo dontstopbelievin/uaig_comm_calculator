@@ -1,14 +1,8 @@
 import React from 'react';
-import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
-import { Link } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
-import LocalizedStrings from 'react-localization';
-import {ru, kk} from '../../languages/header.json';
 import ShowMap from "./ShowMap";
-
-let e = new LocalizedStrings({ru,kk});
 
 export default class ShowApz extends React.Component {
   constructor(props) {
@@ -1060,7 +1054,7 @@ export default class ShowApz extends React.Component {
                                         </table>
                                       </div>
                                     );
-                                  }.bind(this))}
+                                  })}
                                 </div>
                               }
                             </div>
@@ -1318,7 +1312,7 @@ export default class ShowApz extends React.Component {
                         <p className="mb-0">{state.created_at}&emsp;{state.state.name}</p>
                       </div>
                     );
-                  }.bind(this))}
+                  })}
                 </div>
               </div>
             }
@@ -1328,7 +1322,7 @@ export default class ShowApz extends React.Component {
 
             <div className="col-sm-12">
               <hr />
-              <Link className="btn btn-outline-secondary pull-right" to={'/panel/admin/apz/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+              <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
             </div>
           </div>
         }

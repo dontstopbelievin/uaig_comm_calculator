@@ -1,11 +1,11 @@
 import React from 'react';
 import $ from 'jquery';
 import 'jquery-serializejson';
-import { Route, Link, Switch } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import EngineerShowMap from "./ShowMap";
+import ReactQuill from 'react-quill';
 
-export default class EngineerShowApz extends React.Component {
+export default class ShowApz extends React.Component {
   constructor(props) {
     super(props);
     this.webSocket = new WebSocket('wss://127.0.0.1:13579/');
@@ -19,6 +19,7 @@ export default class EngineerShowApz extends React.Component {
 
     this.state = {
       apz: [],
+      templates: [],
       showMap: false,
       showButtons: false,
       showCommission: false,
@@ -73,8 +74,8 @@ export default class EngineerShowApz extends React.Component {
   onDocNumberChange(e) {
     this.setState({ docNumber: e.target.value });
   }
-  onCommentChange(e) {
-    this.setState({ comment: e.target.value });
+  onCommentChange(value) {
+    this.setState({ comment: value });
   }
 
   onFileChange(e) {
@@ -87,6 +88,7 @@ export default class EngineerShowApz extends React.Component {
       return this.props.history.replace({pathname: "/panel/common/login", state:{url_apz_id: fullLoc[fullLoc.length-1]}});
     }else {
       this.getApzInfo();
+      this.getAnswerTemplates();
     }
   }
 
@@ -147,19 +149,44 @@ export default class EngineerShowApz extends React.Component {
           }
         }
 
-        if ((data.status_id === 4 || data.status_id === 5) && hasReponse.length == 0) {
+        if ((data.status_id === 4 || data.status_id === 5) && hasReponse.length === 0) {
           this.setState({showButtons: true});
         }
 
-        if (hasReponse.length == 0 || commission) {
+        if (hasReponse.length === 0 || commission) {
           this.setState({showCommission: true});
         }
 
-        this.setState({engineerReturnedState: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null && obj.sender == 'engineer'})[0]});
+        this.setState({engineerReturnedState: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment !== null && obj.sender === 'engineer'})[0]});
         this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 28})[0]});
         this.setState({needSign: data.files.filter(function(obj) { return obj.category_id === 28})[0]});
       }
     }.bind(this)
+    xhr.send();
+  }
+
+  onTemplateListChange(e) {
+    if(e.target.value != ''){
+      var template = this.state.templates.find(template => template.id == e.target.value);
+      this.setState({ comment: template.text });
+    }
+  }
+
+  getAnswerTemplates(){
+    var token = sessionStorage.getItem('tokenInfo');
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + "api/apz/answer_template/all", true);
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        //console.log(JSON.parse(xhr.responseText));
+        this.setState({templates: JSON.parse(xhr.responseText).data});
+      }
+    }.bind(this)
+    xhr.onerror = function () {
+      alert('Сервер не отвечает');
+    }.bind(this);
     xhr.send();
   }
 
@@ -184,7 +211,7 @@ export default class EngineerShowApz extends React.Component {
       vision.css('display', 'none');
       progressbar.css('display', 'flex');
       xhr.onprogress = function(event) {
-        $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
+        $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
       }
       xhr.onload = function() {
         if (xhr.status === 200) {
@@ -422,7 +449,7 @@ export default class EngineerShowApz extends React.Component {
   }
   webSocketFunction() {
     this.webSocket.onopen = function (event) {
-      if (this.heartbeat_interval == "") {
+      if (this.heartbeat_interval === "") {
         this.missed_heartbeats = 0;
         this.heartbeat_interval = setInterval(this.pingLayer, 2000);
       }
@@ -830,30 +857,30 @@ export default class EngineerShowApz extends React.Component {
     }
   }
 
-  toDate(date) {
-    if(date === null) {
-      return date;
-    }
-
-    var jDate = new Date(date);
-    var curr_date = jDate.getDate();
-    var curr_month = jDate.getMonth() + 1;
-    var curr_year = jDate.getFullYear();
-    var curr_hour = jDate.getHours();
-    var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
-    var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-
-    return formated_date;
+toDate(date) {
+  if(date === null) {
+    return date;
   }
 
+  var jDate = new Date(date);
+  var curr_date = jDate.getDate() < 10 ? "0" + jDate.getDate() : jDate.getDate();
+  var curr_month = (jDate.getMonth() + 1) < 10 ? "0" + (jDate.getMonth() + 1) : jDate.getMonth() + 1;
+  var curr_year = jDate.getFullYear();
+  var curr_hour = jDate.getHours() < 10 ? "0" + jDate.getHours() : jDate.getHours();
+  var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
+  var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
+
+  return formated_date;
+}
+
   createCommission(id) {
-    if(this.state.deadline == ''){
+    if(this.state.deadline === ''){
       alert('Укажите сроки обработки заявки для служб');
       return false;
     }
     var data = $('.commission_users_table input').serializeJSON();
 
-    if (Object.keys(data).length == 0) {
+    if (Object.keys(data).length === 0) {
       alert('Не выбраны провайдеры');
       return false;
     }
@@ -881,7 +908,6 @@ export default class EngineerShowApz extends React.Component {
 
   acceptDeclineApzForm(apzId, status, comment) {
     var token = sessionStorage.getItem('tokenInfo');
-    var file = this.state.file;
 
     var formData = new FormData();
     formData.append('response', status);
@@ -954,7 +980,7 @@ export default class EngineerShowApz extends React.Component {
         xhr.upload.addEventListener("progress", function(evt) {
           if (evt.lengthComputable) {
             var percentComplete = evt.loaded / evt.total;
-            percentComplete = parseInt(percentComplete * 100);
+            percentComplete = parseInt(percentComplete * 100, 10);
             $('div', progressbar).css('width', percentComplete + '%');
           }
         }, false);
@@ -994,6 +1020,7 @@ export default class EngineerShowApz extends React.Component {
 
             case 24:
               this.setState({claimedCapacityJustification: data});
+              break;
 
             case 25:
               this.setState({pack2IdFile: data});
@@ -1062,7 +1089,7 @@ export default class EngineerShowApz extends React.Component {
         this.setState({claimedCapacityJustification: data});
         break;
 
-      case '24':
+      case '25':
         this.setState({pack2IdFile: data});
         break;
     }
@@ -1447,21 +1474,32 @@ export default class EngineerShowApz extends React.Component {
                     <div className="modal-dialog" role="document">
                       <div className="modal-content">
                         <div className="modal-header">
-                          <h5 className="modal-title">Отклонить</h5>
+                          <h5 className="modal-title">Мотивированный отказ</h5>
                           <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                           </button>
                         </div>
                         <div className="modal-body">
-                          <div className="form-group">
-                            <label htmlFor="docNumber">Причина отклонения:</label>
-                            <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                              <textarea style={{marginBottom: '10px'}} placeholder="Комментарий" rows="7" cols="50" className="form-control" defaultValue={this.state.comment} onChange={this.onCommentChange}></textarea>
+                          {this.state.templates && this.state.templates.length > 0 &&
+                            <div className="form-group">
+                              <select className="form-control" defaultValue="" id="templateList" onChange={this.onTemplateListChange.bind(this)}>
+                                <option value="">Выберите шаблон</option>
+                                {this.state.templates.map(function(template, index) {
+                                  return(
+                                    <option key={index} value={template.id}>{template.title}</option>
+                                    );
+                                  })
+                                }
+                              </select>
                             </div>
+                          }
+                          <div className="form-group">
+                            <label>Причина отклонения</label>
+                            <ReactQuill value={this.state.comment} onChange={this.onCommentChange} />
                           </div>
                         </div>
                         <div className="modal-footer">
-                          <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.comment)}>Отправить</button>
+                          <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.comment)}>Отправить Юристу</button>
                           <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                         </div>
                       </div>
@@ -1505,7 +1543,7 @@ export default class EngineerShowApz extends React.Component {
                     <div>
                       <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
                               onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>
-                        В отдел АПЗ
+                        Отправить отделу гос услуг
                       </button>
                     </div>
                   }
@@ -1528,7 +1566,7 @@ export default class EngineerShowApz extends React.Component {
                   <p className="mb-0">{state.created_at}&emsp;{state.state.name}  {state.receiver && '('+state.receiver+')'}</p>
                 </div>
               );
-            }.bind(this))}
+            })}
           </div>
 
           {apz.commission &&  apz.commission.apz_water_response &&
@@ -1773,7 +1811,7 @@ export default class EngineerShowApz extends React.Component {
                               </table>
                             </div>
                           );
-                        }.bind(this))}
+                        })}
                       </div>
                     }
                   </div>
@@ -2330,7 +2368,7 @@ export default class EngineerShowApz extends React.Component {
                               </table>
                             </div>
                           );
-                        }.bind(this))}
+                        })}
                       </div>
                     }
                   </div>
@@ -2491,13 +2529,10 @@ export default class EngineerShowApz extends React.Component {
 
           <div className="col-sm-12">
             <hr />
-            <button className="btn btn-outline-secondary pull-right" onClick={this.routeChange.bind(this)}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
+            <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
           </div>
         </div>
       </div>
     )
-  }
-  routeChange(){
-    this.props.history.goBack();
   }
 }

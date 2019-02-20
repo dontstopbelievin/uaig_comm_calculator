@@ -2,9 +2,7 @@ import React from 'react';
 import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
-import { Link } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
-import {ru, kk} from '../../../languages/header.json';
 
 export default class ShowApz extends React.Component {
     constructor(props) {
@@ -58,13 +56,14 @@ export default class ShowApz extends React.Component {
         if (xhr.status === 200) {
           var apz = JSON.parse(xhr.responseText);
           var commission = apz.commission;
-  console.log(apz.files);
+          //console.log(apz.files);
           this.setState({apz: apz});
           this.setState({personalIdFile: apz.files.filter(function(obj) { return obj.category_id === 3 })[0]});
           this.setState({confirmedTaskFile: apz.files.filter(function(obj) { return obj.category_id === 9 })[0]});
           this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
           this.setState({additionalFile: apz.files.filter(function(obj) { return obj.category_id === 27 })[0]});
           this.setState({paymentPhotoFile: apz.files.filter(function(obj) { return obj.category_id === 20 })[0]});
+          this.setState({otkazFile: apz.files.filter(function(obj) { return obj.category_id === 30 })[0]});
           var pack2IdFile = apz.files.filter(function(obj) { return obj.category_id === 25 }) ?
             apz.files.filter(function(obj) { return obj.category_id === 25 }) : [];
           if ( pack2IdFile.length > 0 ) {
@@ -129,7 +128,7 @@ export default class ShowApz extends React.Component {
         vision.css('display', 'none');
         progressbar.css('display', 'flex');
         xhr.onprogress = function(event) {
-          $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
+          $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
         }
         xhr.onload = function() {
           if (xhr.status === 200) {
@@ -270,10 +269,10 @@ export default class ShowApz extends React.Component {
       }
 
       var jDate = new Date(date);
-      var curr_date = jDate.getDate();
-      var curr_month = jDate.getMonth() + 1;
+      var curr_date = jDate.getDate() < 10 ? "0" + jDate.getDate() : jDate.getDate();
+      var curr_month = (jDate.getMonth() + 1) < 10 ? "0" + (jDate.getMonth() + 1) : jDate.getMonth() + 1;
       var curr_year = jDate.getFullYear();
-      var curr_hour = jDate.getHours();
+      var curr_hour = jDate.getHours() < 10 ? "0" + jDate.getHours() : jDate.getHours();
       var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
       var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
 
@@ -838,22 +837,32 @@ export default class ShowApz extends React.Component {
                   }
 
                   {apz.status_id === 1 &&
-                    <table className="table table-bordered">
-                      <tbody>
-                        <tr>
-                          <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
-                            {this.state.headResponseFile ?
-                              <td><a className="text-info pointer" data-category="8" onClick={this.downloadFile.bind(this, this.state.headResponseFile.id, 8)}>Скачать</a>
-                                <div className="progress mb-2" data-category="8" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                  <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div>
+                      {this.state.otkazFile ?
+                      <table className="table table-bordered">
+                          <tbody>
+                          <tr>
+                              <td style={{width: '22%'}}><b>Запрос</b></td>
+                              <td>
+                                <a className="text-info pointer" data-category="22" onClick={this.downloadFile.bind(this, this.state.otkazFile.id, 22)}>Скачать</a>
+                                <div className="progress mb-2" data-category="22" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                               </td>
-                            :
-                              <td><a className="text-info pointer" onClick={this.printRegionAnswer.bind(this, apz.id)}>Скачать</a></td>
-                            }
-                        </tr>
-                      </tbody>
-                    </table>
+                          </tr>
+                          </tbody>
+                      </table>
+                      :
+                      <table className="table table-bordered">
+                        <tbody>
+                          <tr>
+                            <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
+                            <td><a className="text-info pointer" onClick={this.printRegionAnswer.bind(this, apz.id)}>Скачать</a></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    }
+                  </div>
                   }
 
                   {apz.commission &&
@@ -1135,7 +1144,7 @@ export default class ShowApz extends React.Component {
                                           </table>
                                         </div>
                                       );
-                                    }.bind(this))}
+                                    })}
                                   </div>
                                 }
                               </div>
@@ -1453,7 +1462,7 @@ export default class ShowApz extends React.Component {
                           <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
                         </div>
                       );
-                    }.bind(this))}
+                    })}
                   </div>
                 </div>
               }
@@ -1463,7 +1472,7 @@ export default class ShowApz extends React.Component {
 
               <div className="col-sm-12">
                 <hr />
-                <Link className="btn btn-outline-secondary pull-right" to={'/panel/citizen/apz/'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+                <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
               </div>
             </div>
           }

@@ -1,6 +1,5 @@
 import React from 'react';
-import $ from 'jquery';
-import { Route, NavLink, Link } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 
 export default class AllApzs extends React.Component {
@@ -37,7 +36,7 @@ export default class AllApzs extends React.Component {
       var token = sessionStorage.getItem('tokenInfo');
 
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/apz_department/all/" + status + '?page=' + page, true);
+      xhr.open("get", window.url + "api/apz/stateservices/all/" + status + '?page=' + page, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function () {
@@ -57,6 +56,10 @@ export default class AllApzs extends React.Component {
 
         this.setState({ loaderHidden: true });
       }.bind(this);
+      xhr.onerror = function () {
+        alert('Сервер не отвечает');
+        this.setState({ loaderHidden: true });
+      }.bind(this);
       xhr.send();
     }
 
@@ -85,15 +88,18 @@ export default class AllApzs extends React.Component {
         <div>
           <div className="card-header">
             <h4 className="mb-0">Архитектурно-планировочное задание
-              <NavLink to="/panel/common/export_to_excel"><img title="Экспорт в excel" src='/images/excelicon.png' className="export_image"/></NavLink>
+              <NavLink to="/panel/common/export_to_excel"><img title="Экспорт в excel" alt="export excel" src='/images/excelicon.png' className="export_image"/></NavLink>
             </h4>
           </div>
           {this.state.loaderHidden &&
             <div>
               <ul className="nav nav-tabs mb-2 pull-right">
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/apz-department/apz/status/active/1" replace>Активные</NavLink></li>
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/apz-department/apz/status/accepted/1" replace>Принятые</NavLink></li>
-                <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/apz-department/apz/status/declined/1" replace>Отказанные</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/state_services/apz/status/active/1" replace>Активные</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'gen_plan'} to="/panel/state_services/apz/status/gen_plan/1" replace>У ген план</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'engineer'} to="/panel/state_services/apz/status/engineer/1" replace>У инженера</NavLink></li>
+                {/*<li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'processed'} to="/panel/state_services/apz/status/processed/1" replace>Обработанные</NavLink></li>*/}
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/state_services/apz/status/accepted/1" replace>Принятые</NavLink></li>
+                <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/state_services/apz/status/declined/1" replace>Отказанные</NavLink></li>
               </ul>
 
               <table className="table">
@@ -123,7 +129,7 @@ export default class AllApzs extends React.Component {
                         <td>{apz.project_address}</td>
                         <td>{this.toDate(apz.created_at)}</td>
                         <td>
-                          <Link className="btn btn-outline-info" to={'/panel/apz-department/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                          <Link className="btn btn-outline-info" to={'/panel/state_services/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                         </td>
                       </tr>
                       );
@@ -136,19 +142,19 @@ export default class AllApzs extends React.Component {
                 <nav className="pagination_block">
                   <ul className="pagination justify-content-center">
                     <li className="page-item">
-                      <Link className="page-link" to={'/panel/apz-department/apz/status/' + status + '/1'}>В начало</Link>
+                      <Link className="page-link" to={'/panel/state_services/apz/status/' + status + '/1'}>В начало</Link>
                     </li>
 
                     {this.state.pageNumbers.map(function(num, index) {
                       return(
-                        <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
-                          <Link className="page-link" to={'/panel/apz-department/apz/status/' + status + '/' + num}>{num}</Link>
+                        <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
+                          <Link className="page-link" to={'/panel/state_services/apz/status/' + status + '/' + num}>{num}</Link>
                         </li>
                         );
-                      }.bind(this))
+                      })
                     }
                     <li className="page-item">
-                      <Link className="page-link" to={'/panel/apz-department/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
+                      <Link className="page-link" to={'/panel/state_services/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
                     </li>
                   </ul>
                 </nav>

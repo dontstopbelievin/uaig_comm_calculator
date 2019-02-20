@@ -39,7 +39,6 @@ export default class ShowApz extends React.Component {
             pack2IdFile: null,
             gasCustomTcFile: null,
             headResponseFile: null,
-            callSaveFromSend: false,
             personalIdFile: false,
             confirmedTaskFile: false,
             titleDocumentFile: false,
@@ -84,7 +83,7 @@ export default class ShowApz extends React.Component {
         var id = this.props.match.params.id;
         var token = sessionStorage.getItem('tokenInfo');
         var xhr = new XMLHttpRequest();
-        xhr.open("get", window.url + "api/apz/head/detail/" + id, true);
+        xhr.open("get", window.url + "api/apz/headsstateservices/detail/" + id, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         xhr.onload = function() {
@@ -92,7 +91,7 @@ export default class ShowApz extends React.Component {
                 var data = JSON.parse(xhr.responseText);
                 var commission = data.commission;
                 var hasDeclined = data.state_history.filter(function(obj) {
-                    return obj.state_id === 3
+                    return obj.state_id === 20
                 });
 
                 this.setState({apz: data});
@@ -103,11 +102,8 @@ export default class ShowApz extends React.Component {
                 this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
                 this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
                 this.setState({reglamentFile: data.files.filter(function(obj) { return obj.category_id === 29 })[0]});
-                this.setState({otkazFile: data.files.filter(function(obj) { return obj.category_id === 30 })[0]});
-                if(data.files.filter(function(obj) { return obj.category_id === 30 })[0]){
-                  this.setState({lastDecisionIsMO: true});
-                }
                 //this.setState({returnedState: data.state_history.filter(function(obj) { return obj.state_id === 3 && obj.comment != null })[0]});
+                //console.log(data);
                 var pack2IdFile = data.files.filter(function(obj) { return obj.category_id === 25 }) ?
                     data.files.filter(function(obj) { return obj.category_id === 25 }) : [];
                 if ( pack2IdFile.length > 0 ) {
@@ -118,9 +114,6 @@ export default class ShowApz extends React.Component {
                         case 39:
                             break;
                         case 40:
-                            this.setState({lastDecisionIsMO: true});
-                            break;
-                        case 6:
                             this.setState({lastDecisionIsMO: true});
                             break;
                         default:
@@ -157,31 +150,18 @@ export default class ShowApz extends React.Component {
                     }
                 }
 
-                /*if (data.apz_head_response && data.apz_head_response.files) {
-                  this.setState({headResponseFile: data.apz_head_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-                }*/
-
-                if (data.status_id === 7 && !data.apz_head_response) {
+                if (data.status_id === 12) {
                     this.setState({showButtons: true});
                 }
 
-                if (data.status_id === 7 && data.apz_head_response && data.files.filter(function(obj) { return obj.category_id === 19})[0] == null) {
-                    this.setState({showButtons: true});
-                }
-
-                if (data.apz_head_response && data.apz_head_response && data.files.filter(function(obj) { return obj.category_id === 19})[0] != null) {
+                if ( data.files.filter(function(obj) { return obj.category_id === 33})[0] != null) {
                     this.setState({isSigned: true});
-                    this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 19})[0]});
-                    this.setState({headResponse: data.apz_head_response.response});
+                    this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 33})[0]});
                 }
 
-                if (data.apz_head_response && data.files.filter(function(obj) { return obj.category_id === 19})[0] != null && data.status_id === 7) {
+                if (data.files.filter(function(obj) { return obj.category_id === 33})[0] != null && data.status_id === 12) {
                     this.setState({showSendButton: true});
                 }
-
-                /*if (!this.state.xmlFile && this.state.headResponseFile && data.status_id === 7) {
-                  this.setState({showSignButtons: true});
-                }*/
 
                 this.setState({loaderHidden: true});
 
@@ -307,7 +287,6 @@ export default class ShowApz extends React.Component {
 
     signMessage() {
         this.setState({loaderHiddenSign: false});
-        this.saveApzForm(this.state.apz.id, this.state.lastDecisionIsMO ? false : true, "");
         this.setState({ loaderHidden: false });
         let password = document.getElementById("inpPassword").value;
         let path = document.getElementById("storagePath").value;
@@ -353,7 +332,7 @@ export default class ShowApz extends React.Component {
         var token = sessionStorage.getItem('tokenInfo');
 
         var xhr = new XMLHttpRequest();
-        xhr.open("get", window.url + 'api/apz/head/get_xml/' + this.state.apz.id, true);
+        xhr.open("get", window.url + 'api/apz/headsstateservices/get_xml/' + this.state.apz.id, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         xhr.onload = function() {
@@ -401,7 +380,7 @@ export default class ShowApz extends React.Component {
             console.log("SIGNED XML ------> \n", signedXml);
 
             var xhr = new XMLHttpRequest();
-            xhr.open("post", window.url + 'api/apz/head/save_xml/' + this.state.apz.id, true);
+            xhr.open("post", window.url + 'api/apz/headsstateservices/save_xml/' + this.state.apz.id, true);
             xhr.setRequestHeader("Authorization", "Bearer " + token);
             xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
             xhr.onload = function() {
@@ -526,50 +505,6 @@ export default class ShowApz extends React.Component {
         }
     }
 
-    saveApzForm(apzId, status, comment) {
-        var token = sessionStorage.getItem('tokenInfo');
-        var formData = new FormData();
-        /*if(status){
-          var file = this.state.file;
-          if(!file){alert("Загрузите файл"); return;}
-          formData.append('file', file);
-        }*/
-        formData.append('Response', status);
-        formData.append('Message', comment);
-        if(this.state.docNumber === '' || this.state.docNumber === ' '){alert("Введите номер документа"); return;}
-        formData.append('DocNumber', this.state.docNumber);
-
-        var xhr = new XMLHttpRequest();
-        xhr.open("post", window.url + "api/apz/head/save/" + apzId, true);
-        xhr.setRequestHeader("Authorization", "Bearer " + token);
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                var data = JSON.parse(xhr.responseText);
-
-                this.setState({ showButtons: false });
-                this.setState({ headResponse: data.response });
-
-                if(this.state.callSaveFromSend){
-                    this.setState({callSaveFromSend: false});
-                    this.acceptDeclineApzForm(apzId, status, comment);
-                } else {
-                    // alert("Ответ сохранен!");
-                    this.setState({ showSignButtons: true });
-                }
-            }
-            else if(xhr.status === 401){
-                sessionStorage.clear();
-                alert("Время сессии истекло. Пожалуйста войдите заново!");
-                this.props.history.replace("/login");
-            }
-        }.bind(this);
-        xhr.send(formData);
-
-        /*$('.modal').modal('hide');
-        $('body').removeClass('modal-open');
-        $('.modal-backdrop').remove();*/
-    }
-
     showSignBtns(){
         this.setState({ showSignButtons: true });
         this.setState({ showButtons: false });
@@ -579,49 +514,14 @@ export default class ShowApz extends React.Component {
         this.setState({ showButtons: true });
     }
 
-    returnApzForm(apzId) {
-        var token = sessionStorage.getItem('tokenInfo');
-        var formData = new FormData();
-        if(this.state.description == '' || this.state.description == ' '){
-            alert("Заполните комментарий!");
-            return false;
-        }
-        formData.append('message', this.state.description);
-        var xhr = new XMLHttpRequest();
-        xhr.open("post", window.url + "api/apz/head/return/" + apzId, true);
-        xhr.setRequestHeader("Authorization", "Bearer " + token);
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                this.setState({ showButtons: false });
-                alert("Заявка возвращена!");
-            }
-            else if(xhr.status === 401){
-                sessionStorage.clear();
-                alert("Время сессии истекло. Пожалуйста войдите заново!");
-                this.props.history.replace("/login");
-            }
-        }.bind(this);
-        xhr.send(formData);
-
-        $('.modal').modal('hide');
-        $('body').removeClass('modal-open');
-        $('.modal-backdrop').remove();
-    }
-
     acceptDeclineApzForm(apzId, status, comment) {
-        if(this.state.headResponse === null){
-            this.setState({callSaveFromSend: true});
-            this.saveApzForm(apzId, status, comment);
-            return true;
-        }
-
         var token = sessionStorage.getItem('tokenInfo');
         var formData = new FormData();
-        formData.append('Response', status);
+        formData.append('response', status);
         formData.append('message', comment);
 
         var xhr = new XMLHttpRequest();
-        xhr.open("post", window.url + "api/apz/head/status/" + apzId, true);
+        xhr.open("post", window.url + "api/apz/headsstateservices/status/" + apzId, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.onload = function () {
             if (xhr.status === 200) {
@@ -1241,6 +1141,7 @@ export default class ShowApz extends React.Component {
 
                     <div className="col-sm-6">
                         <h5 className="block-title-2 mt-3 mb-3">Решение</h5>
+
                         {apz.apz_department_response && !this.state.lastDecisionIsMO &&
                         <div>
                             <table className="table table-bordered table-striped">
@@ -1312,21 +1213,6 @@ export default class ShowApz extends React.Component {
                             }
                             </tbody>
                         </table>
-                      }
-                        {this.state.otkazFile &&
-                        <table className="table table-bordered">
-                            <tbody>
-                            <tr>
-                                <td style={{width: '22%'}}><b>Запрос</b></td>
-                                <td>
-                                  <a className="text-info pointer" data-category="22" onClick={this.downloadFile.bind(this, this.state.otkazFile.id, 22)}>Скачать</a>
-                                  <div className="progress mb-2" data-category="22" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                      <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                  </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
                         }
                         {this.state.lastDecisionIsMO &&
                         <table className="table table-bordered">
@@ -1393,7 +1279,7 @@ export default class ShowApz extends React.Component {
                                                 </div>
                                             </div>
                                             <div className="modal-footer">
-                                                <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.returnApzForm.bind(this, apz.id)}>Отправить</button>
+                                                <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.description)}>Отправить</button>
                                                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                                             </div>
                                         </div>
@@ -1401,10 +1287,8 @@ export default class ShowApz extends React.Component {
                                 </div>
                             </div>
                             }
-
-                            {
-                              this.state.showSendButton &&
-                              <button type="button" className="btn btn-raised btn-success" onClick={this.acceptDeclineApzForm.bind(this, apz.id, this.state.lastDecisionIsMO ? false : true, "")}>Отправить заявителю</button>
+                            {this.state.showSendButton &&
+                            <button type="button" className="btn btn-raised btn-success" onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "")}>Отправить архитектору</button>
                             }
                         </div>
                     </div>

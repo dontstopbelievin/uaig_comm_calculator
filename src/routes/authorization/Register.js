@@ -124,7 +124,7 @@ export default class Register extends React.Component {
 
   webSocketFunction() {
     this.webSocket.onopen = function (event) {
-      if (this.heartbeat_interval == "") {
+      if (this.heartbeat_interval === "") {
         this.missed_heartbeats = 0;
         this.heartbeat_interval = setInterval(this.pingLayer, 2000);
       }
@@ -473,7 +473,7 @@ export default class Register extends React.Component {
                           на сайте НУЦ РК. <br/>
                           Для установки пройдите по ссылке:&nbsp;
                           <a onClick={() => document.getElementById("alertModalClose").click()}
-                             href="http://pki.gov.kz/index.php/ru/ncalayer" target="_blank">
+                             href="http://pki.gov.kz/index.php/ru/ncalayer" target="_blank" rel="noopener noreferrer">
                             pki.gov.kz</a>
                         </div>
                         }

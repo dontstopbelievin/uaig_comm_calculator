@@ -1,8 +1,4 @@
 import React from 'react';
-import LocalizedStrings from 'react-localization';
-import {ru, kk} from '../../languages/header.json';
-import $ from 'jquery';
-import Loader from 'react-loader-spinner';
 import ReactQuill from 'react-quill';
 
 export default class AddTemplate extends React.Component{

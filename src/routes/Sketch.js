@@ -3,7 +3,7 @@ import EsriLoaderReact from 'esri-loader-react';
 import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
-import { Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
+import { Route, Link, NavLink, Switch } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import ReactHintFactory from "react-hint";
 
@@ -20,7 +20,7 @@ export default class Sketch extends React.Component {
     };
   }
   componentWillMount(){
-    if(this.props.history.location.pathname != "/panel/citizen/sketch"){
+    if(this.props.history.location.pathname !== "/panel/citizen/sketch"){
       this.setState({welcome_text:false,left_tabs: false});
     }
   }
@@ -373,6 +373,69 @@ class ShowSketch extends React.Component {
     xhr.send();
   }
 
+    printSketch(sketchId, project) {
+        var token = sessionStorage.getItem('tokenInfo');
+        if (token) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("get", window.url + "api/print/sketch/" + sketchId, true);
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    //test of IE
+                    if (typeof window.navigator.msSaveBlob === "function") {
+                        window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
+                    } else {
+                        var data = JSON.parse(xhr.responseText);
+                        var today = new Date();
+                        var curr_date = today.getDate();
+                        var curr_month = today.getMonth() + 1;
+                        var curr_year = today.getFullYear();
+                        var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+
+                        var base64ToArrayBuffer = (function () {
+
+                            return function (base64) {
+                                var binaryString =  window.atob(base64);
+                                var binaryLen = binaryString.length;
+                                var bytes = new Uint8Array(binaryLen);
+
+                                for (var i = 0; i < binaryLen; i++) {
+                                    var ascii = binaryString.charCodeAt(i);
+                                    bytes[i] = ascii;
+                                }
+
+                                return bytes;
+                            }
+
+                        }());
+
+                        var saveByteArray = (function () {
+                            var a = document.createElement("a");
+                            document.body.appendChild(a);
+                            a.style = "display: none";
+
+                            return function (data, name) {
+                                var blob = new Blob(data, {type: "octet/stream"}),
+                                    url = window.URL.createObjectURL(blob);
+                                a.href = url;
+                                a.download = name;
+                                a.click();
+                                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+                            };
+
+                        }());
+
+                        saveByteArray([base64ToArrayBuffer(data.file)], "апз-" + project + formated_date + ".pdf");
+                    }
+                } else {
+                    alert('Не удалось скачать файл');
+                }
+            }
+            xhr.send();
+        } else {
+            console.log('session expired');
+        }
+    }
   toggleMap(value) {
     this.setState({
       showMap: value
@@ -388,6 +451,66 @@ class ShowSketch extends React.Component {
       })
     }
   }
+
+
+    printSketchAnswer(sketchId, progbarId = null) {
+        var token = sessionStorage.getItem('tokenInfo');
+        if (token) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("get", window.url + "api/print/sketch/" + sketchId, true);
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    //test of IE
+                    if (typeof window.navigator.msSaveBlob === "function") {
+                        window.navigator.msSaveBlob(xhr.response, "Sogl.pdf");
+                    } else {
+                        var data = JSON.parse(xhr.responseText);
+
+                        var base64ToArrayBuffer = (function () {
+
+                            return function (base64) {
+                                var binaryString =  window.atob(base64);
+                                var binaryLen = binaryString.length;
+                                var bytes = new Uint8Array(binaryLen);
+
+                                for (var i = 0; i < binaryLen; i++) {
+                                    var ascii = binaryString.charCodeAt(i);
+                                    bytes[i] = ascii;
+                                }
+
+                                return bytes;
+                            }
+
+                        }());
+
+                        var saveByteArray = (function () {
+                            var a = document.createElement("a");
+                            document.body.appendChild(a);
+                            a.style = "display: none";
+
+                            return function (data, name) {
+                                var blob = new Blob(data, {type: "octet/stream"}),
+                                    url = window.URL.createObjectURL(blob);
+                                a.href = url;
+                                a.download = name;
+                                a.click();
+                                setTimeout(function() {window.URL.revokeObjectURL(url);},1000);
+                            };
+
+                        }());
+
+                        saveByteArray([base64ToArrayBuffer(data.file)], "Sogl.pdf");
+                    }
+                } else {
+                    alert('Не удалось скачать файл');
+                }
+            }
+            xhr.send();
+        } else {
+            console.log('Время сессии истекло.');
+        }
+    }
 
   // downloadFile(id) {
   //   var token = sessionStorage.getItem('tokenInfo');
@@ -617,17 +740,31 @@ class ShowSketch extends React.Component {
               <div>
                 <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
 
-                {this.state.responseFile &&
+
+                {/*{this.state.responseFile &&*/}
                   <table className="table table-bordered table-striped">
                     <tbody>
+                    {sketch.urban_response &&
+                    <table className="table table-bordered">
+                        <tbody>
+                        <tr>
+                            <td style={{width: '22%'}}><b>Согласование</b></td>
+                            <td><a className="text-info pointer"
+                                   onClick={this.printSketchAnswer.bind(this, sketch.id)}>Скачать</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    }
                       {sketch.status_id === 2 ?
                         <tr>
-                          <td style={{width: '22%'}}><b>Решение на эскизный проект</b></td>
-                          <td><a className="text-info pointer" data-category="45" onClick={this.downloadFile.bind(this, this.state.responseFile.id, 45)}>Скачать</a>
-                              <div className="progress mb-2" data-category="45" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                  <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                              </div>
-                          </td>
+
+
+                            {/*<td style={{width: '22%'}}><b>Решение на эскизный проект</b></td>*/}
+                          {/*<td><a className="text-info pointer" data-category="45" onClick={this.downloadFile.bind(this, this.state.responseFile.id, 45)}>Скачать</a>*/}
+                              {/*<div className="progress mb-2" data-category="45" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
+                                  {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                              {/*</div>*/}
+                          {/*</td>*/}
                         </tr>
                         :
                         <tr>
@@ -641,7 +778,7 @@ class ShowSketch extends React.Component {
                       }
                     </tbody>
                   </table>
-                }
+                {/*}*/}
               </div>
             }
 
@@ -670,7 +807,7 @@ class ShowSketch extends React.Component {
 
             <div className="col-sm-12">
               <hr />
-              <Link className="btn btn-outline-secondary pull-right" to={'/panel/citizen/sketch'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+              <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
             </div>
           </div>
         }
@@ -1280,10 +1417,6 @@ class AddSketch extends React.Component {
     // });
   };
 
-  routeChange(){
-      this.props.history.goBack();
-  }
-
   render() {
     return (
         <div className="container" id="apzFormDiv">
@@ -1638,7 +1771,7 @@ class AddSketch extends React.Component {
 
             <div>
                 <hr />
-                <button className="btn btn-outline-secondary pull-right" onClick={this.routeChange.bind(this)}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
+                <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
             </div>
         </div>
     )

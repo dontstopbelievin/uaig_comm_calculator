@@ -30,17 +30,10 @@ export default class ShowApz extends React.Component {
         confirmedTaskFile: false,
         titleDocumentFile: false,
         additionalFile: false,
-        engineerReturnedState: false,
-        apzReturnedState: false,
         needSign: false,
         storageAlias: "PKCS12",
-        //acceptSign: false,
-        backFromHead: false,
-        apz_head_id: '',
-        apz_heads_id: [],
-        engineerSign: false,
-        apzSign: false,
         xmlFile: false,
+        reglamentFile: false,
         loaderHiddenSign:true
       };
 
@@ -50,7 +43,6 @@ export default class ShowApz extends React.Component {
     onDescriptionChange(value) {
       this.setState({ description: value });
     }
-
     componentDidMount() {
       this.props.breadCrumbs();
     }
@@ -60,93 +52,43 @@ export default class ShowApz extends React.Component {
         this.props.history.replace({pathname: "/panel/common/login", state:{url_apz_id: fullLoc[fullLoc.length-1]}});
       }else {
         this.getApzInfo();
-        this.getHeads();
       }
-    }
-
-    getHeads(){
-      var token = sessionStorage.getItem('tokenInfo');
-      var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/getheads", true);
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          var data = JSON.parse(xhr.responseText);
-          //console.log(data);
-          var select_directors = [];
-          for (var i = 0; i < data.length; i++) {
-            select_directors.push(<option key={i} value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
-          }
-          this.setState({apz_heads_id: select_directors});
-          if((this.state.apz_head_id === "" || this.state.apz_head_id === " ") && data.length > 0){
-              this.setState({apz_head_id: data[0].user_id});
-          }
-        }
-      }.bind(this);
-      xhr.send();
     }
 
     getApzInfo() {
       var id = this.props.match.params.id;
       var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/region/detail/" + id, true);
+      xhr.open("get", window.url + "api/apz/generalplan/detail/" + id, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
         if (xhr.status === 200) {
-          var apz = JSON.parse(xhr.responseText);
+          var data = JSON.parse(xhr.responseText);
+          var apz = data;
           this.setState({apz: apz});
           this.setState({personalIdFile: apz.files.filter(function(obj) { return obj.category_id === 3 })[0]});
           this.setState({confirmedTaskFile: apz.files.filter(function(obj) { return obj.category_id === 9 })[0]});
           this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
           this.setState({additionalFile: apz.files.filter(function(obj) { return obj.category_id === 27 })[0]});
           this.setState({reglamentFile: apz.files.filter(function(obj) { return obj.category_id === 29 })[0]});
-          this.setState({showButtons: false});
-          for(var data_index = apz.state_history.length-1; data_index >= 0; data_index--){
-            switch (apz.state_history[data_index].state_id) {
-              case 33:
-                this.setState({backFromHead: apz.state_history[data_index]});
-                break;
-              default:
-                continue;
-            }
-            break;
-          }
-          this.setState({engineerReturnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender === 'engineer'})[0]});
-          this.setState({apzReturnedState: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender === 'apz'})[0]});
-          this.setState({needSign: apz.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
-          this.setState({engineerSign: apz.files.filter(function(obj) { return obj.category_id === 28 })[0]});
-          this.setState({apzSign: apz.files.filter(function(obj) { return obj.category_id === 18 })[0]});
-          if(apz.apz_head_id){this.setState({apz_head_id: apz.apz_head_id});}
 
-          if (apz.status_id === 3) {
+          if (apz.status_id === 11) {
             this.setState({showButtons: true});
           }
-
           this.setState({loaderHidden: true});
           // BE CAREFUL OF category_id should be xml регионального архитектора
-          this.setState({xmlFile: apz.files.filter(function(obj) { return obj.category_id === 21})[0]});
-          this.setState({needSign: apz.files.filter(function(obj) { return obj.category_id === 21})[0]});
-          if(apz.state_history.filter(function(obj) { return obj.state_id === 33 })[0] != null){
-              this.setState({needSign: false});
-          }
-          //use instead new columns from table
-          if(!apz.urban_sign_returned){
-              this.setState({xmlFile: false});
-          }
         } else if (xhr.status === 401) {
           sessionStorage.clear();
           alert("Время сессии истекло. Пожалуйста войдите заново!");
           this.props.history.replace("/login");
         }
       }.bind(this);
+      xhr.onerror = function () {
+        alert('Сервер не отвечает');
+        this.setState({ loaderHidden: true });
+      }.bind(this);
       xhr.send();
-    }
-
-    handleHeadIDChange(event){
-      this.setState({apz_head_id: event.target.value});
     }
 
     downloadFile(id, progbarId = null) {
@@ -214,6 +156,65 @@ export default class ShowApz extends React.Component {
           }
         }
       xhr.send();
+    }
+
+    uploadFile(category, e) {
+      if(e.target.files[0] == null){ return;}
+      var file = e.target.files[0];
+      var name = file.name.replace(/\.[^/.]+$/, "");
+      var progressbar = $('.progress[data-category=' + category + ']');
+      if (!file || !category) {
+        alert('Не удалось загрузить файл');
+
+        return false;
+      }
+
+      var formData = new FormData();
+      formData.append('file', file);
+      formData.append('name', name);
+      formData.append('category', category);
+      progressbar.css('display', 'flex');
+      $.ajax({
+        type: 'POST',
+        url: window.url + 'api/file/upload',
+        contentType: false,
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
+        },
+        processData: false,
+        data: formData,
+        xhr: function() {
+          var xhr = new window.XMLHttpRequest();
+
+          xhr.upload.addEventListener("progress", function(evt) {
+            if (evt.lengthComputable) {
+              var percentComplete = evt.loaded / evt.total;
+              percentComplete = parseInt(percentComplete * 100, 10);
+              $('div', progressbar).css('width', percentComplete + '%');
+            }
+          }, false);
+
+          return xhr;
+        },
+        success: function (response) {
+          var data = {id: response.id, name: response.name};
+
+          setTimeout(function() {
+            progressbar.css('display', 'none');
+            switch (category) {
+              case 29:
+                this.setState({reglamentFile: data});
+                break;
+              default:
+            }
+            alert("Файл успешно загружен");
+          }.bind(this), '1000')
+        }.bind(this),
+        error: function (response) {
+          progressbar.css('display', 'none');
+          alert("Не удалось загрузить файл");
+        }
+      });
     }
 
     setMissedHeartbeatsLimitToMax() {
@@ -471,21 +472,21 @@ export default class ShowApz extends React.Component {
     acceptDeclineApzForm(apzId, status, comment) {
       var token = sessionStorage.getItem('tokenInfo');
 
+      if (!comment && !this.state.reglamentFile) {
+        alert('Напишите комментарий и закрепите файл!');
+        return false;
+      }
+
       var registerData = {
         response: status,
         message: comment,
-        apz_head_id: this.state.apz_head_id
+        file: this.state.reglamentFile
       };
-
-      if (!status && !comment) {
-        alert('Заполните причину отказа');
-        return false;
-      }
 
       var data = JSON.stringify(registerData);
 
       var xhr = new XMLHttpRequest();
-      xhr.open("post", window.url + "api/apz/region/status/" + apzId, true);
+      xhr.open("post", window.url + "api/apz/generalplan/status/" + apzId, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function () {
@@ -512,18 +513,9 @@ export default class ShowApz extends React.Component {
         }
       }.bind(this);
       xhr.send(data);
+      $('#ReturnApzForm').modal('hide');
+      $('#AcceptApzForm').modal('hide');
     }
-
-    sendToApz() {
-      this.setState({needSign: true });
-    }
-    hideSignBtns() {
-      this.setState({needSign: false });
-    }
-
-    /*sendToApzAccept(){
-      this.setState({acceptSign: true });
-    }*/
 
     toggleMap(value) {
       this.setState({
@@ -1243,17 +1235,6 @@ export default class ShowApz extends React.Component {
               <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                 {this.state.showMapText}
               </button>
-
-              {this.state.engineerReturnedState &&
-                <div className="alert alert-danger">
-                  Комментарий инженера: {this.state.engineerReturnedState.comment}
-                </div>
-              }
-              {this.state.apzReturnedState &&
-                <div className="alert alert-danger">
-                  Комментарий апз отдела: {this.state.apzReturnedState.comment}
-                </div>
-              }
               {apz.status_id === 1 &&
                 <table className="table table-bordered">
                   <tbody>
@@ -1272,90 +1253,84 @@ export default class ShowApz extends React.Component {
                   </tbody>
                 </table>
               }
-              {this.state.backFromHead &&
-                <div className="alert alert-danger">
-                  Комментарий главного архитектора: {this.state.backFromHead.comment}
-                </div>
-              }
               <div className={this.state.showButtons ? '' : 'invisible'}>
                 <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                  {!this.state.needSign ?
-                    <div style={{margin: 'auto', display: 'table'}}>
-                      <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>Поставить подпись</button>
-                      <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">
-                          Вернуть на доработку
-                      </button>
-                    </div>
-                    :
-                      <div>
-                      { !this.state.xmlFile ?
-                        <div id="MySignForm" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                          <div>Выберите хранилище</div>
-
-                          <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
-                            <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
-                            <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>Kaztoken</button>
-                          </div>
-
-                          <div className="form-group">
-                            <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
-                            <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
-                          </div>
-                          {!this.state.loaderHiddenSign &&
-                          <div style={{margin: '0 auto'}}>
-                              <Loader type="Ball-Triangle" color="#46B3F2" height="70" width="70" />
-                          </div>
-                          }
-                          {this.state.loaderHiddenSign &&
-                          <div className="form-group">
-                              <button className="btn btn-raised btn-success" type="button"
-                                      onClick={this.signMessage.bind(this)}>Подписать
-                              </button>
-                              <button className="btn btn-primary" type="button" style={{marginLeft: '5px'}}
-                                      onClick={this.hideSignBtns.bind(this)}>Назад
-                              </button>
-                          </div>
-                          }
+                  <h5 className="modal-title">Комментарий</h5>
+                  <div className="form-group">
+                    <ReactQuill value={this.state.description} onChange={this.onDescriptionChange} />
+                  </div>
+                  <div className="form-group">
+                    <div className="file_container">
+                      <div className="col-md-12">
+                        <div className="progress mb-2" data-category="29" style={{height: '20px', display: 'none'}}>
+                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
-                        :
-                          <div style={{paddingLeft:'5px', fontSize: '18px', textAlign:'center'}}>
-                            <b>Выберите главного архитектора:</b>
-                            <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
-                              {this.state.apz_heads_id}
-                            </select>
-                            <div>
-                              <button type="button" className="btn btn-raised btn-success" onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "")}>Отправить главному архитектору</button>
-                            </div>
-                          </div>
-                      }
-                    </div>
-                  }
-                  <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                      <div className="modal-dialog" role="document">
-                          <div className="modal-content">
-                              <div className="modal-header">
-                                  <h5 className="modal-title">Вернуть заявку на доработку</h5>
-                                  <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                                      <span aria-hidden="true">&times;</span>
-                                  </button>
-                              </div>
-                              <div className="modal-body">
-                                  <div className="form-group">
-                                      <label htmlFor="docNumber">Комментарий</label>
-                                      <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.description} onChange={this.onDescriptionChange} />
-                                  </div>
-                              </div>
-                              <div className="modal-footer">
-                                  <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.description)}>Отправить</button>
-                                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                              </div>
-                          </div>
                       </div>
+                      {this.state.reglamentFile &&
+                        <div className="file_block mb-2">
+                          <div>
+                            {this.state.reglamentFile.name}
+                            <a className="pointer" onClick={(e) => this.setState({reglamentFile: false}) }>×</a>
+                          </div>
+                        </div>
+                      }
+                      <div className="file_buttons btn-group btn-group-justified d-table mt-0">
+                        <label><h6>Регламент</h6></label>
+                        <label htmlFor="reglamentFile" className="btn btn-success" style={{marginLeft: '5px'}}>Загрузить</label>
+                        <input type="file" id="reglamentFile" name="reglamentFile" className="form-control" onChange={this.uploadFile.bind(this, 29)} style={{display: 'none'}} />
+                      </div>
+                      <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
+                    </div>
+                  </div>
+                  <div style={{margin: 'auto', display: 'table'}}>
+                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} data-toggle="modal" data-target="#AcceptApzForm">
+                      Одобрить
+                    </button>
+                    <button className="btn btn-raised btn-danger" style={{marginRight:'5px'}} data-toggle="modal" data-target="#ReturnApzForm">
+                      Отказ
+                    </button>
                   </div>
                 </div>
               </div>
 
-              {apz.state_history.length > 0 &&
+              <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                <div className="modal-dialog" role="document">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title">Вы уверены что хотите отколнить заявление?</h5>
+                      <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div className="modal-footer" style={{margin:'auto'}}>
+                      <button type="button" className="btn btn-secondary" onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.description)}>
+                        Да
+                      </button>
+                      <button type="button" className="btn btn-secondary" data-dismiss="modal" style={{marginLeft:'5px'}}>Нет</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="modal fade" id="AcceptApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                <div className="modal-dialog" role="document">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title">Вы уверены что хотите принять заявление?</h5>
+                      <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div className="modal-footer" style={{margin:'auto'}}>
+                      <button type="button" className="btn btn-secondary" onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, this.state.description)}>
+                        Да
+                      </button>
+                      <button type="button" className="btn btn-secondary" data-dismiss="modal" style={{marginLeft:'5px'}}>Нет</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {apz.state_history && apz.state_history.length > 0 &&
                 <div>
                   <h5 className="block-title-2 mb-3 mt-3">Логи</h5>
                   <div className="border px-3 py-2">

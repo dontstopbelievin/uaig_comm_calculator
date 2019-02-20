@@ -1,9 +1,9 @@
 import React from 'react';
 import Loader from 'react-loader-spinner';
 import $ from 'jquery';
-import { Route, Link} from 'react-router-dom';
+import { Link} from 'react-router-dom';
 
-export default class EngineerSearchAllApzs extends React.Component {
+export default class SearchAllApzs extends React.Component {
   constructor(props) {
     super(props);
 
@@ -35,7 +35,7 @@ export default class EngineerSearchAllApzs extends React.Component {
     this.setState({ loaderHidden: false });
 
     var data = $("form input, form select").filter(function(index, element) {
-      return $(element).val() != '';
+      return $(element).val() !== '';
     }).serialize();
     //console.log(data);
     var token = sessionStorage.getItem('tokenInfo');
@@ -67,7 +67,7 @@ export default class EngineerSearchAllApzs extends React.Component {
 
   search(page) {
     var data = $("form input, form select").filter(function(index, element) {
-      return $(element).val() != '';
+      return $(element).val() !== '';
     }).serialize();
 
     this.props.history.push('/panel/engineer/apz/search/' + page + '?' + data);
@@ -214,11 +214,11 @@ export default class EngineerSearchAllApzs extends React.Component {
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
-                      <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
+                      <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
                         <Link className="page-link" to={'/panel/engineer/apz/search/' + num + search}>{num}</Link>
                       </li>
                       );
-                    }.bind(this))
+                    })
                   }
                   <li className="page-item">
                     <Link className="page-link" to={'/panel/engineer/apz/search/' + this.state.response.last_page + search}>В конец</Link>

@@ -1,5 +1,4 @@
 import React from 'react';
-import saveAs from 'file-saver';
 import $ from 'jquery';
 
 export default class ExportToExcel extends React.Component {
@@ -31,7 +30,7 @@ export default class ExportToExcel extends React.Component {
   }
 
   exportToExcel(progbarId = null) {
-    if(this.state.start_date == '' || this.state.end_date == ''){
+    if(this.state.start_date === '' || this.state.end_date === ''){
       alert('Заполните даты!');
       return false;
     }

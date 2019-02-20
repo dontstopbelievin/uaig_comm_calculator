@@ -1,9 +1,8 @@
 import React from 'react';
-import { Route, Link, NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
-import $ from 'jquery';
 
-export default class UrbanAllApzs extends React.Component {
+export default class AllApzs extends React.Component {
   constructor(props) {
     super(props);
 
@@ -102,7 +101,7 @@ export default class UrbanAllApzs extends React.Component {
   }
 
   handleSearch(e){
-    if(e.target.value.trim() == ''){this.setState({data: this.state.data_reserve}); return;}
+    if(e.target.value.trim() === ''){this.setState({data: this.state.data_reserve}); return;}
     var items = e.target.value.trim().split(' ');
     var data = this.state.data_reserve.filter(function(obj) {
         for(var i = 0; i < items.length; i++){
@@ -126,20 +125,18 @@ export default class UrbanAllApzs extends React.Component {
             <div>
               <h4 className="mb-0">Архитектурно-планировочное задание</h4>
             </div>
-            <div style={{fontSize: '18px', margin: '10px 0px'}}>
+            {/*<div style={{fontSize: '18px', margin: '10px 0px'}}>
               <b>Выберите регион:</b>
               <select style={{padding: '0px 4px', margin: '5px'}} value={this.state.current_region} onChange={this.handleRegionChange.bind(this)}>
                 {this.state.regions}
               </select>
-            </div>
+            </div>*/}
             <table style={{width:'100%'}}><tbody>
             <tr><td>
               <input placeholder="Поиск по ФИО" type="text" className="mb-2" id="filter" onChange={this.handleSearch} style={{padding:'3px'}}/>
             </td><td>
               <ul className="nav nav-tabs mb-2 pull-right">
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'new'} to="/panel/urban/apz/status/new/1" replace>Новые</NavLink></li>
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'processed'} to="/panel/urban/apz/status/processed/1" replace>Обработанные</NavLink></li>
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'awaiting'} to="/panel/urban/apz/status/awaiting/1" replace>В ожидании</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/urban/apz/status/active/1" replace>Активные</NavLink></li>
                 <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/urban/apz/status/accepted/1" replace>Принятые</NavLink></li>
                 <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/urban/apz/status/declined/1" replace>Отказанные</NavLink></li>
               </ul>
@@ -191,11 +188,11 @@ export default class UrbanAllApzs extends React.Component {
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
-                      <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
+                      <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
                         <Link className="page-link" to={'/panel/urban/apz/status/' + status + '/' + num}>{num}</Link>
                       </li>
                       );
-                    }.bind(this))
+                    })
                   }
                   <li className="page-item">
                     <Link className="page-link" to={'/panel/urban/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>

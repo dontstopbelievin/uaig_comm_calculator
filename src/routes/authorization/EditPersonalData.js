@@ -61,7 +61,7 @@ export default class EditPersonalData extends React.Component{
   onRequestSubmission(){
     console.log(JSON.stringify(this.state.userData));
     var data = new Object();
-    if (this.state.bin != ''){
+    if (this.state.bin !== ''){
         data.bin = this.state.bin;
     }else{
         data.iin = this.state.iin;
@@ -88,8 +88,8 @@ export default class EditPersonalData extends React.Component{
             console.log('___________________________');
             alert(data.message);
             console.log('_____________end______________');
-          window.location.href = '/panel/';
-        }.bind(this),
+          this.props.history.push('/panel/base-page');
+        },
         fail: function (jqXHR) {
             alert("Ошибка " + jqXHR.status + ': ' + jqXHR.statusText);
         },

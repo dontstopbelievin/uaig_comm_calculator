@@ -1,14 +1,9 @@
 import React from 'react';
-import EsriLoaderReact from 'esri-loader-react';
-import $ from 'jquery';
 import 'jquery-serializejson';
-import { Route, NavLink, Link, Switch, Redirect } from 'react-router-dom';
+import { NavLink, Link} from 'react-router-dom';
 import Loader from 'react-loader-spinner';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import saveAs from 'file-saver';
 
-export default class EngineerAllApzs extends React.Component {
+export default class AllApzs extends React.Component {
   constructor(props) {
     super(props);
 
@@ -99,7 +94,7 @@ export default class EngineerAllApzs extends React.Component {
   }
 
   handleSearch(e){
-    if(e.target.value.trim() == ''){this.setState({data: this.state.data_reserve}); return;}
+    if(e.target.value.trim() === ''){this.setState({data: this.state.data_reserve}); return;}
     var items = e.target.value.trim().split(' ');
     var data = this.state.data_reserve.filter(function(obj) {
         for(var i = 0; i < items.length; i++){
@@ -193,11 +188,11 @@ export default class EngineerAllApzs extends React.Component {
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
-                      <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
+                      <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
                         <Link className="page-link" to={'/panel/engineer/apz/status/' + status + '/' + num}>{num}</Link>
                       </li>
                       );
-                    }.bind(this))
+                    })
                   }
                   <li className="page-item">
                     <Link className="page-link" to={'/panel/engineer/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>

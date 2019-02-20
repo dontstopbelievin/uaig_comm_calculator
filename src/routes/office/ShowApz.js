@@ -1,6 +1,5 @@
 import React from 'react';
 import Loader from 'react-loader-spinner';
-import $ from 'jquery';
 import ShowMap from "./ShowMap";
 
 export default class ShowApz extends React.Component {
@@ -104,7 +103,7 @@ export default class ShowApz extends React.Component {
 
         this.setState({loaderHidden: true});
 
-        if (hasDeclined.length == 0) {
+        if (hasDeclined.length === 0) {
           this.setState({response: true});
         }
       } else if (xhr.status === 401) {
@@ -1051,7 +1050,7 @@ export default class ShowApz extends React.Component {
                                 </table>
                               </div>
                             );
-                          }.bind(this))}
+                          })}
                         </div>
                       }
                     </div>
@@ -1305,7 +1304,7 @@ export default class ShowApz extends React.Component {
                         <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
                       </div>
                     );
-                  }.bind(this))}
+                  })}
                 </div>
               </div>
             }

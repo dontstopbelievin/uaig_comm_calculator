@@ -1,25 +1,26 @@
 import React from 'react';
-import { NavLink, Link} from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 
 export default class AllApzs extends React.Component {
   constructor(props) {
     super(props);
 
-    var roles = JSON.parse(sessionStorage.getItem('userRoles'));
-
     this.state = {
       loaderHidden: false,
-      isPerformer: (roles.indexOf('PerformerHeat') !== -1),
       response: null,
-      pageNumbers: []
+      data: [],
+      data_reserve: [],
+      pageNumbers: [],
+      searchApz: '',
     };
 
+    this.handleSearch = this.handleSearch.bind(this);
+    this.getApzs();
   }
 
   componentDidMount() {
     this.props.breadCrumbs();
-    this.getApzs();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -38,27 +39,15 @@ export default class AllApzs extends React.Component {
     this.setState({ loaderHidden: false });
 
     var token = sessionStorage.getItem('tokenInfo');
-    var roles = JSON.parse(sessionStorage.getItem('userRoles'));
-
-    if (roles == null) {
-      sessionStorage.clear();
-      alert("Token is expired, please login again!");
-      this.props.history.replace("/login");
-      return false;
-    }
-    var directorId = JSON.parse(sessionStorage.getItem('userId'));
-    var providerName = roles[1];
+    console.log(sessionStorage.getItem('userRoles'));
     var xhr = new XMLHttpRequest();
-    if(roles[2] === 'DirectorHeat'){
-        xhr.open("get", window.url + "api/apz/provider/" + providerName + "/all/" + status + "/" + directorId + '?page=' + page, true);
-    }else{
-        xhr.open("get", window.url + "api/apz/provider/" + providerName + "/all/" + status + "/0?page=" + page, true);
-    }
+    xhr.open("get", window.url + "api/apz/lawyer/all/" + status + '?page=' + page, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
       if (xhr.status === 200) {
         var response = JSON.parse(xhr.responseText);
+        console.log(response);
         var pageNumbers = [];
         var start = (response.current_page - 4) > 0 ? (response.current_page - 4) : 1;
         var end = (response.current_page + 4) < response.last_page ? (response.current_page + 4) : response.last_page;
@@ -69,8 +58,14 @@ export default class AllApzs extends React.Component {
 
         this.setState({pageNumbers: pageNumbers});
         this.setState({response: response});
+        this.setState({data: response.data});
+        this.setState({data_reserve: response.data});
       }
 
+      this.setState({ loaderHidden: true });
+    }.bind(this);
+    xhr.onerror = function () {
+      alert('Сервер не отвечает');
       this.setState({ loaderHidden: true });
     }.bind(this);
     xhr.send();
@@ -92,28 +87,43 @@ export default class AllApzs extends React.Component {
     return formated_date;
   }
 
+  handleSearch(e){
+    if(e.target.value.trim() === ''){this.setState({data: this.state.data_reserve}); return;}
+    var items = e.target.value.trim().split(' ');
+    var data = this.state.data_reserve.filter(function(obj) {
+        for(var i = 0; i < items.length; i++){
+          if(obj.applicant.toLowerCase().includes(items[i].toLowerCase())){continue;}
+          else{return false;}
+        }
+       return true;
+     });
+    this.setState({data: data});
+  }
+
   render() {
     var status = this.props.match.params.status;
     var page = this.props.match.params.page;
-    var apzs = this.state.response ? this.state.response.data : [];
+    var apzs = this.state.data ? this.state.data : [];
 
     return (
       <div>
-        <div className="card-header">
-          <h4 className="mb-0">Архитектурно-планировочное задание</h4>
-        </div>
         {this.state.loaderHidden &&
           <div>
-            <ul className="nav nav-tabs mb-2 pull-right">
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/heat-provider/apz/status/active/1" replace>Активные</NavLink></li>
-
-              {this.state.isPerformer &&
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'awaiting'} to="/panel/heat-provider/apz/status/awaiting/1" replace>В ожидании</NavLink></li>
-              }
-
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/heat-provider/apz/status/accepted/1" replace>Принятые</NavLink></li>
-              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/heat-provider/apz/status/declined/1" replace>Отказанные</NavLink></li>
-            </ul>
+            <div>
+              <h4 className="mb-0">Архитектурно-планировочное задание</h4>
+            </div>
+            <table style={{width:'100%'}}><tbody>
+            <tr><td>
+              <input placeholder="Поиск по ФИО" type="text" className="mb-2" id="filter" onChange={this.handleSearch} style={{padding:'3px'}}/>
+            </td><td>
+              <ul className="nav nav-tabs mb-2 pull-right">
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'new'} to="/panel/lawyer/apz/status/new/1" replace>Новые</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'processed'} to="/panel/lawyer/apz/status/processed/1" replace>Обработанные</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/lawyer/apz/status/accepted/1" replace>Принятые</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/lawyer/apz/status/declined/1" replace>Отказанные</NavLink></li>
+              </ul>
+            </td></tr></tbody>
+            </table>
 
             <table className="table">
               <thead>
@@ -123,15 +133,11 @@ export default class AllApzs extends React.Component {
                   <th style={{width: '20%'}}>Заявитель</th>
                   <th style={{width: '20%'}}>Адрес</th>
                   <th style={{width: '20%'}}>Дата заявления</th>
-
-                  {(status === 'active' || status === 'awaiting') &&
-                    <th style={{width: '14%'}}>Срок</th>
-                  }
                   <th></th>
                 </tr>
               </thead>
               <tbody>
-                {apzs.map(function(apz, index) {
+                {apzs && apzs.map(function(apz, index) {
                   return(
                     <tr key={index}>
                       <td>{apz.id}</td>
@@ -145,14 +151,8 @@ export default class AllApzs extends React.Component {
                       <td>{apz.applicant}</td>
                       <td>{apz.project_address}</td>
                       <td>{this.toDate(apz.created_at)}</td>
-
-                      {(status === 'active' || status === 'awaiting') &&
-                        <td>
-                          {this.toDate(apz.term.date)}
-                        </td>
-                      }
                       <td>
-                        <Link className="btn btn-outline-info" to={'/panel/heat-provider/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link className="btn btn-outline-info" to={'/panel/lawyer/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
                     </tr>
                     );
@@ -165,19 +165,19 @@ export default class AllApzs extends React.Component {
               <nav className="pagination_block">
                 <ul className="pagination justify-content-center">
                   <li className="page-item">
-                    <Link className="page-link" to={'/panel/heat-provider/apz/status/' + status + '/1'}>В начало</Link>
+                    <Link className="page-link" to={'/panel/lawyer/apz/status/' + status + '/1'}>В начало</Link>
                   </li>
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
                       <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
-                        <Link className="page-link" to={'/panel/heat-provider/apz/status/' + status + '/' + num}>{num}</Link>
+                        <Link className="page-link" to={'/panel/lawyer/apz/status/' + status + '/' + num}>{num}</Link>
                       </li>
                       );
                     })
                   }
                   <li className="page-item">
-                    <Link className="page-link" to={'/panel/heat-provider/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
+                    <Link className="page-link" to={'/panel/lawyer/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
                   </li>
                 </ul>
               </nav>

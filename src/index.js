@@ -18,17 +18,13 @@ import './imports/styles';
 import './imports/js';
 import LocalizedStrings from 'react-localization';
 import {ru, kk} from './languages/breadCrumbs.json';
-import { NavLink, Link, Redirect } from 'react-router-dom';
-import WOW from 'wowjs';
-import $ from 'jquery';
+import { Redirect } from 'react-router-dom';
 
-import Loader from 'react-loader-spinner';
 import BasePagePanel from "./routes/BasePagePanel";
 import SketchEngineer from "./routes/SketchEngineer";
 import SketchHead from "./routes/SketchHead";
 import ExportToExcel from "./components/ExportToExcel";
 import UrbanAllApzs from "./routes/apz/urban/AllApzs";
-import UrbanSearchAllApzs from "./routes/apz/urban/SearchAllApzs";
 import UrbanShowApz from "./routes/apz/urban/ShowApz";
 import AllTemplates from "./routes/reject_templates/AllTemplates";
 import AddTemplate from "./routes/reject_templates/AddTemplate";
@@ -36,8 +32,8 @@ import ShowTemplate from "./routes/reject_templates/ShowTemplate";
 import EngineerAllApzs from "./routes/apz/engineer/AllApzs";
 import EngineerSearchAllApzs from "./routes/apz/engineer/SearchAllApzs";
 import EngineerShowApz from "./routes/apz/engineer/ShowApz";
-import ApzDepartmentAllApzs from "./routes/apz/apz_department/AllApzs";
-import ApzDepartmentShowApz from "./routes/apz/apz_department/ShowApz";
+import StateServicesAllApzs from "./routes/apz/state_services/AllApzs";
+import StateServicesShowApz from "./routes/apz/state_services/ShowApz";
 import HeadAllApzs from "./routes/apz/head/AllApzs";
 import HeadShowApz from "./routes/apz/head/ShowApz";
 import ProviderElectroAllApzs from "./routes/apz/provider_electro/AllApzs";
@@ -62,6 +58,12 @@ import CitizenAllApzs from "./routes/apz/citizen/AllApzs";
 import CitizenAddApz from "./routes/apz/citizen/AddApz";
 import CitizenShowApz from "./routes/apz/citizen/ShowApz";
 import CitizenActions from "./routes/apz/citizen/CitizenActions";
+import LawyerAllApzs from "./routes/apz/lawyer/AllApzs";
+import LawyerShowApz from "./routes/apz/lawyer/ShowApz";
+import GenPlanAllApzs from "./routes/apz/gen_plan/AllApzs";
+import GenPlanShowApz from "./routes/apz/gen_plan/ShowApz";
+import HeadStateServicesAllApzs from "./routes/apz/head_state_services/AllApzs";
+import HeadStateServicesShowApz from "./routes/apz/head_state_services/ShowApz";
 
 let e = new LocalizedStrings({ru,kk});
 
@@ -79,17 +81,27 @@ export default class Main extends React.Component {
     this.setLang();
 
     // window.url = 'https://api.uaig.kz:8843/';
+    window.url = 'http://api.uaig.kz:8880/';
     // window.url = 'http://192.168.0.231/';
     // window.url = 'http://shymkentback.uaig.kz/';
-    // window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
+    window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
 
-    window.url = 'http://uaig/';
+    // window.url = 'http://uaig/';
     //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
     //window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
+<<<<<<< HEAD
      // window.clientSecret = 'B5BCHoPxj4VhKUqs7WHi2HHx6f24xoIK8065tc4s'; // aman
+=======
+>>>>>>> 83db1cfc70fe36906c16d792b2a56f8ba0d123c6
     // window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
+    //  window.clientSecret = 'B5BCHoPxj4VhKUqs7WHi2HHx6f24xoIK8065tc4s'; // aman
     // window.clientSecret = '7zdU2XDblqORFq8wbQHlNRaIgEBR90qbMYnnVWDg'; // yernar
+<<<<<<< HEAD
     window.clientSecret = 'ZuW3nP8EUgXgEAqm6j9GxzBfFsOFuQv39NcyHUz3'; // medet
+=======
+    // window.clientSecret = 'ZuW3nP8EUgXgEAqm6j9GxzBfFsOFuQv39NcyHUz3'; // medet
+
+>>>>>>> 83db1cfc70fe36906c16d792b2a56f8ba0d123c6
   }
 
   breadCrumbs() {
@@ -104,7 +116,7 @@ export default class Main extends React.Component {
     {
       let firstElem = document.createElement('a');
       let firstElemAttributeHref = document.createAttribute('href');
-      firstElemAttributeHref.value = "/panel";
+      firstElemAttributeHref.value = "/panel/base-page";
       let firstElemAttributeClass = document.createAttribute('class');
       firstElemAttributeClass.value = "active";
       firstElem.innerHTML = e['electron-architecture'];
@@ -125,8 +137,8 @@ export default class Main extends React.Component {
         {
           let secondElem = document.createElement('span');
           //console.log(fullLoc);
-          secondElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
-            '<Link to="/#' + e[fullLoc[4]][fullLoc[5]]["link"] + '">' + e[fullLoc[4]][fullLoc[5]]["name"] + '</Link>';
+          secondElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;"></span> ' +
+            '<Link to="/' + e[fullLoc[4]][fullLoc[5]]["link"] + '">' + e[fullLoc[4]][fullLoc[5]]["name"] + '</Link>';
           breadCrumbs.appendChild(secondElem);
 
           let thirdElem = document.createElement('span');
@@ -157,7 +169,6 @@ export default class Main extends React.Component {
   }
 
   render() {
-    var roleIsSet = sessionStorage.getItem('token');
     return (
         <BrowserRouter>
           <div>
@@ -229,14 +240,23 @@ export default class Main extends React.Component {
                       <Route path="/panel/office/apz/all/:page" exact render={(props) =>(<OfficeAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                       <Route path="/panel/office/apz/show/:id" exact render={(props) =>(<OfficeShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
+                      <Route path="/panel/lawyer/apz/status/:status/:page" exact render={(props) =>(<LawyerAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/lawyer/apz/show/:id" exact render={(props) =>(<LawyerShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+
                       <Route path="/panel/engineer/apz/status/:status/:page" exact render={(props) =>(<EngineerAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                       <Route path="/panel/engineer/apz/search/:page" exact render={(props) =>(<EngineerSearchAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                       <Route path="/panel/engineer/apz/show/:id" exact render={(props) =>(<EngineerShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                       <Route path="/panel/engineer/sketch" render={(props) => ( <SketchEngineer breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
 
-                      <Route path="/panel/apz-department/apz/status/:status/:page" exact render={(props) =>(<ApzDepartmentAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
-                      <Route path="/panel/apz-department/apz/show/:id" exact render={(props) =>(<ApzDepartmentShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/state_services/apz/status/:status/:page" exact render={(props) =>(<StateServicesAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/state_services/apz/show/:id" exact render={(props) =>(<StateServicesShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                       <Route path="/panel/apz-department/sketch" render={(props) => ( <SketchApzDepartment breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+
+                      <Route path="/panel/gen_plan/apz/status/:status/:page" exact render={(props) =>(<GenPlanAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/gen_plan/apz/show/:id" exact render={(props) =>(<GenPlanShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+
+                      <Route path="/panel/head_state_services/apz/status/:status/:page" exact render={(props) =>(<HeadStateServicesAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/head_state_services/apz/show/:id" exact render={(props) =>(<HeadStateServicesShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
                       <Redirect from="/" to="/panel/base-page" />
                     </Switch>

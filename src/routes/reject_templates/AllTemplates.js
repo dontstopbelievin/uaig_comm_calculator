@@ -1,7 +1,4 @@
 import React from 'react';
-import LocalizedStrings from 'react-localization';
-import {ru, kk} from '../../languages/header.json';
-import $ from 'jquery';
 import { Link, NavLink } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 
@@ -37,7 +34,7 @@ export default class AllTemplates extends React.Component{
 
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/"+type+"/answer_template/all" + '?page=' + page, true);
+    xhr.open("get", window.url + "api/"+type+"/answer_template/all?page=" + page, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
@@ -141,11 +138,11 @@ export default class AllTemplates extends React.Component{
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
-                      <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
+                      <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
                         <Link className="page-link" to={'/panel/urban/answer-template/all/' + num}>{num}</Link>
                       </li>
                       );
-                    }.bind(this))
+                    })
                   }
                   <li className="page-item">
                     <Link className="page-link" to={'/panel/urban/answer-template/all/' + this.state.response.last_page}>В конец</Link>

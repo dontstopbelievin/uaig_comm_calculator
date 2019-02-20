@@ -2293,14 +2293,11 @@ class ShowSketch  extends React.Component {
 
                     <div className="col-sm-12">
                         <hr />
-                        <button className="btn btn-outline-secondary pull-right" onClick={this.routeChange.bind(this)}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
+                        <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
                     </div>
                 </div>
             </div>
         )
-    }
-    routeChange(){
-        this.props.history.goBack();
     }
 }
 

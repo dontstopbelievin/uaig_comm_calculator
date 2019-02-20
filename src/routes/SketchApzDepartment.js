@@ -11,7 +11,7 @@ export default class SketchApzDepartment extends React.Component {
     return (
       <div className="content container body-content citizen-sketch-list-page">
         <div>
-          
+
           <div className="card-body">
             <Switch>
               <Route path="/panel/apz-department/sketch/status/:status/:page" exact render={(props) =>(
@@ -24,7 +24,7 @@ export default class SketchApzDepartment extends React.Component {
             </Switch>
           </div>
         </div>
-        
+
       </div>
     )
   }
@@ -72,7 +72,7 @@ class AllSketch extends React.Component {
         var pageNumbers = [];
         var start = (response.current_page - 4) > 0 ? (response.current_page - 4) : 1;
         var end = (response.current_page + 4) < response.last_page ? (response.current_page + 4) : response.last_page;
-        
+
         for (start; start <= end; start++) {
           pageNumbers.push(start);
         }
@@ -102,7 +102,7 @@ class AllSketch extends React.Component {
     var curr_hour = jDate.getHours() < 10 ? "0" + jDate.getHours() : jDate.getHours();
     var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
     var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-    
+
     return formated_date;
   }
 
@@ -117,7 +117,7 @@ class AllSketch extends React.Component {
           <h4 className="mb-0 mt-2">Эскизный проект</h4>
         </div>
         {this.state.loaderHidden &&
-          <div>  
+          <div>
             <ul className="nav nav-tabs mb-2 pull-right">
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'active'} activeStyle={{color:"black"}} to="/panel/apz-department/sketch/status/active/1" replace>Активные</NavLink></li>
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'accepted'} activeStyle={{color:"black"}} to="/panel/apz-department/sketch/status/accepted/1" replace>Принятые</NavLink></li>
@@ -167,11 +167,11 @@ class AllSketch extends React.Component {
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
-                      <li key={index} className={'page-item ' + (page == num ? 'active' : '')}>
+                      <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
                         <Link className="page-link" to={'/panel/apz-department/sketch/status/' + status + '/' + num}>{num}</Link>
                       </li>
                       );
-                    }.bind(this))
+                    })
                   }
                   <li className="page-item">
                     <Link className="page-link" to={'/panel/apz-department/sketch/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
@@ -312,27 +312,27 @@ class ShowSketch extends React.Component {
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
           var base64ToArrayBuffer = (function () {
-        
+
             return function (base64) {
               var binaryString =  window.atob(base64);
               var binaryLen = binaryString.length;
               var bytes = new Uint8Array(binaryLen);
-              
+
               for (var i = 0; i < binaryLen; i++) {
                 var ascii = binaryString.charCodeAt(i);
                 bytes[i] = ascii;
               }
-              
-              return bytes; 
+
+              return bytes;
             }
-            
+
           }());
 
           var saveByteArray = (function () {
             var a = document.createElement("a");
             document.body.appendChild(a);
             a.style = "display: none";
-            
+
             return function (data, name) {
               var blob = new Blob(data, {type: "octet/stream"}),
                   url = window.URL.createObjectURL(blob);
@@ -528,7 +528,7 @@ class ShowSketch extends React.Component {
 
   webSocketFunction() {
     this.webSocket.onopen = function (event) {
-      if (this.heartbeat_interval == "") {
+      if (this.heartbeat_interval === "") {
         this.missed_heartbeats = 0;
         this.heartbeat_interval = setInterval(this.pingLayer, 2000);
       }
@@ -538,7 +538,7 @@ class ShowSketch extends React.Component {
     this.webSocket.onclose = function (event) {
       if (event.wasClean) {
         console.log('connection has been closed');
-      } 
+      }
       else {
         console.log('Connection error');
         this.openDialog();
@@ -569,7 +569,7 @@ class ShowSketch extends React.Component {
             return this.errorCode;
           }
         };
-        
+
         switch (this.callback) {
           case 'chooseStoragePathBack':
             this.chooseStoragePathBack(rw);
@@ -616,9 +616,8 @@ class ShowSketch extends React.Component {
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function () {
       if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
         alert("Ответ сохранен!");
-        
+
         this.setState({ showButtons: false });
         this.setState({ showSignButtons: true });
       }
@@ -646,8 +645,6 @@ class ShowSketch extends React.Component {
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onload = function () {
       if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
-
         alert("Заявление отправлено!");
         this.setState({ showSendButton: false });
       } else if(xhr.status === 401){
@@ -665,7 +662,7 @@ class ShowSketch extends React.Component {
     if(date === null) {
       return date;
     }
-    
+
     var jDate = new Date(date);
     var curr_date = jDate.getDate();
     var curr_month = jDate.getMonth() + 1;
@@ -673,10 +670,10 @@ class ShowSketch extends React.Component {
     var curr_hour = jDate.getHours();
     var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
     var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-    
+
     return formated_date;
   }
-  
+
   render() {
     var sketch = this.state.sketch;
 
@@ -697,7 +694,7 @@ class ShowSketch extends React.Component {
         {this.state.loaderHidden &&
           <div>
             <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
-            
+
             <table className="table table-bordered table-striped">
               <tbody>
                 <tr>
@@ -751,16 +748,16 @@ class ShowSketch extends React.Component {
               </table>
             }
 
-            {this.state.showMap && <ShowMap />} 
+            {this.state.showMap && <ShowMap />}
 
             <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
               {this.state.showMapText}
             </button>
 
-            {this.state.showSignButtons && !this.state.isSigned &&  
+            {this.state.showSignButtons && !this.state.isSigned &&
               <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                 <div>Выберите хранилище</div>
-                          
+
                 <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
                   <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
                   <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>eToken</button>
@@ -812,7 +809,7 @@ class ShowSketch extends React.Component {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="modal fade" id="DeclineSketchForm" tabIndex="-1" role="dialog" aria-hidden="true">
                   <div className="modal-dialog" role="document">
                     <div className="modal-content">
@@ -850,11 +847,11 @@ class ShowSketch extends React.Component {
 
             <div className="col-sm-12">
               <hr />
-              <Link className="btn btn-outline-secondary pull-right" to={'/panel/apz-department/sketch'}><i className="glyphicon glyphicon-chevron-left"></i> Назад</Link>
+              <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
             </div>
           </div>
         }
-          
+
         {!this.state.loaderHidden &&
           <div style={{textAlign: 'center'}}>
             <Loader type="Oval" color="#46B3F2" height="200" width="200" />
@@ -885,11 +882,11 @@ class ShowMap extends React.Component {
       <div>
         <h5 className="block-title-2 mt-5 mb-3">Карта</h5>
         <div id="coordinates" style={{display: 'none'}}></div>
-        <div className="col-md-12 viewDiv"> 
-          <EsriLoaderReact options={options} 
+        <div className="col-md-12 viewDiv">
+          <EsriLoaderReact options={options}
             modulesToLoad={[
               'esri/views/MapView',
-              
+
               'esri/widgets/LayerList',
 
               'esri/WebScene',
@@ -901,8 +898,8 @@ class ShowMap extends React.Component {
               'dojo/dom',
               'esri/Graphic',
               'dojo/domReady!'
-            ]}    
-            
+            ]}
+
             onReady={({loadedModules: [MapView, LayerList, WebScene, FeatureLayer, TileLayer, Search, WebMap, webMercatorUtils, dom, Graphic], containerNode}) => {
               var map = new WebMap({
                 basemap: "streets",
@@ -910,11 +907,11 @@ class ShowMap extends React.Component {
                   id: "caa580cafc1449dd9aa4fd8eafd3a14d"
                 }
               });
-              
+
               var view = new MapView({
                 container: containerNode,
                 map: map,
-                center: [76.886, 43.250], 
+                center: [76.886, 43.250],
                 scale: 10000
               });
 
@@ -935,7 +932,7 @@ class ShowMap extends React.Component {
                   placeholder: "Кадастровый поиск"
                 }]
               });
-    
+
               view.when( function(callback){
                 var layerList = new LayerList({
                   view: view
@@ -953,7 +950,7 @@ class ShowMap extends React.Component {
                 console.log('MapView promise rejected! Message: ', error);
               });
             }}
-          /> 
+          />
         </div>
       </div>
     )
