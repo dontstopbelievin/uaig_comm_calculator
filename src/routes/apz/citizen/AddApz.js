@@ -109,7 +109,7 @@ export default class AddApz extends React.Component {
       this.companySearch = this.companySearch.bind(this);
       this.onApplicantChange = this.onApplicantChange.bind(this);
       this.onInputChange = this.onInputChange.bind(this);
-      //this.onInputChangeLevel = this.onInputChangeLevel.bind(this);
+      this.onInputChange2 = this.onInputChange2.bind(this);
       this.Calculate_teplo = this.Calculate_teplo.bind(this);
       this.onBlockChange = this.onBlockChange.bind(this);
       this.downloadFile = this.downloadFile.bind(this);
@@ -145,29 +145,10 @@ export default class AddApz extends React.Component {
       const name = e.target.name;
       this.setState({ [name] : value });
     }
-    /*onInputChangeLevel(e) {
+    onInputChange2(e) {
       const { value, name } = e.target;
       this.setState({ [name] : value });
-      var unorma;
-      switch (true) {
-        case (value > 0 && value < 3):
-          this.setState({udelnayaNorma: '173'});
-          unorma = 173;
-          break;
-        case (value > 2 && value < 5):
-          this.setState({udelnayaNorma: '97'});
-          unorma = 97;
-          break;
-        case (value > 4):
-          this.setState({udelnayaNorma: '81'});
-          unorma = 81;
-          break;
-      }
-      if(this.state.tempVnutri != '' && this.state.tempVnutri != ' ' && this.state.obshayaPloshad != '' && this.state.obshayaPloshad != ' '){
-        var heatGeneral = unorma * this.state.obshayaPloshad / 1.163 * (this.state.tempVnutri + 25)/(this.state.tempVnutri + 20.1) / 1000000;
-        this.setState({heatGeneral: heatGeneral});
-      }
-    }*/
+    }
 
     componentDidMount() {
       console.log(sessionStorage.getItem('userId'));
@@ -181,7 +162,7 @@ export default class AddApz extends React.Component {
           if (xhr.status === 200) {
               var data = JSON.parse(xhr.responseText);
               data = data.userData;
-              console.log(data);
+              //console.log(data);
               this.setState({first_name: data.first_name});
               this.setState({last_name: data.last_name});
               this.setState({middle_name: data.middle_name ?data.middle_name:" "});
@@ -407,7 +388,7 @@ export default class AddApz extends React.Component {
           requiredFields['electricRequiredPower'] = 'Требуемая мощность (кВт)';
         }
         if(this.state.need_heat_provider){
-          requiredFields['heatGeneral'] = 'Общая тепловая нагрузка (Гкал/ч)';
+          requiredFields['heatGeneral'] = 'Тепловая нагрузка (Гкал/ч)';
         }
         if(this.state.need_phone_provider){
           requiredFields['phoneCapacity'] = 'Телефонная емкость';
@@ -986,7 +967,7 @@ export default class AddApz extends React.Component {
                               <label htmlFor="Region">Вид пакета:</label>
                               <div className="custom-control custom-radio">
                                 <input type="radio" className="custom-control-input" name="type" value="1" id={'apztype1'}
-                                       checked={this.state.type === 1 ? true : false} onChange={this.onInputChange} />
+                                       checked={this.state.type == 1 ? true : false} onChange={this.onInputChange2} />
                                 <label htmlFor={"apztype1"} className="custom-control-label" style={{cursor:"pointer"}}>Пакет 1
                                 <br/>
                                 <span className="help-block text-muted">(архитектурно-планировочное задание, технические условия)</span></label>
@@ -994,7 +975,7 @@ export default class AddApz extends React.Component {
                               <hr/>
                               <div className="custom-control custom-radio">
                                 <input type="radio" className="custom-control-input" name="type" value="2" id={'apztype2'}
-                                       checked={this.state.type === 2 ? true : false} onChange={this.onInputChange} />
+                                       checked={this.state.type == 2 ? true : false} onChange={this.onInputChange2} />
                                 <label htmlFor="apztype2" className="custom-control-label" style={{cursor:"pointer"}}>Пакет 2
                                 <br/>
                                 <span className="help-block text-muted">(архитектурно-планировочное задание, вертикальные планировочные отметки,
@@ -1504,8 +1485,8 @@ export default class AddApz extends React.Component {
                               <input data-rh="Общая площадь жилых и нежилых помещений многоквартирного или индивидуального жилого дома (кв. м)" data-rh-at="right" type="number" onChange={this.Calculate_teplo} value={this.state.obshayaPloshad} step="any" className="form-control" name="obshayaPloshad" placeholder="" />
                             </div><hr/>
                             <div className="form-group">
-                              <label htmlFor="HeatGeneral">Общая тепловая нагрузка (Гкал/ч)</label>
-                              <input data-rh="Общая тепловая нагрузка (Гкал/ч)" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.heatGeneral} step="any" className="form-control" name="heatGeneral" placeholder="" />
+                              <label htmlFor="HeatGeneral">Тепловая нагрузка (Гкал/ч)</label>
+                              <input data-rh="Тепловая нагрузка (Гкал/ч)" data-rh-at="right" type="number" onChange={this.onInputChange} value={this.state.heatGeneral} step="any" className="form-control" name="heatGeneral" placeholder="" />
                             </div>
                            </div>
                           </div>
@@ -1546,8 +1527,8 @@ export default class AddApz extends React.Component {
                           <div className="row">
                             <div className="col-sm-6">
                               <div className="form-group">
-                                <label htmlFor="HeatGeneral">Общая тепловая нагрузка по договору(Гкал/ч)</label>
-                                <input data-rh="Общая тепловая нагрузка (Гкал/ч)" data-rh-at="right" type="number" step="any" className="form-control" value={this.state.heatGeneralInContract} onChange={this.onInputChange} name="heatGeneralInContract" placeholder="" />
+                                <label htmlFor="HeatGeneral">Тепловая нагрузка по договору(Гкал/ч)</label>
+                                <input data-rh="Тепловая нагрузка (Гкал/ч)" data-rh-at="right" type="number" step="any" className="form-control" value={this.state.heatGeneralInContract} onChange={this.onInputChange} name="heatGeneralInContract" placeholder="" />
                               </div>
                               <div className="form-group">
                                 <label htmlFor="HeatMain">Отопление по договору (Гкал/ч)</label>
