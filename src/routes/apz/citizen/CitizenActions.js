@@ -1,8 +1,8 @@
 import React from 'react';
+import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
 import { Link } from 'react-router-dom';
-<<<<<<< HEAD
 import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../../../languages/header.json';
 import {
@@ -14,8 +14,6 @@ import {
 import 'react-accessible-accordion/dist/fancy-example.css';
 
 let e = new LocalizedStrings({ru,kk});
-=======
->>>>>>> 83db1cfc70fe36906c16d792b2a56f8ba0d123c6
 
 
 export default class CitizenActions extends React.Component {
@@ -29,7 +27,7 @@ export default class CitizenActions extends React.Component {
       };
     }
     componentWillMount(){
-      if(this.props.history.location.pathname !== "/panel/citizen/apz"){
+      if(this.props.history.location.pathname != "/panel/citizen/apz"){
         this.setState({welcome_text:false, left_tabs:false});
       }
     }
@@ -65,9 +63,9 @@ export default class CitizenActions extends React.Component {
 
           <div className="right-side">
             {this.state.welcome_text &&
-<<<<<<< HEAD
               <div class="apzinfo">
                 <div class = "time">
+                   <p><center><strong>ПАМЯТКА</strong></center></p>
                    <p><strong><u>Архитектурно-планировочное задание</u></strong> - комплекс требований к назначению, основным параметрам и размещению объекта на конкретном земельном участке (площадке, трассе), а также обязательные требования, условия и ограничения к проектированию и строительству, устанавливаемые в соответствии с градостроительными регламентами для данного населенного пункта. При этом допускается установление требований по цветовому решению и использованию материалов отделки фасадов зданий (сооружений), объемно-пространственному решению в соответствии с эскизами (эскизными проектами), предоставляемыми заказчиком (застройщиком, инвестором).
                    </p>
                 </div>
@@ -118,22 +116,8 @@ export default class CitizenActions extends React.Component {
                       </AccordionItemBody>
                   </AccordionItem>
               </Accordion>
-=======
-              <div className="apzinfo">
-                <div className="time">
-                   <p>Срок рассмотрения заявления:</p>
-                   <li>на выдачу архитектурно-планировочного задания и технических условий – 6 (шесть) рабочих дней;</li>
-                   <li>Мотивированный отказ – 5 (пять) рабочих дней.</li>
                 </div>
-                <div className="application">
-                   <p>Необходимый перечень документов для получения АПЗ и ТУ:</p>
-                   <li>заявление о предоставлении АПЗ и ТУ по форме (заполняется онлайн);</li>
-                   <li>электронная копия правоустанавливающего документа на земельный участок;</li>
-                   <li>электронная копия задания на проектирование;</li>
-                   <li>опросный лист для ТУ на подключение к источникам инженерного и коммунального обеспечения по форме (заполняется онлайн);</li>
->>>>>>> 83db1cfc70fe36906c16d792b2a56f8ba0d123c6
-                </div>
-                <button className="btn btn-raised btn-success" onClick={this.hide_text.bind(this)}>Перейти к заявкам</button>
+                <button class="btn btn-raised btn-success" onClick={this.hide_text.bind(this)}>Перейти к заявкам</button>
               </div>
             }
           </div>
