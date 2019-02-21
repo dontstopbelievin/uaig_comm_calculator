@@ -199,7 +199,7 @@ export default class Main extends React.Component {
                       <Route path="/panel/common/edit-password" render={(props) => ( <EditPassword breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                       <Route path="/panel/common/export_to_excel" render={(props) => (<ExportToExcel {...props} breadCrumbs={this.breadCrumbs.bind(this)} /> )} />
 
-                      <Route path="/panel/citizen/apz" exact render={(props) =>(<CitizenActions {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                      <Route path="/panel/services/:index" exact render={(props) =>(<CitizenActions {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                       <Route path="/panel/citizen/apz/status/:status/:page" exact render={(props) =>(<CitizenAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                       <Route path="/panel/citizen/apz/add" exact render={(props) =>(<CitizenAddApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                       <Route path="/panel/citizen/apz/edit/:id" exact render={(props) =>(<CitizenAddApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
