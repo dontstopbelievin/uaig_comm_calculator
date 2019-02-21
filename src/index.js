@@ -80,8 +80,8 @@ export default class Main extends React.Component {
   componentWillMount() {
     this.setLang();
 
-    // window.url = 'https://api.uaig.kz:8843/';
-    window.url = 'http://api.uaig.kz:8880/';
+    window.url = 'https://api.uaig.kz:8843/';
+    // window.url = 'http://api.uaig.kz:8880/';
     // window.url = 'http://192.168.0.231/';
     // window.url = 'http://shymkentback.uaig.kz/';
     window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
