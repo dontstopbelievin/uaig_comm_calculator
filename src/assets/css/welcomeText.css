@@ -204,7 +204,3 @@
     color: white !important;
     font-weight: bold !important;
 }
-.card-body{
-  display: inline-flex;
-  width: 65%;
-}
