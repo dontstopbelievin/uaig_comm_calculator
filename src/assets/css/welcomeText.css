@@ -2,6 +2,7 @@
 	margin-bottom: 25px;
   margin-right: 25px;
 }
+<<<<<<< Updated upstream
 .time{padding: 20px 20px 0 20px;}
 .packages{padding: 0 20px 0 20px;}
 .apzinfo-bottom{
@@ -30,11 +31,19 @@
 .apzinfo li{
 	font-style: italic;
 	list-style-type: none;
+=======
+.apzinfo{
+  border: 1px solid;
+}
+.apzinfo li{
+	font-style: italic;
+>>>>>>> Stashed changes
 }
 .left-tabs{
   display: inline-flex;
   width: 30%;
 }
+<<<<<<< Updated upstream
 .left-tabs a.tab1{
 	background-image: url(/images/7.svg);
 	background-repeat: no-repeat;
@@ -196,4 +205,9 @@
     background-color: #dc3545 !important;
     color: white !important;
     font-weight: bold !important;
+=======
+.card-body{
+  display: inline-flex;
+  width: 65%;
+>>>>>>> Stashed changes
 }

@@ -147,14 +147,14 @@ export default class Admin extends React.Component {
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
       var data = JSON.parse(xhr.responseText);
-      if (xhr.status === 200) {
+      if (xhr.status === 200) {
         console.log(data);
         alert('Роли успешно добавлены');
         this.setState({ roleUser: data.roleUser });
         //console.log(usersArray);
         // this.setState({users: usersArray});
-        console.log('role(s) was(were) added')
-      }else {
+        console.log('role(s) was(were) added')
+      }else {
         console.log(data);
         alert('Ошибка во время добавления роли!');
       }

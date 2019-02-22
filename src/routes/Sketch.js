@@ -6,6 +6,7 @@ import 'jquery-serializejson';
 import { Route, Link, NavLink, Switch } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import ReactHintFactory from "react-hint";
+import '../assets/css/welcomeText.css';
 
 const ReactHint = ReactHintFactory(React)
 
@@ -15,12 +16,20 @@ export default class Sketch extends React.Component {
 
     this.state = {
       welcome_text: true,
+<<<<<<< Updated upstream
       left_tabs: true,
       active: false
     };
   }
   componentWillMount(){
     if(this.props.history.location.pathname !== "/panel/citizen/sketch"){
+=======
+      left_tabs: true
+    };
+  }
+  componentWillMount(){
+    if(this.props.history.location.pathname != "/panel/citizen/sketch"){
+>>>>>>> Stashed changes
       this.setState({welcome_text:false,left_tabs: false});
     }
   }
@@ -29,9 +38,12 @@ export default class Sketch extends React.Component {
     this.setState({welcome_text:false, left_tabs: false});
     this.props.history.push("/panel/citizen/sketch/status/active/1");
   }
+<<<<<<< Updated upstream
   toggle(){
     this.setState({active: true})
   }
+=======
+>>>>>>> Stashed changes
 
 
   render() {
@@ -40,6 +52,7 @@ export default class Sketch extends React.Component {
 
         <div>
         <div class="left-tabs">
+<<<<<<< Updated upstream
         {this.state.left_tabs &&
           <div className="buttons">
               <Link to="/panel/citizen/apz"><button class="tab1">Выдача архитектурно-планировочного задания</button></Link>
@@ -76,6 +89,21 @@ export default class Sketch extends React.Component {
             </div>
           </div>
         }
+=======
+          {this.state.left_tabs &&
+            <ul>
+               <li>
+                 <Link to="/panel/citizen/apz">Выдача архитектурно-планировочного задания</Link>
+               </li>
+               <li>
+                 <Link to="/panel/citizen/sketch">Выдача решения на эскизный проект</Link>
+               </li>
+               <li>
+                 <Link to="/panel/citizen/photoreports">Выдача решения на фотоотчет</Link>
+               </li>
+             </ul>
+          }
+>>>>>>> Stashed changes
         </div>
 
           <div className="card-body">
@@ -95,6 +123,27 @@ export default class Sketch extends React.Component {
               )} />
               {/*<Redirect from="/panel/citizen/sketch" to="/panel/citizen/sketch/status/active/1" />*/}
             </Switch>
+<<<<<<< Updated upstream
+=======
+            {this.state.welcome_text &&
+              <div class="apzinfo">
+                <div class = "time">
+                   <p>Срок рассмотрения заявления:</p>
+                   <li>Срок рассмотрения заявления и согласования эскиза (эскизного проекта) технически и (или) технологически несложных объектов – 10 (десять) рабочих дней.</li>
+                   <li>Срок рассмотрения заявления и согласования эскиза (эскизного проекта) технически и (или) технологически сложных объектов – 15 (пятнадцать) рабочих дней</li>
+                   <li>Срок рассмотрения заявления и согласования эскиза (эскизного проекта) при изменении внешнего облика (фасадов) существующего объекта – 15 (пятнадцать) рабочих дней.</li>
+                </div>
+                <div class="application">
+                   <p>Необходимый перечень документов для получения услуги:</p>
+                   <li>заявление о предоставлении государственной услуги (заполняется онлайн);</li>
+                   <li>электронная копия документа удостоверяющего личность;</li>
+                   <li>электронная копия эскиза (эскизный проект);</li>
+                   <li>копия архитектурно-планировочного задания;</li>
+                </div>
+                <button class="btn btn-raised btn-success" onClick={this.hide_text.bind(this)}>Перейти к заявкам</button>
+              </div>
+            }
+>>>>>>> Stashed changes
 
           </div>
 
