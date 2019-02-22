@@ -6,15 +6,26 @@
 .packages{padding: 0 20px 0 20px;}
 .apzinfo-bottom{
 	margin-top: 20px;
-	border-top: 1px solid;
+	border-top: 1px solid #ccc;
 	background-color: lightgrey;
 }
 .apzinfo-bottom button{
 	margin: 15px 5px 15px 20px;
 }
 .apzinfo{
-  border: 1px solid;
+  border: 1px solid #ccc;
 	border-radius: 4px;
+}
+.apzinfo1{
+  border: 1px solid #ccc;
+	border-radius: 4px;
+	width: 100%;
+	height: 300px;
+}
+.time1{
+	position: relative;
+	top: 37%;
+	left: 8%;
 }
 .apzinfo li{
 	font-style: italic;
@@ -180,4 +191,9 @@
   top: -18px;
 }
 .right-side button{margin-left: 20px;}
-.right-side a{margin-left: 20px; background-color: #db8c8c !important; color:white !important;}
+.right-side a {
+    margin-left: 20px;
+    background-color: #dc3545 !important;
+    color: white !important;
+    font-weight: bold !important;
+}

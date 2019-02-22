@@ -5,6 +5,7 @@ import 'jquery-serializejson';
 import { Link } from 'react-router-dom';
 import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../../../languages/guest.json';
+import {service1,service2,service3,service4,service5,service6,service7} from '../../../languages/services.json';
 import {
     Accordion,
     AccordionItem,
@@ -28,6 +29,7 @@ export default class CitizenActions extends React.Component {
         tokenExists: false,
         active: false
       };
+
     }
 
     componentWillMount(){
@@ -54,6 +56,9 @@ export default class CitizenActions extends React.Component {
       welcome_texts[index-1] = true;
       this.setState({welcome_texts: welcome_texts});
     }
+    InProcess(){
+      alert("Данный раздел находится в разработке.");
+    }
 
   render() {
     var index = this.props.match.params.index;
@@ -79,58 +84,51 @@ export default class CitizenActions extends React.Component {
             {this.state.welcome_texts[0] &&
               <div className="apzinfo">
                 <div className = "time">
-                   <p><strong>Архитектурно-планировочное задание</strong> - комплекс требований к назначению, основным параметрам и размещению объекта на конкретном земельном участке (площадке, трассе), а также обязательные требования, условия и ограничения к проектированию и строительству, устанавливаемые в соответствии с градостроительными регламентами для данного населенного пункта. При этом допускается установление требований по цветовому решению и использованию материалов отделки фасадов зданий (сооружений), объемно-пространственному решению в соответствии с эскизами (эскизными проектами), предоставляемыми заказчиком (застройщиком, инвестором).
-                   </p>
+                   <p><strong>{service1.name}</strong> - {service1.description}</p>
                 </div>
                 <div className="packages">
-                <Accordion>
-                  <AccordionItem>
-                      <AccordionItemTitle className="accordion__title accordion__title--animated">
-                          <h6 className="u-position-relative">
-                              Пакет 1
-                              <div className="accordion__arrow" role="presentation" />
-                          </h6>
-                      </AccordionItemTitle>
-                      <AccordionItemBody>
-                            <p>СРОК ОКАЗАНИЯ – 15 РАБОЧИХ ДНЕЙ</p>
-                            <p><strong>Перечень документов, необходимых для оказания государственной услуги на РЕКОНСТРУКЦИЮ, СТРОИТЕЛЬСТВО ПРИСТРОЙКИ, НАДСТРОЙКИ, ПЕРЕПЛАНИРОВКА, ПЕРЕОБОРУДОВАНИЕ:</strong></p>
+                  <Accordion>
+                    <AccordionItem>
+                        <AccordionItemTitle className="accordion__title accordion__title--animated">
+                            <h6 className="u-position-relative">
+                                Пакет 1
+                                <div className="accordion__arrow" role="presentation" />
+                            </h6>
+                        </AccordionItemTitle>
+                        <AccordionItemBody>
+                              <p>{service1.period[0]}</p>
+                              <p><strong>Перечень документов, необходимых для оказания государственной услуги на РЕКОНСТРУКЦИЮ, СТРОИТЕЛЬСТВО ПРИСТРОЙКИ, НАДСТРОЙКИ, ПЕРЕПЛАНИРОВКА, ПЕРЕОБОРУДОВАНИЕ:</strong></p>
+                              <ul>
+                                {service1.list_of_documents[0].split(';').map(function(item, index) {
+                                    return(
+                                      <li>{index+1}) {item};</li>
+                                    )
+                                })}
+                              </ul>
+                        </AccordionItemBody>
+                    </AccordionItem>
+                    <AccordionItem className="accordion__item">
+                        <AccordionItemTitle className="accordion__title accordion__title--animated">
+                            <h6 className="u-position-relative">
+                                Пакет 2
+                                <div className="accordion__arrow" role="presentation" />
+                            </h6>
+                        </AccordionItemTitle>
+                        <AccordionItemBody>
+                            <p>{service1.period[1]}</p>
+                            <p><strong>Перечень документов, необходимых для оказания государственной услуги предоставление исходных материалов на новое строительство:</strong></p>
                             <ul>
-                              <li>1)  заявление по форме, согласно приложению 4 к настоящему стандарту государственной услуги;</li>
-                              <li>2)	документ, удостоверяющий личность (для идентификации личности услугополучателя);</li>
-                              <li>3)	утвержденное задание на проектирование;</li>
-                              <li>4)	документ, удостоверяющий право собственности заявителя на изменяемый объект, с представлением подлинников для сверки государственным органом, рассматривающим заявление, подлинности документов, либо его нотариально засвидетельствованная копия;</li>
-                              <li>5)	письменное согласие собственника (сособственников) объекта на намечаемое изменение и его параметры;</li>
-                              <li>6)	нотариальное засвидетельствованное письменное согласие собственников других помещений (частей дома), смежных с изменяемыми помещениями (частями дома), в случае, если планируемые реконструкции (перепланировки, переоборудование) помещений (частей жилого дома) или перенос границ помещений затрагивают их интересы;</li>
-                              <li>7)	технический паспорт изменяемого помещения (оригинал предоставляется для сверки);</li>
-                              <li>8)	технический проект (сейсмозаключение);</li>
-                              <li>9)	опросный лист для технических условий на подключение к источникам инженерного и коммунального обеспечения по форме, согласно приложению 3 к настоящему стандарту государственной услуги и топографическая съемка (при необходимости в дополнительном подключении к источникам инженерного и коммунального обеспечения и/или увеличении нагрузок)</li>
-                              <li>10)	правоустанавливающий документ на земельный участок (если реконструкция предусматривает дополнительный отвод (прирезку) земельного участка) (оригинал предоставляется для сверки).</li>
+                            {service1.list_of_documents[1].split(';').map(function(item, index) {
+                                return(
+                                  <li>{index+1}) {item};</li>
+                                )
+                            })}
                             </ul>
-                      </AccordionItemBody>
-                  </AccordionItem>
-                  <AccordionItem className="accordion__item">
-                      <AccordionItemTitle className="accordion__title accordion__title--animated">
-                          <h6 className="u-position-relative">
-                              Пакет 2
-                              <div className="accordion__arrow" role="presentation" />
-                          </h6>
-                      </AccordionItemTitle>
-                      <AccordionItemBody>
-                          <p>СРОК ОКАЗАНИЯ – 15 РАБОЧИХ ДНЕЙ</p>
-                          <p><strong>Перечень документов, необходимых для оказания государственной услуги предоставление исходных материалов на новое строительство:</strong></p>
-                          <ul>
-                            <li>1)	заявление по форме, согласно приложению 2 к настоящему стандарту государственной услуги (в заявлении указывается «пакет 2», срок оказания государственной услуги - 15 рабочих дней); </li>
-                            <li>2)	документ, удостоверяющий личность (для идентификации личности услугополучателя);</li>
-                            <li>3)	утвержденное задание на проектирование;</li>
-                            <li>4)	правоустанавливающий документ на земельный участок;</li>
-                            <li>5)	опросный лист для технических условий на подключение к источникам инженерного и коммунального обеспечения по форме, согласно приложению 3 к настоящему стандарту государственной услуги;</li>
-                            <li>6)	топографическая съемка (срок действия которой не должен превышать одного года)</li>
-                          </ul>
-                      </AccordionItemBody>
-                  </AccordionItem>
-              </Accordion>
-                </div>
-                <div className="apzinfo-bottom">
+                        </AccordionItemBody>
+                    </AccordionItem>
+                </Accordion>
+               </div>
+               <div className="apzinfo-bottom">
                     <div className="card-button">{console.log(this.state.rolename)}
                       {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
                       {this.state.tokenExists && this.state.rolename === 'Admin' && <NavLink to={"/panel/admin/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
@@ -150,76 +148,207 @@ export default class CitizenActions extends React.Component {
                       {this.state.tokenExists && this.state.rolename === 'HeadsStateServices' &&  <NavLink to={"/panel/head_state_services/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                       {!this.state.tokenExists && <AlertModal />}
                     </div>
-                </div>
+                  </div>
               </div>
             }
             {this.state.welcome_texts[1] &&
               <div class="apzinfo">
                 <div class = "time">
-                   <p><strong>Эскизный проект</strong> – это набор документов, схем и чертежей, который содержит данные о разрабатываемом объекте, его назначении, основные технические, архитектурные и конструктивные параметры. Это упрощенный вид проектного решения, объясняющий его замысел и позволяющий составить представление о дальнейших работах.</p>
+                   <p><strong>{service2.name}</strong> – {service2.description}</p>
                 </div>
                 <div class="packages">
                    <p><strong>Срок рассмотрения заявления:</strong></p>
-                   <li>1.	Срок рассмотрения заявления и согласования эскиза (эскизного проекта) технически и (или) технологически несложных объектов – 10 (десять) рабочих дней.</li>
-                   <li>2.	Срок рассмотрения заявления и согласования эскиза (эскизного проекта) технически и (или) технологически сложных объектов – 15 (пятнадцать) рабочих дней.</li>
-                   <li>3.	Срок рассмотрения заявления и согласования эскиза (эскизного проекта) при изменении внешнего облика (фасадов) существующего объекта – 15 (пятнадцать) рабочих дней.</li>
-                   <div>Мотивированный отказ – 5 (пять) рабочих дней</div>
+                   {service2.period[0].split(';').map(function(item, index) {
+                       return(
+                         <li>{index+1}) {item};</li>
+                       )
+                   })}
+                   <div>{service2.period[1]}</div>
                    <br></br>
                    <p><strong>Необходимый перечень документов для получения услуги:</strong></p>
-                   <li>1.	заявление о предоставлении государственной услуги (заполняется онлайн);</li>
-                   <li>2.	электронная копия документа удостоверяющего личность;</li>
-                   <li>3.	электронная копия эскиза (эскизный проект);</li>
-                   <li>4.	копия архитектурно-планировочного задания;</li>
+                   {service2.list_of_documents.split(';').map(function(item, index) {
+                       return(
+                         <li>{index+1}) {item};</li>
+                       )
+                   })}
                 </div>
                 <div className="apzinfo-bottom">
                   <div className="card-button">
                       {/*this.state.tokenExists && this.state.rolename === 'Admin' && <NavLink to={"/panel"} replace className="btn btn-primary">Эскизные проекты</NavLink>*/}
-                      {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/panel/citizen/sketch"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/panel/urban/sketch"} replace className="btn btn-primary">Эскизные проекты</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Head' &&  <NavLink to={"/panel/head/sketch"} replace className="btn btn-primary">Эскизные проекты</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Engineer' &&  <NavLink to={"/panel/engineer/sketch"} replace className="btn btn-primary">Эскизные проекты</NavLink>}
+                      {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/panel/citizen/sketch/status/active/1"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                      {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/panel/urban/sketch/status/active/1"} replace className="btn btn-primary">Эскизные проекты</NavLink>}
+                      {this.state.tokenExists && this.state.rolename === 'Head' &&  <NavLink to={"/panel/head/sketch/status/active/1"} replace className="btn btn-primary">Эскизные проекты</NavLink>}
+                      {this.state.tokenExists && this.state.rolename === 'Engineer' &&  <NavLink to={"/panel/engineer/sketch/status/active/1"} replace className="btn btn-primary">Эскизные проекты</NavLink>}
                       {!this.state.tokenExists && <AlertModal />}
                   </div>
                 </div>
               </div>
             }
             {this.state.welcome_texts[2] &&
-              <div className="apzinfo">
-                <div className="time">
-                  <h4>РАЗДЕЛ НАХОДИТСЯ В РАЗРАБОТКЕ</h4>
-                  <p>Попробуйте зайти позже</p>
+              <div className="apzinfo1">
+                <div className="time1">
+                  <h4>{service3.name}</h4>
+                  <p>{service3.description}</p>
                 </div>
               </div>
             }
             {this.state.welcome_texts[3] &&
               <div className="apzinfo">
-                <div className="time">
-                  <h4>РАЗДЕЛ НАХОДИТСЯ В РАЗРАБОТКЕ</h4>
-                  <p>Попробуйте зайти позже</p>
+                <div className = "time">
+                   <p>Результат оказания услуг:</p>
+                   {service4.description.split(';').map(function(item, index) {
+                       return(
+                         <li>{index+1}) {item};</li>
+                       )
+                   })}
+                   <br></br>
+                   {service4.period.split(';').map(function(item, index) {
+                       return(
+                         <p>{item};</p>
+                       )
+                   })}
                 </div>
+                <div className="packages">
+                  <Accordion>
+                    <AccordionItem>
+                        <AccordionItemTitle className="accordion__title accordion__title--animated">
+                            <h6 className="u-position-relative">
+                                Выдача справки по уточнению адреса объектов недвижимости без истории:
+                                <div className="accordion__arrow" role="presentation" />
+                            </h6>
+                        </AccordionItemTitle>
+                        <AccordionItemBody>
+                              <p><strong>Необходимый перечень документов для получения услуги:</strong></p>
+                              <ul>
+                                {service4.list_of_documents[0].split(';').map(function(item, index) {
+                                    return(
+                                      <li>{index+1}) {item};</li>
+                                    )
+                                })}
+                              </ul>
+                        </AccordionItemBody>
+                    </AccordionItem>
+                    <AccordionItem className="accordion__item">
+                        <AccordionItemTitle className="accordion__title accordion__title--animated">
+                            <h6 className="u-position-relative">
+                                Выдача справки по уточнению адреса объектов недвижимости с историей (при отсутствии архивных сведений об изменении адреса объекта недвижимости в информационной системе "Адресный регистр"):
+                                <div className="accordion__arrow" role="presentation" />
+                            </h6>
+                        </AccordionItemTitle>
+                        <AccordionItemBody>
+                            <p><strong>Необходимый перечень документов для получения услуги:</strong></p>
+                            <ul>
+                            {service4.list_of_documents[1].split(';').map(function(item, index) {
+                                return(
+                                  <li>{index+1}) {item};</li>
+                                )
+                            })}
+                            </ul>
+                        </AccordionItemBody>
+                    </AccordionItem>
+                    <AccordionItem className="accordion__item">
+                        <AccordionItemTitle className="accordion__title accordion__title--animated">
+                            <h6 className="u-position-relative">
+                                Выдача справки об упразднении адреса объекта недвижимости, с выездом на место нахождения объекта недвижимости и с обязательной регистрацией его в информационной системе "Адресный регистр" с указанием регистрационного кода адреса:
+                                <div className="accordion__arrow" role="presentation" />
+                            </h6>
+                        </AccordionItemTitle>
+                        <AccordionItemBody>
+                            <p><strong>Необходимый перечень документов для получения услуги:</strong></p>
+                            <ul>
+                            {service4.list_of_documents[1].split(';').map(function(item, index) {
+                                return(
+                                  <li>{index+1}) {item};</li>
+                                )
+                            })}
+                            </ul>
+                        </AccordionItemBody>
+                    </AccordionItem>
+                </Accordion>
+               </div>
+               <div className="apzinfo-bottom">
+                    <div className="card-button">
+                      <button type="button" onClick={this.InProcess} class="btn btn-secondary">Перейти к заявке</button>
+                    </div>
+                  </div>
               </div>
             }
             {this.state.welcome_texts[4] &&
-              <div className="apzinfo">
-                <div className="time">
-                  <h4>РАЗДЕЛ НАХОДИТСЯ В РАЗРАБОТКЕ</h4>
-                  <p>Попробуйте зайти позже</p>
+              <div class="apzinfo">
+                <div class = "time">
+                   <p>{service5.description}</p>
+                </div>
+                <div class="packages">
+                   <p><strong>Срок рассмотрения заявления:</strong></p>
+                   <li>{service5.period}</li>
+                   <br></br>
+                   <p><strong>Необходимый перечень документов для получения услуги:</strong></p>
+                   {service5.list_of_documents[0].split(';').map(function(item, index) {
+                       return(
+                         <li>{index+1}) {item};</li>
+                       )
+                   })}
+                </div>
+                <div className="apzinfo-bottom">
+                    <div className="card-button">
+                      <button type="button" onClick={this.InProcess} class="btn btn-secondary">Перейти к заявке</button>
+                    </div>
                 </div>
               </div>
             }
             {this.state.welcome_texts[5] &&
-              <div className="apzinfo">
-                <div className="time">
-                  <h4>РАЗДЕЛ НАХОДИТСЯ В РАЗРАБОТКЕ</h4>
-                  <p>Попробуйте зайти позже</p>
+              <div class="apzinfo">
+                <div class = "time">
+                   <p>{service6.description}</p>
+                </div>
+                <div class="packages">
+                   <p><strong>Срок рассмотрения заявления:</strong></p>
+                   <li>{service6.period}</li>
+                   <br></br>
+                   <p><strong>Необходимый перечень документов для получения услуги:</strong></p>
+                   {service6.list_of_documents[0].split(';').map(function(item, index) {
+                       return(
+                         <li>{index+1}) {item};</li>
+                       )
+                   })}
+                </div>
+                <div className="apzinfo-bottom">
+                    <div className="card-button">
+                      <button type="button" onClick={this.InProcess} class="btn btn-secondary">Перейти к заявке</button>
+                    </div>
                 </div>
               </div>
             }
             {this.state.welcome_texts[6] &&
-              <div className="apzinfo">
-                <div className="time">
-                  <h4>РАЗДЕЛ НАХОДИТСЯ В РАЗРАБОТКЕ</h4>
-                  <p>Попробуйте зайти позже</p>
+              <div class="apzinfo">
+                <div class = "time">
+                   <p>{service7.description}</p>
+                </div>
+                <div class="packages">
+                    <p><strong>Срок рассмотрения заявления:</strong></p>
+                    <p>1-этап: <i>{service7.period[0]}</i></p>
+                    <p>2-этап: <i>{service7.period[1]}</i></p>
+                    <p>{service7.period[2]}</p>
+                   <br></br>
+                   <p><strong>Необходимый перечень документов для получения услуги:</strong></p>
+                   <p>1 - этап:</p>
+                   {service7.list_of_documents[0].split(';').map(function(item, index) {
+                       return(
+                         <li>{index+1}) {item};</li>
+                       )
+                   })}
+                   <br></br>
+                   <p>2 - этап:</p>
+                   {service7.list_of_documents[1].split(';').map(function(item, index) {
+                       return(
+                         <li>{index+1}) {item};</li>
+                       )
+                   })}
+                </div>
+                <div className="apzinfo-bottom">
+                    <div className="card-button">
+                      <button type="button" onClick={this.InProcess} class="btn btn-secondary">Перейти к заявке</button>
+                    </div>
                 </div>
               </div>
             }
