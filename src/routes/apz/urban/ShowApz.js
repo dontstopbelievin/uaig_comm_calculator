@@ -59,6 +59,7 @@ export default class ShowApz extends React.Component {
         let fullLoc = window.location.href.split('/');
         this.props.history.replace({pathname: "/panel/common/login", state:{url_apz_id: fullLoc[fullLoc.length-1]}});
       }else {
+        console.log('MOUNTING');
         this.getHeads();
         this.getApzInfo();
       }
@@ -1355,7 +1356,7 @@ export default class ShowApz extends React.Component {
                 </div>
               </div>
 
-              {apz.state_history.length > 0 &&
+              {apz.state_history && apz.state_history.length > 0 &&
                 <div>
                   <h5 className="block-title-2 mb-3 mt-3">Логи</h5>
                   <div className="border px-3 py-2">
