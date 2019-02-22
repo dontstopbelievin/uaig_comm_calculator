@@ -293,42 +293,6 @@ class ShowSketch  extends React.Component {
                 this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
                 this.setState({apzFile: data.files.filter(function(obj) { return obj.category_id === 2 })[0]});
                 this.setState({sketchFile: data.files.filter(function(obj) { return obj.category_id === 1 })[0]});
-                // this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
-
-                // var pack2IdFile = data.files.filter(function(obj) { return obj.category_id === 25 }) ?
-                //     data.files.filter(function(obj) { return obj.category_id === 25 }) : [];
-                // if ( pack2IdFile.length > 0 ) {
-                //     this.setState({pack2IdFile: pack2IdFile[0]});
-                // }
-
-                    // this.setState({claimedCapacityJustification: data.files.filter(function(obj) { return obj.category_id === 24 })[0]});
-
-                // if (commission) {
-                //     if (commission.apz_water_response && commission.apz_water_response.files) {
-                //         this.setState({waterResponseFile: commission.apz_water_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-                //         this.setState({waterCustomTcFile: commission.apz_water_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
-                //     }
-                //
-                //     if (commission.apz_electricity_response && commission.apz_electricity_response.files) {
-                //         this.setState({electroResponseFile: commission.apz_electricity_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-                //         this.setState({electroCustomTcFile: commission.apz_electricity_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
-                //     }
-                //
-                //     if (commission.apz_phone_response && commission.apz_phone_response.files) {
-                //         this.setState({phoneResponseFile: commission.apz_phone_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-                //         this.setState({phoneCustomTcFile: commission.apz_phone_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
-                //     }
-                //
-                //     if (commission.apz_heat_response && commission.apz_heat_response.files) {
-                //         this.setState({heatResponseFile: commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-                //         this.setState({heatCustomTcFile: commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
-                //     }
-                //
-                //     if (commission.apz_gas_response && commission.apz_gas_response.files) {
-                //         this.setState({gasResponseFile: commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-                //         this.setState({gasCustomTcFile: commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
-                //     }
-                // }
 
 
                 if (data.status_id === 4 && hasReponse.length == 0) {

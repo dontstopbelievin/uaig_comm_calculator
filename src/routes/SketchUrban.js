@@ -1404,7 +1404,7 @@ class AllSketch extends React.Component {
             response: null,
             pageNumbers: [],
             regions:[],
-            current_region: ""
+            // current_region: ""
         };
 
     }
@@ -1421,7 +1421,7 @@ class AllSketch extends React.Component {
             select_regions.push(<option value={data[i]}> {data[i]} </option>);
         }
         this.setState({regions: select_regions});
-        this.setState({current_region: data[2]});
+        // this.setState({current_region: data[2]});
     }
 
     componentWillReceiveProps(nextProps) {
@@ -1441,8 +1441,8 @@ class AllSketch extends React.Component {
 
         var token = sessionStorage.getItem('tokenInfo');
         var xhr = new XMLHttpRequest();
-        xhr.open("get", window.url + "api/sketch/region/all/" + status + '/' + this.state.current_region + '?page=' + page, true);
-        // xhr.open("get", window.url + "api/sketch/region/all/" + status + '?page=' + page, true);
+        // xhr.open("get", window.url + "api/sketch/region/all/" + status + '/' + this.state.current_region + '?page=' + page, true);
+        xhr.open("get", window.url + "api/sketch/region/all/" + status + '?page=' + page, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         xhr.onload = function () {
@@ -1481,11 +1481,11 @@ class AllSketch extends React.Component {
         return formated_date;
     }
 
-    handleRegionChange(event){
-        this.setState({current_region: event.target.value}, function stateUpdateComplete() {
-            this.getSketches();
-        }.bind(this));
-    }
+    // handleRegionChange(event){
+    //     this.setState({current_region: event.target.value}, function stateUpdateComplete() {
+    //         this.getSketches();
+    //     }.bind(this));
+    // }
 
     render() {
         var status = this.props.match.params.status;
@@ -1499,12 +1499,12 @@ class AllSketch extends React.Component {
                     <div>
                         <h4 className="mb-0">Эскизные проекты</h4>
                     </div>
-                    <div style={{fontSize: '18px', margin: '10px 0px'}}>
-                        <b>Выберите регион:</b>
-                        <select style={{padding: '0px 4px', margin: '5px'}} value={this.state.current_region} onChange={this.handleRegionChange.bind(this)}>
-                            {this.state.regions}
-                        </select>
-                    </div>
+                    {/*<div style={{fontSize: '18px', margin: '10px 0px'}}>*/}
+                        {/*<b>Выберите регион:</b>*/}
+                        {/*<select style={{padding: '0px 4px', margin: '5px'}} value={this.state.current_region} onChange={this.handleRegionChange.bind(this)}>*/}
+                            {/*{this.state.regions}*/}
+                        {/*</select>*/}
+                    {/*</div>*/}
                     <ul className="nav nav-tabs mb-2 pull-right">
                         <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/urban/sketch/status/active/1" replace>Активные</NavLink></li>
                         <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/urban/sketch/status/accepted/1" replace>Принятые</NavLink></li>
