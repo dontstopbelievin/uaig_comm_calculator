@@ -47,7 +47,7 @@ export default class BasePagePanel extends React.Component{
                       {e.secondblock}
                     </p>
                   </div>
-                  <div className="card-button">{console.log(this.state.rolename)}
+                  <div className="card-button">
                     {/*<button className="btn btn-danger bg-danger text-white font-weight-bold">Подать заявку</button>*/}
                     <NavLink to={"/panel/services/1"} replace className="btn btn-primary">Подробнее</NavLink>
                   </div>
