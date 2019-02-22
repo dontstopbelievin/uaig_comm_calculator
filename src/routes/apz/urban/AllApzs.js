@@ -12,9 +12,9 @@ export default class AllApzs extends React.Component {
       data: [],
       data_reserve: [],
       pageNumbers: [],
-      regions:[],
+      //regions:[],
       searchApz: '',
-      current_region: ""
+      //current_region: ""
     };
 
     this.handleSearch = this.handleSearch.bind(this);
@@ -25,7 +25,7 @@ export default class AllApzs extends React.Component {
     this.getApzs();
   }
 
-  componentWillMount() {
+  /*componentWillMount() {
     var data = JSON.parse(sessionStorage.getItem('userRoles'));
     var select_regions = [];
     for (var i = 2; i < data.length; i++) {
@@ -33,7 +33,7 @@ export default class AllApzs extends React.Component {
     }
     this.setState({regions: select_regions});
     this.setState({current_region: data[2]});
-  }
+  }*/
 
   componentWillReceiveProps(nextProps) {
     this.getApzs(nextProps.match.params.status, nextProps.match.params.page);
@@ -52,7 +52,7 @@ export default class AllApzs extends React.Component {
 
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/region/all/" + status + '/' + this.state.current_region + '?page=' + page, true);
+    xhr.open("get", window.url + "api/apz/region/all/" + status + '?page=' + page, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
@@ -94,11 +94,11 @@ export default class AllApzs extends React.Component {
     return formated_date;
   }
 
-  handleRegionChange(event){
+  /*handleRegionChange(event){
     this.setState({current_region: event.target.value}, function stateUpdateComplete() {
       this.getApzs();
     }.bind(this));
-  }
+  }*/
 
   handleSearch(e){
     if(e.target.value.trim() === ''){this.setState({data: this.state.data_reserve}); return;}

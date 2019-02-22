@@ -122,7 +122,7 @@ export default class AddUsers extends React.Component{
   generatePassword(){
     var string = "abcdefghijklmnopqrstuvwxyz"; //to upper
     var numeric = '0123456789';
-    var punctuation = '!@#$%^&*()_+`}{[]?><-=';
+    var punctuation = '!@#$^*()`_}{[]?><-=';
     var password = "";
     for(var i = 0; i<2; i++) {
       var arr_indexes = [0,1,2];

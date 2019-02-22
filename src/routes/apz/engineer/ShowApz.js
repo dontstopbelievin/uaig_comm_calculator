@@ -323,7 +323,6 @@ export default class ShowApz extends React.Component {
     } else {
       alert("Не выбран хранилище!");
       this.setState({loaderHidden: true});
-
     }
   }
 
@@ -347,9 +346,7 @@ export default class ShowApz extends React.Component {
     if (!alias) {
       alert('Нет ключа подписания');
       this.setState({loaderHidden: true});
-
     }
-
   }
   getTokenXml(alias) {
     let password = document.getElementById("inpPassword").value;
@@ -468,6 +465,7 @@ export default class ShowApz extends React.Component {
     }.bind(this);
 
     this.webSocket.onmessage = function (event) {
+      console.log(event);
       if (event.data === this.heartbeat_msg) {
         this.missed_heartbeats = 0;
         return;
@@ -509,6 +507,20 @@ export default class ShowApz extends React.Component {
       }
       this.setMissedHeartbeatsLimitToMin();
     }.bind(this);
+  }
+  pingLayer() {
+    //console.log("pinging...");
+    try {
+      this.missed_heartbeats++;
+      if (this.missed_heartbeats >= this.missed_heartbeats_limit)
+          throw new Error("Too many missed heartbeats.");
+      this.webSocket.send(this.heartbeat_msg);
+    } catch (e) {
+      clearInterval(this.heartbeat_interval);
+      this.heartbeat_interval = null;
+      console.warn("Closing connection. Reason: " + e.message);
+      this.webSocket.close();
+    }
   }
   openDialog() {
     if (window.confirm("Ошибка при подключений к прослойке. Убедитесь что программа запущена и нажмите ОК") === true) {
