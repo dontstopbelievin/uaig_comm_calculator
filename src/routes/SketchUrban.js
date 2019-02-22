@@ -1441,7 +1441,8 @@ class AllSketch extends React.Component {
 
         var token = sessionStorage.getItem('tokenInfo');
         var xhr = new XMLHttpRequest();
-        xhr.open("get", window.url + "api/sketch/region/all/" + status + '/' + this.state.current_region + '?page=' + page, true);
+        // xhr.open("get", window.url + "api/sketch/region/all/" + status + '/' + this.state.current_region + '?page=' + page, true);
+        xhr.open("get", window.url + "api/sketch/region/all/" + status + '?page=' + page, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         xhr.onload = function () {

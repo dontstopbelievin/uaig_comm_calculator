@@ -4,15 +4,49 @@
 }
 .apzinfo{
   border: 1px solid;
+	border-radius: 4px;
+	padding: 20px;
 }
 .apzinfo li{
 	font-style: italic;
+	list-style-type: none;
 }
 .left-tabs{
   display: inline-flex;
   width: 30%;
 }
-.card-body{
+.left-tabs button{
+	/* background-image: url(/images/3.svg);
+	background-repeat: no-repeat;
+	background-size: 50px;
+	background-position-y: center;
+	background-position-x: 10px; */
+	background-color: #7abf82;
+  border: none;
+  color: white;
+  padding: 20px 20px 20px 70px;
+  text-align: left;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 4px 2px;
+	width: 100%;
+	border-left: 5px solid #db8c8c;
+}
+.left-tabs button:hover{
+	background-color: #4CAF50;
+}
+.left-tabs button.tab1{background-image: url(/images/2.svg);background-repeat: no-repeat;background-size: 50px;background-position-y:center;background-position-x: 10px;}
+.left-tabs button.tab2{background-image: url(/images/7.svg);background-repeat: no-repeat;background-size: 50px;background-position-y:center;background-position-x: 10px;}
+.left-tabs button.tab3{background-image: url(/images/3.svg);background-repeat: no-repeat;background-size: 50px;background-position-y:center;background-position-x: 10px;}
+.left-tabs button.tab4{background-image: url(/images/1.svg);background-repeat: no-repeat;background-size: 50px;background-position-y:center;background-position-x: 10px;}
+.left-tabs button.tab5{background-image: url(/images/4.svg);background-repeat: no-repeat;background-size: 50px;background-position-y:center;background-position-x: 10px;}
+.left-tabs button.tab6{background-image: url(/images/5.svg);background-repeat: no-repeat;background-size: 50px;background-position-y:center;background-position-x: 10px;}
+.left-tabs button.tab7{background-image: url(/images/6.svg);background-repeat: no-repeat;background-size: 50px;background-position-y:center;background-position-x: 10px;}
+.left-tabs button.isactive1{background-color: #db8c8c;background-image: url(/images/2.svg);background-repeat: no-repeat;background-size: 50px;background-position-y:center;background-position-x: 10px; border-left: 5px solid #db8c8c;}
+.left-tabs button.isactive2{background-color: #db8c8c;background-image: url(/images/7.svg);background-repeat: no-repeat;background-size: 50px;background-position-y:center;background-position-x: 10px; border-left: 5px solid #db8c8c;}
+.right-side{
   display: inline-flex;
   width: 65%;
+	margin-left: 45px;
 }

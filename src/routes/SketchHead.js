@@ -321,14 +321,6 @@ class ShowSketch extends React.Component {
                 this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
                 this.setState({apzFile: data.files.filter(function(obj) { return obj.category_id === 2 })[0]});
                 this.setState({sketchFile: data.files.filter(function(obj) { return obj.category_id === 1 })[0]});
-                // this.setState({: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
-                // this.setState({reglamentFile: data.files.filter(function(obj) { return obj.category_id === 29 })[0]});
-                //this.setState({returnedState: data.state_history.filter(function(obj) { return obj.state_id === 3 && obj.comment != null })[0]});
-                // var pack2IdFile = data.files.filter(function(obj) { return obj.category_id === 25 }) ?
-                //     data.files.filter(function(obj) { return obj.category_id === 25 }) : [];
-                // if ( pack2IdFile.length > 0 ) {
-                //     this.setState({pack2IdFile: pack2IdFile[0]});
-                // }
                 for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
                     switch (data.state_history[data_index].state_id) {
                         case 5:
@@ -342,24 +334,21 @@ class ShowSketch extends React.Component {
                     break;
                 }
 
-
-
-
-                if (data.status_id === 6 && !data.apz_head_response) {
+                if (data.status_id === 6 && !data.sketch_head_response) {
                     this.setState({showButtons: true});
                 }
 
-                if (data.status_id === 6 && data.apz_head_response && data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0] == null) {
+                if (data.status_id === 6 && data.sketch_head_response && data.sketch_head_response.files.filter(function(obj) { return obj.category_id === 19})[0] == null) {
                     this.setState({showButtons: true});
                 }
 
-                if (data.apz_head_response && data.apz_head_response && data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0] != null) {
+                if (data.sketch_head_response && data.sketch_head_response && data.sketch_head_response.files.filter(function(obj) { return obj.category_id === 19})[0] != null) {
                     this.setState({isSigned: true});
-                    this.setState({xmlFile: data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0]});
-                    this.setState({headResponse: data.apz_head_response.response});
+                    this.setState({xmlFile: data.sketch_head_response.files.filter(function(obj) { return obj.category_id === 19})[0]});
+                    this.setState({headResponse: data.sketch_head_response.response});
                 }
 
-                if (data.apz_head_response && data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0] != null && data.status_id === 6) {
+                if (data.sketch_head_response && data.sketch_head_response.files.filter(function(obj) { return obj.category_id === 19})[0] != null && data.status_id === 6) {
                     this.setState({showSendButton: true});
                 }
 
@@ -1392,26 +1381,6 @@ class ShowSketch extends React.Component {
                             </div>
                             }
 
-                        {/*</div>*/}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                         {this.state.showSignButtons && !this.state.isSigned &&
                         <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                             <div>Выберите хранилище</div>
@@ -1473,69 +1442,6 @@ class ShowSketch extends React.Component {
                                         </div>
                                     </div>
                                 </div>
-                                {/*<button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#DeclineApzForm">
-                      Отклонить
-                    </button>*/}
-                                {/*<div className="modal fade" id="AcceptApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                      <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                          <div className="modal-header">
-                            <h5 className="modal-title">Одобрение Заявки</h5>
-                            <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div className="modal-body">
-                            <div className="form-group">
-                              <label htmlFor="pname">Наименование объекта</label>
-                              <input type="text" readOnly="readonly" className="form-control" id="pname" style={{background:'lightblue'}} value={apz.project_name} />
-                            </div>
-                            <div className="form-group">
-                              <label htmlFor="adress">Адрес объекта</label>
-                              <input type="text" readOnly="readonly" className="form-control" id="adress" style={{background:'lightblue'}} value={apz.project_address} />
-                            </div>
-                            <div className="form-group">
-                              <label htmlFor="docNumber">Номер документа</label>
-                              <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
-                            </div>
-                          </div>
-                          <div className="modal-footer">
-                            <button type="button" className="btn btn-primary" onClick={this.saveApzForm.bind(this, apz.id, true, "your form was accepted")}>Сохранить</button>
-                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="modal fade" id="DeclineApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                      <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                          <div className="modal-header">
-                            <h5 className="modal-title">Отклонить</h5>
-                            <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div className="modal-body">
-                            <div className="form-group">
-                              <label htmlFor="pname">Наименование объекта</label>
-                              <input type="text" readOnly="readonly" className="form-control" id="pname" style={{background:'lightblue'}} value={apz.project_name} />
-                            </div>
-                            <div className="form-group">
-                              <label htmlFor="adress">Адрес объекта</label>
-                              <input type="text" readOnly="readonly" className="form-control" id="adress" style={{background:'lightblue'}} value={apz.project_address} />
-                            </div>
-                            <div className="form-group">
-                              <label htmlFor="docNumber">Номер документа</label>
-                              <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.docNumber} onChange={this.onDocNumberChange} />
-                            </div>
-                          </div>
-                          <div className="modal-footer">
-                            <button type="button" className="btn btn-primary" onClick={this.saveApzForm.bind(this, apz.id, false, 'Откланен главным архитектором')}>Сохранить</button>
-                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>*/}
                             </div>
                             }
 

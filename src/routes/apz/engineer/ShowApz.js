@@ -346,9 +346,7 @@ export default class ShowApz extends React.Component {
     if (!alias) {
       alert('Нет ключа подписания');
       this.setState({loaderHidden: true});
-
     }
-
   }
   getTokenXml(alias) {
     let password = document.getElementById("inpPassword").value;
