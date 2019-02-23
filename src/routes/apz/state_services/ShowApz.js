@@ -382,7 +382,7 @@ export default class ShowApz extends React.Component {
           this.setState({backFromEngineer: data.state_history.filter(function(obj) { return obj.state_id === 4 })[0]});
           for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
             switch (data.state_history[data_index].state_id) {
-              case 38:
+              case 33:
                 this.setState({backFromHead: data.state_history[data_index]});
                 break;
               default:
@@ -625,6 +625,7 @@ export default class ShowApz extends React.Component {
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         xhr.onload = function() {
           if (xhr.status === 200) {
+            this.setState({ showSignButtons: false });
             this.setState({ showSendButton: true });
             alert('Успешно подписан.');
           } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
@@ -1878,7 +1879,7 @@ export default class ShowApz extends React.Component {
             {!this.state.backFromGP &&
               <button type="button" style={{marginRight:'5px'}} className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'gen_plan')}>Отправить отделу ген плана</button>
             }
-            {(this.state.backFromEngineer && apz.apz_department_response) ?
+            {(this.state.backFromEngineer && !apz.apz_department_response) ?
               <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.saveForm.bind(this, apz.id, true, "")}>
                 Сохранить
               </button>

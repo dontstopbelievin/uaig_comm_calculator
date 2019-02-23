@@ -41,10 +41,10 @@ export default class Sketch extends React.Component {
       <div className="content container body-content citizen-sketch-list-page">
 
         <div>
-        <div class="left-tabs">
+        <div className="left-tabs">
         {this.state.left_tabs &&
           <div className="buttons">
-              <Link to="/panel/citizen/apz"><button class="tab1">Выдача архитектурно-планировочного задания</button></Link>
+              <Link to="/panel/citizen/apz"><button className="tab1">Выдача архитектурно-планировочного задания</button></Link>
               <Link to="/panel/citizen/sketch"><button onClick="toggle()" className={this.state.active === false ? 'isactive2' : 'tab2'}>Выдача решения на эскизный проект</button></Link>
               <Link to="/panel/citizen/photoreports"><button className="tab3">Выдача решения на фотоотчет</button></Link>
               <Link to="/"><button className="tab4">Выдача справки по определению адреса объектов недвижимости</button></Link>
@@ -56,11 +56,11 @@ export default class Sketch extends React.Component {
         </div>
         <div className="right-side">
         {this.state.welcome_text &&
-          <div class="apzinfo">
+          <div className="apzinfo">
             <div class = "time">
                <p><strong>Эскизный проект</strong> – это набор документов, схем и чертежей, который содержит данные о разрабатываемом объекте, его назначении, основные технические, архитектурные и конструктивные параметры. Это упрощенный вид проектного решения, объясняющий его замысел и позволяющий составить представление о дальнейших работах.</p>
             </div>
-            <div class="packages">
+            <div className="packages">
                <p><strong>Срок рассмотрения заявления:</strong></p>
                <li>1.	Срок рассмотрения заявления и согласования эскиза (эскизного проекта) технически и (или) технологически несложных объектов – 10 (десять) рабочих дней.</li>
                <li>2.	Срок рассмотрения заявления и согласования эскиза (эскизного проекта) технически и (или) технологически сложных объектов – 15 (пятнадцать) рабочих дней.</li>
@@ -74,7 +74,7 @@ export default class Sketch extends React.Component {
                <li>4.	копия архитектурно-планировочного задания;</li>
             </div>
             <div className="apzinfo-bottom">
-              <button class="btn btn-raised btn-success" onClick={this.hide_text.bind(this)}>Перейти к заявкам</button>
+              <button className="btn btn-raised btn-success" onClick={this.hide_text.bind(this)}>Перейти к заявкам</button>
             </div>
           </div>
         }

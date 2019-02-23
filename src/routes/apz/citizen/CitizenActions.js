@@ -152,11 +152,11 @@ export default class CitizenActions extends React.Component {
               </div>
             }
             {this.state.welcome_texts[1] &&
-              <div class="apzinfo">
+              <div className="apzinfo">
                 <div class = "time">
                    <p><strong>{service2.name}</strong> – {service2.description}</p>
                 </div>
-                <div class="packages">
+                <div className="packages">
                    <p><strong>Срок рассмотрения заявления:</strong></p>
                    {service2.period[0].split(';').map(function(item, index) {
                        return(
@@ -268,17 +268,17 @@ export default class CitizenActions extends React.Component {
                </div>
                <div className="apzinfo-bottom">
                     <div className="card-button">
-                      <button type="button" onClick={this.InProcess} class="btn btn-secondary">Перейти к заявке</button>
+                      <button type="button" onClick={this.InProcess} className="btn btn-secondary">Перейти к заявке</button>
                     </div>
                   </div>
               </div>
             }
             {this.state.welcome_texts[4] &&
-              <div class="apzinfo">
+              <div className="apzinfo">
                 <div class = "time">
                    <p>{service5.description}</p>
                 </div>
-                <div class="packages">
+                <div className="packages">
                    <p><strong>Срок рассмотрения заявления:</strong></p>
                    <li>{service5.period}</li>
                    <br></br>
@@ -291,17 +291,17 @@ export default class CitizenActions extends React.Component {
                 </div>
                 <div className="apzinfo-bottom">
                     <div className="card-button">
-                      <button type="button" onClick={this.InProcess} class="btn btn-secondary">Перейти к заявке</button>
+                      <button type="button" onClick={this.InProcess} className="btn btn-secondary">Перейти к заявке</button>
                     </div>
                 </div>
               </div>
             }
             {this.state.welcome_texts[5] &&
-              <div class="apzinfo">
+              <div className="apzinfo">
                 <div class = "time">
                    <p>{service6.description}</p>
                 </div>
-                <div class="packages">
+                <div className="packages">
                    <p><strong>Срок рассмотрения заявления:</strong></p>
                    <li>{service6.period}</li>
                    <br></br>
@@ -314,17 +314,17 @@ export default class CitizenActions extends React.Component {
                 </div>
                 <div className="apzinfo-bottom">
                     <div className="card-button">
-                      <button type="button" onClick={this.InProcess} class="btn btn-secondary">Перейти к заявке</button>
+                      <button type="button" onClick={this.InProcess} className="btn btn-secondary">Перейти к заявке</button>
                     </div>
                 </div>
               </div>
             }
             {this.state.welcome_texts[6] &&
-              <div class="apzinfo">
+              <div className="apzinfo">
                 <div class = "time">
                    <p>{service7.description}</p>
                 </div>
-                <div class="packages">
+                <div className="packages">
                     <p><strong>Срок рассмотрения заявления:</strong></p>
                     <p>1-этап: <i>{service7.period[0]}</i></p>
                     <p>2-этап: <i>{service7.period[1]}</i></p>
@@ -347,7 +347,7 @@ export default class CitizenActions extends React.Component {
                 </div>
                 <div className="apzinfo-bottom">
                     <div className="card-button">
-                      <button type="button" onClick={this.InProcess} class="btn btn-secondary">Перейти к заявке</button>
+                      <button type="button" onClick={this.InProcess} className="btn btn-secondary">Перейти к заявке</button>
                     </div>
                 </div>
               </div>
