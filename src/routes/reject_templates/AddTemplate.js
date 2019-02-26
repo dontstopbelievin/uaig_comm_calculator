@@ -41,7 +41,7 @@ export default class AddTemplate extends React.Component{
     xhr.onload = function() {
       if (xhr.status === 200) {
         alert('Шаблон успешно создан');
-        this.props.history.push('/panel/urban/answer-template/all/'+this.state.type+'/1');
+        this.props.history.push('/panel/answer-template/all/'+this.state.type+'/1');
       }else{
         alert('Не удалось');
       }

@@ -88,13 +88,13 @@ export default class AllTemplates extends React.Component{
           <h4 className="mb-0">Шаблоны отказов</h4>
           <br />
         </div>
-        <Link className="btn btn-outline-primary mb-3" to={"/panel/urban/answer-template/"+type+"/add"}>Создать шаблон</Link>
+        <Link className="btn btn-outline-primary mb-3" to={"/panel/answer-template/"+type+"/add"}>Создать шаблон</Link>
 
         {this.state.loaderHidden &&
           <div>
             <ul className="nav nav-tabs mb-2 pull-right">
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => type === 'apz'} to="/panel/urban/answer-template/all/apz/1" replace>АПЗ</NavLink></li>
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => type === 'sketch'} to="/panel/urban/answer-template/all/sketch/1" replace>Эскизный проект</NavLink></li>
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => type === 'apz'} to="/panel/answer-template/all/apz/1" replace>АПЗ</NavLink></li>
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => type === 'sketch'} to="/panel/answer-template/all/sketch/1" replace>Эскизный проект</NavLink></li>
             </ul>
             <table className="table">
               <thead>
@@ -118,7 +118,7 @@ export default class AllTemplates extends React.Component{
                       </td>
                       <td>
                         <div className="btn-group btn-group-xs" style={{margin: '0'}} role="group">
-                          <Link className="btn btn-outline-info" to={'/panel/urban/answer-template/show/'+type+"/" + template.id}><i className="glyphicon glyphicon-pencil mr-2"></i> Изменить</Link>
+                          <Link className="btn btn-outline-info" to={'/panel/answer-template/show/'+type+"/" + template.id}><i className="glyphicon glyphicon-pencil mr-2"></i> Изменить</Link>
                           <button className="btn btn-outline-danger" onClick={this.deleteTemplate.bind(this, template.id, template.title)}><i className="glyphicon glyphicon-trash mr-2"></i> Удалить</button>
                         </div>
                       </td>
@@ -133,19 +133,19 @@ export default class AllTemplates extends React.Component{
               <nav className="pagination_block">
                 <ul className="pagination justify-content-center">
                   <li className="page-item">
-                    <Link className="page-link" to={'/panel/urban/answer-template/all/1'}>В начало</Link>
+                    <Link className="page-link" to={'/panel/answer-template/all/1'}>В начало</Link>
                   </li>
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
                       <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
-                        <Link className="page-link" to={'/panel/urban/answer-template/all/' + num}>{num}</Link>
+                        <Link className="page-link" to={'/panel/answer-template/all/' + num}>{num}</Link>
                       </li>
                       );
                     })
                   }
                   <li className="page-item">
-                    <Link className="page-link" to={'/panel/urban/answer-template/all/' + this.state.response.last_page}>В конец</Link>
+                    <Link className="page-link" to={'/panel/answer-template/all/' + this.state.response.last_page}>В конец</Link>
                   </li>
                 </ul>
               </nav>

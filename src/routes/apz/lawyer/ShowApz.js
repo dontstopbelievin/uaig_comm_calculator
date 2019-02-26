@@ -22,6 +22,7 @@ export default class ShowApz extends React.Component {
 
       this.state = {
         apz: [],
+        templates: [],
         showMap: false,
         showButtons: true,
         showMapText: 'Показать карту',
@@ -38,8 +39,13 @@ export default class ShowApz extends React.Component {
         apz_head_id: '',
         apz_heads_id: [],
         xmlFile: false,
+        comment: null,
+        backFromEngineer: false,
+        backFromStateService: false,
         loaderHiddenSign:true
       };
+
+      this.onCommentChange = this.onCommentChange.bind(this);
     }
 
     componentDidMount() {
@@ -52,7 +58,37 @@ export default class ShowApz extends React.Component {
       }else {
         this.getApzInfo();
         this.getHeads();
+        this.getAnswerTemplates();
       }
+    }
+
+    onTemplateListChange(e) {
+      if(e.target.value != ''){
+        var template = this.state.templates.find(template => template.id == e.target.value);
+        this.setState({ comment: template.text });
+      }
+    }
+
+    onCommentChange(value) {
+      this.setState({ comment: value });
+    }
+
+    getAnswerTemplates(){
+      var token = sessionStorage.getItem('tokenInfo');
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/apz/answer_template/all", true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          //console.log(JSON.parse(xhr.responseText));
+          this.setState({templates: JSON.parse(xhr.responseText).data});
+        }
+      }.bind(this)
+      xhr.onerror = function () {
+        alert('Сервер не отвечает');
+      }.bind(this);
+      xhr.send();
     }
 
     getHeads(){
@@ -116,9 +152,15 @@ export default class ShowApz extends React.Component {
             this.setState({showButtons: true});
           }
 
-          if (apz.state_history.filter(function(obj) { return obj.state_id === 38})[0] != null) {
+          if (apz.state_history.filter(function(obj) { return obj.state_id === 38 || obj.state_id === 6})[0] != null) {
             this.setState({response: true});
           }
+          this.setState({backFromStateService: data.state_history.filter(function(obj) { return obj.state_id === 40 })[0]});
+          this.setState({backFromEngineer: data.state_history.filter(function(obj) { return obj.state_id === 6 })[0]});
+
+          // if (apz.state_history.filter(function(obj) { return obj.state_id === 38})[0] != null) {
+          //   this.setState({response: true});
+          // }
 
           this.setState({loaderHidden: true});
           // BE CAREFUL OF category_id should be xml регионального архитектора
@@ -1292,6 +1334,21 @@ export default class ShowApz extends React.Component {
                 {this.state.showMapText}
               </button>
 
+              {this.state.backFromHead &&
+                <div className="alert alert-danger">
+                  Комментарий главного архитектора: {this.state.backFromHead.comment}
+                </div>
+              }
+              {this.state.backFromEngineer &&
+                <div className="alert alert-danger">
+                  Комментарий инженера: {this.state.backFromEngineer.comment}
+                </div>
+              }
+              {this.state.backFromStateService &&
+                <div className="alert alert-danger">
+                  Комментарий отдела гос услуг: {this.state.backFromStateService.comment}
+                </div>
+              }
               {this.state.response &&
                 <table className="table table-bordered">
                   <tbody>
@@ -1310,11 +1367,6 @@ export default class ShowApz extends React.Component {
                   </tbody>
                 </table>
               }
-              {this.state.backFromHead &&
-                <div className="alert alert-danger">
-                  Комментарий главного архитектора: {this.state.backFromHead.comment}
-                </div>
-              }
               <div className={this.state.showButtons ? '' : 'invisible'}>
                 <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                   {!this.state.response ?
@@ -1330,7 +1382,49 @@ export default class ShowApz extends React.Component {
                     <div>
                       {!this.state.needSign ?
                         <div style={{margin: 'auto', display: 'table'}}>
-                          <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.showSignBtns.bind(this)}>Одобрить</button>
+                          {/*<button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.showSignBtns.bind(this)}>Отклонить заявление</button>*/}
+                          <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">Отклонить заявление</button>
+                          <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                            <div className="modal-dialog" role="document">
+                              <div className="modal-content">
+                                <div className="modal-header">
+                                  <h5 className="modal-title">Мотивированный отказ</h5>
+                                  <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div className="modal-body">
+                                  {this.state.templates && this.state.templates.length > 0 &&
+                                    <div className="form-group">
+                                      <select className="form-control" defaultValue="" id="templateList" onChange={this.onTemplateListChange.bind(this)}>
+                                        <option value="">Выберите шаблон</option>
+                                        {this.state.templates.map(function(template, index) {
+                                          return(
+                                            <option key={index} value={template.id}>{template.title}</option>
+                                            );
+                                          })
+                                        }
+                                      </select>
+                                    </div>
+                                  }
+                                  <div style={{paddingLeft:'5px', fontSize: '18px'}}>
+                                    <b>Выберите главного архитектора:</b>
+                                    <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
+                                      {this.state.apz_heads_id}
+                                    </select>
+                                  </div>
+                                  <div className="form-group">
+                                    <label>Комментарий</label>
+                                    <ReactQuill value={this.state.comment} onChange={this.onCommentChange} />
+                                  </div>
+                                </div>
+                                <div className="modal-footer">
+                                  <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.comment, 'head')}>Отправить главному архитектору</button>
+                                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                         :
                           <div>

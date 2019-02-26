@@ -52,6 +52,30 @@
         "link":"/panel/admin/usersQuestions"
       }
     },
+    "answer-template":{
+      "all":{
+        "name":"Шаблоны отказов",
+        "link":"/panel/urban/answer-template",
+        "all":"Все шаблоны",
+        "add":"Добавить шаблон",
+        "show":"Показать шаблон"
+      },
+      "apz":{
+        "name":"Шаблоны отказов",
+        "link":"/panel/urban/answer-template",
+        "all":"Все шаблоны",
+        "add":"Добавить шаблон",
+        "show":"Показать шаблон"
+      }
+      ,
+      "show":{
+        "name":"Шаблоны отказов",
+        "link":"/panel/urban/answer-template",
+        "all":"Все шаблоны",
+        "add":"Добавить шаблон",
+        "show":"Показать шаблон"
+      }
+    },
     "urban":{
       "apz":{
         "name":"Архитектурно-планировочное задание",
@@ -62,13 +86,6 @@
       "urbanreport":{
         "name":"Архитектурно-планировочное задание : Отчет",
         "link":"/panel/urban/urbanreport"
-      },
-      "answer-template":{
-        "name":"Шаблоны отказов",
-        "link":"/panel/urban/answer-template",
-        "all":"Все шаблоны",
-        "add":"Добавить шаблон",
-        "show":"Показать шаблон"
       },
       "sketch":{
         "name":"Эскизный проект",

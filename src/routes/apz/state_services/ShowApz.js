@@ -20,7 +20,6 @@ export default class ShowApz extends React.Component {
 
       this.state = {
         apz: [],
-        templates: [],
         showMap: false,
         showButtons: false,
         showSendButton: false,
@@ -311,13 +310,6 @@ export default class ShowApz extends React.Component {
       }
     }
 
-    onTemplateListChange(e) {
-      if(e.target.value != ''){
-        var template = this.state.templates.find(template => template.id == e.target.value);
-        this.setState({ description: template.text });
-      }
-    }
-
     onInputChange(state, value) {
       // const { value, name } = e.target
       // this.setState({ [name] : value })
@@ -335,29 +327,10 @@ export default class ShowApz extends React.Component {
 
     componentWillMount() {
       this.getApzInfo();
-      this.getAnswerTemplates();
     }
 
     snakeToCamel(s){
       return s.replace(/_\w/g, (m) => m[1].toUpperCase() );
-    }
-
-    getAnswerTemplates(){
-      var token = sessionStorage.getItem('tokenInfo');
-      var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/answer_template/all", true);
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          //console.log(JSON.parse(xhr.responseText));
-          this.setState({templates: JSON.parse(xhr.responseText).data});
-        }
-      }.bind(this)
-      xhr.onerror = function () {
-        alert('Сервер не отвечает');
-      }.bind(this);
-      xhr.send();
     }
 
     getApzInfo() {
@@ -1900,27 +1873,14 @@ export default class ShowApz extends React.Component {
             <div className="modal-dialog" role="document">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">Мотивированный отказ</h5>
+                  <h5 className="modal-title">Причина отказа</h5>
                   <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
                 <div className="modal-body">
-                  {this.state.templates && this.state.templates.length > 0 &&
-                    <div className="form-group">
-                      <select className="form-control" defaultValue="" id="templateList" onChange={this.onTemplateListChange.bind(this)}>
-                        <option value="">Выберите шаблон</option>
-                        {this.state.templates.map(function(template, index) {
-                          return(
-                            <option key={index} value={template.id}>{template.title}</option>
-                            );
-                          })
-                        }
-                      </select>
-                    </div>
-                  }
                   <div className="form-group">
-                    <label>Причина отклонения</label>
+                    <label>Комментарий</label>
                     <ReactQuill value={this.state.description} onChange={this.onDescriptionChange} />
                   </div>
                 </div>

@@ -101,7 +101,7 @@ export default class CitizenActions extends React.Component {
                               <ul>
                                 {service1.list_of_documents[0].split(';').map(function(item, index) {
                                     return(
-                                      <li>{index+1}) {item};</li>
+                                      <li key={index}>{index+1}) {item};</li>
                                     )
                                 })}
                               </ul>
