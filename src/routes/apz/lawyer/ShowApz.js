@@ -42,6 +42,7 @@ export default class ShowApz extends React.Component {
         comment: null,
         backFromEngineer: false,
         backFromStateService: false,
+        declinedState: false,
         loaderHiddenSign:true
       };
 
@@ -157,6 +158,7 @@ export default class ShowApz extends React.Component {
           }
           this.setState({backFromStateService: data.state_history.filter(function(obj) { return obj.state_id === 40 })[0]});
           this.setState({backFromEngineer: data.state_history.filter(function(obj) { return obj.state_id === 6 })[0]});
+          this.setState({declinedState: data.state_history.filter(function(obj) { return obj.state_id === 37 })[0]});
 
           // if (apz.state_history.filter(function(obj) { return obj.state_id === 38})[0] != null) {
           //   this.setState({response: true});
@@ -1349,7 +1351,7 @@ export default class ShowApz extends React.Component {
                   Комментарий отдела гос услуг: {this.state.backFromStateService.comment}
                 </div>
               }
-              {this.state.response &&
+              {this.state.declinedState &&
                 <table className="table table-bordered">
                   <tbody>
                     <tr>
