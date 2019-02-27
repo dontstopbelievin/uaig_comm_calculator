@@ -1,9 +1,9 @@
 import React from 'react';
 import Loader from 'react-loader-spinner';
 import $ from 'jquery';
-import { Link} from 'react-router-dom';
+import { Link, } from 'react-router-dom';
 
-export default class SearchAllApzs extends React.Component {
+export default class AllApzs extends React.Component {
   constructor(props) {
     super(props);
 
@@ -11,7 +11,8 @@ export default class SearchAllApzs extends React.Component {
       loaderHidden: false,
       response: null,
       pageNumbers: [],
-      results: ''
+      results: '',
+      rolename: 'Temporary',
     };
 
     this.search = this.search.bind(this);
@@ -21,13 +22,26 @@ export default class SearchAllApzs extends React.Component {
   componentDidMount() {
     this.props.breadCrumbs();
     this.getAll();
+    var roles = JSON.parse(sessionStorage.getItem('userRoles'));
+    switch (roles[1]) {
+      case 'Region':
+        this.setState({rolename: 'urban'});
+        break;
+      case 'Engineer':
+        this.setState({rolename: 'engineer'});
+        break;
+      default:
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    this.getAll(nextProps.match.params.page);
+    this.getAll(nextProps.match.params.user_id, nextProps.match.params.page);
   }
 
-  getAll(page) {
+  getAll(user_id = null, page = null) {
+    if (!user_id) {
+      user_id = this.props.match.params.user_id;
+    }
     if (!page) {
       page = this.props.match.params.page;
     }
@@ -40,7 +54,7 @@ export default class SearchAllApzs extends React.Component {
     //console.log(data);
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/engineer/search?page=" + page + "&" + data, true);
+    xhr.open("get", window.url + "api/apz/all_history/"+user_id+"?page=" + page + "&" + data, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
@@ -65,12 +79,12 @@ export default class SearchAllApzs extends React.Component {
     xhr.send();
   }
 
-  search(page) {
+  search(user_id, page) {
     var data = $("form input, form select").filter(function(index, element) {
       return $(element).val() !== '';
     }).serialize();
 
-    this.props.history.push('/panel/engineer/apz/search/' + page + '?' + data);
+    this.props.history.push('/panel/apz/all_history/'+ user_id +'/'+ page + '?' + data);
   }
 
   toDate(date) {
@@ -90,6 +104,7 @@ export default class SearchAllApzs extends React.Component {
   }
 
   render() {
+    var user_id = this.props.match.params.user_id;
     var page = this.props.match.params.page;
     var apzs = this.state.response ? this.state.response.data : [];
     var params = new URLSearchParams(this.props.location.search);
@@ -160,7 +175,7 @@ export default class SearchAllApzs extends React.Component {
                 </div>
               </div>
               <div className="col-sm-12">
-                <button type="button" onClick={this.search.bind(this, 1)} className="btn btn-success" style={{marginRight:'10px'}}>Поиск</button>
+                <button type="button" onClick={this.search.bind(this, user_id, 1)} className="btn btn-success" style={{marginRight:'10px'}}>Поиск</button>
                 <span style={{color:'#4caf50'}}>Всего результатов: {this.state.results}</span>
               </div>
             </div>
@@ -172,11 +187,12 @@ export default class SearchAllApzs extends React.Component {
             <table className="table">
               <thead>
                 <tr>
-                  <th style={{width: '23%'}}>Название</th>
-                  <th style={{width: '23%'}}>Заявитель</th>
+                  <th style={{width: '5%'}}>ИД</th>
+                  <th style={{width: '21%'}}>Название</th>
+                  <th style={{width: '21%'}}>Заявитель</th>
                   <th style={{width: '20%'}}>Адрес</th>
                   <th style={{width: '20%'}}>Дата заявления</th>
-                  <th style={{width: '20%'}}>Статус</th>
+                  <th style={{width: '19%'}}>Статус</th>
                   <th></th>
                 </tr>
               </thead>
@@ -184,6 +200,7 @@ export default class SearchAllApzs extends React.Component {
                 {apzs.map(function(apz, index) {
                   return(
                     <tr key={index}>
+                      <td>{apz.id}</td>
                       <td>
                         {apz.project_name}
 
@@ -196,7 +213,7 @@ export default class SearchAllApzs extends React.Component {
                       <td>{this.toDate(apz.created_at)}</td>
                       <td>{apz.apz_status.name}</td>
                       <td>
-                        <Link className="btn btn-outline-info" to={'/panel/engineer/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link className="btn btn-outline-info" to={'/panel/'+this.state.rolename+'/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
                     </tr>
                     );
@@ -209,19 +226,19 @@ export default class SearchAllApzs extends React.Component {
               <nav className="pagination_block">
                 <ul className="pagination justify-content-center">
                   <li className="page-item">
-                    <Link className="page-link" to={'/panel/engineer/apz/search/1' + search}>В начало</Link>
+                    <Link className="page-link" to={'/panel/apz/all_history/'+user_id+'/1' + search}>В начало</Link>
                   </li>
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
                       <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
-                        <Link className="page-link" to={'/panel/engineer/apz/search/' + num + search}>{num}</Link>
+                        <Link className="page-link" to={'/panel/apz/all_history/' + user_id+ '/' + num + search}>{num}</Link>
                       </li>
                       );
                     })
                   }
                   <li className="page-item">
-                    <Link className="page-link" to={'/panel/engineer/apz/search/' + this.state.response.last_page + search}>В конец</Link>
+                    <Link className="page-link" to={'/panel/apz/all_history/' + user_id + '/' + this.state.response.last_page + search}>В конец</Link>
                   </li>
                 </ul>
               </nav>

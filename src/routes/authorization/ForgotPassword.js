@@ -86,15 +86,11 @@ export default class forgotPassword extends React.Component{
                         <Link to="/" style={{marginRight:'5px'}}>
                           <button type="button" className="btn btn-default" data-dismiss="modal">Закрыть</button>
                         </Link>
-
                       </div>
-
                     }
                   </div>
-
                 </form>
               </div>
-
             </div>
           </div>
         </div>

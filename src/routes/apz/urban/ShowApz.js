@@ -1,9 +1,10 @@
 import React from 'react';
 import Loader from 'react-loader-spinner';
+import {NavLink} from 'react-router-dom';
 import $ from 'jquery';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import CommissionAnswersList from '../../../components/CommissionAnswersList';
+import CommissionAnswersList from '../components/CommissionAnswersList';
 import ShowMap from "./ShowMap";
 
 export default class ShowApz extends React.Component {
@@ -698,7 +699,10 @@ export default class ShowApz extends React.Component {
                   </tr>
                   <tr>
                     <td><b>Заявитель</b></td>
-                    <td>{apz.applicant}</td>
+                    <td>
+                      {apz.applicant}
+                      <NavLink style={{marginLeft:'5px'}} exact className="btn btn-raised btn-primary btn-sm" to={"/panel/apz/all_history/"+apz.user_id+"/1"}>История заявлений</NavLink>
+                    </td>
                   </tr>
                   <tr>
                     <td><b>Телефон</b></td>

@@ -4,8 +4,8 @@ import 'jquery-validation';
 import 'jquery-serializejson';
 import { Link } from 'react-router-dom';
 import LocalizedStrings from 'react-localization';
-import {ru, kk} from '../../../languages/guest.json';
-import {service1,service2,service3,service4,service5,service6,service7} from '../../../languages/services.json';
+import {ru, kk} from '../languages/guest.json';
+import {service1,service2,service3,service4,service5,service6,service7} from '../languages/services.json';
 import {
     Accordion,
     AccordionItem,

@@ -180,8 +180,8 @@ export default class ShowApz extends React.Component {
         if (data.commission.apz_gas_response) {
           data.commission.apz_gas_response.response_text ? this.setState({description: data.commission.apz_gas_response.response_text}) : this.setState({description: ""});
           data.commission.apz_gas_response.connection_point ? this.setState({connectionPoint: data.commission.apz_gas_response.connection_point}) : this.setState({connectionPoint: ""});
-          data.commission.apz_gas_response.gas_pipe_diameter ? this.setState({gasPipeDiameter: data.commission.apz_gas_response.gas_pipe_diameter}) : this.setState({gasPipeDiameter: ""});
-          data.commission.apz_gas_response.assumed_capacity ? this.setState({assumedCapacity: data.commission.apz_gas_response.assumed_capacity}) : this.setState({assumedCapacity: ""});
+          data.commission.apz_gas_response.gas_pipe_diameter ? this.setState({gasPipeDiameter: data.commission.apz_gas_response.gas_pipe_diameter}) : this.setState({gasPipeDiameter: 0});
+          data.commission.apz_gas_response.assumed_capacity ? this.setState({assumedCapacity: data.commission.apz_gas_response.assumed_capacity}) : this.setState({assumedCapacity: 0});
           data.commission.apz_gas_response.reconsideration ? this.setState({reconsideration: data.commission.apz_gas_response.reconsideration}) : this.setState({reconsideration: ""});
           data.commission.apz_gas_response.doc_number ? this.setState({docNumber: data.commission.apz_gas_response.doc_number}) : this.setState({docNumber: ""});
           data.commission.apz_gas_response.id ? this.setState({responseId: data.commission.apz_gas_response.id}) : this.setState({responseId: ""});
@@ -614,6 +614,7 @@ export default class ShowApz extends React.Component {
     formData.append('customTcFile', customTcFile);
     formData.append('Response', status);
     formData.append('Message', comment);
+    console.log(this.state.gasPipeDiameter);
     if(status === false){
       formData.append('ConnectionPoint', "");
       formData.append('GasPipeDiameter', 0);

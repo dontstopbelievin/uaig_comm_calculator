@@ -114,7 +114,7 @@ export default class AllApzs extends React.Component {
     return (
       <div>
         <div className="card-header">
-          <h4 className="mb-0">Архитектурно-планировочное задание <NavLink exact className="btn btn-raised btn-primary btn-sm" to="/panel/engineer/apz/search/1" replace>Расширенный поиск</NavLink></h4>
+          <h4 className="mb-0">Архитектурно-планировочное задание</h4>
         </div>
         {this.state.loaderHidden &&
           <div>

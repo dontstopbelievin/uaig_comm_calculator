@@ -6,7 +6,6 @@ import Loader from 'react-loader-spinner';
 import $ from 'jquery';
 import ReactQuill from 'react-quill';
 import saveAs from 'file-saver';
-import CommissionAnswersList from '../components/CommissionAnswersList';
 
 export default class SketchUrban extends React.Component {
     render() {
@@ -992,12 +991,6 @@ class ShowSketch extends React.Component {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    }
-                    {sketch.commission && (Object.keys(sketch.commission).length > 0) &&
-                    <div>
-                        <h5 className="block-title-2 mb-3">Ответы от служб</h5>
-                        <CommissionAnswersList sketch={sketch} />
                     </div>
                     }
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import {NavLink} from 'react-router-dom';
 import $ from 'jquery';
 import 'jquery-serializejson';
 import Loader from 'react-loader-spinner';
@@ -1112,7 +1113,10 @@ toDate(date) {
               </tr>
               <tr>
                 <td>{apz.id}</td>
-                <td>{apz.applicant}</td>
+                <td>
+                  {apz.applicant}
+                  <NavLink style={{marginLeft:'5px'}} exact className="btn btn-raised btn-primary btn-sm" to={"/panel/apz/all_history/"+apz.user_id+"/1"}>История заявлений</NavLink>
+                </td>
               </tr>
             </tbody>
           </table>

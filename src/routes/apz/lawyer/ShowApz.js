@@ -4,7 +4,7 @@ import Loader from 'react-loader-spinner';
 import $ from 'jquery';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import CommissionAnswersList from '../../../components/CommissionAnswersList';
+import CommissionAnswersList from '../components/CommissionAnswersList';
 import ShowMap from "./ShowMap";
 
 export default class ShowApz extends React.Component {
