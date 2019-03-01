@@ -54,7 +54,8 @@ class ShowSketch extends React.Component {
             personalIdFile: false,
             sketchFile: false,
             apzFile: false,
-            engineerReturnedState: false,
+            // engineerReturnedState: false,
+            apzReturnedState: false,
             sketchReturnedState: false,
             needSign: false,
             response: true,
@@ -65,7 +66,8 @@ class ShowSketch extends React.Component {
             apz_heads_id: [],
             engineerSign: false,
             xmlFile: false,
-            loaderHiddenSign:true
+            loaderHiddenSign:true,
+            isSended:false
         };
 
         this.onDescriptionChange = this.onDescriptionChange.bind(this);
@@ -137,10 +139,11 @@ class ShowSketch extends React.Component {
                 var sketch = data.sketch;
                 this.setState({templates: data.templates});
                 this.setState({sketch: sketch});
+                this.setState({docNumber: sketch.docNumber});
                 this.setState({personalIdFile: sketch.files.filter(function(obj) { return obj.category_id === 3 })[0]});
                 this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
                 this.setState({apzFile: sketch.files.filter(function(obj) { return obj.category_id === 2 })[0]});
-                this.setState({docNumber: sketch.docNumber});
+                // this.setState({docNumber: sketch.docNumber});
                 // this.setState({reglamentFile: apz.files.filter(function(obj) { return obj.category_id === 29 })[0]});
                 this.setState({showButtons: false});
                 for(var data_index = sketch.state_history.length-1; data_index >= 0; data_index--){
@@ -153,8 +156,8 @@ class ShowSketch extends React.Component {
                     }
                     break;
                 }
-                //this.setState({engineerReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender == 'engineer'})[0]});
-                //this.setState({apzReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender == 'apz'})[0]});
+                this.setState({engineerReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender == 'engineer'})[0]});
+                this.setState({apzReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender == 'apz'})[0]});
                 this.setState({needSign: sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
                 this.setState({engineerSign: sketch.files.filter(function(obj) { return obj.category_id === 28 })[0]});
                 if(sketch.apz_head_id){this.setState({apz_head_id: sketch.apz_head_id});}
@@ -163,7 +166,7 @@ class ShowSketch extends React.Component {
                     this.setState({showButtons: true});
                 }
 
-                if (sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender != null })[0] != null) {
+                if (sketch.state_history.filter(function(obj) { return obj.state_id === 1 || obj.state_id ===10})[0] != null) {
                     this.setState({response: false});
                 }
 
@@ -171,6 +174,7 @@ class ShowSketch extends React.Component {
                 // BE CAREFUL OF category_id should be xml регионального архитектора
                 this.setState({xmlFile: sketch.files.filter(function(obj) { return obj.category_id === 21})[0]});
                 this.setState({needSign: sketch.files.filter(function(obj) { return obj.category_id === 21})[0]});
+
                 // if(sketch.state_history.filter(function(obj) { return obj.state_id === 33 })[0] != null){
                 //     this.setState({needSign: false});
                 // }
@@ -391,7 +395,9 @@ class ShowSketch extends React.Component {
         if (result['errorCode'] === "NONE") {
             let signedXml = result.result;
             var token = sessionStorage.getItem('tokenInfo');
-            var data = {xml: signedXml}
+            var data = {xml: signedXml,
+                        apz_head_id: this.state.apz_head_id,
+                        docNumber:this.state.docNumber}
 
             console.log("SIGNED XML ------> \n", signedXml);
 
@@ -401,7 +407,9 @@ class ShowSketch extends React.Component {
             xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
             xhr.onload = function() {
                 if (xhr.status === 200) {
+                    console.log(this.state.xmlFile);
                     this.setState({ xmlFile: true });
+                    console.log(this.state.xmlFile);
                     alert("Успешно подписан!");
                 } else {
                     alert("Не удалось подписать файл");
@@ -535,7 +543,7 @@ class ShowSketch extends React.Component {
         }
     }
 
-    acceptDeclineSketchForm(sketchId, status, comment, direct,docNumber) {
+    acceptDeclineSketchForm(sketchId, status, comment, direct) {
         console.log(this.state.apz_head_id);
         var token = sessionStorage.getItem('tokenInfo');
 
@@ -544,7 +552,7 @@ class ShowSketch extends React.Component {
             message: comment,
             apz_head_id: this.state.apz_head_id,
             direct: direct.length > 0 ? direct : 'engineer',
-            docNumber:docNumber
+            docNumber:this.state.docNumber
         };
 
         if (!status && !comment) {
@@ -565,9 +573,14 @@ class ShowSketch extends React.Component {
                 if(status === true) {
                     alert("Заявление принято!");
                     this.setState({ showButtons: false });
+                    // this.setState({ isSended: true});
+
                 } else {
+                    this.setState({ isSended: true});
+
                     alert("Заявление отклонено!");
                     this.setState({ showButtons: false });
+                    console.log(this.state.isSended);
                 }
             } else if (xhr.status === 401) {
                 sessionStorage.clear();
@@ -1030,7 +1043,7 @@ class ShowSketch extends React.Component {
                     }
                     {this.state.apzReturnedState &&
                     <div className="alert alert-danger">
-                        Комментарий апз отдела: {this.state.apzReturnedState.comment}
+                        Комментарий главного архитектора: {this.state.apzReturnedState.comment}
                     </div>
                     }
                     {sketch.status_id == 1 &&
@@ -1056,7 +1069,7 @@ class ShowSketch extends React.Component {
                         Комментарий главного архитектора: {this.state.backFromHead.comment}
                     </div>
                     }
-                    {!this.state.xmlFile&&
+                    {(!this.state.xmlFile && !this.state.isSended && this.state.response ) &&
                         <div style={{margin: 'auto', marginTop: '20px', display: 'table', width: '30%'}}>
                             <div className="form-group">
                                 <label>Номер документа</label>
@@ -1076,9 +1089,9 @@ class ShowSketch extends React.Component {
                             </div>
                             }
                             {!this.state.response ?
-                                <div className="text-center">
+                                 <div className="text-center">
                                     <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled="disabled">Одобрить</button>
-                                    <button className="btn btn-raised btn-danger" data-toggle="modal" disabled={!this.state.docNumber}  data-target="#accDecApzForm">
+                                    <button className="btn btn-raised btn-danger" data-toggle="modal"  data-target="#accDecApzForm">
                                         Отклонить
                                     </button>
                                 </div>
@@ -1124,8 +1137,8 @@ class ShowSketch extends React.Component {
                                                 </div>
                                                 :
                                                 <div>
-                                                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted","",this.state.docNumber)}>Отправить инженеру</button>
-                                                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted", "chief",this.state.docNumber)}>
+                                                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted","")}>Отправить инженеру</button>
+                                                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted", "chief")}>
                                                         Отправить главному архитектору
                                                     </button>
                                                 </div>
@@ -1164,7 +1177,7 @@ class ShowSketch extends React.Component {
                                             </div>
                                         </div>
                                         <div className="modal-footer">
-                                            <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, false, this.state.description,"",this.state.docNumber)} disabled={!this.state.docNumber} >Отправить</button>
+                                            <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, false, this.state.description,"",this.state.docNumber)}>Отправить</button>
                                             <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                                         </div>
                                     </div>
