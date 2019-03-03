@@ -50,6 +50,10 @@ export default class CitizenActions extends React.Component {
       }
     }
 
+    componentDidMount(){
+      this.props.breadCrumbs();
+    }
+
     componentWillReceiveProps(nextProps){
       var index = nextProps.match.params.index;
       var welcome_texts = [false, false];
@@ -120,7 +124,7 @@ export default class CitizenActions extends React.Component {
                             <ul>
                             {service1.list_of_documents[1].split(';').map(function(item, index) {
                                 return(
-                                  <li>{index+1}) {item};</li>
+                                  <li key={index}>{index+1}) {item};</li>
                                 )
                             })}
                             </ul>

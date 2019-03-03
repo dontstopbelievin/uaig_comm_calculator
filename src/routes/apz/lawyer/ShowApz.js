@@ -60,6 +60,7 @@ export default class ShowApz extends React.Component {
         this.getApzInfo();
         this.getHeads();
         this.getAnswerTemplates();
+        this.webSocketFunction();
       }
     }
 
@@ -558,9 +559,7 @@ export default class ShowApz extends React.Component {
     }
 
     openDialog() {
-      if (window.confirm("Ошибка при подключений к прослойке. Убедитесь что программа запущена и нажмите ОК") === true) {
-        window.location.reload();
-      }
+      alert("Ошибка при подключений к прослойке NCALayer. Убедитесь что программа запущена и перезарузите страницу");
     }
 
     acceptDeclineApzForm(apzId, status, comment, tohead) {

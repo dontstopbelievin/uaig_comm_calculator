@@ -245,6 +245,10 @@ export default class AllApzs extends React.Component {
             }
           </div>
         }
+        <div className="col-sm-12">
+          <hr />
+          <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
+        </div>
 
         {!this.state.loaderHidden &&
           <div style={{textAlign: 'center'}}>

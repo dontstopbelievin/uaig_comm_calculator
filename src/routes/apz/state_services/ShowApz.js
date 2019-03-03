@@ -321,12 +321,13 @@ export default class ShowApz extends React.Component {
       this.setState({ file: e.target.files[0] });
     }
 
-    onDescriptionChange(value) {
-      this.setState({ description: value });
+    onDescriptionChange(e) {
+      this.setState({ description: e.target.value });
     }
 
     componentWillMount() {
       this.getApzInfo();
+      this.webSocketFunction();
     }
 
     snakeToCamel(s){
@@ -705,9 +706,7 @@ export default class ShowApz extends React.Component {
     }
 
     openDialog() {
-      if (window.confirm("Ошибка при подключений к прослойке. Убедитесь что программа запущена и нажмите ОК") === true) {
-        window.location.reload();
-      }
+      alert("Ошибка при подключений к прослойке NCALayer. Убедитесь что программа запущена и перезарузите страницу");
     }
 
     saveForm(apzId, status, comment) {
@@ -749,6 +748,10 @@ export default class ShowApz extends React.Component {
     }
 
     sendForm(apzId, status, comment, direct) {
+      if(!status && comment.trim() == ''){
+        alert('Для отказа напишите комментарий.');
+        return false;
+      }
       var token = sessionStorage.getItem('tokenInfo');
       var formData = new FormData();
       formData.append('response', status);
@@ -1798,7 +1801,7 @@ export default class ShowApz extends React.Component {
 
           {this.state.backFromHead &&
             <div className="alert alert-danger">
-              Комментарий главного архитектора: {this.state.backFromHead.comment}
+              Причина отправки на доработку: {this.state.backFromHead.comment}
             </div>
           }
 
@@ -1881,7 +1884,9 @@ export default class ShowApz extends React.Component {
                 <div className="modal-body">
                   <div className="form-group">
                     <label>Комментарий</label>
-                    <ReactQuill value={this.state.description} onChange={this.onDescriptionChange} />
+                    <div>
+                      <textarea rows="4" style={{width:'100%', resize:'vertical'}} value={this.state.description} onChange={this.onDescriptionChange}></textarea>
+                    </div>
                   </div>
                 </div>
                 <div className="modal-footer">

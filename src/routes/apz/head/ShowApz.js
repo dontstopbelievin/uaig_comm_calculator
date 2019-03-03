@@ -78,6 +78,7 @@ export default class ShowApz extends React.Component {
 
     componentWillMount() {
         this.getApzInfo();
+        this.webSocketFunction();
     }
 
     getApzInfo() {
@@ -521,9 +522,7 @@ export default class ShowApz extends React.Component {
     }
 
     openDialog() {
-        if (window.confirm("Ошибка при подключений к прослойке. Убедитесь что программа запущена и нажмите ОК") === true) {
-            window.location.reload();
-        }
+        alert("Ошибка при подключений к прослойке NCALayer. Убедитесь что программа запущена и перезарузите страницу");
     }
 
     saveApzForm(apzId, status, comment) {
@@ -561,6 +560,10 @@ export default class ShowApz extends React.Component {
                 sessionStorage.clear();
                 alert("Время сессии истекло. Пожалуйста войдите заново!");
                 this.props.history.replace("/login");
+            }
+            if (!status) {
+              $('#accDecApzForm').modal('hide');
+              $('#ReturnApzForm').modal('hide');
             }
         }.bind(this);
         xhr.send(formData);

@@ -122,6 +122,7 @@ export default class ShowApz extends React.Component {
 
   componentWillMount() {
     this.getApzInfo();
+    this.webSocketFunction();
   }
 
   getDirectors(){
@@ -598,9 +599,7 @@ export default class ShowApz extends React.Component {
   }
 
   openDialog() {
-    if (window.confirm("Ошибка при подключений к прослойке. Убедитесь что программа запущена и нажмите ОК") === true) {
-      window.location.reload();
-    }
+    alert("Ошибка при подключений к прослойке NCALayer. Убедитесь что программа запущена и перезарузите страницу");
   }
 
   // this function is to save the respones form when any change is made

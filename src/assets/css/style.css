@@ -11,7 +11,24 @@
   cursor: pointer;
   margin-left: 10px;
 }
-
+.apzs_header{
+  cursor: pointer;
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;
+}
+.apzs_header:hover{
+  background-color: #c9e1da;
+}
+.filter_img{
+  vertical-align: top;
+  border-style: none;
+  display: inline;
+  width: 20px;
+}
 .header {
   height: 115px;
   background: url(/images/header.png) left 30% repeat #fff;
@@ -862,13 +879,15 @@ img {
   font-size:12px;
 }
 .navigational_price{
-  padding-top: 15px;
-  padding-bottom: 10px;
-  padding-left: 20px;
+  padding: 0px!important;
   text-decoration: none;
+  display: inline;
 }
 .navigational_price a{
   color: #00327d;
+}
+.my_font_size{
+  font-size: 14px;
 }
 table{
   margin-top: 20px;

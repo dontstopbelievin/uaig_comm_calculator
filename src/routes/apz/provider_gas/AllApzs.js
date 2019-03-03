@@ -12,6 +12,7 @@ export default class AllApzs extends React.Component {
       loaderHidden: false,
       isPerformer: (roles.indexOf('PerformerGas') !== -1),
       response: null,
+      data: null,
       pageNumbers: []
     };
 
@@ -69,13 +70,30 @@ export default class AllApzs extends React.Component {
 
         this.setState({pageNumbers: pageNumbers});
         this.setState({response: response});
+        this.setState({data: response.data});
       }
 
       this.setState({ loaderHidden: true });
     }.bind(this);
     xhr.send();
   }
-
+  sortData(column){
+    if(this.state.sortState == 'ASC'){
+      this.setState({ sortState: 'DESC'});
+      this.setState({ data: this.state.data.sort(function(a, b){
+          if(a[column] > b[column]) { return -1; }
+          if(a[column] < b[column]) { return 1; }
+          return 0;
+      }) });
+    }else{
+      this.setState({ sortState: 'ASC'});
+      this.setState({ data: this.state.data.sort(function(a, b){
+          if(a[column] < b[column]) { return -1; }
+          if(a[column] > b[column]) { return 1; }
+          return 0;
+      }) });
+    }
+  }
   toDate(date) {
     if(date === null) {
       return date;
@@ -95,7 +113,7 @@ export default class AllApzs extends React.Component {
   render() {
     var status = this.props.match.params.status;
     var page = this.props.match.params.page;
-    var apzs = this.state.response ? this.state.response.data : [];
+    var apzs = this.state.data ? this.state.data : [];
 
     return (
       <div>
@@ -118,14 +136,14 @@ export default class AllApzs extends React.Component {
             <table className="table">
               <thead>
                 <tr>
-                  <th style={{width: '5%'}}>ИД</th>
-                  <th style={{width: '21%'}}>Название</th>
-                  <th style={{width: '20%'}}>Заявитель</th>
-                  <th style={{width: '20%'}}>Адрес</th>
-                  <th style={{width: '20%'}}>Дата заявления</th>
+                <th style={{width: '7%'}} className="apzs_header" onClick={this.sortData.bind(this, 'id')}>ИД<img className="filter_img" src="/images/filter_icon.png"/></th>
+                <th style={{width: '19%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_name')}>Название<img className="filter_img" src="/images/filter_icon.png"/></th>
+                <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'applicant')}>Заявитель<img className="filter_img" src="/images/filter_icon.png"/></th>
+                <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_address')}>Адрес<img className="filter_img" src="/images/filter_icon.png"/></th>
+                <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'created_at')}>Дата заявления<img className="filter_img" src="/images/filter_icon.png"/></th>
 
                   {(status === 'active' || status === 'awaiting') &&
-                    <th style={{width: '14%'}}>Срок</th>
+                    <th style={{width: '14%'}} className="apzs_header" onClick={this.sortData.bind(this, 'provider_deadline')}>Срок<img className="filter_img" src="/images/filter_icon.png"/></th>
                   }
                   <th></th>
                 </tr>
@@ -148,7 +166,10 @@ export default class AllApzs extends React.Component {
 
                       {(status === 'active' || status === 'awaiting') &&
                         <td>
-                          {this.toDate(apz.term.date)}
+                          {apz.provider_deadline ?
+                            this.toDate(apz.provider_deadline)
+                            :
+                            this.toDate(apz.term.date)}
                         </td>
                       }
                       <td>

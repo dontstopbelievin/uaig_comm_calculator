@@ -52,6 +52,7 @@ export default class ShowApz extends React.Component {
         this.props.history.replace({pathname: "/panel/common/login", state:{url_apz_id: fullLoc[fullLoc.length-1]}});
       }else {
         this.getApzInfo();
+        this.webSocketFunction();
       }
     }
 
@@ -464,9 +465,7 @@ export default class ShowApz extends React.Component {
     }
 
     openDialog() {
-      if (window.confirm("Ошибка при подключений к прослойке. Убедитесь что программа запущена и нажмите ОК") === true) {
-        window.location.reload();
-      }
+      alert("Ошибка при подключений к прослойке NCALayer. Убедитесь что программа запущена и перезарузите страницу");
     }
 
     acceptDeclineApzForm(apzId, status, comment) {

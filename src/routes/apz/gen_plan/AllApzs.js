@@ -85,6 +85,24 @@ export default class AllApzs extends React.Component {
     return formated_date;
   }
 
+  sortData(column){
+    if(this.state.sortState == 'ASC'){
+      this.setState({ sortState: 'DESC'});
+      this.setState({ data: this.state.data.sort(function(a, b){
+          if(a[column] > b[column]) { return -1; }
+          if(a[column] < b[column]) { return 1; }
+          return 0;
+      }) });
+    }else{
+      this.setState({ sortState: 'ASC'});
+      this.setState({ data: this.state.data.sort(function(a, b){
+          if(a[column] < b[column]) { return -1; }
+          if(a[column] > b[column]) { return 1; }
+          return 0;
+      }) });
+    }
+  }
+
   handleSearch(e){
     if(e.target.value.trim() === ''){this.setState({data: this.state.data_reserve}); return;}
     var items = e.target.value.trim().split(' ');
@@ -125,11 +143,11 @@ export default class AllApzs extends React.Component {
             <table className="table">
               <thead>
                 <tr>
-                  <th style={{width: '5%'}}>ИД</th>
-                  <th style={{width: '21%'}}>Название</th>
-                  <th style={{width: '20%'}}>Заявитель</th>
-                  <th style={{width: '20%'}}>Адрес</th>
-                  <th style={{width: '20%'}}>Дата заявления</th>
+                  <th style={{width: '7%'}} className="apzs_header" onClick={this.sortData.bind(this, 'id')}>ИД<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '19%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_name')}>Название<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'applicant')}>Заявитель<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_address')}>Адрес<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'created_at')}>Дата заявления<img className="filter_img" src="/images/filter_icon.png"/></th>
                   <th></th>
                 </tr>
               </thead>

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import Header from './components/Header';
 import Login from './routes/authorization/Login';
 import Register from './routes/authorization/Register';
@@ -61,8 +61,8 @@ import LawyerAllApzs from "./routes/apz/lawyer/AllApzs";
 import LawyerShowApz from "./routes/apz/lawyer/ShowApz";
 import GenPlanAllApzs from "./routes/apz/gen_plan/AllApzs";
 import GenPlanShowApz from "./routes/apz/gen_plan/ShowApz";
-import HeadStateServicesAllApzs from "./routes/apz/head_state_services/AllApzs";
-import HeadStateServicesShowApz from "./routes/apz/head_state_services/ShowApz";
+import HeadStateServicesAllApzs from "./routes/apz/state_services_head/AllApzs";
+import HeadStateServicesShowApz from "./routes/apz/state_services_head/ShowApz";
 import AllApzsHistory from "./routes/apz/components/AllApzsHistory";
 
 let e = new LocalizedStrings({ru,kk});
@@ -101,19 +101,9 @@ export default class Main extends React.Component {
     let fullLoc = window.location.href.split('/');
     let breadCrumbs = document.getElementById('breadCrumbs');
     breadCrumbs.innerHTML = "";
-    console.log(fullLoc);
 
     if (fullLoc[3] === 'panel')
     {
-      let firstElem = document.createElement('a');
-      let firstElemAttributeHref = document.createAttribute('href');
-      firstElemAttributeHref.value = "/panel/base-page";
-      let firstElemAttributeClass = document.createAttribute('class');
-      firstElemAttributeClass.value = "active";
-      firstElem.innerHTML = e['electron-architecture'];
-      firstElem.setAttributeNode(firstElemAttributeHref);
-      firstElem.setAttributeNode(firstElemAttributeClass);
-      breadCrumbs.appendChild(firstElem);
       if ( typeof fullLoc[4] !== 'undefined' && typeof fullLoc[5] === 'undefined' )
       {
         let secondElem = document.createElement('span');
@@ -123,37 +113,25 @@ export default class Main extends React.Component {
 
       }else if (typeof fullLoc[4] !== 'undefined' && typeof fullLoc[5] !== 'undefined')
       {
+        let secondElem = document.createElement('span');
+        secondElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
+          '<span style="font-weight: bold;">' + e[fullLoc[4]][fullLoc[5]]["name"] + '</span>';
+        breadCrumbs.appendChild(secondElem);
 
-        if (typeof fullLoc[6] !== 'undefined')
+        if (typeof fullLoc[6] !== 'undefined' && fullLoc[5] !== 'all_history')
         {
-          let secondElem = document.createElement('span');
-          // console.log(fullLoc[5]);
-          secondElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;"></span> ' +
-            '<Link to="/' + e[fullLoc[4]][fullLoc[5]]["link"] + '">' + e[fullLoc[4]][fullLoc[5]]["name"] + '</Link>';
-          breadCrumbs.appendChild(secondElem);
-
           let thirdElem = document.createElement('span');
           thirdElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
             '<span style="font-weight: bold;">' + e[fullLoc[4]][fullLoc[5]][fullLoc[6]] + '</span>';
           breadCrumbs.appendChild(thirdElem);
 
-          if (typeof fullLoc[7] !== 'undefined')
+          if (typeof fullLoc[7] !== 'undefined' && fullLoc[6] === 'edit')
           {
-            if (fullLoc[6] === 'edit')
-            {
               let forthElem = document.createElement('span');
               forthElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
                 '<span style="font-weight: bold;">№ ' + fullLoc[7] + '</span>';
               breadCrumbs.appendChild(forthElem);
-            }
           }
-
-        }else if (typeof fullLoc[6] === 'undefined')
-        {
-          let secondElem = document.createElement('span');
-          secondElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
-            '<span style="font-weight: bold;">' + e[fullLoc[4]][fullLoc[5]]["name"] + '</span>';
-          breadCrumbs.appendChild(secondElem);
         }
       }
     }
@@ -165,6 +143,7 @@ export default class Main extends React.Component {
           <div>
             <Route render={(props) => (<Header {...props} />)} />
             <div className="container body-content">
+              <Link className="active my_font_size" to='/panel/base-page'>{e['electron-architecture']}</Link>
               <div className="container navigational_price" id={'breadCrumbs'}></div>
               <div className="content container citizen-apz-list-page">
                 <div>

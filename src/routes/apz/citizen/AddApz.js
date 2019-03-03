@@ -370,7 +370,6 @@ export default class AddApz extends React.Component {
         var requiredFields = {
           applicant: 'Заявитель',
           applicantAddress: 'Адрес жительства',
-          personalIdFile: 'Уд.личности/Реквизиты',
           projectName: 'Наименование проектируемого объекта',
           projectAddress: 'Адрес проектируемого объекта',
           projectAddressCoordinates: 'Отметить на карте',
@@ -386,6 +385,7 @@ export default class AddApz extends React.Component {
         }
         if(this.state.need_electro_provider){
           requiredFields['electricRequiredPower'] = 'Требуемая мощность (кВт)';
+          requiredFields['personalIdFile'] = 'Уд.личности/Реквизиты';
         }
         if(this.state.need_heat_provider){
           requiredFields['heatGeneral'] = 'Тепловая нагрузка (Гкал/ч)';
@@ -1043,30 +1043,6 @@ export default class AddApz extends React.Component {
                           </div>
                           <div className="col-md-5">
                             <div className="form-group">
-                              <label>Уд.личности/Реквизиты</label>
-                              <div className="file_container">
-                                <div className="progress mb-2" data-category="3" style={{height: '20px', display: 'none'}}>
-                                  <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-
-                                {this.state.personalIdFile &&
-                                  <div className="file_block mb-2">
-                                    <div>
-                                      {this.state.personalIdFile.name}
-                                      <a className="pointer" onClick={(e) => this.setState({personalIdFile: false}) }>×</a>
-                                    </div>
-                                  </div>
-                                }
-
-                                <div className="file_buttons btn-group btn-group-justified d-table mt-0">
-                                  <label htmlFor="PersonalIdFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
-                                  <input type="file" id="PersonalIdFile" name="PersonalIdFile" className="form-control" onChange={this.uploadFile.bind(this, 3)} style={{display: 'none'}} />
-                                  <label onClick={this.selectFromList.bind(this, 3)} className="btn btn-info btn-sm">Выбрать из списка</label>
-                                </div>
-                                <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
-                              </div>
-                            </div>
-                            <div className="form-group">
                               <label>Утвержденное задание на проектирование</label>
                               <div className="file_container">
                                 <div className="progress mb-2" data-category="9" style={{height: '20px', display: 'none'}}>
@@ -1234,6 +1210,32 @@ export default class AddApz extends React.Component {
                         </div>
                         {this.state.need_electro_provider &&
                           <div className="row">
+                            <div className="col-md-6 offset-6">
+                              <div className="form-group">
+                                <label>Уд.личности/Реквизиты</label>
+                                <div className="file_container">
+                                  <div className="progress mb-2" data-category="3" style={{height: '20px', display: 'none'}}>
+                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                  </div>
+
+                                  {this.state.personalIdFile &&
+                                    <div className="file_block mb-2">
+                                      <div>
+                                        {this.state.personalIdFile.name}
+                                        <a className="pointer" onClick={(e) => this.setState({personalIdFile: false}) }>×</a>
+                                      </div>
+                                    </div>
+                                  }
+
+                                  <div className="file_buttons btn-group btn-group-justified d-table mt-0">
+                                    <label htmlFor="PersonalIdFile" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
+                                    <input type="file" id="PersonalIdFile" name="PersonalIdFile" className="form-control" onChange={this.uploadFile.bind(this, 3)} style={{display: 'none'}} />
+                                    <label onClick={this.selectFromList.bind(this, 3)} className="btn btn-info btn-sm">Выбрать из списка</label>
+                                  </div>
+                                  <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
+                                </div>
+                              </div>
+                            </div>
                             <div className="col-md-6">
                              <div style={{borderRadius: '10px', background: 'rgb(239, 239, 239)', paddingLeft: '15px', paddingRight: '15px', paddingBottom: '5px'}}>
                               <div className="text-center" style={{fontSize:'15px'}}>
