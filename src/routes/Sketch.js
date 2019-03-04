@@ -298,48 +298,6 @@ class ShowSketch extends React.Component {
     this.props.breadCrumbs();
   }
 
-  // componentWillMount() {
-  //     if (this.props.match.params.id) {
-  //         this.getSketchInfo();
-  //     }
-  //   }
-  //
-  //   getSketchInfo() {
-  //       var id = this.props.match.params.id;
-  //       var token = sessionStorage.getItem('tokenInfo');
-  //
-  //       this.setState({ loaderHidden: false });
-  //
-  //       var xhr = new XMLHttpRequest();
-  //       xhr.open("get", window.url + "api/sketch/detail/" + id, true);
-  //       xhr.setRequestHeader("Authorization", "Bearer " + token);
-  //       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-  //       xhr.onload = function() {
-  //           if (xhr.status === 200) {
-  //               var sketch = JSON.parse(xhr.responseText);
-  //               var commission = sketch.commission;
-  //               console.log(sketch.files);
-  //               this.setState({sketch: sketch});
-  //               this.setState({personalIdFile: sketch.files.filter(function(obj) { return obj.files.category_id === 3 })[0]});
-  //               this.setState({apzFile: sketch.files.filter(function(obj) { return obj.category_id === 2 })[0]});
-  //               this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
-  //               // this.setState({additionalFile: sketch.files.filter(function(obj) { return obj.category_id === 27 })[0]});
-  //               // this.setState({paymentPhotoFile: sketch.files.filter(function(obj) { return obj.category_id === 20 })[0]});
-  //               // var pack2IdFile = sketch.files.filter(function(obj) { return obj.category_id === 25 }) ?
-  //               //     sketch.files.filter(function(obj) { return obj.category_id === 25 }) : [];
-  //               // if ( pack2IdFile.length > 0 ) {
-  //               //     this.setState({pack2IdFile: pack2IdFile[0]});
-  //               // }
-  //               this.setState({loaderHidden: true});
-  //           } else if (xhr.status === 401) {
-  //               sessionStorage.clear();
-  //               alert("Время сессии истекло. Пожалуйста войдите заново!");
-  //               this.props.history.replace("/login");
-  //           }
-  //       }.bind(this)
-  //       xhr.send();
-  //   }
-
   componentWillMount() {
     this.getSketchInfo();
   }
@@ -357,7 +315,7 @@ class ShowSketch extends React.Component {
     xhr.onload = function() {
       if (xhr.status === 200) {
         var sketch = JSON.parse(xhr.responseText);
-        //console.log(sketch);
+        console.log(sketch);
         this.setState({sketch: sketch});
         this.setState({loaderHidden: true});
 
@@ -365,9 +323,14 @@ class ShowSketch extends React.Component {
         this.setState({apzFile: sketch.files.filter(function(obj) { return obj.category_id === 2 })[0]});
         this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
 
-        if (sketch.apz_department_response && sketch.apz_department_response.files) {
-          this.setState({responseFile: sketch.apz_department_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+        // if (sketch.sketch_head_response && sketch.sketch_head_response.files) {
+        //   this.setState({responseFile: sketch.sketch_head_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+        // }
+        if (sketch.state_history && sketch.state_history .files) {
+          this.setState({responseFile: sketch.sketch_head_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
         }
+
+        // console.log(this.state.responseFile.id);
       } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
@@ -377,7 +340,7 @@ class ShowSketch extends React.Component {
     xhr.send();
   }
 
-    printSketch(sketchId, project) {
+  printSketch(sketchId, project) {
         var token = sessionStorage.getItem('tokenInfo');
         if (token) {
             var xhr = new XMLHttpRequest();
@@ -440,6 +403,7 @@ class ShowSketch extends React.Component {
             console.log('session expired');
         }
     }
+
   toggleMap(value) {
     this.setState({
       showMap: value
@@ -456,8 +420,66 @@ class ShowSketch extends React.Component {
     }
   }
 
+  printRegionAnswer(sketchId, progbarId = null) {
+    var token = sessionStorage.getItem('tokenInfo');
+    if (token) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("get", window.url + "api/print/region/sketch/" + sketchId, true);
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                //test of IE
+                if (typeof window.navigator.msSaveBlob === "function") {
+                    window.navigator.msSaveBlob(xhr.response, "МО.pdf");
+                } else {
+                    var data = JSON.parse(xhr.responseText);
 
-    printSketchAnswer(sketchId, progbarId = null) {
+                    var base64ToArrayBuffer = (function () {
+
+                        return function (base64) {
+                            var binaryString =  window.atob(base64);
+                            var binaryLen = binaryString.length;
+                            var bytes = new Uint8Array(binaryLen);
+
+                            for (var i = 0; i < binaryLen; i++) {
+                                var ascii = binaryString.charCodeAt(i);
+                                bytes[i] = ascii;
+                            }
+
+                            return bytes;
+                        }
+
+                    }());
+
+                    var saveByteArray = (function () {
+                        var a = document.createElement("a");
+                        document.body.appendChild(a);
+                        a.style = "display: none";
+
+                        return function (data, name) {
+                            var blob = new Blob(data, {type: "octet/stream"}),
+                                url = window.URL.createObjectURL(blob);
+                            a.href = url;
+                            a.download = name;
+                            a.click();
+                            setTimeout(function() {window.URL.revokeObjectURL(url);},1000);
+                        };
+
+                    }());
+
+                    saveByteArray([base64ToArrayBuffer(data.file)], "МО.pdf");
+                }
+            } else {
+                alert('Не удалось скачать файл');
+            }
+            }
+            xhr.send();
+        } else {
+            console.log('Время сессии истекло.');
+        }
+    }
+
+  printSketchAnswer(sketchId, progbarId = null) {
         var token = sessionStorage.getItem('tokenInfo');
         if (token) {
             var xhr = new XMLHttpRequest();
@@ -516,59 +538,7 @@ class ShowSketch extends React.Component {
         }
     }
 
-  // downloadFile(id) {
-  //   var token = sessionStorage.getItem('tokenInfo');
-  //   var url = window.url + 'api/file/download/' + id;
-  //
-  //   var xhr = new XMLHttpRequest();
-  //   xhr.open("get", url, true);
-  //     xhr.setRequestHeader("Authorization", "Bearer " + token);
-  //     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-  //     xhr.onload = function() {
-  //       if (xhr.status === 200) {
-  //         var data = JSON.parse(xhr.responseText);
-  //         var base64ToArrayBuffer = (function () {
-  //
-  //           return function (base64) {
-  //             var binaryString =  window.atob(base64);
-  //             var binaryLen = binaryString.length;
-  //             var bytes = new Uint8Array(binaryLen);
-  //
-  //             for (var i = 0; i < binaryLen; i++) {
-  //               var ascii = binaryString.charCodeAt(i);
-  //               bytes[i] = ascii;
-  //             }
-  //
-  //             return bytes;
-  //           }
-  //
-  //         }());
-  //
-  //         var saveByteArray = (function () {
-  //           var a = document.createElement("a");
-  //           document.body.appendChild(a);
-  //           a.style = "display: none";
-  //
-  //           return function (data, name) {
-  //             var blob = new Blob(data, {type: "octet/stream"}),
-  //                 url = window.URL.createObjectURL(blob);
-  //             a.href = url;
-  //             a.download = name;
-  //             a.click();
-  //             setTimeout(function() {window.URL.revokeObjectURL(url);},0);
-  //           };
-  //
-  //         }());
-  //
-  //         saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
-  //       } else {
-  //         alert('Не удалось скачать файл');
-  //       }
-  //     }
-  //   xhr.send();
-  // }
-
-    downloadFile(id, progbarId = null) {
+  downloadFile(id, progbarId = null) {
         var token = sessionStorage.getItem('tokenInfo');
         var url = window.url + 'api/file/download/' + id;
 
@@ -636,8 +606,7 @@ class ShowSketch extends React.Component {
         xhr.send();
     }
 
-
-    toDate(date) {
+  toDate(date) {
     if(date === null) {
       return date;
     }
@@ -749,35 +718,23 @@ class ShowSketch extends React.Component {
                   <table className="table table-bordered table-striped">
                     <tbody>
                     {sketch.urban_response &&
-                    <table className="table table-bordered">
-                        <tbody>
-                        <tr>
-                            <td style={{width: '22%'}}><b>Согласование</b></td>
-                            <td><a className="text-info pointer"
-                                   onClick={this.printSketchAnswer.bind(this, sketch.id)}>Скачать</a></td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    <tr>
+                        <td style={{width: '22%'}}><b>Согласование</b></td>
+                        <td><a className="text-info pointer"
+                                           onClick={this.printSketchAnswer.bind(this, sketch.id)}>Скачать</a></td>
+                        <div className="progress mb-2" data-category="46" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </tr>
                     }
-                      {sketch.status_id === 2 ?
-                        <tr>
 
-
-                            {/*<td style={{width: '22%'}}><b>Решение на эскизный проект</b></td>*/}
-                          {/*<td><a className="text-info pointer" data-category="45" onClick={this.downloadFile.bind(this, this.state.responseFile.id, 45)}>Скачать</a>*/}
-                              {/*<div className="progress mb-2" data-category="45" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
-                                  {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
-                              {/*</div>*/}
-                          {/*</td>*/}
-                        </tr>
-                        :
+                      {sketch.status_id === 2 ||
                         <tr>
                           <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
-                          <td><a className="text-info pointer" data-category="46" onClick={this.downloadFile.bind(this, this.state.responseFile.id, 46)}>Скачать</a>
+                            <td><a className="text-info pointer" onClick={this.printRegionAnswer.bind(this, sketch.id)}>Скачать</a></td>
                               <div className="progress mb-2" data-category="46" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                                   <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                               </div>
-                          </td>
                         </tr>
                       }
                     </tbody>
@@ -1299,19 +1256,14 @@ class AddSketch extends React.Component {
             this.setState({type: sketch.type ? sketch.type : '' });
             this.setState({projectName: sketch.project_name ? sketch.project_name : '' });
             this.setState({projectAddress: sketch.project_address ? sketch.project_address : '' });
-            // this.setState({projectAddressCoordinates: sketch.project_address_coordinates ? sketch.project_address_coordinates : '' });
-            // this.setState({hasCoordinates: sketch.project_address_coordinates ? true : false });
-
             this.setState({personalIdFile: sketch.files.filter(function(obj) { return obj.category_id === 3 })[0]});
             this.setState({apzFile: sketch.files.filter(function(obj) { return obj.category_id === 2 })[0]});
             this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
-
             this.setState({objectType: sketch.object_type ? sketch.object_type : '' });
             this.setState({objectPyaten: sketch.object_pyaten ? sketch.object_pyaten : '' });
             this.setState({objectCarpark: sketch.object_carpark ? sketch.object_carpark : '' });
             this.setState({objectDOU: sketch.object_dou ? sketch.object_dou : '' });
             this.setState({customer: sketch.customer ? sketch.customer : '' });
-            // this.setState({cadastralNumber: sketch.cadastral_number ? sketch.cadastral_number : '' });
             this.setState({objectTerm: sketch.object_term ? sketch.object_term : '' });
             this.setState({objectLevel: sketch.object_level ? sketch.object_level : '' });
             this.setState({commonArea: sketch.common_area ? sketch.common_area : '' });
@@ -1402,23 +1354,6 @@ class AddSketch extends React.Component {
           }
       }.bind(this);
       xhr.send(JSON.stringify(data));
-
-
-    // var formData = $('#sketch-form').serializeJSON();
-    //
-    // $.ajax({
-    //   type: 'POST',
-    //   url: window.url + 'api/sketch/citizen/create',
-    //   contentType: 'application/json; charset=utf-8',
-    //   beforeSend: function (xhr) {
-    //     xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
-    //   },
-    //   data: JSON.stringify(formData),
-    //   success: function (data) {
-    //     this.resetForm();
-    //     alert("Заявка отправлена");
-    //   }.bind(this)
-    // });
   };
 
   render() {
@@ -1473,10 +1408,6 @@ class AddSketch extends React.Component {
                                                     <option>Турксиб</option>
                                                 </select>
                                             </div>
-                                            {/*<div className="form-group">
-                            <label htmlFor="Address">Адрес:</label>
-                            <input type="text" className="form-control" required id="ApzAddressForm" name="Address" placeholder="ул. Абая, д.25" />
-                          </div>*/}
                                             <div className="form-group">
                                                 <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
                                                 <input data-rh="Проектировщик №ГСЛ, категория" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.designer} name="designer" />
@@ -1489,10 +1420,6 @@ class AddSketch extends React.Component {
                                                 <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
                                                 <input data-rh="Адрес проектируемого объекта" data-rh-at="right" type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectAddress} name="projectAddress" />
                                                 <div className="row coordinates_block pt-0">
-                                                    {/*<div className="col-md-6">*/}
-                                                        {/*<input data-rh="Адрес проектируемого объекта" data-rh-at="right" type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectAddress} name="projectAddress" />*/}
-                                                        {/*<input type="hidden" onChange={this.onInputChange} value={this.state.projectAddressCoordinates} id="ProjectAddressCoordinates" name="projectAddressCoordinates" />*/}
-                                                    {/*</div>*/}
                                                 </div>
                                             </div>
                                         </div>
@@ -1570,12 +1497,6 @@ class AddSketch extends React.Component {
                                                     <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
                                                 </div>
                                             </div>
-
-
-                                            {/*<div className="form-group">
-                            <label htmlFor="ApzDate">Дата</label>
-                            <input type="date" required className="form-control" name="ApzDate" />
-                          </div>*/}
                                         </div>
                                     </div>
                                     <div>
@@ -1624,13 +1545,6 @@ class AddSketch extends React.Component {
                                 <form id="tab2-form" data-tab="2" onSubmit={this.saveApz.bind(this, false)}>
                                     <div className="row">
                                         <div className="col-md-6">
-                                            {/*<div className="form-group">
-                                                <div className="form-group">
-                                                    <label htmlFor="ObjectType">Тип объекта:</label>
-                                                    <input data-rh="Тип объекта" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.objectType} name="objectType" placeholder="" />
-                                                    <small>Пример: строительства индивидуального жилого дома со сносом существующего жилого дома</small>
-                                                </div>
-                                            </div>*/}
                                             <div className="form-group">
                                               <label htmlFor="ObjectType">Тип объекта:</label>
                                               <select required className="form-control" name="objectType" id="ObjectType" onChange={this.onInputChange} value={this.state.objectType}>
@@ -1766,7 +1680,6 @@ class AddSketch extends React.Component {
                 </div>
             </div>
             }
-
             {!this.state.loaderHidden &&
             <div style={{textAlign: 'center'}}>
                 <Loader type="Oval" color="#46B3F2" height="200" width="200" />

@@ -287,7 +287,7 @@ class ShowSketch  extends React.Component {
                 var data = JSON.parse(xhr.responseText);
                 var hasReponse = data.state_history.filter(function(obj) { return obj.state_id === 5 || obj.state_id === 6 });
 
-                // console.log("______________________________");console.log(data);
+                console.log("______________________________");console.log(data);
                 this.setState({sketch: data});
                 this.setState({showButtons: false});
                 this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
@@ -303,6 +303,8 @@ class ShowSketch  extends React.Component {
                 // if (hasReponse.length == 0 || commission) {
                 //     this.setState({showCommission: true});
                 // }
+                console.log(data);
+                this.setState({engineerReturnedState: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender === 'engineer'})[0]});
 
                 // this.setState({engineerReturnedState: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment != null && obj.sender == 'engineer'})[0]});
                 this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 28})[0]});
