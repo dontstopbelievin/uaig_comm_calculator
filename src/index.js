@@ -74,84 +74,84 @@ import AllApzsHistory from "./routes/apz/components/AllApzsHistory";
 let e = new LocalizedStrings({ru,kk});
 
 export default class Main extends React.Component {
-  constructor() {
-    super();
-    (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
-  }
-
-  setLang() {
-    return localStorage.getItem('lang') ? true : localStorage.setItem('lang', 'ru');
-  }
-
-  componentWillMount() {
-    this.setLang();
-
-    window.url = 'https://api.uaig.kz:8843/';
-    // window.url = 'http://api.uaig.kz:8880/';
-    // window.url = 'http://192.168.0.231/';
-    // window.url = 'http://shymkentback.uaig.kz/';
-    window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
-
-    // window.url = 'http://uaig/';
-    //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
-    //window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
-    // window.clientSecret = 'B5BCHoPxj4VhKUqs7WHi2HHx6f24xoIK8065tc4s'; // aman
-    // window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
-    // window.clientSecret = '7zdU2XDblqORFq8wbQHlNRaIgEBR90qbMYnnVWDg'; // yernar
-    // window.clientSecret = 'ZuW3nP8EUgXgEAqm6j9GxzBfFsOFuQv39NcyHUz3'; // medet
-  }
-
-  breadCrumbs() {
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
-    let fullLoc = window.location.href.split('/');
-    let breadCrumbs = document.getElementById('breadCrumbs');
-    breadCrumbs.innerHTML = "";
-
-    if (fullLoc[3] === 'panel')
-    {
-      if ( typeof fullLoc[4] !== 'undefined' && typeof fullLoc[5] === 'undefined' )
-      {
-        let secondElem = document.createElement('span');
-        secondElem.innerHTML = ' <span style="color:#e0b431;font-weight: bold;font-size:14px;">></span> ' +
-        '<span style="font-weight: bold;">' + e[fullLoc[4]] + '</span> ';
-        breadCrumbs.appendChild(secondElem);
-
-      }else if (typeof fullLoc[4] !== 'undefined' && typeof fullLoc[5] !== 'undefined')
-      {
-        let secondElem = document.createElement('span');
-        secondElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
-          '<span style="font-weight: bold;">' + e[fullLoc[4]][fullLoc[5]]["name"] + '</span>';
-        breadCrumbs.appendChild(secondElem);
-
-        if (typeof fullLoc[6] !== 'undefined' && fullLoc[5] !== 'all_history')
-        {
-          let thirdElem = document.createElement('span');
-          thirdElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
-            '<span style="font-weight: bold;">' + e[fullLoc[4]][fullLoc[5]][fullLoc[6]] + '</span>';
-          breadCrumbs.appendChild(thirdElem);
-
-          if (typeof fullLoc[7] !== 'undefined' && fullLoc[6] === 'edit')
-          {
-              let forthElem = document.createElement('span');
-              forthElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
-                '<span style="font-weight: bold;">№ ' + fullLoc[7] + '</span>';
-              breadCrumbs.appendChild(forthElem);
-          }
-        }
-      }
+    constructor() {
+        super();
+        (localStorage.getItem('lang')) ? e.setLanguage(localStorage.getItem('lang')) : e.setLanguage('ru');
     }
-  }
 
-  render() {
-    return (
-        <BrowserRouter>
-          <div>
-            <Route render={(props) => (<Header {...props} />)} />
-            <div className="container body-content">
-              <Link className="active my_font_size" to='/panel/base-page'>{e['electron-architecture']}</Link>
-              <div className="container navigational_price" id={'breadCrumbs'}></div>
-              <div className="content container citizen-apz-list-page">
+    setLang() {
+        return localStorage.getItem('lang') ? true : localStorage.setItem('lang', 'ru');
+    }
+
+    componentWillMount() {
+        this.setLang();
+
+        window.url = 'https://api.uaig.kz:8843/';
+        // window.url = 'http://api.uaig.kz:8880/';
+        // window.url = 'http://192.168.0.231/';
+        // window.url = 'http://shymkentback.uaig.kz/';
+        window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
+
+        // window.url = 'http://uaig/';
+        //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
+        //window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
+        // window.clientSecret = 'B5BCHoPxj4VhKUqs7WHi2HHx6f24xoIK8065tc4s'; // aman
+        // window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
+        // window.clientSecret = '7zdU2XDblqORFq8wbQHlNRaIgEBR90qbMYnnVWDg'; // yernar
+        // window.clientSecret = 'ZuW3nP8EUgXgEAqm6j9GxzBfFsOFuQv39NcyHUz3'; // medet
+    }
+
+    breadCrumbs() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+        let fullLoc = window.location.href.split('/');
+        let breadCrumbs = document.getElementById('breadCrumbs');
+        breadCrumbs.innerHTML = "";
+
+        if (fullLoc[3] === 'panel')
+        {
+            if ( typeof fullLoc[4] !== 'undefined' && typeof fullLoc[5] === 'undefined' )
+            {
+                let secondElem = document.createElement('span');
+                secondElem.innerHTML = ' <span style="color:#e0b431;font-weight: bold;font-size:14px;">></span> ' +
+                    '<span style="font-weight: bold;">' + e[fullLoc[4]] + '</span> ';
+                breadCrumbs.appendChild(secondElem);
+
+            }else if (typeof fullLoc[4] !== 'undefined' && typeof fullLoc[5] !== 'undefined')
+            {
+                let secondElem = document.createElement('span');
+                secondElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
+                    '<span style="font-weight: bold;">' + e[fullLoc[4]][fullLoc[5]]["name"] + '</span>';
+                breadCrumbs.appendChild(secondElem);
+
+                if (typeof fullLoc[6] !== 'undefined' && fullLoc[5] !== 'all_history')
+                {
+                    let thirdElem = document.createElement('span');
+                    thirdElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
+                        '<span style="font-weight: bold;">' + e[fullLoc[4]][fullLoc[5]][fullLoc[6]] + '</span>';
+                    breadCrumbs.appendChild(thirdElem);
+
+                    if (typeof fullLoc[7] !== 'undefined' && fullLoc[6] === 'edit')
+                    {
+                        let forthElem = document.createElement('span');
+                        forthElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
+                            '<span style="font-weight: bold;">№ ' + fullLoc[7] + '</span>';
+                        breadCrumbs.appendChild(forthElem);
+                    }
+                }
+            }
+        }
+    }
+
+    render() {
+        return (
+            <BrowserRouter>
+                <div>
+                    <Route render={(props) => (<Header {...props} />)} />
+                    <div className="container body-content">
+                        <Link className="active my_font_size" to='/panel/base-page'>{e['electron-architecture']}</Link>
+                        <div className="container navigational_price" id={'breadCrumbs'}></div>
+                        <div className="content container citizen-apz-list-page">
                             <div>
                                 <div>
                                     <Switch>
