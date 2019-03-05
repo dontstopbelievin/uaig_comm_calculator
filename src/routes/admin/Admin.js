@@ -90,6 +90,26 @@ export default class Admin extends React.Component {
     xhr.send();
   }
 
+  editPassword(userId){
+      var token = sessionStorage.getItem('tokenInfo');
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/userTable/editPassword/" + userId, true);
+      //Send the proper header information along with the request
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function () {
+          if (xhr.status === 200) {
+              var data = JSON.parse(xhr.responseText);
+              //console.log(data);
+              alert('Пароль изменен на Aa123456');
+
+              console.log('edit password')
+          }else {
+              alert('Ошибка во время изменении пароли!');
+          }
+      }.bind(this);
+      xhr.send();
+  }
   // получить список ролей
   getRoles() {
     this.setState({loaderHidden: false});
@@ -315,6 +335,10 @@ export default class Admin extends React.Component {
                         <div className="col-xs-2 col-sm-2 col-md-2" style={columnStyle}>
                           <a title="Удалить роли" style={{cursor: 'pointer'}}>
                             <i className="glyphicon glyphicon-remove text-danger" onClick={this.removeUser.bind(this, user.id)}>Удалить роль</i>
+                          </a>
+                          <br/>
+                          <a title="Удалить роли" style={{cursor: 'pointer'}}>
+                            <i className="glyphicon glyphicon-pencil" onClick={this.editPassword.bind(this, user.id)}>Пароль по умолчанию</i>
                           </a>
                         </div>
                       </div>
