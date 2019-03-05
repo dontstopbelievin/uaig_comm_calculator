@@ -50,6 +50,7 @@ export default class ShowApz extends React.Component {
             loaderHiddenSign:true,
             storageAlias: "PKCS12",
             xmlFile: false,
+            backFromHead: false,
             //returnedState: false,
             lastDecisionIsMO: false,
             isSigned: false
@@ -77,6 +78,7 @@ export default class ShowApz extends React.Component {
 
     componentWillMount() {
         this.getApzInfo();
+        this.webSocketFunction();
     }
 
     getApzInfo() {
@@ -102,8 +104,8 @@ export default class ShowApz extends React.Component {
                 this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
                 this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
                 this.setState({reglamentFile: data.files.filter(function(obj) { return obj.category_id === 29 })[0]});
-                //this.setState({returnedState: data.state_history.filter(function(obj) { return obj.state_id === 3 && obj.comment != null })[0]});
-                //console.log(data);
+                this.setState({backFromHead: data.state_history.filter(function(obj) { return obj.state_id === 33 })[0]});
+
                 var pack2IdFile = data.files.filter(function(obj) { return obj.category_id === 25 }) ?
                     data.files.filter(function(obj) { return obj.category_id === 25 }) : [];
                 if ( pack2IdFile.length > 0 ) {
@@ -500,9 +502,7 @@ export default class ShowApz extends React.Component {
     }
 
     openDialog() {
-        if (window.confirm("Ошибка при подключений к прослойке. Убедитесь что программа запущена и нажмите ОК") === true) {
-            window.location.reload();
-        }
+        alert("Ошибка при подключений к прослойке NCALayer. Убедитесь что программа запущена и перезарузите страницу");
     }
 
     showSignBtns(){
@@ -541,6 +541,10 @@ export default class ShowApz extends React.Component {
                 this.props.history.replace("/login");
             } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
                 alert(JSON.parse(xhr.responseText).message);
+            }
+            if (!status) {
+              $('#accDecApzForm').modal('hide');
+              $('#ReturnApzForm').modal('hide');
             }
         }.bind(this);
         xhr.send(formData);
@@ -1262,34 +1266,38 @@ export default class ShowApz extends React.Component {
                                 <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">
                                     Вернуть на доработку
                                 </button>
-
-                                <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                                    <div className="modal-dialog" role="document">
-                                        <div className="modal-content">
-                                            <div className="modal-header">
-                                                <h5 className="modal-title">Вернуть заявку на доработку</h5>
-                                                <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
+                            </div>
+                            }
+                            {this.state.showSendButton &&
+                            <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "")}>Отправить архитектору</button>
+                            }
+                            {this.state.showButtons && this.state.backFromHead &&
+                              <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">
+                                  Вернуть на доработку
+                              </button>
+                            }
+                            <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                                <div className="modal-dialog" role="document">
+                                    <div className="modal-content">
+                                        <div className="modal-header">
+                                            <h5 className="modal-title">Вернуть заявку на доработку</h5>
+                                            <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div className="modal-body">
+                                            <div className="form-group">
+                                                <label htmlFor="docNumber">Комментарий</label>
+                                                <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.description} onChange={this.onDescriptionChange} />
                                             </div>
-                                            <div className="modal-body">
-                                                <div className="form-group">
-                                                    <label htmlFor="docNumber">Комментарий</label>
-                                                    <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.description} onChange={this.onDescriptionChange} />
-                                                </div>
-                                            </div>
-                                            <div className="modal-footer">
-                                                <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.description)}>Отправить</button>
-                                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                            </div>
+                                        </div>
+                                        <div className="modal-footer">
+                                            <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.description)}>Отправить</button>
+                                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            }
-                            {this.state.showSendButton &&
-                            <button type="button" className="btn btn-raised btn-success" onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "")}>Отправить архитектору</button>
-                            }
                         </div>
                     </div>
 

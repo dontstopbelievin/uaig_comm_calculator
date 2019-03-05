@@ -348,10 +348,7 @@ export default class Register extends React.Component {
   }
 
   openDialog() {
-    //if (window.confirm("Ошибка при подключений к прослойке. Убедитесь что программа запущена и нажмите ОК") === true) {
-    //  window.location.reload();
-    //}
-    console.log('Ошибка при подключении к прослойке. Убедитесь что программа запущена и нажмите ОК');
+    alert("Ошибка при подключений к прослойке NCALayer. Убедитесь что программа запущена и перезарузите страницу");
   }
 
   componentWillMount() {
@@ -360,7 +357,6 @@ export default class Register extends React.Component {
     {
       window.location.href = '/#/panel/base-page';
     }
-
     this.webSocketFunction();
   }
 

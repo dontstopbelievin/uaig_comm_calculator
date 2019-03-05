@@ -39,6 +39,12 @@ export default class ShowApz extends React.Component {
         backFromHead: false,
         backFromGP: false,
         backFromEngineer: false,
+        schemeComment: false,
+        schemeFile: false,
+        calculationComment: false,
+        calculationFile: false,
+        reglamentComment: false,
+        reglamentFile: false,
 
         basisForDevelopmentApz: 'Постановление акимата города (района) №_____ от __________ (число, месяц, год)',
         buildingPresence: 'Строений нет',
@@ -321,12 +327,13 @@ export default class ShowApz extends React.Component {
       this.setState({ file: e.target.files[0] });
     }
 
-    onDescriptionChange(value) {
-      this.setState({ description: value });
+    onDescriptionChange(e) {
+      this.setState({ description: e.target.value });
     }
 
     componentWillMount() {
       this.getApzInfo();
+      this.webSocketFunction();
     }
 
     snakeToCamel(s){
@@ -349,7 +356,12 @@ export default class ShowApz extends React.Component {
           this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
           this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
           this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
+          this.setState({reglamentComment: data.state_history.filter(function(obj) { return obj.state_id === 42 })[0]});
           this.setState({reglamentFile: data.files.filter(function(obj) { return obj.category_id === 29 })[0]});
+          this.setState({schemeComment: data.state_history.filter(function(obj) { return obj.state_id === 56 })[0]});
+          this.setState({schemeFile: data.files.filter(function(obj) { return obj.category_id === 38 })[0]});
+          this.setState({calculationComment: data.state_history.filter(function(obj) { return obj.state_id === 57 })[0]});
+          this.setState({calculationFile: data.files.filter(function(obj) { return obj.category_id === 39 })[0]});
           this.setState({response: data.apz_department_response ? true : false });
           this.setState({backFromGP: data.state_history.filter(function(obj) { return obj.state_id === 41 })[0]});
           this.setState({backFromEngineer: data.state_history.filter(function(obj) { return obj.state_id === 4 })[0]});
@@ -705,9 +717,7 @@ export default class ShowApz extends React.Component {
     }
 
     openDialog() {
-      if (window.confirm("Ошибка при подключений к прослойке. Убедитесь что программа запущена и нажмите ОК") === true) {
-        window.location.reload();
-      }
+      alert("Ошибка при подключений к прослойке NCALayer. Убедитесь что программа запущена и перезарузите страницу");
     }
 
     saveForm(apzId, status, comment) {
@@ -749,6 +759,10 @@ export default class ShowApz extends React.Component {
     }
 
     sendForm(apzId, status, comment, direct) {
+      if(!status && comment.trim() == ''){
+        alert('Для отказа напишите комментарий.');
+        return false;
+      }
       var token = sessionStorage.getItem('tokenInfo');
       var formData = new FormData();
       formData.append('response', status);
@@ -1798,17 +1812,58 @@ export default class ShowApz extends React.Component {
 
           {this.state.backFromHead &&
             <div className="alert alert-danger">
-              Комментарий главного архитектора: {this.state.backFromHead.comment}
+              Причина отправки на доработку: {this.state.backFromHead.comment}
             </div>
           }
 
+          {this.state.schemeComment &&
+            <div className="alert alert-danger">
+              Комментарий ген план(ситуационная схема): {this.state.schemeComment.comment}
+            </div>
+          }
+          {this.state.calculationComment &&
+            <div className="alert alert-danger">
+              Комментарий ген план(расчеты): {this.state.calculationComment.comment}
+            </div>
+          }
+          {this.state.reglamentComment &&
+            <div className="alert alert-danger">
+              Комментарий ген план(регламент): {this.state.reglamentComment.comment}
+            </div>
+          }
+          {this.state.schemeFile &&
+            <div className="col-md-6 offset-3">
+              <div className="row" style={{paddingTop:'5px',paddingBottom:'5px',backgroundColor:'#eeeeff'}}>
+                <div className="col-md-6"><b>Файл ситуационной схемы</b></div>
+                <div className="col-md-6">
+                  <a className="text-info pointer" data-category="9" onClick={this.downloadFile.bind(this, this.state.schemeFile.id, 9)}><b>Скачать</b></a>
+                  <div className="progress mb-2" data-category="9" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+          {this.state.calculationFile &&
+            <div className="col-md-6 offset-3">
+              <div className="row" style={{paddingTop:'5px',paddingBottom:'5px',backgroundColor:'#eeeeff'}}>
+                <div className="col-md-6"><b>Файл расчетов</b></div>
+                <div className="col-md-6">
+                  <a className="text-info pointer" data-category="10" onClick={this.downloadFile.bind(this, this.state.calculationFile.id, 10)}><b>Скачать</b></a>
+                  <div className="progress mb-2" data-category="10" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
           {this.state.reglamentFile &&
-            <div className="col-md-4 offset-4">
+            <div className="col-md-6 offset-3">
               <div className="row" style={{paddingTop:'5px',paddingBottom:'5px',backgroundColor:'#eeeeff'}}>
                 <div className="col-md-6"><b>Регламент</b></div>
                 <div className="col-md-6">
-                  <a className="text-info pointer" data-category="6" onClick={this.downloadFile.bind(this, this.state.reglamentFile.id, 6)}><b>Скачать</b></a>
-                  <div className="progress mb-2" data-category="6" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                  <a className="text-info pointer" data-category="11" onClick={this.downloadFile.bind(this, this.state.reglamentFile.id, 11)}><b>Скачать</b></a>
+                  <div className="progress mb-2" data-category="11" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                     <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                   </div>
                 </div>
@@ -1866,6 +1921,8 @@ export default class ShowApz extends React.Component {
           {this.state.showSendButton &&
             <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', display: 'table'}}>
               <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'head')}>Отправить начальнику Гос Услуг</button>
+                <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#declined_modal">Отклонить</button>
+
             </div>
           }
 
@@ -1881,7 +1938,9 @@ export default class ShowApz extends React.Component {
                 <div className="modal-body">
                   <div className="form-group">
                     <label>Комментарий</label>
-                    <ReactQuill value={this.state.description} onChange={this.onDescriptionChange} />
+                    <div>
+                      <textarea rows="4" style={{width:'100%', resize:'vertical'}} value={this.state.description} onChange={this.onDescriptionChange}></textarea>
+                    </div>
                   </div>
                 </div>
                 <div className="modal-footer">

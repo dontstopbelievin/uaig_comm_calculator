@@ -314,7 +314,7 @@ export default class Admin extends React.Component {
                         </div>
                         <div className="col-xs-2 col-sm-2 col-md-2" style={columnStyle}>
                           <a title="Удалить роли" style={{cursor: 'pointer'}}>
-                            <i className="glyphicon glyphicon-remove text-danger" onClick={this.removeUser.bind(this, user.id)}></i>
+                            <i className="glyphicon glyphicon-remove text-danger" onClick={this.removeUser.bind(this, user.id)}>Удалить роль</i>
                           </a>
                         </div>
                       </div>

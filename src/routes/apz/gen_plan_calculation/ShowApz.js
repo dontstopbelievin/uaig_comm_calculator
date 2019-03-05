@@ -23,6 +23,7 @@ export default class ShowApz extends React.Component {
         apz: [],
         showMap: false,
         showButtons: false,
+        showSendButtons: false,
         description: '',
         showMapText: 'Показать карту',
         loaderHidden: false,
@@ -32,11 +33,9 @@ export default class ShowApz extends React.Component {
         additionalFile: false,
         needSign: false,
         storageAlias: "PKCS12",
-        reglamentFile: false,
+        calculationFile: false,
         schemeComment: false,
         schemeFile: false,
-        calculationComment: false,
-        calculationFile: false,
         loaderHiddenSign:true
       };
 
@@ -63,7 +62,7 @@ export default class ShowApz extends React.Component {
       var id = this.props.match.params.id;
       var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/generalplan/detail/" + id, true);
+      xhr.open("get", window.url + "api/apz/generalplancalculation/detail/" + id, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
@@ -75,13 +74,10 @@ export default class ShowApz extends React.Component {
           this.setState({confirmedTaskFile: apz.files.filter(function(obj) { return obj.category_id === 9 })[0]});
           this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
           this.setState({additionalFile: apz.files.filter(function(obj) { return obj.category_id === 27 })[0]});
-          this.setState({reglamentFile: apz.files.filter(function(obj) { return obj.category_id === 29 })[0]});
+          this.setState({calculationFile: apz.files.filter(function(obj) { return obj.category_id === 39 })[0]});
           this.setState({schemeComment: apz.state_history.filter(function(obj) { return obj.state_id === 56 })[0]});
           this.setState({schemeFile: apz.files.filter(function(obj) { return obj.category_id === 38 })[0]});
-          this.setState({calculationComment: apz.state_history.filter(function(obj) { return obj.state_id === 57 })[0]});
-          this.setState({calculationFile: apz.files.filter(function(obj) { return obj.category_id === 39 })[0]});
-
-          if (apz.status_id === 11) {
+          if (apz.status_id === 15) {
             this.setState({showButtons: true});
           }
           this.setState({loaderHidden: true});
@@ -97,6 +93,20 @@ export default class ShowApz extends React.Component {
         this.setState({ loaderHidden: true });
       }.bind(this);
       xhr.send();
+    }
+
+    showSignBtns(){
+        if (!this.state.description || this.state.description.trim() == '' || !this.state.calculationFile) {
+          alert('Напишите комментарий и закрепите файл!');
+          return false;
+        }
+        this.setState({ showSignButtons: true });
+        this.setState({ showButtons: false });
+    }
+
+    hideSignBtns(){
+        this.setState({ showSignButtons: false });
+        this.setState({ showButtons: true });
     }
 
     downloadFile(id, progbarId = null) {
@@ -210,8 +220,8 @@ export default class ShowApz extends React.Component {
           setTimeout(function() {
             progressbar.css('display', 'none');
             switch (category) {
-              case 29:
-                this.setState({reglamentFile: data});
+              case 39:
+                this.setState({calculationFile: data});
                 break;
               default:
             }
@@ -315,7 +325,7 @@ export default class ShowApz extends React.Component {
       var token = sessionStorage.getItem('tokenInfo');
 
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + 'api/apz/generalplan/get_xml/' + this.state.apz.id, true);
+      xhr.open("get", window.url + 'api/apz/generalplancalculation/get_xml/' + this.state.apz.id, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
@@ -363,7 +373,7 @@ export default class ShowApz extends React.Component {
         console.log("SIGNED XML ------> \n", signedXml);
 
         var xhr = new XMLHttpRequest();
-        xhr.open("post", window.url + 'api/apz/generalplan/save_xml/' + this.state.apz.id, true);
+        xhr.open("post", window.url + 'api/apz/generalplancalculation/save_xml/' + this.state.apz.id, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         xhr.onload = function() {
@@ -476,10 +486,10 @@ export default class ShowApz extends React.Component {
       alert("Ошибка при подключений к прослойке NCALayer. Убедитесь что программа запущена и перезарузите страницу");
     }
 
-    acceptDeclineApzForm(apzId, status, comment) {
+    acceptDeclineApzForm(apzId, status, comment, direct) {
       var token = sessionStorage.getItem('tokenInfo');
 
-      if (!comment || !this.state.reglamentFile) {
+      if (!comment || !this.state.calculationFile) {
         alert('Напишите комментарий и закрепите файл!');
         return false;
       }
@@ -487,19 +497,19 @@ export default class ShowApz extends React.Component {
       var registerData = {
         response: status,
         message: comment,
-        file: this.state.reglamentFile
+        file: this.state.calculationFile,
+        direct: direct
       };
 
       var data = JSON.stringify(registerData);
 
       var xhr = new XMLHttpRequest();
-      xhr.open("post", window.url + "api/apz/generalplan/status/" + apzId, true);
+      xhr.open("post", window.url + "api/apz/generalplancalculation/status/" + apzId, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function () {
         if (xhr.status === 200) {
           //var data = JSON.parse(xhr.responseText);
-
           if(status === true) {
             alert("Заявление принято!");
           } else {
@@ -520,20 +530,6 @@ export default class ShowApz extends React.Component {
       xhr.send(data);
       $('#ReturnApzForm').modal('hide');
       $('#AcceptApzForm').modal('hide');
-    }
-
-    showSignBtns(){
-        if (!this.state.description || this.state.description.trim() == '' || !this.state.reglamentFile) {
-          alert('Напишите комментарий и закрепите файл!');
-          return false;
-        }
-        this.setState({ showSignButtons: true });
-        this.setState({ showButtons: false });
-    }
-
-    hideSignBtns(){
-        this.setState({ showSignButtons: false });
-        this.setState({ showButtons: true });
     }
 
     toggleMap(value) {
@@ -1235,11 +1231,11 @@ export default class ShowApz extends React.Component {
                         <td style={{width: '22%'}}><b>Сформированный АПЗ</b></td>
                         <td><a className="text-info pointer" onClick={this.printApz.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
                       </tr>
-                      {this.state.reglamentFile &&
+                      {this.state.calculationFile &&
                         <tr>
-                          <td style={{width: '22%'}}><b>Регламент</b></td>
-                          <td><a className="text-info pointer" data-category="6" onClick={this.downloadFile.bind(this, this.state.reglamentFile.id, 6)}>Скачать</a>
-                            <div className="progress mb-2" data-category="6" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                          <td style={{width: '22%'}}><b>Файл расчетов</b></td>
+                          <td><a className="text-info pointer" data-category="8" onClick={this.downloadFile.bind(this, this.state.calculationFile.id, 8)}>Скачать</a>
+                            <div className="progress mb-2" data-category="8" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                               <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                           </td>
@@ -1277,11 +1273,6 @@ export default class ShowApz extends React.Component {
                   Комментарий ген план(ситуационная схема): {this.state.schemeComment.comment}
                 </div>
               }
-              {this.state.calculationComment &&
-                <div className="alert alert-danger">
-                  Комментарий ген план(расчеты): {this.state.calculationComment.comment}
-                </div>
-              }
               {this.state.schemeFile &&
                 <div className="col-md-8 offset-2">
                   <div className="row" style={{paddingTop:'5px',paddingBottom:'5px',backgroundColor:'#eeeeff'}}>
@@ -1295,20 +1286,6 @@ export default class ShowApz extends React.Component {
                   </div>
                 </div>
               }
-              {this.state.calculationFile &&
-                <div className="col-md-8 offset-2">
-                  <div className="row" style={{paddingTop:'5px',paddingBottom:'5px',backgroundColor:'#eeeeff'}}>
-                    <div className="col-md-6"><b>Файл расчетов</b></div>
-                    <div className="col-md-6">
-                      <a className="text-info pointer" data-category="10" onClick={this.downloadFile.bind(this, this.state.calculationFile.id, 10)}><b>Скачать</b></a>
-                      <div className="progress mb-2" data-category="10" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              }
-
               <div className={this.state.showButtons ? '' : 'invisible'}>
                 <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                   <h5 className="modal-title">Комментарий</h5>
@@ -1318,22 +1295,22 @@ export default class ShowApz extends React.Component {
                   <div className="form-group">
                     <div className="file_container">
                       <div className="col-md-12">
-                        <div className="progress mb-2" data-category="29" style={{height: '20px', display: 'none'}}>
+                        <div className="progress mb-2" data-category="39" style={{height: '20px', display: 'none'}}>
                           <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                       </div>
-                      {this.state.reglamentFile &&
+                      {this.state.calculationFile &&
                         <div className="file_block mb-2">
                           <div>
-                            {this.state.reglamentFile.name}
-                            <a className="pointer" onClick={(e) => this.setState({reglamentFile: false}) }>×</a>
+                            {this.state.calculationFile.name}
+                            <a className="pointer" onClick={(e) => this.setState({calculationFile: false}) }>×</a>
                           </div>
                         </div>
                       }
                       <div className="file_buttons btn-group btn-group-justified d-table mt-0">
-                        <label><h6>Регламент</h6></label>
-                        <label htmlFor="reglamentFile" className="btn btn-success" style={{marginLeft: '5px'}}>Загрузить</label>
-                        <input type="file" id="reglamentFile" name="reglamentFile" className="form-control" onChange={this.uploadFile.bind(this, 29)} style={{display: 'none'}} />
+                        <label><h6>Файл расчетов</h6></label>
+                        <label htmlFor="calculationFile" className="btn btn-success" style={{marginLeft: '5px'}}>Загрузить</label>
+                        <input type="file" id="calculationFile" name="calculationFile" className="form-control" onChange={this.uploadFile.bind(this, 39)} style={{display: 'none'}} />
                       </div>
                       <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
                     </div>
@@ -1346,7 +1323,8 @@ export default class ShowApz extends React.Component {
 
               {this.state.showSendButtons &&
                 <div style={{margin: 'auto', display: 'table'}}>
-                  <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, this.state.description)}>Отправить начальнику ген план</button>
+                  <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, this.state.description, "scheme")}>Отправить ген план(ситуационная схема)</button>
+                  <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, this.state.description, "reglament")}>Отправить для регламента</button>
                 </div>
               }
 

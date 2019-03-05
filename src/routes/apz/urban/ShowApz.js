@@ -48,8 +48,8 @@ export default class ShowApz extends React.Component {
       this.onDescriptionChange = this.onDescriptionChange.bind(this);
     }
 
-    onDescriptionChange(value) {
-      this.setState({ description: value });
+    onDescriptionChange(e) {
+      this.setState({ description: e.target.value });
     }
 
     componentDidMount() {
@@ -63,6 +63,7 @@ export default class ShowApz extends React.Component {
         console.log('MOUNTING');
         this.getHeads();
         this.getApzInfo();
+        this.webSocketFunction();
       }
     }
 
@@ -465,9 +466,7 @@ export default class ShowApz extends React.Component {
     }
 
     openDialog() {
-      if (window.confirm("Ошибка при подключений к прослойке. Убедитесь что программа запущена и нажмите ОК") === true) {
-        window.location.reload();
-      }
+      alert("Ошибка при подключений к прослойке NCALayer. Убедитесь что программа запущена и перезарузите страницу");
     }
 
     acceptDeclineApzForm(apzId, status, comment) {
@@ -511,6 +510,7 @@ export default class ShowApz extends React.Component {
 
         if (!status) {
           $('#accDecApzForm').modal('hide');
+          $('#ReturnApzForm').modal('hide');
         }
       }.bind(this);
       xhr.send(data);

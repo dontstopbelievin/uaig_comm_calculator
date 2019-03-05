@@ -85,6 +85,24 @@ export default class AllApzs extends React.Component {
     return formated_date;
   }
 
+  sortData(column){
+    if(this.state.sortState == 'ASC'){
+      this.setState({ sortState: 'DESC'});
+      this.setState({ data: this.state.data.sort(function(a, b){
+          if(a[column] > b[column]) { return -1; }
+          if(a[column] < b[column]) { return 1; }
+          return 0;
+      }) });
+    }else{
+      this.setState({ sortState: 'ASC'});
+      this.setState({ data: this.state.data.sort(function(a, b){
+          if(a[column] < b[column]) { return -1; }
+          if(a[column] > b[column]) { return 1; }
+          return 0;
+      }) });
+    }
+  }
+
   handleSearch(e){
     if(e.target.value.trim() === ''){this.setState({data: this.state.data_reserve}); return;}
     var items = e.target.value.trim().split(' ');
@@ -116,8 +134,7 @@ export default class AllApzs extends React.Component {
             </td><td>
               <ul className="nav nav-tabs mb-2 pull-right">
                 <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/gen_plan/apz/status/active/1" replace>Активные</NavLink></li>
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/gen_plan/apz/status/accepted/1" replace>Принятые</NavLink></li>
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/gen_plan/apz/status/declined/1" replace>Отказанные</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/gen_plan/apz/status/accepted/1" replace>Отработанные</NavLink></li>
               </ul>
             </td></tr></tbody>
             </table>
@@ -125,11 +142,11 @@ export default class AllApzs extends React.Component {
             <table className="table">
               <thead>
                 <tr>
-                  <th style={{width: '5%'}}>ИД</th>
-                  <th style={{width: '21%'}}>Название</th>
-                  <th style={{width: '20%'}}>Заявитель</th>
-                  <th style={{width: '20%'}}>Адрес</th>
-                  <th style={{width: '20%'}}>Дата заявления</th>
+                  <th style={{width: '7%'}} className="apzs_header" onClick={this.sortData.bind(this, 'id')}>ИД<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '19%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_name')}>Название<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'applicant')}>Заявитель<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_address')}>Адрес<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'created_at')}>Дата заявления<img className="filter_img" src="/images/filter_icon.png"/></th>
                   <th></th>
                 </tr>
               </thead>

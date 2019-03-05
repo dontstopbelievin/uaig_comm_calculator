@@ -114,21 +114,21 @@ export default class ShowSketch extends React.Component {
 
 
 
-                if (data.status_id === 6 && !data.apz_head_response) {
+                if (data.status_id === 6 && !data.sketch_head_response) {
                     this.setState({showButtons: true});
                 }
 
-                if (data.status_id === 6 && data.apz_head_response && data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0] == null) {
+                if (data.status_id === 6 && data.sketch_head_response && data.sketch_head_response.files.filter(function(obj) { return obj.category_id === 19})[0] == null) {
                     this.setState({showButtons: true});
                 }
 
-                if (data.apz_head_response && data.apz_head_response && data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0] != null) {
+                if (data.sketch_head_response && data.sketch_head_response && data.sketch_head_response.files.filter(function(obj) { return obj.category_id === 19})[0] != null) {
                     this.setState({isSigned: true});
-                    this.setState({xmlFile: data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0]});
-                    this.setState({headResponse: data.apz_head_response.response});
+                    this.setState({xmlFile: data.sketch_head_response.files.filter(function(obj) { return obj.category_id === 19})[0]});
+                    this.setState({headResponse: data.sketch_head_response.response});
                 }
 
-                if (data.apz_head_response && data.apz_head_response.files.filter(function(obj) { return obj.category_id === 19})[0] != null && data.status_id === 6) {
+                if (data.sketch_head_response && data.sketch_head_response.files.filter(function(obj) { return obj.category_id === 19})[0] != null && data.status_id === 6) {
                     this.setState({showSendButton: true});
                 }
 
@@ -493,7 +493,7 @@ export default class ShowSketch extends React.Component {
         formData.append('DocNumber', this.state.docNumber);
 
         var xhr = new XMLHttpRequest();
-        xhr.open("post", window.url + "api/sketch/head/save/" + sketchId, true);
+        xhr.open("post", window.url + "api/sketch/head/saveHead/" + sketchId, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.onload = function () {
             if (xhr.status === 200) {
@@ -696,7 +696,7 @@ export default class ShowSketch extends React.Component {
         var token = sessionStorage.getItem('tokenInfo');
         if (token) {
             var xhr = new XMLHttpRequest();
-            xhr.open("get", window.url + "api/print/region/" + sketchId, true);
+            xhr.open("get", window.url + "api/print/region/sketch/" + sketchId, true);
             xhr.setRequestHeader("Authorization", "Bearer " + token);
             xhr.onload = function () {
                 if (xhr.status === 200) {
@@ -904,28 +904,6 @@ export default class ShowSketch extends React.Component {
 
                     <div className="col-sm-6">
                         <h5 className="block-title-2 mt-3 mb-3">Решение</h5>
-
-                        {sketch.apz_department_response && !this.state.lastDecisionIsMO &&
-                        <div>
-                            <table className="table table-bordered table-striped">
-                                <tbody>
-                                <tr>
-                                    <td style={{width: '40%'}}><b>Отдел АПЗ</b></td>
-                                    <td><a className="text-info pointer" onClick={this.printApz.bind(this, sketch.id, sketch.project_name)}>Скачать</a></td>
-                                </tr>
-                                {this.state.reglamentFile &&
-                                <tr>
-                                    <td style={{width: '40%'}}><b>Регламент</b></td>
-                                    <td><a className="text-info pointer" data-category="21" onClick={this.downloadFile.bind(this, this.state.reglamentFile.id, 6)}>Скачать</a>
-                                        <div className="progress mb-2" data-category="21" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </td>
-                                </tr>}
-                                </tbody>
-                            </table>
-                        </div>
-                        }
 
                         {this.state.lastDecisionIsMO &&
                         <table className="table table-bordered">

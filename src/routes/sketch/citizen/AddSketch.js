@@ -388,19 +388,14 @@ export default class AddSketch extends React.Component {
             this.setState({type: sketch.type ? sketch.type : '' });
             this.setState({projectName: sketch.project_name ? sketch.project_name : '' });
             this.setState({projectAddress: sketch.project_address ? sketch.project_address : '' });
-            // this.setState({projectAddressCoordinates: sketch.project_address_coordinates ? sketch.project_address_coordinates : '' });
-            // this.setState({hasCoordinates: sketch.project_address_coordinates ? true : false });
-
             this.setState({personalIdFile: sketch.files.filter(function(obj) { return obj.category_id === 3 })[0]});
             this.setState({apzFile: sketch.files.filter(function(obj) { return obj.category_id === 2 })[0]});
             this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
-
             this.setState({objectType: sketch.object_type ? sketch.object_type : '' });
             this.setState({objectPyaten: sketch.object_pyaten ? sketch.object_pyaten : '' });
             this.setState({objectCarpark: sketch.object_carpark ? sketch.object_carpark : '' });
             this.setState({objectDOU: sketch.object_dou ? sketch.object_dou : '' });
             this.setState({customer: sketch.customer ? sketch.customer : '' });
-            // this.setState({cadastralNumber: sketch.cadastral_number ? sketch.cadastral_number : '' });
             this.setState({objectTerm: sketch.object_term ? sketch.object_term : '' });
             this.setState({objectLevel: sketch.object_level ? sketch.object_level : '' });
             this.setState({commonArea: sketch.common_area ? sketch.common_area : '' });
@@ -491,23 +486,6 @@ export default class AddSketch extends React.Component {
           }
       }.bind(this);
       xhr.send(JSON.stringify(data));
-
-
-    // var formData = $('#sketch-form').serializeJSON();
-    //
-    // $.ajax({
-    //   type: 'POST',
-    //   url: window.url + 'api/sketch/citizen/create',
-    //   contentType: 'application/json; charset=utf-8',
-    //   beforeSend: function (xhr) {
-    //     xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
-    //   },
-    //   data: JSON.stringify(formData),
-    //   success: function (data) {
-    //     this.resetForm();
-    //     alert("Заявка отправлена");
-    //   }.bind(this)
-    // });
   };
 
   render() {
@@ -562,10 +540,6 @@ export default class AddSketch extends React.Component {
                                                     <option>Турксиб</option>
                                                 </select>
                                             </div>
-                                            {/*<div className="form-group">
-                            <label htmlFor="Address">Адрес:</label>
-                            <input type="text" className="form-control" required id="ApzAddressForm" name="Address" placeholder="ул. Абая, д.25" />
-                          </div>*/}
                                             <div className="form-group">
                                                 <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
                                                 <input data-rh="Проектировщик №ГСЛ, категория" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.designer} name="designer" />
@@ -578,10 +552,6 @@ export default class AddSketch extends React.Component {
                                                 <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
                                                 <input data-rh="Адрес проектируемого объекта" data-rh-at="right" type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectAddress} name="projectAddress" />
                                                 <div className="row coordinates_block pt-0">
-                                                    {/*<div className="col-md-6">*/}
-                                                        {/*<input data-rh="Адрес проектируемого объекта" data-rh-at="right" type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectAddress} name="projectAddress" />*/}
-                                                        {/*<input type="hidden" onChange={this.onInputChange} value={this.state.projectAddressCoordinates} id="ProjectAddressCoordinates" name="projectAddressCoordinates" />*/}
-                                                    {/*</div>*/}
                                                 </div>
                                             </div>
                                         </div>
@@ -659,12 +629,6 @@ export default class AddSketch extends React.Component {
                                                     <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
                                                 </div>
                                             </div>
-
-
-                                            {/*<div className="form-group">
-                            <label htmlFor="ApzDate">Дата</label>
-                            <input type="date" required className="form-control" name="ApzDate" />
-                          </div>*/}
                                         </div>
                                     </div>
                                     <div>
@@ -713,13 +677,6 @@ export default class AddSketch extends React.Component {
                                 <form id="tab2-form" data-tab="2" onSubmit={this.saveApz.bind(this, false)}>
                                     <div className="row">
                                         <div className="col-md-6">
-                                            {/*<div className="form-group">
-                                                <div className="form-group">
-                                                    <label htmlFor="ObjectType">Тип объекта:</label>
-                                                    <input data-rh="Тип объекта" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.objectType} name="objectType" placeholder="" />
-                                                    <small>Пример: строительства индивидуального жилого дома со сносом существующего жилого дома</small>
-                                                </div>
-                                            </div>*/}
                                             <div className="form-group">
                                               <label htmlFor="ObjectType">Тип объекта:</label>
                                               <select required className="form-control" name="objectType" id="ObjectType" onChange={this.onInputChange} value={this.state.objectType}>
@@ -855,7 +812,6 @@ export default class AddSketch extends React.Component {
                 </div>
             </div>
             }
-
             {!this.state.loaderHidden &&
             <div style={{textAlign: 'center'}}>
                 <Loader type="Oval" color="#46B3F2" height="200" width="200" />

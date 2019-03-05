@@ -4,7 +4,6 @@ import $ from 'jquery';
 import 'jquery-serializejson';
 import Loader from 'react-loader-spinner';
 import EngineerShowMap from "./ShowMap";
-import ReactQuill from 'react-quill';
 
 export default class ShowApz extends React.Component {
   constructor(props) {
@@ -50,7 +49,7 @@ export default class ShowApz extends React.Component {
       needSign: false,
       engineerReturnedState: false,
       deadline: '',
-      comment: null
+      comment: ''
     };
 
     this.onDocNumberChange = this.onDocNumberChange.bind(this);
@@ -74,8 +73,8 @@ export default class ShowApz extends React.Component {
   onDocNumberChange(e) {
     this.setState({ docNumber: e.target.value });
   }
-  onCommentChange(value) {
-    this.setState({ comment: value });
+  onCommentChange(e) {
+    this.setState({ comment: e.target.value });
   }
 
   onFileChange(e) {
@@ -88,6 +87,7 @@ export default class ShowApz extends React.Component {
       return this.props.history.replace({pathname: "/panel/common/login", state:{url_apz_id: fullLoc[fullLoc.length-1]}});
     }else {
       this.getApzInfo();
+      this.webSocketFunction();
     }
   }
 
@@ -497,9 +497,7 @@ export default class ShowApz extends React.Component {
     }
   }
   openDialog() {
-    if (window.confirm("Ошибка при подключений к прослойке. Убедитесь что программа запущена и нажмите ОК") === true) {
-      window.location.reload();
-    }
+    alert("Ошибка при подключений к прослойке NCALayer. Убедитесь что программа запущена и перезарузите страницу");
   }
 
   // print technical condition of waterProvider
@@ -893,8 +891,11 @@ toDate(date) {
   }
 
   acceptDeclineApzForm(apzId, status, comment) {
+    if(!status && comment.trim() == ''){
+      alert('Для отказа напишите комментарий.');
+      return false;
+    }
     var token = sessionStorage.getItem('tokenInfo');
-
     var formData = new FormData();
     formData.append('response', status);
     formData.append('message', comment);
@@ -1091,6 +1092,9 @@ toDate(date) {
 
     return (
       <div className="row">
+        <div className="col-sm-12">
+          <button className="btn btn-outline-secondary btn-sm" onClick={this.props.history.goBack}>Назад</button>
+        </div>
         <div className="col-sm-6">
           <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
 
@@ -1471,7 +1475,9 @@ toDate(date) {
                         <div className="modal-body">
                           <div className="form-group">
                             <label>Комментарий</label>
-                            <ReactQuill value={this.state.comment} onChange={this.onCommentChange} />
+                            <div>
+                              <textarea rows="4" style={{width:'100%', resize:'vertical'}} value={this.state.comment} onChange={this.onCommentChange}></textarea>
+                            </div>
                           </div>
                         </div>
                         <div className="modal-footer">

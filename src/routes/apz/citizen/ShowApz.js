@@ -3,6 +3,7 @@ import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
 import Loader from 'react-loader-spinner';
+import ShowMap from './ShowMap';
 
 export default class ShowApz extends React.Component {
     constructor(props) {
@@ -804,7 +805,7 @@ export default class ShowApz extends React.Component {
                 </tbody>
               </table>
 
-              {this.state.showMap && < this.ShowMap coordinates={apz.project_address_coordinates} />}
+              {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
 
               <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                 {this.state.showMapText}

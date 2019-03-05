@@ -12,6 +12,7 @@ export default class AllApzs extends React.Component {
       response: null,
       data: [],
       data_reserve: [],
+      sortState: 'DESC',
       pageNumbers: []
     };
   }
@@ -93,6 +94,24 @@ export default class AllApzs extends React.Component {
     this.props.history.push('/panel/engineer/apz/show/' + id);
   }
 
+  sortData(column){
+    if(this.state.sortState == 'ASC'){
+      this.setState({ sortState: 'DESC'});
+      this.setState({ data: this.state.data.sort(function(a, b){
+          if(a[column] > b[column]) { return -1; }
+          if(a[column] < b[column]) { return 1; }
+          return 0;
+      }) });
+    }else{
+      this.setState({ sortState: 'ASC'});
+      this.setState({ data: this.state.data.sort(function(a, b){
+          if(a[column] < b[column]) { return -1; }
+          if(a[column] > b[column]) { return 1; }
+          return 0;
+      }) });
+    }
+  }
+
   handleSearch(e){
     if(e.target.value.trim() === ''){this.setState({data: this.state.data_reserve}); return;}
     var items = e.target.value.trim().split(' ');
@@ -135,12 +154,12 @@ export default class AllApzs extends React.Component {
             <table className="table">
               <thead>
                 <tr>
-                  <th style={{width: '5%'}}>ИД</th>
-                  <th style={{width: '16%'}}>Дата</th>
-                  <th style={{width: '5%'}}>Тип</th>
-                  <th style={{width: '16%'}}>Заявитель</th>
-                  <th style={{width: '16%'}}>Адрес</th>
-                  <th style={{width: '16%'}}>Район</th>
+                  <th style={{width: '7%'}} className="apzs_header" onClick={this.sortData.bind(this, 'id')}>ИД<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '15%'}} className="apzs_header" onClick={this.sortData.bind(this, 'created_at')}>Дата<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '7%'}} className="apzs_header" onClick={this.sortData.bind(this, 'object_type')}>Тип<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '15%'}} className="apzs_header" onClick={this.sortData.bind(this, 'applicant')}>Заявитель<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '15%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_address')}>Адрес<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '15%'}} className="apzs_header" onClick={this.sortData.bind(this, 'region')}>Район<img className="filter_img" src="/images/filter_icon.png"/></th>
                   {/*<th></th>*/}
                 </tr>
               </thead>
