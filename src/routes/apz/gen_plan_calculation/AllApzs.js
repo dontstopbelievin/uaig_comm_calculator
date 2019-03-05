@@ -133,7 +133,7 @@ export default class AllApzs extends React.Component {
               <input placeholder="Поиск по ФИО" type="text" className="mb-2" id="filter" onChange={this.handleSearch} style={{padding:'3px'}}/>
             </td><td>
               <ul className="nav nav-tabs mb-2 pull-right">
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/gen_plan_calculation/apz/status/active/1" replace>Активные</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'state_active'} to="/panel/gen_plan_calculation/apz/status/state_active/1" replace>Активные</NavLink></li>
                 <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/gen_plan_calculation/apz/status/accepted/1" replace>Отработанные</NavLink></li>
               </ul>
             </td></tr></tbody>
