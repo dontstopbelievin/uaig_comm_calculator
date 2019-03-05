@@ -4,16 +4,17 @@ import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import Header from './components/Header';
 import Login from './routes/authorization/Login';
 import Register from './routes/authorization/Register';
-import Sketch from './routes/Sketch';
-import SketchApzDepartment from './routes/SketchApzDepartment';
+import CitizenAllSketch from './routes/sketch/citizen/AllSketch';
+import CitizenShowSketch from './routes/sketch/citizen/ShowSketch';
+import CitizenAddSketch from './routes/sketch/citizen/AddSketch';
 import Footer from './components/Footer';
 import EditPersonalData from './routes/authorization/EditPersonalData';
 import EditPassword from './routes/authorization/EditPassword';
 import ForgotPassword from './routes/authorization/ForgotPassword';
 import ResetForm from './routes/authorization/ResetForm';
 import FirstLogin from "./routes/authorization/FirstLogin";
-import SketchUrban from "./routes/SketchUrban";
-
+import UrbanAllSketch from "./routes/sketch/urban/AllSketch";
+import UrbanShowSketch from "./routes/sketch/urban/ShowSketch";
 import './imports/styles';
 import './imports/js';
 import LocalizedStrings from 'react-localization';
@@ -21,8 +22,10 @@ import {ru, kk} from './languages/breadCrumbs.json';
 import { Redirect } from 'react-router-dom';
 
 import BasePagePanel from "./routes/BasePagePanel";
-import SketchEngineer from "./routes/SketchEngineer";
-import SketchHead from "./routes/SketchHead";
+import EngineerAllSketch from "./routes/sketch/engineer/AllSketch";
+import EngineerShowSketch from "./routes/sketch/engineer/ShowSketch";
+import HeadAllSketches from "./routes/sketch/head/AllSketches";
+import HeadShowSketch from "./routes/sketch/head/ShowSketch";
 import ExportToExcel from "./routes/apz/components/ExportToExcel";
 import UrbanAllApzs from "./routes/apz/urban/AllApzs";
 import UrbanShowApz from "./routes/apz/urban/ShowApz";
@@ -56,7 +59,7 @@ import FilesImages from "./routes/files/Images";
 import CitizenAllApzs from "./routes/apz/citizen/AllApzs";
 import CitizenAddApz from "./routes/apz/citizen/AddApz";
 import CitizenShowApz from "./routes/apz/citizen/ShowApz";
-import CitizenActions from "./routes/CitizenActions";
+import Actions from "./routes/Actions";
 import LawyerAllApzs from "./routes/apz/lawyer/AllApzs";
 import LawyerShowApz from "./routes/apz/lawyer/ShowApz";
 import GenPlanAllApzs from "./routes/apz/gen_plan/AllApzs";
@@ -161,9 +164,6 @@ export default class Main extends React.Component {
                                         <Route path="/editPassword" render={(props) => (<EditPassword {...props} />)} />
                                         <Route path="/login" render={(props) => (<Login {...props} />)} />
                                         <Route path="/register" render={(props) => (<Register {...props} />)} />
-                                        <Route path="/panel/sketch/urban" render={(props) => (<SketchUrban {...props} />)} />
-                                        <Route path="/sketch" render={(props) => (<Sketch {...props} />)} />
-                                        <Route path="/panel/sketch/apz_department" render={(props) => (<SketchApzDepartment {...props} />)} />
 
                                         <Route path="/panel/base-page" render={(props) => ( <BasePagePanel breadCrumbs={this.breadCrumbs.bind(this)} /> )} />
                                         <Route path="/panel/common/files/all" exact render={(props) =>(<FilesAll {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
@@ -176,12 +176,15 @@ export default class Main extends React.Component {
                                         <Route path="/panel/common/export_to_excel" render={(props) => (<ExportToExcel {...props} breadCrumbs={this.breadCrumbs.bind(this)} /> )} />
                                         <Route path="/panel/apz/all_history/:user_id/:page" exact render={(props) =>(<AllApzsHistory {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
-                                        <Route path="/panel/services/:index" exact render={(props) =>(<CitizenActions {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/services/:index" exact render={(props) =>(<Actions {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/citizen/apz/status/:status/:page" exact render={(props) =>(<CitizenAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/citizen/apz/add" exact render={(props) =>(<CitizenAddApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/citizen/apz/edit/:id" exact render={(props) =>(<CitizenAddApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/citizen/apz/show/:id" exact render={(props) =>(<CitizenShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
-                                        <Route path="/panel/citizen/sketch" render={(props) => ( <Sketch {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/citizen/sketch/status/:status/:page" render={(props) => ( <CitizenAllSketch {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/citizen/sketch/show/:id" exact render={(props) =>(<CitizenShowSketch {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/sketch/add" exact render={(props) =>(<CitizenAddSketch {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/sketch/edit/:id" exact render={(props) =>(<CitizenAddSketch {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
                                         <Route path="/panel/admin/apz/status/:status/:page" exact render={(props) =>(<AdminAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/admin/apz/show/:id" exact render={(props) =>(<AdminShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
@@ -190,7 +193,8 @@ export default class Main extends React.Component {
 
                                         <Route path="/panel/urban/apz/status/:status/:page" exact render={(props) =>(<UrbanAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/urban/apz/show/:id" exact render={(props) =>(<UrbanShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
-                                        <Route path="/panel/urban/sketch" render={(props) => ( <SketchUrban {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/urban/sketch/status/:status/:page" render={(props) => ( <UrbanAllSketch {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/urban/sketch/show/:id" exact render={(props) =>(<UrbanShowSketch {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
                                         <Route path="/panel/answer-template/all/:type/:page" exact render={(props) =>(<AllTemplates {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/answer-template/:type/add" exact render={(props) =>(<AddTemplate {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
@@ -213,7 +217,8 @@ export default class Main extends React.Component {
 
                                         <Route path="/panel/head/apz/status/:status/:page" exact render={(props) =>(<HeadAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/head/apz/show/:id" exact render={(props) =>(<HeadShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
-                                        <Route path="/panel/head/sketch" render={(props) => ( <SketchHead breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/head/sketch/status/:status/:page" render={(props) => ( <HeadAllSketches {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/head/sketch/show/:id" exact render={(props) =>(<HeadShowSketch {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
                                         <Route path="/panel/office/apz/all/:page" exact render={(props) =>(<OfficeAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/office/apz/show/:id" exact render={(props) =>(<OfficeShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
@@ -223,11 +228,11 @@ export default class Main extends React.Component {
 
                                         <Route path="/panel/engineer/apz/status/:status/:page" exact render={(props) =>(<EngineerAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/engineer/apz/show/:id" exact render={(props) =>(<EngineerShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
-                                        <Route path="/panel/engineer/sketch" render={(props) => ( <SketchEngineer breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/engineer/sketch/status/:status/:page" exact render={(props) =>(<EngineerAllSketch {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/engineer/sketch/show/:id" exact render={(props) =>(<EngineerShowSketch {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
                                         <Route path="/panel/state_services/apz/status/:status/:page" exact render={(props) =>(<StateServicesAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/state_services/apz/show/:id" exact render={(props) =>(<StateServicesShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
-                                        <Route path="/panel/apz-department/sketch" render={(props) => ( <SketchApzDepartment breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
 
                                         <Route path="/panel/gen_plan/apz/status/:status/:page" exact render={(props) =>(<GenPlanAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/gen_plan/apz/show/:id" exact render={(props) =>(<GenPlanShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
@@ -246,7 +251,6 @@ export default class Main extends React.Component {
                                 </div>
                             </div>
                         </div>
-
                     </div>
                     <Footer />
                 </div>

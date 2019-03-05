@@ -73,8 +73,8 @@ export default class ShowApz extends React.Component {
           this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
           this.setState({additionalFile: apz.files.filter(function(obj) { return obj.category_id === 27 })[0]});
           this.setState({schemeFile: apz.files.filter(function(obj) { return obj.category_id === 38 })[0]});
-
-          if (apz.status_id === 14) {
+          if (apz.state_history.filter(function(obj) { return obj.state_id === 53 })[0] != null &&
+              apz.state_history.filter(function(obj) { return obj.state_id === 54 })[0] == null) {
             this.setState({showButtons: true});
           }
           this.setState({loaderHidden: true});

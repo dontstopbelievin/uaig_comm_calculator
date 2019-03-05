@@ -148,10 +148,10 @@ export default class CitizenActions extends React.Component {
                       {this.state.tokenExists && this.state.rolename === 'Engineer' &&  <NavLink to={"/panel/engineer/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                       {this.state.tokenExists && this.state.rolename === 'Office' &&  <NavLink to={"/panel/office/apz/all/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                       {this.state.tokenExists && this.state.rolename === 'Lawyer' &&  <NavLink to={"/panel/lawyer/apz/status/new/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'GeneralPlan' &&  <NavLink to={"/panel/gen_plan/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'GeneralPlanHead' &&  <NavLink to={"/panel/gen_plan_head/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'GeneralPlanScheme' &&  <NavLink to={"/panel/gen_plan_scheme/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'GeneralPlanCalculation' &&  <NavLink to={"/panel/gen_plan_calculation/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                      {this.state.tokenExists && this.state.rolename === 'GeneralPlan' &&  <NavLink to={"/panel/gen_plan/apz/status/state_active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                      {this.state.tokenExists && this.state.rolename === 'GeneralPlanHead' &&  <NavLink to={"/panel/gen_plan_head/apz/status/state_active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                      {this.state.tokenExists && this.state.rolename === 'GeneralPlanScheme' &&  <NavLink to={"/panel/gen_plan_scheme/apz/status/state_active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                      {this.state.tokenExists && this.state.rolename === 'GeneralPlanCalculation' &&  <NavLink to={"/panel/gen_plan_calculation/apz/status/state_active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                       {this.state.tokenExists && this.state.rolename === 'HeadsStateServices' &&  <NavLink to={"/panel/head_state_services/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                       {!this.state.tokenExists && <AlertModal />}
                     </div>

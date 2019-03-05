@@ -363,7 +363,7 @@ export default class ShowApz extends React.Component {
           this.setState({calculationComment: data.state_history.filter(function(obj) { return obj.state_id === 57 })[0]});
           this.setState({calculationFile: data.files.filter(function(obj) { return obj.category_id === 39 })[0]});
           this.setState({response: data.apz_department_response ? true : false });
-          this.setState({backFromGP: data.state_history.filter(function(obj) { return obj.state_id === 41 })[0]});
+          this.setState({backFromGP: data.state_history.filter(function(obj) { return obj.state_id === 53 })[0]});
           this.setState({backFromEngineer: data.state_history.filter(function(obj) { return obj.state_id === 4 })[0]});
           for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
             switch (data.state_history[data_index].state_id) {
@@ -376,7 +376,8 @@ export default class ShowApz extends React.Component {
             break;
           }
 
-          if (!data.apz_department_response && data.status_id === 6) {
+          if (!data.apz_department_response && (data.status_id === 6 || data.status_id === 4 || data.status_id === 11 || data.status_id === 13
+          || data.status_id === 14 || data.status_id === 15)) {
             this.setState({showButtons: true});
           }
 
@@ -775,14 +776,23 @@ export default class ShowApz extends React.Component {
       xhr.onload = function () {
         if (xhr.status === 200) {
           alert("Заявление отправлено!");
-          this.setState({ showButtons: false });
-          this.setState({ showSendButton: false });
         } else if(xhr.status === 401){
           sessionStorage.clear();
           alert("Время сессии истекло. Пожалуйста войдите заново!");
           this.props.history.replace("/login");
         } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
           alert(JSON.parse(xhr.responseText).message);
+        }
+        switch (direct) {
+          case 'gen_plan':
+            this.setState({backFromGP: true});
+            break;
+          case 'engineer':
+            this.setState({backFromEngineer: true});
+            break;
+          default:
+          this.setState({ showButtons: false });
+          this.setState({ showSendButton: false });
         }
       }.bind(this);
       xhr.send(formData);
@@ -1921,8 +1931,7 @@ export default class ShowApz extends React.Component {
           {this.state.showSendButton &&
             <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', display: 'table'}}>
               <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'head')}>Отправить начальнику Гос Услуг</button>
-                <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#declined_modal">Отклонить</button>
-
+              <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#declined_modal">Отклонить</button>
             </div>
           }
 
