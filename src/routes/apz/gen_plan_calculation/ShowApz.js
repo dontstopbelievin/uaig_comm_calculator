@@ -482,7 +482,7 @@ export default class ShowApz extends React.Component {
     }
 
     openDialog() {
-      alert("Ошибка при подключений к прослойке NCALayer. Убедитесь что программа запущена и перезарузите страницу");
+      alert("Ошибка при подключении к прослойке NCALayer. Убедитесь, что программа запущена и перезагрузите страницу");
     }
 
     acceptDeclineApzForm(apzId, status, comment, direct) {

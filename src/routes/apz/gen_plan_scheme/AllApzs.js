@@ -134,7 +134,7 @@ export default class AllApzs extends React.Component {
             </td><td>
               <ul className="nav nav-tabs mb-2 pull-right">
                 <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'state_active'} to="/panel/gen_plan_scheme/apz/status/state_active/1" replace>Активные</NavLink></li>
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'calculation'} to="/panel/gen_plan_scheme/apz/status/calculation/1" replace>У расчеты</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'calculation'} to="/panel/gen_plan_scheme/apz/status/calculation/1" replace>У экономиста</NavLink></li>
                 <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/gen_plan_scheme/apz/status/accepted/1" replace>Обработынные</NavLink></li>
               </ul>
             </td></tr></tbody>

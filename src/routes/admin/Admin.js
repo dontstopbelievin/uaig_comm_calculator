@@ -1,6 +1,7 @@
 import React from 'react';
 import Loader from 'react-loader-spinner';
 import { Link } from 'react-router-dom';
+import $ from 'jquery';
 
 var columnStyle = {
   textAlign: 'center'
@@ -17,6 +18,7 @@ export default class Admin extends React.Component {
       roleUser: [],
       isLoggedIn: true,
       pageNumbers: [],
+      current_user_id: false,
       searchText: '',
       username: ""
     };
@@ -96,7 +98,7 @@ export default class Admin extends React.Component {
               var data = JSON.parse(xhr.responseText);
               //console.log(data);
               alert('Пароль изменен на Aa123456');
-
+              $('#ReturnApzForm').modal('hide');
               console.log('edit password')
           }else {
               alert('Ошибка во время изменении пароли!');
@@ -182,6 +184,11 @@ export default class Admin extends React.Component {
     }else {
       this.props.history.replace('/');
     }
+  }
+
+  toggleEditPassword(user_id){
+    this.setState({current_user_id: user_id});
+    $('#ReturnApzForm').modal('show');
   }
 
   componentDidMount() {
@@ -342,7 +349,7 @@ export default class Admin extends React.Component {
                           </a>
                           <br/>
                           <a title="Удалить роли" style={{cursor: 'pointer'}}>
-                            <i className="glyphicon glyphicon-pencil" onClick={this.editPassword.bind(this, user.id)}>Пароль по умолчанию</i>
+                            <i className="glyphicon glyphicon-pencil" onClick={this.toggleEditPassword.bind(this, user.id)}>Пароль по умолчанию</i>
                           </a>
                         </div>
                       </div>
@@ -350,6 +357,24 @@ export default class Admin extends React.Component {
                   )
                 }.bind(this))
               }
+            </div>
+            <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+              <div className="modal-dialog" role="document">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title">Вы уверены что хотите сбросить пароль?</h5>
+                    <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div className="modal-footer" style={{margin:'auto'}}>
+                    <button type="button" className="btn btn-secondary" onClick={this.editPassword.bind(this, this.state.current_user_id)}>
+                      Да
+                    </button>
+                    <button type="button" className="btn btn-secondary" data-dismiss="modal" style={{marginLeft:'5px'}}>Нет</button>
+                  </div>
+                </div>
+              </div>
             </div>
             <hr/>
             {this.state.data && this.state.data.last_page > 1 &&
