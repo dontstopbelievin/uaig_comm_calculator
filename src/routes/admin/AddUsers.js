@@ -154,6 +154,10 @@ export default class AddUsers extends React.Component{
       <div className="container body-content">
           <div className="content container">
               <div>
+                  <div className="col-sm-12">
+                    <button className="btn btn-outline-secondary" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
+                    <hr />
+                  </div>
                   <div className="card-header">
                       <h4 className="mb-0 mt-2">Добавить нового пользователя</h4>
                   </div>

@@ -23,6 +23,9 @@
 .apzs_header:hover{
   background-color: #c9e1da;
 }
+.my_comments_ta{
+    width: 100%;
+}
 .filter_img{
   vertical-align: top;
   border-style: none;

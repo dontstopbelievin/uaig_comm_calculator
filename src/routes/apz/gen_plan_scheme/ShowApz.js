@@ -1,8 +1,6 @@
 import React from 'react';
 import Loader from 'react-loader-spinner';
 import $ from 'jquery';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import CommissionAnswersList from '../components/CommissionAnswersList';
 import ShowMap from "./ShowMap";
 
@@ -40,8 +38,8 @@ export default class ShowApz extends React.Component {
       this.onDescriptionChange = this.onDescriptionChange.bind(this);
     }
 
-    onDescriptionChange(value) {
-      this.setState({ description: value });
+    onDescriptionChange(e) {
+      this.setState({ description: e.target.value });
     }
     componentDidMount() {
       this.props.breadCrumbs();
@@ -1269,7 +1267,7 @@ export default class ShowApz extends React.Component {
                 <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                   <h5 className="modal-title">Комментарий</h5>
                   <div className="form-group">
-                    <ReactQuill value={this.state.description} onChange={this.onDescriptionChange} />
+                    <textarea className="my_comments_ta" value={this.state.description} onChange={this.onDescriptionChange}></textarea>
                   </div>
                   <div className="form-group">
                     <div className="file_container">

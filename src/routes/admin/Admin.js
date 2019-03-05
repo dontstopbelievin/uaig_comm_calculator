@@ -17,6 +17,7 @@ export default class Admin extends React.Component {
       roleUser: [],
       isLoggedIn: true,
       pageNumbers: [],
+      searchText: '',
       username: ""
     };
   }
@@ -30,20 +31,16 @@ export default class Admin extends React.Component {
     if (!page) {
       page = this.props.match.params.page;
     }
-
+    var data = {searchText: this.state.searchText};
     this.setState({loaderHidden: false});
-    //console.log("entered getUsers function");
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/userTable/getUsers?page=" + page, true);
-    //Send the proper header information along with the request
+    xhr.open("post", window.url + "api/userTable/getUsers?page=" + page, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText).users;
-        //console.log(data);
-
         var pageNumbers = [];
         var start = (data.current_page - 4) > 0 ? (data.current_page - 4) : 1;
         var end = (data.current_page + 4) < data.last_page ? (data.current_page + 4) : data.last_page;
@@ -51,15 +48,12 @@ export default class Admin extends React.Component {
           pageNumbers.push(start);
         }
         this.setState({pageNumbers: pageNumbers});
-
         this.setState({loaderHidden: true});
         this.setState({ users: data.data });
         this.setState({ data: data });
       }
     }.bind(this);
-    xhr.send();
-    //console.log("finished getUsers function");
-    //console.log(this.state.data);
+    xhr.send(JSON.stringify(data));
   }
 
   // удалить пользователя
@@ -177,6 +171,10 @@ export default class Admin extends React.Component {
     this.getRoleUser();
   }
 
+  handleInputChange(e){
+    this.setState({searchText: e.target.value.trim()});
+  }
+
   render() {
     //console.log("rendering the AdminComponent");
     var roles = this.state.roles;
@@ -186,7 +184,13 @@ export default class Admin extends React.Component {
         <div className="col-sm-12">
           <Link className="btn btn-outline-primary mb-3" to="/panel/admin/users/add">Добавить пользователя</Link>
         </div>
-        <h3 style={{fontSize: '40px', color: 'dodgerblue'}}>Пользователи</h3>
+        <div className="col-sm-6">
+          <h3 style={{fontSize: '40px', color: 'dodgerblue', display:'inline', paddingRight: '20px'}}>Пользователи</h3>
+        </div>
+        <div className="col-sm-6">
+          <input placeholder="Поиск по ИИН" type="text" className="mb-2" id="filter" onChange={this.handleInputChange.bind(this)} style={{margin:'3px'}}/>
+          <button className="btn btn-raised btn-success btn-sm" onClick={this.getUsers.bind(this, 1)} style={{margin:'3px'}}>Найти</button>
+        </div>
         <div>
           <div className="container">
             <div className="panel panel-info">
