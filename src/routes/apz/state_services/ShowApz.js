@@ -1931,7 +1931,12 @@ export default class ShowApz extends React.Component {
           {this.state.showSendButton &&
             <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', display: 'table'}}>
               <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'head')}>Отправить начальнику Гос Услуг</button>
+<<<<<<< Updated upstream
               <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#declined_modal">Отклонить</button>
+=======
+                <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#declined_modal">Отклонить</button>
+
+>>>>>>> Stashed changes
             </div>
           }
 
