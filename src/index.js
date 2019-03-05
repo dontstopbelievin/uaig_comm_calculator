@@ -4,7 +4,6 @@ import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import Header from './components/Header';
 import Login from './routes/authorization/Login';
 import Register from './routes/authorization/Register';
-import SketchCitizen from './routes/sketch/citizen/SketchCitizen';
 import CitizenAllSketch from './routes/sketch/citizen/AllSketch';
 import CitizenShowSketch from './routes/sketch/citizen/ShowSketch';
 import CitizenAddSketch from './routes/sketch/citizen/AddSketch';
@@ -14,7 +13,6 @@ import EditPassword from './routes/authorization/EditPassword';
 import ForgotPassword from './routes/authorization/ForgotPassword';
 import ResetForm from './routes/authorization/ResetForm';
 import FirstLogin from "./routes/authorization/FirstLogin";
-import SketchUrban from "./routes/sketch/urban/SketchUrban";
 import UrbanAllSketch from "./routes/sketch/urban/AllSketch";
 import UrbanShowSketch from "./routes/sketch/urban/ShowSketch";
 import './imports/styles';
@@ -91,16 +89,16 @@ export default class Main extends React.Component {
     componentWillMount() {
         this.setLang();
 
-        // window.url = 'https://api.uaig.kz:8843/';
+        window.url = 'https://api.uaig.kz:8843/';
         // window.url = 'http://api.uaig.kz:8880/';
         // window.url = 'http://192.168.0.231/';
         // window.url = 'http://shymkentback.uaig.kz/';
-        // window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
+        window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
 
-        window.url = 'http://uaig/';
+        // window.url = 'http://uaig/';
         //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
         //window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
-        window.clientSecret = 'B5BCHoPxj4VhKUqs7WHi2HHx6f24xoIK8065tc4s'; // aman
+        // window.clientSecret = 'B5BCHoPxj4VhKUqs7WHi2HHx6f24xoIK8065tc4s'; // aman
         // window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
         // window.clientSecret = '7zdU2XDblqORFq8wbQHlNRaIgEBR90qbMYnnVWDg'; // yernar
         // window.clientSecret = 'ZuW3nP8EUgXgEAqm6j9GxzBfFsOFuQv39NcyHUz3'; // medet
