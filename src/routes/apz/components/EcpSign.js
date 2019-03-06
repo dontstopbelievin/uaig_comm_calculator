@@ -66,6 +66,7 @@ export default class EcpSign extends React.Component {
     }
 
     signMessage() {
+      this.props.beforeSign();
       this.setState({loaderHiddenSign: false});
       let password = document.getElementById("inpPassword").value;
       let path = document.getElementById("storagePath").value;
