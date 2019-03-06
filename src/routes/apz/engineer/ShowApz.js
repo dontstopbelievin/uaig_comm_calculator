@@ -231,23 +231,6 @@ export default class ShowApz extends React.Component {
     xhr.send();
   }
 
-
-
-  pingLayer() {
-    //console.log("pinging...");
-    try {
-      this.missed_heartbeats++;
-      if (this.missed_heartbeats >= this.missed_heartbeats_limit)
-          throw new Error("Too many missed heartbeats.");
-      this.webSocket.send(this.heartbeat_msg);
-    } catch (e) {
-      clearInterval(this.heartbeat_interval);
-      this.heartbeat_interval = null;
-      console.warn("Closing connection. Reason: " + e.message);
-      this.webSocket.close();
-    }
-  }
-
   // print technical condition of waterProvider
   printWaterTechCon(apzId, project) {
     var token = sessionStorage.getItem('tokenInfo');
@@ -834,6 +817,7 @@ toDate(date) {
 
   ecpSignSuccess(){
     this.setState({ xmlFile: true });
+    this.setState({loaderHidden: true});
   }
 
   render() {
