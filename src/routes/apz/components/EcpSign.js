@@ -66,7 +66,9 @@ export default class EcpSign extends React.Component {
     }
 
     signMessage() {
-      this.props.beforeSign();
+      if (this.props.rolename == 'head'){
+        this.props.beforeSign();
+      }
       this.setState({loaderHiddenSign: false});
       let password = document.getElementById("inpPassword").value;
       let path = document.getElementById("storagePath").value;
@@ -110,7 +112,12 @@ export default class EcpSign extends React.Component {
       var token = sessionStorage.getItem('tokenInfo');
 
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + 'api/apz/' + this.props.rolename + '/get_xml/' + this.props.apz_id, true);
+      if(this.props.rolename == 'electricity' || this.props.rolename == 'heat'|| this.props.rolename == 'gas'
+        || this.props.rolename == 'water'|| this.props.rolename == 'phone'){
+        xhr.open("get", window.url + 'api/apz/provider/get_xml/' + this.props.rolename +'/'+ this.props.apz_id, true);
+      }else{
+        xhr.open("get", window.url + 'api/apz/' + this.props.rolename + '/get_xml/' + this.props.apz_id, true);
+      }
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
@@ -157,7 +164,12 @@ export default class EcpSign extends React.Component {
         console.log("SIGNED XML ------> \n", signedXml);
 
         var xhr = new XMLHttpRequest();
-        xhr.open("post", window.url + 'api/apz/'+ this.props.rolename +'/save_xml/' + this.props.apz_id, true);
+        if(this.props.rolename == 'electricity' || this.props.rolename == 'heat'|| this.props.rolename == 'gas'
+          || this.props.rolename == 'water'|| this.props.rolename == 'phone'){
+          xhr.open("post", window.url + 'api/apz/provider/save_xml/' + this.props.rolename +'/'+ this.props.apz_id, true);
+        }else{
+          xhr.open("post", window.url + 'api/apz/'+ this.props.rolename +'/save_xml/' + this.props.apz_id, true);
+        }
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         xhr.onload = function() {
