@@ -31,9 +31,6 @@
 	font-style: italic;
 	list-style-type: none;
 }
-.apzinfo{
-  border: 1px solid;
-}
 .apzinfo li{
 	font-style: italic;
 
@@ -203,4 +200,12 @@
     background-color: #dc3545 !important;
     color: white !important;
     font-weight: bold !important;
+}
+.reglament {float: right;}
+.reglament a{
+	display: block;
+	margin-right: 20px !important;
+	background-color: transparent !important;
+	color: blue !important;
+	font-weight: 400 !important;
 }
