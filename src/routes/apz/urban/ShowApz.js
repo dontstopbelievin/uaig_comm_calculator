@@ -9,6 +9,7 @@ import EcpSign from "../components/EcpSign";
 import AllInfo from "../components/AllInfo";
 import Logs from "../components/Logs";
 import Answers from "../components/Answers";
+import ReturnBack from "../components/ReturnBack";
 
 export default class ShowApz extends React.Component {
     constructor(props) {
@@ -202,7 +203,6 @@ export default class ShowApz extends React.Component {
       this.setState({
         showMap: value
       })
-
       if (value) {
         this.setState({
           showMapText: 'Скрыть карту'
@@ -219,8 +219,6 @@ export default class ShowApz extends React.Component {
     }
 
     render() {
-      var apz = this.state.apz;
-
       return (
         <div>
           {this.state.loaderHidden &&
@@ -229,22 +227,22 @@ export default class ShowApz extends React.Component {
               <AllInfo toggleMap={this.toggleMap.bind(this, true)} apz={this.state.apz} personalIdFile={this.state.personalIdFile} confirmedTaskFile={this.state.confirmedTaskFile} titleDocumentFile={this.state.titleDocumentFile}
                 additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
 
-              {apz.commission && (Object.keys(apz.commission).length > 0) &&
+              {this.state.apz.commission && (Object.keys(this.state.apz.commission).length > 0) &&
                 <div>
                   <h5 className="block-title-2 mb-3">Ответы от служб</h5>
-                  <CommissionAnswersList apz={apz} />
+                  <CommissionAnswersList apz={this.state.apz} />
                 </div>
               }
 
-              {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
+              {this.state.showMap && <ShowMap coordinates={this.state.apz.project_address_coordinates} />}
 
               <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                 {this.state.showMapText}
               </button>
 
               <Answers engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
-                backFromHead={this.state.backFromHead} apz_department_response={this.props.apz_department_response} apz_id={apz.id} p_name={apz.project_name}
-                  reglamentFile={this.state.reglamentFile} apz_status={apz.status_id}/>
+                backFromHead={this.state.backFromHead} apz_department_response={this.props.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
+                  reglamentFile={this.state.reglamentFile} apz_status={this.state.apz.status_id}/>
 
               <div className={this.state.showButtons ? '' : 'invisible'}>
                 <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
@@ -258,7 +256,7 @@ export default class ShowApz extends React.Component {
                     :
                       <div>
                       { !this.state.xmlFile ?
-                          <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="region" apz_id={apz.id}/>
+                          <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="region" apz_id={this.state.apz.id}/>
                         :
                           <div style={{paddingLeft:'5px', fontSize: '18px', textAlign:'center'}}>
                             <b>Выберите главного архитектора:</b>
@@ -266,38 +264,18 @@ export default class ShowApz extends React.Component {
                               {this.state.apz_heads_id}
                             </select>
                             <div>
-                              <button type="button" className="btn btn-raised btn-success" onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "")}>Отправить главному архитектору</button>
+                              <button type="button" className="btn btn-raised btn-success" onClick={this.acceptDeclineApzForm.bind(this, this.state.apz.id, true, "")}>Отправить главному архитектору</button>
                             </div>
                           </div>
                       }
                     </div>
                   }
-                  <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                      <div className="modal-dialog" role="document">
-                          <div className="modal-content">
-                              <div className="modal-header">
-                                  <h5 className="modal-title">Вернуть заявку на доработку</h5>
-                                  <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                                      <span aria-hidden="true">&times;</span>
-                                  </button>
-                              </div>
-                              <div className="modal-body">
-                                  <div className="form-group">
-                                      <label htmlFor="docNumber">Комментарий</label>
-                                      <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.description} onChange={this.onDescriptionChange} />
-                                  </div>
-                              </div>
-                              <div className="modal-footer">
-                                  <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.description)}>Отправить</button>
-                                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
+                  <ReturnBack description={this.state.description} onDescriptionChange={this.onDescriptionChange}
+                    acceptDeclineApzForm={this.acceptDeclineApzForm.bind(this, this.state.apz.id, false, this.state.description)} />
                 </div>
               </div>
 
-              <Logs state_history={apz.state_history} />
+              <Logs state_history={this.state.apz.state_history} />
 
               <div className="col-sm-12">
                 <hr />
