@@ -3,6 +3,8 @@ import Loader from 'react-loader-spinner';
 import $ from 'jquery';
 import CommissionAnswersList from '../components/CommissionAnswersList';
 import ShowMap from "./ShowMap";
+import EcpSign from "../components/EcpSign"
+
 
 export default class ShowApz extends React.Component {
     constructor(props) {
@@ -44,17 +46,24 @@ export default class ShowApz extends React.Component {
     onDescriptionChange(e) {
       this.setState({ description: e.target.value });
     }
+
     componentDidMount() {
       this.props.breadCrumbs();
     }
+
     componentWillMount() {
       if(!sessionStorage.getItem('tokenInfo')){
         let fullLoc = window.location.href.split('/');
         this.props.history.replace({pathname: "/panel/common/login", state:{url_apz_id: fullLoc[fullLoc.length-1]}});
       }else {
         this.getApzInfo();
-        this.webSocketFunction();
+        // this.webSocketFunction();
       }
+    }
+
+    ecpSignSuccess(){
+        this.setState({ isSigned: true });
+        this.setState({ showSendButton: true });
     }
 
     getApzInfo() {
@@ -222,257 +231,6 @@ export default class ShowApz extends React.Component {
           alert("Не удалось загрузить файл");
         }
       });
-    }
-
-    setMissedHeartbeatsLimitToMax() {
-      this.missed_heartbeats_limit = this.missed_heartbeats_limit_max;
-    }
-
-    setMissedHeartbeatsLimitToMin() {
-      this.missed_heartbeats_limit = this.missed_heartbeats_limit_min;
-    }
-
-    browseKeyStore(storageName, fileExtension, currentDirectory, callBack) {
-      var browseKeyStore = {
-        "method": "browseKeyStore",
-        "args": [storageName, fileExtension, currentDirectory]
-      };
-      //console.log(browseKeyStore);
-      this.callback = callBack;
-      this.webSocketFunction();
-      this.setMissedHeartbeatsLimitToMax();
-      //console.log(browseKeyStore);
-      this.webSocket.send(JSON.stringify(browseKeyStore));
-    }
-
-    getKeys(storageName, storagePath, password, type, callBack) {
-      var getKeys = {
-        "method": "getKeys",
-        "args": [storageName, storagePath, password, type]
-      };
-      this.callback = callBack;
-      this.webSocketFunction();
-      this.setMissedHeartbeatsLimitToMax();
-      this.webSocket.send(JSON.stringify(getKeys));
-    }
-
-    chooseFile() {
-      var browseKeyStore = {
-        "method": "browseKeyStore",
-        "args": [this.state.storageAlias, "P12", '']
-      };
-      this.callback = "chooseStoragePathBack";
-      this.webSocketFunction();
-      this.setMissedHeartbeatsLimitToMax();
-      this.webSocket.send(JSON.stringify(browseKeyStore));
-    }
-
-    signMessage() {
-      this.setState({loaderHiddenSign: false});
-      let password = document.getElementById("inpPassword").value;
-      let path = document.getElementById("storagePath").value;
-      let keyType = "SIGN";
-      //console.log(path);
-      if (path !== null && path !== "" && this.state.storageAlias !== null && this.state.storageAlias !== "") {
-        if (password !== null && password !== "") {
-            this.getKeys(this.state.storageAlias, path, password, keyType, "loadKeysBack");
-        } else {
-          alert("Введите пароль к хранилищу");
-          this.setState({loaderHiddenSign: true});
-        }
-      } else {
-        alert("Не выбран хранилище!");
-        this.setState({loaderHiddenSign: true});
-      }
-    }
-
-    loadKeysBack(result) {
-      if (result.errorCode === "WRONG_PASSWORD") {
-        alert("Неверный пароль!");
-        this.setState({loaderHiddenSign: true});
-        return false;
-      }
-
-      let alias = "";
-      //console.log(result);
-      if (result && result.result) {
-        let keys = result.result.split('/n');
-        if (keys && keys.length > 0) {
-          let arr = keys[0].split('|');
-          alias = arr[3];
-          this.getTokenXml(alias);
-        }
-      }
-      if (!alias) {
-        alert('Нет ключа подписания');
-      }
-    }
-
-    getTokenXml(alias) {
-      let password = document.getElementById("inpPassword").value;
-      let storagePath = document.getElementById("storagePath").value;
-      var token = sessionStorage.getItem('tokenInfo');
-
-      var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + 'api/apz/generalplan/get_xml/' + this.state.apz.id, true);
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-      xhr.onload = function() {
-        var tokenXml = xhr.responseText;
-
-        if (storagePath !== null && storagePath !== "" && this.state.storageAlias !== null && this.state.storageAlias !== "") {
-          if (password !== null && password !== "") {
-            if (alias !== null && alias !== "") {
-              if (tokenXml !== null && tokenXml !== "") {
-                  this.signXml(this.state.storageAlias, storagePath, alias, password, tokenXml, "signXmlBack");
-              }
-              else {
-                  alert("Нет данных для подписания!");
-              }
-            } else {
-                alert("Вы не выбрали ключ!");
-            }
-          } else {
-              alert("Введите пароль к хранилищу");
-          }
-        } else {
-            alert("Не выбран хранилище!");
-        }
-      }.bind(this);
-      xhr.send();
-    }
-
-    signXml(storageName, storagePath, alias, password, xmlToSign, callBack) {
-      var signXml = {
-        "method": "signXml",
-        "args": [storageName, storagePath, alias, password, xmlToSign]
-      };
-      this.callback = callBack;
-      this.webSocketFunction();
-      this.setMissedHeartbeatsLimitToMax();
-      this.webSocket.send(JSON.stringify(signXml));
-    }
-
-    signXmlBack(result) {
-      if (result['errorCode'] === "NONE") {
-        let signedXml = result.result;
-        var token = sessionStorage.getItem('tokenInfo');
-        var data = {xml: signedXml}
-
-        console.log("SIGNED XML ------> \n", signedXml);
-
-        var xhr = new XMLHttpRequest();
-        xhr.open("post", window.url + 'api/apz/generalplan/save_xml/' + this.state.apz.id, true);
-        xhr.setRequestHeader("Authorization", "Bearer " + token);
-        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-        xhr.onload = function() {
-          if (xhr.status === 200) {
-            this.setState({ showSendButtons: true });
-            this.setState({ showSignButtons: false });
-            alert("Успешно подписан!");
-          } else {
-            alert("Не удалось подписать файл");
-            this.setState({loaderHiddenSign: true})
-          }
-        }.bind(this);
-        xhr.send(JSON.stringify(data));
-      }
-      else {
-        if (result['errorCode'] === "WRONG_PASSWORD" && result['result'] > -1) {
-          alert("Неправильный пароль! Количество оставшихся попыток: " + result['result']);
-        } else if (result['errorCode'] === "WRONG_PASSWORD") {
-          alert("Неправильный пароль!");
-        } else {
-          alert(result['errorCode']);
-        }
-      }
-    }
-
-    chooseStorage(storage) {
-      this.browseKeyStore(storage, "P12", '', "chooseStoragePathBack");
-    }
-
-    chooseStoragePathBack(rw) {
-      if (rw.getErrorCode() === "NONE") {
-        var storagePath = rw.getResult();
-        if (storagePath !== null && storagePath !== "") {
-          document.getElementById("storagePath").value = storagePath;
-        }
-        else {
-          document.getElementById("storagePath").value = "";
-        }
-      } else {
-        console.log(rw.getErrorCode());
-        document.getElementById("storagePath").value = "";
-      }
-  }
-
-    webSocketFunction() {
-      this.webSocket.onopen = function (event) {
-        if (this.heartbeat_interval === "") {
-          this.missed_heartbeats = 0;
-          this.heartbeat_interval = setInterval(this.pingLayer, 2000);
-        }
-        console.log("Connection opened");
-      }.bind(this);
-
-      this.webSocket.onclose = function (event) {
-        if (event.wasClean) {
-          console.log('connection has been closed');
-        }
-        else {
-          console.log('Connection error');
-          this.openDialog();
-        }
-        console.log('Code: ' + event.code + ' Reason: ' + event.reason);
-      }.bind(this);
-
-      this.webSocket.onmessage = function (event) {
-        if (event.data === this.heartbeat_msg) {
-          this.missed_heartbeats = 0;
-          return;
-        }
-
-        var result = JSON.parse(event.data);
-
-        if (result != null) {
-          var rw = {
-            result: result['result'],
-            secondResult: result['secondResult'],
-            errorCode: result['errorCode'],
-            getResult: function () {
-              return this.result;
-            },
-            getSecondResult: function () {
-              return this.secondResult;
-            },
-            getErrorCode: function () {
-              return this.errorCode;
-            }
-          };
-
-          switch (this.callback) {
-            case 'chooseStoragePathBack':
-              this.chooseStoragePathBack(rw);
-              break;
-
-            case 'loadKeysBack':
-              this.loadKeysBack(rw);
-              break;
-
-            case 'signXmlBack':
-              this.signXmlBack(rw);
-              break;
-            default:
-              break;
-          }
-        }
-        this.setMissedHeartbeatsLimitToMin();
-      }.bind(this);
-    }
-
-    openDialog() {
-      alert("Ошибка при подключении к прослойке NCALayer. Убедитесь, что программа запущена и перезагрузите страницу");
     }
 
     acceptDeclineApzForm(apzId, status, comment) {
@@ -1308,6 +1066,7 @@ export default class ShowApz extends React.Component {
                 </div>
               }
 
+
               <div className={this.state.showButtons ? '' : 'invisible'}>
                 <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                   <h5 className="modal-title">Комментарий</h5>
@@ -1348,38 +1107,9 @@ export default class ShowApz extends React.Component {
                   <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, this.state.description)}>Отправить начальнику ген план</button>
                 </div>
               }
-
               {this.state.showSignButtons && !this.state.isSigned &&
-              <div style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                  <div>Выберите хранилище</div>
-
-                  <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
-                      <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
-                      <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>eToken</button>
-                  </div>
-
-                  <div className="form-group">
-                      <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
-                      <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
-                  </div>
-                  {!this.state.loaderHiddenSign &&
-                  <div style={{margin: '0 auto'}}>
-                      <Loader type="Ball-Triangle" color="#46B3F2" height="70" width="70" />
-                  </div>
-                  }
-                  {this.state.loaderHiddenSign &&
-                  <div className="form-group">
-                      <button className="btn btn-raised btn-success" type="button"
-                              style={{marginRight: '5px'}} onClick={this.signMessage.bind(this)}>Подписать
-                      </button>
-                      <button className="btn btn-primary" type="button"
-                              onClick={this.hideSignBtns.bind(this)}>Назад
-                      </button>
-                  </div>
-                  }
-              </div>
+                <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="region" apz_id={this.state.apz.id}/>
               }
-
               {apz.state_history && apz.state_history.length > 0 &&
                 <div>
                   <h5 className="block-title-2 mb-3 mt-3">Логи</h5>

@@ -257,6 +257,7 @@ export default class ShowApz extends React.Component {
     beforeSign(){
       this.saveApzForm(this.state.apz.id, this.state.lastDecisionIsMO ? false : true, "");
     }
+
     ecpSignSuccess(){
       this.setState({ isSigned: true });
       this.setState({ showSendButton: true });
