@@ -69,6 +69,10 @@ export default class EcpSign extends React.Component {
       if (this.props.rolename == 'head'){
         this.props.beforeSign();
       }
+      if (this.props.rolename == 'generalplan'){
+        // this.props.showSendButtons = false;
+          this.setState({showSendButtons: true});
+      }
       this.setState({loaderHiddenSign: false});
       let password = document.getElementById("inpPassword").value;
       let path = document.getElementById("storagePath").value;
@@ -178,8 +182,8 @@ export default class EcpSign extends React.Component {
             alert("Успешно подписан!");
           } else {
             alert("Не удалось подписать файл");
+            this.setState({loaderHiddenSign: true})
           }
-          this.setState({loaderHiddenSign: true})
         }.bind(this);
         xhr.send(JSON.stringify(data));
       }
@@ -279,20 +283,6 @@ export default class EcpSign extends React.Component {
 
     openDialog() {
       alert("Ошибка при подключении к прослойке NCALayer. Убедитесь, что программа запущена и перезагрузите страницу");
-    }
-
-    pingLayer() {
-      try {
-        this.missed_heartbeats++;
-        if (this.missed_heartbeats >= this.missed_heartbeats_limit)
-            throw new Error("Too many missed heartbeats.");
-        this.webSocket.send(this.heartbeat_msg);
-      } catch (e) {
-        clearInterval(this.heartbeat_interval);
-        this.heartbeat_interval = null;
-        console.warn("Closing connection. Reason: " + e.message);
-        this.webSocket.close();
-      }
     }
 
     render() {

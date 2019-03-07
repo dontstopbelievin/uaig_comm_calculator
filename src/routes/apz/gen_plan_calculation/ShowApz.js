@@ -43,9 +43,11 @@ export default class ShowApz extends React.Component {
     onDescriptionChange(e) {
       this.setState({ description: e.target.value });
     }
+
     componentDidMount() {
       this.props.breadCrumbs();
     }
+
     componentWillMount() {
       if(!sessionStorage.getItem('tokenInfo')){
         let fullLoc = window.location.href.split('/');
@@ -693,94 +695,7 @@ export default class ShowApz extends React.Component {
         <div>
           {this.state.loaderHidden &&
             <div>
-              <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
 
-              <table className="table table-bordered table-striped">
-                <tbody>
-                  <tr>
-                    <td style={{width: '22%'}}><b>ИД заявки</b></td>
-                    <td>{apz.id}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Заявитель</b></td>
-                    <td>{apz.applicant}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Телефон</b></td>
-                    <td>{apz.phone}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Заказчик</b></td>
-                    <td>{apz.customer}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Разработчик</b></td>
-                    <td>{apz.designer}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Название проекта</b></td>
-                    <td>{apz.project_name}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Адрес проектируемого объекта</b></td>
-                    <td>
-                      {apz.project_address}
-
-                      {apz.project_address_coordinates &&
-                        <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
-                      }
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><b>Дата заявления</b></td>
-                    <td>{apz.created_at && this.toDate(apz.created_at)}</td>
-                  </tr>
-
-                  {this.state.personalIdFile &&
-                    <tr>
-                      <td><b>Уд. лич./ Реквизиты</b></td>
-                      <td><a className="text-info pointer" data-category="1" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id, 1)}>Скачать</a>
-                        <div className="progress mb-2" data-category="1" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                      </td>
-                    </tr>
-                  }
-
-                  {this.state.confirmedTaskFile &&
-                    <tr>
-                      <td><b>Утвержденное задание</b></td>
-                      <td><a className="text-info pointer" data-category="2" onClick={this.downloadFile.bind(this, this.state.confirmedTaskFile.id, 2)}>Скачать</a>
-                        <div className="progress mb-2" data-category="2" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                      </td>
-                    </tr>
-                  }
-
-                  {this.state.titleDocumentFile &&
-                    <tr>
-                      <td><b>Правоустанавл. документ</b></td>
-                      <td><a className="text-info pointer" data-category="3" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id, 3)}>Скачать</a>
-                        <div className="progress mb-2" data-category="3" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                      </td>
-                    </tr>
-                  }
-
-                  {this.state.additionalFile &&
-                    <tr>
-                      <td><b>Дополнительно</b></td>
-                      <td><a className="text-info pointer" data-category="4" onClick={this.downloadFile.bind(this, this.state.additionalFile.id, 4)}>Скачать</a>
-                        <div className="progress mb-2" data-category="4" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
 
               <h5 className="block-title-2 mb-3">Службы</h5>
 
