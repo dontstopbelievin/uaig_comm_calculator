@@ -1,6 +1,7 @@
 import React from 'react';
 import {NavLink} from 'react-router-dom';
 import $ from 'jquery';
+import saveAs from 'file-saver';
 
 export default class AllInfo extends React.Component {
     constructor(props) {
@@ -74,6 +75,68 @@ export default class AllInfo extends React.Component {
       xhr.send();
     }
 
+    downloadAllFile(id) {
+      var token = sessionStorage.getItem('tokenInfo');
+
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + 'api/file/downloadAll/' + id, true);
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
+        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+        var progressbar = $('.progress[data-category=1]');
+        var vision = $('.text-info[data-category=1]');
+        progressbar.css('display', 'flex');
+        vision.css('display', 'none');
+        xhr.onprogress = function(event) {
+          $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
+        }
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            var data = JSON.parse(xhr.responseText);
+            //console.log(data.my_files[0]);return;
+            var base64ToArrayBuffer = (function () {
+
+              return function (base64) {
+                var binaryString = window.atob(base64);
+                var binaryLen = binaryString.length;
+                var bytes = new Uint8Array(binaryLen);
+
+                for (var i = 0; i < binaryLen; i++) {
+                  var ascii = binaryString.charCodeAt(i);
+                  bytes[i] = ascii;
+                }
+
+                return bytes;
+              }
+
+            }());
+
+            var JSZip = require("jszip");
+            var zip = new JSZip();
+            for(var i=0; i<data.my_files.length;i++){
+              zip.file(i+'_'+data.my_files[i].file_name, base64ToArrayBuffer(data.my_files[i].file), {binary:true});
+            }
+            zip.generateAsync({type:"blob"})
+            .then(function (content) {
+                // see FileSaver.js
+                saveAs(content, data.zip_name);
+            });
+            setTimeout(function() {
+              progressbar.css('display', 'none');
+              vision.css('display', 'inline');
+              alert("Файлы успешно загружены");
+              $('div', progressbar).css('width', 0);
+            }, '1000');
+          } else {
+            progressbar.css('display', 'none');
+            vision.css('display', 'inline');
+            alert("Файлы успешно загружены");
+            $('div', progressbar).css('width', 0);
+            alert('Не удалось скачать файл');
+          }
+        }
+      xhr.send();
+    }
+
     toDate(date) {
       if(date === null) {
         return date;
@@ -90,12 +153,44 @@ export default class AllInfo extends React.Component {
       return formated_date;
     }
 
+    printQuestionnaire() {
+      var id = this.props.match.params.id;
+      var token = sessionStorage.getItem('tokenInfo');
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/print/questionnaire/" + id, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          var newWin = window.open("");
+          newWin.document.write(xhr.responseText);
+          newWin.print();
+          newWin.close();
+        }
+      }
+      xhr.send();
+    }
+
+    printData(){
+       var divToPrint=document.getElementById("printTable");
+       var divToPrints=document.getElementById("detail_table");
+       var newWin= window.open("");
+
+
+       newWin.document.write(divToPrint.outerHTML + divToPrints.outerHTML);
+        var elements = newWin.document.getElementsByClassName('shukichi');
+        while(elements.length > 0){
+            elements[0].parentNode.removeChild(elements[0]);
+        }
+       newWin.print();
+       newWin.close();
+    }
+
     render() {
       return (
             <div>
               <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
 
-              <table className="table table-bordered table-striped">
+              <table className="table table-bordered table-striped" id="printTable">
                 <tbody>
                   <tr>
                     <td style={{width: '22%'}}><b>ИД заявки</b></td>
@@ -182,10 +277,20 @@ export default class AllInfo extends React.Component {
                       </td>
                     </tr>
                   }
+                  {(this.props.personalIdFile || this.props.confirmedTaskFile || this.props.titleDocumentFile || this.props.additionalFile) &&
+                    <tr className="shukichi">
+                      <td colSpan="2"><a className="text-info pointer" data-category="1" onClick={this.downloadAllFile.bind(this, this.props.apz_id)}><img style={{height:'16px'}} src="/images/download.png" alt="download"/>Скачать одним архивом</a>
+                        <div className="progress mb-2" data-category="1" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                          <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                      </td>
+                    </tr>
+                  }
                 </tbody>
               </table>
 
               <h5 className="block-title-2 mb-3">Службы</h5>
+
 
               <table className="table table-bordered table-striped">
                 <tbody>
@@ -481,7 +586,7 @@ export default class AllInfo extends React.Component {
                         </button>
                       </div>
                       <div className="modal-body">
-                        <table className="table table-bordered table-striped">
+                        <table className="table table-bordered table-striped" id="detail_table">
                           <tbody>
                             <tr>
                               <td style={{width: '60%'}}>Требуемая мощность (кВт)</td>
@@ -520,6 +625,8 @@ export default class AllInfo extends React.Component {
                             }
                           </tbody>
                         </table>
+                        <button className="btn btn-raised btn-success" onClick={this.printData}>Печать</button>
+                        <button className="btn btn-raised btn-success ml-2" onClick={this.printQuestionnaire}>Печать опросного листа</button>
                       </div>
                       <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>

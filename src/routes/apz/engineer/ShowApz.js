@@ -4,7 +4,9 @@ import $ from 'jquery';
 import 'jquery-serializejson';
 import Loader from 'react-loader-spinner';
 import EngineerShowMap from "./ShowMap";
-import EcpSign from "../components/EcpSign"
+import EcpSign from "../components/EcpSign";
+import AllInfo from "../components/AllInfo";
+import Logs from "../components/Logs";
 
 export default class ShowApz extends React.Component {
   constructor(props) {
@@ -572,7 +574,7 @@ export default class ShowApz extends React.Component {
     }
   }
 
-toDate(date) {
+  toDate(date) {
   if(date === null) {
     return date;
   }
@@ -830,175 +832,12 @@ toDate(date) {
       <div className="row">
         <div className="col-sm-12">
           <button className="btn btn-outline-secondary btn-sm" onClick={this.props.history.goBack}>Назад</button>
-        </div>
-        <div className="col-sm-6">
-          <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
-
-          <table className="table table-bordered table-striped">
-            <tbody>
-            <tr>
-              <td style={{width: '100%'}}><b>Тип заявки</b></td>
-            </tr>
-            <tr>
-              <td>{apz.type === 1 ? 'Пакет 1': (apz.type === 2 ? 'Пакет 2': 'Не определенный тип')}</td>
-            </tr>
-            </tbody>
-          </table>
-
-          <table className="table table-bordered table-striped">
-            <tbody>
-              <tr>
-                <td style={{width: '50%'}}><b>ИД заявки</b></td>
-                <td><b>Заявитель</b></td>
-              </tr>
-              <tr>
-                <td>{apz.id}</td>
-                <td>
-                  {apz.applicant}
-                  <NavLink style={{marginLeft:'5px'}} exact className="btn btn-raised btn-primary btn-sm" to={"/panel/apz/all_history/"+apz.user_id+"/1"}>История заявлений</NavLink>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <table className="table table-bordered table-striped">
-            <tbody>
-              <tr>
-                <td style={{width: '50%'}}><b>Разработчик</b></td>
-                <td><b>Название проекта</b></td>
-              </tr>
-              <tr>
-                <td>{apz.designer}</td>
-                <td>{apz.project_name}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <table className="table table-bordered table-striped">
-            <tbody>
-              <tr>
-                <td style={{width: '50%'}}><b>Телефон</b></td>
-                <td><b>Адрес проектируемого объекта</b></td>
-              </tr>
-              <tr>
-                <td>{apz.phone}</td>
-                <td>
-                  {apz.project_address}
-
-                  {apz.project_address_coordinates &&
-                    <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
-                  }
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <table className="table table-bordered table-striped">
-            <tbody>
-              <tr>
-                <td style={{width: '50%'}}><b>Заказчик</b></td>
-                <td><b>Дата заявления</b></td>
-              </tr>
-              <tr>
-                <td>{apz.customer}</td>
-                <td>{apz.created_at && this.toDate(apz.created_at)}</td>
-              </tr>
-            </tbody>
-          </table>
+          <AllInfo toggleMap={this.toggleMap.bind(this, true)} apz={this.state.apz} personalIdFile={this.state.personalIdFile} confirmedTaskFile={this.state.confirmedTaskFile} titleDocumentFile={this.state.titleDocumentFile}
+            additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
         </div>
 
-        <div className="col-sm-6">
-          <h5 className="block-title-2 mt-3 mb-3">Файлы</h5>
 
-          <table className="table table-bordered table-striped">
-            <tbody>
-              {this.state.personalIdFile &&
-                <tr>
-                  <td><b>Уд. лич./ Реквизиты</b></td>
-                  <td><a className="text-info pointer" data-category="1" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id, 1)}>Скачать</a>
-                    <div className="progress mb-2" data-category="1" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                      <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                  </td>
-                </tr>
-              }
 
-              {this.state.confirmedTaskFile &&
-                <tr>
-                  <td><b>Утвержденное задание</b></td>
-                  <td><a className="text-info pointer" data-category="2" onClick={this.downloadFile.bind(this, this.state.confirmedTaskFile.id, 2)}>Скачать</a>
-                    <div className="progress mb-2" data-category="2" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                      <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                  </td>
-                </tr>
-              }
-
-              {this.state.titleDocumentFile &&
-                <tr>
-                  <td><b>Правоустанавл. документ</b></td>
-                  <td><a className="text-info pointer" data-category="3" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id, 3)}>Скачать</a>
-                    <div className="progress mb-2" data-category="3" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                      <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                  </td>
-                </tr>
-              }
-
-              {this.state.additionalFile &&
-                <tr>
-                  <td><b>Дополнительно</b></td>
-                  <td><a className="text-info pointer" data-category="4" onClick={this.downloadFile.bind(this, this.state.additionalFile.id, 4)}>Скачать</a>
-                    <div className="progress mb-2" data-category="4" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                      <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-
-          <h5 className="block-title-2 mb-3">Службы</h5>
-
-          <table className="table table-bordered table-striped">
-            <tbody>
-              {!!apz.need_water_provider && apz.apz_water &&
-                <tr>
-                  <td><b>Водоснабжение</b></td>
-                  <td><a className="text-info pointer" data-toggle="modal" data-target="#water_modal">Открыть</a></td>
-                </tr>
-              }
-
-              {!!apz.need_heat_provider && apz.apz_heat &&
-                <tr>
-                  <td><b>Теплоснабжение</b></td>
-                  <td><a className="text-info pointer" data-toggle="modal" data-target="#heat_modal">Открыть</a></td>
-                </tr>
-              }
-
-              {!!apz.need_electro_provider && apz.apz_electricity &&
-                <tr>
-                  <td><b>Электроснабжение</b></td>
-                  <td><a className="text-info pointer" data-toggle="modal" data-target="#electro_modal">Открыть</a></td>
-                </tr>
-              }
-
-              {!!apz.need_gas_provider && apz.apz_gas &&
-                <tr>
-                  <td><b>Газоснабжение</b></td>
-                  <td><a className="text-info pointer" data-toggle="modal" data-target="#gas_modal">Открыть</a></td>
-                </tr>
-              }
-
-              {!!apz.need_phone_provider && apz.apz_phone &&
-                <tr>
-                  <td><b>Телефонизация</b></td>
-                  <td><a className="text-info pointer" data-toggle="modal" data-target="#phone_modal">Открыть</a></td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
 
         <div className="col-sm-12">
           {this.state.showMap && <EngineerShowMap coordinates={apz.project_address_coordinates} />}
@@ -1103,6 +942,7 @@ toDate(date) {
               </table>
             </div>
           }
+
           {apz.commission != null && apz.commission.status_id === 2 && apz.type === 2 &&
             <div className={'row'}>
               <div className={'col-md-6'}>
@@ -1247,16 +1087,7 @@ toDate(date) {
             </div>
           }
 
-          <h5 className="block-title-2 mb-3">Логи</h5>
-          <div className="border px-3 py-2">
-            {apz.state_history.map(function(state, index) {
-              return(
-                <div key={index}>
-                  <p className="mb-0">{state.created_at}&emsp;{state.state.name}  {state.receiver && '('+state.receiver+')'}</p>
-                </div>
-              );
-            })}
-          </div>
+          <Logs state_history={this.state.apz.state_history} />
 
           {apz.commission &&  apz.commission.apz_water_response &&
             <div className="modal fade" id="water_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">

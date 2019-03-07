@@ -701,6 +701,12 @@ export default class ShowApz extends React.Component {
                       additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
 
 
+                    {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
+                    <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
+                        {this.state.showMapText}
+                    </button>
+
+
                     {apz.commission && (Object.keys(apz.commission).length > 0) &&
                       <div>
                         <h5 className="block-title-2 mb-3">Ответы от служб</h5>
@@ -708,11 +714,7 @@ export default class ShowApz extends React.Component {
                       </div>
                     }
 
-                    {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
 
-                    <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
-                        {this.state.showMapText}
-                    </button>
 
                     <Answers engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
                            backFromHead={this.state.backFromHead} apz_department_response={this.props.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
@@ -763,8 +765,9 @@ export default class ShowApz extends React.Component {
                         </div>
                     </div>
                     </div>
-                    <Logs state_history={this.state.apz.state_history} />
+
                   <div className="col-sm-12">
+                      <Logs state_history={this.state.apz.state_history} />
                       <hr />
                       <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
                   </div>
