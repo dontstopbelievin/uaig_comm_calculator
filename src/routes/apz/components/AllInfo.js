@@ -282,7 +282,7 @@ export default class AllInfo extends React.Component {
                   }
                   {(this.props.personalIdFile || this.props.confirmedTaskFile || this.props.titleDocumentFile || this.props.additionalFile) &&
                     <tr className="shukichi">
-                      <td colSpan="2"><a className="text-info pointer" data-category="101" onClick={this.downloadAllFile.bind(this, this.props.apz_id)}><img style={{height:'16px'}} src="/images/download.png" alt="download"/>Скачать одним архивом</a>
+                      <td colSpan="2"><a className="text-info pointer" data-category="101" onClick={this.downloadAllFile.bind(this, this.props.apz.id)}><img style={{height:'16px'}} src="/images/download.png" alt="download"/>Скачать одним архивом</a>
                         <div className="progress mb-2" data-category="101" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                           <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
