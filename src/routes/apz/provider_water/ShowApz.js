@@ -4,7 +4,9 @@ import Loader from 'react-loader-spinner';
 import ReactQuill from 'react-quill';
 import saveAs from 'file-saver';
 import ShowMap from "./ShowMap";
-import EcpSign from "../components/EcpSign"
+import EcpSign from "../components/EcpSign";
+import AllInfo from "../components/AllInfo";
+import Logs from "../components/Logs";
 
 export default class ShowApz extends React.Component {
   constructor(props) {
@@ -133,8 +135,9 @@ export default class ShowApz extends React.Component {
     this.onperenos_TcTextWaterRequirementsChange = this.onperenos_TcTextWaterRequirementsChange.bind(this);
     this.onperenos_TcTextWaterGeneralChange = this.onperenos_TcTextWaterGeneralChange.bind(this);
     //this.toggleFormTabs = this.toggleFormTabs.bind(this);
-    this.printQuestionnaire = this.printQuestionnaire.bind(this);
+    // this.printQuestionnaire = this.printQuestionnaire.bind(this);
   }
+
   componentDidMount() {
     this.props.breadCrumbs();
     var roles = JSON.parse(sessionStorage.getItem('userRoles'));
@@ -224,87 +227,63 @@ export default class ShowApz extends React.Component {
   onTcTextWaterChange(value) {
     this.setState({ tab_tcTextWater: value });
   }
+
   onTcTextWaterRequirementsChange(value) {
     this.setState({ tab_tcTextWaterRequirements: value });
   }
+
   onTcTextWaterGeneralChange(value) {
     this.setState({ tab_tcTextWaterGeneral: value });
   }
+
   onTcTextSewageChange(value) {
     this.setState({ tab_tcTextSewage: value });
   }
-  // onTcTextSewageRequirementsChange(value) {
-  //   this.setState({ tab_tcTextSewageRequirements: value });
-  // }
-  // onTcTextSewageGeneralChange(value) {
-  //   this.setState({ tab_tcTextSewageGeneral: value });
-  // }
 
   onzhk_TcTextWaterChange(value) {
     this.setState({ zhk_tcTextWater: value });
   }
+
   onzhk_TcTextWaterRequirementsChange(value) {
     this.setState({ zhk_tcTextWaterRequirements: value });
   }
+
   onzhk_TcTextWaterGeneralChange(value) {
     this.setState({ zhk_tcTextWaterGeneral: value });
   }
+
   onzhk_TcTextSewageChange(value) {
     this.setState({ zhk_tcTextSewage: value });
   }
-  // onzhk_TcTextSewageRequirementsChange(value) {
-  //   this.setState({ zhk_tcTextSewageRequirements: value });
-  // }
-  // onzhk_TcTextSewageGeneralChange(value) {
-  //   this.setState({ zhk_tcTextSewageGeneral: value });
-  // }
 
   onks_TcTextWaterChange(value) {
     this.setState({ ks_tcTextWater: value });
   }
+
   onks_TcTextWaterRequirementsChange(value) {
     this.setState({ ks_tcTextWaterRequirements: value });
   }
+
   onks_TcTextWaterGeneralChange(value) {
     this.setState({ ks_tcTextWaterGeneral: value });
   }
+
   onks_TcTextSewageChange(value) {
     this.setState({ ks_tcTextSewage: value });
   }
-  // onks_TcTextSewageRequirementsChange(value) {
-  //   this.setState({ ks_tcTextSewageRequirements: value });
-  // }
-  // onks_TcTextSewageGeneralChange(value) {
-  //   this.setState({ ks_tcTextSewageGeneral: value });
-  // }
 
   onperenos_TcTextWaterChange(value) {
     this.setState({ perenos_tcTextWater: value });
   }
+
   onperenos_TcTextWaterRequirementsChange(value) {
     this.setState({ perenos_tcTextWaterRequirements: value });
   }
+
   onperenos_TcTextWaterGeneralChange(value) {
     this.setState({ perenos_tcTextWaterGeneral: value });
   }
 
-  // toggleFormTabs(tab) {
-  //   if (tab === 'water') {
-  //     this.setState({ waterTab: true });
-  //     this.setState({ sewageTab: false });
-  //
-  //     $('.water_tab').removeClass('active').addClass('active');
-  //     $('.sewage_tab').removeClass('active');
-  //   } else {
-  //     this.setState({ waterTab: false });
-  //     this.setState({ sewageTab: true });
-  //
-  //     $('.sewage_tab').removeClass('active').addClass('active');
-  //     $('.water_tab').removeClass('active');
-  //   }
-  // }
-
-  // this function to show one of the forms Accept/Decline
   toggleAcceptDecline(value) {
     this.setState({accept: value});
   }
@@ -467,140 +446,6 @@ export default class ShowApz extends React.Component {
     xhr.send();
   }
 
-  downloadFile(id, progbarId = null) {
-    var token = sessionStorage.getItem('tokenInfo');
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + 'api/file/download/' + id, true);
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-      var vision = $('.text-info[data-category='+progbarId+']');
-      var progressbar = $('.progress[data-category='+progbarId+']');
-      vision.css('display', 'none');
-      progressbar.css('display', 'flex');
-      xhr.onprogress = function(event) {
-        $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
-      }
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          var data = JSON.parse(xhr.responseText);
-          var base64ToArrayBuffer = (function () {
-
-            return function (base64) {
-              //var headers = xhr.getAllResponseHeaders().toLowerCase();
-              //console.log(headers);
-              var binaryString = window.atob(base64);
-              var binaryLen = binaryString.length;
-              var bytes = new Uint8Array(binaryLen);
-
-              for (var i = 0; i < binaryLen; i++) {
-                var ascii = binaryString.charCodeAt(i);
-                bytes[i] = ascii;
-              }
-
-              return bytes;
-            }
-
-          }());
-
-          var saveByteArray = (function () {
-            var a = document.createElement("a");
-            document.body.appendChild(a);
-            a.style = "display: none";
-
-            return function (data, name) {
-              var blob = new Blob(data, {type: "octet/stream"}),
-                  url = window.URL.createObjectURL(blob);
-              a.href = url;
-              a.download = name;
-              a.click();
-
-              setTimeout(function() {
-                window.URL.revokeObjectURL(url);
-                $('div', progressbar).css('width', 0);
-                progressbar.css('display', 'none');
-                vision.css('display','inline');
-                alert("Файлы успешно загружены");
-              },1000);
-            };
-
-          }());
-
-          saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
-        } else {
-          alert('Не удалось скачать файл');
-          vision.css('display', 'inline');
-          progressbar.css('display', 'none');
-          $('div', progressbar).css('width', 0);
-        }
-      }
-    xhr.send();
-  }
-
-  downloadAllFile(id) {
-    var token = sessionStorage.getItem('tokenInfo');
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + 'api/file/downloadAll/' + id, true);
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    var progressbar = $('.progress[data-category=6]');
-    var vision = $('.text-info[data-category=6]');
-    progressbar.css('display', 'flex');
-    vision.css('display', 'none');
-    xhr.onprogress = function(event) {
-      $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
-    }
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
-        //console.log(data.my_files[0]);return;
-        var base64ToArrayBuffer = (function () {
-          //var headers = xhr.getAllResponseHeaders().toLowerCase();
-          //console.log(headers);
-          return function (base64) {
-            var binaryString = window.atob(base64);
-            var binaryLen = binaryString.length;
-            var bytes = new Uint8Array(binaryLen);
-
-            for (var i = 0; i < binaryLen; i++) {
-              var ascii = binaryString.charCodeAt(i);
-              bytes[i] = ascii;
-            }
-
-            return bytes;
-          }
-
-        }());
-
-        var JSZip = require("jszip");
-        var zip = new JSZip();
-        for(var i=0; i<data.my_files.length;i++){
-          zip.file(i+'_'+data.my_files[i].file_name, base64ToArrayBuffer(data.my_files[i].file), {binary:true});
-        }
-        zip.generateAsync({type:"blob"})
-        .then(function (content) {
-            // see FileSaver.js
-            saveAs(content, data.zip_name);
-        });
-        setTimeout(function() {
-          progressbar.css('display', 'none');
-          vision.css('display', 'inline');
-          alert("Файлы успешно загружены");
-          $('div', progressbar).css('width', 0);
-        }, '1000');
-      } else {
-        alert('Не удалось скачать файл');
-        progressbar.css('display', 'none');
-        vision.css('display', 'inline');
-        $('div', progressbar).css('width', 0);
-      }
-    }
-    xhr.send();
-  }
-
-
-  // this function is to save the respones form when any change is made
   saveResponseForm(apzId, status, comment){
     var token = sessionStorage.getItem('tokenInfo');
     var file = this.state.file;
@@ -702,7 +547,6 @@ export default class ShowApz extends React.Component {
     xhr.send(formData);
   }
 
-  // this function is to send the final response
   sendWaterResponse(apzId, status, comment) {
     if((this.state.responseId <= 0 || this.state.responseId > 0) && this.state.response !== status){
       console.log('saving');
@@ -775,7 +619,6 @@ export default class ShowApz extends React.Component {
     xhr.send(formData);
   }
 
-  // print technical condition
   printTechCon(apzId, project) {
     var token = sessionStorage.getItem('tokenInfo');
     if (token) {
@@ -856,41 +699,7 @@ export default class ShowApz extends React.Component {
     }
   }
 
-  toDate(date) {
-    if(date === null) {
-      return date;
-    }
-
-    var jDate = new Date(date);
-    var curr_date = jDate.getDate() < 10 ? "0" + jDate.getDate() : jDate.getDate();
-    var curr_month = (jDate.getMonth() + 1) < 10 ? "0" + (jDate.getMonth() + 1) : jDate.getMonth() + 1;
-    var curr_year = jDate.getFullYear();
-    var curr_hour = jDate.getHours() < 10 ? "0" + jDate.getHours() : jDate.getHours();
-    var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
-    var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-
-    return formated_date;
-  }
-
-  printQuestionnaire() {
-    var id = this.props.match.params.id;
-    var token = sessionStorage.getItem('tokenInfo');
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/print/questionnaire/" + id, true);
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        var newWin = window.open("");
-        newWin.document.write(xhr.responseText);
-        newWin.print();
-        newWin.close();
-      }
-    }
-    xhr.send();
-  }
-
-  printMainInfo()
-  {
+  printMainInfo(){
       var divToPrint=document.getElementById("printTable");
       var divToRightPrint=document.getElementById("rightMainTable");
       var newWin= window.open("");
@@ -903,68 +712,54 @@ export default class ShowApz extends React.Component {
       newWin.close();
   }
 
-  printData()
-{
-   var divToPrint=document.getElementById("printTable");
-   var divToPrints=document.getElementById("detail_table");
-   var divToRightPrint=document.getElementById("rightMainTable");
-   var divToWaterDisposalPrint =document.getElementById("detailWaterDisposal");
-   var newWin= window.open("");
-   newWin.document.write(divToPrint.outerHTML + divToRightPrint.outerHTML+divToPrints.outerHTML+divToWaterDisposalPrint.outerHTML);
-    var elements = newWin.document.getElementsByClassName('shukichi');
-    while(elements.length > 0){
-        elements[0].parentNode.removeChild(elements[0]);
-    }
-   newWin.print();
-   newWin.close();
-}
-handleDirectorIDChange(event){
-  this.setState({ty_director_id: event.target.value});
-}
-handleObjTypeChange(event){
-  this.setState({ty_object_type: event.target.value});
-  switch(event.target.value) {
-        case 'ИЖС':
-            this.setState({tab_tcTextWater: this.state.tcTextWater});
-            this.setState({tab_tcTextWaterRequirements: this.state.tcTextWaterRequirements});
-            this.setState({tab_tcTextWaterGeneral: this.state.tcTextWaterGeneral});
-            this.setState({tab_tcTextSewage: this.state.tcTextSewage});
-            //this.setState({tab_tcTextSewageRequirements: this.state.tcTextSewageRequirements});
-            //this.setState({tab_tcTextSewageGeneral: this.state.tcTextSewageGeneral});
-            break;
-        case 'ЖК':
-            this.setState({tab_tcTextWater: this.state.zhk_tcTextWater});
-            this.setState({tab_tcTextWaterRequirements: this.state.zhk_tcTextWaterRequirements});
-            this.setState({tab_tcTextWaterGeneral: this.state.zhk_tcTextWaterGeneral});
-            this.setState({tab_tcTextSewage: this.state.zhk_tcTextSewage});
-            // this.setState({tab_tcTextSewageRequirements: this.state.zhk_tcTextSewageRequirements});
-            // this.setState({tab_tcTextSewageGeneral: this.state.zhk_tcTextSewageGeneral});
-            break;
-        case 'КоммСтр':
-            this.setState({tab_tcTextWater: this.state.ks_tcTextWater});
-            this.setState({tab_tcTextWaterRequirements: this.state.ks_tcTextWaterRequirements});
-            this.setState({tab_tcTextWaterGeneral: this.state.ks_tcTextWaterGeneral});
-            this.setState({tab_tcTextSewage: this.state.ks_tcTextSewage});
-            // this.setState({tab_tcTextSewageRequirements: this.state.ks_tcTextSewageRequirements});
-            // this.setState({tab_tcTextSewageGeneral: this.state.ks_tcTextSewageGeneral});
-            break;
-        case 'Перенос':
-            this.setState({tab_tcTextWater: this.state.perenos_tcTextWater});
-            this.setState({tab_tcTextWaterRequirements: this.state.perenos_tcTextWaterRequirements});
-            this.setState({tab_tcTextWaterGeneral: this.state.perenos_tcTextWaterGeneral});
-            this.setState({tab_tcTextSewage: ""});
-            // this.setState({tab_tcTextSewageRequirements: ""});
-            // this.setState({tab_tcTextSewageGeneral: ""});
-            break;
-        default:
-            this.setState({tab_tcTextWater: this.state.tcTextWater});
-            this.setState({tab_tcTextWaterRequirements: this.state.tcTextWaterRequirements});
-            this.setState({tab_tcTextWaterGeneral: this.state.tcTextWaterGeneral});
-            this.setState({tab_tcTextSewage: this.state.tcTextSewage});
-            // this.setState({tab_tcTextSewageRequirements: this.state.tcTextSewageRequirements});
-            // this.setState({tab_tcTextSewageGeneral: this.state.tcTextSewageGeneral});
-    }
-}
+  handleDirectorIDChange(event){
+    this.setState({ty_director_id: event.target.value});
+  }
+
+  handleObjTypeChange(event){
+    this.setState({ty_object_type: event.target.value});
+    switch(event.target.value) {
+          case 'ИЖС':
+              this.setState({tab_tcTextWater: this.state.tcTextWater});
+              this.setState({tab_tcTextWaterRequirements: this.state.tcTextWaterRequirements});
+              this.setState({tab_tcTextWaterGeneral: this.state.tcTextWaterGeneral});
+              this.setState({tab_tcTextSewage: this.state.tcTextSewage});
+              //this.setState({tab_tcTextSewageRequirements: this.state.tcTextSewageRequirements});
+              //this.setState({tab_tcTextSewageGeneral: this.state.tcTextSewageGeneral});
+              break;
+          case 'ЖК':
+              this.setState({tab_tcTextWater: this.state.zhk_tcTextWater});
+              this.setState({tab_tcTextWaterRequirements: this.state.zhk_tcTextWaterRequirements});
+              this.setState({tab_tcTextWaterGeneral: this.state.zhk_tcTextWaterGeneral});
+              this.setState({tab_tcTextSewage: this.state.zhk_tcTextSewage});
+              // this.setState({tab_tcTextSewageRequirements: this.state.zhk_tcTextSewageRequirements});
+              // this.setState({tab_tcTextSewageGeneral: this.state.zhk_tcTextSewageGeneral});
+              break;
+          case 'КоммСтр':
+              this.setState({tab_tcTextWater: this.state.ks_tcTextWater});
+              this.setState({tab_tcTextWaterRequirements: this.state.ks_tcTextWaterRequirements});
+              this.setState({tab_tcTextWaterGeneral: this.state.ks_tcTextWaterGeneral});
+              this.setState({tab_tcTextSewage: this.state.ks_tcTextSewage});
+              // this.setState({tab_tcTextSewageRequirements: this.state.ks_tcTextSewageRequirements});
+              // this.setState({tab_tcTextSewageGeneral: this.state.ks_tcTextSewageGeneral});
+              break;
+          case 'Перенос':
+              this.setState({tab_tcTextWater: this.state.perenos_tcTextWater});
+              this.setState({tab_tcTextWaterRequirements: this.state.perenos_tcTextWaterRequirements});
+              this.setState({tab_tcTextWaterGeneral: this.state.perenos_tcTextWaterGeneral});
+              this.setState({tab_tcTextSewage: ""});
+              // this.setState({tab_tcTextSewageRequirements: ""});
+              // this.setState({tab_tcTextSewageGeneral: ""});
+              break;
+          default:
+              this.setState({tab_tcTextWater: this.state.tcTextWater});
+              this.setState({tab_tcTextWaterRequirements: this.state.tcTextWaterRequirements});
+              this.setState({tab_tcTextWaterGeneral: this.state.tcTextWaterGeneral});
+              this.setState({tab_tcTextSewage: this.state.tcTextSewage});
+              // this.setState({tab_tcTextSewageRequirements: this.state.tcTextSewageRequirements});
+              // this.setState({tab_tcTextSewageGeneral: this.state.tcTextSewageGeneral});
+      }
+  }
 
   ecpSignSuccess(){
     this.setState({ xmlFile: true });
@@ -984,155 +779,10 @@ handleObjTypeChange(event){
     return (
       <div className="row">
         <div className="col-sm-12">
-          <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
+          <AllInfo toggleMap={this.toggleMap.bind(this, true)} apz={this.state.apz} personalIdFile={this.state.personalIdFile} confirmedTaskFile={this.state.confirmedTaskFile} titleDocumentFile={this.state.titleDocumentFile}
+          additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
         </div>
 
-        <div className="col-sm-6">
-          <table className="table table-bordered table-striped"  style={{textAlign: 'left'}} id="printTable">
-            <tbody>
-              <tr>
-                <td><b>ИД заявки</b></td>
-                <td>{apz.id}</td>
-              </tr>
-              <tr>
-                <td><b>Заявитель</b></td>
-                <td>{apz.applicant}</td>
-              </tr>
-              {apz.user.bin &&
-                <tr>
-                  <td><b>БИН</b></td>
-                  <td>{apz.user.bin}</td>
-                </tr>
-              }
-              {!apz.user.bin &&
-                <tr>
-                  <td><b>ИИН</b></td>
-                  <td>{apz.user.iin}</td>
-                </tr>
-              }
-              <tr>
-                <td><b>Телефон</b></td>
-                <td>{apz.phone}</td>
-              </tr>
-              <tr>
-                <td><b>Заказчик</b></td>
-                <td>{apz.customer}</td>
-              </tr>
-              <tr>
-                <td><b>Разработчик</b></td>
-                <td>{apz.designer}</td>
-              </tr>
-              <tr>
-                <td><b>Название проекта</b></td>
-                <td>{apz.project_name}</td>
-              </tr>
-              <tr>
-                <td><b>Адрес проектируемого объекта</b></td>
-                <td>
-                  {apz.project_address}
-
-                  {apz.project_address_coordinates &&
-                    <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
-                  }
-                </td>
-              </tr>
-
-            </tbody>
-          </table>
-            <button className="btn btn-raised btn-success" onClick={this.printMainInfo}>Печать общей информации</button>
-
-        </div>
-
-        <div className="col-sm-6">
-          <table className="table table-bordered table-striped" style={{textAlign: 'left'}} id={"rightMainTable"}>
-            <tbody>
-              <tr>
-                <td><b>Срок строительства</b></td>
-                <td>{apz.object_term}</td>
-              </tr>
-              <tr>
-                <td><b>Этажность</b></td>
-                <td>{apz.object_level}</td>
-              </tr>
-              <tr>
-                <td><b>Площадь здания</b></td>
-                <td>{apz.object_area}</td>
-              </tr>
-              <tr>
-                <td><b>Количество квартир</b></td>
-                <td>{apz.object_rooms}</td>
-              </tr>
-              <tr>
-                <td><b>Дата поступления</b></td>
-                <td>{this.toDate(apz.commission.created_at)}</td>
-              </tr>
-
-              {this.state.personalIdFile &&
-                <tr className="shukichi">
-                  <td><b>Уд. лич./ Реквизиты</b></td>
-                  <td><a className="text-info pointer" data-category="1" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id, 1)}>Скачать</a>
-                    <div className="progress mb-2" data-category="1" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                      <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                  </td>
-                </tr>
-              }
-
-              {this.state.confirmedTaskFile &&
-                <tr className="shukichi">
-                  <td><b>Утвержденное задание</b></td>
-                  <td><a className="text-info pointer" data-category="2" onClick={this.downloadFile.bind(this, this.state.confirmedTaskFile.id, 2)}>Скачать</a>
-                    <div className="progress mb-2" data-category="2" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                      <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                  </td>
-                </tr>
-              }
-
-              {this.state.titleDocumentFile &&
-                <tr className="shukichi">
-                  <td><b>Правоустанавл. документ</b></td>
-                  <td><a className="text-info pointer" data-category="3" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id, 3)}>Скачать</a>
-                    <div className="progress mb-2" data-category="3" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                      <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                  </td>
-                </tr>
-              }
-
-              {this.state.additionalFile &&
-                <tr className="shukichi">
-                  <td><b>Дополнительно</b></td>
-                  <td><a className="text-info pointer" data-category="4" onClick={this.downloadFile.bind(this, this.state.additionalFile.id, 4)}>Скачать</a>
-                    <div className="progress mb-2" data-category="4" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                      <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                  </td>
-                </tr>
-              }
-
-              {this.state.surveyFile &&
-                <tr className="shukichi">
-                  <td><b>Топографическая съемка</b></td>
-                  <td><a className="text-info pointer" data-category="5" onClick={this.downloadFile.bind(this, this.state.surveyFile.id, 5)}>Скачать</a>
-                    <div className="progress mb-2" data-category="5" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                      <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                  </td>
-                </tr>
-              }
-              {(this.state.personalIdFile || this.state.confirmedTaskFile || this.state.titleDocumentFile || this.state.additionalFile || this.state.surveyFile) &&
-                <tr className="shukichi">
-                  <td><a className="text-info pointer" data-category="6" onClick={this.downloadAllFile.bind(this, this.state.apz.id)}><img style={{height:'16px'}} src="/images/download.png" alt="download"/>Скачать одним архивом</a>
-                  <div className="progress mb-2" data-category="6" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                  </td><td></td>
-                </tr>
-              }
-            </tbody>
-          </table>
-       </div>
         <div className={apz.apz_sewage ? 'col-sm-6' : 'col-sm-12'}>
           <h5 className="block-title-2 mt-3 mb-3">Детали водоснабжения</h5>
 
@@ -1180,9 +830,6 @@ handleObjTypeChange(event){
               </tr>
             </tbody>
           </table>
-          <button className="btn btn-raised btn-success" onClick={this.printData}>Печать</button>
-          <button className="btn btn-raised btn-success ml-2" onClick={this.printQuestionnaire}>Печать опросного листа</button>
-
         </div>
 
         {apz.apz_sewage &&
@@ -1735,21 +1382,10 @@ handleObjTypeChange(event){
           </div>}
         </div>
 
-        {apz.state_history.length > 0 &&
-          <div className="col-sm-12">
-            <h5 className="block-title-2 mb-3 mt-3">Логи</h5>
-            <div className="border px-3 py-2">
-              {apz.state_history.map(function(state, index) {
-                return(
-                  <div key={index}>
-                    <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        }
-
+        <div className="col-sm-12">
+          <Logs state_history={this.state.apz.state_history} />
+        </div>
+        
         <div className="col-sm-12">
           <hr />
           <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>

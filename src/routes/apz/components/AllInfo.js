@@ -188,7 +188,10 @@ export default class AllInfo extends React.Component {
     render() {
       return (
             <div>
-              <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
+              <h5 className="block-title-2 mt-3 mb-3">Общая информация
+                <button className="btn btn-raised btn-success" style={{ marginLeft:'20px'}} onClick={this.printData}>Печать</button>
+                <button className="btn btn-raised btn-success ml-2" onClick={this.printQuestionnaire}>Печать опросного листа</button>
+              </h5>
 
               <table className="table table-bordered table-striped" id="printTable">
                 <tbody>
@@ -290,7 +293,6 @@ export default class AllInfo extends React.Component {
               </table>
 
               <h5 className="block-title-2 mb-3">Службы</h5>
-
 
               <table className="table table-bordered table-striped">
                 <tbody>

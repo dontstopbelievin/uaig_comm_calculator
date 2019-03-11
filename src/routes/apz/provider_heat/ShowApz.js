@@ -3,7 +3,9 @@ import $ from 'jquery';
 import Loader from 'react-loader-spinner';
 import saveAs from 'file-saver';
 import ShowMap from "./ShowMap";
-import EcpSign from "../components/EcpSign"
+import EcpSign from "../components/EcpSign";
+import AllInfo from "../components/AllInfo";
+import Logs from "../components/Logs";
 
 export default class ShowApz extends React.Component {
   constructor(props) {
@@ -143,7 +145,6 @@ export default class ShowApz extends React.Component {
     this.onFinalIncreaseChange = this.onFinalIncreaseChange.bind(this);
     this.onFinalPercentageIncreaseChange = this.onFinalPercentageIncreaseChange.bind(this);
     this.calculateIncrease = this.calculateIncrease.bind(this);
-    this.printQuestionnaire = this.printQuestionnaire.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
   }
 
@@ -205,6 +206,7 @@ export default class ShowApz extends React.Component {
       finalPercentageIncrease: Math.floor(((parseInt(contractTotal) - total) / total) * 100),
     });
   }
+
   componentDidMount() {
     this.props.breadCrumbs();
     var roles = JSON.parse(sessionStorage.getItem('userRoles'));
@@ -212,11 +214,13 @@ export default class ShowApz extends React.Component {
       this.getDirectors();
     }
   }
+
   onInputChange(e) {
     const value = e.target.value;
     const name = e.target.name;
     this.setState({ [name] : value });
   }
+
   onHeatResourceChange(e) {
     this.setState({ heatResource: e.target.value });
   }
@@ -425,7 +429,6 @@ export default class ShowApz extends React.Component {
     this.setState({ customTcFile: e.target.files[0] });
   }
 
-  // this function to show one of the forms Accept/Decline
   toggleAcceptDecline(value) {
     this.setState({accept: value});
   }
@@ -609,134 +612,6 @@ export default class ShowApz extends React.Component {
     xhr.send();
   }
 
-  downloadFile(id, progbarId = null) {
-    var token = sessionStorage.getItem('tokenInfo');
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + 'api/file/download/' + id, true);
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-      var vision = $('.text-info[data-category='+progbarId+']');
-      var progressbar = $('.progress[data-category='+progbarId+']');
-      progressbar.css('display', 'flex');
-      vision.css('display', 'none');
-      xhr.onprogress = function(event) {
-        $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
-      }
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          var data = JSON.parse(xhr.responseText);
-          var base64ToArrayBuffer = (function () {
-
-            return function (base64) {
-              var binaryString = window.atob(base64);
-              var binaryLen = binaryString.length;
-              var bytes = new Uint8Array(binaryLen);
-
-              for (var i = 0; i < binaryLen; i++) {
-                var ascii = binaryString.charCodeAt(i);
-                bytes[i] = ascii;
-              }
-
-              return bytes;
-            }
-
-          }());
-
-          var saveByteArray = (function () {
-            var a = document.createElement("a");
-            document.body.appendChild(a);
-            a.style = "display: none";
-
-            return function (data, name) {
-              var blob = new Blob(data, {type: "octet/stream"}),
-                  url = window.URL.createObjectURL(blob);
-              a.href = url;
-              a.download = name;
-              a.click();
-              setTimeout(function() {
-                window.URL.revokeObjectURL(url);
-                $('div', progressbar).css('width', 0);
-                progressbar.css('display', 'none');
-                vision.css('display','inline');
-                alert("Файлы успешно загружены");
-              },1000);
-            };
-
-          }());
-
-          saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
-        } else {
-          $('div', progressbar).css('width', 0);
-          progressbar.css('display', 'none');
-          vision.css('display','inline');
-          alert('Не удалось скачать файл');
-        }
-      }
-    xhr.send();
-  }
-  downloadAllFile(id) {
-    var token = sessionStorage.getItem('tokenInfo');
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + 'api/file/downloadAll/' + id, true);
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-      var vision = $('.text-info[data-category=1]');
-      var progressbar = $('.progress[data-category=1]');
-      progressbar.css('display', 'flex');
-      vision.css('display', 'none');
-      xhr.onprogress = function(event) {
-        $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
-      }
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          var data = JSON.parse(xhr.responseText);
-          //console.log(data.my_files[0]);return;
-          var base64ToArrayBuffer = (function () {
-
-            return function (base64) {
-              var binaryString = window.atob(base64);
-              var binaryLen = binaryString.length;
-              var bytes = new Uint8Array(binaryLen);
-
-              for (var i = 0; i < binaryLen; i++) {
-                var ascii = binaryString.charCodeAt(i);
-                bytes[i] = ascii;
-              }
-
-              return bytes;
-            }
-
-          }());
-
-          var JSZip = require("jszip");
-          var zip = new JSZip();
-          for(var i=0; i<data.my_files.length;i++){
-            zip.file(i+'_'+data.my_files[i].file_name, base64ToArrayBuffer(data.my_files[i].file), {binary:true});
-          }
-          zip.generateAsync({type:"blob"})
-          .then(function (content) {
-              // see FileSaver.js
-              saveAs(content, data.zip_name);
-          });
-          setTimeout(function() {
-            $('div', progressbar).css('width', 0);
-            progressbar.css('display', 'none');
-            vision.css('display','inline');
-            alert("Файлы успешно загружены");
-          },1000);
-        } else {
-          $('div', progressbar).css('width', 0);
-          progressbar.css('display', 'none');
-          vision.css('display','inline');
-          alert('Не удалось скачать файл');
-        }
-      }
-    xhr.send();
-  }
-
-  // this function is to save the respones form when any change is made
   saveResponseForm(apzId, status, comment){
     var token = sessionStorage.getItem('tokenInfo');
     var file = this.state.file;
@@ -916,7 +791,6 @@ export default class ShowApz extends React.Component {
     xhr.send(formData);
   }
 
-  // this function is to send the final response
   sendHeatResponse(apzId, status, comment) {
     if(this.state.responseId <= 0 || this.state.responseId > 0 && this.state.response != status){
       this.setState({callSaveFromSend: true});
@@ -984,7 +858,6 @@ export default class ShowApz extends React.Component {
     xhr.send(formData);
   }
 
-  // print technical condition
   printTechCon(apzId, project) {
     var token = sessionStorage.getItem('tokenInfo');
     if (token) {
@@ -1049,7 +922,6 @@ export default class ShowApz extends React.Component {
     }
   }
 
-
   toggleMap(value) {
     this.setState({
       showMap: value
@@ -1066,59 +938,10 @@ export default class ShowApz extends React.Component {
     }
   }
 
-  printQuestionnaire() {
-    var id = this.props.match.params.id;
-    var token = sessionStorage.getItem('tokenInfo');
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/print/questionnaire/" + id, true);
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        var newWin = window.open("");
-        if(newWin == null){
-          alert('Для печати страницы разрешите открытие дополнительных окон.');
-          return;
-        }
-        newWin.document.write(xhr.responseText);
-        newWin.print();
-        newWin.close();
-      }
-    }
-    xhr.send();
-  }
-
-  printData()
-  {
-     var divToPrint=document.getElementById("printTable");
-     var divToPrints=document.getElementById("detail_table");
-     var newWin= window.open("");
-     newWin.document.write(divToPrint.outerHTML + divToPrints.outerHTML);
-      var elements = newWin.document.getElementsByClassName('shukichi');
-      while(elements.length > 0){
-          elements[0].parentNode.removeChild(elements[0]);
-      }
-     newWin.print();
-     newWin.close();
-  }
   handleDirectorIDChange(event){
     this.setState({ty_director_id: event.target.value});
   }
-  toDate(date) {
-    if(date === null) {
-      return date;
-    }
 
-    var jDate = new Date(date);
-    var curr_date = jDate.getDate() < 10 ? "0" + jDate.getDate() : jDate.getDate();
-    var curr_month = (jDate.getMonth() + 1) < 10 ? "0" + (jDate.getMonth() + 1) : jDate.getMonth() + 1;
-    var curr_year = jDate.getFullYear();
-    var curr_hour = jDate.getHours() < 10 ? "0" + jDate.getHours() : jDate.getHours();
-    var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
-    var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-
-    return formated_date;
-  }
-  
   ecpSignSuccess(){
     this.setState({ xmlFile: true });
   }
@@ -1137,212 +960,10 @@ export default class ShowApz extends React.Component {
 
     return (
       <div className="row">
-          <div className="col-sm-6">
-            <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
-
-            <table className="table table-bordered table-striped" id="printTable">
-              <tbody>
-                <tr>
-                  <td style={{width: '40%'}}><b>ИД заявки</b></td>
-                  <td>{apz.id}</td>
-                </tr>
-                <tr>
-                  <td><b>Заявитель</b></td>
-                  <td>{apz.applicant}</td>
-                </tr>
-                <tr>
-                  <td><b>Адрес жительства</b></td>
-                  <td>{apz.address}</td>
-                </tr>
-                <tr>
-                  <td><b>Телефон</b></td>
-                  <td>{apz.phone}</td>
-                </tr>
-                <tr>
-                  <td><b>Заказчик</b></td>
-                  <td>{apz.customer}</td>
-                </tr>
-                <tr>
-                  <td><b>Разработчик</b></td>
-                  <td>{apz.designer}</td>
-                </tr>
-                <tr>
-                  <td><b>Название проекта</b></td>
-                  <td>{apz.project_name}</td>
-                </tr>
-                <tr>
-                  <td><b>Адрес проектируемого объекта</b></td>
-                  <td>
-                    {apz.project_address}
-
-                    {apz.project_address_coordinates &&
-                      <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
-                    }
-                  </td>
-                </tr>
-                <tr>
-                  <td><b>Кадастровый номер</b></td>
-                  <td>{apz.cadastral_number}</td>
-                </tr>
-                <tr>
-                  <td><b>Этажность</b></td>
-                  <td>{apz.object_level}</td>
-                </tr>
-                <tr>
-                  <td><b>Общая площадь</b></td>
-                  <td>{apz.object_area}</td>
-                </tr>
-                <tr>
-                  <td><b>Отапливаемая площадь</b></td>
-                  <td></td>{/*apz.apz_heat.area*/}
-                </tr>
-                <tr>
-                  <td><b>Дата поступления</b></td>
-                  <td>{this.toDate(apz.commission.created_at)}</td>
-                </tr>
-
-                {this.state.personalIdFile &&
-                  <tr className="shukichi">
-                    <td><b>Уд. лич./ Реквизиты</b></td>
-                    <td><a className="text-info pointer" data-category="2" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id, 2)}>Скачать</a>
-                      <div className="progress mb-2" data-category="2" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </td>
-                  </tr>
-                }
-
-                {this.state.confirmedTaskFile &&
-                  <tr className="shukichi">
-                    <td><b>Утвержденное задание</b></td>
-                    <td><a className="text-info pointer" data-category="3" onClick={this.downloadFile.bind(this, this.state.confirmedTaskFile.id, 3)}>Скачать</a>
-                      <div className="progress mb-2" data-category="3" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </td>
-                  </tr>
-                }
-
-                {this.state.titleDocumentFile &&
-                  <tr className="shukichi">
-                    <td><b>Правоустанавл. документ</b></td>
-                    <td><a className="text-info pointer" data-category="4" onClick={this.downloadFile.bind(this, this.state.titleDocumentFile.id, 4)}>Скачать</a>
-                      <div className="progress mb-2" data-category="4" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </td>
-                  </tr>
-                }
-
-                {this.state.additionalFile &&
-                  <tr className="shukichi">
-                    <td><b>Дополнительно</b></td>
-                    <td><a className="text-info pointer" data-category="5" onClick={this.downloadFile.bind(this, this.state.additionalFile.id, 5)}>Скачать</a>
-                      <div className="progress mb-2" data-category="5" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </td>
-                  </tr>
-                }
-                {(this.state.personalIdFile || this.state.confirmedTaskFile || this.state.titleDocumentFile || this.state.additionalFile) &&
-                  <tr className="shukichi">
-                    <td colspan="2"><a className="text-info pointer" data-category="1" onClick={this.downloadAllFile.bind(this, this.state.apz.id)}><img style={{height:'16px'}} src="/images/download.png"/>Скачать одним архивом</a>
-                      <div className="progress mb-2" data-category="1" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-        </div>
-
-        <div className="col-sm-6">
-          <h5 className="block-title-2 mt-3 mb-3">Детали</h5>
-
-          <table className="table table-bordered table-striped" id="detail_table">
-            <tbody>
-              <tr>
-                <td style={{width: '40%'}}>Общая нагрузка (Гкал/ч)</td>
-                <td>{apz.apz_heat.general}</td>
-              </tr>
-              <tr>
-                <td>Отопление (Гкал/ч)</td>
-                <td>{apz.apz_heat.main_heat}</td>
-              </tr>
-              <tr>
-                <td>Вентиляция (Гкал/ч)</td>
-                <td>{apz.apz_heat.main_ven}</td>
-              </tr>
-              <tr>
-                <td>Горячее водоснабжение, ср (Гкал/ч)</td>
-                <td>{apz.apz_heat.main_water}</td>
-              </tr>
-              <tr>
-                <td>Горячее водоснабжение, макс (Гкал/ч)</td>
-                <td>{apz.apz_heat.main_water_max}</td>
-              </tr>
-              <tr>
-                <td>Энергосб. мероприятие</td>
-                <td>{apz.apz_heat.saving}</td>
-              </tr>
-              <tr>
-                <td>Технолог. нужды(пар) (Т/ч)</td>
-                <td>{apz.apz_heat.tech}</td>
-              </tr>
-
-              {apz.apz_heat.contract_num &&
-                <tr>
-                  <td>Номер договора</td>
-                  <td>{apz.apz_heat.contract_num}</td>
-                </tr>
-              }
-
-              {apz.apz_heat.general_in_contract &&
-                <tr>
-                  <td>Общая тепловая нагрузка по договору (Гкал/ч)</td>
-                  <td>{apz.apz_heat.general_in_contract}</td>
-                </tr>
-              }
-
-              {apz.apz_heat.tech_in_contract &&
-                <tr>
-                  <td>Технологическая нагрузка(пар) по договору (Гкал/ч)</td>
-                  <td>{apz.apz_heat.tech_in_contract}</td>
-                </tr>
-              }
-
-              {apz.apz_heat.main_in_contract &&
-                <tr>
-                  <td>Отопление по договору (Гкал/ч)</td>
-                  <td>{apz.apz_heat.main_in_contract}</td>
-                </tr>
-              }
-
-              {apz.apz_heat.water_in_contract &&
-                <tr>
-                  <td>Горячее водоснабжение по договору (ср/ч)</td>
-                  <td>{apz.apz_heat.water_in_contract}</td>
-                </tr>
-              }
-
-              {apz.apz_heat.ven_in_contract &&
-                <tr>
-                  <td>Вентиляция по договору (Гкал/ч)</td>
-                  <td>{apz.apz_heat.ven_in_contract}</td>
-                </tr>
-              }
-
-              {apz.apz_heat.water_in_contract_max &&
-                <tr>
-                  <td>Горячее водоснабжение по договору (макс/ч)</td>
-                  <td>{apz.apz_heat.water_in_contract_max}</td>
-                </tr>
-              }
-            </tbody>
-          </table>
-
-          {apz.apz_heat.heatDistribution && apz.apz_heat.blocks &&
+          <div className="col-sm-12">
+            <AllInfo toggleMap={this.toggleMap.bind(this, true)} apz={this.state.apz} personalIdFile={this.state.personalIdFile} confirmedTaskFile={this.state.confirmedTaskFile} titleDocumentFile={this.state.titleDocumentFile}
+            additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
+            {apz.apz_heat.heatDistribution && apz.apz_heat.blocks &&
             <div>
               <div>Разделение нагрузки</div>
               {apz.apz_heat.blocks.map(function(item, index) {
@@ -1377,9 +998,6 @@ export default class ShowApz extends React.Component {
               }.bind(this))}
             </div>
           }
-
-          <button className="btn btn-raised btn-success" onClick={this.printData}>Печать</button>
-          <button className="btn btn-raised btn-success ml-2" onClick={this.printQuestionnaire}>Печать опросного листа</button>
         </div>
 
         <div className="col-sm-12">
@@ -2085,20 +1703,7 @@ export default class ShowApz extends React.Component {
           </div>}
         </div>
 
-        {apz.state_history.length > 0 &&
-          <div className="col-sm-12">
-            <h5 className="block-title-2 mb-3 mt-3">Логи</h5>
-            <div className="border px-3 py-2">
-              {apz.state_history.map(function(state, index) {
-                return(
-                  <div key={index}>
-                    <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
-                  </div>
-                );
-              }.bind(this))}
-            </div>
-          </div>
-        }
+        <Logs state_history={this.state.apz.state_history} />
 
         <div className="col-sm-12">
           <hr />
