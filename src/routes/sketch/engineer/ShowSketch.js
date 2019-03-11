@@ -840,7 +840,36 @@ export default class ShowSketch extends React.Component {
                                 :
                                 <div>
                                     { !this.state.xmlFile ?
-                                        <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="engineer" apz_id={apz.id}/>
+                                        <div>
+                                            <div id="MySignForm" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                                                <div>Выберите хранилище</div>
+
+                                                <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
+                                                    <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
+                                                    <button className="btn btn-raised" onClick={this.chooseStorage.bind(this, 'AKKaztokenStore')}>Kaztoken</button>
+                                                </div>
+
+                                                <div className="form-group">
+                                                    <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
+                                                    <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
+                                                </div>
+                                                {!this.state.loaderHidden &&
+                                                <div style={{margin: '0 auto'}}>
+                                                    <Loader type="Ball-Triangle" color="#46B3F2" height="70" width="70" />
+                                                </div>
+                                                }
+
+                                                {this.state.loaderHidden &&
+                                                <div className="form-group">
+
+                                                    <button className="btn btn-raised btn-success" type="button" onClick={this.signMessage.bind(this)}>Подписать</button>
+                                                    <button className="btn btn-primary" type="button" style={{marginLeft: '5px'}}
+                                                            onClick={this.hideSignBtns.bind(this)}>Назад
+                                                    </button>
+                                                </div>
+                                                }
+                                            </div>
+                                        </div>
                                         :
                                         <div>
                                             <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
