@@ -2,7 +2,7 @@ import React from 'react';
 import Loader from 'react-loader-spinner';
 import $ from 'jquery';
 import CommissionAnswersList from '../components/CommissionAnswersList';
-import ShowMap from "./ShowMap";
+import ShowMap from "../components/ShowMap";
 import EcpSign from "../components/EcpSign";
 import AllInfo from "../components/AllInfo";
 import Answers from "../components/Answers";
@@ -250,7 +250,7 @@ export default class ShowApz extends React.Component {
               <AllInfo toggleMap={this.toggleMap.bind(this, true)} apz={this.state.apz} personalIdFile={this.state.personalIdFile} confirmedTaskFile={this.state.confirmedTaskFile} titleDocumentFile={this.state.titleDocumentFile}
                          additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
 
-              {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
+              {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} mapId={"0e8ae8f43ea94d358673e749f9a5e147"}/>}
 
               <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                 {this.state.showMapText}
