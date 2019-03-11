@@ -82,8 +82,8 @@ export default class AllInfo extends React.Component {
       xhr.open("get", window.url + 'api/file/downloadAll/' + id, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-        var progressbar = $('.progress[data-category=1]');
-        var vision = $('.text-info[data-category=1]');
+        var progressbar = $('.progress[data-category=101]');
+        var vision = $('.text-info[data-category=101]');
         progressbar.css('display', 'flex');
         vision.css('display', 'none');
         xhr.onprogress = function(event) {
@@ -279,8 +279,8 @@ export default class AllInfo extends React.Component {
                   }
                   {(this.props.personalIdFile || this.props.confirmedTaskFile || this.props.titleDocumentFile || this.props.additionalFile) &&
                     <tr className="shukichi">
-                      <td colSpan="2"><a className="text-info pointer" data-category="1" onClick={this.downloadAllFile.bind(this, this.props.apz_id)}><img style={{height:'16px'}} src="/images/download.png" alt="download"/>Скачать одним архивом</a>
-                        <div className="progress mb-2" data-category="1" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                      <td colSpan="2"><a className="text-info pointer" data-category="101" onClick={this.downloadAllFile.bind(this, this.props.apz_id)}><img style={{height:'16px'}} src="/images/download.png" alt="download"/>Скачать одним архивом</a>
+                        <div className="progress mb-2" data-category="101" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                           <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                       </td>
@@ -625,8 +625,6 @@ export default class AllInfo extends React.Component {
                             }
                           </tbody>
                         </table>
-                        <button className="btn btn-raised btn-success" onClick={this.printData}>Печать</button>
-                        <button className="btn btn-raised btn-success ml-2" onClick={this.printQuestionnaire}>Печать опросного листа</button>
                       </div>
                       <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
