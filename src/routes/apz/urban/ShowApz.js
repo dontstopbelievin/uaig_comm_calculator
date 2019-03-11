@@ -241,8 +241,10 @@ export default class ShowApz extends React.Component {
               </button>
 
               <Answers engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
-                backFromHead={this.state.backFromHead} apz_department_response={this.props.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
-                  reglamentFile={this.state.reglamentFile} apz_status={this.state.apz.status_id}/>
+                       backFromHead={this.state.backFromHead} apz_department_response={this.props.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
+                       apz_status={this.state.apz.status_id} schemeComment={this.state.schemeComment}
+                       calculationComment={this.state.calculationComment} reglamentComment={this.state.reglamentComment} schemeFile={this.state.schemeFile}
+                       calculationFile={this.state.calculationFile} reglamentFile={this.state.reglamentFile}/>
 
               <div className={this.state.showButtons ? '' : 'invisible'}>
                 <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>

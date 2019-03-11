@@ -209,65 +209,90 @@ export default class ShowApz extends React.Component {
                   Комментарий апз отдела: {this.props.apzReturnedState.comment}
                 </div>
               }
-              {this.props.backFromHead &&
+              {this.props.schemeComment &&
+              <div className="alert alert-danger">
+                  Комментарий ген план(ситуационная схема): {this.props.schemeComment.comment}
+              </div>
+              }
+              {this.props.calculationComment &&
+              <div className="alert alert-danger">
+                  Комментарий ген план(расчеты): {this.props.calculationComment.comment}
+              </div>
+              }
+              {this.props.reglamentComment &&
+              <div className="alert alert-danger">
+                  Комментарий ген план(регламент): {this.props.reglamentComment.comment}
+              </div>
+              }
+              {this.props.backFromEngineer &&
                 <div className="alert alert-danger">
-                  Комментарий главного архитектора: {this.props.backFromHead.comment}
+                  Комментарий инженера: {this.props.backFromEngineer.comment}
                 </div>
               }
-                {this.props.schemeComment &&
+              {this.props.backFromStateService &&
                 <div className="alert alert-danger">
-                    Комментарий ген план(ситуационная схема): {this.props.schemeComment.comment}
+                  Комментарий отдела гос услуг: {this.props.backFromStateService.comment}
                 </div>
-                }
-                {this.props.calculationComment &&
+              }
+              {this.props.schemeFile &&
+              <div className="col-md-8 offset-2">
+                  <div className="row" style={{paddingTop:'5px',paddingBottom:'5px',backgroundColor:'#eeeeff'}}>
+                      <div className="col-md-6"><b>Файл ситуационной схемы</b></div>
+                      <div className="col-md-6">
+                          <a className="text-info pointer" data-category="9" onClick={this.downloadFile.bind(this, this.props.schemeFile.id, 9)}><b>Скачать</b></a>
+                          <div className="progress mb-2" data-category="9" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                              <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              }
+              {this.props.calculationFile &&
+              <div className="col-md-8 offset-2">
+                  <div className="row" style={{paddingTop:'5px',paddingBottom:'5px',backgroundColor:'#eeeeff'}}>
+                      <div className="col-md-6"><b>Файл расчетов</b></div>
+                      <div className="col-md-6">
+                          <a className="text-info pointer" data-category="10" onClick={this.downloadFile.bind(this, this.props.calculationFile.id, 10)}><b>Скачать</b></a>
+                          <div className="progress mb-2" data-category="10" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                              <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              }
+              {this.props.reglamentFile &&
+              <div className="col-md-8 offset-2">
+                  <div className="row" style={{paddingTop:'5px',paddingBottom:'5px',backgroundColor:'#eeeeff'}}>
+                      <div className="col-md-6"><b>Регламент</b></div>
+                      <div className="col-md-6">
+                          <a className="text-info pointer" data-category="11" onClick={this.downloadFile.bind(this, this.props.reglamentFile.id, 11)}><b>Скачать</b></a>
+                          <div className="progress mb-2" data-category="11" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                              <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              }
+              {this.props.backFromHead &&
                 <div className="alert alert-danger">
-                    Комментарий ген план(расчеты): {this.props.calculationComment.comment}
+                  Причина отправки на доработку: {this.props.backFromHead.comment}
                 </div>
-                }
-                {this.props.reglamentComment &&
-                <div className="alert alert-danger">
-                    Комментарий ген план(регламент): {this.props.reglamentComment.comment}
-                </div>
-                }
-                {this.props.schemeFile &&
-                <div className="col-md-8 offset-2">
-                    <div className="row" style={{paddingTop:'5px',paddingBottom:'5px',backgroundColor:'#eeeeff'}}>
-                        <div className="col-md-6"><b>Файл ситуационной схемы</b></div>
-                        <div className="col-md-6">
-                            <a className="text-info pointer" data-category="9" onClick={this.downloadFile.bind(this, this.props.schemeFile.id, 9)}><b>Скачать</b></a>
-                            <div className="progress mb-2" data-category="9" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
+              }
+              {this.props.otkazFile &&
+              <table className="table table-bordered">
+                  <tbody>
+                  <tr>
+                      <td style={{width: '22%'}}><b>Запрос</b></td>
+                      <td>
+                        <a className="text-info pointer" data-category="22" onClick={this.downloadFile.bind(this, this.props.otkazFile.id, 22)}>Скачать</a>
+                        <div className="progress mb-2" data-category="22" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
-                    </div>
-                </div>
-                }
-                {this.props.calculationFile &&
-                <div className="col-md-8 offset-2">
-                    <div className="row" style={{paddingTop:'5px',paddingBottom:'5px',backgroundColor:'#eeeeff'}}>
-                        <div className="col-md-6"><b>Файл расчетов</b></div>
-                        <div className="col-md-6">
-                            <a className="text-info pointer" data-category="10" onClick={this.downloadFile.bind(this, this.props.calculationFile.id, 10)}><b>Скачать</b></a>
-                            <div className="progress mb-2" data-category="10" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                }
-                {this.props.reglamentFile &&
-                <div className="col-md-8 offset-2">
-                    <div className="row" style={{paddingTop:'5px',paddingBottom:'5px',backgroundColor:'#eeeeff'}}>
-                        <div className="col-md-6"><b>Регламент</b></div>
-                        <div className="col-md-6">
-                            <a className="text-info pointer" data-category="11" onClick={this.downloadFile.bind(this, this.props.reglamentFile.id, 11)}><b>Скачать</b></a>
-                            <div className="progress mb-2" data-category="11" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                }
+                      </td>
+                  </tr>
+                  </tbody>
+              </table>
+              }
               {this.props.apz_department_response &&
                 <div>
                   <h5 className="block-title-2 mb-3">Ответ от АПЗ отдела</h5>
@@ -290,7 +315,7 @@ export default class ShowApz extends React.Component {
                   </table>
                 </div>
               }
-              {this.props.apz_status === 1 &&
+              {(this.props.apz_status === 1 || this.props.lastDecisionIsMO || this.props.declinedState) &&
                 <table className="table table-bordered">
                   <tbody>
                     <tr>
