@@ -224,6 +224,16 @@ export default class ShowApz extends React.Component {
                   Комментарий ген план(регламент): {this.props.reglamentComment.comment}
               </div>
               }
+              {this.props.backFromEngineer &&
+                <div className="alert alert-danger">
+                  Комментарий инженера: {this.props.backFromEngineer.comment}
+                </div>
+              }
+              {this.props.backFromStateService &&
+                <div className="alert alert-danger">
+                  Комментарий отдела гос услуг: {this.props.backFromStateService.comment}
+                </div>
+              }
               {this.props.schemeFile &&
               <div className="col-md-8 offset-2">
                   <div className="row" style={{paddingTop:'5px',paddingBottom:'5px',backgroundColor:'#eeeeff'}}>
@@ -268,6 +278,21 @@ export default class ShowApz extends React.Component {
                   Причина отправки на доработку: {this.props.backFromHead.comment}
                 </div>
               }
+              {this.props.otkazFile &&
+              <table className="table table-bordered">
+                  <tbody>
+                  <tr>
+                      <td style={{width: '22%'}}><b>Запрос</b></td>
+                      <td>
+                        <a className="text-info pointer" data-category="22" onClick={this.downloadFile.bind(this, this.props.otkazFile.id, 22)}>Скачать</a>
+                        <div className="progress mb-2" data-category="22" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                      </td>
+                  </tr>
+                  </tbody>
+              </table>
+              }
               {this.props.apz_department_response &&
                 <div>
                   <h5 className="block-title-2 mb-3">Ответ от АПЗ отдела</h5>
@@ -290,7 +315,7 @@ export default class ShowApz extends React.Component {
                   </table>
                 </div>
               }
-              {(this.props.apz_status === 1 || this.props.lastDecisionIsMO) &&
+              {(this.props.apz_status === 1 || this.props.lastDecisionIsMO || this.props.declinedState) &&
                 <table className="table table-bordered">
                   <tbody>
                     <tr>
