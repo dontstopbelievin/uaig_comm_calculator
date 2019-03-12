@@ -3,11 +3,6 @@ import $ from 'jquery';
 import 'jquery-serializejson';
 import Loader from 'react-loader-spinner';
 import ShowMap from './ShowMap';
-import EcpSign from "../components/EcpSign";
-import AllInfo from "../components/AllInfo";
-import Logs from "../components/Logs";
-import Answers from "../components/Answers";
-import ReturnBack from "../components/ReturnBack";
 
 export default class ShowSketch extends React.Component {
     constructor(props) {
@@ -524,6 +519,17 @@ export default class ShowSketch extends React.Component {
                 <div className="col-sm-6">
                     <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
 
+                    {/*<table className="table table-bordered table-striped">*/}
+                        {/*<tbody>*/}
+                        {/*<tr>*/}
+                            {/*<td style={{width: '100%'}}><b>Тип заявки</b></td>*/}
+                        {/*</tr>*/}
+                        {/*<tr>*/}
+                            {/*<td>{sketch.type === 1 ? 'Пакет 1': (sketch.type === 2 ? 'Пакет 2': 'Не определенный тип')}</td>*/}
+                        {/*</tr>*/}
+                        {/*</tbody>*/}
+                    {/*</table>*/}
+
                     <table className="table table-bordered table-striped">
                         <tbody>
                         <tr>
@@ -804,6 +810,7 @@ export default class ShowSketch extends React.Component {
                 </div>
 
                 <div className="col-sm-12">
+
                     <div className={this.state.showButtons ? '' : 'invisible'}>
                         <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px', display: 'table'}}>
                             {!this.state.needSign ?
@@ -889,7 +896,16 @@ export default class ShowSketch extends React.Component {
                     </div>
                     }
 
-                    <Logs state_history={this.state.apz.state_history} />
+                    <h5 className="block-title-2 mb-3">Логи</h5>
+                    <div className="border px-3 py-2">
+                        {sketch.state_history.map(function(state, index) {
+                            return(
+                                <div key={index}>
+                                    <p className="mb-0">{state.created_at}&emsp;{state.state.name}  {state.receiver && '('+state.receiver+')'}</p>
+                                </div>
+                            );
+                        }.bind(this))}
+                    </div>
 
                     <div className="col-sm-12">
                         <hr />
