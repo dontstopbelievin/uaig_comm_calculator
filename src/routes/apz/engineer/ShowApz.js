@@ -3,7 +3,7 @@ import {NavLink} from 'react-router-dom';
 import $ from 'jquery';
 import 'jquery-serializejson';
 import Loader from 'react-loader-spinner';
-import EngineerShowMap from "./ShowMap";
+import ShowMap from "../components/ShowMap";
 import EcpSign from "../components/EcpSign";
 import AllInfo from "../components/AllInfo";
 import Logs from "../components/Logs";
@@ -71,8 +71,8 @@ export default class ShowApz extends React.Component {
   onDocNumberChange(e) {
     this.setState({ docNumber: e.target.value });
   }
-  onCommentChange(e) {
-    this.setState({ comment: e.target.value });
+  onCommentChange(value) {
+    this.setState({ comment: value });
   }
 
   onFileChange(e) {
@@ -889,13 +889,13 @@ export default class ShowApz extends React.Component {
     return (
       <div className="row">
         <div className="col-sm-12">
-          <button className="btn btn-outline-secondary btn-sm" onClick={this.props.history.goBack}>Назад</button>
+          <button style={{padding:'5px'}} className="btn btn-outline-secondary btn-sm" onClick={this.props.history.goBack}>Назад</button>
           <AllInfo toggleMap={this.toggleMap.bind(this, true)} apz={this.state.apz} personalIdFile={this.state.personalIdFile} confirmedTaskFile={this.state.confirmedTaskFile} titleDocumentFile={this.state.titleDocumentFile}
             additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
         </div>
 
         <div className="col-sm-12">
-          {this.state.showMap && <EngineerShowMap coordinates={apz.project_address_coordinates} />}
+          {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} mapId={"b5a3c97bd18442c1949ba5aefc4c1835"}/>}
 
           <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
             {this.state.showMapText}
@@ -1124,7 +1124,7 @@ export default class ShowApz extends React.Component {
                             </select>
                           </div>
                           <div className="form-group">
-                            <label>Комментарий</label>
+                            <label>Причина отказа</label>
                             <ReactQuill value={this.state.comment} onChange={this.onCommentChange} />
                           </div>
                         </div>
@@ -1728,7 +1728,6 @@ export default class ShowApz extends React.Component {
           }
 
           <div className="col-sm-12">
-            <hr />
             <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
           </div>
         </div>

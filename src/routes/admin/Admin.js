@@ -97,7 +97,7 @@ export default class Admin extends React.Component {
           if (xhr.status === 200) {
               var data = JSON.parse(xhr.responseText);
               //console.log(data);
-              alert('Пароль изменен на Aa123456');
+              alert('Пароль изменен на passurban');
               $('#ReturnApzForm').modal('hide');
               console.log('edit password')
           }else {
