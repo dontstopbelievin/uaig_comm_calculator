@@ -4,7 +4,7 @@ import {NavLink} from 'react-router-dom';
 import $ from 'jquery';
 import ReactQuill from 'react-quill';
 import CommissionAnswersList from '../components/CommissionAnswersList';
-import ShowMap from "./ShowMap";
+import ShowMap from "../components/ShowMap";
 import EcpSign from "../components/EcpSign";
 import AllInfo from "../components/AllInfo";
 import Logs from "../components/Logs";
@@ -234,7 +234,7 @@ export default class ShowApz extends React.Component {
                 </div>
               }
 
-              {this.state.showMap && <ShowMap coordinates={this.state.apz.project_address_coordinates} />}
+              {this.state.showMap && <ShowMap coordinates={this.state.apz.project_address_coordinates} mapId={"0e8ae8f43ea94d358673e749f9a5e147"}/>}
 
               <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                 {this.state.showMapText}
