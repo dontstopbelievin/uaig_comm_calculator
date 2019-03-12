@@ -201,7 +201,7 @@
     color: white !important;
     font-weight: bold !important;
 }
-.reglament {float: right;}
+.reglament {float: right; margin-top: 1%;}
 .reglament a{
 	display: block;
 	margin-right: 20px !important;
@@ -209,3 +209,4 @@
 	color: blue !important;
 	font-weight: 400 !important;
 }
+.card-button > div{display: initial;}
