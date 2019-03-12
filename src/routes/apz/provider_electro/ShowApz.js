@@ -5,6 +5,7 @@ import saveAs from 'file-saver';
 import ShowMap from "../components/ShowMap";
 import EcpSign from "../components/EcpSign";
 import AllInfo from "../components/AllInfo";
+import Logs from "../components/Logs";
 
 export default class ShowApz extends React.Component {
   constructor(props) {
@@ -1011,20 +1012,7 @@ export default class ShowApz extends React.Component {
           }
         </div>
 
-        {apz.state_history.length > 0 &&
-          <div className="col-sm-12">
-            <h5 className="block-title-2 mb-3 mt-3">Логи</h5>
-            <div className="border px-3 py-2">
-              {apz.state_history.map(function(state, index) {
-                return(
-                  <div key={index}>
-                    <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        }
+        <Logs state_history={this.state.apz.state_history} />
 
         <div className="col-sm-12">
           <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
