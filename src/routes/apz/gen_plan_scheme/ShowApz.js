@@ -162,8 +162,8 @@ export default class ShowApz extends React.Component {
     acceptDeclineApzForm(apzId, status, comment, direct) {
       var token = sessionStorage.getItem('tokenInfo');
 
-      if (!comment || !this.state.schemeFile) {
-        alert('Напишите комментарий и закрепите файл!');
+      if (!this.state.schemeFile) {
+        alert('Закрепите файл!');
         return false;
       }
 

@@ -920,7 +920,7 @@ export default class ShowApz extends React.Component {
 
           {this.state.showButtons && !this.state.showSendButton &&
             <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-            {!this.state.backFromGP &&
+            {(!this.state.backFromGP || !this.state.reglamentFile) &&
               <button type="button" style={{marginRight:'5px'}} className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'gen_plan')}>Отправить отделу ген плана</button>
             }
             {(this.state.backFromEngineer && !apz.apz_department_response) ?
