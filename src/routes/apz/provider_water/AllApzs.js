@@ -9,7 +9,7 @@ export default class AllApzs extends React.Component {
     var roles = JSON.parse(sessionStorage.getItem('userRoles'));
     this.state = {
       loaderHidden: false,
-      isPerformer: (roles.indexOf('PerformerWater') !== -1),
+      isPerformer: roles != null ? (roles.indexOf('PerformerWater') !== -1) : null,
       response: null,
       data: null,
       pageNumbers: []
@@ -43,8 +43,6 @@ export default class AllApzs extends React.Component {
 
     if (roles == null) {
       sessionStorage.clear();
-      alert("Token is expired, please login again!");
-      this.props.history.replace("/login");
       return false;
     }
     var directorId = JSON.parse(sessionStorage.getItem('userId'));
