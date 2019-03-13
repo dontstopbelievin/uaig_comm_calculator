@@ -41,6 +41,8 @@ export default class Header extends React.Component {
         if (xhr.status === 200) {
           sessionStorage.clear();
           this.props.history.replace('/');
+          window.localStorage.setItem('CREDENTIALS_FLUSH', Date.now().toString());
+          window.localStorage.removeItem('CREDENTIALS_FLUSH');
           console.log("loggedOut");
         }
         else if(xhr.status === 401){
