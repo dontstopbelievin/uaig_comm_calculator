@@ -73,6 +73,7 @@ import GenPlanCalculationShowApz from "./routes/apz/gen_plan_calculation/ShowApz
 import HeadStateServicesAllApzs from "./routes/apz/state_services_head/AllApzs";
 import HeadStateServicesShowApz from "./routes/apz/state_services_head/ShowApz";
 import AllApzsHistory from "./routes/apz/components/AllApzsHistory";
+import KeepSession from "./routes/authorization/KeepSession";
 
 let e = new LocalizedStrings({ru,kk});
 
@@ -150,6 +151,7 @@ export default class Main extends React.Component {
         return (
             <BrowserRouter>
                 <div>
+                    <Route render={(props) => (<KeepSession {...props} />)} />
                     <Route render={(props) => (<Header {...props} />)} />
                     <div className="container body-content">
                         <Link className="active my_font_size" to='/panel/base-page'>{e['electron-architecture']}</Link>
