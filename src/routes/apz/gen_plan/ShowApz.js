@@ -315,7 +315,7 @@ export default class ShowApz extends React.Component {
               }
 
               {this.state.showSignButtons && !this.state.isSigned &&
-                <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="generalplan" apz_id={this.state.apz.id}/>
+                <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="generalplan" id={this.state.apz.id} serviceName='apz'/>
               }
 
               <Logs state_history={this.state.apz.state_history} />

@@ -118,9 +118,9 @@ export default class EcpSign extends React.Component {
       var xhr = new XMLHttpRequest();
       if(this.props.rolename == 'electricity' || this.props.rolename == 'heat'|| this.props.rolename == 'gas'
         || this.props.rolename == 'water'|| this.props.rolename == 'phone'){
-        xhr.open("get", window.url + 'api/apz/provider/get_xml/' + this.props.rolename +'/'+ this.props.apz_id, true);
+        xhr.open("get", window.url + 'api/' + this.props.serviceName + '/provider/' + this.props.rolename +  '/get_xml/' + this.props.id, true);
       }else{
-        xhr.open("get", window.url + 'api/apz/' + this.props.rolename + '/get_xml/' + this.props.apz_id, true);
+        xhr.open("get", window.url + 'api/' + this.props.serviceName+ '/' + this.props.rolename + '/get_xml/' + this.props.id, true);
       }
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
@@ -168,12 +168,12 @@ export default class EcpSign extends React.Component {
         console.log("SIGNED XML ------> \n", signedXml);
 
         var xhr = new XMLHttpRequest();
-        if(this.props.rolename == 'electricity' || this.props.rolename == 'heat'|| this.props.rolename == 'gas'
-          || this.props.rolename == 'water'|| this.props.rolename == 'phone'){
-          xhr.open("post", window.url + 'api/apz/provider/save_xml/' + this.props.rolename +'/'+ this.props.apz_id, true);
-        }else{
-          xhr.open("post", window.url + 'api/apz/'+ this.props.rolename +'/save_xml/' + this.props.apz_id, true);
-        }
+              if (this.props.rolename == 'electricity' || this.props.rolename == 'heat' || this.props.rolename == 'gas'
+                  || this.props.rolename == 'water' || this.props.rolename == 'phone') {
+                  xhr.open("post", window.url + 'api/' + this.props.serviceName + '/provider/'  + this.props.rolename + '/save_xml/' + this.props.id, true);
+              } else {
+                  xhr.open("post", window.url + 'api/' + this.props.serviceName + '/' + this.props.rolename + '/save_xml/' + this.props.id, true);
+              }
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         xhr.onload = function() {
@@ -287,7 +287,9 @@ export default class EcpSign extends React.Component {
 
     render() {
       return (
-              <div id="MySignForm" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+          <div class="border border-top-0">
+            <h5 className="border" style={{textAlign:'center'}}>Подписание ЭЦП</h5>
+            <div id="MySignForm" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                 <div>Выберите хранилище</div>
 
                 <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
@@ -315,6 +317,7 @@ export default class EcpSign extends React.Component {
                 </div>
                 }
               </div>
+            </div>
             )
     }
   }

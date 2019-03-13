@@ -98,6 +98,9 @@ export default class ShowApz extends React.Component {
                 this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
                 this.setState({reglamentFile: data.files.filter(function(obj) { return obj.category_id === 29 })[0]});
                 this.setState({otkazFile: data.files.filter(function(obj) { return obj.category_id === 30 })[0]});
+                if(data.files.filter(function(obj) { return obj.category_id === 30 })[0]){
+                  this.setState({lastDecisionIsMO: true});
+                }
                 //this.setState({returnedState: data.state_history.filter(function(obj) { return obj.state_id === 3 && obj.comment != null })[0]});
                 var pack2IdFile = data.files.filter(function(obj) { return obj.category_id === 25 }) ?
                     data.files.filter(function(obj) { return obj.category_id === 25 }) : [];
@@ -358,7 +361,7 @@ export default class ShowApz extends React.Component {
                    </div>
                  }
 
-                 {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} mapId={"b5a3c97bd18442c1949ba5aefc4c1835"} />}
+                 {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
 
                  <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                      {this.state.showMapText}
@@ -366,13 +369,13 @@ export default class ShowApz extends React.Component {
 
                  <Answers engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
                           backFromHead={this.state.backFromHead} apz_department_response={this.props.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
-                          apz_status={this.state.apz.status_id} schemeComment={this.state.schemeComment} lastDecisionIsMO={this.state.lastDecisionIsMO}
+                          apz_status={this.state.apz.status_id} schemeComment={this.state.schemeComment}
                           calculationComment={this.state.calculationComment} reglamentComment={this.state.reglamentComment} schemeFile={this.state.schemeFile}
                           calculationFile={this.state.calculationFile} reglamentFile={this.state.reglamentFile} otkazFile={this.state.otkazFile}/>
 
                   <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                     {this.state.showSignButtons && !this.state.isSigned &&
-                    <EcpSign beforeSign={this.beforeSign.bind(this)} ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="head" apz_id={apz.id}/>
+                    <EcpSign beforeSign={this.beforeSign.bind(this)} ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="head" id={apz.id} serviceName='apz'/>
                     }
 
                     {this.state.showButtons && !this.state.isSigned &&
@@ -416,6 +419,7 @@ export default class ShowApz extends React.Component {
                   <Logs state_history={this.state.apz.state_history} />
 
                   <div className="col-sm-12">
+                      <hr />
                       <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
                   </div>
                 </div>

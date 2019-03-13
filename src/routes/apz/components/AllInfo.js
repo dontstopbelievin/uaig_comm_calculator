@@ -530,6 +530,13 @@ export default class AllInfo extends React.Component {
                                 <td>{this.props.apz.apz_heat.water_in_contract_max}</td>
                               </tr>
                             }
+
+                            {this.props.apz.apz_heat.tc_number &&
+                              <tr>
+                                <td>Номер ТУ</td>
+                                <td>{this.props.apz.apz_heat.tc_number}</td>
+                              </tr>
+                            }
                           </tbody>
                         </table>
 

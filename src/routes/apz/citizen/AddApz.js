@@ -16,7 +16,6 @@ export default class AddApz extends React.Component {
         personalIdFile: null,
         survey: null,
         claimedCapacityJustification: null,
-
         applicant: '',
         applicantAddress: '',
         type: 1,
@@ -100,6 +99,8 @@ export default class AddApz extends React.Component {
         udelnayaNorma: '',
         tempVnutri: '',
         obshayaPloshad: '',
+        hasTCNumber: false,
+        TCNumber: '',
       };
 
       this.saveApz = this.saveApz.bind(this);
@@ -288,6 +289,7 @@ export default class AddApz extends React.Component {
             this.setState({heatVenInContract: apz.apz_heat.ven_in_contract ? apz.apz_heat.ven_in_contract : '' });
             this.setState({heatWaterInContract: apz.apz_heat.water_in_contract ? apz.apz_heat.water_in_contract : '' });
             this.setState({heatWaterMaxInContract: apz.apz_heat.water_in_contract_max ? apz.apz_heat.water_in_contract_max : '' });
+            this.setState({TCNumber: apz.apz_heat.tc_number ? apz.apz_heat.tc_number : '' });
             if (apz.apz_heat.blocks) {
               for (var i = 0; i < apz.apz_heat.blocks.length; i++) {
                 var blocks = this.state.blocks;
@@ -307,6 +309,10 @@ export default class AddApz extends React.Component {
             if (this.state.heatMainInContract || this.state.heatVenInContract || this.state.heatWaterInContract || this.state.heatWaterMaxInContract
             || this.state.heatTechInContract || this.state.heatGeneralInContract) {
               this.setState({ hasHeatContract: true });
+            }
+
+            if (this.state.TCNumber){
+                this.setState({ hasTCNumber : true });
             }
           }
 
@@ -490,6 +496,18 @@ export default class AddApz extends React.Component {
       }
 
       this.setState({ hasHeatContract: value })
+    }
+
+    onTCChange(value){
+      if(!value){
+        this.setState(
+            {
+                TCNumber:''
+            }
+        )
+      }
+
+      this.setState({ hasTCNumber: value })
     }
 
     deleteBlock(num) {
@@ -1522,6 +1540,8 @@ export default class AddApz extends React.Component {
                         <div className="row">
                           <div className="col-sm-12">
                             <label><input type="checkbox" onChange={this.onHeatContractChange.bind(this, !this.state.hasHeatContract)} checked={this.state.hasHeatContract} /> Имеется договор</label>
+                              <br/>
+                            <label><input type="checkbox" onChange={this.onTCChange.bind(this, !this.state.hasTCNumber)} checked={this.state.hasTCNumber} /> Имеется ТУ</label>
                           </div>
                         </div>
 
@@ -1562,6 +1582,16 @@ export default class AddApz extends React.Component {
                           </div>
                         }
 
+                        {this.state.hasTCNumber &&
+                            <div className="row">
+                            <div className="col-sm-6">
+                                <div className="form-group">
+                                    <label htmlFor="TCNumber">Номер ТУ</label>
+                                    <input data-rh="ТУ" data-rh-at="right" type="text" className="form-control" value={this.state.TCNumber} onChange={this.onInputChange} name="TCNumber" placeholder="" />
+                                </div>
+                            </div>
+                        </div>
+                        }
                         <div style={{color:'#D8A82D !important'}}>
                           <label><input type="checkbox" onChange={this.onInputChange} checked={this.state.heatDistribution} name="heatDistribution" /> Разделить нагрузку по жилью и по встроенным помещениям</label>
                         </div>

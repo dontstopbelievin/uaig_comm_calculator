@@ -338,7 +338,7 @@ export default class ShowApz extends React.Component {
                         :
                           <div>
                           { !this.state.xmlFile ?
-                          <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="lawyer" apz_id={apz.id}/>
+                          <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="lawyer" id={apz.id} serviceName='apz'/>
                             :
                             <div>
                               <div style={{paddingLeft:'5px', fontSize: '18px', textAlign:'center'}}>

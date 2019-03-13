@@ -8,6 +8,8 @@ export default class ShowMap extends React.Component {
         };
         var coordinates = this.props.coordinates;
 
+        // var id=this.props.mapId;
+
         return (
             <div>
                 <h5 className="block-title-2 mt-5 mb-3">Карта</h5>
