@@ -1384,13 +1384,10 @@ export default class ShowApz extends React.Component {
 
         <div className="col-sm-12">
           <Logs state_history={this.state.apz.state_history} />
-<<<<<<< HEAD
         </div>
 
         <div className="col-sm-12">
           <hr />
-=======
->>>>>>> 3eef3e8b6c5ecb1821b907f807c6b08779cf7fcb
           <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
         </div>
       </div>
