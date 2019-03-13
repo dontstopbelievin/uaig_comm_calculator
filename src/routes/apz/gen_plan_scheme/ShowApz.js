@@ -162,8 +162,8 @@ export default class ShowApz extends React.Component {
     acceptDeclineApzForm(apzId, status, comment, direct) {
       var token = sessionStorage.getItem('tokenInfo');
 
-      if (!comment || !this.state.schemeFile) {
-        alert('Напишите комментарий и закрепите файл!');
+      if (!this.state.schemeFile) {
+        alert('Закрепите файл!');
         return false;
       }
 
@@ -308,7 +308,6 @@ export default class ShowApz extends React.Component {
               <Logs state_history={this.state.apz.state_history} />
 
               <div className="col-sm-12">
-                <hr />
                 <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
               </div>
             </div>

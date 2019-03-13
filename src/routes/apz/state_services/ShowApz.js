@@ -3,7 +3,7 @@ import $ from 'jquery';
 import Loader from 'react-loader-spinner';
 import ReactQuill from 'react-quill';
 import CommissionAnswersList from '../components/CommissionAnswersList';
-import ShowMap from "./ShowMap";
+import ShowMap from "../components/ShowMap";
 import EcpSign from "../components/EcpSign";
 import AllInfo from "../components/AllInfo";
 import Logs from "../components/Logs";
@@ -15,12 +15,15 @@ export default class ShowApz extends React.Component {
 
       this.state = {
         apz: [],
+        templates: [],
+        apz_head_id: '',
+        apz_heads_id: [],
         showMap: false,
         showButtons: false,
         showSendButton: false,
         showSignButtons: false,
         file: null,
-        description: "",
+        comment: "",
         docNumber: "",
         response: false,
         personalIdFile: false,
@@ -89,12 +92,16 @@ export default class ShowApz extends React.Component {
       };
 
       this.onFileChange = this.onFileChange.bind(this);
-      this.onDescriptionChange = this.onDescriptionChange.bind(this);
+      this.onCommentChange = this.onCommentChange.bind(this);
       this.sendForm = this.sendForm.bind(this);
       this.onInputChange = this.onInputChange.bind(this);
     }
     componentDidMount() {
       this.props.breadCrumbs();
+    }
+
+    handleHeadIDChange(event){
+      this.setState({apz_head_id: event.target.value});
     }
 
     onTypeChange(type) {
@@ -321,12 +328,62 @@ export default class ShowApz extends React.Component {
       this.setState({ file: e.target.files[0] });
     }
 
-    onDescriptionChange(e) {
-      this.setState({ description: e.target.value });
+    onCommentChange(value) {
+      this.setState({ comment: value });
     }
 
     componentWillMount() {
       this.getApzInfo();
+      this.getHeads();
+      this.getAnswerTemplates();
+    }
+
+    onTemplateListChange(e) {
+      if(e.target.value != ''){
+        var template = this.state.templates.find(template => template.id == e.target.value);
+        this.setState({ comment: template.text });
+      }
+    }
+
+    getHeads(){
+      var token = sessionStorage.getItem('tokenInfo');
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/apz/getheads", true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+          //console.log(data);
+          var select_directors = [];
+          for (var i = 0; i < data.length; i++) {
+            select_directors.push(<option key={i} value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
+          }
+          this.setState({apz_heads_id: select_directors});
+          if((this.state.apz_head_id == "" || this.state.apz_head_id == " ") && data.length > 0){
+              this.setState({apz_head_id: data[0].user_id});
+          }
+        }
+      }.bind(this);
+      xhr.send();
+    }
+
+    getAnswerTemplates(){
+      var token = sessionStorage.getItem('tokenInfo');
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + "api/apz/answer_template/all", true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          //console.log(JSON.parse(xhr.responseText));
+          this.setState({templates: JSON.parse(xhr.responseText).data});
+        }
+      }.bind(this)
+      xhr.onerror = function () {
+        alert('Сервер не отвечает');
+      }.bind(this);
+      xhr.send();
     }
 
     snakeToCamel(s){
@@ -515,7 +572,7 @@ export default class ShowApz extends React.Component {
             </div>
           }
 
-          {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
+          {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} mapId={"0e8ae8f43ea94d358673e749f9a5e147"} />}
 
           <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
             {this.state.showMapText}
@@ -863,7 +920,7 @@ export default class ShowApz extends React.Component {
 
           {this.state.showButtons && !this.state.showSendButton &&
             <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-            {!this.state.backFromGP &&
+            {(!this.state.backFromGP || !this.state.reglamentFile) &&
               <button type="button" style={{marginRight:'5px'}} className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'gen_plan')}>Отправить отделу ген плана</button>
             }
             {(this.state.backFromEngineer && !apz.apz_department_response) ?
@@ -873,38 +930,53 @@ export default class ShowApz extends React.Component {
               :
               <button type="button" style={{marginRight:'5px'}} className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'engineer')}>Отправить инженеру</button>
             }
-              <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#declined_modal">Отклонить</button>
+              <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">Отклонить</button>
             </div>
           }
 
           {this.state.showSendButton &&
             <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', display: 'table'}}>
-              <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'head')}>Отправить начальнику Гос Услуг</button>
-              <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#declined_modal">Отклонить</button>
+              <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'head')} style={{marginRight:'5px'}}>Отправить начальнику Гос Услуг</button>
+              <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">Отклонить</button>
             </div>
           }
 
-          <div className="modal fade" id="declined_modal" tabIndex="-1" role="dialog" aria-hidden="true">
+          <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
             <div className="modal-dialog" role="document">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">Причина отказа</h5>
-                  <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <h5 className="modal-title">Мотивированный отказ</h5>
+                  <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
                 <div className="modal-body">
-                  <div className="form-group">
-                    <label>Комментарий</label>
-                    <div>
-                      <textarea rows="4" style={{width:'100%', resize:'vertical'}} value={this.state.description} onChange={this.onDescriptionChange}></textarea>
+                  {this.state.templates && this.state.templates.length > 0 &&
+                    <div className="form-group">
+                      <select className="form-control" defaultValue="" id="templateList" onChange={this.onTemplateListChange.bind(this)}>
+                        <option value="">Выберите шаблон</option>
+                        {this.state.templates.map(function(template, index) {
+                          return(
+                            <option key={index} value={template.id}>{template.title}</option>
+                            );
+                          })
+                        }
+                      </select>
                     </div>
+                  }
+                  <div style={{paddingLeft:'5px', fontSize: '18px'}}>
+                    <b>Выберите главного архитектора:</b>
+                    <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
+                      {this.state.apz_heads_id}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Причина отказа</label>
+                    <ReactQuill value={this.state.comment} onChange={this.onCommentChange} />
                   </div>
                 </div>
                 <div className="modal-footer">
-                  <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} data-dismiss="modal" onClick={this.sendForm.bind(this, apz.id, false, this.state.description, 'lawyer')}>
-                    Отправить Юристу
-                  </button>
+                  <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.sendForm.bind(this, apz.id, false, this.state.comment, 'lawyer')}>Отправить Юристу</button>
                   <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                 </div>
               </div>
@@ -912,8 +984,6 @@ export default class ShowApz extends React.Component {
           </div>
 
           <Logs state_history={this.state.apz.state_history} />
-
-          <hr />
           <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
         </div>
       )

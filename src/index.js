@@ -162,7 +162,7 @@ export default class Main extends React.Component {
                                         <Route path="/password/reset/:token" render={(props) => (<ResetForm {...props} />)} />
                                         <Route path="/editPersonalData" render={(props) => (<EditPersonalData {...props} />)} />
                                         <Route path="/editPassword" render={(props) => (<EditPassword {...props} />)} />
-                                        <Route path="/login" render={(props) => (<Login {...props} />)} />
+                                        <Route path="/login" render={(props) => (<Login breadCrumbs={this.breadCrumbs.bind(this)} {...props} />)} />
                                         <Route path="/register" render={(props) => (<Register {...props} />)} />
 
                                         <Route path="/panel/base-page" render={(props) => ( <BasePagePanel breadCrumbs={this.breadCrumbs.bind(this)} /> )} />

@@ -4,7 +4,7 @@ import Loader from 'react-loader-spinner';
 import $ from 'jquery';
 import ReactQuill from 'react-quill';
 import CommissionAnswersList from '../components/CommissionAnswersList';
-import ShowMap from "./ShowMap";
+import ShowMap from "../components/ShowMap";
 import EcpSign from "../components/EcpSign"
 import AllInfo from "../components/AllInfo";
 import Answers from "../components/Answers";
@@ -16,7 +16,6 @@ export default class ShowApz extends React.Component {
 
       this.state = {
         apz: [],
-        templates: [],
         showMap: false,
         showButtons: true,
         showMapText: 'Показать карту',
@@ -51,37 +50,11 @@ export default class ShowApz extends React.Component {
       }else {
         this.getApzInfo();
         this.getHeads();
-        this.getAnswerTemplates();
-      }
-    }
-
-    onTemplateListChange(e) {
-      if(e.target.value != ''){
-        var template = this.state.templates.find(template => template.id == e.target.value);
-        this.setState({ comment: template.text });
       }
     }
 
     onCommentChange(value) {
       this.setState({ comment: value });
-    }
-
-    getAnswerTemplates(){
-      var token = sessionStorage.getItem('tokenInfo');
-      var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/answer_template/all", true);
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          //console.log(JSON.parse(xhr.responseText));
-          this.setState({templates: JSON.parse(xhr.responseText).data});
-        }
-      }.bind(this)
-      xhr.onerror = function () {
-        alert('Сервер не отвечает');
-      }.bind(this);
-      xhr.send();
     }
 
     getHeads(){
@@ -171,6 +144,10 @@ export default class ShowApz extends React.Component {
         this.setState({ loaderHidden: true });
       }.bind(this);
       xhr.send();
+    }
+
+    sendToApz() {
+      this.setState({needSign: true });
     }
 
     handleHeadIDChange(event){
@@ -305,7 +282,7 @@ export default class ShowApz extends React.Component {
         })
       }
     }
-    
+
     ecpSignSuccess(){
       this.setState({ xmlFile: true });
     }
@@ -328,7 +305,7 @@ export default class ShowApz extends React.Component {
                 </div>
               }
 
-              {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
+              {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} mapId={"0e8ae8f43ea94d358673e749f9a5e147"} />}
 
               <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                 {this.state.showMapText}
@@ -356,48 +333,7 @@ export default class ShowApz extends React.Component {
                     <div>
                       {!this.state.needSign ?
                         <div style={{margin: 'auto', display: 'table'}}>
-                          <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">Отклонить заявление</button>
-                          <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                            <div className="modal-dialog" role="document">
-                              <div className="modal-content">
-                                <div className="modal-header">
-                                  <h5 className="modal-title">Мотивированный отказ</h5>
-                                  <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                  </button>
-                                </div>
-                                <div className="modal-body">
-                                  {this.state.templates && this.state.templates.length > 0 &&
-                                    <div className="form-group">
-                                      <select className="form-control" defaultValue="" id="templateList" onChange={this.onTemplateListChange.bind(this)}>
-                                        <option value="">Выберите шаблон</option>
-                                        {this.state.templates.map(function(template, index) {
-                                          return(
-                                            <option key={index} value={template.id}>{template.title}</option>
-                                            );
-                                          })
-                                        }
-                                      </select>
-                                    </div>
-                                  }
-                                  <div style={{paddingLeft:'5px', fontSize: '18px'}}>
-                                    <b>Выберите главного архитектора:</b>
-                                    <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
-                                      {this.state.apz_heads_id}
-                                    </select>
-                                  </div>
-                                  <div className="form-group">
-                                    <label>Комментарий</label>
-                                    <ReactQuill value={this.state.comment} onChange={this.onCommentChange} />
-                                  </div>
-                                </div>
-                                <div className="modal-footer">
-                                  <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.comment, 'head')}>Отправить главному архитектору</button>
-                                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                          <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.sendToApz.bind(this)}>Поставить подпись</button>
                         </div>
                         :
                           <div>
@@ -474,7 +410,6 @@ export default class ShowApz extends React.Component {
               <Logs state_history={this.state.apz.state_history} />
 
               <div className="col-sm-12">
-                <hr />
                 <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
               </div>
             </div>

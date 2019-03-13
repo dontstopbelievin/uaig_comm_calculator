@@ -4,10 +4,7 @@ import {ru, kk} from '../../languages/header.json';
 import { Link } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 
-
 let e = new LocalizedStrings({ru,kk});
-
-
 
 export default class forgotPassword extends React.Component{
 
@@ -22,13 +19,11 @@ export default class forgotPassword extends React.Component{
     };
 
     this.onEmailChange = this.onEmailChange.bind(this);
-    // this.getLink = this.getLink.bind(this);
   }
   onEmailChange (e) {
     this.setState({email: e.target.value});
   }
   getLink () {
-    console.log('getLink() is working');
     var formData = new FormData();
     formData.append('email', this.state.email);
 

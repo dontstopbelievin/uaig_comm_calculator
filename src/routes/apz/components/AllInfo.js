@@ -154,7 +154,7 @@ export default class AllInfo extends React.Component {
     }
 
     printQuestionnaire() {
-      var id = this.props.match.params.id;
+      var id = this.props.apz.id;
       var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
       xhr.open("get", window.url + "api/print/questionnaire/" + id, true);
@@ -189,8 +189,8 @@ export default class AllInfo extends React.Component {
       return (
             <div>
               <h5 className="block-title-2 mt-3 mb-3">Общая информация
-                <button className="btn btn-raised btn-success" style={{ marginLeft:'20px'}} onClick={this.printData}>Печать</button>
-                <button className="btn btn-raised btn-success ml-2" onClick={this.printQuestionnaire}>Печать опросного листа</button>
+                <button className="btn btn-raised btn-success btn-sm" style={{ marginLeft:'20px'}} onClick={this.printData.bind(this)}>Печать</button>
+                <button className="btn btn-raised btn-success ml-2 btn-sm" onClick={this.printQuestionnaire.bind(this)}>Печать опросного листа</button>
               </h5>
 
               <table className="table table-bordered table-striped" id="printTable">
@@ -228,7 +228,7 @@ export default class AllInfo extends React.Component {
                       {this.props.apz.project_address}
 
                       {this.props.apz.project_address_coordinates &&
-                        <a className="ml-2 pointer text-info" onClick={this.props.toggleMap}>Показать на карте</a>
+                        <a style={{marginLeft:'5px'}} className="btn btn-raised btn-primary btn-sm" onClick={this.props.toggleMap}>Показать на карте</a>
                       }
                     </td>
                   </tr>

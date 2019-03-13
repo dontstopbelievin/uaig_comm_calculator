@@ -2,7 +2,7 @@ import React from 'react';
 import $ from 'jquery';
 import Loader from 'react-loader-spinner';
 import saveAs from 'file-saver';
-import ShowMap from "./ShowMap";
+import ShowMap from "../components/ShowMap";
 import EcpSign from "../components/EcpSign";
 import AllInfo from "../components/AllInfo";
 import Logs from "../components/Logs";
@@ -958,7 +958,7 @@ export default class ShowApz extends React.Component {
         </div>
 
         <div className="col-sm-12">
-          {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
+          {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} mapId={"c21e78cf188349719570ab5512cb114f"} />}
 
           <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
             {this.state.showMapText}
@@ -1015,7 +1015,6 @@ export default class ShowApz extends React.Component {
         <Logs state_history={this.state.apz.state_history} />
 
         <div className="col-sm-12">
-          <hr />
           <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
         </div>
       </div>

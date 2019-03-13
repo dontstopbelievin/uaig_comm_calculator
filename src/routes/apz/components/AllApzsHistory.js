@@ -112,6 +112,7 @@ export default class AllApzs extends React.Component {
 
     return (
       <div>
+        <div className="col-sm-12"><button style={{padding:'5px'}} className="btn btn-outline-secondary btn-sm" onClick={this.props.history.goBack}>Назад</button></div>
         <div className="filter">
           <form className="office_filter">
             <div className="row">

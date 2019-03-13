@@ -234,6 +234,11 @@ export default class ShowApz extends React.Component {
                   Комментарий отдела гос услуг: {this.props.backFromStateService.comment}
                 </div>
               }
+              {this.props.backFromHead &&
+                <div className="alert alert-danger">
+                  Причина отправки на доработку: {this.props.backFromHead.comment}
+                </div>
+              }
               {this.props.schemeFile &&
               <div className="col-md-8 offset-2">
                   <div className="row" style={{paddingTop:'5px',paddingBottom:'5px',backgroundColor:'#eeeeff'}}>
@@ -272,11 +277,6 @@ export default class ShowApz extends React.Component {
                       </div>
                   </div>
               </div>
-              }
-              {this.props.backFromHead &&
-                <div className="alert alert-danger">
-                  Причина отправки на доработку: {this.props.backFromHead.comment}
-                </div>
               }
               {this.props.otkazFile &&
               <table className="table table-bordered">
