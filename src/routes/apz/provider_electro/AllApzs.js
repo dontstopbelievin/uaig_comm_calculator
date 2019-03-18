@@ -116,7 +116,9 @@ export default class AllApzs extends React.Component {
     return (
       <div>
         <div>
-          <h4>Архитектурно-планировочное задание</h4>
+          <h4>Архитектурно-планировочное задание
+          <NavLink to="/panel/common/export_to_excel"><img title="Экспорт в excel" src='/images/excelicon.png' className="export_image" alt="export excel"/></NavLink>
+          </h4>
         </div>
         {this.state.loaderHidden &&
           <div>

@@ -288,9 +288,9 @@ export default class EcpSign extends React.Component {
     render() {
       return (
           <div class="border border-top-0">
-            <h5 className="border" style={{textAlign:'center'}}>Подписание ЭЦП</h5>
-            <div id="MySignForm" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                <div>Выберите хранилище</div>
+            <h5 style={{textAlign:'center', background: '#d3e8ef', padding: '10px'}}>Подписание ЭЦП</h5>
+            <div id="MySignForm" style={{margin: 'auto', display: 'table', padding: '10px'}}>
+                <div>Выберите хранилище:</div>
 
                 <div className="btn-group mb-2" role="group" style={{margin: 'auto', display: 'table'}}>
                   <button className="btn btn-raised" style={{marginRight: '5px'}} onClick={this.chooseFile.bind(this)}>файловое хранилище</button>
