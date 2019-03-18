@@ -28,48 +28,6 @@ export default class ShowSketch extends React.Component {
     this.props.breadCrumbs();
   }
 
-  // componentWillMount() {
-  //     if (this.props.match.params.id) {
-  //         this.getSketchInfo();
-  //     }
-  //   }
-  //
-  //   getSketchInfo() {
-  //       var id = this.props.match.params.id;
-  //       var token = sessionStorage.getItem('tokenInfo');
-  //
-  //       this.setState({ loaderHidden: false });
-  //
-  //       var xhr = new XMLHttpRequest();
-  //       xhr.open("get", window.url + "api/sketch/detail/" + id, true);
-  //       xhr.setRequestHeader("Authorization", "Bearer " + token);
-  //       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-  //       xhr.onload = function() {
-  //           if (xhr.status === 200) {
-  //               var sketch = JSON.parse(xhr.responseText);
-  //               var commission = sketch.commission;
-  //               console.log(sketch.files);
-  //               this.setState({sketch: sketch});
-  //               this.setState({personalIdFile: sketch.files.filter(function(obj) { return obj.files.category_id === 3 })[0]});
-  //               this.setState({apzFile: sketch.files.filter(function(obj) { return obj.category_id === 2 })[0]});
-  //               this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
-  //               // this.setState({additionalFile: sketch.files.filter(function(obj) { return obj.category_id === 27 })[0]});
-  //               // this.setState({paymentPhotoFile: sketch.files.filter(function(obj) { return obj.category_id === 20 })[0]});
-  //               // var pack2IdFile = sketch.files.filter(function(obj) { return obj.category_id === 25 }) ?
-  //               //     sketch.files.filter(function(obj) { return obj.category_id === 25 }) : [];
-  //               // if ( pack2IdFile.length > 0 ) {
-  //               //     this.setState({pack2IdFile: pack2IdFile[0]});
-  //               // }
-  //               this.setState({loaderHidden: true});
-  //           } else if (xhr.status === 401) {
-  //               sessionStorage.clear();
-  //               alert("Время сессии истекло. Пожалуйста войдите заново!");
-  //               this.props.history.replace("/login");
-  //           }
-  //       }.bind(this)
-  //       xhr.send();
-  //   }
-
   componentWillMount() {
     this.getSketchInfo();
   }

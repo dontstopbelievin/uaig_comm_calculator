@@ -3,74 +3,12 @@ import {Switch} from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import $ from 'jquery';
 import ReactQuill from 'react-quill';
-import ShowMap from './ShowMap';
-import EcpSign from '../../apz/components/EcpSign';
-import Logs from "../../apz/components/Logs";
-// import
-export default class ShowSketch extends React.Component {
+
+export default class AllInfo extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            sketch: [],
-            templates: [],
-            showMap: false,
-            showButtons: true,
-            description: '',
-            docNumber: "",
-            showMapText: 'Показать карту',
-            loaderHidden: false,
-            personalIdFile: false,
-            sketchFile: false,
-            sketchFilePDF: false,
-            apzFile: false,
-            apzReturnedState: false,
-            sketchReturnedState: false,
-            needSign: false,
-            response: true,
-            storageAlias: "PKCS12",
-            backFromHead: false,
-            apz_head_id: '',
-            apz_heads_id: [],
-            engineerSign: false,
-            xmlFile: false,
-            loaderHiddenSign:true,
-            isSended:false
-        };
-
         this.onDescriptionChange = this.onDescriptionChange.bind(this);
         this.onDocNumberChange = this.onDocNumberChange.bind(this);
-    }
-
-    onDocNumberChange(e) {
-        this.setState({ docNumber: e.target.value });
-    }
-
-    onDescriptionChange(value) {
-        this.setState({ description: value });
-    }
-
-    onTemplateListChange(e) {
-        if(e.target.value == ''){
-          this.setState({ description: '' });
-        }else{
-          var template = this.state.templates.find(template => template.id == e.target.value);
-          this.setState({ description: template.text });
-        }
-    }
-
-    componentDidMount() {
-        this.props.breadCrumbs();
-    }
-
-    componentWillMount() {
-        if(!sessionStorage.getItem('tokenInfo')){
-            let fullLoc = window.location.href.split('/');
-            this.props.history.replace({pathname: "/panel/common/login", state:{url_apz_id: fullLoc[fullLoc.length-1]}});
-        }else {
-            this.getSketchInfo();
-            this.getHeads();
-        }
     }
 
     getHeads(){
@@ -91,75 +29,6 @@ export default class ShowSketch extends React.Component {
                 if(this.state.apz_head_id == "" || this.state.apz_head_id == " "){
                     this.setState({apz_head_id: data[0].user_id});
                 }
-            }
-        }.bind(this);
-        xhr.send();
-    }
-
-    getSketchInfo() {
-        var id = this.props.match.params.id;
-        var token = sessionStorage.getItem('tokenInfo');
-        var xhr = new XMLHttpRequest();
-        xhr.open("get", window.url + "api/sketch/region/detail/" + id, true);
-        xhr.setRequestHeader("Authorization", "Bearer " + token);
-        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                var data = JSON.parse(xhr.responseText);
-                var sketch = data.sketch;
-                this.setState({templates: data.templates});
-                this.setState({sketch: sketch});
-                this.setState({docNumber: sketch.docNumber});
-                this.setState({personalIdFile: sketch.files.filter(function(obj) { return obj.category_id === 3 })[0]});
-                this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
-                this.setState({sketchFilePDF: sketch.files.filter(function(obj) { return obj.category_id === 40 })[0]});
-                console.log(this.state.sketchFilePDF);
-                this.setState({apzFile: sketch.files.filter(function(obj) { return obj.category_id === 2 })[0]});
-                // this.setState({docNumber: sketch.docNumber});
-                // this.setState({reglamentFile: apz.files.filter(function(obj) { return obj.category_id === 29 })[0]});
-                this.setState({showButtons: false});
-
-                for(var data_index = sketch.state_history.length-1; data_index >= 0; data_index--){
-                    switch (sketch.state_history[data_index].state_id) {
-                        case 17:
-                            this.setState({backFromHead: sketch.state_history[data_index]});
-                            break;
-                        default:
-                            continue;
-                    }
-                    break;
-                }
-
-                this.setState({engineerReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender == 'engineer'})[0]});
-                this.setState({apzReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender == 'apz'})[0]});
-                this.setState({needSign: sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
-                this.setState({engineerSign: sketch.files.filter(function(obj) { return obj.category_id === 28 })[0]});
-                if(sketch.apz_head_id){this.setState({apz_head_id: sketch.apz_head_id});}
-
-                if (sketch.status_id === 3) {
-                    this.setState({showButtons: true});
-                }
-
-                if (sketch.state_history.filter(function(obj) { return obj.state_id === 1 || obj.state_id ===10})[0] != null) {
-                    this.setState({response: false});
-                }
-
-                this.setState({loaderHidden: true});
-                // BE CAREFUL OF category_id should be xml регионального архитектора
-                this.setState({xmlFile: sketch.files.filter(function(obj) { return obj.category_id === 21})[0]});
-                this.setState({needSign: sketch.files.filter(function(obj) { return obj.category_id === 21})[0]});
-
-                // if(sketch.state_history.filter(function(obj) { return obj.state_id === 33 })[0] != null){
-                //     this.setState({needSign: false});
-                // }
-                //use instead new columns from table
-                if(!sketch.urban_sign_returned){
-                    this.setState({xmlFile: false});
-                }
-            } else if (xhr.status === 401) {
-                sessionStorage.clear();
-                alert("Время сессии истекло. Пожалуйста войдите заново!");
-                this.props.history.replace("/login");
             }
         }.bind(this);
         xhr.send();
@@ -245,29 +114,6 @@ export default class ShowSketch extends React.Component {
         this.webSocketFunction();
         this.setMissedHeartbeatsLimitToMax();
         this.webSocket.send(JSON.stringify(browseKeyStore));
-    }
-
-    signMessage() {
-        this.setState({loaderHiddenSign: false});
-        let password = document.getElementById("inpPassword").value;
-        let path = document.getElementById("storagePath").value;
-        let keyType = "SIGN";
-        //console.log(path);
-        if (path !== null && path !== "" && this.state.storageAlias !== null && this.state.storageAlias !== "") {
-            if (password !== null && password !== "") {
-                this.getKeys(this.state.storageAlias, path, password, keyType, "loadKeysBack");
-            } else {
-                alert("Введите пароль к хранилищу");
-                this.setState({loaderHiddenSign: true});
-            }
-        } else {
-            alert("Не выбран хранилище!");
-            this.setState({loaderHiddenSign: true});
-        }
-    }
-
-    ecpSignSuccess(){
-        this.setState({ xmlFile: true });
     }
 
     sendToApz(publish) {
@@ -513,7 +359,6 @@ export default class ShowSketch extends React.Component {
 
         return (
             <div>
-                {this.state.loaderHidden &&
                 <div>
                     <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
 
@@ -521,47 +366,43 @@ export default class ShowSketch extends React.Component {
                         <tbody>
                         <tr>
                             <td style={{width: '22%'}}><b>ИД заявки</b></td>
-                            <td>{sketch.id}</td>
+                            <td>{this.props.sketch.id}</td>
                         </tr>
                         <tr>
                             <td><b>Заявитель</b></td>
-                            <td>{sketch.applicant}</td>
+                            <td>{this.props.sketch.applicant}</td>
                         </tr>
                         <tr>
                             <td><b>Телефон</b></td>
-                            <td>{sketch.phone}</td>
+                            <td>{this.props.sketch.phone}</td>
                         </tr>
                         <tr>
                             <td><b>Заказчик</b></td>
-                            <td>{sketch.customer}</td>
+                            <td>{this.props.sketch.customer}</td>
                         </tr>
-                        {/*<tr>*/}
-                            {/*<td><b>Разработчик</b></td>*/}
-                            {/*<td>{sketch.designer}</td>*/}
-                        {/*</tr>*/}
                         <tr>
                             <td><b>Название проекта</b></td>
-                            <td>{sketch.project_name}</td>
+                            <td>{this.props.sketch.project_name}</td>
                         </tr>
                         <tr>
                             <td><b>Адрес проектируемого объекта</b></td>
                             <td>
-                                {sketch.project_address}
+                                {this.props.sketch.project_address}
 
-                                {sketch.project_address_coordinates &&
+                                {this.props.sketch.project_address_coordinates &&
                                 <a className="ml-2 pointer text-info" onClick={this.toggleMap.bind(this, true)}>Показать на карте</a>
                                 }
                             </td>
                         </tr>
                         <tr>
                             <td><b>Дата заявления</b></td>
-                            <td>{sketch.created_at && this.toDate(sketch.created_at)}</td>
+                            <td>{this.props.sketch.created_at && this.toDate(this.props.sketch.created_at)}</td>
                         </tr>
 
-                        {this.state.personalIdFile &&
+                        {this.props.personalIdFile &&
                         <tr>
                             <td><b>Уд. лич./ Реквизиты</b></td>
-                            <td><a className="text-info pointer" data-category="1" onClick={this.downloadFile.bind(this, this.state.personalIdFile.id, 1)}>Скачать</a>
+                            <td><a className="text-info pointer" data-category="1" onClick={this.downloadFile.bind(this, this.props.personalIdFile.id, 1)}>Скачать</a>
                                 <div className="progress mb-2" data-category="1" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                                     <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
@@ -569,10 +410,10 @@ export default class ShowSketch extends React.Component {
                         </tr>
                         }
 
-                        {this.state.sketchFile &&
+                        {this.props.sketchFile &&
                         <tr>
                             <td><b>Эскизный проект</b></td>
-                            <td><a className="text-info pointer" data-category="2" onClick={this.downloadFile.bind(this, this.state.sketchFile.id, 2)}>Скачать</a>
+                            <td><a className="text-info pointer" data-category="2" onClick={this.downloadFile.bind(this, this.props.sketchFile.id, 2)}>Скачать</a>
                                 <div className="progress mb-2" data-category="2" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                                     <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
@@ -580,20 +421,20 @@ export default class ShowSketch extends React.Component {
                         </tr>
                         }
 
-                        {this.state.apzFile &&
+                        {this.props.apzFile &&
                         <tr>
                             <td><b>АПЗ</b></td>
-                            <td><a className="text-info pointer" data-category="3" onClick={this.downloadFile.bind(this, this.state.apzFile.id, 3)}>Скачать</a>
+                            <td><a className="text-info pointer" data-category="3" onClick={this.downloadFile.bind(this, this.props.apzFile.id, 3)}>Скачать</a>
                                 <div className="progress mb-2" data-category="3" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                                     <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </td>
                         </tr>
                         }
-                        {this.state.sketchFilePDF &&
+                        {this.props.sketchFilePDF &&
                         <tr>
                             <td><b>Эскизный проект(PDF)</b></td>
-                            <td><a className="text-info pointer" data-category="4" onClick={this.downloadFile.bind(this, this.state.sketchFilePDF.id, 4)}>Скачать</a>
+                            <td><a className="text-info pointer" data-category="4" onClick={this.downloadFile.bind(this, this.props.sketchFilePDF.id, 4)}>Скачать</a>
                                 <div className="progress mb-2" data-category="4" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                                     <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
@@ -608,21 +449,21 @@ export default class ShowSketch extends React.Component {
 
                     <table className="table table-bordered table-striped">
                         <tbody>
-                        {sketch &&
+                        {this.props.sketch &&
                         <tr>
                             <td style={{width: '40%'}}><b>Показатели по ген плану</b></td>
                             <td><a className="text-info pointer" data-toggle="modal" data-target="#gen_modal">Просмотр</a></td>
                         </tr>
                         }
 
-                        {sketch &&
+                        {this.props.sketch &&
                         <tr>
                             <td style={{width: '40%'}}><b>Показатели по проекту</b></td>
                             <td><a className="text-info pointer" data-toggle="modal" data-target="#project_modal">Просмотр</a></td>
                         </tr>
                         }
 
-                        {sketch &&
+                        {this.props.sketch &&
                         <tr>
                             <td style={{width: '40%'}}><b>Архитектурные решения по отделки фасада здания и сооружения</b></td>
                             <td><a className="text-info pointer" data-toggle="modal" data-target="#architect_modal">Просмотр</a></td>
@@ -631,7 +472,7 @@ export default class ShowSketch extends React.Component {
                         </tbody>
                     </table>
 
-                    {sketch &&
+                    {this.props.sketch &&
                     <div className="modal fade" id="gen_modal" tabIndex="-1" role="dialog" aria-hidden="true">
                         <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
                             <div className="modal-content">
@@ -646,15 +487,15 @@ export default class ShowSketch extends React.Component {
                                         <tbody>
                                         <tr>
                                             <td style={{width: '70%'}}>Площадь земельного участка (га)</td>
-                                            <td>{sketch.land_area}</td>
+                                            <td>{this.props.sketch.land_area}</td>
                                         </tr>
                                         <tr>
                                             <td>Площадь покрытия (м<sup>2</sup>)</td>
-                                            <td>{sketch.cover_area}</td>
+                                            <td>{this.props.sketch.cover_area}</td>
                                         </tr>
                                         <tr>
                                             <td>Площадь озеленения (м<sup>2</sup>)</td>
-                                            <td>{sketch.green_area}</td>
+                                            <td>{this.props.sketch.green_area}</td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -667,7 +508,7 @@ export default class ShowSketch extends React.Component {
                     </div>
                     }
 
-                    {sketch &&
+                    {this.props.sketch &&
                     <div className="modal fade" id="project_modal" tabIndex="-1" role="dialog" aria-hidden="true">
                         <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
                             <div className="modal-content">
@@ -682,39 +523,39 @@ export default class ShowSketch extends React.Component {
                                         <tbody>
                                         <tr>
                                             <td style={{width: '70%'}}>Этажность</td>
-                                            <td>{sketch.object_level}</td>
+                                            <td>{this.props.sketch.object_level}</td>
                                         </tr>
                                         <tr>
                                             <td>Общая площадь(м<sup>2</sup>)</td>
-                                            <td>{sketch.common_area}</td>
+                                            <td>{this.props.sketch.common_area}</td>
                                         </tr>
                                         <tr>
                                             <td>Площадь застройки(м<sup>2</sup>)</td>
-                                            <td>{sketch.build_area}</td>
+                                            <td>{this.props.sketch.build_area}</td>
                                         </tr>
                                         <tr>
                                             <td>Тип проекта</td>
-                                            <td>{sketch.object_type}</td>
+                                            <td>{this.props.sketch.object_type}</td>
                                         </tr>
                                         <tr>
                                             <td>Сроки строительства</td>
-                                            <td>{sketch.object_term}</td>
+                                            <td>{this.props.sketch.object_term}</td>
                                         </tr>
-                                        {(sketch.object_type == 'МЖК Общественное задание' || sketch.object_type == 'МЖК Производственное задание') &&
-                                          <React.Fragment>
-                                          <tr>
-                                            <td>Количество пятен</td>
-                                            <td>{sketch.object_pyaten}</td>
+                                        {(this.props.sketch.object_type == 'МЖК Общественное задание' || this.props.sketch.object_type == 'МЖК Производственное задание') &&
+                                        <React.Fragment>
+                                            <tr>
+                                                <td>Количество пятен</td>
+                                                <td>{this.props.sketch.object_pyaten}</td>
                                             </tr>
-                                          <tr>
-                                            <td>Количество парковочных мест</td>
-                                            <td>{sketch.object_carpark}</td>
-                                          </tr>
-                                          <tr>
-                                            <td>Количество мест в детское дошкольное учреждение и детский сад</td>
-                                            <td>{sketch.object_dou}</td>
-                                          </tr>
-                                          </React.Fragment>
+                                            <tr>
+                                                <td>Количество парковочных мест</td>
+                                                <td>{this.props.sketch.object_carpark}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Количество мест в детское дошкольное учреждение и детский сад</td>
+                                                <td>{this.props.sketch.object_dou}</td>
+                                            </tr>
+                                        </React.Fragment>
                                         }
                                         </tbody>
                                     </table>
@@ -726,7 +567,7 @@ export default class ShowSketch extends React.Component {
                         </div>
                     </div>
                     }
-                    {sketch &&
+                    {this.props.sketch &&
                     <div className="modal fade" id="architect_modal" tabIndex="-1" role="dialog" aria-hidden="true">
                         <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
                             <div className="modal-content">
@@ -741,19 +582,19 @@ export default class ShowSketch extends React.Component {
                                         <tbody>
                                         <tr>
                                             <td style={{width: '70%'}}>Цоколь здания(фасад)</td>
-                                            <td>{sketch.basement_facade}</td>
+                                            <td>{this.props.sketch.basement_facade}</td>
                                         </tr>
                                         <tr>
                                             <td>Цоколь здания(цвет)</td>
-                                            <td>{sketch.basement_color}</td>
+                                            <td>{this.props.sketch.basement_color}</td>
                                         </tr>
                                         <tr>
                                             <td>Стены здания(фасад)</td>
-                                            <td>{sketch.walls_facade}</td>
+                                            <td>{this.props.sketch.walls_facade}</td>
                                         </tr>
                                         <tr>
                                             <td>Стены здания(цвет)</td>
-                                            <td>{sketch.walls_color}</td>
+                                            <td>{this.props.sketch.walls_color}</td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -766,172 +607,18 @@ export default class ShowSketch extends React.Component {
                     </div>
                     }
 
-                    {sketch.apz_department_response &&
-                    <div>
-                        <h5 className="block-title-2 mb-3">Ответ от АПЗ отдела</h5>
-                        <table className="table table-bordered table-striped">
-                            <tbody>
-                            <tr>
-                                <td style={{width: '22%'}}><b>Сформированный АПЗ</b></td>
-                                <td><a className="text-info pointer" onClick={this.printSketch.bind(this, sketch.id, sketch.project_name)}>Скачать</a></td>
-                            </tr>
-                            {this.state.reglamentFile &&
-                            <tr>
-                                <td style={{width: '22%'}}><b>Регламент</b></td>
-                                <td><a className="text-info pointer" data-category="6" onClick={this.downloadFile.bind(this, this.state.reglamentFile.id, 6)}>Скачать</a>
-                                    <div className="progress mb-2" data-category="6" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </td>
-                            </tr>}
-                            </tbody>
-                        </table>
-                    </div>
-                    }
-
                     {this.state.showMap && <ShowMap coordinates={sketch.project_address_coordinates} />}
 
                     <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                         {this.state.showMapText}
                     </button>
 
-                    {this.state.engineerReturnedState &&
-                    <div className="alert alert-danger">
-                        Комментарий инженера: {this.state.engineerReturnedState.comment}
-                    </div>
-                    }
-                    {this.state.apzReturnedState &&
-                    <div className="alert alert-danger">
-                        Комментарий главного архитектора: {this.state.apzReturnedState.comment}
-                    </div>
-                    }
-                    {sketch.status_id == 1 &&
-                    <table className="table table-bordered">
-                        <tbody>
-                        <tr>
-                            <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
-                            {this.state.headResponseFile ?
-                                <td><a className="text-info pointer" data-category="6" onClick={this.downloadFile.bind(this, this.state.headResponseFile.id, 6)}>Скачать</a>
-                                    <div className="progress mb-2" data-category="6" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </td>
-                                :
-                                <td><a className="text-info pointer" onClick={this.printRegionAnswer.bind(this, sketch.id)}>Скачать</a></td>
-                            }
-                        </tr>
-                        </tbody>
-                    </table>
-                    }
-                    {this.state.backFromHead &&
-                    <div className="alert alert-danger">
-                        Комментарий главного архитектора: {this.state.backFromHead.comment}
-                    </div>
-                    }
-                    {(!this.state.xmlFile && !this.state.isSended && this.state.response ) &&
-                        <div style={{margin: 'auto', marginTop: '20px', display: 'table', width: '30%'}}>
-                            <div className="form-group">
-                                <label>Номер документа</label>
-                                <input type="text" className="form-control" placeholder="" value={this.state.docNumber}
-                                       onChange={this.onDocNumberChange}/>
-                            </div>
-                        </div>
-                    }
-                    <div className={this.state.showButtons ? '' : 'invisible'}>
-                        <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                            {sketch.status_id == 3 && !this.state.xmlFile &&
-                            <div style={{paddingLeft:'5px', fontSize: '18px', textAlign:'center'}}>
-                                <b>Выберите главного архитектора:</b>
-                                <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
-                                    {this.state.apz_heads_id}
-                                </select>
-                            </div>
-                            }
-                            {!this.state.response ?
-                                 <div className="text-center">
-                                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled="disabled">Одобрить</button>
-                                    <button className="btn btn-raised btn-danger" data-toggle="modal"  data-target="#accDecApzForm">
-                                        Отклонить
-                                    </button>
-                                </div>
-                                :
-                                <div>
-                                    {!this.state.needSign ?
-                                        <div style={{margin: 'auto', display: 'table'}}>{console.log(this.state.engineerReturnedState)}
-                                            <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled={!this.state.docNumber} onClick={this.sendToApz.bind(this,true)}>Одобрить</button>
-                                            <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
-                                                Отклонить
-                                            </button>
-                                        </div>
-                                        :
-                                        <div>
-                                            { !this.state.xmlFile  ?
-                                                <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="region" id={this.state.sketch.id} serviceName='sketch'/>
-                                                :
-                                                <div>
-                                                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted","")}>Отправить инженеру</button>
-                                                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted", "chief")}>
-                                                        Отправить главному архитектору
-                                                    </button>
-                                                </div>
-                                            }
-                                        </div>
-                                    }
-                                </div>
-                            }
-
-                            <div className="modal fade" id="accDecApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                                <div className="modal-dialog modal-lg" role="document">
-                                    <div className="modal-content">
-                                        <div className="modal-header">
-                                            <h5 className="modal-title">Причина отклонения</h5>
-                                            <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div className="modal-body">
-                                            {this.state.templates.length > 0 &&
-                                            <div className="form-group">
-                                                <select className="form-control" defaultValue="" id="templateList" onChange={this.onTemplateListChange.bind(this)}>
-                                                    <option value="">Выберите шаблон</option>
-                                                    {this.state.templates.map(function(template, index) {
-                                                        return(
-                                                            <option key={index} value={template.id}>{template.title}</option>
-                                                        );
-                                                    }.bind(this))
-                                                    }
-                                                </select>
-                                            </div>
-                                            }
-
-                                            <div className="form-group">
-                                                <ReactQuill value={this.state.description} onChange={this.onDescriptionChange} />
-                                            </div>
-                                        </div>
-                                        <div className="modal-footer">
-                                            <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, false, this.state.description,"",this.state.docNumber)}>Отправить</button>
-                                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <Logs state_history={this.state.sketch.state_history} />
 
                     <div className="col-sm-12">
                         <hr />
                         <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
                     </div>
                 </div>
-                }
-
-                {!this.state.loaderHidden &&
-                <div style={{textAlign: 'center'}}>
-                    <Loader type="Oval" color="#46B3F2" height="200" width="200" />
-                </div>
-                }
             </div>
         )
     }
