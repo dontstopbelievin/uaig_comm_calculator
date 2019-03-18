@@ -369,16 +369,14 @@ export default class ShowApz extends React.Component {
                         <div className="modal-body">
                           <div className="form-group">
                             <div className="file_container">
-                              <div className="col-md-12">
-                                <div style={{paddingLeft:'5px', fontSize: '18px'}}>
-                                  <b>Выберите главного архитектора:</b>
-                                  <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
-                                    {this.state.apz_heads_id}
-                                  </select>
-                                </div>
-                                <div className="progress mb-2" data-category="30" style={{height: '20px', display: 'none'}}>
-                                  <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
+                              <div style={{paddingLeft:'5px', fontSize: '18px'}}>
+                                <b>Выберите главного архитектора:</b>
+                                <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
+                                  {this.state.apz_heads_id}
+                                </select>
+                              </div>
+                              <div className="progress mb-2" data-category="30" style={{height: '20px', display: 'none'}}>
+                                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                               </div>
                               {this.state.otkazFile &&
                                 <div className="file_block mb-2">

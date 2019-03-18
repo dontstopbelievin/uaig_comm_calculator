@@ -16,6 +16,7 @@ export default class ShowApz extends React.Component {
       this.state = {
         apz: [],
         templates: [],
+        theme: '',
         apz_head_id: '',
         apz_heads_id: [],
         showMap: false,
@@ -332,6 +333,10 @@ export default class ShowApz extends React.Component {
       this.setState({ comment: value });
     }
 
+    onThemeChange(e) {
+      this.setState({ theme: e.target.value });
+    }
+
     componentWillMount() {
       this.getApzInfo();
       this.getHeads();
@@ -342,6 +347,9 @@ export default class ShowApz extends React.Component {
       if(e.target.value != ''){
         var template = this.state.templates.find(template => template.id == e.target.value);
         this.setState({ comment: template.text });
+        this.setState({ theme: template.title });
+      }else{
+        this.setState({ theme: '' });
       }
     }
 
@@ -493,14 +501,15 @@ export default class ShowApz extends React.Component {
     }
 
     sendForm(apzId, status, comment, direct) {
-      if(!status && comment.trim() == ''){
-        alert('Для отказа напишите комментарий.');
+      if(!status && (comment.trim() == '' || this.state.theme.trim() == '')){
+        alert('Для отказа напишите тему и причину отказа.');
         return false;
       }
       var token = sessionStorage.getItem('tokenInfo');
       var formData = new FormData();
       formData.append('response', status);
       formData.append('message', comment);
+      formData.append('theme', this.state.theme);
       formData.append('direct', direct);
 
       var xhr = new XMLHttpRequest();
@@ -526,6 +535,9 @@ export default class ShowApz extends React.Component {
           default:
           this.setState({ showButtons: false });
           this.setState({ showSendButton: false });
+        }
+        if (!status) {
+          $('#ReturnApzForm').modal('hide');
         }
       }.bind(this);
       xhr.send(formData);
@@ -915,7 +927,7 @@ export default class ShowApz extends React.Component {
           }
 
           {this.state.showSignButtons && !this.state.showSendButton &&
-              <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="stateservices" apz_id={apz.id}/>
+              <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="stateservices" id={apz.id} serviceName='apz'/>
           }
 
           {this.state.showButtons && !this.state.showSendButton &&
@@ -969,6 +981,12 @@ export default class ShowApz extends React.Component {
                     <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
                       {this.state.apz_heads_id}
                     </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Тема(краткое описание)</label>
+                    <div>
+                      <input value={this.state.theme} onChange={this.onThemeChange.bind(this)} />
+                    </div>
                   </div>
                   <div className="form-group">
                     <label>Причина отказа</label>
