@@ -1592,7 +1592,7 @@ export default class ShowApz extends React.Component {
           {this.state.isDirector && this.state.heatStatus == 2 &&
             <div>
               {!this.state.xmlFile && !this.state.isSigned && apz.status_id === 5 &&
-                <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="heat" apz_id={apz.id}/>
+                <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="heat" id={apz.id} serviceName='apz'/>
               }
             </div>
           }

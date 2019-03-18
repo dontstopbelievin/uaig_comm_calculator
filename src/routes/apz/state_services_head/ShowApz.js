@@ -53,7 +53,6 @@ export default class ShowApz extends React.Component {
         this.onDescriptionChange = this.onDescriptionChange.bind(this);
         this.onFileChange = this.onFileChange.bind(this);
     }
-
     componentDidMount() {
         this.props.breadCrumbs();
     }
@@ -176,7 +175,6 @@ export default class ShowApz extends React.Component {
         this.setState({ showSignButtons: true });
         this.setState({ showButtons: false });
     }
-
     hideSignBtns(){
         this.setState({ showSignButtons: false });
         this.setState({ showButtons: true });
@@ -218,6 +216,395 @@ export default class ShowApz extends React.Component {
         xhr.send(formData);
     }
 
+    // print technical condition of waterProvider
+    printWaterTechCon(apzId, project) {
+        var token = sessionStorage.getItem('tokenInfo');
+        if (token) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("get", window.url + "api/print/tc/water/" + apzId, true);
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    //test of IE
+                    if (typeof window.navigator.msSaveBlob === "function") {
+                        window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
+                    } else {
+                        var data = JSON.parse(xhr.responseText);
+                        var today = new Date();
+                        var curr_date = today.getDate();
+                        var curr_month = today.getMonth() + 1;
+                        var curr_year = today.getFullYear();
+                        var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+
+                        var base64ToArrayBuffer = (function () {
+
+                            return function (base64) {
+                                var binaryString =  window.atob(base64);
+                                var binaryLen = binaryString.length;
+                                var bytes = new Uint8Array(binaryLen);
+
+                                for (var i = 0; i < binaryLen; i++) {
+                                    var ascii = binaryString.charCodeAt(i);
+                                    bytes[i] = ascii;
+                                }
+
+                                return bytes;
+                            }
+
+                        }());
+
+                        var saveByteArray = (function () {
+                            var a = document.createElement("a");
+                            document.body.appendChild(a);
+                            a.style = "display: none";
+
+                            return function (data, name) {
+                                var blob = new Blob(data, {type: "octet/stream"}),
+                                    url = window.URL.createObjectURL(blob);
+                                a.href = url;
+                                a.download = name;
+                                a.click();
+                                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+                            };
+
+                        }());
+
+                        saveByteArray([base64ToArrayBuffer(data.file)], "ТУ-Вода-" + project + formated_date + ".pdf");
+                    }
+                } else {
+                    alert('Не удалось скачать файл');
+                }
+            }
+            xhr.send();
+        } else {
+            console.log('Время сессии истекло.');
+        }
+    }
+
+    // print technical condition of gasProvider
+    printGasTechCon(apzId, project) {
+        var token = sessionStorage.getItem('tokenInfo');
+        if (token) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("get", window.url + "api/print/tc/gas/" + apzId, true);
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    //test of IE
+                    if (typeof window.navigator.msSaveBlob === "function") {
+                        window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
+                    } else {
+                        var data = JSON.parse(xhr.responseText);
+                        var today = new Date();
+                        var curr_date = today.getDate();
+                        var curr_month = today.getMonth() + 1;
+                        var curr_year = today.getFullYear();
+                        var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+
+                        var base64ToArrayBuffer = (function () {
+
+                            return function (base64) {
+                                var binaryString =  window.atob(base64);
+                                var binaryLen = binaryString.length;
+                                var bytes = new Uint8Array(binaryLen);
+
+                                for (var i = 0; i < binaryLen; i++) {
+                                    var ascii = binaryString.charCodeAt(i);
+                                    bytes[i] = ascii;
+                                }
+
+                                return bytes;
+                            }
+
+                        }());
+
+                        var saveByteArray = (function () {
+                            var a = document.createElement("a");
+                            document.body.appendChild(a);
+                            a.style = "display: none";
+
+                            return function (data, name) {
+                                var blob = new Blob(data, {type: "octet/stream"}),
+                                    url = window.URL.createObjectURL(blob);
+                                a.href = url;
+                                a.download = name;
+                                a.click();
+                                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+                            };
+
+                        }());
+
+                        saveByteArray([base64ToArrayBuffer(data.file)], "ТУ-Газ-" + project + formated_date + ".pdf");
+                    }
+                } else {
+                    alert('Не удалось скачать файл');
+                }
+            }
+            xhr.send();
+        } else {
+            console.log('Время сессии истекло.');
+        }
+    }
+
+    // print technical condition of electroProvider
+    printElectroTechCon(apzId, project) {
+        var token = sessionStorage.getItem('tokenInfo');
+        if (token) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("get", window.url + "api/print/tc/electro/" + apzId, true);
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    //test of IE
+                    if (typeof window.navigator.msSaveBlob === "function") {
+                        window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
+                    } else {
+                        var data = JSON.parse(xhr.responseText);
+                        var today = new Date();
+                        var curr_date = today.getDate();
+                        var curr_month = today.getMonth() + 1;
+                        var curr_year = today.getFullYear();
+                        var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+
+                        var base64ToArrayBuffer = (function () {
+
+                            return function (base64) {
+                                var binaryString =  window.atob(base64);
+                                var binaryLen = binaryString.length;
+                                var bytes = new Uint8Array(binaryLen);
+
+                                for (var i = 0; i < binaryLen; i++) {
+                                    var ascii = binaryString.charCodeAt(i);
+                                    bytes[i] = ascii;
+                                }
+
+                                return bytes;
+                            }
+
+                        }());
+
+                        var saveByteArray = (function () {
+                            var a = document.createElement("a");
+                            document.body.appendChild(a);
+                            a.style = "display: none";
+
+                            return function (data, name) {
+                                var blob = new Blob(data, {type: "octet/stream"}),
+                                    url = window.URL.createObjectURL(blob);
+                                a.href = url;
+                                a.download = name;
+                                a.click();
+                                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+                            };
+
+                        }());
+
+                        saveByteArray([base64ToArrayBuffer(data.file)], "ТУ-Электр-" + project + formated_date + ".pdf");
+                    }
+                } else {
+                    alert('Не удалось скачать файл');
+                }
+            }
+            xhr.send();
+        } else {
+            console.log('Время сессии истекло.');
+        }
+    }
+
+    // print technical condition of heatProvider
+    printHeatTechCon(apzId, project) {
+        var token = sessionStorage.getItem('tokenInfo');
+        if (token) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("get", window.url + "api/print/tc/heat/" + apzId, true);
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    //test of IE
+                    if (typeof window.navigator.msSaveBlob === "function") {
+                        window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
+                    } else {
+                        var data = JSON.parse(xhr.responseText);
+                        var today = new Date();
+                        var curr_date = today.getDate();
+                        var curr_month = today.getMonth() + 1;
+                        var curr_year = today.getFullYear();
+                        var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+
+                        var base64ToArrayBuffer = (function () {
+
+                            return function (base64) {
+                                var binaryString =  window.atob(base64);
+                                var binaryLen = binaryString.length;
+                                var bytes = new Uint8Array(binaryLen);
+
+                                for (var i = 0; i < binaryLen; i++) {
+                                    var ascii = binaryString.charCodeAt(i);
+                                    bytes[i] = ascii;
+                                }
+
+                                return bytes;
+                            }
+
+                        }());
+
+                        var saveByteArray = (function () {
+                            var a = document.createElement("a");
+                            document.body.appendChild(a);
+                            a.style = "display: none";
+
+                            return function (data, name) {
+                                var blob = new Blob(data, {type: "octet/stream"}),
+                                    url = window.URL.createObjectURL(blob);
+                                a.href = url;
+                                a.download = name;
+                                a.click();
+                                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+                            };
+
+                        }());
+
+                        saveByteArray([base64ToArrayBuffer(data.file)], "ТУ-Тепло-" + project + formated_date + ".pdf");
+                    }
+                } else {
+                    alert('Не удалось скачать файл');
+                }
+            }
+            xhr.send();
+        } else {
+            console.log('Время сессии истекло.');
+        }
+    }
+
+    // print technical condition of phoneProvider
+    printPhoneTechCon(apzId, project) {
+        var token = sessionStorage.getItem('tokenInfo');
+        if (token) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("get", window.url + "api/print/tc/phone/" + apzId, true);
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    //test of IE
+                    if (typeof window.navigator.msSaveBlob === "function") {
+                        window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
+                    } else {
+                        var data = JSON.parse(xhr.responseText);
+                        var today = new Date();
+                        var curr_date = today.getDate();
+                        var curr_month = today.getMonth() + 1;
+                        var curr_year = today.getFullYear();
+                        var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+
+                        var base64ToArrayBuffer = (function () {
+
+                            return function (base64) {
+                                var binaryString =  window.atob(base64);
+                                var binaryLen = binaryString.length;
+                                var bytes = new Uint8Array(binaryLen);
+
+                                for (var i = 0; i < binaryLen; i++) {
+                                    var ascii = binaryString.charCodeAt(i);
+                                    bytes[i] = ascii;
+                                }
+
+                                return bytes;
+                            }
+
+                        }());
+
+                        var saveByteArray = (function () {
+                            var a = document.createElement("a");
+                            document.body.appendChild(a);
+                            a.style = "display: none";
+
+                            return function (data, name) {
+                                var blob = new Blob(data, {type: "octet/stream"}),
+                                    url = window.URL.createObjectURL(blob);
+                                a.href = url;
+                                a.download = name;
+                                a.click();
+                                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+                            };
+
+                        }());
+
+                        saveByteArray([base64ToArrayBuffer(data.file)], "ТУ-Телефон-" + project + formated_date + ".pdf");
+                    }
+                } else {
+                    alert('Не удалось скачать файл');
+                }
+            }
+            xhr.send();
+        } else {
+            console.log('session expired');
+        }
+    }
+
+    printApz(apzId, project) {
+        var token = sessionStorage.getItem('tokenInfo');
+        if (token) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("get", window.url + "api/print/apz/" + apzId, true);
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    //test of IE
+                    if (typeof window.navigator.msSaveBlob === "function") {
+                        window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
+                    } else {
+                        var data = JSON.parse(xhr.responseText);
+                        var today = new Date();
+                        var curr_date = today.getDate();
+                        var curr_month = today.getMonth() + 1;
+                        var curr_year = today.getFullYear();
+                        var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
+
+                        var base64ToArrayBuffer = (function () {
+
+                            return function (base64) {
+                                var binaryString =  window.atob(base64);
+                                var binaryLen = binaryString.length;
+                                var bytes = new Uint8Array(binaryLen);
+
+                                for (var i = 0; i < binaryLen; i++) {
+                                    var ascii = binaryString.charCodeAt(i);
+                                    bytes[i] = ascii;
+                                }
+
+                                return bytes;
+                            }
+
+                        }());
+
+                        var saveByteArray = (function () {
+                            var a = document.createElement("a");
+                            document.body.appendChild(a);
+                            a.style = "display: none";
+
+                            return function (data, name) {
+                                var blob = new Blob(data, {type: "octet/stream"}),
+                                    url = window.URL.createObjectURL(blob);
+                                a.href = url;
+                                a.download = name;
+                                a.click();
+                                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+                            };
+
+                        }());
+
+                        saveByteArray([base64ToArrayBuffer(data.file)], "апз-" + project + formated_date + ".pdf");
+                    }
+                } else {
+                    alert('Не удалось скачать файл');
+                }
+            }
+            xhr.send();
+        } else {
+            console.log('session expired');
+        }
+    }
+
     toggleMap(value) {
         this.setState({
             showMap: value
@@ -231,6 +618,65 @@ export default class ShowApz extends React.Component {
             this.setState({
                 showMapText: 'Показать карту'
             })
+        }
+    }
+
+    printRegionAnswer(apzId, progbarId = null) {
+        var token = sessionStorage.getItem('tokenInfo');
+        if (token) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("get", window.url + "api/print/region/" + apzId, true);
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    //test of IE
+                    if (typeof window.navigator.msSaveBlob === "function") {
+                        window.navigator.msSaveBlob(xhr.response, "МО.pdf");
+                    } else {
+                        var data = JSON.parse(xhr.responseText);
+
+                        var base64ToArrayBuffer = (function () {
+
+                            return function (base64) {
+                                var binaryString =  window.atob(base64);
+                                var binaryLen = binaryString.length;
+                                var bytes = new Uint8Array(binaryLen);
+
+                                for (var i = 0; i < binaryLen; i++) {
+                                    var ascii = binaryString.charCodeAt(i);
+                                    bytes[i] = ascii;
+                                }
+
+                                return bytes;
+                            }
+
+                        }());
+
+                        var saveByteArray = (function () {
+                            var a = document.createElement("a");
+                            document.body.appendChild(a);
+                            a.style = "display: none";
+
+                            return function (data, name) {
+                                var blob = new Blob(data, {type: "octet/stream"}),
+                                    url = window.URL.createObjectURL(blob);
+                                a.href = url;
+                                a.download = name;
+                                a.click();
+                                setTimeout(function() {window.URL.revokeObjectURL(url);},1000);
+                            };
+
+                        }());
+
+                        saveByteArray([base64ToArrayBuffer(data.file)], "МО.pdf");
+                    }
+                } else {
+                    alert('Не удалось скачать файл');
+                }
+            }
+            xhr.send();
+        } else {
+            console.log('Время сессии истекло.');
         }
     }
 
@@ -255,7 +701,7 @@ export default class ShowApz extends React.Component {
                       additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
 
 
-                    {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} mapId={"b5a3c97bd18442c1949ba5aefc4c1835"} />}
+                    {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
                     <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                         {this.state.showMapText}
                     </button>
@@ -277,7 +723,7 @@ export default class ShowApz extends React.Component {
                            calculationFile={this.state.calculationFile} reglamentFile={this.state.reglamentFile}/>
 
                     {this.state.showSignButtons && !this.state.isSigned &&
-                    <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="headsstateservices" apz_id={apz.id}/>
+                    <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="headsstateservices" id={apz.id} serviceName='apz'/>
                     }
 
                     {this.state.showButtons && !this.state.isSigned &&
@@ -322,6 +768,7 @@ export default class ShowApz extends React.Component {
 
                   <div className="col-sm-12">
                       <Logs state_history={this.state.apz.state_history} />
+                      <hr />
                       <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
                   </div>
                 </div>
