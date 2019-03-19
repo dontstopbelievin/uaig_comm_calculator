@@ -175,20 +175,12 @@ export default class AllApzs extends React.Component {
                       <td>{apz.project_address}</td>
                       <td>{this.toDate(apz.created_at)}</td>
 
-                      {(status === 'active' || status === 'awaiting') && this.checkDeadline(apz.provider_deadline)?
-                          <td style={{color: 'red'}}>
+                      {(status === 'active' || status === 'awaiting') &&
+                          <td style={{color: this.checkDeadline(apz.provider_deadline)? 'red' : 'initial'}}>
                               {apz.provider_deadline ?
                                   this.toDate(apz.provider_deadline)
                                   :
                                   this.toDate(apz.term.date)}
-                          </td>
-                          :
-                          <td >
-                              {apz.provider_deadline ?
-                                  this.toDate(apz.provider_deadline)
-                                  :
-                                  this.toDate(apz.term.date)
-                              }
                           </td>
                       }
                       <td>
