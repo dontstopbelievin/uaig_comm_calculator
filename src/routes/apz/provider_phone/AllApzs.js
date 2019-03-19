@@ -75,6 +75,7 @@ export default class AllApzs extends React.Component {
     }.bind(this);
     xhr.send();
   }
+
   sortData(column){
     if(this.state.sortState == 'ASC'){
       this.setState({ sortState: 'DESC'});
@@ -92,21 +93,31 @@ export default class AllApzs extends React.Component {
       }) });
     }
   }
-  toDate(date) {
-    if(date === null) {
-      return date;
+
+  checkDeadline(date){
+        var jDate = new Date();
+        var dbTime = new Date(date);
+        if(dbTime.getTime()<jDate.getTime()){
+            return true;
+        }
+        return false;
     }
 
-    var jDate = new Date(date);
-    var curr_date = jDate.getDate() < 10 ? "0" + jDate.getDate() : jDate.getDate();
-    var curr_month = (jDate.getMonth() + 1) < 10 ? "0" + (jDate.getMonth() + 1) : jDate.getMonth() + 1;
-    var curr_year = jDate.getFullYear();
-    var curr_hour = jDate.getHours() < 10 ? "0" + jDate.getHours() : jDate.getHours();
-    var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
-    var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
+  toDate(date) {
+        if(date === null) {
+            return date;
+        }
 
-    return formated_date;
-  }
+        var jDate = new Date(date);
+        var curr_date = jDate.getDate() < 10 ? "0" + jDate.getDate() : jDate.getDate();
+        var curr_month = (jDate.getMonth() + 1) < 10 ? "0" + (jDate.getMonth() + 1) : jDate.getMonth() + 1;
+        var curr_year = jDate.getFullYear();
+        var curr_hour = jDate.getHours() < 10 ? "0" + jDate.getHours() : jDate.getHours();
+        var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
+        var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
+
+        return formated_date;
+    }
 
   render() {
     var status = this.props.match.params.status;
@@ -164,13 +175,21 @@ export default class AllApzs extends React.Component {
                       <td>{apz.project_address}</td>
                       <td>{this.toDate(apz.created_at)}</td>
 
-                      {(status === 'active' || status === 'awaiting') &&
-                        <td>
-                        {apz.provider_deadline ?
-                          this.toDate(apz.provider_deadline)
+                      {(status === 'active' || status === 'awaiting') && this.checkDeadline(apz.provider_deadline)?
+                          <td style={{color: 'red'}}>
+                              {apz.provider_deadline ?
+                                  this.toDate(apz.provider_deadline)
+                                  :
+                                  this.toDate(apz.term.date)}
+                          </td>
                           :
-                          this.toDate(apz.term.date)}
-                        </td>
+                          <td >
+                              {apz.provider_deadline ?
+                                  this.toDate(apz.provider_deadline)
+                                  :
+                                  this.toDate(apz.term.date)
+                              }
+                          </td>
                       }
                       <td>
                         <Link className="btn btn-outline-info" to={'/panel/phone-provider/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>

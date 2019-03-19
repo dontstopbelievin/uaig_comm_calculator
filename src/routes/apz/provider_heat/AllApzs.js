@@ -75,6 +75,7 @@ export default class AllApzs extends React.Component {
     }.bind(this);
     xhr.send();
   }
+
   sortData(column){
     if(this.state.sortState == 'ASC'){
       this.setState({ sortState: 'DESC'});
@@ -92,6 +93,16 @@ export default class AllApzs extends React.Component {
       }) });
     }
   }
+
+  checkDeadline(date){
+        var jDate = new Date();
+        var dbTime = new Date(date);
+        if(dbTime.getTime()<jDate.getTime()){
+            return true;
+        }
+        return false;
+}
+
   toDate(date) {
     if(date === null) {
       return date;
@@ -164,13 +175,21 @@ export default class AllApzs extends React.Component {
                       <td>{apz.project_address}</td>
                       <td>{this.toDate(apz.created_at)}</td>
 
-                      {(status === 'active' || status === 'awaiting') &&
-                        <td>
-                          {apz.provider_deadline ?
-                            this.toDate(apz.provider_deadline)
-                            :
-                            this.toDate(apz.term.date)}
-                        </td>
+                      {(status === 'active' || status === 'awaiting') && this.checkDeadline(apz.provider_deadline)?
+                          <td style={{color: 'red'}}>
+                              {apz.provider_deadline ?
+                                  this.toDate(apz.provider_deadline)
+                                  :
+                                  this.toDate(apz.term.date)}
+                          </td>
+                          :
+                          <td >
+                              {apz.provider_deadline ?
+                                  this.toDate(apz.provider_deadline)
+                                  :
+                                  this.toDate(apz.term.date)
+                              }
+                          </td>
                       }
                       <td>
                         <Link className="btn btn-outline-info" to={'/panel/heat-provider/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>

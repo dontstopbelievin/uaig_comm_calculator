@@ -75,6 +75,7 @@ export default class AllApzs extends React.Component {
     }.bind(this);
     xhr.send();
   }
+
   sortData(column){
     if(this.state.sortState == 'ASC'){
       this.setState({ sortState: 'DESC'});
@@ -92,6 +93,16 @@ export default class AllApzs extends React.Component {
       }) });
     }
   }
+
+  checkDeadline(date){
+    var jDate = new Date();
+    var dbTime = new Date(date);
+    if(dbTime.getTime()<jDate.getTime()){
+      return true;
+    }
+    return false;
+  }
+
   toDate(date) {
     if(date === null) {
       return date;
@@ -165,12 +176,20 @@ export default class AllApzs extends React.Component {
                         }
                       </td>
                       <td>{apz.project_address}</td>
-                      {(status === 'active' || status === 'awaiting') &&
-                        <td>
+                      {(status === 'active' || status === 'awaiting') && this.checkDeadline(apz.provider_deadline)?
+                        <td style={{color: 'red'}}>
                           {apz.provider_deadline ?
                             this.toDate(apz.provider_deadline)
                             :
                             this.toDate(apz.term.date)}
+                        </td>
+                        :
+                        <td >
+                          {apz.provider_deadline ?
+                              this.toDate(apz.provider_deadline)
+                              :
+                              this.toDate(apz.term.date)
+                          }
                         </td>
                       }
                       <td>

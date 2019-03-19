@@ -37,6 +37,7 @@ export default class AddSketch extends React.Component {
           // hasCoordinates:false,
           personalIdFile: null,
           sketchFile: null,
+          sketchFilePDF: null,
           apzFile:null,
           additionalFile: '',
           paymentPhotoFile: '',
@@ -115,8 +116,6 @@ export default class AddSketch extends React.Component {
       var check=value>0?this.setState({[name]:value}):alert("error");
   }
 
-
-
   downloadFile(id, progbarId = null) {
         var token = sessionStorage.getItem('tokenInfo');
         var url = window.url + 'api/file/download/' + id;
@@ -185,7 +184,7 @@ export default class AddSketch extends React.Component {
         xhr.send();
     }
 
-    uploadFile(category, e) {
+  uploadFile(category, e) {
       var file = e.target.files[0];
       var name = file.name.replace(/\.[^/.]+$/, "");
       var progressbar = $('.progress[data-category=' + category + ']');
@@ -238,6 +237,10 @@ export default class AddSketch extends React.Component {
 
               case 1:
                 this.setState({sketchFile: data});
+                break;
+
+              case 40:
+                this.setState({sketchFilePDF: data});
                 break;
             }
             alert("Файл успешно загружен");
@@ -351,6 +354,10 @@ export default class AddSketch extends React.Component {
         this.setState({sketchFile: data});
         break;
 
+      case '40':
+        this.setState({sketchFilePDF: data});
+        break;
+
       case '2':
         this.setState({apzFile: data});
         break;
@@ -359,14 +366,13 @@ export default class AddSketch extends React.Component {
     $('#selectFileModal').modal('hide');
   }
 
-
-    componentWillMount() {
+  componentWillMount() {
         if (this.props.match.params.id) {
             this.getSketchInfo();
         }
     }
 
-    getSketchInfo() {
+  getSketchInfo() {
     this.setState({loaderHidden: false});
 
     var id = this.props.match.params.id;
@@ -391,6 +397,7 @@ export default class AddSketch extends React.Component {
             this.setState({personalIdFile: sketch.files.filter(function(obj) { return obj.category_id === 3 })[0]});
             this.setState({apzFile: sketch.files.filter(function(obj) { return obj.category_id === 2 })[0]});
             this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
+            this.setState({sketchFilePDF: sketch.files.filter(function(obj) { return obj.category_id === 40 })[0]});
             this.setState({objectType: sketch.object_type ? sketch.object_type : '' });
             this.setState({objectPyaten: sketch.object_pyaten ? sketch.object_pyaten : '' });
             this.setState({objectCarpark: sketch.object_carpark ? sketch.object_carpark : '' });
@@ -415,7 +422,6 @@ export default class AddSketch extends React.Component {
     }.bind(this)
     xhr.send();
 }
-
 
   saveApz(publish,e) {
     e.preventDefault();
@@ -601,7 +607,31 @@ export default class AddSketch extends React.Component {
                                                         <input type="file" id="SketchFile" name="SketchFile" className="form-control" onChange={this.uploadFile.bind(this, 1)} style={{display: 'none'}} />
                                                         <label onClick={this.selectFromList.bind(this, 1)} className="btn btn-info btn-sm">Выбрать из списка</label>
                                                     </div>
-                                                    <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
+                                                    <span className="help-block text-muted">документ в формате dwg</span>
+                                                </div>
+                                            </div>
+                                            <div className="form-group">
+                                                <label>Эскизный проект(pdf)</label>
+                                                <div className="file_container">
+                                                    <div className="progress mb-2" data-category="40" style={{height: '20px', display: 'none'}}>
+                                                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+
+                                                    {this.state.sketchFilePDF &&
+                                                    <div className="file_block mb-2">
+                                                        <div>
+                                                            {this.state.sketchFilePDF.name}
+                                                            <a className="pointer" onClick={(e) => this.setState({sketchFilePDF: false}) }>×</a>
+                                                        </div>
+                                                    </div>
+                                                    }
+
+                                                    <div className="file_buttons btn-group btn-group-justified d-table mt-0">
+                                                        <label htmlFor="SketchFilePDF" className="btn btn-success btn-sm" style={{marginRight: '2px'}}>Загрузить</label>
+                                                        <input type="file" id="SketchFilePDF" name="SketchFilePDF" className="form-control" onChange={this.uploadFile.bind(this, 40)} style={{display: 'none'}} />
+                                                        <label onClick={this.selectFromList.bind(this, 40)} className="btn btn-info btn-sm">Выбрать из списка</label>
+                                                    </div>
+                                                    <span className="help-block text-muted">документ в формате pdf</span>
                                                 </div>
                                             </div>
 

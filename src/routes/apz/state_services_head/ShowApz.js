@@ -442,7 +442,6 @@ export default class ShowApz extends React.Component {
                                     var ascii = binaryString.charCodeAt(i);
                                     bytes[i] = ascii;
                                 }
-
                                 return bytes;
                             }
 
@@ -700,12 +699,10 @@ export default class ShowApz extends React.Component {
                     <AllInfo toggleMap={this.toggleMap.bind(this, true)} apz={this.state.apz} personalIdFile={this.state.personalIdFile} confirmedTaskFile={this.state.confirmedTaskFile} titleDocumentFile={this.state.titleDocumentFile}
                       additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
 
-
                     {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
                     <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                         {this.state.showMapText}
                     </button>
-
 
                     {apz.commission && (Object.keys(apz.commission).length > 0) &&
                       <div>
@@ -713,8 +710,6 @@ export default class ShowApz extends React.Component {
                         <CommissionAnswersList apz={apz} />
                       </div>
                     }
-
-
 
                     <Answers engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
                            backFromHead={this.state.backFromHead} apz_department_response={this.props.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
