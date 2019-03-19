@@ -128,8 +128,9 @@ export default class AllApzs extends React.Component {
                       <td>{apz.applicant}</td>
                       <td>{apz.project_address}</td>
                       <td>{this.toDate(apz.created_at)}</td>
-                      <td>
-                        <Link className="btn btn-outline-info" to={'/panel/admin/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                      <td style={{padding: '0px'}}>
+                        <Link className="btn btn-outline-info btn-sm" to={'/panel/admin/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link className="btn btn-outline-info btn-sm" to={'/panel/admin/apz/update/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Редактировать</Link>
                       </td>
                     </tr>
                     );

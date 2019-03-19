@@ -34,6 +34,7 @@ import AddTemplate from "./routes/reject_templates/AddTemplate";
 import ShowTemplate from "./routes/reject_templates/ShowTemplate";
 import EngineerAllApzs from "./routes/apz/engineer/AllApzs";
 import EngineerShowApz from "./routes/apz/engineer/ShowApz";
+import EngineerEditApz from "./routes/apz/engineer/UpdateApz";
 import StateServicesAllApzs from "./routes/apz/state_services/AllApzs";
 import StateServicesShowApz from "./routes/apz/state_services/ShowApz";
 import HeadAllApzs from "./routes/apz/head/AllApzs";
@@ -50,6 +51,7 @@ import ProviderWaterAllApzs from "./routes/apz/provider_water/AllApzs";
 import ProviderWaterShowApz from "./routes/apz/provider_water/ShowApz";
 import AdminAllApzs from "./routes/admin/AllApzs";
 import AdminShowApz from "./routes/admin/ShowApz";
+import AdminUpdateApz from "./routes/admin/UpdateApz";
 import Admin from './routes/admin/Admin';
 import AddUsers from "./routes/admin/AddUsers";
 import OfficeAllApzs from "./routes/office/AllApzs";
@@ -99,8 +101,8 @@ export default class Main extends React.Component {
         window.url = 'http://uaig/';
         //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
         //window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
-        window.clientSecret = 'B5BCHoPxj4VhKUqs7WHi2HHx6f24xoIK8065tc4s'; // aman
-        // window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
+        // window.clientSecret = 'B5BCHoPxj4VhKUqs7WHi2HHx6f24xoIK8065tc4s'; // aman
+        window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
         // window.clientSecret = '7zdU2XDblqORFq8wbQHlNRaIgEBR90qbMYnnVWDg'; // yernar
         // window.clientSecret = 'ZuW3nP8EUgXgEAqm6j9GxzBfFsOFuQv39NcyHUz3'; // medet
     }
@@ -194,6 +196,7 @@ export default class Main extends React.Component {
 
                                         <Route path="/panel/admin/apz/status/:status/:page" exact render={(props) =>(<AdminAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/admin/apz/show/:id" exact render={(props) =>(<AdminShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/admin/apz/update/:id" exact render={(props) =>(<AdminUpdateApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/admin/user-roles/:page" exact render={(props) => ( <Admin {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                                         <Route path="/panel/admin/users/add" render={(props) => ( <AddUsers {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
 
@@ -234,6 +237,7 @@ export default class Main extends React.Component {
 
                                         <Route path="/panel/engineer/apz/status/:status/:page" exact render={(props) =>(<EngineerAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/engineer/apz/show/:id" exact render={(props) =>(<EngineerShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/engineer/apz/edit/:id" exact render={(props) =>(<EngineerEditApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/engineer/sketch/status/:status/:page" exact render={(props) =>(<EngineerAllSketch {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/engineer/sketch/show/:id" exact render={(props) =>(<EngineerShowSketch {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 

@@ -88,9 +88,9 @@ export default class AllApzs extends React.Component {
     return formated_date;
   }
 
-  toApz(id, e) {
-    this.props.history.push('/panel/engineer/apz/show/' + id);
-  }
+  // toApz(id, e) {
+  //   this.props.history.push('/panel/engineer/apz/show/' + id);
+  // }
 
   sortData(column){
     if(this.state.sortState == 'ASC'){
@@ -160,14 +160,14 @@ export default class AllApzs extends React.Component {
                   <th style={{width: '15%'}} className="apzs_header" onClick={this.sortData.bind(this, 'applicant')}>Заявитель<img className="filter_img" src="/images/filter_icon.png"/></th>
                   <th style={{width: '15%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_address')}>Адрес<img className="filter_img" src="/images/filter_icon.png"/></th>
                   <th style={{width: '15%'}} className="apzs_header" onClick={this.sortData.bind(this, 'region')}>Район<img className="filter_img" src="/images/filter_icon.png"/></th>
-                  {/*<th></th>*/}
+                  <th></th>
                 </tr>
               </thead>
 
               <tbody className="tbody">
                 {apzs.map(function(apz, index) {
                   return(
-                    <tr style={{background: !apz.commission ? '#e1e7ef' : ''}} key={index} className="cursor" onClick={this.toApz.bind(this, apz.id)}>
+                    <tr key={index} >
                       <td>
                         {apz.id}
                       </td>
@@ -188,9 +188,10 @@ export default class AllApzs extends React.Component {
                       <td>
                         {apz.region}
                       </td>
-                      {/*<td>*/}
-                        {/*<Link className="btn btn-outline-info" to={'/panel/engineer/apz/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>*/}
-                      {/*</td>*/}
+                      <td>
+                        <Link className="btn btn-outline-info btn-sm" to={'/panel/engineer/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link style={{marginLeft: '5px' }} className="btn btn-outline-info btn-sm" to={'/panel/engineer/apz/edit/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Редактировать</Link>
+                      </td>
                     </tr>
                   );
                   }.bind(this))
