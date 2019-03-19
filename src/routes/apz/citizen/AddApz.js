@@ -213,7 +213,7 @@ export default class AddApz extends React.Component {
           this.setState({need_water_provider: apz.need_water_provider ? apz.need_water_provider : false });
           this.setState({need_phone_provider: apz.need_phone_provider ? apz.need_phone_provider : false });
           this.setState({need_electro_provider: apz.need_electro_provider ? apz.need_electro_provider : false });
-          this.setState({applicantAddress: apz.applicantAddress ? apz.applicantAddress : '' });
+          this.setState({applicantAddress: apz.address ? apz.address : '' });
           this.setState({phone: apz.phone ? apz.phone : '' });
           this.setState({region: apz.region ? apz.region : '' });
           this.setState({designer: apz.designer ? apz.designer : '' });
