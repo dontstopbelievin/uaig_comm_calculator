@@ -650,13 +650,13 @@ export default class AddSketch extends React.Component {
                                             <div className="form-group">
                                                 <div className="form-group">
                                                     <label htmlFor="landArea">Площадь земельного участка(га):</label>
-                                                    <input data-rh="Площадь земельного участка(га)" data-rh-at="right" type="number" min="0" className="form-control" onChange={this.onInputChange} value={this.state.landArea} name="landArea" placeholder="" />
+                                                    <input data-rh="Площадь земельного участка(га)" data-rh-at="right" type="number" step="any" min="0" className="form-control" onChange={this.onInputChange} value={this.state.landArea} name="landArea" placeholder="" />
                                                 </div>
                                             </div>
                                             <div className="form-group">
                                                 <div className="form-group">
                                                     <label htmlFor="coverArea">Площадь покрытия (м<sup>2</sup>):</label>
-                                                    <input data-rh="Площадь покрытия(кв.м)" data-rh-at="right" type="number" min="0" className="form-control" onChange={this.onInputChange} value={this.state.coverArea} name="coverArea" placeholder="" />
+                                                    <input data-rh="Площадь покрытия(кв.м)" data-rh-at="right" type="number" step="any" min="0" className="form-control" onChange={this.onInputChange} value={this.state.coverArea} name="coverArea" placeholder="" />
                                                 </div>
                                             </div>
                                         </div>
@@ -689,7 +689,7 @@ export default class AddSketch extends React.Component {
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="CommonArea">Общая площадь (м<sup>2</sup>):</label>
-                                                <input data-rh="Общая площадь" data-rh-at="right" type="number" min="0" name="commonArea" onChange={this.onInputChange} value={this.state.commonArea} className="form-control" id="commonArea" placeholder="" />
+                                                <input data-rh="Общая площадь" data-rh-at="right" type="number" step="any" min="0" name="commonArea" onChange={this.onInputChange} value={this.state.commonArea} className="form-control" id="commonArea" placeholder="" />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="ObjectLevel">Этажность :</label>
@@ -721,7 +721,7 @@ export default class AddSketch extends React.Component {
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="BuildArea">Площадь застройки (м<sup>2</sup>):</label>
-                                                <input data-rh="Площадь застройки" data-rh-at="right" type="number" min="0" name="buildArea" onChange={this.onInputChange} value={this.state.buildArea} className="form-control" id="buildArea" placeholder="" />
+                                                <input data-rh="Площадь застройки" data-rh-at="right" type="number" step="any" min="0" name="buildArea" onChange={this.onInputChange} value={this.state.buildArea} className="form-control" id="buildArea" placeholder="" />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="AktNumber">№ акта на право частной собственности:</label>

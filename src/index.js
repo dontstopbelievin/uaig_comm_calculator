@@ -147,11 +147,15 @@ export default class Main extends React.Component {
         }
     }
 
+    forceUpdatePage(){
+      this.forceUpdate();
+    }
+
     render() {
         return (
             <BrowserRouter>
                 <div>
-                    <Route render={(props) => (<KeepSession {...props} />)} />
+                    <Route render={(props) => (<KeepSession forceUpdatePage={this.forceUpdatePage.bind(this)} {...props} />)} />
                     <Route render={(props) => (<Header {...props} />)} />
                     <div className="container body-content">
                         <Link className="active my_font_size" to='/panel/base-page'>{e['electron-architecture']}</Link>

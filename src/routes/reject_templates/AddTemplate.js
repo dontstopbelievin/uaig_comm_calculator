@@ -60,7 +60,7 @@ export default class AddTemplate extends React.Component{
           <div className="row">
             <div className="col-sm-12">
               <div className="form-group">
-                <label htmlFor="Region">Район</label>
+                <label htmlFor="Region">Тип гос услуги</label>
                 <select className="form-control" onChange={this.onInputChange} value={this.state.type} name="type">
                   <option value="apz">АПЗ</option>
                   <option value="sketch">Эскизный проект</option>

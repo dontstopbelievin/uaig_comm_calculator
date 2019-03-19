@@ -21,32 +21,31 @@ export default class ShowSketch extends React.Component {
         this.state = {
             sketch: [],
             templates: [],
+            theme: '',
+            apz_head_id: '',
+            apz_heads_id: [],
             showMap: false,
             showButtons: true,
-            description: '',
+            comment: '',
             docNumber: "",
             showMapText: 'Показать карту',
             loaderHidden: false,
             personalIdFile: false,
             sketchFile: false,
             apzFile: false,
-            // engineerReturnedState: false,
             apzReturnedState: false,
             sketchReturnedState: false,
             needSign: false,
             response: true,
             storageAlias: "PKCS12",
-            //acceptSign: false,
             backFromHead: false,
-            apz_head_id: '',
-            apz_heads_id: [],
             engineerSign: false,
             xmlFile: false,
             loaderHiddenSign:true,
             isSended:false
         };
 
-        this.onDescriptionChange = this.onDescriptionChange.bind(this);
+        this.onCommentChange = this.onCommentChange.bind(this);
         this.onDocNumberChange = this.onDocNumberChange.bind(this);
     }
     onDocNumberChange(e) {
@@ -54,21 +53,28 @@ export default class ShowSketch extends React.Component {
     }
 
 
-    onDescriptionChange(value) {
-        this.setState({ description: value });
+    onCommentChange(value) {
+        this.setState({ comment: value });
     }
 
     onTemplateListChange(e) {
-        if(e.target.value == ''){
-          this.setState({ description: '' });
-        }else{
-          var template = this.state.templates.find(template => template.id == e.target.value);
-          this.setState({ description: template.text });
-        }
+      if(e.target.value != ''){
+        var template = this.state.templates.find(template => template.id == e.target.value);
+        this.setState({ comment: template.text });
+        this.setState({ theme: template.title });
+      }else{
+        this.setState({ theme: '' });
+      }
     }
+
+    onThemeChange(e) {
+      this.setState({ theme: e.target.value });
+    }
+
     componentDidMount() {
         this.props.breadCrumbs();
     }
+
     componentWillMount() {
         if(!sessionStorage.getItem('tokenInfo')){
             let fullLoc = window.location.href.split('/');
@@ -132,8 +138,8 @@ export default class ShowSketch extends React.Component {
                     }
                     break;
                 }
-                this.setState({engineerReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender == 'engineer'})[0]});
-                this.setState({apzReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.sender == 'apz'})[0]});
+                this.setState({engineerReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 6})[0]});
+                this.setState({apzReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 17})[0]});
                 this.setState({needSign: sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
                 this.setState({engineerSign: sketch.files.filter(function(obj) { return obj.category_id === 28 })[0]});
                 if(sketch.apz_head_id){this.setState({apz_head_id: sketch.apz_head_id});}
@@ -520,7 +526,7 @@ export default class ShowSketch extends React.Component {
     }
 
     acceptDeclineSketchForm(sketchId, status, comment, direct) {
-        console.log(this.state.apz_head_id);
+        //console.log(this.state.apz_head_id);
         var token = sessionStorage.getItem('tokenInfo');
 
         var registerData = {
@@ -528,11 +534,12 @@ export default class ShowSketch extends React.Component {
             message: comment,
             apz_head_id: this.state.apz_head_id,
             direct: direct.length > 0 ? direct : 'engineer',
-            docNumber:this.state.docNumber
+            docNumber: this.state.docNumber,
+            theme: this.state.theme
         };
 
-        if (!status && !comment) {
-            alert('Заполните причину отказа');
+        if (!status && (comment.trim() == '' || this.state.theme.trim() == '')) {
+            alert('Для отказа напишите тему и причину отказа.');
             return false;
         }
 
@@ -567,7 +574,7 @@ export default class ShowSketch extends React.Component {
             }
 
             if (!status) {
-                $('#accDecApzForm').modal('hide');
+                $('#ReturnApzForm').modal('hide');
             }
         }.bind(this);
         xhr.send(data);
@@ -576,10 +583,6 @@ export default class ShowSketch extends React.Component {
     hideSignBtns() {
         this.setState({needSign: false });
     }
-
-    /*sendToApzAccept(){
-      this.setState({acceptSign: true });
-    }*/
 
     toggleMap(value) {
         this.setState({
@@ -1076,7 +1079,7 @@ export default class ShowSketch extends React.Component {
                                     {!this.state.needSign ?
                                         <div style={{margin: 'auto', display: 'table'}}>{console.log(this.state.engineerReturnedState)}
                                             <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled={!this.state.docNumber} onClick={this.sendToApz.bind(this,true)}>Одобрить</button>
-                                            <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">
+                                            <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">
                                                 Отклонить
                                             </button>
                                         </div>
@@ -1124,41 +1127,54 @@ export default class ShowSketch extends React.Component {
                                 </div>
                             }
 
-                            <div className="modal fade" id="accDecApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                                <div className="modal-dialog modal-lg" role="document">
-                                    <div className="modal-content">
-                                        <div className="modal-header">
-                                            <h5 className="modal-title">Причина отклонения</h5>
-                                            <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div className="modal-body">
-                                            {this.state.templates.length > 0 &&
-                                            <div className="form-group">
-                                                <select className="form-control" defaultValue="" id="templateList" onChange={this.onTemplateListChange.bind(this)}>
-                                                    <option value="">Выберите шаблон</option>
-                                                    {this.state.templates.map(function(template, index) {
-                                                        return(
-                                                            <option key={index} value={template.id}>{template.title}</option>
-                                                        );
-                                                    }.bind(this))
-                                                    }
-                                                </select>
-                                            </div>
-                                            }
-
-                                            <div className="form-group">
-                                                <ReactQuill value={this.state.description} onChange={this.onDescriptionChange} />
-                                            </div>
-                                        </div>
-                                        <div className="modal-footer">
-                                            <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, false, this.state.description,"",this.state.docNumber)}>Отправить</button>
-                                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                        </div>
+                            <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                              <div className="modal-dialog" role="document">
+                                <div className="modal-content">
+                                  <div className="modal-header">
+                                    <h5 className="modal-title">Мотивированный отказ</h5>
+                                    <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div className="modal-body">
+                                    {this.state.templates && this.state.templates.length > 0 &&
+                                      <div className="form-group">
+                                        <select className="form-control" defaultValue="" id="templateList" onChange={this.onTemplateListChange.bind(this)}>
+                                          <option value="">Выберите шаблон</option>
+                                          {this.state.templates.map(function(template, index) {
+                                            return(
+                                              <option key={index} value={template.id}>{template.title}</option>
+                                              );
+                                            })
+                                          }
+                                        </select>
+                                      </div>
+                                    }
+                                    <div style={{paddingLeft:'5px', fontSize: '18px'}}>
+                                      <b>Выберите главного архитектора:</b>
+                                      <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
+                                        {this.state.apz_heads_id}
+                                      </select>
                                     </div>
+                                    <div className="form-group">
+                                      <label>Тема(краткое описание)</label>
+                                      <div>
+                                        <input value={this.state.theme} onChange={this.onThemeChange.bind(this)} />
+                                      </div>
+                                    </div>
+                                    <div className="form-group">
+                                      <label>Причина отказа</label>
+                                      <ReactQuill value={this.state.comment} onChange={this.onCommentChange} />
+                                    </div>
+                                  </div>
+                                  <div className="modal-footer">
+                                    <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, false, this.state.comment,"",this.state.docNumber)}>Отправить</button>
+                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                  </div>
                                 </div>
+                              </div>
                             </div>
+
                         </div>
                     </div>
 

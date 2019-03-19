@@ -8,9 +8,8 @@ export default class ExportToExcel extends React.Component {
     this.state = {
       start_date: '',
       end_date: '',
-      object_type: 'all'
-      //region: 'all',
-      //type: 'all'
+      object_type: 'all',
+      service_type: 'apzs'
     };
 
     this.onInputChange = this.onInputChange.bind(this);
@@ -44,7 +43,7 @@ export default class ExportToExcel extends React.Component {
 
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + 'api/export_to_excel/export', true);
+    xhr.open("post", window.url + 'api/export_to_excel/export/' + this.state.service_type, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     var vision = $('.text-info[data-category='+progbarId+']');
@@ -74,12 +73,23 @@ export default class ExportToExcel extends React.Component {
     return (
       <div>
       <div className="card-header">
-          <h4 className="mb-0">Экспорт отчета по архитектурно-планировочным заданиям</h4>
+          <h4 className="mb-0">Экспорт отчета по гос услугам</h4>
       </div>
       <div className="filter">
         <form className="office_filter">
           <div className="row">
             <div className="offset-sm-2 col-sm-8">
+              <div className="form-group form-inline row">
+                <div className="col-sm-4">
+                  <label htmlFor="object_type" className="bmd-label-floating" style={{paddingRight:'20px'}}>Вид гос услуги : </label>
+                </div>
+                <div className="col-sm-8">
+                  <select className="form-control" id="object_type" name="service_type" onChange={this.onInputChange} value={this.state.service_type}>
+                    <option value="apzs">АПЗ</option>
+                    <option value="sketches">Эскизный проект</option>
+                  </select>
+                </div>
+              </div>
               <div className="form-group form-inline row">
                 <div className="col-sm-4">
                   <label htmlFor="start_date" className="bmd-label-floating" style={{paddingRight:'20px'}}>Дата создания от : </label>
@@ -96,24 +106,6 @@ export default class ExportToExcel extends React.Component {
                   <input type="date" className="form-control" id="end_date" name="end_date" onChange={this.onInputChange} value={this.state.end_date} />
                 </div>
               </div>
-              {/*<div className="form-group form-inline row">
-                <div className="col-sm-4">
-                  <label htmlFor="region" className="bmd-label-floating" style={{paddingRight:'20px'}}>Район : </label>
-                </div>
-                <div className="col-sm-8">
-                  <select className="form-control" id="region" name="region" onChange={this.onInputChange} value={this.state.region}>
-                    <option value="all">Все</option>
-                    <option>Наурызбай</option>
-                    <option>Алатау</option>
-                    <option>Алмалы</option>
-                    <option>Ауезов</option>
-                    <option>Бостандық</option>
-                    <option>Жетісу</option>
-                    <option>Медеу</option>
-                    <option>Турксиб</option>
-                  </select>
-                </div>
-              </div>*/}
               <div className="form-group form-inline row">
                 <div className="col-sm-4">
                   <label htmlFor="object_type" className="bmd-label-floating" style={{paddingRight:'20px'}}>Тип строения : </label>
@@ -128,18 +120,6 @@ export default class ExportToExcel extends React.Component {
                   </select>
                 </div>
               </div>
-              {/*<div className="form-group form-inline row">
-                <div className="col-sm-4">
-                  <label htmlFor="type" className="bmd-label-floating" style={{paddingRight:'20px'}}>Пакет : </label>
-                </div>
-                <div className="col-sm-8">
-                  <select className="form-control" id="type" name="type" onChange={this.onInputChange} value={this.state.type}>
-                    <option value="all">Все</option>
-                    <option value="1">Пакет 1</option>
-                    <option value="2">Пакет 2</option>
-                  </select>
-                </div>
-              </div>*/}
               <div className="form-group row">
                 <div className="offset-sm-4 col-sm-8">
                   <button type="button" data-category="1" onClick={this.exportToExcel.bind(this, 1)} className="btn btn-success text-info" style={{marginRight:'10px'}}>Экспортировать</button>

@@ -26,8 +26,9 @@ export default class KeepSession extends React.Component {
         sessionStorage.setItem("userBin", JSON.parse(event.newValue).bin ? JSON.parse(event.newValue).bin : '');
         sessionStorage.setItem("userRoles", JSON.parse(event.newValue).roles);
         sessionStorage.setItem("logStatus", true);
-        console.log(this.props.history);
-        this.props.history.replace(this.props.history.location.pathname);
+        //console.log(this.props.history);
+        //this.props.history.replace(this.props.history.location.pathname);
+        this.props.forceUpdatePage();
       }
 
       if(event.key === 'CREDENTIALS_FLUSH' && credentials){
@@ -43,8 +44,8 @@ export default class KeepSession extends React.Component {
   }
 
   componentDidMount() {
-  localStorage.setItem('REQUESTING_SHARED_CREDENTIALS', Date.now().toString());
-  localStorage.removeItem('REQUESTING_SHARED_CREDENTIALS');
+    localStorage.setItem('REQUESTING_SHARED_CREDENTIALS', Date.now().toString());
+    localStorage.removeItem('REQUESTING_SHARED_CREDENTIALS');
   }
 
   render(){
