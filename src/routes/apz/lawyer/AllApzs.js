@@ -108,9 +108,10 @@ export default class AllApzs extends React.Component {
     var items = e.target.value.trim().split(' ');
     var data = this.state.data_reserve.filter(function(obj) {
         for(var i = 0; i < items.length; i++){
-          if(obj.applicant.toLowerCase().includes(items[i].toLowerCase())){continue;}
+          if(obj.applicant.toLowerCase().includes(items[i].toLowerCase())  || obj.project_address.toLowerCase().includes(items[i].toLowerCase()) ){continue;}
           else{return false;}
         }
+       console.log(obj);
        return true;
      });
     this.setState({data: data});
