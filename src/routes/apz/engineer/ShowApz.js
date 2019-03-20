@@ -3,11 +3,11 @@ import {NavLink} from 'react-router-dom';
 import $ from 'jquery';
 import 'jquery-serializejson';
 import Loader from 'react-loader-spinner';
-import ReactQuill from 'react-quill';
 import ShowMap from "../components/ShowMap";
 import EcpSign from "../components/EcpSign";
 import AllInfo from "../components/AllInfo";
 import Logs from "../components/Logs";
+import ReactQuill from 'react-quill';
 
 export default class ShowApz extends React.Component {
   constructor(props) {
@@ -16,7 +16,6 @@ export default class ShowApz extends React.Component {
     this.state = {
       apz: [],
       templates: [],
-      theme: '',
       apz_head_id: '',
       apz_heads_id: [],
       showMap: false,
@@ -64,30 +63,24 @@ export default class ShowApz extends React.Component {
     this.props.breadCrumbs();
   }
 
-  handleHeadIDChange(event){
-    this.setState({apz_head_id: event.target.value});
-  }
-
   onInputChange(e) {
     const value = e.target.value;
     const name = e.target.name;
     this.setState({ [name] : value });
   }
-
   onDocNumberChange(e) {
     this.setState({ docNumber: e.target.value });
   }
-
   onCommentChange(value) {
     this.setState({ comment: value });
   }
 
-  onThemeChange(e) {
-    this.setState({ theme: e.target.value });
-  }
-
   onFileChange(e) {
     this.setState({ file: e.target.files[0] });
+  }
+
+  handleHeadIDChange(event){
+    this.setState({apz_head_id: event.target.value});
   }
 
   componentWillMount() {
@@ -105,9 +98,6 @@ export default class ShowApz extends React.Component {
     if(e.target.value != ''){
       var template = this.state.templates.find(template => template.id == e.target.value);
       this.setState({ comment: template.text });
-      this.setState({ theme: template.title });
-    }else{
-      this.setState({ theme: '' });
     }
   }
 
@@ -229,7 +219,6 @@ export default class ShowApz extends React.Component {
       this.setState({loaderHidden: true});
       this.setState({needSign: true });
   }
-
   hideSignBtns(){
       this.setState({loaderHidden: false});
       this.setState({ needSign: false });
@@ -693,15 +682,14 @@ export default class ShowApz extends React.Component {
   }
 
   acceptDeclineApzForm(apzId, status, comment) {
-    if(!status && (comment.trim() == '' || this.state.theme.trim() == '')){
-      alert('Для отказа напишите тему и причину отказа.');
+    if(!status && comment.trim() == ''){
+      alert('Для отказа напишите комментарий.');
       return false;
     }
     var token = sessionStorage.getItem('tokenInfo');
     var formData = new FormData();
     formData.append('response', status);
     formData.append('message', comment);
-    formData.append('theme', this.state.theme);
     if ( this.state.pack2IdFile != null ) {
       formData.append('file_id', this.state.pack2IdFile.id);
     }else{
@@ -901,13 +889,13 @@ export default class ShowApz extends React.Component {
     return (
       <div className="row">
         <div className="col-sm-12">
-          <button className="btn btn-outline-secondary btn-sm" onClick={this.props.history.goBack}>Назад</button>
+          <button style={{padding:'5px'}} className="btn btn-outline-secondary btn-sm" onClick={this.props.history.goBack}>Назад</button>
           <AllInfo toggleMap={this.toggleMap.bind(this, true)} apz={this.state.apz} personalIdFile={this.state.personalIdFile} confirmedTaskFile={this.state.confirmedTaskFile} titleDocumentFile={this.state.titleDocumentFile}
             additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
         </div>
 
         <div className="col-sm-12">
-          {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} mapId={"b5a3c97bd18442c1949ba5aefc4c1835"} />}
+          {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} mapId={"b5a3c97bd18442c1949ba5aefc4c1835"}/>}
 
           <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
             {this.state.showMapText}
@@ -1106,7 +1094,6 @@ export default class ShowApz extends React.Component {
                   <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">
                     Отклонить
                   </button>
-
                   <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
                     <div className="modal-dialog" role="document">
                       <div className="modal-content">
@@ -1137,29 +1124,22 @@ export default class ShowApz extends React.Component {
                             </select>
                           </div>
                           <div className="form-group">
-                            <label>Тема(краткое описание)</label>
-                            <div>
-                              <input value={this.state.theme} onChange={this.onThemeChange.bind(this)} />
-                            </div>
-                          </div>
-                          <div className="form-group">
                             <label>Причина отказа</label>
                             <ReactQuill value={this.state.comment} onChange={this.onCommentChange} />
                           </div>
                         </div>
                         <div className="modal-footer">
-                          <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.comment)}>Отправить Юристу</button>
+                          <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, false, this.state.comment, 'head')}>Отправить Юристу</button>
                           <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                         </div>
                       </div>
                     </div>
                   </div>
-
                 </div>
                 :
                   <div>
                   { !this.state.xmlFile ?
-                    <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="engineer" id={apz.id} serviceName='apz'/>
+                    <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="engineer" apz_id={apz.id}/>
                     :
                     <div>
                       <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
@@ -1748,7 +1728,6 @@ export default class ShowApz extends React.Component {
           }
 
           <div className="col-sm-12">
-            <hr />
             <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
           </div>
         </div>
