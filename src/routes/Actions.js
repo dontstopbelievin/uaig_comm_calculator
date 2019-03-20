@@ -18,7 +18,6 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 let e = new LocalizedStrings({ru,kk});
 
-
 export default class CitizenActions extends React.Component {
     constructor(props) {
       super(props);
@@ -59,7 +58,19 @@ export default class CitizenActions extends React.Component {
       var welcome_texts = [false, false];
       welcome_texts[index-1] = true;
       this.setState({welcome_texts: welcome_texts});
+      if(sessionStorage.getItem('tokenInfo')){
+        this.setState({ tokenExists: true });
+        var roleName = JSON.parse(sessionStorage.getItem('userRoles'))[0];
+        if(roleName === 'Urban' || roleName === 'Provider'){
+          roleName = JSON.parse(sessionStorage.getItem('userRoles'))[1];
+          this.setState({ rolename: roleName });
+        }
+        else{
+          this.setState({ rolename: roleName });
+        }
+      }
     }
+
     InProcess(){
       alert("Данный раздел находится в разработке.");
     }

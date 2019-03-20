@@ -519,17 +519,6 @@ export default class ShowSketch extends React.Component {
                 <div className="col-sm-6">
                     <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
 
-                    {/*<table className="table table-bordered table-striped">*/}
-                        {/*<tbody>*/}
-                        {/*<tr>*/}
-                            {/*<td style={{width: '100%'}}><b>Тип заявки</b></td>*/}
-                        {/*</tr>*/}
-                        {/*<tr>*/}
-                            {/*<td>{sketch.type === 1 ? 'Пакет 1': (sketch.type === 2 ? 'Пакет 2': 'Не определенный тип')}</td>*/}
-                        {/*</tr>*/}
-                        {/*</tbody>*/}
-                    {/*</table>*/}
-
                     <table className="table table-bordered table-striped">
                         <tbody>
                         <tr>

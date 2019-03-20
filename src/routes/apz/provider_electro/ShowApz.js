@@ -289,6 +289,7 @@ export default class ShowApz extends React.Component {
       }
     xhr.send();
   }
+
   downloadAllFile(id) {
     var token = sessionStorage.getItem('tokenInfo');
 

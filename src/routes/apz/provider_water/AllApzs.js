@@ -75,6 +75,7 @@ export default class AllApzs extends React.Component {
     }.bind(this);
     xhr.send();
   }
+
   sortData(column){
     if(this.state.sortState == 'ASC'){
       this.setState({ sortState: 'DESC'});
@@ -92,6 +93,16 @@ export default class AllApzs extends React.Component {
       }) });
     }
   }
+
+  checkDeadline(date){
+    var jDate = new Date();
+    var dbTime = new Date(date);
+    if(dbTime.getTime()<jDate.getTime()){
+      return true;
+    }
+    return false;
+  }
+
   toDate(date) {
     if(date === null) {
       return date;
@@ -116,7 +127,9 @@ export default class AllApzs extends React.Component {
     return (
       <div>
         <div className="card-header">
-          <h4 className="mb-0">Архитектурно-планировочное задание</h4>
+          <h4 className="mb-0">Архитектурно-планировочное задание
+          <NavLink to="/panel/common/export_to_excel"><img title="Экспорт в excel" src='/images/excelicon.png' className="export_image" alt="export excel"/></NavLink>
+          </h4>
         </div>
         {this.state.loaderHidden &&
           <div>
@@ -164,7 +177,7 @@ export default class AllApzs extends React.Component {
                       </td>
                       <td>{apz.project_address}</td>
                       {(status === 'active' || status === 'awaiting') &&
-                        <td>
+                        <td style={{color: this.checkDeadline(apz.provider_deadline)? 'red' : 'initial'}}>
                           {apz.provider_deadline ?
                             this.toDate(apz.provider_deadline)
                             :
