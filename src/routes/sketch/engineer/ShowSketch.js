@@ -4,6 +4,7 @@ import 'jquery-serializejson';
 import Loader from 'react-loader-spinner';
 import ShowMap from './ShowMap';
 import EcpSign from '../../apz/components/EcpSign';
+import Logs from "../../apz/components/Logs";
 
 export default class ShowSketch extends React.Component {
     constructor(props) {
@@ -602,16 +603,7 @@ export default class ShowSketch extends React.Component {
                     </div>
                     }
 
-                    <h5 className="block-title-2 mb-3">Логи</h5>
-                    <div className="border px-3 py-2">
-                        {sketch.state_history.map(function(state, index) {
-                            return(
-                                <div key={index}>
-                                    <p className="mb-0">{state.created_at}&emsp;{state.state.name}  {state.receiver && '('+state.receiver+')'}</p>
-                                </div>
-                            );
-                        }.bind(this))}
-                    </div>
+                    <Logs state_history={this.state.sketch.state_history} />
 
                     <div className="col-sm-12">
                         <hr />
