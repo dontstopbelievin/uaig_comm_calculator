@@ -66,7 +66,7 @@ export default class EcpSign extends React.Component {
     }
 
     signMessage() {
-      if (this.props.rolename == 'head'){
+      if (this.props.rolename == 'head' && this.props.serviceName == 'apz'){
         this.props.beforeSign();
       }
       if (this.props.rolename == 'generalplan'){
