@@ -304,6 +304,8 @@ export default class ShowSketch extends React.Component {
                 //var data = JSON.parse(xhr.responseText);
 
                 if(status === true) {
+                    this.setState({ isSended: true});
+                    console.log(this.state.isSended);
                     alert("Заявление принято!");
                     this.setState({ showButtons: false });
                     this.setState({ isSent: true});
@@ -311,6 +313,7 @@ export default class ShowSketch extends React.Component {
 
                 } else {
                     // this.setState({ isSent: false});
+
 
                     alert("Заявление отклонено!");
                     this.setState({ showButtons: false });
@@ -399,6 +402,65 @@ export default class ShowSketch extends React.Component {
                         }());
 
                         saveByteArray([base64ToArrayBuffer(data.file)], "МО.pdf");
+                    }
+                } else {
+                    alert('Не удалось скачать файл');
+                }
+            }
+            xhr.send();
+        } else {
+            console.log('Время сессии истекло.');
+        }
+    }
+
+    printSketchAnswer(sketchId, progbarId = null) {
+        var token = sessionStorage.getItem('tokenInfo');
+        if (token) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("get", window.url + "api/print/sketch/" + sketchId, true);
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    //test of IE
+                    if (typeof window.navigator.msSaveBlob === "function") {
+                        window.navigator.msSaveBlob(xhr.response, "Sogl.pdf");
+                    } else {
+                        var data = JSON.parse(xhr.responseText);
+
+                        var base64ToArrayBuffer = (function () {
+
+                            return function (base64) {
+                                var binaryString =  window.atob(base64);
+                                var binaryLen = binaryString.length;
+                                var bytes = new Uint8Array(binaryLen);
+
+                                for (var i = 0; i < binaryLen; i++) {
+                                    var ascii = binaryString.charCodeAt(i);
+                                    bytes[i] = ascii;
+                                }
+
+                                return bytes;
+                            }
+
+                        }());
+
+                        var saveByteArray = (function () {
+                            var a = document.createElement("a");
+                            document.body.appendChild(a);
+                            a.style = "display: none";
+
+                            return function (data, name) {
+                                var blob = new Blob(data, {type: "octet/stream"}),
+                                    url = window.URL.createObjectURL(blob);
+                                a.href = url;
+                                a.download = name;
+                                a.click();
+                                setTimeout(function() {window.URL.revokeObjectURL(url);},1000);
+                            };
+
+                        }());
+
+                        saveByteArray([base64ToArrayBuffer(data.file)], "Sogl.pdf");
                     }
                 } else {
                     alert('Не удалось скачать файл');
@@ -503,10 +565,38 @@ export default class ShowSketch extends React.Component {
                                                 <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="region" id={this.state.sketch.id} serviceName='sketch'/>
                                                 :
                                                 <div>
+<<<<<<< Updated upstream
                                                     <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, this.state.sketch.id, true, "your form was accepted","")}>Отправить инженеру</button>
                                                     <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, this.state.sketch.id, true, "your form was accepted", "chief")}>
                                                         Отправить главному архитектору
                                                     </button>
+=======
+                                                    { this.state.response  ?
+                                                        <div>
+                                                            <button className="btn btn-raised btn-success"
+                                                                    style={{marginRight: '5px'}}
+                                                                    onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted", "")}>Отправить
+                                                                инженеру
+                                                            </button>
+                                                            <button className="btn btn-raised btn-success"
+                                                                    style={{marginRight: '5px'}}
+                                                                    onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted", "chief")}>
+                                                                Отправить главному архитектору
+                                                            </button>
+                                                        </div>
+                                                        :
+                                                        <table className="table table-bordered">
+                                                            <tbody>
+                                                            <tr>
+                                                                <td style={{width: '22%'}}><b>Согласование</b></td>
+                                                                <td><a className="text-info pointer"
+                                                                       onClick={this.printSketchAnswer.bind(this, sketch.id)}>Скачать</a>
+                                                                </td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    }
+>>>>>>> Stashed changes
                                                 </div>
                                             }
                                         </div>
@@ -568,6 +658,18 @@ export default class ShowSketch extends React.Component {
                         </div>
                     </div>
 
+                    {/*{console.log(sketch)}*/}
+                    {/*{sketch.urban_response &&*/}
+                    {/*<table className="table table-bordered">*/}
+                        {/*<tbody>*/}
+                        {/*<tr>*/}
+                            {/*<td style={{width: '22%'}}><b>Согласование</b></td>*/}
+                            {/*<td><a className="text-info pointer"*/}
+                                   {/*onClick={this.printSketchAnswer.bind(this, sketch.id)}>Скачать</a></td>*/}
+                        {/*</tr>*/}
+                        {/*</tbody>*/}
+                    {/*</table>*/}
+                    {/*}*/}
                     <Logs state_history={this.state.sketch.state_history} />
 
                     <div className="col-sm-12">
