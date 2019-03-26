@@ -39,6 +39,7 @@ export default class KeepSession extends React.Component {
         sessionStorage.removeItem('userBin');
         sessionStorage.removeItem('userRoles');
         sessionStorage.removeItem('logStatus');
+        this.props.forceUpdatePage();
       }
     })
   }

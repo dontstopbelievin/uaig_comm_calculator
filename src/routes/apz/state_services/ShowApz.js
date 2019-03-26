@@ -565,33 +565,28 @@ export default class ShowApz extends React.Component {
     }
 
     render() {
-      var apz = this.state.apz;
       var counter = 1;
-
-      if (apz.length === 0) {
-        return false;
-      }
 
       return (
         <div>
           <AllInfo toggleMap={this.toggleMap.bind(this, true)} apz={this.state.apz} personalIdFile={this.state.personalIdFile} confirmedTaskFile={this.state.confirmedTaskFile} titleDocumentFile={this.state.titleDocumentFile}
             additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
 
-          {apz.commission && (Object.keys(apz.commission).length > 0) &&
+          {this.state.apz.commission && (Object.keys(this.state.apz.commission).length > 0) &&
             <div>
               <h5 className="block-title-2 mb-3">Ответы от служб</h5>
-              <CommissionAnswersList apz={apz} />
+              <CommissionAnswersList apz={this.state.apz} />
             </div>
           }
 
-          {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} mapId={"0e8ae8f43ea94d358673e749f9a5e147"} />}
+          {this.state.showMap && <ShowMap coordinates={this.state.apz.project_address_coordinates} mapId={"0e8ae8f43ea94d358673e749f9a5e147"} />}
 
           <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
             {this.state.showMapText}
           </button>
 
           <Answers engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
-                   backFromHead={this.state.backFromHead} apz_department_response={this.props.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
+                   backFromHead={this.state.backFromHead} apz_department_response={this.state.apz.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
                    apz_status={this.state.apz.status_id} schemeComment={this.state.schemeComment}
                    calculationComment={this.state.calculationComment} reglamentComment={this.state.reglamentComment} schemeFile={this.state.schemeFile}
                    calculationFile={this.state.calculationFile} reglamentFile={this.state.reglamentFile}/>
@@ -927,20 +922,20 @@ export default class ShowApz extends React.Component {
           }
 
           {this.state.showSignButtons && !this.state.showSendButton &&
-              <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="stateservices" id={apz.id} serviceName='apz'/>
+              <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="stateservices" id={this.state.apz.id} serviceName='apz'/>
           }
 
           {this.state.showButtons && !this.state.showSendButton &&
             <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
             {(!this.state.backFromGP || !this.state.reglamentFile) &&
-              <button type="button" style={{marginRight:'5px'}} className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'gen_plan')}>Отправить отделу ген плана</button>
+              <button type="button" style={{marginRight:'5px'}} className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, this.state.apz.id, true, "", 'gen_plan')}>Отправить отделу ген плана</button>
             }
-            {(this.state.backFromEngineer && !apz.apz_department_response) ?
-              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.saveForm.bind(this, apz.id, true, "")}>
+            {(this.state.backFromEngineer && !this.state.apz.apz_department_response) ?
+              <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.saveForm.bind(this, this.state.apz.id, true, "")}>
                 Сохранить
               </button>
               :
-              <button type="button" style={{marginRight:'5px'}} className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'engineer')}>Отправить инженеру</button>
+              <button type="button" style={{marginRight:'5px'}} className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, this.state.apz.id, true, "", 'engineer')}>Отправить инженеру</button>
             }
               <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">Отклонить</button>
             </div>
@@ -948,7 +943,7 @@ export default class ShowApz extends React.Component {
 
           {this.state.showSendButton &&
             <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', display: 'table'}}>
-              <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, apz.id, true, "", 'head')} style={{marginRight:'5px'}}>Отправить начальнику Гос Услуг</button>
+              <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, this.state.apz.id, true, "", 'head')} style={{marginRight:'5px'}}>Отправить начальнику Гос Услуг</button>
               <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">Отклонить</button>
             </div>
           }
@@ -994,7 +989,7 @@ export default class ShowApz extends React.Component {
                   </div>
                 </div>
                 <div className="modal-footer">
-                  <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.sendForm.bind(this, apz.id, false, this.state.comment, 'lawyer')}>Отправить Юристу</button>
+                  <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.sendForm.bind(this, this.state.apz.id, false, this.state.comment, 'lawyer')}>Отправить Юристу</button>
                   <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                 </div>
               </div>

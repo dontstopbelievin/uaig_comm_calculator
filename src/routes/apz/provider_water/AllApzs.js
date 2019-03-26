@@ -177,7 +177,7 @@ export default class AllApzs extends React.Component {
                       </td>
                       <td>{apz.project_address}</td>
                       {(status === 'active' || status === 'awaiting') &&
-                        <td style={{color: this.checkDeadline(apz.provider_deadline)? 'red' : 'initial'}}>
+                        <td style={{backgroundColor: this.checkDeadline(apz.provider_deadline)? '#fdd' : 'initial'}}>
                           {apz.provider_deadline ?
                             this.toDate(apz.provider_deadline)
                             :

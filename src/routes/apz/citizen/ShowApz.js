@@ -7,6 +7,7 @@ import ShowMap from "../components/ShowMap";
 import AllInfo from "../components/AllInfo";
 import CommissionAnswersList from '../components/CommissionAnswersList';
 import Logs from "../components/Logs";
+import Answers from "../components/Answers";
 
 export default class ShowApz extends React.Component {
     constructor(props) {
@@ -703,62 +704,11 @@ export default class ShowApz extends React.Component {
                 {this.state.showMapText}
               </button>
 
-              {(apz.status_id === 1 || apz.status_id === 2) &&
-                <div>
-                  <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
-
-                  {apz.status_id === 2 &&
-                    <table className="table table-bordered table-striped">
-                      <tbody>
-                        {this.state.headResponseFile &&
-                          <tr>
-                            <td style={{width: '22%'}}><b>Загруженный АПЗ</b></td>
-                            <td><a className="text-info pointer" data-category="7" onClick={this.downloadFile.bind(this, this.state.headResponseFile.id, 7)}>Скачать</a>
-                              <div className="progress mb-2" data-category="7" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                              </div>
-                            </td>
-                          </tr>
-                        }
-
-                        <tr>
-                          <td style={{width: '22%'}}><b>Сформированный АПЗ</b></td>
-                          <td><a className="text-info pointer" onClick={this.printApz.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  }
-
-                  {apz.status_id === 1 &&
-                    <div>
-                      {this.state.otkazFile ?
-                      <table className="table table-bordered">
-                          <tbody>
-                          <tr>
-                              <td style={{width: '22%'}}><b>Запрос</b></td>
-                              <td>
-                                <a className="text-info pointer" data-category="22" onClick={this.downloadFile.bind(this, this.state.otkazFile.id, 22)}>Скачать</a>
-                                <div className="progress mb-2" data-category="22" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                              </td>
-                          </tr>
-                          </tbody>
-                      </table>
-                      :
-                      <table className="table table-bordered">
-                        <tbody>
-                          <tr>
-                            <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
-                            <td><a className="text-info pointer" onClick={this.printRegionAnswer.bind(this, apz.id)}>Скачать</a></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    }
-                  </div>
-                  }
-                </div>
-              }
+              <Answers engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
+                       backFromHead={this.state.backFromHead} apz_department_response={this.state.apz.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
+                       apz_status={this.state.apz.status_id} schemeComment={this.state.schemeComment}
+                       calculationComment={this.state.calculationComment} reglamentComment={this.state.reglamentComment} schemeFile={this.state.schemeFile}
+                       calculationFile={this.state.calculationFile} reglamentFile={this.state.reglamentFile}/>
 
               <Logs state_history={this.state.apz.state_history} />
 

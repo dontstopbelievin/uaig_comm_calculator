@@ -1040,24 +1040,6 @@ export default class AddApz extends React.Component {
                               <label htmlFor="ProjectName">Наименование проектируемого объекта</label>
                               <input data-rh="Наименование проектируемого объекта" data-rh-at="right" type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectName} id="ProjectName" name="projectName" />
                             </div>
-                            <div className="form-group">
-                              <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
-                              <div className="row coordinates_block pt-0">
-                                <div className="col-sm-7">
-                                  <input data-rh="Адрес проектируемого объекта" data-rh-at="right" type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectAddress} name="projectAddress" />
-                                  <input type="hidden" onChange={this.onInputChange} value={this.state.projectAddressCoordinates} id="ProjectAddressCoordinates" name="projectAddressCoordinates" />
-                                </div>
-                                <div className="col-sm-5 p-0">
-                                  <a className="btn btn-secondary btn-sm mark_btn" onClick={() => this.toggleMap(true)}>
-                                    {this.state.hasCoordinates &&
-                                      <i className="glyphicon glyphicon-ok coordinateIcon mr-1"></i>
-                                    }
-
-                                    Отметить на карте
-                                  </a>
-                                </div>
-                              </div>
-                            </div>
                           </div>
                           <div className="col-md-5">
                             <div className="form-group">
@@ -1146,12 +1128,6 @@ export default class AddApz extends React.Component {
                         </div>
                       </form>
 
-                      {this.state.showMap &&
-                        <div className="mb-4">
-                          <ShowMap point={true} changeFunction={this.onInputChange} mapFunction={this.toggleMap} hasCoordinates={this.hasCoordinates}/>
-                        </div>
-                      }
-
                       <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
                     </div>
                     <div className="tab-pane fade" id="tab1" role="tabpanel" aria-labelledby="tab1-link">
@@ -1183,21 +1159,31 @@ export default class AddApz extends React.Component {
                             </div>
                             <div className="form-group">
                               <label htmlFor="CadastralNumber">Кадастровый номер:</label>
-                              <input data-rh="Кадастровый номер:" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.cadastralNumber} name="cadastralNumber" placeholder="" />
+                              <div className="row coordinates_block pt-0">
+                                <div className="col-sm-7">
+                                  <input data-rh="Кадастровый номер:" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.cadastralNumber} name="cadastralNumber" placeholder="" />
+                                </div>
+                                <div className="col-sm-5 p-0">
+                                  <a className="btn btn-secondary btn-sm mark_btn" onClick={() => this.toggleMap(true)}>
+                                    {this.state.hasCoordinates &&
+                                      <i className="glyphicon glyphicon-ok coordinateIcon mr-1"></i>
+                                    }
+                                    Отметить на карте
+                                  </a>
+                                </div>
+                              </div>
                             </div>
+                            <div className="form-group">
+                              <label htmlFor="ProjectAddress">Адрес проектируемого объекта</label>
+                              <input data-rh="Адрес проектируемого объекта" data-rh-at="right" type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectAddress} name="projectAddress" />
+                              <input type="hidden" onChange={this.onInputChange} value={this.state.projectAddressCoordinates} id="ProjectAddressCoordinates" name="projectAddressCoordinates" />
+                            </div>
+                          </div>
+                          <div className="col-md-6">
                             <div className="form-group">
                               <label htmlFor="ObjectTerm">Срок строительства по нормам</label>
                               <input data-rh="Срок строительства по нормам" data-rh-at="right" type="text" name="objectTerm" onChange={this.onInputChange} value={this.state.objectTerm} className="form-control" id="ObjectTerm" placeholder="" />
                             </div>
-                            {/* <div className="form-group">
-                              <label htmlFor="">Правоустанавливающие документы на объект (реконструкция)</label>
-                              <div className="fileinput fileinput-new" data-provides="fileinput">
-                              <span className="btn btn-default btn-file"><span></span><input type="file" multiple /></span>
-                              <span className="fileinput-filename"></span><span className="fileinput-new"></span>
-                              </div>
-                            </div> */}
-                          </div>
-                          <div className="col-md-6">
                             <div className="form-group">
                               <label htmlFor="ObjectLevel">Этажность</label>
                               <input data-rh="Этажность" data-rh-at="right" type="number" className="form-control" onChange={this.onInputChange} value={this.state.objectLevel} name="objectLevel" placeholder="" />
@@ -1216,6 +1202,12 @@ export default class AddApz extends React.Component {
                           <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                         </div>
                       </form>
+
+                      {this.state.showMap &&
+                        <div className="mb-4">
+                          <ShowMap point={true} kadastr_number={this.state.cadastralNumber} changeFunction={this.onInputChange} mapFunction={this.toggleMap} hasCoordinates={this.hasCoordinates}/>
+                        </div>
+                      }
                       <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
                     </div>
                     <div className="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-link">
