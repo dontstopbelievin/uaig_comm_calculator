@@ -6,19 +6,11 @@ import ShowMap from './ShowMap';
 import EcpSign from '../../apz/components/EcpSign';
 import Logs from "../../apz/components/Logs";
 import AllInfo from '../components/AllInfo';
+import Answers from '../components/Answers';
 
 export default class ShowSketch extends React.Component {
     constructor(props) {
         super(props);
-
-        this.webSocket = new WebSocket('wss://127.0.0.1:13579/');
-        this.heartbeat_msg = '--heartbeat--';
-        this.heartbeat_interval = null;
-        this.missed_heartbeats = 0;
-        this.missed_heartbeats_limit_min = 3;
-        this.missed_heartbeats_limit_max = 50;
-        this.missed_heartbeats_limit = this.missed_heartbeats_limit_min;
-        this.callback = null;
 
         this.state = {
             sketch: [],
@@ -261,6 +253,7 @@ export default class ShowSketch extends React.Component {
         this.setState({ showSignButtons: true });
         this.setState({ showButtons: false });
     }
+
     hideSignBtns(){
         this.setState({ showSignButtons: false });
         this.setState({ showButtons: true });
@@ -426,124 +419,6 @@ export default class ShowSketch extends React.Component {
         return formated_date;
     }
 
-    printRegionAnswer(sketchId, progbarId = null) {
-        var token = sessionStorage.getItem('tokenInfo');
-        if (token) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("get", window.url + "api/print/region/sketch/" + sketchId, true);
-            xhr.setRequestHeader("Authorization", "Bearer " + token);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    //test of IE
-                    if (typeof window.navigator.msSaveBlob === "function") {
-                        window.navigator.msSaveBlob(xhr.response, "МО.pdf");
-                    } else {
-                        var data = JSON.parse(xhr.responseText);
-
-                        var base64ToArrayBuffer = (function () {
-
-                            return function (base64) {
-                                var binaryString =  window.atob(base64);
-                                var binaryLen = binaryString.length;
-                                var bytes = new Uint8Array(binaryLen);
-
-                                for (var i = 0; i < binaryLen; i++) {
-                                    var ascii = binaryString.charCodeAt(i);
-                                    bytes[i] = ascii;
-                                }
-
-                                return bytes;
-                            }
-
-                        }());
-
-                        var saveByteArray = (function () {
-                            var a = document.createElement("a");
-                            document.body.appendChild(a);
-                            a.style = "display: none";
-
-                            return function (data, name) {
-                                var blob = new Blob(data, {type: "octet/stream"}),
-                                    url = window.URL.createObjectURL(blob);
-                                a.href = url;
-                                a.download = name;
-                                a.click();
-                                setTimeout(function() {window.URL.revokeObjectURL(url);},1000);
-                            };
-
-                        }());
-
-                        saveByteArray([base64ToArrayBuffer(data.file)], "МО.pdf");
-                    }
-                } else {
-                    alert('Не удалось скачать файл');
-                }
-            }
-            xhr.send();
-        } else {
-            console.log('Время сессии истекло.');
-        }
-    }
-
-    printSketchAnswer(sketchId, progbarId = null) {
-        var token = sessionStorage.getItem('tokenInfo');
-        if (token) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("get", window.url + "api/print/sketch/" + sketchId, true);
-            xhr.setRequestHeader("Authorization", "Bearer " + token);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    //test of IE
-                    if (typeof window.navigator.msSaveBlob === "function") {
-                        window.navigator.msSaveBlob(xhr.response, "Sogl.pdf");
-                    } else {
-                        var data = JSON.parse(xhr.responseText);
-
-                        var base64ToArrayBuffer = (function () {
-
-                            return function (base64) {
-                                var binaryString =  window.atob(base64);
-                                var binaryLen = binaryString.length;
-                                var bytes = new Uint8Array(binaryLen);
-
-                                for (var i = 0; i < binaryLen; i++) {
-                                    var ascii = binaryString.charCodeAt(i);
-                                    bytes[i] = ascii;
-                                }
-
-                                return bytes;
-                            }
-
-                        }());
-
-                        var saveByteArray = (function () {
-                            var a = document.createElement("a");
-                            document.body.appendChild(a);
-                            a.style = "display: none";
-
-                            return function (data, name) {
-                                var blob = new Blob(data, {type: "octet/stream"}),
-                                    url = window.URL.createObjectURL(blob);
-                                a.href = url;
-                                a.download = name;
-                                a.click();
-                                setTimeout(function() {window.URL.revokeObjectURL(url);},1000);
-                            };
-
-                        }());
-
-                        saveByteArray([base64ToArrayBuffer(data.file)], "Sogl.pdf");
-                    }
-                } else {
-                    alert('Не удалось скачать файл');
-                }
-            }
-            xhr.send();
-        } else {
-            console.log('Время сессии истекло.');
-        }
-    }
-
     ecpSignSuccess(){
       this.setState({ isSigned: true });
       this.setState({ showSendButton: true });
@@ -565,31 +440,10 @@ export default class ShowSketch extends React.Component {
                     <AllInfo toggleMap={this.toggleMap.bind(this, true)} sketch={this.state.sketch} personalIdFile={this.state.personalIdFile}
                       sketchFile={this.state.sketchFile} sketchFilePDF={this.state.sketchFilePDF} apzFile={this.state.apzFile}/>
 
+                    <Answers  sketch_id={this.state.sketch.id} urban_response={this.state.sketch.urban_response} lastDecisionIsMO = {this.state.lastDecisionIsMO} />
+
+                    
                     <div className="col-sm-6">
-                        <h5 className="block-title-2 mt-3 mb-3">Решение</h5>
-
-                        {this.state.lastDecisionIsMO &&
-                        <table className="table table-bordered">
-                            <tbody>
-                            <tr>
-                                <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
-                                <td><a className="text-info pointer" onClick={this.printRegionAnswer.bind(this, sketch.id)}>Скачать</a></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        }
-                        {sketch.urban_response &&
-                            <table className="table table-bordered">
-                                <tbody>
-                                <tr>
-                                    <td style={{width: '22%'}}><b>Согласование</b></td>
-                                    <td><a className="text-info pointer"
-                                           onClick={this.printSketchAnswer.bind(this, sketch.id)}>Скачать</a></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        }
-
                         {this.state.showSignButtons && !this.state.isSigned &&
                           <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="head" id={this.state.sketch.id} serviceName='sketch'/>
                         }
