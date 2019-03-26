@@ -565,38 +565,10 @@ export default class ShowSketch extends React.Component {
                                                 <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="region" id={this.state.sketch.id} serviceName='sketch'/>
                                                 :
                                                 <div>
-<<<<<<< Updated upstream
                                                     <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, this.state.sketch.id, true, "your form was accepted","")}>Отправить инженеру</button>
                                                     <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, this.state.sketch.id, true, "your form was accepted", "chief")}>
                                                         Отправить главному архитектору
                                                     </button>
-=======
-                                                    { this.state.response  ?
-                                                        <div>
-                                                            <button className="btn btn-raised btn-success"
-                                                                    style={{marginRight: '5px'}}
-                                                                    onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted", "")}>Отправить
-                                                                инженеру
-                                                            </button>
-                                                            <button className="btn btn-raised btn-success"
-                                                                    style={{marginRight: '5px'}}
-                                                                    onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted", "chief")}>
-                                                                Отправить главному архитектору
-                                                            </button>
-                                                        </div>
-                                                        :
-                                                        <table className="table table-bordered">
-                                                            <tbody>
-                                                            <tr>
-                                                                <td style={{width: '22%'}}><b>Согласование</b></td>
-                                                                <td><a className="text-info pointer"
-                                                                       onClick={this.printSketchAnswer.bind(this, sketch.id)}>Скачать</a>
-                                                                </td>
-                                                            </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    }
->>>>>>> Stashed changes
                                                 </div>
                                             }
                                         </div>
@@ -608,68 +580,56 @@ export default class ShowSketch extends React.Component {
 
 
                             <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                              <div className="modal-dialog" role="document">
-                                <div className="modal-content">
-                                  <div className="modal-header">
-                                    <h5 className="modal-title">Мотивированный отказ</h5>
-                                    <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                                      <span aria-hidden="true">&times;</span>
-                                    </button>
-                                  </div>
-                                  <div className="modal-body">
-                                    {this.state.templates && this.state.templates.length > 0 &&
-                                      <div className="form-group">
-                                        <select className="form-control" defaultValue="" id="templateList" onChange={this.onTemplateListChange.bind(this)}>
-                                          <option value="">Выберите шаблон</option>
-                                          {this.state.templates.map(function(template, index) {
-                                            return(
-                                              <option key={index} value={template.id}>{template.title}</option>
-                                              );
-                                            })
-                                          }
-                                        </select>
-                                      </div>
-                                    }
-                                    <div style={{paddingLeft:'5px', fontSize: '18px'}}>
-                                      <b>Выберите главного архитектора:</b>
-                                      <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
-                                        {this.state.apz_heads_id}
-                                      </select>
+                                <div className="modal-dialog" role="document">
+                                    <div className="modal-content">
+                                        <div className="modal-header">
+                                            <h5 className="modal-title">Мотивированный отказ</h5>
+                                            <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div className="modal-body">
+                                            {this.state.templates && this.state.templates.length > 0 &&
+                                            <div className="form-group">
+                                                <select className="form-control" defaultValue="" id="templateList" onChange={this.onTemplateListChange.bind(this)}>
+                                                    <option value="">Выберите шаблон</option>
+                                                    {this.state.templates.map(function(template, index) {
+                                                        return(
+                                                            <option key={index} value={template.id}>{template.title}</option>
+                                                        );
+                                                    })
+                                                    }
+                                                </select>
+                                            </div>
+                                            }
+                                            <div style={{paddingLeft:'5px', fontSize: '18px'}}>
+                                                <b>Выберите главного архитектора:</b>
+                                                <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
+                                                    {this.state.apz_heads_id}
+                                                </select>
+                                            </div>
+                                            <div className="form-group">
+                                                <label>Тема(краткое описание)</label>
+                                                <div>
+                                                    <input value={this.state.theme} onChange={this.onThemeChange.bind(this)} />
+                                                </div>
+                                            </div>
+                                            <div className="form-group">
+                                                <label>Причина отказа</label>
+                                                <ReactQuill value={this.state.comment} onChange={this.onCommentChange} />
+                                            </div>
+                                        </div>
+                                        <div className="modal-footer">
+                                            <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineSketchForm.bind(this, this.state.sketch.id, false, this.state.comment,"",this.state.docNumber)}>Отправить</button>
+                                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                        </div>
                                     </div>
-                                    <div className="form-group">
-                                      <label>Тема(краткое описание)</label>
-                                      <div>
-                                        <input value={this.state.theme} onChange={this.onThemeChange.bind(this)} />
-                                      </div>
-                                    </div>
-                                    <div className="form-group">
-                                      <label>Причина отказа</label>
-                                      <ReactQuill value={this.state.comment} onChange={this.onCommentChange} />
-                                    </div>
-                                  </div>
-                                  <div className="modal-footer">
-                                    <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineSketchForm.bind(this, this.state.sketch.id, false, this.state.comment,"",this.state.docNumber)}>Отправить</button>
-                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                  </div>
                                 </div>
-                              </div>
                             </div>
 
                         </div>
                     </div>
 
-                    {/*{console.log(sketch)}*/}
-                    {/*{sketch.urban_response &&*/}
-                    {/*<table className="table table-bordered">*/}
-                        {/*<tbody>*/}
-                        {/*<tr>*/}
-                            {/*<td style={{width: '22%'}}><b>Согласование</b></td>*/}
-                            {/*<td><a className="text-info pointer"*/}
-                                   {/*onClick={this.printSketchAnswer.bind(this, sketch.id)}>Скачать</a></td>*/}
-                        {/*</tr>*/}
-                        {/*</tbody>*/}
-                    {/*</table>*/}
-                    {/*}*/}
                     <Logs state_history={this.state.sketch.state_history} />
 
                     <div className="col-sm-12">
