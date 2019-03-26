@@ -144,6 +144,64 @@ export default class ShowSketch extends React.Component {
     }
   }
 
+    printRegionAnswer(id) {
+        var token = sessionStorage.getItem('tokenInfo');
+        if (token) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("get", window.url + "api/print/region/sketch/" + id, true);
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    //test of IE
+                    if (typeof window.navigator.msSaveBlob === "function") {
+                        window.navigator.msSaveBlob(xhr.response, "МО.pdf");
+                    } else {
+                        var data = JSON.parse(xhr.responseText);
+
+                        var base64ToArrayBuffer = (function () {
+
+                            return function (base64) {
+                                var binaryString =  window.atob(base64);
+                                var binaryLen = binaryString.length;
+                                var bytes = new Uint8Array(binaryLen);
+
+                                for (var i = 0; i < binaryLen; i++) {
+                                    var ascii = binaryString.charCodeAt(i);
+                                    bytes[i] = ascii;
+                                }
+
+                                return bytes;
+                            }
+
+                        }());
+
+                        var saveByteArray = (function () {
+                            var a = document.createElement("a");
+                            document.body.appendChild(a);
+                            a.style = "display: none";
+
+                            return function (data, name) {
+                                var blob = new Blob(data, {type: "octet/stream"}),
+                                    url = window.URL.createObjectURL(blob);
+                                a.href = url;
+                                a.download = name;
+                                a.click();
+                                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+                            };
+
+                        }());
+
+                        saveByteArray([base64ToArrayBuffer(data.file)], "МО.pdf");
+                    }
+                } else {
+                    alert('Не удалось скачать файл');
+                }
+            }
+            xhr.send();
+        } else {
+            console.log('Время сессии истекло.');
+        }
+    }
 
     printSketchAnswer(sketchId, progbarId = null) {
         var token = sessionStorage.getItem('tokenInfo');
@@ -461,7 +519,7 @@ export default class ShowSketch extends React.Component {
                         :
                         <tr>
                           <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
-                          <td><a className="text-info pointer" data-category="46" onClick={this.downloadFile.bind(this, this.state.responseFile.id, 46)}>Скачать</a>
+                            <td><a className="text-info pointer" onClick={this.printRegionAnswer.bind(this, sketch.id)}>Скачать</a>
                               <div className="progress mb-2" data-category="46" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                                   <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                               </div>
