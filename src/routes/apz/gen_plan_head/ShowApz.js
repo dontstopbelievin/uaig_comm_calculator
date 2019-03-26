@@ -267,7 +267,7 @@ export default class ShowApz extends React.Component {
                 {this.state.showMapText}
               </button>
               <Answers engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
-                       backFromHead={this.state.backFromHead} apz_department_response={this.props.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
+                       backFromHead={this.state.backFromHead} apz_department_response={this.state.apz.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
                        apz_status={this.state.apz.status_id} schemeComment={this.state.schemeComment}
                        calculationComment={this.state.calculationComment} reglamentComment={this.state.reglamentComment} schemeFile={this.state.schemeFile}
                        calculationFile={this.state.calculationFile} reglamentFile={this.state.reglamentFile}/>

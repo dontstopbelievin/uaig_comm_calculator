@@ -287,7 +287,7 @@ export default class EcpSign extends React.Component {
 
     render() {
       return (
-          <div class="border border-top-0">
+          <div className="border border-top-0">
             <h5 style={{textAlign:'center', background: '#d3e8ef', padding: '10px'}}>Подписание ЭЦП</h5>
             <div id="MySignForm" style={{margin: 'auto', display: 'table', padding: '10px'}}>
                 <div>Выберите хранилище:</div>

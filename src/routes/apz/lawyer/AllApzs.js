@@ -136,8 +136,7 @@ export default class AllApzs extends React.Component {
               <input placeholder="Поиск по ФИО" type="text" className="mb-2" id="filter" onChange={this.handleSearch} style={{padding:'3px'}}/>
             </td><td>
               <ul className="nav nav-tabs mb-2 pull-right">
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'new'} to="/panel/lawyer/apz/status/new/1" replace>Новые</NavLink></li>
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'processed'} to="/panel/lawyer/apz/status/processed/1" replace>Обработанные</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/lawyer/apz/status/active/1" replace>Активные</NavLink></li>
                 <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/lawyer/apz/status/accepted/1" replace>Принятые</NavLink></li>
                 <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/lawyer/apz/status/declined/1" replace>Отказанные</NavLink></li>
               </ul>

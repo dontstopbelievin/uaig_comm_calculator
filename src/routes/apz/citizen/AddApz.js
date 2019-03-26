@@ -21,7 +21,7 @@ export default class AddApz extends React.Component {
         type: 1,
         phone: '',
         region: 'Наурызбай',
-        designer: '',
+        //designer: '',
         projectName: '',
         projectAddress: '',
         projectAddressCoordinates: '',
@@ -216,7 +216,7 @@ export default class AddApz extends React.Component {
           this.setState({applicantAddress: apz.address ? apz.address : '' });
           this.setState({phone: apz.phone ? apz.phone : '' });
           this.setState({region: apz.region ? apz.region : '' });
-          this.setState({designer: apz.designer ? apz.designer : '' });
+          //this.setState({designer: apz.designer ? apz.designer : '' });
           this.setState({type: apz.type ? apz.type : '' });
           this.setState({projectName: apz.project_name ? apz.project_name : '' });
           this.setState({projectAddress: apz.project_address ? apz.project_address : '' });
@@ -1032,10 +1032,10 @@ export default class AddApz extends React.Component {
                               <label htmlFor="Address">Адрес:</label>
                               <input type="text" className="form-control" required id="ApzAddressForm" name="Address" placeholder="ул. Абая, д.25" />
                             </div>*/}
-                            <div className="form-group">
+                            {/*<div className="form-group">
                               <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
                               <input data-rh="Проектировщик №ГСЛ, категория" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.designer} name="designer" />
-                            </div>
+                            </div>*/}
                             <div className="form-group">
                               <label htmlFor="ProjectName">Наименование проектируемого объекта</label>
                               <input data-rh="Наименование проектируемого объекта" data-rh-at="right" type="text" required className="form-control" onChange={this.onInputChange} value={this.state.projectName} id="ProjectName" name="projectName" />

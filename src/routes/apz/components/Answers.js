@@ -73,12 +73,19 @@ export default class ShowApz extends React.Component {
       xhr.send();
     }
 
-    printApz(apzId, project) {
+    printApz(apzId, project, progbarId = null) {
       var token = sessionStorage.getItem('tokenInfo');
       if (token) {
         var xhr = new XMLHttpRequest();
         xhr.open("get", window.url + "api/print/apz/" + apzId, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
+        var vision = $('.text-info[data-category='+progbarId+']');
+        var progressbar = $('.progress[data-category='+progbarId+']');
+        vision.css('display', 'none');
+        progressbar.css('display', 'flex');
+        xhr.onprogress = function(event) {
+          $('div', progressbar).css('width', parseInt(event.loaded / 100000 * 100, 10) + '%');
+        }
         xhr.onload = function () {
           if (xhr.status === 200) {
             //test of IE
@@ -120,7 +127,12 @@ export default class ShowApz extends React.Component {
                   a.href = url;
                   a.download = name;
                   a.click();
-                  setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+                  setTimeout(function() {
+                    window.URL.revokeObjectURL(url);
+                    $('div', progressbar).css('width', 0);
+                    progressbar.css('display', 'none');
+                    vision.css('display','inline');
+                  },1000);
                 };
 
               }());
@@ -128,6 +140,9 @@ export default class ShowApz extends React.Component {
               saveByteArray([base64ToArrayBuffer(data.file)], "апз-" + project + formated_date + ".pdf");
             }
           } else {
+            $('div', progressbar).css('width', 0);
+            progressbar.css('display', 'none');
+            vision.css('display','inline');
             alert('Не удалось скачать файл');
           }
         }
@@ -137,12 +152,20 @@ export default class ShowApz extends React.Component {
       }
     }
 
-    printRegionAnswer(apzId) {
+    printRegionAnswer(apzId, progbarId = null) {
       var token = sessionStorage.getItem('tokenInfo');
       if (token) {
         var xhr = new XMLHttpRequest();
         xhr.open("get", window.url + "api/print/region/" + apzId, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
+        var vision = $('.text-info[data-category='+progbarId+']');
+        var progressbar = $('.progress[data-category='+progbarId+']');
+        vision.css('display', 'none');
+        progressbar.css('display', 'flex');
+        xhr.onprogress = function(event) {
+          $('div', progressbar).css('width', parseInt(event.loaded / 85000 * 100, 10) + '%');
+          console.log(event.loaded);
+        }
         xhr.onload = function () {
           if (xhr.status === 200) {
             //test of IE
@@ -179,7 +202,12 @@ export default class ShowApz extends React.Component {
                   a.href = url;
                   a.download = name;
                   a.click();
-                  setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+                  setTimeout(function() {
+                    window.URL.revokeObjectURL(url);
+                    $('div', progressbar).css('width', 0);
+                    progressbar.css('display', 'none');
+                    vision.css('display','inline');
+                  },1000);
                 };
 
               }());
@@ -187,6 +215,9 @@ export default class ShowApz extends React.Component {
               saveByteArray([base64ToArrayBuffer(data.file)], "МО.pdf");
             }
           } else {
+            $('div', progressbar).css('width', 0);
+            progressbar.css('display', 'none');
+            vision.css('display','inline');
             alert('Не удалось скачать файл');
           }
         }
@@ -268,6 +299,19 @@ export default class ShowApz extends React.Component {
                     </div>
                 </div>
                 }
+                {this.props.otkazFile &&
+                <div className="col-md-8 offset-2">
+                    <div className="row" style={{paddingTop:'5px',paddingBottom:'5px',backgroundColor:'#eeeeff'}}>
+                        <div className="col-md-6"><b>Файл отказа</b></div>
+                        <div className="col-md-6">
+                            <a className="text-info pointer" data-category="12" onClick={this.downloadFile.bind(this, this.props.otkazFile.id, 12)}><b>Скачать</b></a>
+                            <div className="progress mb-2" data-category="12" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                }
               {(this.props.apz_status === 2 || this.props.apz_department_response) &&
                 <div>
                   <h5 className="block-title-2 mb-3">Решение</h5>
@@ -275,7 +319,12 @@ export default class ShowApz extends React.Component {
                     <tbody>
                       <tr>
                         <td style={{width: '22%'}}><b>Сформированный АПЗ</b></td>
-                        <td><a className="text-info pointer" onClick={this.printApz.bind(this, this.props.apz_id, this.props.p_name)}>Скачать</a></td>
+                        <td>
+                          <a className="text-info pointer" data-category="13" onClick={this.printApz.bind(this, this.props.apz_id, this.props.p_name, 13)}>Скачать</a>
+                          <div className="progress mb-2" data-category="13" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                              <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -286,7 +335,12 @@ export default class ShowApz extends React.Component {
                   <tbody>
                     <tr>
                       <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
-                      <td><a className="text-info pointer" onClick={this.printRegionAnswer.bind(this, this.props.apz_id)}>Скачать</a></td>
+                      <td>
+                        <a className="text-info pointer" data-category="14" onClick={this.printRegionAnswer.bind(this, this.props.apz_id, 14)}>Скачать</a>
+                        <div className="progress mb-2" data-category="14" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                      </td>
                     </tr>
                   </tbody>
                 </table>

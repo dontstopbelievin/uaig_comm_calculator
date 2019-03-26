@@ -694,8 +694,7 @@ export default class ShowApz extends React.Component {
         return (
             <div>
                 {this.state.loaderHidden &&
-                <div className="row">
-                  <div className="col-sm-12">
+                <div>
                     <AllInfo toggleMap={this.toggleMap.bind(this, true)} apz={this.state.apz} personalIdFile={this.state.personalIdFile} confirmedTaskFile={this.state.confirmedTaskFile} titleDocumentFile={this.state.titleDocumentFile}
                       additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
 
@@ -712,31 +711,33 @@ export default class ShowApz extends React.Component {
                     }
 
                     <Answers engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
-                           backFromHead={this.state.backFromHead} apz_department_response={this.props.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
+                           backFromHead={this.state.backFromHead} apz_department_response={this.state.apz.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
                            apz_status={this.state.apz.status_id} schemeComment={this.state.schemeComment} lastDecisionIsMO={this.state.lastDecisionIsMO}
                            calculationComment={this.state.calculationComment} reglamentComment={this.state.reglamentComment} schemeFile={this.state.schemeFile}
                            calculationFile={this.state.calculationFile} reglamentFile={this.state.reglamentFile}/>
 
-                    {this.state.showSignButtons && !this.state.isSigned &&
-                    <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="headsstateservices" id={apz.id} serviceName='apz'/>
-                    }
+                    <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                      {this.state.showSignButtons && !this.state.isSigned &&
+                      <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="headsstateservices" id={apz.id} serviceName='apz'/>
+                      }
 
-                    {this.state.showButtons && !this.state.isSigned &&
-                    <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
-                        <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.showSignBtns.bind(this)}>Поставить подпись</button>
+                      {this.state.showButtons && !this.state.isSigned &&
+                      <div>
+                          <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.showSignBtns.bind(this)}>Поставить подпись</button>
+                          <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">
+                              Вернуть на доработку
+                          </button>
+                      </div>
+                      }
+                      {this.state.showSendButton &&
+                      <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "")}>Отправить архитектору</button>
+                      }
+                      {this.state.showButtons && this.state.backFromHead &&
                         <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">
                             Вернуть на доработку
                         </button>
+                      }
                     </div>
-                    }
-                    {this.state.showSendButton &&
-                    <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "")}>Отправить архитектору</button>
-                    }
-                    {this.state.showButtons && this.state.backFromHead &&
-                      <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">
-                          Вернуть на доработку
-                      </button>
-                    }
                     <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
                         <div className="modal-dialog" role="document">
                             <div className="modal-content">
@@ -758,7 +759,6 @@ export default class ShowApz extends React.Component {
                                 </div>
                             </div>
                         </div>
-                    </div>
                     </div>
 
                   <div className="col-sm-12">

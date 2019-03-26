@@ -43,6 +43,7 @@ export default class ShowApz extends React.Component {
         calculationFile: false,
         reglamentComment: false,
         reglamentFile: false,
+        otkazFile: false,
 
         basisForDevelopmentApz: 'Постановление акимата города (района) №_____ от __________ (число, месяц, год)',
         buildingPresence: 'Строений нет',
@@ -423,6 +424,7 @@ export default class ShowApz extends React.Component {
           this.setState({response: data.apz_department_response ? true : false });
           this.setState({backFromGP: data.state_history.filter(function(obj) { return obj.state_id === 53 })[0]});
           this.setState({backFromEngineer: data.state_history.filter(function(obj) { return obj.state_id === 4 })[0]});
+          this.setState({otkazFile: data.files.filter(function(obj) { return obj.category_id === 30 })[0]});
           for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
             switch (data.state_history[data_index].state_id) {
               case 33:
@@ -501,20 +503,30 @@ export default class ShowApz extends React.Component {
     }
 
     sendForm(apzId, status, comment, direct) {
-      if(!status && (comment.trim() == '' || this.state.theme.trim() == '')){
+      console.log(comment);
+      if(!status && comment != 'otkaz' && (comment.trim() == '' || this.state.theme.trim() == '')){
         alert('Для отказа напишите тему и причину отказа.');
         return false;
       }
+      if (comment == 'otkaz' && !this.state.otkazFile) {
+        alert('Загрузите файл отказа');
+        return false;
+      }
+
       var token = sessionStorage.getItem('tokenInfo');
-      var formData = new FormData();
-      formData.append('response', status);
-      formData.append('message', comment);
-      formData.append('theme', this.state.theme);
-      formData.append('direct', direct);
+      var registerData = {
+        response: status,
+        message: comment,
+        theme: this.state.theme,
+        direct: direct
+      };
+      if(comment == 'otkaz'){ registerData['otkazFile'] = this.state.otkazFile; }
+      var data = JSON.stringify(registerData);
 
       var xhr = new XMLHttpRequest();
       xhr.open("post", window.url + "api/apz/stateservices/status/" + apzId, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function () {
         if (xhr.status === 200) {
           alert("Заявление отправлено!");
@@ -538,9 +550,69 @@ export default class ShowApz extends React.Component {
         }
         if (!status) {
           $('#ReturnApzForm').modal('hide');
+          $('#accDecApzForm').modal('hide');
         }
       }.bind(this);
-      xhr.send(formData);
+      xhr.send(data);
+    }
+
+    uploadFile(category, e) {
+      if(e.target.files[0] == null){ return;}
+      var file = e.target.files[0];
+      var name = file.name.replace(/\.[^/.]+$/, "");
+      var progressbar = $('.progress[data-category=' + category + ']');
+      if (!file || !category) {
+        alert('Не удалось загрузить файл');
+
+        return false;
+      }
+
+      var formData = new FormData();
+      formData.append('file', file);
+      formData.append('name', name);
+      formData.append('category', category);
+      progressbar.css('display', 'flex');
+      $.ajax({
+        type: 'POST',
+        url: window.url + 'api/file/upload',
+        contentType: false,
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
+        },
+        processData: false,
+        data: formData,
+        xhr: function() {
+          var xhr = new window.XMLHttpRequest();
+
+          xhr.upload.addEventListener("progress", function(evt) {
+            if (evt.lengthComputable) {
+              var percentComplete = evt.loaded / evt.total;
+              percentComplete = parseInt(percentComplete * 100, 10);
+              $('div', progressbar).css('width', percentComplete + '%');
+            }
+          }, false);
+
+          return xhr;
+        },
+        success: function (response) {
+          var data = {id: response.id, name: response.name};
+
+          setTimeout(function() {
+            progressbar.css('display', 'none');
+            switch (category) {
+              case 30:
+                this.setState({otkazFile: data});
+                break;
+              default:
+            }
+            alert("Файл успешно загружен");
+          }.bind(this), '1000')
+        }.bind(this),
+        error: function (response) {
+          progressbar.css('display', 'none');
+          alert("Не удалось загрузить файл");
+        }
+      });
     }
 
     toggleMap(value) {
@@ -587,7 +659,7 @@ export default class ShowApz extends React.Component {
 
           <Answers engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
                    backFromHead={this.state.backFromHead} apz_department_response={this.state.apz.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
-                   apz_status={this.state.apz.status_id} schemeComment={this.state.schemeComment}
+                   apz_status={this.state.apz.status_id} schemeComment={this.state.schemeComment} otkazFile={this.state.otkazFile}
                    calculationComment={this.state.calculationComment} reglamentComment={this.state.reglamentComment} schemeFile={this.state.schemeFile}
                    calculationFile={this.state.calculationFile} reglamentFile={this.state.reglamentFile}/>
 
@@ -937,14 +1009,16 @@ export default class ShowApz extends React.Component {
               :
               <button type="button" style={{marginRight:'5px'}} className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, this.state.apz.id, true, "", 'engineer')}>Отправить инженеру</button>
             }
-              <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">Отклонить</button>
+              <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm" style={{marginRight:'5px'}}>Мотивированный отказ</button>
+              <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">Отказ</button>
             </div>
           }
 
           {this.state.showSendButton &&
             <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', display: 'table'}}>
               <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, this.state.apz.id, true, "", 'head')} style={{marginRight:'5px'}}>Отправить начальнику Гос Услуг</button>
-              <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">Отклонить</button>
+              <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm" style={{marginRight:'5px'}}>Мотивированный отказ</button>
+              <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">Отказ</button>
             </div>
           }
 
@@ -990,6 +1064,52 @@ export default class ShowApz extends React.Component {
                 </div>
                 <div className="modal-footer">
                   <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.sendForm.bind(this, this.state.apz.id, false, this.state.comment, 'lawyer')}>Отправить Юристу</button>
+                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="modal fade" id="accDecApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+            <div className="modal-dialog modal-lg" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Причина отказа</h5>
+                  <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <div className="form-group">
+                    <div className="file_container">
+                      <div style={{paddingLeft:'5px', fontSize: '18px'}}>
+                        <b>Выберите главного архитектора:</b>
+                        <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
+                          {this.state.apz_heads_id}
+                        </select>
+                      </div>
+                      <div className="progress mb-2" data-category="30" style={{height: '20px', display: 'none'}}>
+                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                      {this.state.otkazFile &&
+                        <div className="file_block mb-2">
+                          <div>
+                            {this.state.otkazFile.name}
+                            <a className="pointer" onClick={(e) => this.setState({otkazFile: false}) }>×</a>
+                          </div>
+                        </div>
+                      }
+                      <div className="file_buttons btn-group btn-group-justified d-table mt-0">
+                        <label><h6>Файл отказа</h6></label>
+                        <label htmlFor="otkazFile" className="btn btn-success" style={{marginLeft: '5px'}}>Загрузить</label>
+                        <input type="file" id="otkazFile" name="otkazFile" className="form-control" onChange={this.uploadFile.bind(this, 30)} style={{display: 'none'}} />
+                      </div>
+                      <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.sendForm.bind(this, this.state.apz.id, false, 'otkaz', 'lawyer')}>Отправить Юристу</button>
                   <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                 </div>
               </div>
