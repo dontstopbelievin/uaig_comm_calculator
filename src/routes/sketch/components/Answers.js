@@ -130,6 +130,9 @@ export default class AllInfo extends React.Component {
         <div className="col-sm-12">
           <h5 className="block-title-2 mt-3 mb-3">Решение</h5>
 
+            {console.log('mo'+this.props.lastDecisionIsMO)}
+            {/*{console.log('ur'+this.props.urban_response)}*/}
+            {/*{console.log('is'+this.props.isSent)}*/}
           {this.props.lastDecisionIsMO &&
           <table className="table table-bordered">
               <tbody>

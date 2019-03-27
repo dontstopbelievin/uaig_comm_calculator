@@ -38,7 +38,8 @@ export default class ShowSketch extends React.Component {
             engineerSign: false,
             xmlFile: false,
             loaderHiddenSign:true,
-            isSent:false
+            isSent:false,
+            lastDecisionIsMO:false
         };
 
         this.onCommentChange = this.onCommentChange.bind(this);
@@ -96,7 +97,7 @@ export default class ShowSketch extends React.Component {
                 //console.log(data);
                 var select_directors = [];
                 for (var i = 0; i < data.length; i++) {
-                    select_directors.push(<option value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
+                    select_directors.push(<option key={i} value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
                 }
                 this.setState({apz_heads_id: select_directors});
                 if(this.state.apz_head_id == "" || this.state.apz_head_id == " "){
@@ -124,7 +125,8 @@ export default class ShowSketch extends React.Component {
                 this.setState({personalIdFile: sketch.files.filter(function(obj) { return obj.category_id === 3 })[0]});
                 this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
                 this.setState({sketchFilePDF: sketch.files.filter(function(obj) { return obj.category_id === 40 })[0]});
-                console.log(this.state.sketchFilePDF);
+                // this.setState({lastDecisionIsMo: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment !== null && obj.sender === 'engineer'})[0]});
+
                 this.setState({apzFile: sketch.files.filter(function(obj) { return obj.category_id === 2 })[0]});
                 // this.setState({docNumber: sketch.docNumber});
                 // this.setState({reglamentFile: apz.files.filter(function(obj) { return obj.category_id === 29 })[0]});
@@ -132,8 +134,11 @@ export default class ShowSketch extends React.Component {
 
                 for(var data_index = sketch.state_history.length-1; data_index >= 0; data_index--){
                     switch (sketch.state_history[data_index].state_id) {
-                        case 17:
-                            this.setState({backFromHead: sketch.state_history[data_index]});
+                        case 2:
+                            break;
+                        case 3:
+                            this.setState({lastDecisionIsMo: true});
+                            console.log('asdf');
                             break;
                         default:
                             continue;
@@ -303,6 +308,7 @@ export default class ShowSketch extends React.Component {
             if (xhr.status === 200) {
                 //var data = JSON.parse(xhr.responseText);
 
+                // console.log(this.state.sketch);
                 if(status === true) {
                     this.setState({ isSended: true});
                     console.log(this.state.isSended);
@@ -310,14 +316,16 @@ export default class ShowSketch extends React.Component {
                     this.setState({ showButtons: false });
                     this.setState({ isSent: true});
                     console.log(this.state.isSent);
+                    console.log(this.state.sketch);
 
                 } else {
-                    // this.setState({ isSent: false});
-
-
+                    // this.setState({ isSent: true});
+                    this.setState({ lastDecisionIsMO: true});
                     alert("Заявление отклонено!");
                     this.setState({ showButtons: false });
                     console.log(this.state.isSent);
+                    console.log(this.state.lastDecisionIsMO);
+                    console.log(this.state.sketch);
                 }
             } else if (xhr.status === 401) {
                 sessionStorage.clear();
@@ -480,10 +488,8 @@ export default class ShowSketch extends React.Component {
 
                 <AllInfo toggleMap={this.toggleMap.bind(this, true)} sketch={this.state.sketch} personalIdFile={this.state.personalIdFile}
                   sketchFile={this.state.sketchFile} sketchFilePDF={this.state.sketchFilePDF} apzFile={this.state.apzFile}/>
-                  { (this.state.isSent || this.state.sketch.urban_response )&&
+                    {console.log(this.state.lastDecisionIsMO)}
                     <Answers  isSent={this.state.isSent} sketch_id={this.state.sketch.id} urban_response={this.state.sketch.urban_response} lastDecisionIsMO = {this.state.lastDecisionIsMO} />
-                  }
-
 
                     {this.state.showMap && <ShowMap coordinates={this.state.sketch.project_address_coordinates} />}
 
@@ -575,10 +581,6 @@ export default class ShowSketch extends React.Component {
                                     }
                                 </div>
                             }
-
-
-
-
                             <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
                                 <div className="modal-dialog" role="document">
                                     <div className="modal-content">
