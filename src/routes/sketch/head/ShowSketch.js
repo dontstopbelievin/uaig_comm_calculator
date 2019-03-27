@@ -27,7 +27,6 @@ export default class ShowSketch extends React.Component {
             personalIdFile: false,
             apzFile:false,
             sketchFile: false,
-
             showMapText: 'Показать карту',
             headResponse: null,
             response: false,
@@ -82,17 +81,12 @@ export default class ShowSketch extends React.Component {
                 this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
                 this.setState({apzFile: data.files.filter(function(obj) { return obj.category_id === 2 })[0]});
                 this.setState({sketchFile: data.files.filter(function(obj) { return obj.category_id === 1 })[0]});
-                // this.setState({: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
-                // this.setState({reglamentFile: data.files.filter(function(obj) { return obj.category_id === 29 })[0]});
-                //this.setState({returnedState: data.state_history.filter(function(obj) { return obj.state_id === 3 && obj.comment != null })[0]});
-                // var pack2IdFile = data.files.filter(function(obj) { return obj.category_id === 25 }) ?
-                //     data.files.filter(function(obj) { return obj.category_id === 25 }) : [];
-                // if ( pack2IdFile.length > 0 ) {
-                //     this.setState({pack2IdFile: pack2IdFile[0]});
-                // }
+                this.setState({engineerReturnedState: data.state_history.filter(function(obj) { return obj.state_id === 6})[0]});
+                this.setState({apzReturnedState: data.state_history.filter(function(obj) { return obj.state_id === 17})[0]});
+
                 for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
                     switch (data.state_history[data_index].state_id) {
-                        case 5:
+                        case 2:
                             break;
                         case 3:
                             this.setState({lastDecisionIsMO: true});
@@ -102,9 +96,6 @@ export default class ShowSketch extends React.Component {
                     }
                     break;
                 }
-
-
-
 
                 if (data.status_id === 6 && !data.sketch_head_response) {
                     this.setState({showButtons: true});
@@ -440,9 +431,10 @@ export default class ShowSketch extends React.Component {
                     <AllInfo toggleMap={this.toggleMap.bind(this, true)} sketch={this.state.sketch} personalIdFile={this.state.personalIdFile}
                       sketchFile={this.state.sketchFile} sketchFilePDF={this.state.sketchFilePDF} apzFile={this.state.apzFile}/>
 
-                    <Answers  sketch_id={this.state.sketch.id} urban_response={this.state.sketch.urban_response} lastDecisionIsMO = {this.state.lastDecisionIsMO} />
+                    <Answers engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
+                    sketch_id={this.state.sketch.id} urban_response={this.state.sketch.urban_response} lastDecisionIsMO = {this.state.lastDecisionIsMO} />
 
-                    
+
                     <div className="col-sm-6">
                         {this.state.showSignButtons && !this.state.isSigned &&
                           <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="head" id={this.state.sketch.id} serviceName='sketch'/>

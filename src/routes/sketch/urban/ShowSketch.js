@@ -34,7 +34,6 @@ export default class ShowSketch extends React.Component {
             needSign: false,
             response: true,
             storageAlias: "PKCS12",
-            backFromHead: false,
             engineerSign: false,
             xmlFile: false,
             loaderHiddenSign:true,
@@ -137,14 +136,14 @@ export default class ShowSketch extends React.Component {
                         case 2:
                             break;
                         case 3:
-                            this.setState({lastDecisionIsMo: true});
-                            console.log('asdf');
+                            this.setState({lastDecisionIsMO: true});
                             break;
                         default:
                             continue;
                     }
                     break;
                 }
+
                 this.setState({engineerReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 6})[0]});
                 this.setState({apzReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 17})[0]});
                 this.setState({needSign: sketch.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment === null })[0]});
@@ -489,7 +488,8 @@ export default class ShowSketch extends React.Component {
                 <AllInfo toggleMap={this.toggleMap.bind(this, true)} sketch={this.state.sketch} personalIdFile={this.state.personalIdFile}
                   sketchFile={this.state.sketchFile} sketchFilePDF={this.state.sketchFilePDF} apzFile={this.state.apzFile}/>
                     {console.log(this.state.lastDecisionIsMO)}
-                    <Answers  isSent={this.state.isSent} sketch_id={this.state.sketch.id} urban_response={this.state.sketch.urban_response} lastDecisionIsMO = {this.state.lastDecisionIsMO} />
+                    <Answers  isSent={this.state.isSent} engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
+                    sketch_id={this.state.sketch.id} urban_response={this.state.sketch.urban_response} lastDecisionIsMO = {this.state.lastDecisionIsMO} />
 
                     {this.state.showMap && <ShowMap coordinates={this.state.sketch.project_address_coordinates} />}
 
@@ -497,39 +497,6 @@ export default class ShowSketch extends React.Component {
                         {this.state.showMapText}
                     </button>
 
-                    {this.state.engineerReturnedState &&
-                    <div className="alert alert-danger">
-                        Комментарий инженера: {this.state.engineerReturnedState.comment}
-                    </div>
-                    }
-                    {this.state.apzReturnedState &&
-                    <div className="alert alert-danger">
-                        Комментарий главного архитектора: {this.state.apzReturnedState.comment}
-                    </div>
-                    }
-                    {this.state.sketch.status_id == 1 &&
-                    <table className="table table-bordered">
-                        <tbody>
-                        <tr>
-                            <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
-                            {this.state.headResponseFile ?
-                                <td><a className="text-info pointer" data-category="6" onClick={this.downloadFile.bind(this, this.state.headResponseFile.id, 6)}>Скачать</a>
-                                    <div className="progress mb-2" data-category="6" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </td>
-                                :
-                                <td><a className="text-info pointer" onClick={this.printRegionAnswer.bind(this, this.state.sketch.id)}>Скачать</a></td>
-                            }
-                        </tr>
-                        </tbody>
-                    </table>
-                    }
-                    {this.state.backFromHead &&
-                    <div className="alert alert-danger">
-                        Комментарий главного архитектора: {this.state.backFromHead.comment}
-                    </div>
-                    }
                     {(!this.state.xmlFile && !this.state.isSent && this.state.response ) &&
                         <div style={{margin: 'auto', marginTop: '20px', display: 'table', width: '30%'}}>
                             <div className="form-group">
