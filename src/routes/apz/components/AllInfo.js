@@ -1,5 +1,6 @@
 import React from 'react';
 import {NavLink} from 'react-router-dom';
+import { withRouter } from 'react-router';
 import $ from 'jquery';
 import saveAs from 'file-saver';
 
@@ -191,6 +192,7 @@ export default class AllInfo extends React.Component {
               <h5 className="block-title-2 mt-3 mb-3">Общая информация
                 <button className="btn btn-raised btn-success btn-sm" style={{ marginLeft:'20px'}} onClick={this.printData.bind(this)}>Печать</button>
                 <button className="btn btn-raised btn-success ml-2 btn-sm" onClick={this.printQuestionnaire.bind(this)}>Печать опросного листа</button>
+                <button className="btn btn-outline-secondary btn-sm pull-right" onClick={this.props.historygoBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
               </h5>
 
               <table className="table table-bordered table-striped" id="printTable">

@@ -151,7 +151,7 @@ export default class AllApzs extends React.Component {
             </td></tr></tbody>
             </table>
 
-            <table className="table">
+            <table className="table allapzs_fonts">
               <thead>
                 <tr>
                   <th style={{width: '7%'}} className="apzs_header" onClick={this.sortData.bind(this, 'id')}>ИД<img className="filter_img" src="/images/filter_icon.png"/></th>
@@ -189,8 +189,8 @@ export default class AllApzs extends React.Component {
                         {apz.region}
                       </td>
                       <td>
-                        <Link className="btn btn-outline-info btn-sm" to={'/panel/engineer/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
-                        <Link style={{marginLeft: '5px' }} className="btn btn-outline-info btn-sm" to={'/panel/engineer/apz/edit/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Редактировать</Link>
+                        <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/engineer/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link style={{marginLeft: '5px' }} className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/engineer/apz/edit/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Редактировать</Link>
                       </td>
                     </tr>
                   );

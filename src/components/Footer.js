@@ -60,7 +60,7 @@ export default class Footer extends React.Component {
                                 <YMInitializer accounts={[49388944]} />
                             </div>
                             <div className="contact col-md-8 text-left font-weight-bold">
-                                <p className="text-white"><img src="/images/phone-call.png" alt=""/>Call center: <b className="underline"> +7 (707) 429-55-39</b></p>
+                                <p className="text-white"><img src="/images/phone-call.png" alt=""/>Проблемы с сайтом: <b className="underline"> +7 (707) 429-55-39</b></p>
                             </div>
                         </div>
                     </div>

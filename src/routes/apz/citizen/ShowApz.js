@@ -689,7 +689,7 @@ export default class ShowApz extends React.Component {
             <div>
 
               <AllInfo toggleMap={this.toggleMap.bind(this, true)} apz={this.state.apz} personalIdFile={this.state.personalIdFile} confirmedTaskFile={this.state.confirmedTaskFile} titleDocumentFile={this.state.titleDocumentFile}
-                   additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
+                   historygoBack={this.props.history.goBack} additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
 
               {apz.commission && (Object.keys(apz.commission).length > 0) &&
                 <div>
@@ -713,7 +713,7 @@ export default class ShowApz extends React.Component {
               <Logs state_history={this.state.apz.state_history} />
 
               <div className="col-sm-12">
-                <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
+                <button className="btn btn-outline-secondary pull-right btn-sm" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
               </div>
             </div>
           }

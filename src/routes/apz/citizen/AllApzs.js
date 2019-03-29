@@ -105,7 +105,7 @@ export default class AllApzs extends React.Component {
                 </div>
               </div>
 
-              <table className="table">
+              <table className="table allapzs_fonts">
                 <thead>
                   <tr>
                     <th style={{width: '5%'}}>ИД</th>
@@ -132,7 +132,7 @@ export default class AllApzs extends React.Component {
                         <td>{apz.project_address}</td>
                         <td>{this.toDate(apz.created_at)}</td>
                         <td>
-                          <Link className="btn btn-outline-info" to={'/panel/citizen/apz/' + (apz.status_id === 8 ? 'edit/' : 'show/') + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                          <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/citizen/apz/' + (apz.status_id === 8 ? 'edit/' : 'show/') + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                         </td>
                       </tr>
                       );

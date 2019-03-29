@@ -47,7 +47,7 @@ export default class ShowApz extends React.Component {
       headComment: "",
       ty_director_id: "",
       gas_directors_id: [],
-      customTcFile: null,
+      customTcFile: false,
       loaderHidden:true
     };
 
@@ -246,7 +246,7 @@ export default class ShowApz extends React.Component {
           data.commission.apz_gas_response.id ? this.setState({responseId: data.commission.apz_gas_response.id}) : this.setState({responseId: ""});
           data.commission.apz_gas_response.response ? this.setState({response: data.commission.apz_gas_response.response}) : this.setState({response: ""});
           data.commission.apz_gas_response.gas_director_id ? this.setState({ty_director_id: data.commission.apz_gas_response.gas_director_id}) : this.setState({ty_director_id: "" });
-          data.commission.apz_gas_response.files ? this.setState({customTcFile: data.commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: null});;
+          data.commission.apz_gas_response.files ? this.setState({customTcFile: data.commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: false});;
 
           if(data.commission.apz_gas_response.id !== -1){
             this.setState({accept: data.commission.apz_gas_response.response ? 'answer' : 'decline'});
@@ -316,7 +316,7 @@ export default class ShowApz extends React.Component {
         this.setState({responseId: data.id});
         data.response ? this.setState({response: data.response}) : this.setState({response: ""});
         data.response_text ? this.setState({description: data.response_text}) : this.setState({description: ""});
-        data.files ? this.setState({customTcFile: data.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: null});;
+        data.files ? this.setState({customTcFile: data.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: false});;
         data.files ? this.setState({responseFile: data.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]}) : this.setState({responseFile: null});
         data.connection_point ? this.setState({connectionPoint: data.connection_point}) : this.setState({connectionPoint: ""});
         data.gas_pipe_diameter ? this.setState({gasPipeDiameter: data.gas_pipe_diameter}) : this.setState({gasPipeDiameter: ""});
@@ -513,7 +513,7 @@ export default class ShowApz extends React.Component {
       <div className="row">
         <div className="col-sm-12">
           <AllInfo toggleMap={this.toggleMap.bind(this, true)} apz={this.state.apz} personalIdFile={this.state.personalIdFile} confirmedTaskFile={this.state.confirmedTaskFile} titleDocumentFile={this.state.titleDocumentFile}
-            additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
+            historygoBack={this.props.history.goBack} additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
         </div>
 
         <div className="col-sm-12">
@@ -679,7 +679,7 @@ export default class ShowApz extends React.Component {
 
                   {this.state.customTcFile &&
                     <span style={{paddingLeft: '5px'}}>
-                      (текущий файл: <a className="pointer text-info" data-category="8" title="Скачать" onClick={this.downloadFile.bind(this, this.state.customTcFile.id, 8)}>{this.state.customTcFile.name}</a>)
+                      (Технические условия: <a className="pointer text-info" data-category="8" title="Скачать" onClick={this.downloadFile.bind(this, this.state.customTcFile.id, 8)}>{this.state.customTcFile.name}</a>)
                       <div className="progress mb-2" data-category="8" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                         <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
@@ -905,7 +905,7 @@ export default class ShowApz extends React.Component {
 
         <div className="col-sm-12">
           <Logs state_history={this.state.apz.state_history} />
-          <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
+          <button className="btn btn-outline-secondary pull-right btn-sm" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
         </div>
       </div>
     )

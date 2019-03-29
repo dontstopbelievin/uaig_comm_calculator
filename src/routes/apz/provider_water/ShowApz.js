@@ -780,7 +780,7 @@ export default class ShowApz extends React.Component {
       <div className="row">
         <div className="col-sm-12">
           <AllInfo toggleMap={this.toggleMap.bind(this, true)} apz={this.state.apz} personalIdFile={this.state.personalIdFile} confirmedTaskFile={this.state.confirmedTaskFile} titleDocumentFile={this.state.titleDocumentFile}
-          additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
+          historygoBack={this.props.history.goBack} additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
         </div>
 
         <div className={apz.apz_sewage ? 'col-sm-6' : 'col-sm-12'}>
@@ -1388,7 +1388,7 @@ export default class ShowApz extends React.Component {
 
         <div className="col-sm-12">
           <hr />
-          <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
+          <button className="btn btn-outline-secondary pull-right btn-sm" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
         </div>
       </div>
     )
