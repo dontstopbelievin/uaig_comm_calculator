@@ -27,7 +27,8 @@ export default class AddSketch extends React.Component {
           objectLevel:'',
           commonArea:'',
           buildArea:'',
-          objectType:'',
+          objectType:'Новое строительство',
+          zoneType:'Жилищная зона',
           basementFacade:'',
           basementColor:'',
           wallsFacade:'',
@@ -96,6 +97,10 @@ export default class AddSketch extends React.Component {
       this.setState({ hasCoordinates: value });
   }
 
+  onObjectTypeChange (e){
+      this.setState({objectType : e.target.value});
+  }
+
   onCustomerChange(e){
       this.setState({customer:e.target.value});
   }
@@ -108,6 +113,8 @@ export default class AddSketch extends React.Component {
       const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
       const name = e.target.name;
       this.setState({ [name] : value });
+      console.log(e.target.value);
+      console.log(e.target.name);
   }
 
   onAreaCheck(e){
@@ -399,6 +406,7 @@ export default class AddSketch extends React.Component {
             this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
             this.setState({sketchFilePDF: sketch.files.filter(function(obj) { return obj.category_id === 40 })[0]});
             this.setState({objectType: sketch.object_type ? sketch.object_type : '' });
+            this.setState({zoneType: sketch.zone_type ? sketch.zone_type : '' });
             this.setState({objectPyaten: sketch.object_pyaten ? sketch.object_pyaten : '' });
             this.setState({objectCarpark: sketch.object_carpark ? sketch.object_carpark : '' });
             this.setState({objectDOU: sketch.object_dou ? sketch.object_dou : '' });
@@ -709,13 +717,23 @@ export default class AddSketch extends React.Component {
                                         <div className="col-md-6">
                                             <div className="form-group">
                                               <label htmlFor="ObjectType">Тип объекта:</label>
-                                              <select required className="form-control" name="objectType" id="ObjectType" onChange={this.onInputChange} value={this.state.objectType}>
-                                                <option value="null" disabled>Выберите тип объекта</option>
-                                                <option>ИЖС</option>
-                                                <option>МЖК Общественное задание</option>
-                                                <option>МЖК Производственное задание</option>
-                                                <option>Реконструкция (перепланировка в т.ч)</option>
-                                              </select>
+                                                <div class="custom-control custom-radio">
+                                                    <input type="radio" class="custom-control-input" id="Новое строительство" name="objectType" onChange={this.onInputChange} value="Новое строительство"  />
+                                                        <label class="custom-control-label" for="Новое строительство">Новое строительство</label>
+                                                </div>
+                                                <div class="custom-control custom-radio">
+                                                    <input type="radio" class="custom-control-input" name="objectType" onChange={this.onInputChange} value="Реконструкция" id="Реконструкция"  />
+                                                        <label class="custom-control-label" for="Реконструкция" >Реконструкция</label>
+                                                </div>
+                                            </div>
+                                            <div className="form-group">
+                                                <select required className="form-control" name="zoneType" id="ZoneType" onChange={this.onInputChange} value={this.state.zoneType}>
+                                                    <option value="null" disabled>Выберите зону</option>
+                                                    <option value="Жилищная зона">Жилищная зона</option>
+                                                    <option value="Социальная зона">Социальная зона</option>
+                                                    <option value="Коммерческая зона">Коммерческая зона</option>
+                                                    <option value="Иная зона">Иная зона</option>
+                                                </select>
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="CommonArea">Общая площадь (м<sup>2</sup>):</label>
