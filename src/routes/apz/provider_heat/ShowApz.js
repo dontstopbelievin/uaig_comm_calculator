@@ -449,7 +449,7 @@ export default class ShowApz extends React.Component {
         //console.log(data);
         var select_directors = [];
         for (var i = 0; i < data.length; i++) {
-          select_directors.push(<option value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
+          select_directors.push(<option key={i} value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
         }
         this.setState({heat_directors_id: select_directors});
         if(this.state.ty_director_id == "" || this.state.ty_director_id == " "){
@@ -948,6 +948,73 @@ export default class ShowApz extends React.Component {
 
   hideSignBtns() {
     this.setState({needSign: false });
+  }
+
+  downloadFile(id, progbarId = null) {
+    var token = sessionStorage.getItem('tokenInfo');
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", window.url + 'api/file/download/' + id, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+      var vision = $('.text-info[data-category='+progbarId+']');
+      var progressbar = $('.progress[data-category='+progbarId+']');
+      vision.css('display', 'none');
+      progressbar.css('display', 'flex');
+      xhr.onprogress = function(event) {
+        $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
+      }
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+          var base64ToArrayBuffer = (function () {
+
+            return function (base64) {
+              var binaryString = window.atob(base64);
+              var binaryLen = binaryString.length;
+              var bytes = new Uint8Array(binaryLen);
+
+              for (var i = 0; i < binaryLen; i++) {
+                var ascii = binaryString.charCodeAt(i);
+                bytes[i] = ascii;
+              }
+
+              return bytes;
+            }
+
+          }());
+
+          var saveByteArray = (function () {
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+            a.style = "display: none";
+
+            return function (data, name) {
+              var blob = new Blob(data, {type: "octet/stream"}),
+                  url = window.URL.createObjectURL(blob);
+              a.href = url;
+              a.download = name;
+              a.click();
+              setTimeout(function() {
+                window.URL.revokeObjectURL(url);
+                $('div', progressbar).css('width', 0);
+                progressbar.css('display', 'none');
+                vision.css('display','inline');
+                alert("Файлы успешно загружены");
+              },1000);
+            };
+
+          }());
+
+          saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
+        } else {
+          $('div', progressbar).css('width', 0);
+          progressbar.css('display', 'none');
+          vision.css('display','inline');
+          alert('Не удалось скачать файл');
+        }
+      }
+    xhr.send();
   }
 
   render() {
@@ -1703,9 +1770,8 @@ export default class ShowApz extends React.Component {
           </div>}
         </div>
 
-        <Logs state_history={this.state.apz.state_history} />
-
         <div className="col-sm-12">
+          <Logs state_history={this.state.apz.state_history} />
           <button className="btn btn-outline-secondary pull-right btn-sm" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
         </div>
       </div>

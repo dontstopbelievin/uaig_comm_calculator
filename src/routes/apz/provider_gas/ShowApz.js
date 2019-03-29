@@ -517,6 +517,13 @@ export default class ShowApz extends React.Component {
         </div>
 
         <div className="col-sm-12">
+          {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} mapId={"363b7bd55ec5497eaa27c54da725845c"} />}
+          <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
+            {this.state.showMapText}
+          </button>
+        </div>
+
+        <div className="col-sm-12">
           <div className="row provider_answer_top" style={{margin: '16px 0 0'}}>
             {(this.state.isPerformer === true || this.state.responseId !== 0) &&
               <div className="col-sm-6">
@@ -734,14 +741,16 @@ export default class ShowApz extends React.Component {
               </tbody>
             </table>
           }
+          </div>
 
           {this.state.isDirector && this.state.gasStatus === 2 &&
-            <div>
+            <div style={{margin:'auto'}}>
               {!this.state.xmlFile && !this.state.isSigned && apz.status_id === 5 &&
                 <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="gas" id={apz.id} serviceName='apz'/>
               }
             </div>
           }
+          <div className="col-sm-12">
 
           {this.state.gasStatus === 2 && this.state.isSigned && this.state.isPerformer &&
             <div style={{margin: 'auto', marginTop: '20px', display: 'table', width: '30%'}}>
@@ -847,13 +856,6 @@ export default class ShowApz extends React.Component {
                 </tbody>
               </table>
             </div>}
-        </div>
-
-        <div className="col-sm-12">
-          {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} mapId={"363b7bd55ec5497eaa27c54da725845c"} />}
-          <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
-            {this.state.showMapText}
-          </button>
         </div>
 
         <div className="col-sm-12">
