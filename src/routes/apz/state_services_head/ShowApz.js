@@ -695,10 +695,10 @@ export default class ShowApz extends React.Component {
             <div>
                 {this.state.loaderHidden &&
                 <div>
-                    <AllInfo toggleMap={this.toggleMap.bind(this, true)} apz={this.state.apz} personalIdFile={this.state.personalIdFile} confirmedTaskFile={this.state.confirmedTaskFile} titleDocumentFile={this.state.titleDocumentFile}
+                    <AllInfo historygoBack={this.props.history.goBack} toggleMap={this.toggleMap.bind(this, true)} apz={this.state.apz} personalIdFile={this.state.personalIdFile} confirmedTaskFile={this.state.confirmedTaskFile} titleDocumentFile={this.state.titleDocumentFile}
                       additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
 
-                    {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
+                    {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} mapId={"b5a3c97bd18442c1949ba5aefc4c1835"}/>}
                     <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                         {this.state.showMapText}
                     </button>
@@ -764,7 +764,7 @@ export default class ShowApz extends React.Component {
                   <div className="col-sm-12">
                       <Logs state_history={this.state.apz.state_history} />
                       <hr />
-                      <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
+                      <button className="btn btn-outline-secondary pull-right btn-sm" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
                   </div>
                 </div>
                 }
