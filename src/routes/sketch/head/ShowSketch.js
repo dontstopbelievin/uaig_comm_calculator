@@ -486,6 +486,7 @@ export default class ShowSketch extends React.Component {
                         </div>
                     </div>
 
+
                     <div className="col-sm-12">
                       <Logs state_history={this.state.sketch.state_history} />
                     </div>
