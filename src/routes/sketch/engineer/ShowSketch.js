@@ -2,7 +2,7 @@ import React from 'react';
 import $ from 'jquery';
 import 'jquery-serializejson';
 import Loader from 'react-loader-spinner';
-import ShowMap from './ShowMap';
+import ShowMap from '../components/ShowMap';
 import EcpSign from '../../apz/components/EcpSign';
 import Logs from "../../apz/components/Logs";
 import AllInfo from '../components/AllInfo';
@@ -257,17 +257,15 @@ export default class ShowSketch extends React.Component {
             <div className="row">
                 <AllInfo toggleMap={this.toggleMap.bind(this, true)} sketch={this.state.sketch} personalIdFile={this.state.personalIdFile}
                   sketchFile={this.state.sketchFile} sketchFilePDF={this.state.sketchFilePDF} apzFile={this.state.apzFile}/>
-                <Answers  sketch_id={this.state.sketch.id} urban_response={this.state.sketch.urban_response} lastDecisionIsMO = {this.state.lastDecisionIsMO} />
-                
                 <div className="col-sm-12">
-                    {this.state.showMap && <ShowMap coordinates={sketch.project_address_coordinates} />}
+                    {this.state.showMap && <ShowMap mapId={"b5a3c97bd18442c1949ba5aefc4c1835"} coordinates={sketch.project_address_coordinates} />}
                     <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                         {this.state.showMapText}
                     </button>
                 </div>
+                <Answers  sketch_id={this.state.sketch.id} urban_response={this.state.sketch.urban_response} lastDecisionIsMO = {this.state.lastDecisionIsMO} />
 
                 <div className="col-sm-12">
-
                     <div className={this.state.showButtons ? '' : 'invisible'}>
                         <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px', display: 'table'}}>
                             {!this.state.needSign ?

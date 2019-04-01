@@ -6,7 +6,7 @@ import {Link, Switch } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import ReactHintFactory from "react-hint";
 import '../../../assets/css/welcomeText.css';
-import ShowMap from './ShowMap';
+import ShowMap from '../components/ShowMap';
 
 const ReactHint = ReactHintFactory(React)
 

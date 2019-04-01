@@ -4,7 +4,7 @@ import 'jquery-validation';
 import 'jquery-serializejson';
 import Loader from 'react-loader-spinner';
 import '../../../assets/css/welcomeText.css';
-import ShowMap from './ShowMap';
+import ShowMap from '../components/ShowMap';
 
 
 export default class ShowSketch extends React.Component {
@@ -462,9 +462,9 @@ export default class ShowSketch extends React.Component {
                 <tbody>
                   {sketch.files.map(function(file, index) {
                     return(
-                      <React.Fragment>
+                      <React.Fragment key={index}>
                         {(file.category_id == 1 || file.category_id == 2 || file.category_id == 3) &&
-                          <tr key={index}>
+                          <tr>
                             <td style={{width: '22%'}}>{file.category.name_ru} </td>
                             <td><a className="text-info pointer" data-category={file.id} onClick={this.downloadFile.bind(this, file.id, file.id)}>Скачать</a>
                               <div className="progress mb-2" data-category={file.id} style={{height: '20px', display: 'none', marginTop:'5px'}}>
@@ -480,7 +480,7 @@ export default class ShowSketch extends React.Component {
               </table>
             }
 
-            {this.state.showMap && <ShowMap />}
+            {this.state.showMap && <ShowMap mapId={"b5a3c97bd18442c1949ba5aefc4c1835"}/>}
 
             <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
               {this.state.showMapText}
