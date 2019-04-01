@@ -2,7 +2,7 @@ import React from 'react';
 import Loader from 'react-loader-spinner';
 import $ from 'jquery';
 import { Switch } from 'react-router-dom';
-import ShowMap from './ShowMap';
+import ShowMap from '../components/ShowMap';
 import EcpSign from '../../apz/components/EcpSign';
 import Logs from "../../apz/components/Logs";
 import AllInfo from '../components/AllInfo';
@@ -431,18 +431,25 @@ export default class ShowSketch extends React.Component {
                     <AllInfo toggleMap={this.toggleMap.bind(this, true)} sketch={this.state.sketch} personalIdFile={this.state.personalIdFile}
                       sketchFile={this.state.sketchFile} sketchFilePDF={this.state.sketchFilePDF} apzFile={this.state.apzFile}/>
 
+                    <div className="col-sm-12">
+                        {this.state.showMap && <ShowMap mapId={"b5a3c97bd18442c1949ba5aefc4c1835"} coordinates={sketch.project_address_coordinates} />}
+
+                        <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
+                            {this.state.showMapText}
+                        </button>
+                    </div>
+
                     <Answers engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
                     sketch_id={this.state.sketch.id} urban_response={this.state.sketch.urban_response} lastDecisionIsMO = {this.state.lastDecisionIsMO} />
 
-
-                    <div className="col-sm-6">
+                    <div className="col-sm-6" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                         {this.state.showSignButtons && !this.state.isSigned &&
                           <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="head" id={this.state.sketch.id} serviceName='sketch'/>
                         }
 
                         <div>
                             {this.state.showButtons && !this.state.isSigned &&
-                            <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', marginBottom: '10px'}}>
+                            <div>
                                 <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.showSignBtns.bind(this)}>Поставить подпись</button>
                                 <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnSketchForm">
                                     Вернуть на доработку
@@ -477,14 +484,6 @@ export default class ShowSketch extends React.Component {
                             <button type="button" className="btn btn-raised btn-success" onClick={this.acceptDeclineSketchForm.bind(this,sketch.id, this.state.lastDecisionIsMO ? false : true, "")}>Отправить заявителю</button>
                             }
                         </div>
-                    </div>
-
-                    <div className="col-sm-12">
-                        {this.state.showMap && <ShowMap coordinates={sketch.project_address_coordinates} />}
-
-                        <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
-                            {this.state.showMapText}
-                        </button>
                     </div>
 
                     <div className="col-sm-12">

@@ -182,7 +182,7 @@ export default class CitizenActions extends React.Component {
                    <p><strong>Срок рассмотрения заявления:</strong></p>
                    {service2.period[0].split(';').map(function(item, index) {
                        return(
-                         <li>{index+1}) {item};</li>
+                         <li key={index}>{index+1}) {item};</li>
                        )
                    })}
                    <div>{service2.period[1]}</div>

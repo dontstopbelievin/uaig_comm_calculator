@@ -3,7 +3,7 @@ import {Switch} from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import $ from 'jquery';
 import ReactQuill from 'react-quill';
-import ShowMap from './ShowMap';
+import ShowMap from '../components/ShowMap';
 import EcpSign from '../../apz/components/EcpSign';
 import Logs from "../../apz/components/Logs";
 import AllInfo from '../components/AllInfo';
@@ -487,133 +487,133 @@ export default class ShowSketch extends React.Component {
 
                 <AllInfo toggleMap={this.toggleMap.bind(this, true)} sketch={this.state.sketch} personalIdFile={this.state.personalIdFile}
                   sketchFile={this.state.sketchFile} sketchFilePDF={this.state.sketchFilePDF} apzFile={this.state.apzFile}/>
-                    {console.log(this.state.lastDecisionIsMO)}
-                    <Answers  isSent={this.state.isSent} engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
-                    sketch_id={this.state.sketch.id} urban_response={this.state.sketch.urban_response} lastDecisionIsMO = {this.state.lastDecisionIsMO} />
 
-                    {this.state.showMap && <ShowMap coordinates={this.state.sketch.project_address_coordinates} />}
+                {this.state.showMap && <ShowMap mapId={"0e8ae8f43ea94d358673e749f9a5e147"} coordinates={this.state.sketch.project_address_coordinates} />}
 
-                    <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
-                        {this.state.showMapText}
-                    </button>
+                <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
+                    {this.state.showMapText}
+                </button>
 
-                    {(!this.state.xmlFile && !this.state.isSent && this.state.response ) &&
-                        <div style={{margin: 'auto', marginTop: '20px', display: 'table', width: '30%'}}>
-                            <div className="form-group">
-                                <label>Номер документа</label>
-                                <input type="text" className="form-control" placeholder="" value={this.state.docNumber}
-                                       onChange={this.onDocNumberChange}/>
-                            </div>
-                        </div>
-                    }
-                    <div className={this.state.showButtons ? '' : 'invisible'}>
-                        <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-                            {this.state.sketch.status_id == 3 && !this.state.xmlFile &&
-                            <div style={{paddingLeft:'5px', fontSize: '18px', textAlign:'center'}}>
-                                <b>Выберите главного архитектора:</b>
-                                <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
-                                    {this.state.apz_heads_id}
-                                </select>
-                            </div>
-                            }
-                            {!this.state.response ?
-                                 <div className="text-center">
-                                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled="disabled">Одобрить</button>
-                                    <button className="btn btn-raised btn-danger" data-toggle="modal"  data-target="#accDecApzForm">
-                                        Отклонить
-                                    </button>
-                                </div>
-                                :
-                                <div>
-                                    {!this.state.needSign ?
-                                        <div style={{margin: 'auto', display: 'table'}}>{console.log(this.state.engineerReturnedState)}
-                                            <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled={!this.state.docNumber} onClick={this.sendToApz.bind(this,true)}>Одобрить</button>
-                                            <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">
-                                                Отклонить
-                                            </button>
-                                        </div>
-                                        :
-                                        <div>
-                                            { !this.state.xmlFile  ?
-                                                <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="region" id={this.state.sketch.id} serviceName='sketch'/>
-                                                :
-                                                <div>
-                                                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, this.state.sketch.id, true, "your form was accepted","")}>Отправить инженеру</button>
-                                                    <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, this.state.sketch.id, true, "your form was accepted", "chief")}>
-                                                        Отправить главному архитектору
-                                                    </button>
-                                                </div>
-                                            }
-                                        </div>
-                                    }
-                                </div>
-                            }
-                            <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
-                                <div className="modal-dialog" role="document">
-                                    <div className="modal-content">
-                                        <div className="modal-header">
-                                            <h5 className="modal-title">Мотивированный отказ</h5>
-                                            <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div className="modal-body">
-                                            {this.state.templates && this.state.templates.length > 0 &&
-                                            <div className="form-group">
-                                                <select className="form-control" defaultValue="" id="templateList" onChange={this.onTemplateListChange.bind(this)}>
-                                                    <option value="">Выберите шаблон</option>
-                                                    {this.state.templates.map(function(template, index) {
-                                                        return(
-                                                            <option key={index} value={template.id}>{template.title}</option>
-                                                        );
-                                                    })
-                                                    }
-                                                </select>
-                                            </div>
-                                            }
-                                            <div style={{paddingLeft:'5px', fontSize: '18px'}}>
-                                                <b>Выберите главного архитектора:</b>
-                                                <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
-                                                    {this.state.apz_heads_id}
-                                                </select>
-                                            </div>
-                                            <div className="form-group">
-                                                <label>Тема(краткое описание)</label>
-                                                <div>
-                                                    <input value={this.state.theme} onChange={this.onThemeChange.bind(this)} />
-                                                </div>
-                                            </div>
-                                            <div className="form-group">
-                                                <label>Причина отказа</label>
-                                                <ReactQuill value={this.state.comment} onChange={this.onCommentChange} />
-                                            </div>
-                                        </div>
-                                        <div className="modal-footer">
-                                            <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineSketchForm.bind(this, this.state.sketch.id, false, this.state.comment,"",this.state.docNumber)}>Отправить</button>
-                                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                <Answers  isSent={this.state.isSent} engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
+                sketch_id={this.state.sketch.id} urban_response={this.state.sketch.urban_response} lastDecisionIsMO = {this.state.lastDecisionIsMO} />
 
-                        </div>
-                    </div>
+                  {(!this.state.xmlFile && !this.state.isSent && this.state.response ) &&
+                      <div style={{margin: 'auto', marginTop: '20px', display: 'table', width: '30%'}}>
+                          <div className="form-group">
+                              <label>Номер документа</label>
+                              <input type="text" className="form-control" placeholder="" value={this.state.docNumber}
+                                     onChange={this.onDocNumberChange}/>
+                          </div>
+                      </div>
+                  }
+                  <div className={this.state.showButtons ? '' : 'invisible'}>
+                      <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                          {this.state.sketch.status_id == 3 && !this.state.xmlFile &&
+                          <div style={{paddingLeft:'5px', fontSize: '18px', textAlign:'center'}}>
+                              <b>Выберите главного архитектора:</b>
+                              <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
+                                  {this.state.apz_heads_id}
+                              </select>
+                          </div>
+                          }
+                          {!this.state.response ?
+                               <div className="text-center">
+                                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled="disabled">Одобрить</button>
+                                  <button className="btn btn-raised btn-danger" data-toggle="modal"  data-target="#accDecApzForm">
+                                      Отклонить
+                                  </button>
+                              </div>
+                              :
+                              <div>
+                                  {!this.state.needSign ?
+                                      <div style={{margin: 'auto', display: 'table'}}>{console.log(this.state.engineerReturnedState)}
+                                          <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled={!this.state.docNumber} onClick={this.sendToApz.bind(this,true)}>Одобрить</button>
+                                          <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">
+                                              Отклонить
+                                          </button>
+                                      </div>
+                                      :
+                                      <div>
+                                          { !this.state.xmlFile  ?
+                                              <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="region" id={this.state.sketch.id} serviceName='sketch'/>
+                                              :
+                                              <div>
+                                                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, this.state.sketch.id, true, "your form was accepted","")}>Отправить инженеру</button>
+                                                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, this.state.sketch.id, true, "your form was accepted", "chief")}>
+                                                      Отправить главному архитектору
+                                                  </button>
+                                              </div>
+                                          }
+                                      </div>
+                                  }
+                              </div>
+                          }
+                          <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                              <div className="modal-dialog" role="document">
+                                  <div className="modal-content">
+                                      <div className="modal-header">
+                                          <h5 className="modal-title">Мотивированный отказ</h5>
+                                          <button type="button" id="uploadFileModalClose" className="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                          </button>
+                                      </div>
+                                      <div className="modal-body">
+                                          {this.state.templates && this.state.templates.length > 0 &&
+                                          <div className="form-group">
+                                              <select className="form-control" defaultValue="" id="templateList" onChange={this.onTemplateListChange.bind(this)}>
+                                                  <option value="">Выберите шаблон</option>
+                                                  {this.state.templates.map(function(template, index) {
+                                                      return(
+                                                          <option key={index} value={template.id}>{template.title}</option>
+                                                      );
+                                                  })
+                                                  }
+                                              </select>
+                                          </div>
+                                          }
+                                          <div style={{paddingLeft:'5px', fontSize: '18px'}}>
+                                              <b>Выберите главного архитектора:</b>
+                                              <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
+                                                  {this.state.apz_heads_id}
+                                              </select>
+                                          </div>
+                                          <div className="form-group">
+                                              <label>Тема(краткое описание)</label>
+                                              <div>
+                                                  <input value={this.state.theme} onChange={this.onThemeChange.bind(this)} />
+                                              </div>
+                                          </div>
+                                          <div className="form-group">
+                                              <label>Причина отказа</label>
+                                              <ReactQuill value={this.state.comment} onChange={this.onCommentChange} />
+                                          </div>
+                                      </div>
+                                      <div className="modal-footer">
+                                          <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineSketchForm.bind(this, this.state.sketch.id, false, this.state.comment,"",this.state.docNumber)}>Отправить</button>
+                                          <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
 
-                    <Logs state_history={this.state.sketch.state_history} />
+                      </div>
+                  </div>
 
-                    <div className="col-sm-12">
-                        <hr />
-                        <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
-                    </div>
-                </div>
-                }
+                  <Logs state_history={this.state.sketch.state_history} />
 
-                {!this.state.loaderHidden &&
-                <div style={{textAlign: 'center'}}>
-                    <Loader type="Oval" color="#46B3F2" height="200" width="200" />
-                </div>
-                }
-            </div>
+                  <div className="col-sm-12">
+                      <hr />
+                      <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
+                  </div>
+              </div>
+              }
+
+              {!this.state.loaderHidden &&
+              <div style={{textAlign: 'center'}}>
+                  <Loader type="Oval" color="#46B3F2" height="200" width="200" />
+              </div>
+              }
+          </div>
         )
     }
 }
