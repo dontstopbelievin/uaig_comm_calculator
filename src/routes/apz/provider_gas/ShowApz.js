@@ -341,7 +341,7 @@ export default class ShowApz extends React.Component {
   }
   // this function is to send the final response
   sendGasResponse(apzId, status, comment) {
-    if((this.state.responseId <= 0 || this.state.responseId > 0) && this.state.response !== status){
+    if (this.state.responseId <= 0 || this.state.responseId > 0 && this.state.response != status){
       this.setState({callSaveFromSend: true});
       this.saveResponseForm(apzId, status, comment);
     }
@@ -743,13 +743,13 @@ export default class ShowApz extends React.Component {
           }
           </div>
 
-          {/*{this.state.isDirector && this.state.gasStatus === 2 &&*/}
+          {this.state.isDirector && this.state.gasStatus === 2 &&
             <div style={{margin:'auto'}}>
-              {/*{!this.state.xmlFile && !this.state.isSigned && apz.status_id === 5 &&*/}
+              {!this.state.xmlFile && !this.state.isSigned && apz.status_id === 5 &&
                 <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="gas" id={apz.id} serviceName='apz'/>
-              {/*}*/}
+              }
             </div>
-          {/*}*/}
+          }
           <div className="col-sm-12">
 
           {this.state.gasStatus === 2 && this.state.isSigned && this.state.isPerformer &&
