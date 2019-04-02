@@ -185,7 +185,7 @@ export default class ShowApz extends React.Component {
           data.commission.apz_electricity_response.safe_category ? this.setState({elecSafeCategory: data.commission.apz_electricity_response.safe_category}) : this.setState({elecSafeCategory: ""});
           data.commission.apz_electricity_response.recommendation ? this.setState({recomendation: data.commission.apz_electricity_response.recommendation}) : this.setState({recomendation: ""});
           data.commission.apz_electricity_response.doc_number ? this.setState({docNumber: data.commission.apz_electricity_response.doc_number}) : this.setState({docNumber: ""});
-          data.commission.apz_electricity_response.id ? this.setState({responseId: data.commission.apz_electricity_response.id}) : this.setState({responseId: ""});
+          data.commission.apz_electricity_response.id ? this.setState({responseId: data.commission.apz_electricity_response.id}) : this.setState({responseId: 0});
           data.commission.apz_electricity_response.response ? this.setState({response: data.commission.apz_electricity_response.response}) : this.setState({response: ""});
           data.commission.apz_electricity_response.electricity_director_id ? this.setState({ty_director_id: data.commission.apz_electricity_response.electricity_director_id}) : this.setState({ty_director_id: "" });
           data.commission.apz_electricity_response.files ? this.setState({customTcFile: data.commission.apz_electricity_response.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: ""});;
@@ -389,7 +389,7 @@ export default class ShowApz extends React.Component {
         //console.log(data);
         this.setState({responseId: data.id});
         data.files ? this.setState({customTcFile: data.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: null});;
-        data.response ? this.setState({response: data.response}) : this.setState({response: ""});
+        data.response ? this.setState({response: data.response}) : this.setState({response: false});
         data.response ? this.setState({accept: data.response ? 'answer' : 'decline'}) : this.setState({accept: "answer"});
         data.files ? this.setState({responseFile: data.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]}) : this.setState({responseFile: null});
         data.response_text ? this.setState({description: data.response_text}) : this.setState({description: ""});
@@ -418,7 +418,7 @@ export default class ShowApz extends React.Component {
 
   // this function is to send the final response
   sendElectroResponse(apzId, status, comment) {
-    if((this.state.responseId <= 0 || this.state.responseId > 0) && this.state.response !== status){
+    if(this.state.responseId == 0){
       this.setState({callSaveFromSend: true});
       this.saveResponseForm(apzId, status, comment);
     }

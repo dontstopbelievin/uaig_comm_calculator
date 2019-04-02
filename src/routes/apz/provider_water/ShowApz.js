@@ -410,7 +410,7 @@ export default class ShowApz extends React.Component {
           data.commission.apz_water_response.doc_number ? this.setState({docNumber: data.commission.apz_water_response.doc_number}) : this.setState({docNumber: "" });
           data.commission.apz_water_response.ty_object_type ? this.setState({ty_object_type: data.commission.apz_water_response.ty_object_type}) : this.setState({ty_object_type: "ИЖС" });
           data.commission.apz_water_response.water_director_id ? this.setState({ty_director_id: data.commission.apz_water_response.water_director_id}) : this.setState({ty_director_id: "" });
-          data.commission.apz_water_response.id ? this.setState({responseId: data.commission.apz_water_response.id}) : this.setState({responseId: "" });
+          data.commission.apz_water_response.id ? this.setState({responseId: data.commission.apz_water_response.id}) : this.setState({responseId: 0 });
           data.commission.apz_water_response.response ? this.setState({response: data.commission.apz_water_response.response}) : this.setState({response: "" });
           data.commission.apz_water_response.files ? this.setState({customTcFile: data.commission.apz_water_response.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: null});;
 
@@ -615,7 +615,7 @@ export default class ShowApz extends React.Component {
   }
 
   sendWaterResponse(apzId, status, comment) {
-    if((this.state.responseId <= 0 || this.state.responseId > 0) && this.state.response !== status){
+    if(this.state.responseId == 0 ){
       console.log('saving');
       this.setState({callSaveFromSend: true});
       this.saveResponseForm(apzId, status, comment);

@@ -792,7 +792,7 @@ export default class ShowApz extends React.Component {
   }
 
   sendHeatResponse(apzId, status, comment) {
-    if(this.state.responseId <= 0 || this.state.responseId > 0 && this.state.response != status){
+    if(this.state.responseId == 0){
       this.setState({callSaveFromSend: true});
       this.saveResponseForm(apzId, status, comment);
     }

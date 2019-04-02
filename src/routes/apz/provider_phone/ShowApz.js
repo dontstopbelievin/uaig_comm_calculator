@@ -245,7 +245,7 @@ export default class ShowApz extends React.Component {
           data.commission.apz_phone_response.sewage ? this.setState({responseSewage: data.commission.apz_phone_response.sewage}) : this.setState({responseSewage: ""});
           data.commission.apz_phone_response.client_wishes ? this.setState({responseClientWishes: data.commission.apz_phone_response.client_wishes}) : this.setState({responseClientWishes: ""});
           data.commission.apz_phone_response.doc_number ? this.setState({docNumber: data.commission.apz_phone_response.doc_number}) : this.setState({docNumber: ""});
-          data.commission.apz_phone_response.id ? this.setState({responseId: data.commission.apz_phone_response.id}) : this.setState({responseId: ""});
+          data.commission.apz_phone_response.id ? this.setState({responseId: data.commission.apz_phone_response.id}) : this.setState({responseId: 0});
           data.commission.apz_phone_response.response ? this.setState({response: data.commission.apz_phone_response.response}) : this.setState({response: ""});
           data.commission.apz_phone_response.files ? this.setState({customTcFile: data.commission.apz_phone_response.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: null});;
           data.commission.apz_phone_response.phone_director_id ? this.setState({ty_director_id: data.commission.apz_phone_response.phone_director_id}) : this.setState({ty_director_id: "" });
@@ -344,7 +344,7 @@ export default class ShowApz extends React.Component {
   }
 
   sendPhoneResponse(apzId, status, comment) {
-    if((this.state.responseId <= 0 || this.state.responseId > 0) && this.state.response !== status){
+    if(this.state.responseId == 0){
       this.setState({callSaveFromSend: true});
       this.saveResponseForm(apzId, status, comment);
     }
@@ -777,7 +777,7 @@ export default class ShowApz extends React.Component {
                   </button>
                 </div>
                 <div className="modal-footer" style={{margin:'auto'}}>
-                  <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, 'decline', this.state.description)}>
+                  <button type="button" className="btn btn-secondary" onClick={this.sendPhoneResponse.bind(this, apz.id, false, this.state.description)}>
                     Да
                   </button>
                   <button type="button" className="btn btn-secondary" data-dismiss="modal" style={{marginLeft:'5px'}}>Нет</button>
