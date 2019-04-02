@@ -341,7 +341,7 @@ export default class ShowApz extends React.Component {
   }
   // this function is to send the final response
   sendGasResponse(apzId, status, comment) {
-    if((this.state.responseId <= 0 || this.state.responseId > 0) && this.state.response !== status){
+    if (this.state.responseId <= 0 || this.state.responseId > 0 && this.state.response != status){
       this.setState({callSaveFromSend: true});
       this.saveResponseForm(apzId, status, comment);
     }

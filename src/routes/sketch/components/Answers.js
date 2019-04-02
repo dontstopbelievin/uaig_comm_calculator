@@ -140,7 +140,7 @@ export default class AllInfo extends React.Component {
               Комментарий главного архитектора: {this.props.apzReturnedState.comment}
           </div>
           }
-          {this.props.lastDecisionIsMO &&
+          {this.props.lastDecisionIsMO ?
           <table className="table table-bordered">
               <tbody>
               <tr>
@@ -149,17 +149,20 @@ export default class AllInfo extends React.Component {
               </tr>
               </tbody>
           </table>
-          }
-          {(this.props.urban_response || this.props.isSent) &&
-              <table className="table table-bordered">
-                  <tbody>
-                  <tr>
-                      <td style={{width: '22%'}}><b>Согласование</b></td>
-                      <td><a className="text-info pointer"
-                             onClick={this.printSketchAnswer.bind(this, this.props.sketch_id)}>Скачать</a></td>
-                  </tr>
-                  </tbody>
-              </table>
+          :
+              <div>
+              {(this.props.urban_response || this.props.isSent)&&
+                  <table className="table table-bordered">
+                      <tbody>
+                      <tr>
+                          <td style={{width: '22%'}}><b>Согласование</b></td>
+                          <td><a className="text-info pointer"
+                                 onClick={this.printSketchAnswer.bind(this, this.props.sketch_id)}>Скачать</a></td>
+                      </tr>
+                      </tbody>
+                  </table>
+              }
+              </div>
           }
         </div>
     )}
