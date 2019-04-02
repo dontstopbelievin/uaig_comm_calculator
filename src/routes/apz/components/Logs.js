@@ -15,7 +15,7 @@ export default class Logs extends React.Component {
                   {this.props.state_history.map(function(state, index) {
                     return(
                       <div key={index}>
-                        <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
+                        <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && state.state_id == 10 &&'('+state.receiver+')'}</p>
                       </div>
                     );
                   })}
