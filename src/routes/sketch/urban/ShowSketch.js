@@ -124,11 +124,7 @@ export default class ShowSketch extends React.Component {
                 this.setState({personalIdFile: sketch.files.filter(function(obj) { return obj.category_id === 3 })[0]});
                 this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
                 this.setState({sketchFilePDF: sketch.files.filter(function(obj) { return obj.category_id === 40 })[0]});
-                // this.setState({lastDecisionIsMo: data.state_history.filter(function(obj) { return obj.state_id === 1 && obj.comment !== null && obj.sender === 'engineer'})[0]});
-
                 this.setState({apzFile: sketch.files.filter(function(obj) { return obj.category_id === 2 })[0]});
-                // this.setState({docNumber: sketch.docNumber});
-                // this.setState({reglamentFile: apz.files.filter(function(obj) { return obj.category_id === 29 })[0]});
                 this.setState({showButtons: false});
 
                 for(var data_index = sketch.state_history.length-1; data_index >= 0; data_index--){
@@ -181,73 +177,6 @@ export default class ShowSketch extends React.Component {
 
     handleHeadIDChange(event){
         this.setState({apz_head_id: event.target.value});
-    }
-
-    downloadFile(id, progbarId = null) {
-        var token = sessionStorage.getItem('tokenInfo');
-
-        var xhr = new XMLHttpRequest();
-        xhr.open("get", window.url + 'api/file/download/' + id, true);
-        xhr.setRequestHeader("Authorization", "Bearer " + token);
-        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-        var vision = $('.text-info[data-category='+progbarId+']');
-        var progressbar = $('.progress[data-category='+progbarId+']');
-        vision.css('display', 'none');
-        progressbar.css('display', 'flex');
-        xhr.onprogress = function(event) {
-            $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
-        }
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                var data = JSON.parse(xhr.responseText);
-                var base64ToArrayBuffer = (function () {
-
-                    return function (base64) {
-                        var binaryString = window.atob(base64);
-                        var binaryLen = binaryString.length;
-                        var bytes = new Uint8Array(binaryLen);
-
-                        for (var i = 0; i < binaryLen; i++) {
-                            var ascii = binaryString.charCodeAt(i);
-                            bytes[i] = ascii;
-                        }
-
-                        return bytes;
-                    }
-
-                }());
-
-                var saveByteArray = (function () {
-                    var a = document.createElement("a");
-                    document.body.appendChild(a);
-                    a.style = "display: none";
-
-                    return function (data, name) {
-                        var blob = new Blob(data, {type: "octet/stream"}),
-                            url = window.URL.createObjectURL(blob);
-                        a.href = url;
-                        a.download = name;
-                        a.click();
-                        setTimeout(function() {
-                            window.URL.revokeObjectURL(url);
-                            $('div', progressbar).css('width', 0);
-                            progressbar.css('display', 'none');
-                            vision.css('display','inline');
-                            alert("Файлы успешно загружены");
-                        },1000);
-                    };
-
-                }());
-
-                saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
-            } else {
-                $('div', progressbar).css('width', 0);
-                progressbar.css('display', 'none');
-                vision.css('display','inline');
-                alert('Не удалось скачать файл');
-            }
-        }
-        xhr.send();
     }
 
     ecpSignSuccess(){
@@ -358,124 +287,6 @@ export default class ShowSketch extends React.Component {
             this.setState({
                 showMapText: 'Показать карту'
             })
-        }
-    }
-
-    printRegionAnswer(sketchId) {
-        var token = sessionStorage.getItem('tokenInfo');
-        if (token) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("get", window.url + "api/print/region/sketch/" + sketchId, true);
-            xhr.setRequestHeader("Authorization", "Bearer " + token);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    //test of IE
-                    if (typeof window.navigator.msSaveBlob === "function") {
-                        window.navigator.msSaveBlob(xhr.response, "МО.pdf");
-                    } else {
-                        var data = JSON.parse(xhr.responseText);
-
-                        var base64ToArrayBuffer = (function () {
-
-                            return function (base64) {
-                                var binaryString =  window.atob(base64);
-                                var binaryLen = binaryString.length;
-                                var bytes = new Uint8Array(binaryLen);
-
-                                for (var i = 0; i < binaryLen; i++) {
-                                    var ascii = binaryString.charCodeAt(i);
-                                    bytes[i] = ascii;
-                                }
-
-                                return bytes;
-                            }
-
-                        }());
-
-                        var saveByteArray = (function () {
-                            var a = document.createElement("a");
-                            document.body.appendChild(a);
-                            a.style = "display: none";
-
-                            return function (data, name) {
-                                var blob = new Blob(data, {type: "octet/stream"}),
-                                    url = window.URL.createObjectURL(blob);
-                                a.href = url;
-                                a.download = name;
-                                a.click();
-                                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
-                            };
-
-                        }());
-
-                        saveByteArray([base64ToArrayBuffer(data.file)], "МО.pdf");
-                    }
-                } else {
-                    alert('Не удалось скачать файл');
-                }
-            }
-            xhr.send();
-        } else {
-            console.log('Время сессии истекло.');
-        }
-    }
-
-    printSketchAnswer(sketchId, progbarId = null) {
-        var token = sessionStorage.getItem('tokenInfo');
-        if (token) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("get", window.url + "api/print/sketch/" + sketchId, true);
-            xhr.setRequestHeader("Authorization", "Bearer " + token);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    //test of IE
-                    if (typeof window.navigator.msSaveBlob === "function") {
-                        window.navigator.msSaveBlob(xhr.response, "Sogl.pdf");
-                    } else {
-                        var data = JSON.parse(xhr.responseText);
-
-                        var base64ToArrayBuffer = (function () {
-
-                            return function (base64) {
-                                var binaryString =  window.atob(base64);
-                                var binaryLen = binaryString.length;
-                                var bytes = new Uint8Array(binaryLen);
-
-                                for (var i = 0; i < binaryLen; i++) {
-                                    var ascii = binaryString.charCodeAt(i);
-                                    bytes[i] = ascii;
-                                }
-
-                                return bytes;
-                            }
-
-                        }());
-
-                        var saveByteArray = (function () {
-                            var a = document.createElement("a");
-                            document.body.appendChild(a);
-                            a.style = "display: none";
-
-                            return function (data, name) {
-                                var blob = new Blob(data, {type: "octet/stream"}),
-                                    url = window.URL.createObjectURL(blob);
-                                a.href = url;
-                                a.download = name;
-                                a.click();
-                                setTimeout(function() {window.URL.revokeObjectURL(url);},1000);
-                            };
-
-                        }());
-
-                        saveByteArray([base64ToArrayBuffer(data.file)], "Sogl.pdf");
-                    }
-                } else {
-                    alert('Не удалось скачать файл');
-                }
-            }
-            xhr.send();
-        } else {
-            console.log('Время сессии истекло.');
         }
     }
 

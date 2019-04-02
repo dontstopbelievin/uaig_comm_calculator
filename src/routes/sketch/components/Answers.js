@@ -151,7 +151,7 @@ export default class AllInfo extends React.Component {
           </table>
           :
               <div>
-              {(this.props.urban_response || this.props.isSent)&&
+              {(this.props.urban_response || this.props.isSent) &&
                   <table className="table table-bordered">
                       <tbody>
                       <tr>

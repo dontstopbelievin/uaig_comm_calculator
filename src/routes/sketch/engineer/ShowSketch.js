@@ -105,73 +105,6 @@ export default class ShowSketch extends React.Component {
         this.setState({ needSign: false });
     }
 
-    downloadFile(id, progbarId = null) {
-        var token = sessionStorage.getItem('tokenInfo');
-
-        var xhr = new XMLHttpRequest();
-        xhr.open("get", window.url + 'api/file/download/' + id, true);
-        xhr.setRequestHeader("Authorization", "Bearer " + token);
-        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-        var vision = $('.text-info[data-category='+progbarId+']');
-        var progressbar = $('.progress[data-category='+progbarId+']');
-        vision.css('display', 'none');
-        progressbar.css('display', 'flex');
-        xhr.onprogress = function(event) {
-            $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
-        }
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                var data = JSON.parse(xhr.responseText);
-                var base64ToArrayBuffer = (function () {
-
-                    return function (base64) {
-                        var binaryString =  window.atob(base64);
-                        var binaryLen = binaryString.length;
-                        var bytes = new Uint8Array(binaryLen);
-
-                        for (var i = 0; i < binaryLen; i++) {
-                            var ascii = binaryString.charCodeAt(i);
-                            bytes[i] = ascii;
-                        }
-
-                        return bytes;
-                    }
-
-                }());
-
-                var saveByteArray = (function () {
-                    var a = document.createElement("a");
-                    document.body.appendChild(a);
-                    a.style = "display: none";
-
-                    return function (data, name) {
-                        var blob = new Blob(data, {type: "octet/stream"}),
-                            url = window.URL.createObjectURL(blob);
-                        a.href = url;
-                        a.download = name;
-                        a.click();
-                        setTimeout(function() {
-                            window.URL.revokeObjectURL(url);
-                            $('div', progressbar).css('width', 0);
-                            progressbar.css('display', 'none');
-                            vision.css('display','inline');
-                            alert("Файлы успешно загружены");
-                        },1000);
-                    };
-
-                }());
-
-                saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
-            } else {
-                $('div', progressbar).css('width', 0);
-                progressbar.css('display', 'none');
-                vision.css('display','inline');
-                alert('Не удалось скачать файл');
-            }
-        }
-        xhr.send();
-    }
-
     ecpSignSuccess(){
       this.setState({ xmlFile: true });
       this.setState({loaderHidden: true});
@@ -191,22 +124,6 @@ export default class ShowSketch extends React.Component {
                 showMapText: 'Показать карту'
             })
         }
-    }
-
-    toDate(date) {
-        if(date === null) {
-            return date;
-        }
-
-        var jDate = new Date(date);
-        var curr_date = jDate.getDate();
-        var curr_month = jDate.getMonth() + 1;
-        var curr_year = jDate.getFullYear();
-        var curr_hour = jDate.getHours();
-        var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
-        var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-
-        return formated_date;
     }
 
     acceptDeclineSketchForm(sketchId, status, comment) {
@@ -248,22 +165,20 @@ export default class ShowSketch extends React.Component {
     }
 
     render() {
-        var sketch = this.state.sketch;
-        if (sketch.length === 0) {
-            return false;
-        }
-
         return (
             <div className="row">
                 <AllInfo toggleMap={this.toggleMap.bind(this, true)} sketch={this.state.sketch} personalIdFile={this.state.personalIdFile}
                   sketchFile={this.state.sketchFile} sketchFilePDF={this.state.sketchFilePDF} apzFile={this.state.apzFile}/>
+
                 <div className="col-sm-12">
-                    {this.state.showMap && <ShowMap mapId={"b5a3c97bd18442c1949ba5aefc4c1835"} coordinates={sketch.project_address_coordinates} />}
+                    {this.state.showMap && <ShowMap mapId={"b5a3c97bd18442c1949ba5aefc4c1835"} coordinates={this.state.sketch.project_address_coordinates} />}
                     <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                         {this.state.showMapText}
                     </button>
                 </div>
-                <Answers  sketch_id={this.state.sketch.id} urban_response={this.state.sketch.urban_response} lastDecisionIsMO = {this.state.lastDecisionIsMO} />
+
+                <Answers  engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
+                sketch_id={this.state.sketch.id} urban_response={this.state.sketch.urban_response} lastDecisionIsMO = {this.state.lastDecisionIsMO} />
 
                 <div className="col-sm-12">
                     <div className={this.state.showButtons ? '' : 'invisible'}>
@@ -292,7 +207,7 @@ export default class ShowSketch extends React.Component {
                                                     </div>
                                                 </div>
                                                 <div className="modal-footer">
-                                                    <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, false, this.state.comment)}>Отправить</button>
+                                                    <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineSketchForm.bind(this, this.state.sketch.id, false, this.state.comment)}>Отправить</button>
                                                     <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                                                 </div>
                                             </div>
@@ -306,7 +221,7 @@ export default class ShowSketch extends React.Component {
                                         :
                                         <div>
                                             <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
-                                                    onClick={this.acceptDeclineSketchForm.bind(this, sketch.id, true, "your form was accepted")}>
+                                                    onClick={this.acceptDeclineSketchForm.bind(this, this.state.sketch.id, true, "your form was accepted")}>
                                                 Главному архитектору
                                             </button>
                                         </div>
@@ -315,12 +230,6 @@ export default class ShowSketch extends React.Component {
                             }
                           </div>
                         </div>
-
-                    {this.state.engineerReturnedState &&
-                    <div className="alert alert-danger">
-                        Комментарий инженера: {this.state.engineerReturnedState.comment}
-                    </div>
-                    }
 
                     <Logs state_history={this.state.sketch.state_history} />
 

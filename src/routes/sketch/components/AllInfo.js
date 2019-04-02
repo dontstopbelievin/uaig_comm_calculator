@@ -91,7 +91,7 @@ export default class AllInfo extends React.Component {
         }
         xhr.send();
     }
-    
+
     render() {
         return (
           <React.Fragment>
@@ -302,6 +302,7 @@ export default class AllInfo extends React.Component {
               </div>
           </div>
           }
+          
           {this.props.sketch &&
           <div className="modal fade" id="architect_modal" tabIndex="-1" role="dialog" aria-hidden="true">
               <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>

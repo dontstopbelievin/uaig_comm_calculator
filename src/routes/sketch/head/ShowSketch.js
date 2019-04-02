@@ -133,73 +133,6 @@ export default class ShowSketch extends React.Component {
         xhr.send();
     }
 
-    downloadFile(id, progbarId = null) {
-        var token = sessionStorage.getItem('tokenInfo');
-
-        var xhr = new XMLHttpRequest();
-        xhr.open("get", window.url + 'api/file/download/' + id, true);
-        xhr.setRequestHeader("Authorization", "Bearer " + token);
-        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-        var vision = $('.text-info[data-category='+progbarId+']');
-        var progressbar = $('.progress[data-category='+progbarId+']');
-        vision.css('display', 'none');
-        progressbar.css('display', 'flex');
-        xhr.onprogress = function(event) {
-            $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
-        }
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                var data = JSON.parse(xhr.responseText);
-                var base64ToArrayBuffer = (function () {
-
-                    return function (base64) {
-                        var binaryString =  window.atob(base64);
-                        var binaryLen = binaryString.length;
-                        var bytes = new Uint8Array(binaryLen);
-
-                        for (var i = 0; i < binaryLen; i++) {
-                            var ascii = binaryString.charCodeAt(i);
-                            bytes[i] = ascii;
-                        }
-
-                        return bytes;
-                    }
-
-                }());
-
-                var saveByteArray = (function () {
-                    var a = document.createElement("a");
-                    document.body.appendChild(a);
-                    a.style = "display: none";
-
-                    return function (data, name) {
-                        var blob = new Blob(data, {type: "octet/stream"}),
-                            url = window.URL.createObjectURL(blob);
-                        a.href = url;
-                        a.download = name;
-                        a.click();
-                        setTimeout(function() {
-                            window.URL.revokeObjectURL(url);
-                            $('div', progressbar).css('width', 0);
-                            progressbar.css('display', 'none');
-                            vision.css('display','inline');
-                            alert("Файлы успешно загружены");
-                        },1000);
-                    };
-
-                }());
-
-                saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
-            } else {
-                alert('Не удалось скачать файл');
-                vision.css('display', 'inline');
-                progressbar.css('display', 'none');
-                $('div', progressbar).css('width', 0);
-            }
-        }
-        xhr.send();
-    }
-
     saveSketchForm(sketchId, status, comment) {
         var token = sessionStorage.getItem('tokenInfo');
         var formData = new FormData();
@@ -313,71 +246,6 @@ export default class ShowSketch extends React.Component {
         xhr.send(formData);
     }
 
-
-    printSketch(sketchId, project) {
-        var token = sessionStorage.getItem('tokenInfo');
-        if (token) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("get", window.url + "api/print/sketch/" + sketchId, true);
-            xhr.setRequestHeader("Authorization", "Bearer " + token);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    //test of IE
-                    if (typeof window.navigator.msSaveBlob === "function") {
-                        window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
-                    } else {
-                        var data = JSON.parse(xhr.responseText);
-                        var today = new Date();
-                        var curr_date = today.getDate();
-                        var curr_month = today.getMonth() + 1;
-                        var curr_year = today.getFullYear();
-                        var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
-
-                        var base64ToArrayBuffer = (function () {
-
-                            return function (base64) {
-                                var binaryString =  window.atob(base64);
-                                var binaryLen = binaryString.length;
-                                var bytes = new Uint8Array(binaryLen);
-
-                                for (var i = 0; i < binaryLen; i++) {
-                                    var ascii = binaryString.charCodeAt(i);
-                                    bytes[i] = ascii;
-                                }
-
-                                return bytes;
-                            }
-
-                        }());
-
-                        var saveByteArray = (function () {
-                            var a = document.createElement("a");
-                            document.body.appendChild(a);
-                            a.style = "display: none";
-
-                            return function (data, name) {
-                                var blob = new Blob(data, {type: "octet/stream"}),
-                                    url = window.URL.createObjectURL(blob);
-                                a.href = url;
-                                a.download = name;
-                                a.click();
-                                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
-                            };
-
-                        }());
-
-                        saveByteArray([base64ToArrayBuffer(data.file)], "апз-" + project + formated_date + ".pdf");
-                    }
-                } else {
-                    alert('Не удалось скачать файл');
-                }
-            }
-            xhr.send();
-        } else {
-            console.log('session expired');
-        }
-    }
-
     toggleMap(value) {
         this.setState({
             showMap: value
@@ -394,34 +262,12 @@ export default class ShowSketch extends React.Component {
         }
     }
 
-    toDate(date) {
-        if(date === null) {
-            return date;
-        }
-
-        var jDate = new Date(date);
-        var curr_date = jDate.getDate();
-        var curr_month = jDate.getMonth() + 1;
-        var curr_year = jDate.getFullYear();
-        var curr_hour = jDate.getHours();
-        var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
-        var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-
-        return formated_date;
-    }
-
     ecpSignSuccess(){
       this.setState({ isSigned: true });
       this.setState({ showSendButton: true });
     }
 
     render() {
-        var sketch = this.state.sketch;
-
-        if (sketch.length === 0) {
-            return false;
-        }
-
         return (
             <div>
                 {this.state.loaderHidden &&
@@ -432,7 +278,7 @@ export default class ShowSketch extends React.Component {
                       sketchFile={this.state.sketchFile} sketchFilePDF={this.state.sketchFilePDF} apzFile={this.state.apzFile}/>
 
                     <div className="col-sm-12">
-                        {this.state.showMap && <ShowMap mapId={"b5a3c97bd18442c1949ba5aefc4c1835"} coordinates={sketch.project_address_coordinates} />}
+                        {this.state.showMap && <ShowMap mapId={"b5a3c97bd18442c1949ba5aefc4c1835"} coordinates={this.state.sketch.project_address_coordinates} />}
 
                         <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                             {this.state.showMapText}
@@ -471,7 +317,7 @@ export default class ShowSketch extends React.Component {
                                                 </div>
                                             </div>
                                             <div className="modal-footer">
-                                                <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.returnSketchForm.bind(this, sketch.id)}>Отправить</button>
+                                                <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.returnSketchForm.bind(this, this.state.sketch.id)}>Отправить</button>
                                                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                                             </div>
                                         </div>
@@ -481,7 +327,7 @@ export default class ShowSketch extends React.Component {
                             }
 
                             {this.state.showSendButton &&
-                            <button type="button" className="btn btn-raised btn-success" onClick={this.acceptDeclineSketchForm.bind(this,sketch.id, this.state.lastDecisionIsMO ? false : true, "")}>Отправить заявителю</button>
+                            <button type="button" className="btn btn-raised btn-success" onClick={this.acceptDeclineSketchForm.bind(this, this.state.sketch.id, this.state.lastDecisionIsMO ? false : true, "")}>Отправить заявителю</button>
                             }
                         </div>
                     </div>

@@ -5,7 +5,9 @@ import 'jquery-serializejson';
 import Loader from 'react-loader-spinner';
 import '../../../assets/css/welcomeText.css';
 import ShowMap from '../components/ShowMap';
-
+import Logs from "../../apz/components/Logs";
+import AllInfo from '../components/AllInfo';
+import Answers from '../components/Answers';
 
 export default class ShowSketch extends React.Component {
   constructor(props) {
@@ -19,8 +21,11 @@ export default class ShowSketch extends React.Component {
       responseFile: false,
       personalIdFile:false,
       apzFile:false,
-      sketchFile:false
-
+      sketchFilePDF: false,
+      sketchFile:false,
+      apzReturnedState: false,
+      engineerReturnedState: false,
+      lastDecisionIsMO:false
     };
   }
 
@@ -52,6 +57,21 @@ export default class ShowSketch extends React.Component {
         this.setState({personalIdFile: sketch.files.filter(function(obj) {return obj.category_id === 3 })[0]});
         this.setState({apzFile: sketch.files.filter(function(obj) { return obj.category_id === 2 })[0]});
         this.setState({sketchFile: sketch.files.filter(function(obj) { return obj.category_id === 1 })[0]});
+        this.setState({sketchFilePDF: sketch.files.filter(function(obj) { return obj.category_id === 40 })[0]});
+        this.setState({engineerReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 6})[0]});
+        this.setState({apzReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 17})[0]});
+        for(var data_index = sketch.state_history.length-1; data_index >= 0; data_index--){
+            switch (sketch.state_history[data_index].state_id) {
+                case 2:
+                    break;
+                case 3:
+                    this.setState({lastDecisionIsMO: true});
+                    break;
+                default:
+                    continue;
+            }
+            break;
+        }
 
         if (sketch.apz_department_response && sketch.apz_department_response.files) {
           this.setState({responseFile: sketch.apz_department_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
@@ -65,69 +85,6 @@ export default class ShowSketch extends React.Component {
     xhr.send();
   }
 
-    printSketch(sketchId, project) {
-        var token = sessionStorage.getItem('tokenInfo');
-        if (token) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("get", window.url + "api/print/sketch/" + sketchId, true);
-            xhr.setRequestHeader("Authorization", "Bearer " + token);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    //test of IE
-                    if (typeof window.navigator.msSaveBlob === "function") {
-                        window.navigator.msSaveBlob(xhr.response, "tc-" + new Date().getTime() + ".pdf");
-                    } else {
-                        var data = JSON.parse(xhr.responseText);
-                        var today = new Date();
-                        var curr_date = today.getDate();
-                        var curr_month = today.getMonth() + 1;
-                        var curr_year = today.getFullYear();
-                        var formated_date = "(" + curr_date + "-" + curr_month + "-" + curr_year + ")";
-
-                        var base64ToArrayBuffer = (function () {
-
-                            return function (base64) {
-                                var binaryString =  window.atob(base64);
-                                var binaryLen = binaryString.length;
-                                var bytes = new Uint8Array(binaryLen);
-
-                                for (var i = 0; i < binaryLen; i++) {
-                                    var ascii = binaryString.charCodeAt(i);
-                                    bytes[i] = ascii;
-                                }
-
-                                return bytes;
-                            }
-
-                        }());
-
-                        var saveByteArray = (function () {
-                            var a = document.createElement("a");
-                            document.body.appendChild(a);
-                            a.style = "display: none";
-
-                            return function (data, name) {
-                                var blob = new Blob(data, {type: "octet/stream"}),
-                                    url = window.URL.createObjectURL(blob);
-                                a.href = url;
-                                a.download = name;
-                                a.click();
-                                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
-                            };
-
-                        }());
-
-                        saveByteArray([base64ToArrayBuffer(data.file)], "апз-" + project + formated_date + ".pdf");
-                    }
-                } else {
-                    alert('Не удалось скачать файл');
-                }
-            }
-            xhr.send();
-        } else {
-            console.log('session expired');
-        }
-    }
   toggleMap(value) {
     this.setState({
       showMap: value
@@ -144,341 +101,13 @@ export default class ShowSketch extends React.Component {
     }
   }
 
-    printRegionAnswer(id) {
-        var token = sessionStorage.getItem('tokenInfo');
-        if (token) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("get", window.url + "api/print/region/sketch/" + id, true);
-            xhr.setRequestHeader("Authorization", "Bearer " + token);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    //test of IE
-                    if (typeof window.navigator.msSaveBlob === "function") {
-                        window.navigator.msSaveBlob(xhr.response, "МО.pdf");
-                    } else {
-                        var data = JSON.parse(xhr.responseText);
-
-                        var base64ToArrayBuffer = (function () {
-
-                            return function (base64) {
-                                var binaryString =  window.atob(base64);
-                                var binaryLen = binaryString.length;
-                                var bytes = new Uint8Array(binaryLen);
-
-                                for (var i = 0; i < binaryLen; i++) {
-                                    var ascii = binaryString.charCodeAt(i);
-                                    bytes[i] = ascii;
-                                }
-
-                                return bytes;
-                            }
-
-                        }());
-
-                        var saveByteArray = (function () {
-                            var a = document.createElement("a");
-                            document.body.appendChild(a);
-                            a.style = "display: none";
-
-                            return function (data, name) {
-                                var blob = new Blob(data, {type: "octet/stream"}),
-                                    url = window.URL.createObjectURL(blob);
-                                a.href = url;
-                                a.download = name;
-                                a.click();
-                                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
-                            };
-
-                        }());
-
-                        saveByteArray([base64ToArrayBuffer(data.file)], "МО.pdf");
-                    }
-                } else {
-                    alert('Не удалось скачать файл');
-                }
-            }
-            xhr.send();
-        } else {
-            console.log('Время сессии истекло.');
-        }
-    }
-
-    printSketchAnswer(sketchId, progbarId = null) {
-        var token = sessionStorage.getItem('tokenInfo');
-        if (token) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("get", window.url + "api/print/sketch/" + sketchId, true);
-            xhr.setRequestHeader("Authorization", "Bearer " + token);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    //test of IE
-                    if (typeof window.navigator.msSaveBlob === "function") {
-                        window.navigator.msSaveBlob(xhr.response, "Sogl.pdf");
-                    } else {
-                        var data = JSON.parse(xhr.responseText);
-
-                        var base64ToArrayBuffer = (function () {
-
-                            return function (base64) {
-                                var binaryString =  window.atob(base64);
-                                var binaryLen = binaryString.length;
-                                var bytes = new Uint8Array(binaryLen);
-
-                                for (var i = 0; i < binaryLen; i++) {
-                                    var ascii = binaryString.charCodeAt(i);
-                                    bytes[i] = ascii;
-                                }
-
-                                return bytes;
-                            }
-
-                        }());
-
-                        var saveByteArray = (function () {
-                            var a = document.createElement("a");
-                            document.body.appendChild(a);
-                            a.style = "display: none";
-
-                            return function (data, name) {
-                                var blob = new Blob(data, {type: "octet/stream"}),
-                                    url = window.URL.createObjectURL(blob);
-                                a.href = url;
-                                a.download = name;
-                                a.click();
-                                setTimeout(function() {window.URL.revokeObjectURL(url);},1000);
-                            };
-
-                        }());
-
-                        saveByteArray([base64ToArrayBuffer(data.file)], "Sogl.pdf");
-                    }
-                } else {
-                    alert('Не удалось скачать файл');
-                }
-            }
-            xhr.send();
-        } else {
-            console.log('Время сессии истекло.');
-        }
-    }
-
-  // downloadFile(id) {
-  //   var token = sessionStorage.getItem('tokenInfo');
-  //   var url = window.url + 'api/file/download/' + id;
-  //
-  //   var xhr = new XMLHttpRequest();
-  //   xhr.open("get", url, true);
-  //     xhr.setRequestHeader("Authorization", "Bearer " + token);
-  //     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-  //     xhr.onload = function() {
-  //       if (xhr.status === 200) {
-  //         var data = JSON.parse(xhr.responseText);
-  //         var base64ToArrayBuffer = (function () {
-  //
-  //           return function (base64) {
-  //             var binaryString =  window.atob(base64);
-  //             var binaryLen = binaryString.length;
-  //             var bytes = new Uint8Array(binaryLen);
-  //
-  //             for (var i = 0; i < binaryLen; i++) {
-  //               var ascii = binaryString.charCodeAt(i);
-  //               bytes[i] = ascii;
-  //             }
-  //
-  //             return bytes;
-  //           }
-  //
-  //         }());
-  //
-  //         var saveByteArray = (function () {
-  //           var a = document.createElement("a");
-  //           document.body.appendChild(a);
-  //           a.style = "display: none";
-  //
-  //           return function (data, name) {
-  //             var blob = new Blob(data, {type: "octet/stream"}),
-  //                 url = window.URL.createObjectURL(blob);
-  //             a.href = url;
-  //             a.download = name;
-  //             a.click();
-  //             setTimeout(function() {window.URL.revokeObjectURL(url);},0);
-  //           };
-  //
-  //         }());
-  //
-  //         saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
-  //       } else {
-  //         alert('Не удалось скачать файл');
-  //       }
-  //     }
-  //   xhr.send();
-  // }
-
-    downloadFile(id, progbarId = null) {
-        var token = sessionStorage.getItem('tokenInfo');
-        var url = window.url + 'api/file/download/' + id;
-
-        var xhr = new XMLHttpRequest();
-        xhr.open("get", url, true);
-        xhr.setRequestHeader("Authorization", "Bearer " + token);
-        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-        var vision = $('.text-info[data-category='+progbarId+']');
-        var progressbar = $('.progress[data-category='+progbarId+']');
-        vision.css('display', 'none');
-        progressbar.css('display', 'flex');
-        xhr.onprogress = function(event) {
-            $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100) + '%');
-        }
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                var data = JSON.parse(xhr.responseText);
-                var base64ToArrayBuffer = (function () {
-
-                    return function (base64) {
-                        var binaryString =  window.atob(base64);
-                        var binaryLen = binaryString.length;
-                        var bytes = new Uint8Array(binaryLen);
-
-                        for (var i = 0; i < binaryLen; i++) {
-                            var ascii = binaryString.charCodeAt(i);
-                            bytes[i] = ascii;
-                        }
-
-                        return bytes;
-                    }
-
-                }());
-
-                var saveByteArray = (function () {
-                    var a = document.createElement("a");
-                    document.body.appendChild(a);
-                    a.style = "display: none";
-
-                    return function (data, name) {
-                        var blob = new Blob(data, {type: "octet/stream"}),
-                            url = window.URL.createObjectURL(blob);
-                        a.href = url;
-                        a.download = name;
-                        a.click();
-                        setTimeout(function() {
-                            window.URL.revokeObjectURL(url);
-                            $('div', progressbar).css('width', 0);
-                            progressbar.css('display', 'none');
-                            vision.css('display','inline');
-                            alert("Файлы успешно загружены");
-                        },1000);
-                    };
-
-                }());
-
-                saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
-            } else {
-                $('div', progressbar).css('width', 0);
-                progressbar.css('display', 'none');
-                vision.css('display','inline');
-                alert('Не удалось скачать файл');
-            }
-        }
-        xhr.send();
-    }
-
-
-    toDate(date) {
-    if(date === null) {
-      return date;
-    }
-
-    var jDate = new Date(date);
-    var curr_date = jDate.getDate();
-    var curr_month = jDate.getMonth() + 1;
-    var curr_year = jDate.getFullYear();
-    var curr_hour = jDate.getHours();
-    var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
-    var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-
-    return formated_date;
-  }
-
   render() {
-    var sketch = this.state.sketch;
-
-    if (sketch.length === 0) {
-      return (
-        <div>
-          {!this.state.loaderHidden &&
-            <div style={{textAlign: 'center'}}>
-              <Loader type="Oval" color="#46B3F2" height="200" width="200" />
-            </div>
-          }
-        </div>
-      );
-    }
-
     return (
       <div>
         {this.state.loaderHidden &&
           <div>
-            <h5 className="block-title-2 mt-3 mb-3">Общая информация</h5>
-
-            <table className="table table-bordered table-striped">
-              <tbody>
-                <tr>
-                  <td style={{width: '22%'}}><b>ИД заявки</b></td>
-                  <td>{sketch.id}</td>
-                </tr>
-                <tr>
-                  <td><b>Заявитель</b></td>
-                  <td>{sketch.applicant}</td>
-                </tr>
-                <tr>
-                  <td><b>Телефон</b></td>
-                  <td>{sketch.phone}</td>
-                </tr>
-                <tr>
-                  <td><b>Заказчик</b></td>
-                  <td>{sketch.customer}</td>
-                </tr>
-                <tr>
-                  <td><b>Проектировщик №ГСЛ, категория</b></td>
-                  <td>{sketch.designer}</td>
-                </tr>
-                <tr>
-                  <td><b>Название проекта</b></td>
-                  <td>{sketch.project_name}</td>
-                </tr>
-                <tr>
-                  <td><b>Адрес проектируемого объекта</b></td>
-                  <td>{sketch.project_address}</td>
-                </tr>
-                <tr>
-                  <td><b>Дата заявления</b></td>
-                  <td>{sketch.created_at && this.toDate(sketch.created_at)}</td>
-                </tr>
-              </tbody>
-            </table>
-
-            {sketch.files.length > 0 &&
-              <table className="table table-bordered table-striped">
-                <tbody>
-                  {sketch.files.map(function(file, index) {
-                    return(
-                      <React.Fragment key={index}>
-                        {(file.category_id == 1 || file.category_id == 2 || file.category_id == 3) &&
-                          <tr>
-                            <td style={{width: '22%'}}>{file.category.name_ru} </td>
-                            <td><a className="text-info pointer" data-category={file.id} onClick={this.downloadFile.bind(this, file.id, file.id)}>Скачать</a>
-                              <div className="progress mb-2" data-category={file.id} style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                  <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                              </div>
-                            </td>
-                          </tr>}
-                        </React.Fragment>
-                      );
-                    }.bind(this))
-                  }
-                </tbody>
-              </table>
-            }
+            <AllInfo toggleMap={this.toggleMap.bind(this, true)} sketch={this.state.sketch} personalIdFile={this.state.personalIdFile}
+              sketchFile={this.state.sketchFile} sketchFilePDF={this.state.sketchFilePDF} apzFile={this.state.apzFile}/>
 
             {this.state.showMap && <ShowMap mapId={"b5a3c97bd18442c1949ba5aefc4c1835"}/>}
 
@@ -486,74 +115,10 @@ export default class ShowSketch extends React.Component {
               {this.state.showMapText}
             </button>
 
-            {(sketch.status_id === 1 || sketch.status_id === 2) &&
-              <div>
-                <h5 className="block-title-2 mt-5 mb-3">Результат</h5>
+            <Answers  isSent={this.state.isSent} engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
+            sketch_id={this.state.sketch.id} urban_response={this.state.sketch.urban_response} lastDecisionIsMO = {this.state.lastDecisionIsMO} />
 
-
-                {/*{this.state.responseFile &&*/}
-                  <table className="table table-bordered table-striped">
-                    <tbody>
-                    {sketch.urban_response &&
-                    <table className="table table-bordered">
-                        <tbody>
-                        <tr>
-                            <td style={{width: '22%'}}><b>Согласование</b></td>
-                            <td><a className="text-info pointer"
-                                   onClick={this.printSketchAnswer.bind(this, sketch.id)}>Скачать</a></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    }
-                      {sketch.status_id === 2 ?
-                        <tr>
-
-
-                            {/*<td style={{width: '22%'}}><b>Решение на эскизный проект</b></td>*/}
-                          {/*<td><a className="text-info pointer" data-category="45" onClick={this.downloadFile.bind(this, this.state.responseFile.id, 45)}>Скачать</a>*/}
-                              {/*<div className="progress mb-2" data-category="45" style={{height: '20px', display: 'none', marginTop:'5px'}}>*/}
-                                  {/*<div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>*/}
-                              {/*</div>*/}
-                          {/*</td>*/}
-                        </tr>
-                        :
-                        <tr>
-                          <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
-                            <td><a className="text-info pointer" onClick={this.printRegionAnswer.bind(this, sketch.id)}>Скачать</a>
-                              <div className="progress mb-2" data-category="46" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                                  <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                              </div>
-                          </td>
-                        </tr>
-                      }
-                    </tbody>
-                  </table>
-                {/*}*/}
-              </div>
-            }
-
-            {sketch.state_history.length > 0 &&
-              <div>
-                <h5 className="block-title-2 mb-3 mt-3">Логи</h5>
-                <div className="border px-3 py-2">
-                  {sketch.state_history.map(function(state, index) {
-                    if(state.state_id == 21){
-                      return(
-                        <div key={index}>
-                          <p className="mb-0">{state.created_at}&emsp;{state.state.name} {state.receiver && '('+state.receiver+')'}</p>
-                        </div>
-                      );
-                    }else{
-                      return(
-                        <div key={index}>
-                          <p className="mb-0">{state.created_at}&emsp;{state.state.name}</p>
-                        </div>
-                      );
-                    }
-                  }.bind(this))}
-                </div>
-              </div>
-            }
+            <Logs state_history={this.state.sketch.state_history} />
 
             <div className="col-sm-12">
               <hr />
