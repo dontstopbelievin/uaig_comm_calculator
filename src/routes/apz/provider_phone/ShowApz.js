@@ -140,6 +140,73 @@ export default class ShowApz extends React.Component {
     xhr.send();
   }
 
+  downloadFile(id, progbarId = null) {
+        var token = sessionStorage.getItem('tokenInfo');
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("get", window.url + 'api/file/download/' + id, true);
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
+        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+        var vision = $('.text-info[data-category='+progbarId+']');
+        var progressbar = $('.progress[data-category='+progbarId+']');
+        vision.css('display', 'none');
+        progressbar.css('display', 'flex');
+        xhr.onprogress = function(event) {
+            $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
+        }
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText);
+                var base64ToArrayBuffer = (function () {
+
+                    return function (base64) {
+                        var binaryString = window.atob(base64);
+                        var binaryLen = binaryString.length;
+                        var bytes = new Uint8Array(binaryLen);
+
+                        for (var i = 0; i < binaryLen; i++) {
+                            var ascii = binaryString.charCodeAt(i);
+                            bytes[i] = ascii;
+                        }
+
+                        return bytes;
+                    }
+
+                }());
+
+                var saveByteArray = (function () {
+                    var a = document.createElement("a");
+                    document.body.appendChild(a);
+                    a.style = "display: none";
+
+                    return function (data, name) {
+                        var blob = new Blob(data, {type: "octet/stream"}),
+                            url = window.URL.createObjectURL(blob);
+                        a.href = url;
+                        a.download = name;
+                        a.click();
+                        setTimeout(function() {
+                            window.URL.revokeObjectURL(url);
+                            $('div', progressbar).css('width', 0);
+                            progressbar.css('display', 'none');
+                            vision.css('display','inline');
+                            alert("Файлы успешно загружены");
+                        },1000);
+                    };
+
+                }());
+
+                saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
+            } else {
+                $('div', progressbar).css('width', 0);
+                progressbar.css('display', 'none');
+                vision.css('display','inline');
+                alert('Не удалось скачать файл');
+            }
+        }
+        xhr.send();
+    }
+
   getApzInfo() {
     var id = this.props.match.params.id;
     var roles = JSON.parse(sessionStorage.getItem('userRoles'));
@@ -178,7 +245,7 @@ export default class ShowApz extends React.Component {
           data.commission.apz_phone_response.sewage ? this.setState({responseSewage: data.commission.apz_phone_response.sewage}) : this.setState({responseSewage: ""});
           data.commission.apz_phone_response.client_wishes ? this.setState({responseClientWishes: data.commission.apz_phone_response.client_wishes}) : this.setState({responseClientWishes: ""});
           data.commission.apz_phone_response.doc_number ? this.setState({docNumber: data.commission.apz_phone_response.doc_number}) : this.setState({docNumber: ""});
-          data.commission.apz_phone_response.id ? this.setState({responseId: data.commission.apz_phone_response.id}) : this.setState({responseId: ""});
+          data.commission.apz_phone_response.id ? this.setState({responseId: data.commission.apz_phone_response.id}) : this.setState({responseId: 0});
           data.commission.apz_phone_response.response ? this.setState({response: data.commission.apz_phone_response.response}) : this.setState({response: ""});
           data.commission.apz_phone_response.files ? this.setState({customTcFile: data.commission.apz_phone_response.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: null});;
           data.commission.apz_phone_response.phone_director_id ? this.setState({ty_director_id: data.commission.apz_phone_response.phone_director_id}) : this.setState({ty_director_id: "" });
@@ -277,7 +344,7 @@ export default class ShowApz extends React.Component {
   }
 
   sendPhoneResponse(apzId, status, comment) {
-    if((this.state.responseId <= 0 || this.state.responseId > 0) && this.state.response !== status){
+    if(this.state.responseId == 0){
       this.setState({callSaveFromSend: true});
       this.saveResponseForm(apzId, status, comment);
     }
@@ -710,7 +777,7 @@ export default class ShowApz extends React.Component {
                   </button>
                 </div>
                 <div className="modal-footer" style={{margin:'auto'}}>
-                  <button type="button" className="btn btn-secondary" onClick={this.saveResponseForm.bind(this, apz.id, 'decline', this.state.description)}>
+                  <button type="button" className="btn btn-secondary" onClick={this.sendPhoneResponse.bind(this, apz.id, false, this.state.description)}>
                     Да
                   </button>
                   <button type="button" className="btn btn-secondary" data-dismiss="modal" style={{marginLeft:'5px'}}>Нет</button>

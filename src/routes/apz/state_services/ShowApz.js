@@ -1010,7 +1010,7 @@ export default class ShowApz extends React.Component {
               <button type="button" style={{marginRight:'5px'}} className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, this.state.apz.id, true, "", 'engineer')}>Отправить инженеру</button>
             }
               <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm" style={{marginRight:'5px'}}>Мотивированный отказ</button>
-              <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">Отказ</button>
+              <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">Запрос</button>
             </div>
           }
 
@@ -1018,7 +1018,7 @@ export default class ShowApz extends React.Component {
             <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', display: 'table'}}>
               <button type="button" className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, this.state.apz.id, true, "", 'head')} style={{marginRight:'5px'}}>Отправить начальнику Гос Услуг</button>
               <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm" style={{marginRight:'5px'}}>Мотивированный отказ</button>
-              <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">Отказ</button>
+              <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#accDecApzForm">Запрос</button>
             </div>
           }
 

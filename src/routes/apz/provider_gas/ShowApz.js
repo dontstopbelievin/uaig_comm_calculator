@@ -243,8 +243,8 @@ export default class ShowApz extends React.Component {
           data.commission.apz_gas_response.assumed_capacity ? this.setState({assumedCapacity: data.commission.apz_gas_response.assumed_capacity}) : this.setState({assumedCapacity: 0});
           data.commission.apz_gas_response.reconsideration ? this.setState({reconsideration: data.commission.apz_gas_response.reconsideration}) : this.setState({reconsideration: ""});
           data.commission.apz_gas_response.doc_number ? this.setState({docNumber: data.commission.apz_gas_response.doc_number}) : this.setState({docNumber: ""});
-          data.commission.apz_gas_response.id ? this.setState({responseId: data.commission.apz_gas_response.id}) : this.setState({responseId: ""});
-          data.commission.apz_gas_response.response ? this.setState({response: data.commission.apz_gas_response.response}) : this.setState({response: ""});
+          data.commission.apz_gas_response.id ? this.setState({responseId: data.commission.apz_gas_response.id}) : this.setState({responseId: 0});
+          data.commission.apz_gas_response.response ? this.setState({response: data.commission.apz_gas_response.response}) : this.setState({response: false});
           data.commission.apz_gas_response.gas_director_id ? this.setState({ty_director_id: data.commission.apz_gas_response.gas_director_id}) : this.setState({ty_director_id: "" });
           data.commission.apz_gas_response.files ? this.setState({customTcFile: data.commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 23})[0]}) : this.setState({customTcFile: false});;
 
@@ -341,7 +341,7 @@ export default class ShowApz extends React.Component {
   }
   // this function is to send the final response
   sendGasResponse(apzId, status, comment) {
-    if (this.state.responseId <= 0 || this.state.responseId > 0 && this.state.response != status){
+    if (this.state.responseId == 0 ){
       this.setState({callSaveFromSend: true});
       this.saveResponseForm(apzId, status, comment);
     }

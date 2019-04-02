@@ -472,7 +472,7 @@ class EngineerMenu extends Component {
     return (
       <div>
         <NavLink to={"/panel/services/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
-        <NavLink to={"/panel/services/3"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
+        <NavLink to={"/panel/services/2"} replace className="dropdown-item" activeClassName="active">Заявления на эскизный проект</NavLink>
         <NavLink to={"/panel/answer-template/all/apz/1"} replace className="dropdown-item" activeClassName="active">Шаблоны отказов</NavLink>
       </div>
     )
