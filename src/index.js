@@ -74,6 +74,10 @@ import GenPlanCalculationAllApzs from "./routes/apz/gen_plan_calculation/AllApzs
 import GenPlanCalculationShowApz from "./routes/apz/gen_plan_calculation/ShowApz";
 import HeadStateServicesAllApzs from "./routes/apz/state_services_head/AllApzs";
 import HeadStateServicesShowApz from "./routes/apz/state_services_head/ShowApz";
+import SchemeRoadAllApzs from "./routes/apz/scheme_road/AllApzs";
+import SchemeRoadShowApz from "./routes/apz/scheme_road/ShowApz";
+import SchemeRoadHeadAllApzs from "./routes/apz/scheme_road_head/AllApzs";
+import SchemeRoadHeadShowApz from "./routes/apz/scheme_road_head/ShowApz";
 import AllApzsHistory from "./routes/apz/components/AllApzsHistory";
 import KeepSession from "./routes/authorization/KeepSession";
 
@@ -92,16 +96,16 @@ export default class Main extends React.Component {
     componentWillMount() {
         this.setLang();
 
-        window.url = 'https://api.uaig.kz:8843/';
+        // window.url = 'https://api.uaig.kz:8843/';
         // window.url = 'http://api.uaig.kz:8880/';
         // window.url = 'http://192.168.0.231/';
         // window.url = 'http://shymkentback.uaig.kz/';
-        window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
+        // window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
 
-        // window.url = 'http://uaig/';
+        window.url = 'http://uaig/';
         //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
         //window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
-        // window.clientSecret = 'fuckaduckmotherfucker'; // aman
+        window.clientSecret = 'fuckaduckmotherfucker'; // aman
         // window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
         // window.clientSecret = '7zdU2XDblqORFq8wbQHlNRaIgEBR90qbMYnnVWDg'; // yernar
         // window.clientSecret = 'ZuW3nP8EUgXgEAqm6j9GxzBfFsOFuQv39NcyHUz3'; // medet
@@ -234,6 +238,11 @@ export default class Main extends React.Component {
 
                                         <Route path="/panel/lawyer/apz/status/:status/:page" exact render={(props) =>(<LawyerAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/lawyer/apz/show/:id" exact render={(props) =>(<LawyerShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+
+                                        <Route path="/panel/schemeroad/apz/status/:status/:page" exact render={(props) =>(<SchemeRoadAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/schemeroad/apz/show/:id" exact render={(props) =>(<SchemeRoadShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/schemeroadhead/apz/status/:status/:page" exact render={(props) =>(<SchemeRoadHeadAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/schemeroadhead/apz/show/:id" exact render={(props) =>(<SchemeRoadHeadShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
                                         <Route path="/panel/engineer/apz/status/:status/:page" exact render={(props) =>(<EngineerAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/engineer/apz/show/:id" exact render={(props) =>(<EngineerShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />

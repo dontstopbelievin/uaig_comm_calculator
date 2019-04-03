@@ -12,15 +12,6 @@ export default class ShowApz extends React.Component {
     constructor(props) {
       super(props);
 
-      this.webSocket = new WebSocket('wss://127.0.0.1:13579/');
-      this.heartbeat_msg = '--heartbeat--';
-      this.heartbeat_interval = null;
-      this.missed_heartbeats = 0;
-      this.missed_heartbeats_limit_min = 3;
-      this.missed_heartbeats_limit_max = 50;
-      this.missed_heartbeats_limit = this.missed_heartbeats_limit_min;
-      this.callback = null;
-
       this.state = {
         apz: [],
         showMap: false,
@@ -32,14 +23,11 @@ export default class ShowApz extends React.Component {
         confirmedTaskFile: false,
         titleDocumentFile: false,
         additionalFile: false,
-        needSign: false,
-        storageAlias: "PKCS12",
         reglamentFile: false,
         schemeComment: false,
         schemeFile: false,
         calculationComment: false,
         calculationFile: false,
-        loaderHiddenSign:true,
         showSendButtons:false
       };
 
@@ -245,8 +233,6 @@ export default class ShowApz extends React.Component {
     }
 
     render() {
-      var apz = this.state.apz;
-
       return (
         <div>
           {this.state.loaderHidden &&
@@ -254,14 +240,14 @@ export default class ShowApz extends React.Component {
                 <AllInfo toggleMap={this.toggleMap.bind(this, true)} apz={this.state.apz} personalIdFile={this.state.personalIdFile} confirmedTaskFile={this.state.confirmedTaskFile} titleDocumentFile={this.state.titleDocumentFile}
                          historygoBack={this.props.history.goBack} additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
 
-              {apz.commission && (Object.keys(apz.commission).length > 0) &&
+              {this.state.apz.commission && (Object.keys(this.state.apz.commission).length > 0) &&
                 <div>
                   <h5 className="block-title-2 mb-3">Ответы от служб</h5>
-                  <CommissionAnswersList apz={apz} />
+                  <CommissionAnswersList apz={this.state.apz} />
                 </div>
               }
 
-              {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} mapId={"b5a3c97bd18442c1949ba5aefc4c1835"}/>}
+              {this.state.showMap && <ShowMap coordinates={this.state.apz.project_address_coordinates} mapId={"b5a3c97bd18442c1949ba5aefc4c1835"}/>}
               //0e8ae8f43ea94d358673e749f9a5e147
 
               <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
@@ -311,7 +297,7 @@ export default class ShowApz extends React.Component {
 
               {this.state.showSendButtons &&
                 <div style={{margin: 'auto', display: 'table'}}>
-                  <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, this.state.description)}>Отправить начальнику ген план</button>
+                  <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, this.state.apz.id, true, this.state.description)}>Отправить начальнику ген план</button>
                 </div>
               }
 

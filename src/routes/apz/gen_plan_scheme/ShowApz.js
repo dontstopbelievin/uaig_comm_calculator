@@ -12,15 +12,6 @@ export default class ShowApz extends React.Component {
     constructor(props) {
       super(props);
 
-      this.webSocket = new WebSocket('wss://127.0.0.1:13579/');
-      this.heartbeat_msg = '--heartbeat--';
-      this.heartbeat_interval = null;
-      this.missed_heartbeats = 0;
-      this.missed_heartbeats_limit_min = 3;
-      this.missed_heartbeats_limit_max = 50;
-      this.missed_heartbeats_limit = this.missed_heartbeats_limit_min;
-      this.callback = null;
-
       this.state = {
         apz: [],
         showMap: false,
@@ -33,10 +24,7 @@ export default class ShowApz extends React.Component {
         confirmedTaskFile: false,
         titleDocumentFile: false,
         additionalFile: false,
-        needSign: false,
-        storageAlias: "PKCS12",
-        schemeFile: false,
-        loaderHiddenSign:true
+        schemeFile: false
       };
 
       this.onDescriptionChange = this.onDescriptionChange.bind(this);
@@ -237,8 +225,6 @@ export default class ShowApz extends React.Component {
     }
 
     render() {
-      var apz = this.state.apz;
-
       return (
         <div>
           {this.state.loaderHidden &&
@@ -246,7 +232,7 @@ export default class ShowApz extends React.Component {
               <AllInfo toggleMap={this.toggleMap.bind(this, true)} apz={this.state.apz} personalIdFile={this.state.personalIdFile} confirmedTaskFile={this.state.confirmedTaskFile} titleDocumentFile={this.state.titleDocumentFile}
                        historygoBack={this.props.history.goBack} additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
 
-              {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} mapId={"b5a3c97bd18442c1949ba5aefc4c1835"} />}
+              {this.state.showMap && <ShowMap coordinates={this.state.apz.project_address_coordinates} mapId={"b5a3c97bd18442c1949ba5aefc4c1835"} />}
 
               <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                 {this.state.showMapText}
@@ -296,8 +282,8 @@ export default class ShowApz extends React.Component {
 
               {this.state.showSendButtons &&
                 <div style={{margin: 'auto', display: 'table'}}>
-                  <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, this.state.description, "calculation")}>Отправить для расчетов</button>
-                  <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, this.state.description, "reglament")}>Отправить для регламента</button>
+                  <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, this.state.apz.id, true, this.state.description, "calculation")}>Отправить для расчетов</button>
+                  <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, this.state.apz.id, true, this.state.description, "reglament")}>Отправить для регламента</button>
                 </div>
               }
 

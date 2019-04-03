@@ -151,6 +151,7 @@ export default class ShowMap extends React.Component {
                 find.execute(params).then(showResults);
                 function showResults(response) {
                   return response.results.map(function(result) {
+                    //console.log(result.feature);
                     switch (result.layerName) {
                       case 'Здания и сооружения':
                           console.log(result.feature.attributes['полный адрес'].trim());

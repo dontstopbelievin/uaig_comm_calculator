@@ -25,6 +25,7 @@ export default class ShowApz extends React.Component {
         confirmedTaskFile: false,
         titleDocumentFile: false,
         additionalFile: false,
+        schemeroadFile: false,
         schemeComment: false,
         schemeFile: false,
         calculationComment: false,
@@ -58,7 +59,7 @@ export default class ShowApz extends React.Component {
       var id = this.props.match.params.id;
       var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/generalplanhead/detail/" + id, true);
+      xhr.open("get", window.url + "api/apz/schemeroadhead/detail/" + id, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
@@ -72,6 +73,7 @@ export default class ShowApz extends React.Component {
           this.setState({additionalFile: apz.files.filter(function(obj) { return obj.category_id === 27 })[0]});
           this.setState({reglamentComment: apz.state_history.filter(function(obj) { return obj.state_id === 42 })[0]});
           this.setState({reglamentFile: apz.files.filter(function(obj) { return obj.category_id === 29 })[0]});
+          this.setState({schemeroadFile: apz.files.filter(function(obj) { return obj.category_id === 40 })[0]});
           this.setState({schemeComment: apz.state_history.filter(function(obj) { return obj.state_id === 56 })[0]});
           this.setState({schemeFile: apz.files.filter(function(obj) { return obj.category_id === 38 })[0]});
           this.setState({calculationComment: apz.state_history.filter(function(obj) { return obj.state_id === 57 })[0]});
@@ -94,7 +96,7 @@ export default class ShowApz extends React.Component {
       }.bind(this);
       xhr.send();
     }
-
+    
     acceptDeclineApzForm(apzId, status, comment) {
       var token = sessionStorage.getItem('tokenInfo');
       var registerData = {
@@ -104,7 +106,7 @@ export default class ShowApz extends React.Component {
       var data = JSON.stringify(registerData);
 
       var xhr = new XMLHttpRequest();
-      xhr.open("post", window.url + "api/apz/generalplanhead/status/" + apzId, true);
+      xhr.open("post", window.url + "api/apz/schemeroadhead/status/" + apzId, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function () {
@@ -197,7 +199,7 @@ export default class ShowApz extends React.Component {
                        backFromHead={this.state.backFromHead} apz_department_response={this.state.apz.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
                        apz_status={this.state.apz.status_id} schemeComment={this.state.schemeComment}
                        calculationComment={this.state.calculationComment} reglamentComment={this.state.reglamentComment} schemeFile={this.state.schemeFile}
-                       calculationFile={this.state.calculationFile} reglamentFile={this.state.reglamentFile}/>
+                       calculationFile={this.state.calculationFile} reglamentFile={this.state.reglamentFile} schemeroadFile={this.state.schemeroadFile}/>
 
               <div className={this.state.showButtons ? '' : 'invisible'}>
                 <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
@@ -214,7 +216,7 @@ export default class ShowApz extends React.Component {
               }
 
               {this.state.showSignButtons && !this.state.isSigned &&
-                <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="generalplanhead" id={this.state.apz.id} serviceName='apz'/>
+                <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="schemeroadhead" id={this.state.apz.id} serviceName='apz'/>
               }
               <Logs state_history={this.state.apz.state_history} />
 

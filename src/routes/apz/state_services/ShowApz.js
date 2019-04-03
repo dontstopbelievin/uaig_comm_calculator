@@ -17,8 +17,6 @@ export default class ShowApz extends React.Component {
         apz: [],
         templates: [],
         theme: '',
-        apz_head_id: '',
-        apz_heads_id: [],
         showMap: false,
         showButtons: false,
         showSendButton: false,
@@ -100,10 +98,6 @@ export default class ShowApz extends React.Component {
     }
     componentDidMount() {
       this.props.breadCrumbs();
-    }
-
-    handleHeadIDChange(event){
-      this.setState({apz_head_id: event.target.value});
     }
 
     onTypeChange(type) {
@@ -340,7 +334,6 @@ export default class ShowApz extends React.Component {
 
     componentWillMount() {
       this.getApzInfo();
-      this.getHeads();
       this.getAnswerTemplates();
     }
 
@@ -352,29 +345,6 @@ export default class ShowApz extends React.Component {
       }else{
         this.setState({ theme: '' });
       }
-    }
-
-    getHeads(){
-      var token = sessionStorage.getItem('tokenInfo');
-      var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/getheads", true);
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          var data = JSON.parse(xhr.responseText);
-          //console.log(data);
-          var select_directors = [];
-          for (var i = 0; i < data.length; i++) {
-            select_directors.push(<option key={i} value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
-          }
-          this.setState({apz_heads_id: select_directors});
-          if((this.state.apz_head_id == "" || this.state.apz_head_id == " ") && data.length > 0){
-              this.setState({apz_head_id: data[0].user_id});
-          }
-        }
-      }.bind(this);
-      xhr.send();
     }
 
     getAnswerTemplates(){
@@ -1045,12 +1015,6 @@ export default class ShowApz extends React.Component {
                       </select>
                     </div>
                   }
-                  <div style={{paddingLeft:'5px', fontSize: '18px'}}>
-                    <b>Выберите главного архитектора:</b>
-                    <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
-                      {this.state.apz_heads_id}
-                    </select>
-                  </div>
                   <div className="form-group">
                     <label>Тема(краткое описание)</label>
                     <div>
@@ -1082,12 +1046,6 @@ export default class ShowApz extends React.Component {
                 <div className="modal-body">
                   <div className="form-group">
                     <div className="file_container">
-                      <div style={{paddingLeft:'5px', fontSize: '18px'}}>
-                        <b>Выберите главного архитектора:</b>
-                        <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
-                          {this.state.apz_heads_id}
-                        </select>
-                      </div>
                       <div className="progress mb-2" data-category="30" style={{height: '20px', display: 'none'}}>
                         <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                       </div>

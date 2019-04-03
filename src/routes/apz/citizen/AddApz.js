@@ -923,8 +923,8 @@ export default class AddApz extends React.Component {
                     </div>
             }
     }
-    render() {
 
+    render() {
       return (
         <div className="container" id="apzFormDiv">
         <ReactHint autoPosition events delay={100} />

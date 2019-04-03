@@ -61,7 +61,7 @@ export default class ShowApz extends React.Component {
         if (xhr.status === 200) {
           var apz = JSON.parse(xhr.responseText);
           var commission = apz.commission;
-          //console.log(apz.files);
+          console.log(apz.files);
           this.setState({apz: apz});
           this.setState({personalIdFile: apz.files.filter(function(obj) { return obj.category_id === 3 })[0]});
           this.setState({confirmedTaskFile: apz.files.filter(function(obj) { return obj.category_id === 9 })[0]});

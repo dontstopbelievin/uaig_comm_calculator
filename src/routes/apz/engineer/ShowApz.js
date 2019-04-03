@@ -17,8 +17,6 @@ export default class ShowApz extends React.Component {
       apz: [],
       templates: [],
       theme: '',
-      apz_head_id: '',
-      apz_heads_id: [],
       showMap: false,
       showButtons: false,
       showCommission: false,
@@ -64,10 +62,6 @@ export default class ShowApz extends React.Component {
     this.props.breadCrumbs();
   }
 
-  handleHeadIDChange(event){
-    this.setState({apz_head_id: event.target.value});
-  }
-
   onInputChange(e) {
     const value = e.target.value;
     const name = e.target.name;
@@ -96,7 +90,6 @@ export default class ShowApz extends React.Component {
       return this.props.history.replace({pathname: "/panel/common/login", state:{url_apz_id: fullLoc[fullLoc.length-1]}});
     }else {
       this.getApzInfo();
-      this.getHeads();
       this.getAnswerTemplates();
     }
   }
@@ -109,29 +102,6 @@ export default class ShowApz extends React.Component {
     }else{
       this.setState({ theme: '' });
     }
-  }
-
-  getHeads(){
-    var token = sessionStorage.getItem('tokenInfo');
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/getheads", true);
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
-        //console.log(data);
-        var select_directors = [];
-        for (var i = 0; i < data.length; i++) {
-          select_directors.push(<option key={i} value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
-        }
-        this.setState({apz_heads_id: select_directors});
-        if((this.state.apz_head_id == "" || this.state.apz_head_id == " ") && data.length > 0){
-            this.setState({apz_head_id: data[0].user_id});
-        }
-      }
-    }.bind(this);
-    xhr.send();
   }
 
   getAnswerTemplates(){
@@ -1129,12 +1099,6 @@ export default class ShowApz extends React.Component {
                               </select>
                             </div>
                           }
-                          <div style={{paddingLeft:'5px', fontSize: '18px'}}>
-                            <b>Выберите главного архитектора:</b>
-                            <select id="gas_directors" style={{padding: '0px 4px', margin: '5px'}} value={this.state.apz_head_id} onChange={this.handleHeadIDChange.bind(this)}>
-                              {this.state.apz_heads_id}
-                            </select>
-                          </div>
                           <div className="form-group">
                             <label>Тема(краткое описание)</label>
                             <div>

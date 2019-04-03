@@ -164,6 +164,8 @@ export default class CitizenActions extends React.Component {
                       {this.state.tokenExists && this.state.rolename === 'GeneralPlanScheme' &&  <NavLink to={"/panel/gen_plan_scheme/apz/status/state_active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                       {this.state.tokenExists && this.state.rolename === 'GeneralPlanCalculation' &&  <NavLink to={"/panel/gen_plan_calculation/apz/status/state_active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                       {this.state.tokenExists && this.state.rolename === 'HeadsStateServices' &&  <NavLink to={"/panel/head_state_services/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                      {this.state.tokenExists && this.state.rolename === 'SchemeRoad' &&  <NavLink to={"/panel/scheme_road/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                      {this.state.tokenExists && this.state.rolename === 'SchemeRoadHead' &&  <NavLink to={"/panel/scheme_road_head/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                       {!this.state.tokenExists && <AlertModal />}
                       <div className="reglament">
                         <a href="http://adilet.zan.kz/rus/docs/V12PG003299">Регламент Гос. услуги</a>
