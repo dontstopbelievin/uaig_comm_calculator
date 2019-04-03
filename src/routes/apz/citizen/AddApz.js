@@ -41,7 +41,6 @@ export default class AddApz extends React.Component {
         electricSafetyCategory: 3,
         peopleCount: 0,
         waterRequirement: '',
-        waterSewage: '',
         waterProduction: '',
         waterDrinking: '',
         waterFireFighting: '',
@@ -135,7 +134,6 @@ export default class AddApz extends React.Component {
         this.setState({waterFireFighting: ''});
         this.setState({waterProduction: ''});
         this.setState({waterDrinking: ''});
-        this.setState({waterSewage: ''});
         this.setState({waterFireFightingIn: ''});
         this.setState({sewageAmount: ''});
         this.setState({sewageFeksal: ''});
@@ -251,7 +249,6 @@ export default class AddApz extends React.Component {
           if (apz.apz_water) {
             this.setState({peopleCount: apz.apz_water.people_count ? apz.apz_water.people_count : '' });
             this.setState({waterRequirement: apz.apz_water.requirement ? apz.apz_water.requirement : '' });
-            this.setState({waterSewage: apz.apz_water.sewage ? apz.apz_water.sewage : '' });
             this.setState({waterProduction: apz.apz_water.production ? apz.apz_water.production : '' });
             this.setState({waterDrinking: apz.apz_water.drinking ? apz.apz_water.drinking : '' });
             this.setState({waterFireFighting: apz.apz_water.fire_fighting ? apz.apz_water.fire_fighting : '' });
@@ -387,7 +384,6 @@ export default class AddApz extends React.Component {
 
         if(this.state.need_water_provider){
           requiredFields['waterRequirement'] = 'Общая потребность в воде';
-          requiredFields['waterSewage'] = 'Канализация';
         }
         if(this.state.need_electro_provider){
           requiredFields['electricRequiredPower'] = 'Требуемая мощность (кВт)';
@@ -644,9 +640,6 @@ export default class AddApz extends React.Component {
     PeopleCount(e) {
       this.setState({waterRequirement: parseFloat( "0.19" * e.target.value)});
       this.setState({peopleCount: e.target.value});
-      this.setState({waterSewage: parseFloat( "0.19" * e.target.value)});
-      //document.getElementsByName('WaterRequirement')[0].value = parseFloat( "0.19" * document.getElementsByName('PeopleCount')[0].value);
-      //document.getElementsByName('WaterSewage')[0].value = document.getElementsByName('WaterRequirement')[0].value;
     }
 
     downloadFile(id, progbarId = null) {
@@ -1367,26 +1360,22 @@ export default class AddApz extends React.Component {
                               <label htmlFor="WaterRequirement">Общая потребность в воде (м<sup>3</sup>/сутки)</label>
                               <input type="number" onChange={this.onInputChange} step="any" className="form-control" name="waterRequirement" value={this.state.waterRequirement} />
                             </div>
-                            {this.state.objectType !== 'ИЖС' && <span>
+                            {this.state.objectType !== 'ИЖС' &&
                               <div className="form-group">
                                 <label htmlFor="WaterFireFighting">Потребные расходы наружного пожаротушения (л/сек)</label>
                                 <input data-rh="Потребные расходы наружного пожаротушения (л/сек)" data-rh-at="right" type="number" onChange={this.onInputChange} step="any" min="10" className="form-control" name="waterFireFighting" value={this.state.waterFireFighting} />
                               </div>
-                              <div className="form-group">
-                                <label htmlFor="WaterProduction">На производственные нужды (м<sup>3</sup>/сутки)</label>
-                                <input data-rh="На производственные нужды (м3/сутки)" data-rh-at="right" type="number" onChange={this.onInputChange} step="any" className="form-control" name="waterProduction" value={this.state.waterProduction} placeholder="" />
-                              </div></span>
                             }
                           </div>
                           <div className="col-md-6">
                           {this.state.objectType !== 'ИЖС' && <span>
                             <div className="form-group">
-                              <label htmlFor="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
-                              <input data-rh="На хозпитьевые нужды (м3/сутки)" data-rh-at="right" type="number" onChange={this.onInputChange} step="any" className="form-control" name="waterDrinking" value={this.state.waterDrinking} placeholder="" />
+                              <label htmlFor="WaterProduction">На производственные нужды (м<sup>3</sup>/сутки)</label>
+                              <input data-rh="На производственные нужды (м3/сутки)" data-rh-at="right" type="number" onChange={this.onInputChange} step="any" className="form-control" name="waterProduction" value={this.state.waterProduction} placeholder="" />
                             </div>
                             <div className="form-group">
-                              <label htmlFor="WaterSewage">Канализация (м<sup>3</sup>/сутки)</label>
-                              <input data-rh="Канализация (м/3)" data-rh-at="right" type="number" onChange={this.onInputChange} className="form-control" name="waterSewage" value={this.state.waterSewage} />
+                              <label htmlFor="WaterDrinking">На хозпитьевые нужды (м<sup>3</sup>/сутки)</label>
+                              <input data-rh="На хозпитьевые нужды (м3/сутки)" data-rh-at="right" type="number" onChange={this.onInputChange} step="any" className="form-control" name="waterDrinking" value={this.state.waterDrinking} placeholder="" />
                             </div>
                             <div className="form-group">
                               <label>Потребные расходы внутреннего пожаротушения (л/сек)</label>
