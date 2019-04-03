@@ -105,8 +105,8 @@ export default class Main extends React.Component {
         window.url = 'http://uaig/';
         //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
         //window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
-        window.clientSecret = 'fuckaduckmotherfucker'; // aman
-        // window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
+        // window.clientSecret = 'fuckaduckmotherfucker'; // aman
+        window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
         // window.clientSecret = '7zdU2XDblqORFq8wbQHlNRaIgEBR90qbMYnnVWDg'; // yernar
         // window.clientSecret = 'ZuW3nP8EUgXgEAqm6j9GxzBfFsOFuQv39NcyHUz3'; // medet
     }
@@ -118,39 +118,39 @@ export default class Main extends React.Component {
         let breadCrumbs = document.getElementById('breadCrumbs');
         breadCrumbs.innerHTML = "";
 
-        if (fullLoc[3] === 'panel')
-        {
-            if ( typeof fullLoc[4] !== 'undefined' && typeof fullLoc[5] === 'undefined' )
-            {
-                let secondElem = document.createElement('span');
-                secondElem.innerHTML = ' <span style="color:#e0b431;font-weight: bold;font-size:14px;">></span> ' +
-                    '<span style="font-weight: bold;">' + e[fullLoc[4]] + '</span> ';
-                breadCrumbs.appendChild(secondElem);
-
-            }else if (typeof fullLoc[4] !== 'undefined' && typeof fullLoc[5] !== 'undefined')
-            {
-                let secondElem = document.createElement('span');
-                secondElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
-                    '<span style="font-weight: bold;">' + e[fullLoc[4]][fullLoc[5]]["name"] + '</span>';
-                breadCrumbs.appendChild(secondElem);
-
-                if (typeof fullLoc[6] !== 'undefined' && fullLoc[5] !== 'all_history')
-                {
-                    let thirdElem = document.createElement('span');
-                    thirdElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
-                        '<span style="font-weight: bold;">' + e[fullLoc[4]][fullLoc[5]][fullLoc[6]] + '</span>';
-                    breadCrumbs.appendChild(thirdElem);
-
-                    if (typeof fullLoc[7] !== 'undefined' && fullLoc[6] === 'edit')
-                    {
-                        let forthElem = document.createElement('span');
-                        forthElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
-                            '<span style="font-weight: bold;">№ ' + fullLoc[7] + '</span>';
-                        breadCrumbs.appendChild(forthElem);
-                    }
-                }
-            }
-        }
+        // if (fullLoc[3] === 'panel')
+        // {
+        //     if ( typeof fullLoc[4] !== 'undefined' && typeof fullLoc[5] === 'undefined' )
+        //     {
+        //         let secondElem = document.createElement('span');
+        //         secondElem.innerHTML = ' <span style="color:#e0b431;font-weight: bold;font-size:14px;">></span> ' +
+        //             '<span style="font-weight: bold;">' + e[fullLoc[4]] + '</span> ';
+        //         breadCrumbs.appendChild(secondElem);
+        //
+        //     }else if (typeof fullLoc[4] !== 'undefined' && typeof fullLoc[5] !== 'undefined')
+        //     {
+        //         let secondElem = document.createElement('span');
+        //         secondElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
+        //             '<span style="font-weight: bold;">' + e[fullLoc[4]][fullLoc[5]]["name"] + '</span>';
+        //         breadCrumbs.appendChild(secondElem);
+        //
+        //         if (typeof fullLoc[6] !== 'undefined' && fullLoc[5] !== 'all_history')
+        //         {
+        //             let thirdElem = document.createElement('span');
+        //             thirdElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
+        //                 '<span style="font-weight: bold;">' + e[fullLoc[4]][fullLoc[5]][fullLoc[6]] + '</span>';
+        //             breadCrumbs.appendChild(thirdElem);
+        //
+        //             if (typeof fullLoc[7] !== 'undefined' && fullLoc[6] === 'edit')
+        //             {
+        //                 let forthElem = document.createElement('span');
+        //                 forthElem.innerHTML = ' <span style="color:#e0b431;font-weight:bold;font-size:14px;">></span> ' +
+        //                     '<span style="font-weight: bold;">№ ' + fullLoc[7] + '</span>';
+        //                 breadCrumbs.appendChild(forthElem);
+        //             }
+        //         }
+        //     }
+        // }
     }
 
     forceUpdatePage(){
@@ -239,10 +239,10 @@ export default class Main extends React.Component {
                                         <Route path="/panel/lawyer/apz/status/:status/:page" exact render={(props) =>(<LawyerAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/lawyer/apz/show/:id" exact render={(props) =>(<LawyerShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
-                                        <Route path="/panel/schemeroad/apz/status/:status/:page" exact render={(props) =>(<SchemeRoadAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
-                                        <Route path="/panel/schemeroad/apz/show/:id" exact render={(props) =>(<SchemeRoadShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
-                                        <Route path="/panel/schemeroadhead/apz/status/:status/:page" exact render={(props) =>(<SchemeRoadHeadAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
-                                        <Route path="/panel/schemeroadhead/apz/show/:id" exact render={(props) =>(<SchemeRoadHeadShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/scheme_road/apz/status/:status/:page" exact render={(props) =>(<SchemeRoadAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/scheme_road/apz/show/:id" exact render={(props) =>(<SchemeRoadShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/scheme_road_head/apz/status/:status/:page" exact render={(props) =>(<SchemeRoadHeadAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/scheme_road_head/apz/show/:id" exact render={(props) =>(<SchemeRoadHeadShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
                                         <Route path="/panel/engineer/apz/status/:status/:page" exact render={(props) =>(<EngineerAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/engineer/apz/show/:id" exact render={(props) =>(<EngineerShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />

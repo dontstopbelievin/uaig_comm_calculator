@@ -169,7 +169,7 @@ export default class AllApzs extends React.Component {
                       <td>{apz.project_address}</td>
                       <td>{this.toDate(apz.created_at)}</td>
                       <td>
-                        <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/gen_plan/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/scheme_road/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
                     </tr>
                     );
@@ -182,19 +182,19 @@ export default class AllApzs extends React.Component {
               <nav className="pagination_block">
                 <ul className="pagination justify-content-center">
                   <li className="page-item">
-                    <Link className="page-link" to={'/panel/gen_plan/apz/status/' + status + '/1'}>В начало</Link>
+                    <Link className="page-link" to={'/panel/scheme_road/apz/status/' + status + '/1'}>В начало</Link>
                   </li>
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
                       <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
-                        <Link className="page-link" to={'/panel/gen_plan/apz/status/' + status + '/' + num}>{num}</Link>
+                        <Link className="page-link" to={'/panel/scheme_road/apz/status/' + status + '/' + num}>{num}</Link>
                       </li>
                       );
                     })
                   }
                   <li className="page-item">
-                    <Link className="page-link" to={'/panel/gen_plan/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
+                    <Link className="page-link" to={'/panel/scheme_road/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
                   </li>
                 </ul>
               </nav>

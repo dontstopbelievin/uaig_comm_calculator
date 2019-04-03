@@ -238,6 +238,7 @@ export default class NavBar extends React.Component {
                                 case 'Lawyer': return <LawyerMenu />;
                                 case 'GeneralPlan': return <GenPlanMenu />;
                                 case 'HeadsStateServices': return <HeadsStateServicesMenu />;
+                                case 'SchemeRoad': return <SchemeRoadMenu />;
                                 default:
                               }
                             case 'Provider':
@@ -518,6 +519,15 @@ class GenPlanMenu extends Component {
   }
 }
 class HeadsStateServicesMenu extends Component {
+  render() {
+    return (
+      <div>
+        <NavLink to={"/panel/services/1"} replace className="dropdown-item" activeClassName="active">Заявления на архитектурно-планировочное задание</NavLink>
+      </div>
+    )
+  }
+}
+class SchemeRoadMenu  extends Component {
   render() {
     return (
       <div>
