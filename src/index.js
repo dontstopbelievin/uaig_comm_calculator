@@ -76,8 +76,6 @@ import HeadStateServicesAllApzs from "./routes/apz/state_services_head/AllApzs";
 import HeadStateServicesShowApz from "./routes/apz/state_services_head/ShowApz";
 import SchemeRoadAllApzs from "./routes/apz/scheme_road/AllApzs";
 import SchemeRoadShowApz from "./routes/apz/scheme_road/ShowApz";
-import SchemeRoadHeadAllApzs from "./routes/apz/scheme_road_head/AllApzs";
-import SchemeRoadHeadShowApz from "./routes/apz/scheme_road_head/ShowApz";
 import AllApzsHistory from "./routes/apz/components/AllApzsHistory";
 import KeepSession from "./routes/authorization/KeepSession";
 
@@ -105,8 +103,8 @@ export default class Main extends React.Component {
         window.url = 'http://uaig/';
         //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
         //window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
-        // window.clientSecret = 'fuckaduckmotherfucker'; // aman
-        window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
+        window.clientSecret = 'fuckaduckmotherfucker'; // aman
+        // window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
         // window.clientSecret = '7zdU2XDblqORFq8wbQHlNRaIgEBR90qbMYnnVWDg'; // yernar
         // window.clientSecret = 'ZuW3nP8EUgXgEAqm6j9GxzBfFsOFuQv39NcyHUz3'; // medet
     }
@@ -241,8 +239,6 @@ export default class Main extends React.Component {
 
                                         <Route path="/panel/scheme_road/apz/status/:status/:page" exact render={(props) =>(<SchemeRoadAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/scheme_road/apz/show/:id" exact render={(props) =>(<SchemeRoadShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
-                                        <Route path="/panel/scheme_road_head/apz/status/:status/:page" exact render={(props) =>(<SchemeRoadHeadAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
-                                        <Route path="/panel/scheme_road_head/apz/show/:id" exact render={(props) =>(<SchemeRoadHeadShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
                                         <Route path="/panel/engineer/apz/status/:status/:page" exact render={(props) =>(<EngineerAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/engineer/apz/show/:id" exact render={(props) =>(<EngineerShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />

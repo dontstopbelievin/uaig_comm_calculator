@@ -662,7 +662,7 @@ export default class ShowApz extends React.Component {
     xhr.send(JSON.stringify(data));
   }
 
-  acceptDeclineApzForm(apzId, status, comment) {
+  acceptDeclineApzForm(apzId, status, comment, direct) {
     if(!status && (comment.trim() == '' || this.state.theme.trim() == '')){
       alert('Для отказа напишите тему и причину отказа.');
       return false;
@@ -670,6 +670,7 @@ export default class ShowApz extends React.Component {
     var token = sessionStorage.getItem('tokenInfo');
     var formData = new FormData();
     formData.append('response', status);
+    formData.append('direct', direct);
     formData.append('message', comment);
     formData.append('theme', this.state.theme);
     if ( this.state.pack2IdFile != null ) {
@@ -1125,10 +1126,8 @@ export default class ShowApz extends React.Component {
                     <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="engineer" id={apz.id} serviceName='apz'/>
                     :
                     <div>
-                      <button className="btn btn-raised btn-success" style={{marginRight: '5px'}}
-                              onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted")}>
-                        Отправить отделу гос услуг
-                      </button>
+                      <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", 'state_services')}>Отправить отделу гос услуг</button>
+                      <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, apz.id, true, "your form was accepted", 'scheme_road')}>Отправить отделу схем трасс</button>
                     </div>
                   }
                 </div>

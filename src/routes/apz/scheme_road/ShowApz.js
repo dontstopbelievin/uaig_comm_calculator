@@ -321,9 +321,15 @@ export default class ShowApz extends React.Component {
                     </div>
                   </div>
                   <div style={{margin: 'auto', display: 'table'}}>
-                    <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.showSignBtns.bind(this)}>Отправить начальнику схема трасс</button>
+                    <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.showSignBtns.bind(this)}>Поставить подпись</button>
                     <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm" style={{marginRight:'5px'}}>Мотивированный отказ</button>
                   </div>
+                  {this.state.showSignButtons && !this.state.isSigned &&
+                    <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="schemeroad" id={this.state.apz.id} serviceName='apz'/>
+                  }
+                  {this.state.showSendButtons &&
+                      <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, this.state.apz.id, true, 'your form was accepted')}>Отправить в отдел гос улсуг</button>
+                  }
                 </div>
               </div>
 
@@ -368,16 +374,6 @@ export default class ShowApz extends React.Component {
                   </div>
                 </div>
               </div>
-
-              {this.state.showSendButtons &&
-                <div style={{margin: 'auto', display: 'table'}}>
-                  <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, this.state.apz.id, true, 'your form was accepted')}>Отправить в отдел гос улсуг</button>
-                </div>
-              }
-
-              {this.state.showSignButtons && !this.state.isSigned &&
-                <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="schemeroad" id={this.state.apz.id} serviceName='apz'/>
-              }
 
               <Logs state_history={this.state.apz.state_history} />
 
