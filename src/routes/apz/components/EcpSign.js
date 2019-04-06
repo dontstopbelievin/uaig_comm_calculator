@@ -125,6 +125,9 @@ export default class EcpSign extends React.Component {
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
+        if (xhr.status != 200) {
+          this.setState({loaderHiddenSign: true});
+        }
         var tokenXml = xhr.responseText;
         if (storagePath !== null && storagePath !== "" && this.state.storageAlias !== null && this.state.storageAlias !== "") {
           if (password !== null && password !== "") {
@@ -144,6 +147,9 @@ export default class EcpSign extends React.Component {
         } else {
             alert("Не выбран хранилище!");
         }
+      }.bind(this);
+      xhr.onerror = function () {
+        this.setState({loaderHiddenSign: true});
       }.bind(this);
       xhr.send();
     }
@@ -301,13 +307,12 @@ export default class EcpSign extends React.Component {
                   <input className="form-control" placeholder="Путь к ключу" type="hidden" id="storagePath" />
                   <input className="form-control" placeholder="Пароль" id="inpPassword" type="password" />
                 </div>
+                <div className="form-group" style={{margin: 'auto', display: 'table', padding: '10px'}}>
                 {!this.state.loaderHiddenSign &&
-                <div style={{margin: '0 auto'}}>
                     <Loader type="Ball-Triangle" color="#46B3F2" height="70" width="70" />
-                </div>
                 }
                 {this.state.loaderHiddenSign &&
-                <div className="form-group">
+                  <div>
                     <button className="btn btn-raised btn-success" type="button"
                             onClick={this.signMessage.bind(this)}>Подписать
                     </button>
@@ -316,6 +321,7 @@ export default class EcpSign extends React.Component {
                     </button>
                 </div>
                 }
+                </div>
               </div>
             </div>
             )

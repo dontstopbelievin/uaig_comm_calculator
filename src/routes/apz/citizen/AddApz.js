@@ -430,7 +430,7 @@ export default class AddApz extends React.Component {
       }.bind(this));
 
       this.setState({loaderHidden: false});
-      console.log(data);
+      // console.log(data);
       var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
       xhr.open("post", window.url + link, true);
