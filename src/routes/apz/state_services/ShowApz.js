@@ -407,7 +407,7 @@ export default class ShowApz extends React.Component {
           }
 
           if (!data.apz_department_response && (data.status_id === 6 || data.status_id === 4 || data.status_id === 11 || data.status_id === 13
-          || data.status_id === 14 || data.status_id === 15)) {
+          || data.status_id === 14 || data.status_id === 15 || data.status_id === 5)) {
             this.setState({showButtons: true});
           }
 
@@ -969,7 +969,7 @@ export default class ShowApz extends React.Component {
 
           {this.state.showButtons && !this.state.showSendButton &&
             <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
-            {(!this.state.backFromGP || !this.state.reglamentFile) &&
+            {(!this.state.backFromGP) &&
               <button type="button" style={{marginRight:'5px'}} className="btn btn-raised btn-success" onClick={this.sendForm.bind(this, this.state.apz.id, true, "", 'gen_plan')}>Отправить отделу ген плана</button>
             }
             {(this.state.backFromEngineer && !this.state.apz.apz_department_response) ?

@@ -150,7 +150,7 @@ export default class CitizenActions extends React.Component {
                       {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/panel/citizen/apz/status/active/1"} replace className="btn btn-primary">Подать заявку</NavLink>}
                       {this.state.tokenExists && this.state.rolename === 'Region' &&  <NavLink to={"/panel/urban/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                       {this.state.tokenExists && this.state.rolename === 'Head' &&  <NavLink to={"/panel/head/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Electricity' &&  <NavLink to={"/panel/elector-provider/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
+                      {this.state.tokenExists && this.state.rolename === 'Electricity' &&  <NavLink to={"/panel/electro-provider/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                       {this.state.tokenExists && this.state.rolename === 'Gas' &&  <NavLink to={"/panel/gas-provider/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                       {this.state.tokenExists && this.state.rolename === 'Heat' &&  <NavLink to={"/panel/heat-provider/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}
                       {this.state.tokenExists && this.state.rolename === 'Water' &&  <NavLink to={"/panel/water-provider/apz/status/active/1"} replace className="btn btn-primary">Заявки на АПЗ</NavLink>}

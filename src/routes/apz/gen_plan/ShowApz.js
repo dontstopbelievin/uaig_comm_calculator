@@ -248,7 +248,6 @@ export default class ShowApz extends React.Component {
               }
 
               {this.state.showMap && <ShowMap coordinates={this.state.apz.project_address_coordinates} mapId={"b5a3c97bd18442c1949ba5aefc4c1835"}/>}
-              //0e8ae8f43ea94d358673e749f9a5e147
 
               <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                 {this.state.showMapText}

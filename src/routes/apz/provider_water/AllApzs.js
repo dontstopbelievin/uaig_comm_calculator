@@ -147,15 +147,14 @@ export default class AllApzs extends React.Component {
             <table className="table allapzs_fonts">
               <thead>
                 <tr>
-                  <th style={{width: '14%'}} className="apzs_header" onClick={this.sortData.bind(this, 'id')}>Дата поступления<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '13%'}} className="apzs_header" onClick={this.sortData.bind(this, 'id')}>Дата поступления<img className="filter_img" src="/images/filter_icon.png"/></th>
                   <th style={{width: '5%'}} className="apzs_header" onClick={this.sortData.bind(this, 'id')}>№<img className="filter_img" src="/images/filter_icon.png"/></th>
-                  <th style={{width: '14%'}} className="apzs_header" onClick={this.sortData.bind(this, 'created_at')}>Дата<img className="filter_img" src="/images/filter_icon.png"/></th>
-                  <th style={{width: '17%'}} className="apzs_header" onClick={this.sortData.bind(this, 'applicant')}>Заявитель<img className="filter_img" src="/images/filter_icon.png"/></th>
-                  <th style={{width: '18%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_name')}>Название<img className="filter_img" src="/images/filter_icon.png"/></th>
-                  <th style={{width: '18%'}} className="apzs_header" onClick={this.sortData.bind(this, 'object_type')}>Адрес<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '22%'}} className="apzs_header" onClick={this.sortData.bind(this, 'applicant')}>Заявитель<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '22%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_name')}>Название<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '22%'}} className="apzs_header" onClick={this.sortData.bind(this, 'object_type')}>Адрес<img className="filter_img" src="/images/filter_icon.png"/></th>
 
                   {(status === 'active' || status === 'awaiting') &&
-                    <th style={{width: '14%'}} className="apzs_header" onClick={this.sortData.bind(this, 'provider_deadline')}>Срок<img className="filter_img" src="/images/filter_icon.png"/></th>
+                    <th style={{width: '13%'}} className="apzs_header" onClick={this.sortData.bind(this, 'provider_deadline')}>Срок<img className="filter_img" src="/images/filter_icon.png"/></th>
                   }
                   <th></th>
                 </tr>
@@ -166,7 +165,6 @@ export default class AllApzs extends React.Component {
                     <tr key={index}>
                       <td>{this.toDate(apz.commission.created_at)}</td>
                       <td>{apz.id}</td>
-                      <td>{this.toDate(apz.created_at)}</td>
                       <td>{apz.applicant}</td>
                       <td>
                         {apz.project_name}
