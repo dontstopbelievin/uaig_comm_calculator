@@ -147,23 +147,25 @@ export default class AllApzs extends React.Component {
             <table className="table allapzs_fonts">
               <thead>
                 <tr>
-                <th style={{width: '7%'}} className="apzs_header" onClick={this.sortData.bind(this, 'id')}>ИД<img className="filter_img" src="/images/filter_icon.png"/></th>
-                <th style={{width: '19%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_name')}>Название<img className="filter_img" src="/images/filter_icon.png"/></th>
-                <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'applicant')}>Заявитель<img className="filter_img" src="/images/filter_icon.png"/></th>
-                <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_address')}>Адрес<img className="filter_img" src="/images/filter_icon.png"/></th>
-                <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'created_at')}>Дата заявления<img className="filter_img" src="/images/filter_icon.png"/></th>
+                <th style={{width: '13%'}} className="apzs_header" onClick={this.sortData.bind(this, 'id')}>Дата поступления<img className="filter_img" src="/images/filter_icon.png"/></th>
+                <th style={{width: '5%'}} className="apzs_header" onClick={this.sortData.bind(this, 'id')}>№<img className="filter_img" src="/images/filter_icon.png"/></th>
+                <th style={{width: '22%'}} className="apzs_header" onClick={this.sortData.bind(this, 'applicant')}>Заявитель<img className="filter_img" src="/images/filter_icon.png"/></th>
+                <th style={{width: '22%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_name')}>Название<img className="filter_img" src="/images/filter_icon.png"/></th>
+                <th style={{width: '22%'}} className="apzs_header" onClick={this.sortData.bind(this, 'object_type')}>Адрес<img className="filter_img" src="/images/filter_icon.png"/></th>
 
-                  {(status === 'active' || status === 'awaiting') &&
-                    <th style={{width: '14%'}} className="apzs_header" onClick={this.sortData.bind(this, 'provider_deadline')}>Срок<img className="filter_img" src="/images/filter_icon.png"/></th>
-                  }
-                  <th></th>
+                {(status === 'active' || status === 'awaiting') &&
+                  <th style={{width: '13%'}} className="apzs_header" onClick={this.sortData.bind(this, 'provider_deadline')}>Срок<img className="filter_img" src="/images/filter_icon.png"/></th>
+                }
+                <th></th>
                 </tr>
               </thead>
               <tbody>
                 {apzs.map(function(apz, index) {
                   return(
                     <tr key={index}>
+                      <td>{this.toDate(apz.commission.created_at)}</td>
                       <td>{apz.id}</td>
+                      <td>{apz.applicant}</td>
                       <td>
                         {apz.project_name}
 
@@ -171,17 +173,14 @@ export default class AllApzs extends React.Component {
                           <span className="ml-1">({apz.object_type})</span>
                         }
                       </td>
-                      <td>{apz.applicant}</td>
                       <td>{apz.project_address}</td>
-                      <td>{this.toDate(apz.created_at)}</td>
-
                       {(status === 'active' || status === 'awaiting') &&
-                          <td style={{backgroundColor: this.checkDeadline(apz.provider_deadline)? '#fdd' : 'initial'}}>
-                              {apz.provider_deadline ?
-                                  this.toDate(apz.provider_deadline)
-                                  :
-                                  this.toDate(apz.term.date)}
-                          </td>
+                        <td style={{backgroundColor: this.checkDeadline(apz.provider_deadline)? '#fdd' : 'initial'}}>
+                          {apz.provider_deadline ?
+                            this.toDate(apz.provider_deadline)
+                            :
+                            this.toDate(apz.term.date)}
+                        </td>
                       }
                       <td>
                         <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/phone-provider/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>

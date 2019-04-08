@@ -101,7 +101,7 @@ export default class AllApzs extends React.Component {
             return true;
         }
         return false;
-    }
+  }
 
   toDate(date) {
     if(date === null) {
@@ -134,27 +134,27 @@ export default class AllApzs extends React.Component {
         {this.state.loaderHidden &&
           <div>
             <ul className="nav nav-tabs mb-2 pull-right">
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/elector-provider/apz/status/active/1" replace>Активные</NavLink></li>
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/electro-provider/apz/status/active/1" replace>Активные</NavLink></li>
 
               {this.state.isPerformer &&
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'awaiting'} to="/panel/elector-provider/apz/status/awaiting/1" replace>В ожидании</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'awaiting'} to="/panel/electro-provider/apz/status/awaiting/1" replace>В ожидании</NavLink></li>
               }
 
-              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/elector-provider/apz/status/accepted/1" replace>Принятые</NavLink></li>
-              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/elector-provider/apz/status/declined/1" replace>Отказанные</NavLink></li>
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/electro-provider/apz/status/accepted/1" replace>Принятые</NavLink></li>
+              <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/electro-provider/apz/status/declined/1" replace>Отказанные</NavLink></li>
             </ul>
 
             <table className="table allapzs_fonts">
               <thead>
                 <tr>
-                <th style={{width: '7%'}} className="apzs_header" onClick={this.sortData.bind(this, 'id')}>ИД<img className="filter_img" src="/images/filter_icon.png"/></th>
-                <th style={{width: '19%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_name')}>Название<img className="filter_img" src="/images/filter_icon.png"/></th>
-                <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'applicant')}>Заявитель<img className="filter_img" src="/images/filter_icon.png"/></th>
-                <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_address')}>Адрес<img className="filter_img" src="/images/filter_icon.png"/></th>
-                <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'created_at')}>Дата заявления<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '13%'}} className="apzs_header" onClick={this.sortData.bind(this, 'id')}>Дата поступления<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '5%'}} className="apzs_header" onClick={this.sortData.bind(this, 'id')}>№<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '22%'}} className="apzs_header" onClick={this.sortData.bind(this, 'applicant')}>Заявитель<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '22%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_name')}>Название<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '22%'}} className="apzs_header" onClick={this.sortData.bind(this, 'object_type')}>Адрес<img className="filter_img" src="/images/filter_icon.png"/></th>
 
                   {(status === 'active' || status === 'awaiting') &&
-                    <th style={{width: '14%'}} className="apzs_header" onClick={this.sortData.bind(this, 'provider_deadline')}>Срок<img className="filter_img" src="/images/filter_icon.png"/></th>
+                    <th style={{width: '13%'}} className="apzs_header" onClick={this.sortData.bind(this, 'provider_deadline')}>Срок<img className="filter_img" src="/images/filter_icon.png"/></th>
                   }
                   <th></th>
                 </tr>
@@ -163,7 +163,9 @@ export default class AllApzs extends React.Component {
                 {apzs.map(function(apz, index) {
                   return(
                     <tr key={index}>
+                      <td>{this.toDate(apz.commission.created_at)}</td>
                       <td>{apz.id}</td>
+                      <td>{apz.applicant}</td>
                       <td>
                         {apz.project_name}
 
@@ -171,20 +173,17 @@ export default class AllApzs extends React.Component {
                           <span className="ml-1">({apz.object_type})</span>
                         }
                       </td>
-                      <td>{apz.applicant}</td>
                       <td>{apz.project_address}</td>
-                      <td>{this.toDate(apz.created_at)}</td>
-
                       {(status === 'active' || status === 'awaiting') &&
-                          <td style={{backgroundColor: this.checkDeadline(apz.provider_deadline)? '#fdd' : 'initial'}}>
-                              {apz.provider_deadline ?
-                                  this.toDate(apz.provider_deadline)
-                                  :
-                                  this.toDate(apz.term.date)}
-                          </td>
+                        <td style={{backgroundColor: this.checkDeadline(apz.provider_deadline)? '#fdd' : 'initial'}}>
+                          {apz.provider_deadline ?
+                            this.toDate(apz.provider_deadline)
+                            :
+                            this.toDate(apz.term.date)}
+                        </td>
                       }
                       <td>
-                        <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/elector-provider/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/electro-provider/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
                     </tr>
                     );
@@ -197,19 +196,19 @@ export default class AllApzs extends React.Component {
               <nav className="pagination_block">
                 <ul className="pagination justify-content-center">
                   <li className="page-item">
-                    <Link className="page-link" to={'/panel/elector-provider/apz/status/' + status + '/1'}>В начало</Link>
+                    <Link className="page-link" to={'/panel/electro-provider/apz/status/' + status + '/1'}>В начало</Link>
                   </li>
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
                       <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
-                        <Link className="page-link" to={'/panel/elector-provider/apz/status/' + status + '/' + num}>{num}</Link>
+                        <Link className="page-link" to={'/panel/electro-provider/apz/status/' + status + '/' + num}>{num}</Link>
                       </li>
                       );
                     })
                   }
                   <li className="page-item">
-                    <Link className="page-link" to={'/panel/elector-provider/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
+                    <Link className="page-link" to={'/panel/electro-provider/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
                   </li>
                 </ul>
               </nav>

@@ -898,7 +898,7 @@ export default class ShowApz extends React.Component {
                   <tr>
                     <th></th>
                     <th>Название провайдера</th>
-                    <th>Оставшееся время</th>
+                    <th>Срок до</th>
                     <th>Статус</th>
                   </tr>
                 </thead>
