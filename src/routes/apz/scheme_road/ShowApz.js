@@ -268,6 +268,60 @@ export default class ShowApz extends React.Component {
       }
     }
 
+    sendForm(apzId, status, comment, direct) {
+        console.log(comment);
+        if(!status && comment != 'otkaz' && (comment.trim() == '' || this.state.theme.trim() == '')){
+            alert('Для отказа напишите тему и причину отказа.');
+            return false;
+        }
+        if (comment == 'otkaz' && !this.state.otkazFile) {
+            alert('Загрузите файл отказа');
+            return false;
+        }
+
+        var token = sessionStorage.getItem('tokenInfo');
+        var registerData = {
+            response: status,
+            message: comment,
+            theme: this.state.theme,
+            direct: direct
+        };
+        if(comment == 'otkaz'){ registerData['otkazFile'] = this.state.otkazFile; }
+        var data = JSON.stringify(registerData);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("post", window.url + "api/apz/schemeroad/status/" + apzId, true);
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
+        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                alert("Заявление отправлено!");
+            } else if(xhr.status === 401){
+                sessionStorage.clear();
+                alert("Время сессии истекло. Пожалуйста войдите заново!");
+                this.props.history.replace("/login");
+            } else if (xhr.status === 403 && JSON.parse(xhr.responseText).message) {
+                alert(JSON.parse(xhr.responseText).message);
+            }
+            switch (direct) {
+                case 'gen_plan':
+                    this.setState({backFromGP: true});
+                    break;
+                case 'engineer':
+                    this.setState({backFromEngineer: true});
+                    break;
+                default:
+                    this.setState({ showButtons: false });
+                    this.setState({ showSendButton: false });
+            }
+            if (!status) {
+                $('#ReturnApzForm').modal('hide');
+                $('#accDecApzForm').modal('hide');
+            }
+        }.bind(this);
+        xhr.send(data);
+    }
+
     render() {
       return (
         <div>
