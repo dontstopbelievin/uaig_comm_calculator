@@ -87,7 +87,7 @@ export default class AddTemplate extends React.Component{
             <label htmlFor="text">Текст</label>
             <ReactQuill value={this.state.text} onChange={this.onTextChange} />
           </div>
-          <input type="submit" className="btn btn-outline-success" value="Отправить" />
+          <input type="submit" className="btn btn-outline-success" value="Создать" />
         </form>
 
         <div>

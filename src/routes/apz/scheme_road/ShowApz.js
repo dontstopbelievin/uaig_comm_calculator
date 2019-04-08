@@ -17,6 +17,7 @@ export default class ShowApz extends React.Component {
         apz: [],
         templates: [],
         theme: '',
+        comment: '',
         showMap: false,
         showButtons: false,
         showMapText: 'Показать карту',
@@ -49,6 +50,10 @@ export default class ShowApz extends React.Component {
       }
     }
 
+    onThemeChange(e) {
+      this.setState({ theme: e.target.value });
+    }
+
     onTemplateListChange(e) {
       if(e.target.value != ''){
         var template = this.state.templates.find(template => template.id == e.target.value);
@@ -57,6 +62,10 @@ export default class ShowApz extends React.Component {
       }else{
         this.setState({ theme: '' });
       }
+    }
+
+    onCommentChange(value) {
+      this.setState({ comment: value });
     }
 
     getAnswerTemplates(){
@@ -105,8 +114,8 @@ export default class ShowApz extends React.Component {
           this.setState({calculationComment: apz.state_history.filter(function(obj) { return obj.state_id === 57 })[0]});
           this.setState({calculationFile: apz.files.filter(function(obj) { return obj.category_id === 39 })[0]});
 
-          if (apz.state_history.filter(function(obj) { return obj.state_id === 41 })[0] != null &&
-              apz.state_history.filter(function(obj) { return obj.state_id === 42 })[0] == null) {
+          if (apz.state_history.filter(function(obj) { return obj.state_id === 64 })[0] == null &&
+              apz.state_history.filter(function(obj) { return obj.state_id === 65 })[0] == null) {
             this.setState({showButtons: true});
           }
           this.setState({loaderHidden: true});
@@ -199,6 +208,7 @@ export default class ShowApz extends React.Component {
       var registerData = {
         response: status,
         message: comment,
+        theme: this.state.theme,
         file: this.state.schemeroadFile
       };
 
@@ -225,6 +235,7 @@ export default class ShowApz extends React.Component {
           alert(JSON.parse(xhr.responseText).message);
         }
         this.setState({ showSendButtons: false });
+        this.setState({ showButtons: false });
         if (!status) {
           $('#accDecApzForm').modal('hide');
         }
@@ -239,17 +250,10 @@ export default class ShowApz extends React.Component {
           return false;
         }
         this.setState({ showSignButtons: true });
-        this.setState({ showButtons: false });
     }
 
     hideSignBtns(){
         this.setState({ showSignButtons: false });
-        this.setState({ showButtons: true });
-    }
-
-
-    onThemeChange(e) {
-        this.setState({ theme: e.target.value });
     }
 
     toggleMap(value) {
@@ -374,10 +378,11 @@ export default class ShowApz extends React.Component {
                       </div>
                     </div>
                   </div>
+                  {!this.state.showSignButtons && !this.state.showSendButtons &&
                   <div style={{margin: 'auto', display: 'table'}}>
                     <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.showSignBtns.bind(this)}>Поставить подпись</button>
                     <button type="button" className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm" style={{marginRight:'5px'}}>Мотивированный отказ</button>
-                  </div>
+                  </div>}
                   {this.state.showSignButtons && !this.state.isSigned &&
                     <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="schemeroad" id={this.state.apz.id} serviceName='apz'/>
                   }
@@ -422,7 +427,7 @@ export default class ShowApz extends React.Component {
                       </div>
                     </div>
                     <div className="modal-footer">
-                      <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.sendForm.bind(this, this.state.apz.id, false, this.state.comment, 'lawyer')}>Отправить Юристу</button>
+                      <button type="button" className="btn btn-raised btn-success" style={{marginRight:'5px'}} onClick={this.acceptDeclineApzForm.bind(this, this.state.apz.id, false, this.state.comment)}>Отправить Юристу</button>
                       <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                     </div>
                   </div>
