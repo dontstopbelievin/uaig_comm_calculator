@@ -100,6 +100,7 @@ export default class AddApz extends React.Component {
         obshayaPloshad: '',
         hasTCNumber: false,
         TCNumber: '',
+        status  : '',
       };
 
       this.saveApz = this.saveApz.bind(this);
@@ -236,7 +237,8 @@ export default class AddApz extends React.Component {
           this.setState({objectLevel: apz.object_level ? apz.object_level : '' });
           this.setState({objectArea: apz.object_area ? apz.object_area : '' });
           this.setState({objectRooms: apz.object_rooms ? apz.object_rooms : '' });
-
+          this.setState({status: apz.status_id? apz.status_id : '' });
+          console.log('status ' + this.state.status);
           if (apz.apz_electricity) {
             this.setState({n_lamp: apz.apz_electricity.number_lamps ? apz.apz_electricity.number_lamps : '' });
             this.setState({n_rozetka: apz.apz_electricity.number_sockets ? apz.apz_electricity.number_sockets : '' });
@@ -419,7 +421,16 @@ export default class AddApz extends React.Component {
       }
 
       var apzId = this.props.match.params.id;
-      var link = apzId > 0 ? ("api/apz/citizen/save/" + apzId) : "api/apz/citizen/save";
+
+      switch(this.state.status){
+          case 1://declined
+            var link="api/apz/citizen/save";
+            break;
+          default:
+            var link = apzId > 0 ? ("api/apz/citizen/save/" + apzId) : "api/apz/citizen/save";
+            break;
+      }
+console.log(link);
 
       var data = {
         publish: publish ? true : false,
