@@ -109,10 +109,10 @@ export default class AllApzs extends React.Component {
                 <thead>
                   <tr>
                     <th style={{width: '5%'}}>ИД</th>
-                    <th style={{width: '21%'}}>Название</th>
-                    <th style={{width: '20%'}}>Заявитель</th>
-                    <th style={{width: '20%'}}>Адрес</th>
-                    <th style={{width: '20%'}}>Дата заявления</th>
+                    <th style={{width: '19%'}}>Название</th>
+                    <th style={{width: '19%'}}>Заявитель</th>
+                    <th style={{width: '19%'}}>Адрес</th>
+                    <th style={{width: '14%'}}>Дата заявления</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -132,7 +132,10 @@ export default class AllApzs extends React.Component {
                         <td>{apz.project_address}</td>
                         <td>{this.toDate(apz.created_at)}</td>
                         <td>
-                          <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/citizen/apz/' + (apz.status_id === 8 ? 'edit/' : 'show/') + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                          <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/citizen/apz/' + (apz.status_id === 8 ? 'edit/' : 'show/') + apz.id}><i className="glyphicon glyphicon-eye-open small"></i> Просмотр</Link>
+                          {apz.status_id === 1 &&
+                             <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/citizen/apz/' + (apz.status_id === 1 ? 'edit/' : 'show/') + apz.id}><i className="glyphicon glyphicon-eye-open small"></i>Переотправить</Link>
+                          }
                         </td>
                       </tr>
                       );
