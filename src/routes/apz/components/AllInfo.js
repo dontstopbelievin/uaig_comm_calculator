@@ -76,6 +76,67 @@ export default class AllInfo extends React.Component {
       xhr.send();
     }
 
+    viewOrDownloadFile(id, progbarId = null) {
+      var token = sessionStorage.getItem('tokenInfo');
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", window.url + 'api/file/download/' + id, true);
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
+        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+        var vision = $('.text-info[data-category='+progbarId+']');
+        var progressbar = $('.progress[data-category='+progbarId+']');
+        vision.css('display', 'none');
+        progressbar.css('display', 'flex');
+        xhr.onprogress = function(event) {
+          $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
+        }
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            var data = JSON.parse(xhr.responseText);
+            var extenstion = data.file_name.substring(data.file_name.lastIndexOf('.')+1, data.file_name.length);
+            if(extenstion == 'jpg' || extenstion == 'png' || extenstion == 'dwg' || extenstion == 'tiff'){
+              // var image = new Image();
+              // image.src = "data:image/jpg;base64," + data.file;
+              // var w = window.open("");
+              // w.document.write(image.outerHTML);
+
+              var image = new Image();
+              image.src = "data:image/jpg;base64," + data.file;
+              image.style = "width:inherit!important;height:inherit!important";
+              var win = window.open("#","_blank");
+              var title = data.file_name;
+              win.document.write('<html><title>'+ title +'</title><body style="margin-top:0px; margin-left: 0px; margin-right: 0px; margin-bottom: 0px;"><div class="row"><div class="col-md-12" style="width:100%;height:auto">');
+              win.document.write(image.outerHTML);
+              win.document.write('</div></div></body></html>');
+              var layer = $(win.document);
+            }else if (extenstion == 'pdf'){
+              var objbuilder = '';
+              objbuilder += ('<object width="100%" height="100%" data="data:application/pdf;base64,');
+              objbuilder += (data.file );
+              objbuilder += ('" type="application/pdf" class="internal">');
+              objbuilder += ('<embed src="data:application/pdf;base64,');
+              objbuilder += (data.file );
+              objbuilder += ('" type="application/pdf"  />');
+              objbuilder += ('</object>');
+
+              var win = window.open("#","_blank");
+              var title = data.file_name;
+              win.document.write('<html><title>'+ title +'</title><body style="margin-top:0px; margin-left: 0px; margin-right: 0px; margin-bottom: 0px;">');
+              win.document.write(objbuilder);
+              win.document.write('</body></html>');
+              var layer = $(win.document);
+            }else{
+              alert("Формат файла не поддерживается");
+            }
+          } else {
+            alert('Не удалось загрузить файл');
+          }
+          $('div', progressbar).css('width', 0);
+          progressbar.css('display', 'none');
+          vision.css('display','inline');
+        }
+      xhr.send();
+    }
+
     downloadAllFile(id) {
       var token = sessionStorage.getItem('tokenInfo');
 
@@ -242,7 +303,8 @@ export default class AllInfo extends React.Component {
                   {this.props.personalIdFile &&
                     <tr>
                       <td><b>Уд. лич./ Реквизиты</b></td>
-                      <td><a className="text-info pointer" data-category="1" onClick={this.downloadFile.bind(this, this.props.personalIdFile.id, 1)}>Скачать</a>
+                      <td><a className="text-info pointer" data-category="1" style={{marginRight: '10px'}} onClick={this.downloadFile.bind(this, this.props.personalIdFile.id, 1)}>Скачать</a>
+                          <a className="text-info pointer" data-category="1" onClick={this.viewOrDownloadFile.bind(this, this.props.personalIdFile.id, 1)}>Просмотр</a>
                         <div className="progress mb-2" data-category="1" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                           <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
@@ -253,7 +315,8 @@ export default class AllInfo extends React.Component {
                   {this.props.confirmedTaskFile &&
                     <tr>
                       <td><b>Утвержденное задание</b></td>
-                      <td><a className="text-info pointer" data-category="2" onClick={this.downloadFile.bind(this, this.props.confirmedTaskFile.id, 2)}>Скачать</a>
+                      <td><a className="text-info pointer" data-category="2" style={{marginRight: '10px'}} onClick={this.downloadFile.bind(this, this.props.confirmedTaskFile.id, 2)}>Скачать</a>
+                          <a className="text-info pointer" data-category="2" onClick={this.viewOrDownloadFile.bind(this, this.props.confirmedTaskFile.id, 2)}>Просмотр</a>
                         <div className="progress mb-2" data-category="2" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                           <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
@@ -264,7 +327,8 @@ export default class AllInfo extends React.Component {
                   {this.props.titleDocumentFile &&
                     <tr>
                       <td><b>Правоустанавл. документ</b></td>
-                      <td><a className="text-info pointer" data-category="3" onClick={this.downloadFile.bind(this, this.props.titleDocumentFile.id, 3)}>Скачать</a>
+                      <td><a className="text-info pointer" data-category="3" style={{marginRight: '10px'}} onClick={this.downloadFile.bind(this, this.props.titleDocumentFile.id, 3)}>Скачать</a>
+                          <a className="text-info pointer" data-category="3" onClick={this.viewOrDownloadFile.bind(this, this.props.titleDocumentFile.id, 3)}>Просмотр</a>
                         <div className="progress mb-2" data-category="3" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                           <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
@@ -275,7 +339,8 @@ export default class AllInfo extends React.Component {
                   {this.props.additionalFile &&
                     <tr>
                       <td><b>Дополнительно</b></td>
-                      <td><a className="text-info pointer" data-category="4" onClick={this.downloadFile.bind(this, this.props.additionalFile.id, 4)}>Скачать</a>
+                      <td><a className="text-info pointer" data-category="4" style={{marginRight: '10px'}} onClick={this.downloadFile.bind(this, this.props.additionalFile.id, 4)}>Скачать</a>
+                          <a className="text-info pointer" data-category="4" onClick={this.viewOrDownloadFile.bind(this, this.props.additionalFile.id, 4)}>Просмотр</a>
                         <div className="progress mb-2" data-category="4" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                           <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
@@ -627,7 +692,8 @@ export default class AllInfo extends React.Component {
                             {this.props.claimedCapacityJustification &&
                               <tr>
                                 <td>Расчет-обоснование заявленной мощности</td>
-                                <td><a className="text-info pointer" data-category="5" onClick={this.downloadFile.bind(this, this.props.claimedCapacityJustification.id, 5)}>Скачать</a>
+                                <td><a className="text-info pointer" data-category="5" style={{marginRight: '10px'}} onClick={this.downloadFile.bind(this, this.props.claimedCapacityJustification.id, 5)}>Скачать</a>
+                                    <a className="text-info pointer" data-category="5" onClick={this.viewOrDownloadFile.bind(this, this.props.claimedCapacityJustification.id, 5)}>Просмотр</a>
                                   <div className="progress mb-2" data-category="5" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                                     <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                   </div>
