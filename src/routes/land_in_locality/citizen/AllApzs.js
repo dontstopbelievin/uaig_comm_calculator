@@ -4,7 +4,7 @@ import 'jquery-serializejson';
 import { Link, NavLink } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 
-export default class AllApzs extends React.Component {
+export default class AllLand_in_locality extends React.Component {
     constructor(props) {
       super(props);
 
@@ -18,14 +18,14 @@ export default class AllApzs extends React.Component {
     }
     componentDidMount() {
       this.props.breadCrumbs();
-      this.getApzs();
+      this.getLand_in_locality();
     }
 
     componentWillReceiveProps(nextProps) {
-      this.getApzs(nextProps.match.params.status, nextProps.match.params.page);
+      this.getLand_in_locality(nextProps.match.params.status, nextProps.match.params.page);
     }
 
-    getApzs(status = null, page = null) {
+    getLand_in_locality(status = null, page = null) {
       if (!status) {
         status = this.props.match.params.status;
       }
@@ -38,7 +38,7 @@ export default class AllApzs extends React.Component {
 
       var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/apz/citizen/all/" + status + '?page=' + page, true);
+      xhr.open("get", window.url + "api/land_in_locality/citizen/all/" + status + '?page=' + page, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
@@ -84,7 +84,7 @@ export default class AllApzs extends React.Component {
     render() {
       var status = this.props.match.params.status;
       var page = this.props.match.params.page;
-      var apzs = this.state.response ? this.state.response.data : [];
+      var lands_in_locality = this.state.response ? this.state.response.data : [];
 
       return (
         <div>
@@ -93,14 +93,14 @@ export default class AllApzs extends React.Component {
               <h4 className="mb-0 mt-2">Архитектурно-планировочное задание</h4>
               <div className="row">
                 <div className="col-sm-7">
-                  <Link className="btn btn-outline-primary mb-3" to="/panel/citizen/apz/add">Создать заявление</Link>
+                  <Link className="btn btn-outline-primary mb-3" to="/panel/citizen/land_in_locality/add">Создать заявление</Link>
                 </div>
                 <div className="col-sm-5 statusActive">
                   <ul className="nav nav-tabs mb-2 pull-right">
-                    <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'active'} activeStyle={{color:"black"}} to="/panel/citizen/apz/status/active/1" replace>Активные</NavLink></li>
-                    <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'draft'} activeStyle={{color:"black"}} to="/panel/citizen/apz/status/draft/1" replace>Черновики</NavLink></li>
-                    <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'accepted'} activeStyle={{color:"black"}} to="/panel/citizen/apz/status/accepted/1" replace>Принятые</NavLink></li>
-                    <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'declined'} activeStyle={{color:"black"}} to="/panel/citizen/apz/status/declined/1" replace>Отказанные</NavLink></li>
+                    <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'active'} activeStyle={{color:"black"}} to="/panel/citizen/land_in_locality/status/active/1" replace>Активные</NavLink></li>
+                    <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'draft'} activeStyle={{color:"black"}} to="/panel/citizen/land_in_locality/status/draft/1" replace>Черновики</NavLink></li>
+                    <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'accepted'} activeStyle={{color:"black"}} to="/panel/citizen/land_in_locality/status/accepted/1" replace>Принятые</NavLink></li>
+                    <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => status === 'declined'} activeStyle={{color:"black"}} to="/panel/citizen/land_in_locality/status/declined/1" replace>Отказанные</NavLink></li>
                   </ul>
                 </div>
               </div>
@@ -117,24 +117,24 @@ export default class AllApzs extends React.Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {apzs.map(function(apz, index) {
+                  {lands_in_locality.map(function(land_in_locality, index) {
                     return(
                       <tr key={index}>
-                        <td>{apz.id}</td>
+                        <td>{land_in_locality.id}</td>
                         <td>
-                          {apz.project_name}
+                          {land_in_locality.project_name}
 
-                          {apz.object_type &&
-                            <span className="ml-1">({apz.object_type})</span>
+                          {land_in_locality.object_type &&
+                            <span className="ml-1">({land_in_locality.object_type})</span>
                           }
                         </td>
-                        <td>{apz.applicant}</td>
-                        <td>{apz.project_address}</td>
-                        <td>{this.toDate(apz.apz_start)}</td>
+                        <td>{land_in_locality.applicant}</td>
+                        <td>{land_in_locality.project_address}</td>
+                        <td>{this.toDate(land_in_locality.created_at)}</td>
                         <td>
-                          <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/citizen/apz/' + (apz.status_id === 8 ? 'edit/' : 'show/') + apz.id}><i className="glyphicon glyphicon-eye-open small"></i> Просмотр</Link>
-                          {apz.status_id === 1 &&
-                             <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/citizen/apz/' + (apz.status_id === 1 ? 'edit/' : 'show/') + apz.id}><i className="glyphicon glyphicon-eye-open small"></i>Переотправить</Link>
+                          <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/citizen/land_in_locality/' + (land_in_locality.status_id === 8 ? 'edit/' : 'show/') + land_in_locality.id}><i className="glyphicon glyphicon-eye-open small"></i> Просмотр</Link>
+                          {land_in_locality.status_id === 1 &&
+                             <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/citizen/land_in_locality/' + (land_in_locality.status_id === 1 ? 'edit/' : 'show/') + land_in_locality.id}><i className="glyphicon glyphicon-eye-open small"></i>Переотправить</Link>
                           }
                         </td>
                       </tr>
@@ -142,7 +142,7 @@ export default class AllApzs extends React.Component {
                     }.bind(this))
                   }
 
-                  {apzs.length === 0 &&
+                  {lands_in_locality.length === 0 &&
                     <tr>
                       <td colSpan="5">Пусто</td>
                     </tr>
@@ -154,19 +154,19 @@ export default class AllApzs extends React.Component {
                 <nav className="pagination_block">
                   <ul className="pagination justify-content-center">
                     <li className="page-item">
-                      <Link className="page-link" to={'/panel/citizen/apz/status/' + status + '/1'}>В начало</Link>
+                      <Link className="page-link" to={'/panel/citizen/land_in_locality/status/' + status + '/1'}>В начало</Link>
                     </li>
 
                     {this.state.pageNumbers.map(function(num, index) {
                       return(
                         <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
-                          <Link className="page-link" to={'/panel/citizen/apz/status/' + status + '/' + num}>{num}</Link>
+                          <Link className="page-link" to={'/panel/citizen/land_in_locality/status/' + status + '/' + num}>{num}</Link>
                         </li>
                         );
                       })
                     }
                     <li className="page-item">
-                      <Link className="page-link" to={'/panel/citizen/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
+                      <Link className="page-link" to={'/panel/citizen/land_in_locality/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
                     </li>
                   </ul>
                 </nav>

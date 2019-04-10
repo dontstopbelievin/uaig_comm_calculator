@@ -11,7 +11,10 @@ export default class AllApzs extends React.Component {
       response: null,
       data: [],
       data_reserve: [],
-      pageNumbers: []
+      pageNumbers: [],
+      //regions:[],
+      searchApz: '',
+      //current_region: ""
     };
 
     this.handleSearch = this.handleSearch.bind(this);
@@ -21,6 +24,16 @@ export default class AllApzs extends React.Component {
     this.props.breadCrumbs();
     this.getApzs();
   }
+
+  /*componentWillMount() {
+    var data = JSON.parse(sessionStorage.getItem('userRoles'));
+    var select_regions = [];
+    for (var i = 2; i < data.length; i++) {
+      select_regions.push(<option key={i} value={data[i]}> {data[i]} </option>);
+    }
+    this.setState({regions: select_regions});
+    this.setState({current_region: data[2]});
+  }*/
 
   componentWillReceiveProps(nextProps) {
     this.getApzs(nextProps.match.params.status, nextProps.match.params.page);
@@ -39,7 +52,7 @@ export default class AllApzs extends React.Component {
 
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/generalplanhead/all/" + status + '?page=' + page, true);
+    xhr.open("get", window.url + "api/apz/region/all/" + status + '?page=' + page, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
@@ -62,29 +75,8 @@ export default class AllApzs extends React.Component {
 
       this.setState({ loaderHidden: true });
     }.bind(this);
-    xhr.onerror = function () {
-      alert('Сервер не отвечает');
-      this.setState({ loaderHidden: true });
-    }.bind(this);
     xhr.send();
   }
-
-  toDate(date) {
-    if(date === null) {
-      return date;
-    }
-
-    var jDate = new Date(date);
-    var curr_date = jDate.getDate() < 10 ? "0" + jDate.getDate() : jDate.getDate();
-    var curr_month = (jDate.getMonth() + 1) < 10 ? "0" + (jDate.getMonth() + 1) : jDate.getMonth() + 1;
-    var curr_year = jDate.getFullYear();
-    var curr_hour = jDate.getHours() < 10 ? "0" + jDate.getHours() : jDate.getHours();
-    var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
-    var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
-
-    return formated_date;
-  }
-
   sortData(column){
     if(this.state.sortState == 'ASC'){
       this.setState({ sortState: 'DESC'});
@@ -102,6 +94,27 @@ export default class AllApzs extends React.Component {
       }) });
     }
   }
+  toDate(date) {
+    if(date === null) {
+      return date;
+    }
+
+    var jDate = new Date(date);
+    var curr_date = jDate.getDate() < 10 ? "0" + jDate.getDate() : jDate.getDate();
+    var curr_month = (jDate.getMonth() + 1) < 10 ? "0" + (jDate.getMonth() + 1) : jDate.getMonth() + 1;
+    var curr_year = jDate.getFullYear();
+    var curr_hour = jDate.getHours() < 10 ? "0" + jDate.getHours() : jDate.getHours();
+    var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
+    var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
+
+    return formated_date;
+  }
+
+  /*handleRegionChange(event){
+    this.setState({current_region: event.target.value}, function stateUpdateComplete() {
+      this.getApzs();
+    }.bind(this));
+  }*/
 
   handleSearch(e){
     if(e.target.value.trim() === ''){this.setState({data: this.state.data_reserve}); return;}
@@ -114,15 +127,6 @@ export default class AllApzs extends React.Component {
        return true;
      });
     this.setState({data: data});
-  }
-
-  checkDeadline(date){
-        var jDate = new Date();
-        var dbTime = new Date(date);
-        if(dbTime.getTime()<jDate.getTime()){
-            return true;
-        }
-        return false;
   }
 
   render() {
@@ -139,13 +143,20 @@ export default class AllApzs extends React.Component {
               <NavLink to="/panel/common/export_to_excel"><img title="Экспорт в excel" src='/images/excelicon.png' className="export_image" alt="export excel"/></NavLink>
               </h4>
             </div>
+            {/*<div style={{fontSize: '18px', margin: '10px 0px'}}>
+              <b>Выберите регион:</b>
+              <select style={{padding: '0px 4px', margin: '5px'}} value={this.state.current_region} onChange={this.handleRegionChange.bind(this)}>
+                {this.state.regions}
+              </select>
+            </div>*/}
             <table style={{width:'100%'}}><tbody>
             <tr><td>
               <input placeholder="Поиск по ФИО" type="text" className="mb-2" id="filter" onChange={this.handleSearch} style={{padding:'3px'}}/>
             </td><td>
               <ul className="nav nav-tabs mb-2 pull-right">
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'state_active'} to="/panel/gen_plan_head/apz/status/state_active/1" replace>Активные</NavLink></li>
-                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/gen_plan_head/apz/status/accepted/1" replace>Отработанные</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/urban/apz/status/active/1" replace>Активные</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/urban/apz/status/accepted/1" replace>Принятые</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/urban/apz/status/declined/1" replace>Отказанные</NavLink></li>
               </ul>
             </td></tr></tbody>
             </table>
@@ -153,12 +164,11 @@ export default class AllApzs extends React.Component {
             <table className="table allapzs_fonts">
               <thead>
                 <tr>
-                  <th style={{width: '5%'}} className="apzs_header" onClick={this.sortData.bind(this, 'id')}>ИД<img className="filter_img" src="/images/filter_icon.png"/></th>
-                  <th style={{width: '13%'}} className="apzs_header" onClick={this.sortData.bind(this, 'apz_start')}>Дата заявления<img className="filter_img" src="/images/filter_icon.png"/></th>
-                  <th style={{width: '18%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_name')}>Название<img className="filter_img" src="/images/filter_icon.png"/></th>
-                  <th style={{width: '19%'}} className="apzs_header" onClick={this.sortData.bind(this, 'applicant')}>Заявитель<img className="filter_img" src="/images/filter_icon.png"/></th>
-                  <th style={{width: '19%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_address')}>Адрес<img className="filter_img" src="/images/filter_icon.png"/></th>
-                  <th style={{width: '13%'}} className="apzs_header" onClick={this.sortData.bind(this, 'apz_deadline')}>Срок<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '7%'}} className="apzs_header" onClick={this.sortData.bind(this, 'id')}>ИД<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '19%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_name')}>Название<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'applicant')}>Заявитель<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_address')}>Адрес<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'created_at')}>Дата заявления<img className="filter_img" src="/images/filter_icon.png"/></th>
                   <th></th>
                 </tr>
               </thead>
@@ -167,7 +177,6 @@ export default class AllApzs extends React.Component {
                   return(
                     <tr key={index}>
                       <td>{apz.id}</td>
-                      <td>{this.toDate(apz.apz_start)}</td>
                       <td>
                         {apz.project_name}
 
@@ -177,9 +186,9 @@ export default class AllApzs extends React.Component {
                       </td>
                       <td>{apz.applicant}</td>
                       <td>{apz.project_address}</td>
-                      <td style={{backgroundColor: this.checkDeadline(apz.apz_deadline)? '#fdd' : 'initial'}}>{this.toDate(apz.apz_deadline)}</td>
+                      <td>{this.toDate(apz.created_at)}</td>
                       <td>
-                        <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/gen_plan_head/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/urban/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
                     </tr>
                     );
@@ -192,19 +201,19 @@ export default class AllApzs extends React.Component {
               <nav className="pagination_block">
                 <ul className="pagination justify-content-center">
                   <li className="page-item">
-                    <Link className="page-link" to={'/panel/gen_plan_head/apz/status/' + status + '/1'}>В начало</Link>
+                    <Link className="page-link" to={'/panel/urban/apz/status/' + status + '/1'}>В начало</Link>
                   </li>
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
                       <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
-                        <Link className="page-link" to={'/panel/gen_plan_head/apz/status/' + status + '/' + num}>{num}</Link>
+                        <Link className="page-link" to={'/panel/urban/apz/status/' + status + '/' + num}>{num}</Link>
                       </li>
                       );
                     })
                   }
                   <li className="page-item">
-                    <Link className="page-link" to={'/panel/gen_plan_head/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
+                    <Link className="page-link" to={'/panel/urban/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
                   </li>
                 </ul>
               </nav>

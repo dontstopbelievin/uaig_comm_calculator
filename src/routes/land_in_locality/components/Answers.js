@@ -312,7 +312,7 @@ export default class ShowApz extends React.Component {
                     </div>
                 </div>
                 }
-              {(this.props.apz_status === 2 || this.props.apz_department_response) && this.props.lastDecisionIsMO == false &&
+              {(this.props.apz_status === 2 || this.props.apz_department_response) &&
                 <div>
                   <h5 className="block-title-2 mb-3">Решение</h5>
                   <table className="table table-bordered table-striped">
@@ -330,7 +330,7 @@ export default class ShowApz extends React.Component {
                   </table>
                 </div>
               }
-              {(this.props.apz_status === 1 || this.props.lastDecisionIsMO == true) &&
+              {this.props.apz_status === 1 &&
                 <table className="table table-bordered">
                   <tbody>
                     <tr>

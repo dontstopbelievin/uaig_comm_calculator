@@ -405,7 +405,24 @@ export default class ShowApz extends React.Component {
             }
             break;
           }
-
+          if(data.files.filter(function(obj) { return obj.category_id === 30 })[0]){
+            this.setState({lastDecisionIsMO: true});
+          }
+          for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
+              switch (data.state_history[data_index].state_id) {
+                  case 39:
+                      break;
+                  case 40:
+                      this.setState({lastDecisionIsMO: true});
+                      break;
+                  case 6:
+                      this.setState({lastDecisionIsMO: true});
+                      break;
+                  default:
+                      continue;
+              }
+              break;
+          }
           if (!data.apz_department_response && (data.status_id === 6 || data.status_id === 4 || data.status_id === 11 || data.status_id === 13
           || data.status_id === 14 || data.status_id === 15 || data.status_id === 5)) {
             this.setState({showButtons: true});
@@ -629,7 +646,7 @@ export default class ShowApz extends React.Component {
 
           <Answers engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
                    backFromHead={this.state.backFromHead} apz_department_response={this.state.apz.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
-                   apz_status={this.state.apz.status_id} schemeComment={this.state.schemeComment} otkazFile={this.state.otkazFile}
+                   apz_status={this.state.apz.status_id} schemeComment={this.state.schemeComment} otkazFile={this.state.otkazFile} lastDecisionIsMO={this.state.lastDecisionIsMO}
                    calculationComment={this.state.calculationComment} reglamentComment={this.state.reglamentComment} schemeFile={this.state.schemeFile}
                    calculationFile={this.state.calculationFile} reglamentFile={this.state.reglamentFile}/>
 

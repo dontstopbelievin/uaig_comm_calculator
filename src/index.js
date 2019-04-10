@@ -61,6 +61,9 @@ import FilesImages from "./routes/files/Images";
 import CitizenAllApzs from "./routes/apz/citizen/AllApzs";
 import CitizenAddApz from "./routes/apz/citizen/AddApz";
 import CitizenShowApz from "./routes/apz/citizen/ShowApz";
+import CitizenAllLand_in_locality from "./routes/land_in_locality/citizen/AllApzs";
+import CitizenAddLand_in_locality from "./routes/land_in_locality/citizen/AddApz";
+import CitizenShowLand_in_locality from "./routes/land_in_locality/citizen/ShowApz";
 import Actions from "./routes/Actions";
 import LawyerAllApzs from "./routes/apz/lawyer/AllApzs";
 import LawyerShowApz from "./routes/apz/lawyer/ShowApz";
@@ -196,6 +199,11 @@ export default class Main extends React.Component {
                                         <Route path="/panel/citizen/sketch/add" exact render={(props) =>(<CitizenAddSketch {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/citizen/sketch/edit/:id" exact render={(props) =>(<CitizenAddSketch {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
+                                        <Route path="/panel/citizen/land_in_locality/status/:status/:page" render={(props) => ( <CitizenAllLand_in_locality {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/citizen/land_in_locality/show/:id" exact render={(props) =>(<CitizenShowLand_in_locality {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/land_in_locality/add" exact render={(props) =>(<CitizenAddLand_in_locality {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/land_in_locality/edit/:id" exact render={(props) =>(<CitizenAddLand_in_locality {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+
                                         <Route path="/panel/admin/apz/status/:status/:page" exact render={(props) =>(<AdminAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/admin/apz/show/:id" exact render={(props) =>(<AdminShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/admin/apz/update/:id" exact render={(props) =>(<AdminUpdateApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
@@ -274,6 +282,4 @@ export default class Main extends React.Component {
     }
 }
 
-ReactDOM.render(
-    <Main />, document.getElementById('root')
-);
+ReactDOM.render(<Main />, document.getElementById('root'));
