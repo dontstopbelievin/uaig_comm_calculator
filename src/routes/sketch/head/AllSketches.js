@@ -42,7 +42,7 @@ export default class AllSketches extends React.Component {
                   //console.log(data);
                   var select_directors = [];
                   for (var i = 0; i < data.length; i++) {
-                      select_directors.push(<option value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
+                      select_directors.push(<option key={i} value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
                   }
                   this.setState({apz_heads: select_directors});
                   if(this.state.current_head == "" || this.state.current_head == " "){

@@ -98,14 +98,14 @@ export default class ShowApz extends React.Component {
                 this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
                 this.setState({reglamentFile: data.files.filter(function(obj) { return obj.category_id === 29 })[0]});
                 this.setState({otkazFile: data.files.filter(function(obj) { return obj.category_id === 30 })[0]});
+                if(data.files.filter(function(obj) { return obj.category_id === 30 })[0]){
+                  this.setState({lastDecisionIsMO: true});
+                }
                 //this.setState({returnedState: data.state_history.filter(function(obj) { return obj.state_id === 3 && obj.comment != null })[0]});
                 var pack2IdFile = data.files.filter(function(obj) { return obj.category_id === 25 }) ?
                     data.files.filter(function(obj) { return obj.category_id === 25 }) : [];
                 if ( pack2IdFile.length > 0 ) {
                     this.setState({pack2IdFile: pack2IdFile[0]});
-                }
-                if(data.files.filter(function(obj) { return obj.category_id === 30 })[0]){
-                  this.setState({lastDecisionIsMO: true});
                 }
                 for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
                     switch (data.state_history[data_index].state_id) {
@@ -369,7 +369,7 @@ export default class ShowApz extends React.Component {
 
                  <Answers engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
                           backFromHead={this.state.backFromHead} apz_department_response={this.state.apz.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
-                          apz_status={this.state.apz.status_id} schemeComment={this.state.schemeComment} lastDecisionIsMO={this.state.lastDecisionIsMO}
+                          apz_status={this.state.apz.status_id} schemeComment={this.state.schemeComment}
                           calculationComment={this.state.calculationComment} reglamentComment={this.state.reglamentComment} schemeFile={this.state.schemeFile}
                           calculationFile={this.state.calculationFile} reglamentFile={this.state.reglamentFile} otkazFile={this.state.otkazFile}/>
 
