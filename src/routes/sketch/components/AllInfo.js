@@ -116,6 +116,14 @@ export default class AllInfo extends React.Component {
                   <td>{this.props.sketch.customer}</td>
               </tr>
               <tr>
+                  <td><b>Проектировщик</b></td>
+                  <td>{this.props.sketch.designer}</td>
+              </tr>
+              <tr>
+                  <td><b>Главный архитектор проекта</b></td>
+                  <td>{this.props.sketch.urbanId}</td>
+              </tr>
+              <tr>
                   <td><b>Название проекта</b></td>
                   <td>{this.props.sketch.project_name}</td>
               </tr>

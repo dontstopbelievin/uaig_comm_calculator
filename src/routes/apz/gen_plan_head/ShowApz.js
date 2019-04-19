@@ -77,9 +77,22 @@ export default class ShowApz extends React.Component {
           this.setState({calculationComment: apz.state_history.filter(function(obj) { return obj.state_id === 57 })[0]});
           this.setState({calculationFile: apz.files.filter(function(obj) { return obj.category_id === 39 })[0]});
           if (apz.state_history.filter(function(obj) { return obj.state_id === 50 })[0] != null &&
-              apz.state_history.filter(function(obj) { return obj.state_id === 51 })[0] == null) {
+              apz.state_history.filter(function(obj) { return obj.state_id === 51 })[0] == null)
+            {
             this.setState({showButtons: true});
           }
+            for(var data_index = apz.state_history.length-1; data_index >= 0; data_index--){
+                switch (apz.state_history[data_index].state_id) {
+                    case 51:
+                        break;
+                    case 50:
+                        this.setState({showButtons: true});
+                        break;
+                    default:
+                        continue;
+                }
+                break;
+            }
           this.setState({loaderHidden: true});
           // BE CAREFUL OF category_id should be xml регионального архитектора
         } else if (xhr.status === 401) {

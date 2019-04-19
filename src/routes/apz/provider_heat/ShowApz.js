@@ -82,7 +82,7 @@ export default class ShowApz extends React.Component {
             negotiation: "После предварительного согласования с ЦЭР/СВЭР/ЮЭР ТОО «АлТС» проектную документацию (чертежи марки ОВ, ТС, сводный план инженерных сетей) согласовать с Техническим отделом ТОО «АлТС» (тел.: 378-07-00, вн. 1023). \n\nСогласованный проект на бумажном и электронном носителях предоставить в ТОО «АлТС».",
             technicalConditionsTerms: "нормативный период проектирования и строительства, предусмотренный в проектно-сметной документации.",
             isPerformer: (roles.indexOf('PerformerHeat') != -1),
-            isHead: (roles.indexOf('HeadHeat') != -1),
+            isHead: (roles.indexOf('HeadHeatOPR') != -1 || roles.indexOf('HeadHeatPTU') != -1 || roles.indexOf('HeadHeatOR') != -1 || roles.indexOf('HeadHeatERn') != -1),
             isDirector: (roles.indexOf('DirectorHeat') != -1),
             heads_responses: [],
             head_accepted: true,
@@ -602,7 +602,7 @@ export default class ShowApz extends React.Component {
                     this.setState({isSigned: true});
                 }
 
-                this.setState({heads_responses: data.apz_provider_head_response.filter(function(obj) { return obj.role_id === 33 })});
+                this.setState({heads_responses: data.apz_provider_head_response.filter(function(obj) { return obj.role_id === 33 || obj.role_id === 50 || obj.role_id === 51 || obj.role_id === 52 || obj.role_id === 53})});
 
                 if (this.state.isHead && data.apz_provider_head_response.filter(function(obj) { return obj.role_id === 33 && obj.user_id === userId }).length === 0) {
                     this.setState({head_accepted: false});
@@ -940,6 +940,22 @@ export default class ShowApz extends React.Component {
 
     handleDirectorIDChange(event){
         this.setState({ty_director_id: event.target.value});
+    }
+
+    toDate(date) {
+        if(date === null) {
+            return date;
+        }
+
+        var jDate = new Date(date);
+        var curr_date = jDate.getDate() < 10 ? "0" + jDate.getDate() : jDate.getDate();
+        var curr_month = (jDate.getMonth() + 1) < 10 ? "0" + (jDate.getMonth() + 1) : jDate.getMonth() + 1;
+        var curr_year = jDate.getFullYear();
+        var curr_hour = jDate.getHours() < 10 ? "0" + jDate.getHours() : jDate.getHours();
+        var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
+        var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
+
+        return formated_date;
     }
 
     ecpSignSuccess(){
@@ -1651,6 +1667,9 @@ export default class ShowApz extends React.Component {
                             <textarea style={{marginBottom: '10px'}} placeholder="Комментарий" rows="7" cols="50" className="form-control" value={this.state.headComment} onChange={this.onHeadCommentChange}></textarea>
                             <button className="btn btn-raised btn-success" onClick={this.sendHeadResponse.bind(this, apz.id, true, this.state.headComment)}>
                                 Отправить
+                            </button>
+                            <button className="btn btn-raised btn-danger" onClick={this.sendHeadResponse.bind(this, apz.id, false, this.state.headComment)}>
+                                Отклонить
                             </button>
                         </div>
                     </div>
