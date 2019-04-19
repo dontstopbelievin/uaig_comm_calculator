@@ -155,7 +155,7 @@ export default class AllApzs extends React.Component {
               <thead>
                 <tr>
                   <th style={{width: '7%'}} className="apzs_header" onClick={this.sortData.bind(this, 'id')}>ИД<img className="filter_img" src="/images/filter_icon.png"/></th>
-                  <th style={{width: '15%'}} className="apzs_header" onClick={this.sortData.bind(this, 'created_at')}>Дата<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '15%'}} className="apzs_header" onClick={this.sortData.bind(this, 'apz_start')}>Дата<img className="filter_img" src="/images/filter_icon.png"/></th>
                   <th style={{width: '7%'}} className="apzs_header" onClick={this.sortData.bind(this, 'object_type')}>Тип<img className="filter_img" src="/images/filter_icon.png"/></th>
                   <th style={{width: '15%'}} className="apzs_header" onClick={this.sortData.bind(this, 'applicant')}>Заявитель<img className="filter_img" src="/images/filter_icon.png"/></th>
                   <th style={{width: '15%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_address')}>Адрес<img className="filter_img" src="/images/filter_icon.png"/></th>
@@ -172,7 +172,7 @@ export default class AllApzs extends React.Component {
                         {apz.id}
                       </td>
                       <td>
-                        {this.toDate(apz.created_at)}
+                        {this.toDate(apz.apz_start)}
                       </td>
                       <td>
                         {apz.object_type &&

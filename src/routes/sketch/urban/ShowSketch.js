@@ -150,8 +150,12 @@ export default class ShowSketch extends React.Component {
                     this.setState({showButtons: true});
                 }
 
-                if (sketch.state_history.filter(function(obj) { return obj.state_id === 1 || obj.state_id ===10})[0] != null) {
+                if (sketch.state_history.filter(function(obj) { return obj.state_id === 4 || obj.state_id === 10})[0] != null) {
                     this.setState({response: false});
+                }
+
+                if (sketch.state_history.filter(function(obj) { return obj.state_id === 17})[0] != null) {
+                    this.setState({response: true});
                 }
 
                 this.setState({loaderHidden: true});
@@ -308,17 +312,17 @@ export default class ShowSketch extends React.Component {
                 <Answers  isSent={this.state.isSent} engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
                 sketch_id={this.state.sketch.id} urban_response={this.state.sketch.urban_response} lastDecisionIsMO = {this.state.lastDecisionIsMO} />
 
-                  {(!this.state.xmlFile && !this.state.isSent && this.state.response ) &&
-                      <div style={{margin: 'auto', marginTop: '20px', display: 'table', width: '30%'}}>
-                          <div className="form-group">
-                              <label>Номер документа</label>
-                              <input type="text" className="form-control" placeholder="" value={this.state.docNumber}
-                                     onChange={this.onDocNumberChange}/>
-                          </div>
-                      </div>
-                  }
                   <div className={this.state.showButtons ? '' : 'invisible'}>
                       <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
+                          {((!this.state.xmlFile && !this.state.isSent && this.state.response ) || this.state.apzReturnedState) &&
+                              <div style={{margin: 'auto', marginTop: '20px', display: 'table', width: '30%'}}>
+                                  <div className="form-group">
+                                      <label>Номер документа</label>
+                                      <input type="text" className="form-control" placeholder="" value={this.state.docNumber}
+                                             onChange={this.onDocNumberChange}/>
+                                  </div>
+                              </div>
+                          }
                           {this.state.sketch.status_id == 3 && !this.state.xmlFile &&
                           <div style={{paddingLeft:'5px', fontSize: '18px', textAlign:'center'}}>
                               <b>Выберите главного архитектора:</b>
@@ -330,14 +334,14 @@ export default class ShowSketch extends React.Component {
                           {!this.state.response ?
                                <div className="text-center">
                                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled="disabled">Одобрить</button>
-                                  <button className="btn btn-raised btn-danger" data-toggle="modal"  data-target="#accDecApzForm">
+                                  <button className="btn btn-raised btn-danger" data-toggle="modal"  data-target="#ReturnApzForm">
                                       Отклонить
                                   </button>
                               </div>
                               :
                               <div>
                                   {!this.state.needSign ?
-                                      <div style={{margin: 'auto', display: 'table'}}>{console.log(this.state.engineerReturnedState)}
+                                      <div style={{margin: 'auto', display: 'table'}}>
                                           <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled={!this.state.docNumber} onClick={this.sendToApz.bind(this,true)}>Одобрить</button>
                                           <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">
                                               Отклонить

@@ -153,7 +153,7 @@ export default class AllApzs extends React.Component {
             <table className="table allapzs_fonts">
               <thead>
                 <tr>
-                  <th style={{width: '13%'}} className="apzs_header" onClick={this.sortData.bind(this, 'created_at')}>Дата заявления<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '13%'}} className="apzs_header" onClick={this.sortData.bind(this, 'apz_start')}>Дата заявления<img className="filter_img" src="/images/filter_icon.png"/></th>
                   <th style={{width: '5%'}} className="apzs_header" onClick={this.sortData.bind(this, 'id')}>ИД<img className="filter_img" src="/images/filter_icon.png"/></th>
                   <th style={{width: '18%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_name')}>Название<img className="filter_img" src="/images/filter_icon.png"/></th>
                   <th style={{width: '19%'}} className="apzs_header" onClick={this.sortData.bind(this, 'applicant')}>Заявитель<img className="filter_img" src="/images/filter_icon.png"/></th>
@@ -166,7 +166,7 @@ export default class AllApzs extends React.Component {
                 {apzs && apzs.map(function(apz, index) {
                   return(
                     <tr key={index}>
-                      <td>{this.toDate(apz.created_at)}</td>
+                      <td>{this.toDate(apz.apz_start)}</td>
                       <td>{apz.id}</td>
                       <td>
                         {apz.project_name}

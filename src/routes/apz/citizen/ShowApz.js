@@ -74,7 +74,24 @@ export default class ShowApz extends React.Component {
           if ( pack2IdFile.length > 0 ) {
             this.setState({pack2IdFile: pack2IdFile[0]});
           }
-
+          if(apz.files.filter(function(obj) { return obj.category_id === 30 })[0]){
+            this.setState({lastDecisionIsMO: true});
+          }
+          for(var data_index = apz.state_history.length-1; data_index >= 0; data_index--){
+              switch (apz.state_history[data_index].state_id) {
+                  case 39:
+                      break;
+                  case 40:
+                      this.setState({lastDecisionIsMO: true});
+                      break;
+                  case 6:
+                      this.setState({lastDecisionIsMO: true});
+                      break;
+                  default:
+                      continue;
+              }
+              break;
+          }
           if (apz.status_id === 1 || apz.status_id === 2) {
 
             if (commission) {
@@ -706,7 +723,7 @@ export default class ShowApz extends React.Component {
 
               <Answers engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
                        backFromHead={this.state.backFromHead} apz_department_response={this.state.apz.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
-                       apz_status={this.state.apz.status_id} schemeComment={this.state.schemeComment}
+                       apz_status={this.state.apz.status_id} schemeComment={this.state.schemeComment} lastDecisionIsMO={this.state.lastDecisionIsMO}
                        calculationComment={this.state.calculationComment} reglamentComment={this.state.reglamentComment} schemeFile={this.state.schemeFile}
                        calculationFile={this.state.calculationFile} reglamentFile={this.state.reglamentFile}/>
 

@@ -130,7 +130,7 @@ export default class AllApzs extends React.Component {
                         </td>
                         <td>{apz.applicant}</td>
                         <td>{apz.project_address}</td>
-                        <td>{this.toDate(apz.created_at)}</td>
+                        <td>{this.toDate(apz.apz_start)}</td>
                         <td>
                           <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/citizen/apz/' + (apz.status_id === 8 ? 'edit/' : 'show/') + apz.id}><i className="glyphicon glyphicon-eye-open small"></i> Просмотр</Link>
                           {apz.status_id === 1 &&

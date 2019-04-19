@@ -177,7 +177,7 @@ export default class CitizenActions extends React.Component {
             }
             {this.state.welcome_texts[1] &&
               <div className="apzinfo">
-                <div class = "time">
+                <div className = "time">
                    <p><strong>{service2.name}</strong> – {service2.description}</p>
                 </div>
                 <div className="packages">
@@ -192,7 +192,7 @@ export default class CitizenActions extends React.Component {
                    <p><strong>Необходимый перечень документов для получения услуги:</strong></p>
                    {service2.list_of_documents.split(';').map(function(item, index) {
                        return(
-                         <li>{index+1}) {item};</li>
+                         <li key={index}>{index+1}) {item};</li>
                        )
                    })}
                 </div>
@@ -250,7 +250,7 @@ export default class CitizenActions extends React.Component {
                               <ul>
                                 {service4.list_of_documents[0].split(';').map(function(item, index) {
                                     return(
-                                      <li>{index+1}) {item};</li>
+                                      <li key={index}>{index+1}) {item};</li>
                                     )
                                 })}
                               </ul>
@@ -268,7 +268,7 @@ export default class CitizenActions extends React.Component {
                             <ul>
                             {service4.list_of_documents[1].split(';').map(function(item, index) {
                                 return(
-                                  <li>{index+1}) {item};</li>
+                                  <li key={index}>{index+1}) {item};</li>
                                 )
                             })}
                             </ul>
@@ -286,7 +286,7 @@ export default class CitizenActions extends React.Component {
                             <ul>
                             {service4.list_of_documents[1].split(';').map(function(item, index) {
                                 return(
-                                  <li>{index+1}) {item};</li>
+                                  <li key={index}>{index+1}) {item};</li>
                                 )
                             })}
                             </ul>
@@ -307,7 +307,7 @@ export default class CitizenActions extends React.Component {
             }
             {this.state.welcome_texts[4] &&
               <div className="apzinfo">
-                <div class = "time">
+                <div className = "time">
                    <p>{service5.description}</p>
                 </div>
                 <div className="packages">
@@ -317,7 +317,7 @@ export default class CitizenActions extends React.Component {
                    <p><strong>Необходимый перечень документов для получения услуги:</strong></p>
                    {service5.list_of_documents[0].split(';').map(function(item, index) {
                        return(
-                         <li>{index+1}) {item};</li>
+                         <li key={index}>{index+1}) {item};</li>
                        )
                    })}
                 </div>
@@ -334,7 +334,7 @@ export default class CitizenActions extends React.Component {
             }
             {this.state.welcome_texts[5] &&
               <div className="apzinfo">
-                <div class = "time">
+                <div className = "time">
                    <p>{service6.description}</p>
                 </div>
                 <div className="packages">
@@ -344,7 +344,7 @@ export default class CitizenActions extends React.Component {
                    <p><strong>Необходимый перечень документов для получения услуги:</strong></p>
                    {service6.list_of_documents[0].split(';').map(function(item, index) {
                        return(
-                         <li>{index+1}) {item};</li>
+                         <li key={index}>{index+1}) {item};</li>
                        )
                    })}
                 </div>
@@ -361,7 +361,7 @@ export default class CitizenActions extends React.Component {
             }
             {this.state.welcome_texts[6] &&
               <div className="apzinfo">
-                <div class = "time">
+                <div className = "time">
                    <p>{service7.description}</p>
                 </div>
                 <div className="packages">
@@ -374,20 +374,23 @@ export default class CitizenActions extends React.Component {
                    <p>1 - этап:</p>
                    {service7.list_of_documents[0].split(';').map(function(item, index) {
                        return(
-                         <li>{index+1}) {item};</li>
+                         <li key={index}>{index+1}) {item};</li>
                        )
                    })}
                    <br></br>
                    <p>2 - этап:</p>
                    {service7.list_of_documents[1].split(';').map(function(item, index) {
                        return(
-                         <li>{index+1}) {item};</li>
+                         <li key={index}>{index+1}) {item};</li>
                        )
                    })}
                 </div>
                 <div className="apzinfo-bottom">
                     <div className="card-button">
-                      <button type="button" onClick={this.InProcess} className="btn btn-secondary">Перейти к заявке</button>
+                      {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/panel/citizen/landinlocality/status/active/1"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                      {this.state.tokenExists && this.state.rolename === 'Region' && <NavLink to={"/panel/urban/landinlocality/status/active/1"} replace className="btn btn-primary">Просмотр заявок</NavLink>}
+                      {this.state.tokenExists && this.state.rolename === 'Head' && <NavLink to={"/panel/head/landinlocality/status/active/1"} replace className="btn btn-primary">Просмотр заявок</NavLink>}
+                      {!this.state.tokenExists && <AlertModal />}
                       <div className="reglament">
                         <a href="http://adilet.zan.kz/rus/docs/V15P0004512">Регламент Гос. услуги</a>
                         <a href="http://adilet.zan.kz/rus/docs/V1500011051">Стандарт Гос. услуги</a>

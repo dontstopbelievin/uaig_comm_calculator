@@ -2,7 +2,7 @@ import React from 'react';
 import Loader from 'react-loader-spinner';
 import { NavLink, Link } from 'react-router-dom';
 
-export default class AllApzs extends React.Component {
+export default class AllLandInLocality extends React.Component {
     constructor(props) {
         super(props);
 
@@ -11,7 +11,7 @@ export default class AllApzs extends React.Component {
             response: null,
             current_head: '',
             data: null,
-            apz_heads:[],
+            heads:[],
             pageNumbers: []
         };
     }
@@ -25,13 +25,13 @@ export default class AllApzs extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.getApzs(nextProps.match.params.status, nextProps.match.params.page);
+        this.getApplications(nextProps.match.params.status, nextProps.match.params.page);
     }
 
     getHeads(){
         var token = sessionStorage.getItem('tokenInfo');
         var xhr = new XMLHttpRequest();
-        xhr.open("get", window.url + "api/apz/getsortheads", true);
+        xhr.open("get", window.url + "api/users/getsortheads", true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         xhr.onload = function() {
@@ -42,10 +42,10 @@ export default class AllApzs extends React.Component {
                 for (var i = 0; i < data.length; i++) {
                     select_directors.push(<option key={i} value={data[i].user_id}> {data[i].last_name +' ' + data[i].first_name+' '+data[i].middle_name} </option>);
                 }
-                this.setState({apz_heads: select_directors});
+                this.setState({heads: select_directors});
                 if(this.state.current_head === "" || this.state.current_head === " "){
                     this.setState({current_head: data[0].user_id}, function stateUpdateComplete() {
-                        this.getApzs();
+                        this.getApplications();
                     }.bind(this));
                 }
             }
@@ -53,7 +53,7 @@ export default class AllApzs extends React.Component {
         xhr.send();
     }
 
-    getApzs(status = null, page = null) {
+    getApplications(status = null, page = null) {
         if (!status) {
             status = this.props.match.params.status;
         }
@@ -66,7 +66,7 @@ export default class AllApzs extends React.Component {
 
         var token = sessionStorage.getItem('tokenInfo');
         var xhr = new XMLHttpRequest();
-        xhr.open("get", window.url + "api/apz/head/all/" + status + '/' + this.state.current_head + '?page=' + page, true);
+        xhr.open("get", window.url + "api/land_in_locality/head/all/" + status + '/' + this.state.current_head + '?page=' + page, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         xhr.onload = function () {
@@ -93,9 +93,10 @@ export default class AllApzs extends React.Component {
 
     handleHeadChange(event){
         this.setState({current_head: event.target.value}, function stateUpdateComplete() {
-            this.getApzs();
+            this.getApplications();
         }.bind(this));
     }
+
     sortData(column){
       if(this.state.sortState == 'ASC'){
         this.setState({ sortState: 'DESC'});
@@ -113,6 +114,7 @@ export default class AllApzs extends React.Component {
         }) });
       }
     }
+
     toDate(date) {
         if(date === null) {
             return date;
@@ -130,14 +132,10 @@ export default class AllApzs extends React.Component {
     }
 
     render() {
-        var status = this.props.match.params.status;
-        var page = this.props.match.params.page;
-        var apzs = this.state.data ? this.state.data : [];
-
         return (
             <div>
                 <div className="card-header">
-                    <h4 className="mb-0">Архитектурно-планировочное задание
+                    <h4 className="mb-0 mt-2 col-sm-8" style={{paddingLeft:'0px'}}>Предоставление земельного участка для строительства объекта в черте населенного пункта
                     <NavLink to="/panel/common/export_to_excel"><img title="Экспорт в excel" src='/images/excelicon.png' className="export_image" alt="export excel"/></NavLink>
                     </h4>
                 </div>
@@ -146,44 +144,36 @@ export default class AllApzs extends React.Component {
                     <div style={{fontSize: '18px', margin: '10px 0px'}}>
                         <b>Выберите главного архитектора:</b>
                         <select style={{padding: '0px 4px', margin: '5px'}} value={this.state.current_head} onChange={this.handleHeadChange.bind(this)}>
-                            {this.state.apz_heads}
+                            {this.state.heads}
                         </select>
                     </div>
                     <ul className="nav nav-tabs mb-2 pull-right">
-                        <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'active'} to="/panel/head/apz/status/active/1" replace>Активные</NavLink></li>
-                        <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'inproccess'} to="/panel/head/apz/status/inproccess/1" replace>В процессе</NavLink></li>
-                        <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'accepted'} to="/panel/head/apz/status/accepted/1" replace>Принятые</NavLink></li>
-                        <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => status === 'declined'} to="/panel/head/apz/status/declined/1" replace>Отказанные</NavLink></li>
+                        <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => this.props.match.params.status === 'active'} to="/panel/head/landinlocality/status/active/1" replace>Активные</NavLink></li>
+                        <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => this.props.match.params.status === 'inproccess'} to="/panel/head/landinlocality/status/inproccess/1" replace>В процессе</NavLink></li>
+                        <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => this.props.match.params.status === 'accepted'} to="/panel/head/landinlocality/status/accepted/1" replace>Принятые</NavLink></li>
+                        <li className="nav-item"><NavLink activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => this.props.match.params.status === 'declined'} to="/panel/head/landinlocality/status/declined/1" replace>Отказанные</NavLink></li>
                     </ul>
 
                     <table className="table allapzs_fonts">
                         <thead>
                         <tr>
                             <th style={{width: '7%'}} className="apzs_header" onClick={this.sortData.bind(this, 'id')}>ИД<img className="filter_img" src="/images/filter_icon.png"/></th>
-                            <th style={{width: '19%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_name')}>Название<img className="filter_img" src="/images/filter_icon.png"/></th>
-                            <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'applicant')}>Заявитель<img className="filter_img" src="/images/filter_icon.png"/></th>
-                            <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_address')}>Адрес<img className="filter_img" src="/images/filter_icon.png"/></th>
-                            <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'apz_start')}>Дата заявления<img className="filter_img" src="/images/filter_icon.png"/></th>
+                            <th style={{width: '25%'}} className="apzs_header" onClick={this.sortData.bind(this, 'applicant')}>Заявитель<img className="filter_img" src="/images/filter_icon.png"/></th>
+                            <th style={{width: '30%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_address')}>Адрес<img className="filter_img" src="/images/filter_icon.png"/></th>
+                            <th style={{width: '25%'}} className="apzs_header" onClick={this.sortData.bind(this, 'created_at')}>Дата заявления<img className="filter_img" src="/images/filter_icon.png"/></th>
                             <th></th>
                         </tr>
                         </thead>
                         <tbody>
-                        {apzs.map(function(apz, index) {
+                        {this.state.data.map(function(application, index) {
                             return(
                                 <tr key={index}>
-                                    <td>{apz.id}</td>
+                                    <td>{application.id}</td>
+                                    <td>{application.applicant}</td>
+                                    <td>{application.land_address}</td>
+                                    <td>{this.toDate(application.application_start)}</td>
                                     <td>
-                                        {apz.project_name}
-
-                                        {apz.object_type &&
-                                        <span className="ml-1">({apz.object_type})</span>
-                                        }
-                                    </td>
-                                    <td>{apz.applicant}</td>
-                                    <td>{apz.project_address}</td>
-                                    <td>{this.toDate(apz.apz_start)}</td>
-                                    <td>
-                                        <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/head/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                                        <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/head/landinlocality/show/' + application.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                                     </td>
                                 </tr>
                             );
@@ -196,19 +186,19 @@ export default class AllApzs extends React.Component {
                     <nav className="pagination_block">
                         <ul className="pagination justify-content-center">
                             <li className="page-item">
-                                <Link className="page-link" to={'/panel/head/apz/status/' + status + '/1'}>В начало</Link>
+                                <Link className="page-link" to={'/panel/head/landinlocality/status/' + this.props.match.params.status + '/1'}>В начало</Link>
                             </li>
 
                             {this.state.pageNumbers.map(function(num, index) {
                                 return(
-                                    <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
-                                        <Link className="page-link" to={'/panel/head/apz/status/' + status + '/' + num}>{num}</Link>
+                                    <li key={index} className={'page-item ' + (this.props.match.params.page === num ? 'active' : '')}>
+                                        <Link className="page-link" to={'/panel/head/landinlocality/status/' + this.props.match.params.status + '/' + num}>{num}</Link>
                                     </li>
                                 );
                             })
                             }
                             <li className="page-item">
-                                <Link className="page-link" to={'/panel/head/apz/status/' + status + '/' + this.state.response.last_page}>В конец</Link>
+                                <Link className="page-link" to={'/panel/head/landinlocality/status/' + this.props.match.params.status + '/' + this.state.response.last_page}>В конец</Link>
                             </li>
                         </ul>
                     </nav>

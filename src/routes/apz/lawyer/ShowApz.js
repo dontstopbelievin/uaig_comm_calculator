@@ -32,8 +32,7 @@ export default class ShowApz extends React.Component {
         xmlFile: false,
         comment: null,
         backFromEngineer: false,
-        backFromStateService: false,
-        declinedState: false
+        backFromStateService: false
       };
 
       this.onCommentChange = this.onCommentChange.bind(this);
@@ -120,8 +119,24 @@ export default class ShowApz extends React.Component {
 
           this.setState({backFromStateService: data.state_history.filter(function(obj) { return obj.state_id === 40 })[0]});
           this.setState({backFromEngineer: data.state_history.filter(function(obj) { return obj.state_id === 6 })[0]});
-          this.setState({declinedState: data.state_history.filter(function(obj) { return obj.state_id === 37 })[0]});
-
+          if(data.files.filter(function(obj) { return obj.category_id === 30 })[0]){
+            this.setState({lastDecisionIsMO: true});
+          }
+          for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
+              switch (data.state_history[data_index].state_id) {
+                  case 39:
+                      break;
+                  case 40:
+                      this.setState({lastDecisionIsMO: true});
+                      break;
+                  case 6:
+                      this.setState({lastDecisionIsMO: true});
+                      break;
+                  default:
+                      continue;
+              }
+              break;
+          }
           // if (apz.state_history.filter(function(obj) { return obj.state_id === 38})[0] != null) {
           //   this.setState({response: true});
           // }
@@ -243,10 +258,10 @@ export default class ShowApz extends React.Component {
 
               <Answers engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
                        backFromHead={this.state.backFromHead} apz_department_response={this.state.apz.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
-                       apz_status={this.state.apz.status_id} schemeComment={this.state.schemeComment}
+                       apz_status={this.state.apz.status_id} schemeComment={this.state.schemeComment} lastDecisionIsMO={this.state.lastDecisionIsMO}
                        calculationComment={this.state.calculationComment} reglamentComment={this.state.reglamentComment} schemeFile={this.state.schemeFile}
                        calculationFile={this.state.calculationFile} reglamentFile={this.state.reglamentFile} otkazFile={this.state.otkazFile}
-                       backFromStateService={this.state.backFromStateService} backFromEngineer={this.state.backFromEngineer} declinedState={this.state.declinedState}/>
+                       backFromStateService={this.state.backFromStateService} backFromEngineer={this.state.backFromEngineer}/>
 
               <div className={this.state.showButtons ? '' : 'invisible'}>
                 <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>

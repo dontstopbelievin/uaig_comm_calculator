@@ -149,7 +149,7 @@ export default class AllApzs extends React.Component {
                   <th style={{width: '19%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_name')}>Название<img className="filter_img" src="/images/filter_icon.png"/></th>
                   <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'applicant')}>Заявитель<img className="filter_img" src="/images/filter_icon.png"/></th>
                   <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'project_address')}>Адрес<img className="filter_img" src="/images/filter_icon.png"/></th>
-                  <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'created_at')}>Дата заявления<img className="filter_img" src="/images/filter_icon.png"/></th>
+                  <th style={{width: '20%'}} className="apzs_header" onClick={this.sortData.bind(this, 'apz_start')}>Дата заявления<img className="filter_img" src="/images/filter_icon.png"/></th>
                   <th></th>
                 </tr>
               </thead>
@@ -167,7 +167,7 @@ export default class AllApzs extends React.Component {
                       </td>
                       <td>{apz.applicant}</td>
                       <td>{apz.project_address}</td>
-                      <td>{this.toDate(apz.created_at)}</td>
+                      <td>{this.toDate(apz.apz_start)}</td>
                       <td>
                         <Link className="btn btn-outline-info btn-sm allapz_btn" to={'/panel/scheme_road/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
