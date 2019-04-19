@@ -266,10 +266,27 @@ export default class NavBar extends React.Component {
                 </li> {/*dropdown*/}
                 <li className="nav-item dropdown">
                   <a className="nav-link dropdown-toggle" data-toggle='dropdown' style={{cursor:'pointer'}}>
-			  		Справочная информация
+			  		Правила информационной безопасности
                   </a>
                   <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li><a className="dropdown-item" target="_blank" href="/docs/InstructionGetAPZ.pdf">Инструкция по руководству АПЗ</a></li>
+                    <li><a className="dropdown-item" target="_blank" href="/docs/security/36.InformationSecurity.pdf">Политика информационной безопасности</a></li>
+                    <li><a className="dropdown-item" target="_blank" href="/docs/security/48.RiskCalcInfoSecurity.pdf">Методика оценки рисков информационной безопасности</a></li>
+                    <li><a className="dropdown-item" target="_blank" href="/docs/security/56.IdentificationSecurity.pdf">Правила идентификации, классификации и маркировки активов</a></li>
+                    <li><a className="dropdown-item" target="_blank" href="/docs/security/68.ActiveMark.pdf">Правила по обеспечению непрерывной работы активов</a></li>
+                    <li><a className="dropdown-item" target="_blank" href="/docs/security/72.Passport.pdf">Правила инвентаризации и паспортизации средств вычислительной техник</a></li>
+                    <li><a className="dropdown-item" target="_blank" href="/docs/security/75.AuditInfoSecurity.pdf">Правила проведения внутреннего аудита информационной безопасности</a></li>
+                    <li><a className="dropdown-item" target="_blank" href="/docs/security/80.Crypto.pdf">Правила использования криптографических средств</a></li>
+                    <li><a className="dropdown-item" target="_blank" href="/docs/security/81.Rulesofaccessrights.pdf">Правила разграничения прав доступа</a></li>
+                    <li><a className="dropdown-item" target="_blank" href="/docs/security/83.InternetEmail.pdf">Правила использования сети интернет и электронной почты</a></li>
+                    <li><a className="dropdown-item" target="_blank" href="/docs/security/84.authentication.pdf">Правила организации процедуры аутентификации</a></li>
+                    <li><a className="dropdown-item" target="_blank" href="/docs/security/85.antivirusControl.pdf">Правила организации антивирусного контроля</a></li>
+                    <li><a className="dropdown-item" target="_blank" href="/docs/security/86.mobile.pdf">Правила использования мобильных устройств и носителей информации</a></li>
+                    <li><a className="dropdown-item" target="_blank" href="/docs/security/89.physicalDefender.pdf">Правила организации физической защиты</a></li>
+                    <li><a className="dropdown-item" target="_blank" href="/docs/security/90.administratorUaig.pdf">Портал Руководство администратора Almaty.uaig.kz</a></li>
+                    <li><a className="dropdown-item" target="_blank" href="/docs/security/91.reserCopyied.pdf">Регламент резервного копирования и восстановления информации</a></li>
+                    <li><a className="dropdown-item" target="_blank" href="/docs/security/97.sequenseAction.pdf">Инструкция о порядке действий пользователей по реагированию на инциденты информационной безопасности и во внештатных (кризисных) ситуациях</a></li>
+
 					{/*<NavLink to={"/panel/example-second"} replace className="dropdown-item" activeClassName="active">Место для справочной информации 2</NavLink>
 					<NavLink to={"/panel/example-third"} replace className="dropdown-item" activeClassName="active">Место для справочной информации 3</NavLink>*/}
                   </ul>
