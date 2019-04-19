@@ -74,7 +74,7 @@ export default class AllSketches extends React.Component {
           xhr.onload = function () {
               if (xhr.status === 200) {
                   var response = JSON.parse(xhr.responseText);
-                  console.log(response);
+                  // console.log(response);
                   var pageNumbers = [];
                   var start = (response.current_page - 4) > 0 ? (response.current_page - 4) : 1;
                   var end = (response.current_page + 4) < response.last_page ? (response.current_page + 4) : response.last_page;
