@@ -24,9 +24,9 @@ export default class ShowMap extends React.Component {
   }
 
   saveCoordinates(address) {
-    this.changeState('projectAddressCoordinates', $('#coordinates').html());
+    this.changeState('landAddressCoordinates', $('#coordinates').html());
 
-    this.changeState('projectAddress', address);
+    this.changeState('landAddress', address);
 
     this.props.hasCoordinates(true);
 

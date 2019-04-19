@@ -64,6 +64,7 @@ export default class AddTemplate extends React.Component{
                 <select className="form-control" onChange={this.onInputChange} value={this.state.type} name="type">
                   <option value="apz">АПЗ</option>
                   <option value="sketch">Эскизный проект</option>
+                  <option value="landinlocality">Права на зем. участок</option>
                 </select>
               </div>
             </div>

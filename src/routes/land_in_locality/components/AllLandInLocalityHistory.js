@@ -3,7 +3,7 @@ import Loader from 'react-loader-spinner';
 import $ from 'jquery';
 import { Link, } from 'react-router-dom';
 
-export default class AllApzs extends React.Component {
+export default class AllLandInLocalityHistory extends React.Component {
   constructor(props) {
     super(props);
 
@@ -54,13 +54,13 @@ export default class AllApzs extends React.Component {
     //console.log(data);
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/all_history/"+user_id+"?page=" + page + "&" + data, true);
+    xhr.open("get", window.url + "api/land_in_locality/all_history/"+user_id+"?page=" + page + "&" + data, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
       if (xhr.status === 200) {
         var response = JSON.parse(xhr.responseText);
-        //console.log(response);
+        console.log(response);
         var pageNumbers = [];
         var start = (response.current_page - 4) > 0 ? (response.current_page - 4) : 1;
         var end = (response.current_page + 4) < response.last_page ? (response.current_page + 4) : response.last_page;
@@ -84,7 +84,7 @@ export default class AllApzs extends React.Component {
       return $(element).val() !== '';
     }).serialize();
 
-    this.props.history.push('/panel/apz/all_history/'+ user_id +'/'+ page + '?' + data);
+    this.props.history.push('/panel/landinlocality/all_history/'+ user_id +'/'+ page + '?' + data);
   }
 
   toDate(date) {
@@ -104,12 +104,7 @@ export default class AllApzs extends React.Component {
   }
 
   render() {
-    var user_id = this.props.match.params.user_id;
-    var page = this.props.match.params.page;
-    var apzs = this.state.response ? this.state.response.data : [];
     var params = new URLSearchParams(this.props.location.search);
-    var search = this.props.location.search;
-
     return (
       <div>
         <div className="col-sm-12"><button style={{padding:'5px'}} className="btn btn-outline-secondary btn-sm" onClick={this.props.history.goBack}>Назад</button></div>
@@ -118,30 +113,15 @@ export default class AllApzs extends React.Component {
             <div className="row">
               <div className="col-sm-4">
                 <div className="form-group">
-                  <label htmlFor="object_type" className="bmd-label-floating">Тип строения</label>
-                  <select className="form-control" id="object_type" name="object_type" defaultValue={params.get('object_type')}>
-                    <option value="">Все</option>
-                    <option>ИЖС</option>
-                    <option>МЖК</option>
-                    <option>КомБыт</option>
-                    <option>ПромПред</option>
-                  </select>
-                </div>
-                <div className="form-group">
                   <label htmlFor="status" className="bmd-label-floating">Статус</label>
                   <select className="form-control" id="status" name="status" defaultValue={params.get('status')}>
                     <option value="">Все</option>
                     <option value="1">Отказано</option>
                     <option value="2">Принято</option>
                     <option value="3">Архитектор</option>
-                    <option value="4">Инженер</option>
-                    <option value="5">Службы</option>
-                    <option value="6">Отдел АПЗ</option>
-                    <option value="7">Главный архитектор</option>
+                    <option value="4">Главный архитектор</option>
                   </select>
                 </div>
-              </div>
-              <div className="col-sm-4">
                 <div className="form-group">
                   <label htmlFor="region" className="bmd-label-floating">Район</label>
                   <select className="form-control" id="region" name="region" defaultValue={params.get('region')}>
@@ -156,14 +136,6 @@ export default class AllApzs extends React.Component {
                     <option>Турксиб</option>
                   </select>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="type" className="bmd-label-floating">Пакет</label>
-                  <select className="form-control" id="type" name="type" defaultValue={params.get('type')}>
-                    <option value="">Все</option>
-                    <option value="1">Пакет 1</option>
-                    <option value="2">Пакет 2</option>
-                  </select>
-                </div>
               </div>
               <div className="col-sm-4">
                 <div className="form-group">
@@ -176,7 +148,7 @@ export default class AllApzs extends React.Component {
                 </div>
               </div>
               <div className="col-sm-12">
-                <button type="button" onClick={this.search.bind(this, user_id, 1)} className="btn btn-success" style={{marginRight:'10px'}}>Поиск</button>
+                <button type="button" onClick={this.search.bind(this, this.props.match.params.user_id, 1)} className="btn btn-success" style={{marginRight:'10px'}}>Поиск</button>
                 <span style={{color:'#4caf50'}}>Всего результатов: {this.state.results}</span>
               </div>
             </div>
@@ -198,23 +170,16 @@ export default class AllApzs extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {apzs.map(function(apz, index) {
+                {this.state.response.data && this.state.response.data.map(function(application, index) {
                   return(
                     <tr key={index}>
-                      <td>{apz.id}</td>
+                      <td>{application.id}</td>
+                      <td>{application.applicant}</td>
+                      <td>{application.land_address}</td>
+                      <td>{this.toDate(application.created_at)}</td>
+                      <td>{application.landinlocality_status.name}</td>
                       <td>
-                        {apz.project_name}
-
-                        {apz.object_type &&
-                          <span className="ml-1">({apz.object_type})</span>
-                        }
-                      </td>
-                      <td>{apz.applicant}</td>
-                      <td>{apz.project_address}</td>
-                      <td>{this.toDate(apz.created_at)}</td>
-                      <td>{apz.apz_status.name}</td>
-                      <td>
-                        <Link className="btn btn-outline-info" to={'/panel/'+this.state.rolename+'/apz/show/' + apz.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                        <Link className="btn btn-outline-info" to={'/panel/'+this.state.rolename+'/landinlocality/show/' + application.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
                       </td>
                     </tr>
                     );
@@ -227,19 +192,19 @@ export default class AllApzs extends React.Component {
               <nav className="pagination_block">
                 <ul className="pagination justify-content-center">
                   <li className="page-item">
-                    <Link className="page-link" to={'/panel/apz/all_history/'+user_id+'/1' + search}>В начало</Link>
+                    <Link className="page-link" to={'/panel/landinlocality/all_history/'+ this.props.match.params.user_id + '/1' + this.props.location.search}>В начало</Link>
                   </li>
 
                   {this.state.pageNumbers.map(function(num, index) {
                     return(
-                      <li key={index} className={'page-item ' + (page === num ? 'active' : '')}>
-                        <Link className="page-link" to={'/panel/apz/all_history/' + user_id+ '/' + num + search}>{num}</Link>
+                      <li key={index} className={'page-item ' + (this.props.match.params.page === num ? 'active' : '')}>
+                        <Link className="page-link" to={'/panel/landinlocality/all_history/' + this.props.match.params.user_id+ '/' + num + this.props.location.search}>{num}</Link>
                       </li>
                       );
                     })
                   }
                   <li className="page-item">
-                    <Link className="page-link" to={'/panel/apz/all_history/' + user_id + '/' + this.state.response.last_page + search}>В конец</Link>
+                    <Link className="page-link" to={'/panel/landinlocality/all_history/' + this.props.match.params.user_id + '/' + this.state.response.last_page + this.props.location.search}>В конец</Link>
                   </li>
                 </ul>
               </nav>

@@ -6,60 +6,38 @@ import EcpSign from "../components/EcpSign";
 import AllInfo from "../components/AllInfo";
 import Answers from "../components/Answers";
 import Logs from "../components/Logs";
-import CommissionAnswersList from "../components/CommissionAnswersList";
 
-export default class ShowApz extends React.Component {
+export default class ShowLandInLocality extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            apz: [],
+            landinlocality: [],
             showMap: false,
             showButtons: false,
             showSendButton: false,
             showSignButtons: false,
             file: false,
-            docNumber: "",
             description: '',
             responseFile: null,
-            waterResponseFile: null,
-            phoneResponseFile: null,
-            electroResponseFile: null,
-            heatResponseFile: null,
-            gasResponseFile: null,
-            waterCustomTcFile: null,
-            phoneCustomTcFile: null,
-            electroCustomTcFile: null,
-            heatCustomTcFile: null,
-            fileDescription: "",
-            pack2IdFile: null,
-            gasCustomTcFile: null,
-            headResponseFile: null,
             callSaveFromSend: false,
             personalIdFile: false,
-            confirmedTaskFile: false,
-            titleDocumentFile: false,
-            additionalFile: false,
+            landLocationSchemeFile: false,
+            actChooseLandFile: false,
             showMapText: 'Показать карту',
             headResponse: null,
             response: false,
             loaderHidden: false,
             xmlFile: false,
-            //returnedState: false,
             lastDecisionIsMO: false,
             isSigned: false
         };
 
-        this.onDocNumberChange = this.onDocNumberChange.bind(this);
         this.onDescriptionChange = this.onDescriptionChange.bind(this);
         this.onFileChange = this.onFileChange.bind(this);
     }
     componentDidMount() {
         this.props.breadCrumbs();
-    }
-
-    onDocNumberChange(e) {
-        this.setState({ docNumber: e.target.value });
     }
 
     onDescriptionChange(e) {
@@ -71,50 +49,34 @@ export default class ShowApz extends React.Component {
     }
 
     componentWillMount() {
-        this.getApzInfo();
+        this.getApplications();
     }
 
-    getApzInfo() {
+    getApplications() {
         var id = this.props.match.params.id;
         var token = sessionStorage.getItem('tokenInfo');
         var xhr = new XMLHttpRequest();
-        xhr.open("get", window.url + "api/apz/head/detail/" + id, true);
+        xhr.open("get", window.url + "api/land_in_locality/head/detail/" + id, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         xhr.onload = function() {
             if (xhr.status === 200) {
                 var data = JSON.parse(xhr.responseText);
-                var commission = data.commission;
                 var hasDeclined = data.state_history.filter(function(obj) {
                     return obj.state_id === 3
                 });
 
-                this.setState({apz: data});
+                this.setState({landinlocality: data});
                 this.setState({showButtons: false});
-                this.setState({docNumber: data.id});
                 this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
-                this.setState({confirmedTaskFile: data.files.filter(function(obj) { return obj.category_id === 9 })[0]});
-                this.setState({titleDocumentFile: data.files.filter(function(obj) { return obj.category_id === 10 })[0]});
-                this.setState({additionalFile: data.files.filter(function(obj) { return obj.category_id === 27 })[0]});
-                this.setState({reglamentFile: data.files.filter(function(obj) { return obj.category_id === 29 })[0]});
-                this.setState({otkazFile: data.files.filter(function(obj) { return obj.category_id === 30 })[0]});
-                if(data.files.filter(function(obj) { return obj.category_id === 30 })[0]){
-                  this.setState({lastDecisionIsMO: true});
-                }
-                //this.setState({returnedState: data.state_history.filter(function(obj) { return obj.state_id === 3 && obj.comment != null })[0]});
-                var pack2IdFile = data.files.filter(function(obj) { return obj.category_id === 25 }) ?
-                    data.files.filter(function(obj) { return obj.category_id === 25 }) : [];
-                if ( pack2IdFile.length > 0 ) {
-                    this.setState({pack2IdFile: pack2IdFile[0]});
-                }
+                this.setState({landLocationSchemeFile: data.files.filter(function(obj) { return obj.category_id === 42 })[0]});
+                this.setState({actChooseLandFile: data.files.filter(function(obj) { return obj.category_id === 43 })[0]});
+
                 for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
                     switch (data.state_history[data_index].state_id) {
-                        case 39:
+                        case 2:
                             break;
-                        case 40:
-                            this.setState({lastDecisionIsMO: true});
-                            break;
-                        case 6:
+                        case 3:
                             this.setState({lastDecisionIsMO: true});
                             break;
                         default:
@@ -123,57 +85,29 @@ export default class ShowApz extends React.Component {
                     break;
                 }
 
-                if (commission) {
-                    if (commission.apz_water_response && commission.apz_water_response.files) {
-                        this.setState({waterResponseFile: commission.apz_water_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-                        this.setState({waterCustomTcFile: commission.apz_water_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
-                    }
-
-                    if (commission.apz_electricity_response && commission.apz_electricity_response.files) {
-                        this.setState({electroResponseFile: commission.apz_electricity_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-                        this.setState({electroCustomTcFile: commission.apz_electricity_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
-                    }
-
-                    if (commission.apz_phone_response && commission.apz_phone_response.files) {
-                        this.setState({phoneResponseFile: commission.apz_phone_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-                        this.setState({phoneCustomTcFile: commission.apz_phone_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
-                    }
-
-                    if (commission.apz_heat_response && commission.apz_heat_response.files) {
-                        this.setState({heatResponseFile: commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-                        this.setState({heatCustomTcFile: commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
-                        this.setState({fileDescription: commission.apz_heat_response.fileDescription});
-                    }
-
-                    if (commission.apz_gas_response && commission.apz_gas_response.files) {
-                        this.setState({gasResponseFile: commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-                        this.setState({gasCustomTcFile: commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
-                    }
-                }
-
-                /*if (data.apz_head_response && data.apz_head_response.files) {
-                  this.setState({headResponseFile: data.apz_head_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+                /*if (data.land_in_locality_head_responses && data.land_in_locality_head_responses.files) {
+                  this.setState({headResponseFile: data.land_in_locality_head_responses.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
                 }*/
 
-                if (data.status_id === 7 && !data.apz_head_response) {
+                if (data.status_id === 4 && !data.land_in_locality_head_responses) {
                     this.setState({showButtons: true});
                 }
 
-                if (data.status_id === 7 && data.apz_head_response && data.files.filter(function(obj) { return obj.category_id === 19})[0] == null) {
+                if (data.status_id === 4 && data.land_in_locality_head_responses && data.files.filter(function(obj) { return obj.category_id === 19})[0] == null) {
                     this.setState({showButtons: true});
                 }
 
-                if (data.apz_head_response && data.apz_head_response && data.files.filter(function(obj) { return obj.category_id === 19})[0] != null) {
+                if (data.land_in_locality_head_responses && data.land_in_locality_head_responses && data.files.filter(function(obj) { return obj.category_id === 19})[0] != null) {
                     this.setState({isSigned: true});
                     this.setState({xmlFile: data.files.filter(function(obj) { return obj.category_id === 19})[0]});
-                    this.setState({headResponse: data.apz_head_response.response});
+                    this.setState({headResponse: data.land_in_locality_head_responses.response});
                 }
 
-                if (data.apz_head_response && data.files.filter(function(obj) { return obj.category_id === 19})[0] != null && data.status_id === 7) {
+                if (data.land_in_locality_head_responses && data.files.filter(function(obj) { return obj.category_id === 19})[0] != null && data.status_id === 4) {
                     this.setState({showSendButton: true});
                 }
 
-                /*if (!this.state.xmlFile && this.state.headResponseFile && data.status_id === 7) {
+                /*if (!this.state.xmlFile && this.state.headResponseFile && data.status_id === 4) {
                   this.setState({showSignButtons: true});
                 }*/
 
@@ -192,7 +126,7 @@ export default class ShowApz extends React.Component {
     }
 
     beforeSign(){
-      this.saveApzForm(this.state.apz.id, this.state.lastDecisionIsMO ? false : true, "");
+      this.saveApplicationForm(this.state.landinlocality.id, this.state.lastDecisionIsMO ? false : true, "");
     }
 
     ecpSignSuccess(){
@@ -200,21 +134,14 @@ export default class ShowApz extends React.Component {
       this.setState({ showSendButton: true });
     }
 
-    saveApzForm(apzId, status, comment) {
+    saveApplicationForm(landinlocalityId, status, comment) {
         var token = sessionStorage.getItem('tokenInfo');
         var formData = new FormData();
-        /*if(status){
-          var file = this.state.file;
-          if(!file){alert("Загрузите файл"); return;}
-          formData.append('file', file);
-        }*/
         formData.append('Response', status);
         formData.append('Message', comment);
-        if(this.state.docNumber === '' || this.state.docNumber === ' '){alert("Введите номер документа"); return;}
-        formData.append('DocNumber', this.state.docNumber);
 
         var xhr = new XMLHttpRequest();
-        xhr.open("post", window.url + "api/apz/head/save/" + apzId, true);
+        xhr.open("post", window.url + "api/land_in_locality/head/saveHead/" + landinlocalityId, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.onload = function () {
             if (xhr.status === 200) {
@@ -225,7 +152,7 @@ export default class ShowApz extends React.Component {
 
                 if(this.state.callSaveFromSend){
                     this.setState({callSaveFromSend: false});
-                    this.acceptDeclineApzForm(apzId, status, comment);
+                    this.acceptDeclineForm(landinlocalityId, status, comment);
                 } else {
                     // alert("Ответ сохранен!");
                     this.setState({ showSignButtons: true });
@@ -238,7 +165,7 @@ export default class ShowApz extends React.Component {
             }
             if (!status) {
               $('#accDecApzForm').modal('hide');
-              $('#ReturnApzForm').modal('hide');
+              $('#ReturnApplicationForm').modal('hide');
             }
         }.bind(this);
         xhr.send(formData);
@@ -257,7 +184,7 @@ export default class ShowApz extends React.Component {
         this.setState({ showButtons: true });
     }
 
-    returnApzForm(apzId) {
+    returnApplicationForm(landinlocalityId) {
         var token = sessionStorage.getItem('tokenInfo');
         var formData = new FormData();
         if(this.state.description == '' || this.state.description == ' '){
@@ -266,7 +193,7 @@ export default class ShowApz extends React.Component {
         }
         formData.append('message', this.state.description);
         var xhr = new XMLHttpRequest();
-        xhr.open("post", window.url + "api/apz/head/return/" + apzId, true);
+        xhr.open("post", window.url + "api/land_in_locality/head/return/" + landinlocalityId, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.onload = function () {
             if (xhr.status === 200) {
@@ -286,10 +213,10 @@ export default class ShowApz extends React.Component {
         $('.modal-backdrop').remove();
     }
 
-    acceptDeclineApzForm(apzId, status, comment) {
+    acceptDeclineForm(landinlocalityId, status, comment) {
         if(this.state.headResponse === null){
             this.setState({callSaveFromSend: true});
-            this.saveApzForm(apzId, status, comment);
+            this.saveApplicationForm(landinlocalityId, status, comment);
             return true;
         }
 
@@ -299,7 +226,7 @@ export default class ShowApz extends React.Component {
         formData.append('message', comment);
 
         var xhr = new XMLHttpRequest();
-        xhr.open("post", window.url + "api/apz/head/status/" + apzId, true);
+        xhr.open("post", window.url + "api/land_in_locality/head/status/" + landinlocalityId, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.onload = function () {
             if (xhr.status === 200) {
@@ -341,51 +268,35 @@ export default class ShowApz extends React.Component {
     }
 
     render() {
-        var apz = this.state.apz;
-
-        if (apz.length === 0) {
-            return false;
-        }
-
         return (
             <div>
               {this.state.loaderHidden &&
                 <div>
-                  <AllInfo toggleMap={this.toggleMap.bind(this, true)} apz={this.state.apz} personalIdFile={this.state.personalIdFile} confirmedTaskFile={this.state.confirmedTaskFile} titleDocumentFile={this.state.titleDocumentFile}
-                           historygoBack={this.props.history.goBack} additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
+                  <AllInfo toggleMap={this.toggleMap.bind(this, true)} landinlocality={this.state.landinlocality} personalIdFile={this.state.personalIdFile}
+                  landLocationSchemeFile={this.state.landLocationSchemeFile} historygoBack={this.props.history.goBack}/>
 
-                 {apz.commission && (Object.keys(apz.commission).length > 0) &&
-                   <div>
-                     <h5 className="block-title-2 mb-3">Ответы от служб</h5>
-                     <CommissionAnswersList apz={apz} />
-                   </div>
-                 }
-
-                 {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} mapId={"b5a3c97bd18442c1949ba5aefc4c1835"}/>}
+                 {this.state.showMap && <ShowMap coordinates={this.state.landinlocality.land_address_coordinates} mapId={"b5a3c97bd18442c1949ba5aefc4c1835"}/>}
 
                  <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                      {this.state.showMapText}
                  </button>
 
-                 <Answers engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
-                          backFromHead={this.state.backFromHead} apz_department_response={this.state.apz.apz_department_response} apz_id={this.state.apz.id} p_name={this.state.apz.project_name}
-                          apz_status={this.state.apz.status_id} schemeComment={this.state.schemeComment}
-                          calculationComment={this.state.calculationComment} reglamentComment={this.state.reglamentComment} schemeFile={this.state.schemeFile}
-                          calculationFile={this.state.calculationFile} reglamentFile={this.state.reglamentFile} otkazFile={this.state.otkazFile}/>
+                 <Answers landinlocality_id={this.state.landinlocality.id} landinlocality_status={this.state.landinlocality.status_id}
+                          actChooseLandFile={this.state.actChooseLandFile} lastDecisionIsMO={this.state.lastDecisionIsMO} />
 
                   <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                     {this.state.showSignButtons && !this.state.isSigned &&
-                    <EcpSign beforeSign={this.beforeSign.bind(this)} ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="head" id={apz.id} serviceName='apz'/>
+                    <EcpSign beforeSign={this.beforeSign.bind(this)} ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="head" id={this.state.landinlocality.id} serviceName='land_in_locality'/>
                     }
 
                     {this.state.showButtons && !this.state.isSigned &&
                     <div>
                         <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.showSignBtns.bind(this)}>Поставить подпись</button>
-                        <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">
+                        <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApplicationForm">
                             Вернуть на доработку
                         </button>
 
-                        <div className="modal fade" id="ReturnApzForm" tabIndex="-1" role="dialog" aria-hidden="true">
+                        <div className="modal fade" id="ReturnApplicationForm" tabIndex="-1" role="dialog" aria-hidden="true">
                             <div className="modal-dialog" role="document">
                                 <div className="modal-content">
                                     <div className="modal-header">
@@ -396,12 +307,12 @@ export default class ShowApz extends React.Component {
                                     </div>
                                     <div className="modal-body">
                                         <div className="form-group">
-                                            <label htmlFor="docNumber">Комментарий</label>
-                                            <input type="text" className="form-control" id="docNumber" placeholder="" value={this.state.description} onChange={this.onDescriptionChange} />
+                                            <label htmlFor="description">Комментарий</label>
+                                            <input type="text" className="form-control" id="description" placeholder="" value={this.state.description} onChange={this.onDescriptionChange} />
                                         </div>
                                     </div>
                                     <div className="modal-footer">
-                                        <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.returnApzForm.bind(this, apz.id)}>Отправить</button>
+                                        <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.returnApplicationForm.bind(this, this.state.landinlocality.id)}>Отправить</button>
                                         <button type="button" className="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                                     </div>
                                 </div>
@@ -412,11 +323,11 @@ export default class ShowApz extends React.Component {
 
                     {
                       this.state.showSendButton &&
-                      <button type="button" className="btn btn-raised btn-success" onClick={this.acceptDeclineApzForm.bind(this, apz.id, this.state.lastDecisionIsMO ? false : true, "")}>Отправить заявителю</button>
+                      <button type="button" className="btn btn-raised btn-success" onClick={this.acceptDeclineForm.bind(this, this.state.landinlocality.id, this.state.lastDecisionIsMO ? false : true, "")}>Отправить заявителю</button>
                     }
                   </div>
 
-                  <Logs state_history={this.state.apz.state_history} />
+                  <Logs state_history={this.state.landinlocality.state_history} />
 
                   <div className="col-sm-12">
                       <hr />
