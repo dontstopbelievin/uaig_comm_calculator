@@ -68,6 +68,17 @@ import UrbanAllLandInLocality from "./routes/land_in_locality/urban/AllLandInLoc
 import UrbanShowLandInLocality from "./routes/land_in_locality/urban/ShowLandInLocality";
 import HeadAllLandInLocality from "./routes/land_in_locality/head/AllLandInLocality";
 import HeadShowLandInLocality from "./routes/land_in_locality/head/ShowLandInLocality";
+import AllLandInLocalityHistory from "./routes/land_in_locality/components/AllLandInLocalityHistory";
+
+import CitizenAllPropertyAddress from "./routes/property_address/citizen/AllApplications";
+import CitizenAddPropertyAddress from "./routes/property_address/citizen/AddApplication";
+import CitizenShowPropertyAddress from "./routes/property_address/citizen/ShowApplication";
+import UrbanAllPropertyAddress from "./routes/property_address/urban/AllApplications";
+import UrbanShowPropertyAddress from "./routes/property_address/urban/ShowApplication";
+import HeadAllPropertyAddress from "./routes/property_address/head/AllApplications";
+import HeadShowPropertyAddress from "./routes/property_address/head/ShowApplication";
+import AllPropertyAddressHistory from "./routes/property_address/components/AllApplicationsHistory";
+
 import Actions from "./routes/Actions";
 import LawyerAllApzs from "./routes/apz/lawyer/AllApzs";
 import LawyerShowApz from "./routes/apz/lawyer/ShowApz";
@@ -84,7 +95,6 @@ import HeadStateServicesShowApz from "./routes/apz/state_services_head/ShowApz";
 import SchemeRoadAllApzs from "./routes/apz/scheme_road/AllApzs";
 import SchemeRoadShowApz from "./routes/apz/scheme_road/ShowApz";
 import AllApzsHistory from "./routes/apz/components/AllApzsHistory";
-import AllLandInLocalityHistory from "./routes/land_in_locality/components/AllLandInLocalityHistory";
 import KeepSession from "./routes/authorization/KeepSession";
 
 let e = new LocalizedStrings({ru,kk});
@@ -112,7 +122,7 @@ export default class Main extends React.Component {
         window.url = 'http://uaig.local/';
         //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
         //window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
-        window.clientSecret = 'fuckaduckmotherfucker'; // aman
+        // window.clientSecret = 'fuckaduckmotherfucker'; // aman
         // window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
         // window.clientSecret = '7zdU2XDblqORFq8wbQHlNRaIgEBR90qbMYnnVWDg'; // yernar
         window.clientSecret = 'TPzBTua5JvfgKAnhQiThXu03DWSh1xyiZ9T8VHDn'; // medet
@@ -194,7 +204,6 @@ export default class Main extends React.Component {
                                         <Route path="/panel/common/edit-password" render={(props) => ( <EditPassword breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                                         <Route path="/panel/common/export_to_excel" render={(props) => (<ExportToExcel {...props} breadCrumbs={this.breadCrumbs.bind(this)} /> )} />
                                         <Route path="/panel/apz/all_history/:user_id/:page" exact render={(props) =>(<AllApzsHistory {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
-                                        <Route path="/panel/landinlocality/all_history/:user_id/:page" exact render={(props) =>(<AllLandInLocalityHistory {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
                                         <Route path="/panel/services/:index" exact render={(props) =>(<Actions {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/citizen/apz/status/:status/:page" exact render={(props) =>(<CitizenAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
@@ -206,11 +215,6 @@ export default class Main extends React.Component {
                                         <Route path="/panel/citizen/sketch/add" exact render={(props) =>(<CitizenAddSketch {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/citizen/sketch/edit/:id" exact render={(props) =>(<CitizenAddSketch {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
-                                        <Route path="/panel/citizen/landinlocality/status/:status/:page" render={(props) => ( <CitizenAllLandInLocality {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
-                                        <Route path="/panel/citizen/landinlocality/show/:id" exact render={(props) =>(<CitizenShowLandInLocality {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
-                                        <Route path="/panel/citizen/landinlocality/add" exact render={(props) =>(<CitizenAddLandInLocality {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
-                                        <Route path="/panel/citizen/landinlocality/edit/:id" exact render={(props) =>(<CitizenAddLandInLocality {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
-
                                         <Route path="/panel/admin/apz/status/:status/:page" exact render={(props) =>(<AdminAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/admin/apz/show/:id" exact render={(props) =>(<AdminShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/admin/apz/update/:id" exact render={(props) =>(<AdminUpdateApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
@@ -221,8 +225,6 @@ export default class Main extends React.Component {
                                         <Route path="/panel/urban/apz/show/:id" exact render={(props) =>(<UrbanShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/urban/sketch/status/:status/:page" render={(props) => ( <UrbanAllSketch {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                                         <Route path="/panel/urban/sketch/show/:id" exact render={(props) =>(<UrbanShowSketch {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
-                                        <Route path="/panel/urban/landinlocality/status/:status/:page" render={(props) => ( <UrbanAllLandInLocality {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
-                                        <Route path="/panel/urban/landinlocality/show/:id" exact render={(props) =>(<UrbanShowLandInLocality {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
                                         <Route path="/panel/answer-template/all/:type/:page" exact render={(props) =>(<AllTemplates {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/answer-template/:type/add" exact render={(props) =>(<AddTemplate {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
@@ -247,8 +249,6 @@ export default class Main extends React.Component {
                                         <Route path="/panel/head/apz/show/:id" exact render={(props) =>(<HeadShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/head/sketch/status/:status/:page" render={(props) => ( <HeadAllSketches {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                                         <Route path="/panel/head/sketch/show/:id" exact render={(props) =>(<HeadShowSketch {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
-                                        <Route path="/panel/head/landinlocality/status/:status/:page" render={(props) => ( <HeadAllLandInLocality {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
-                                        <Route path="/panel/head/landinlocality/show/:id" exact render={(props) =>(<HeadShowLandInLocality {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
                                         <Route path="/panel/office/apz/all/:page" exact render={(props) =>(<OfficeAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/office/apz/show/:id" exact render={(props) =>(<OfficeShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
@@ -279,6 +279,26 @@ export default class Main extends React.Component {
 
                                         <Route path="/panel/head_state_services/apz/status/:status/:page" exact render={(props) =>(<HeadStateServicesAllApzs {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/head_state_services/apz/show/:id" exact render={(props) =>(<HeadStateServicesShowApz {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+
+                                        <Route path="/panel/landinlocality/all_history/:user_id/:page" exact render={(props) =>(<AllLandInLocalityHistory {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/landinlocality/status/:status/:page" render={(props) => ( <CitizenAllLandInLocality {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/citizen/landinlocality/show/:id" exact render={(props) =>(<CitizenShowLandInLocality {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/landinlocality/add" exact render={(props) =>(<CitizenAddLandInLocality {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/landinlocality/edit/:id" exact render={(props) =>(<CitizenAddLandInLocality {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/urban/landinlocality/status/:status/:page" render={(props) => ( <UrbanAllLandInLocality {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/urban/landinlocality/show/:id" exact render={(props) =>(<UrbanShowLandInLocality {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/head/landinlocality/status/:status/:page" render={(props) => ( <HeadAllLandInLocality {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/head/landinlocality/show/:id" exact render={(props) =>(<HeadShowLandInLocality {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+
+                                        <Route path="/panel/propertyaddress/all_history/:user_id/:page" exact render={(props) =>(<AllPropertyAddressHistory {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/propertyaddress/status/:status/:page" render={(props) => ( <CitizenAllPropertyAddress {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/citizen/propertyaddress/show/:id" exact render={(props) =>(<CitizenShowPropertyAddress {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/propertyaddress/add" exact render={(props) =>(<CitizenAddPropertyAddress {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/propertyaddress/edit/:id" exact render={(props) =>(<CitizenAddPropertyAddress {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/urban/propertyaddress/status/:status/:page" render={(props) => ( <UrbanAllPropertyAddress {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/urban/propertyaddress/show/:id" exact render={(props) =>(<UrbanShowPropertyAddress {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/head/propertyaddress/status/:status/:page" render={(props) => ( <HeadAllPropertyAddress {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/head/propertyaddress/show/:id" exact render={(props) =>(<HeadShowPropertyAddress {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
                                         <Redirect from="/" to="/panel/base-page" />
                                     </Switch>

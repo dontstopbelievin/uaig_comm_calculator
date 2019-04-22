@@ -65,6 +65,7 @@ export default class AddTemplate extends React.Component{
                   <option value="apz">АПЗ</option>
                   <option value="sketch">Эскизный проект</option>
                   <option value="landinlocality">Права на зем. участок</option>
+                  <option value="propertyaddress">Адрес объекта недвижимости</option>
                 </select>
               </div>
             </div>

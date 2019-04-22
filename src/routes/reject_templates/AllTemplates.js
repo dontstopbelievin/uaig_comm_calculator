@@ -96,6 +96,7 @@ export default class AllTemplates extends React.Component{
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => type === 'apz'} to="/panel/answer-template/all/apz/1" replace>АПЗ</NavLink></li>
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => type === 'sketch'} to="/panel/answer-template/all/sketch/1" replace>Эскизный проект</NavLink></li>
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => type === 'landinlocality'} to="/panel/answer-template/all/landinlocality/1" replace>Права на зем. участка</NavLink></li>
+              <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => type === 'propertyaddress'} to="/panel/answer-template/all/propertyaddress/1" replace>Адрес объекта недвижимости</NavLink></li>
             </ul>
             <table className="table">
               <thead>
