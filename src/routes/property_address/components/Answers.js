@@ -153,17 +153,18 @@ export default class Answers extends React.Component {
             <div>
               {this.props.backFromHead &&
                 <div className="alert alert-danger">
-                  Комментарий главного архитектора: {this.props.backFromHead.comment}
+                    Комментарий главного архитектора: {this.props.backFromHead.comment}
                 </div>
-              }
-              {(this.props.propertyaddress_status === 2 || this.props.actChooseLandFile) && !this.props.lastDecisionIsMO &&
+                  }
+                {(this.props.propertyaddress_status === 2 || this.props.actChooseLandFile) && !this.props.lastDecisionIsMO &&
                 <div>
-                  <h5 className="block-title-2 mb-3">Решение</h5>
-                  <table className="table table-bordered table-striped">
-                    <tbody>
+                    <h5 className="block-title-2 mb-3">Решение</h5>
+                    <table className="table table-bordered table-striped">
+                        <tbody>
                       <tr>
                         <td style={{width: '22%'}}><b>Акт выбора земельного участка</b></td>
                         <td>
+                            {console.log(this.props.actChooseLandFile.id)}
                           <a className="text-info pointer" data-category="43" onClick={this.downloadFile.bind(this, this.props.actChooseLandFile.id, 43)}><b>Скачать</b></a>
                           <div className="progress mb-2" data-category="43" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                               <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
