@@ -494,6 +494,22 @@ export default class ShowApz extends React.Component {
     this.setState({ty_director_id: event.target.value});
   }
 
+  toDate(date) {
+        if(date === null) {
+            return date;
+        }
+
+        var jDate = new Date(date);
+        var curr_date = jDate.getDate() < 10 ? "0" + jDate.getDate() : jDate.getDate();
+        var curr_month = (jDate.getMonth() + 1) < 10 ? "0" + (jDate.getMonth() + 1) : jDate.getMonth() + 1;
+        var curr_year = jDate.getFullYear();
+        var curr_hour = jDate.getHours() < 10 ? "0" + jDate.getHours() : jDate.getHours();
+        var curr_minute = jDate.getMinutes() < 10 ? "0" + jDate.getMinutes() : jDate.getMinutes();
+        var formated_date = curr_date + "-" + curr_month + "-" + curr_year + " " + curr_hour + ":" + curr_minute;
+
+        return formated_date;
+    }
+
   ecpSignSuccess(){
     this.setState({ xmlFile: true });
   }

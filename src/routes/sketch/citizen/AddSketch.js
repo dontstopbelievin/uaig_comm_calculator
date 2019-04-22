@@ -36,6 +36,8 @@ export default class AddSketch extends React.Component {
           region: 'Наурызбай',
           categoryFiles: [],
           // hasCoordinates:false,
+          designer:'',
+          urbanId:'',
           personalIdFile: null,
           sketchFile: null,
           sketchFilePDF: null,
@@ -398,6 +400,7 @@ export default class AddSketch extends React.Component {
             this.setState({phone: sketch.phone ? sketch.phone : '' });
             this.setState({region: sketch.region ? sketch.region : '' });
             this.setState({designer: sketch.designer ? sketch.designer : '' });
+            this.setState({urbanId: sketch.urbanId ? sketch.urbanId : '' });
             this.setState({type: sketch.type ? sketch.type : '' });
             this.setState({projectName: sketch.project_name ? sketch.project_name : '' });
             this.setState({projectAddress: sketch.project_address ? sketch.project_address : '' });
@@ -436,6 +439,30 @@ export default class AddSketch extends React.Component {
 
     if (publish) {
       var requiredFields = {
+          applicant: 'Заявитель',
+          address: 'Адрес жительства',
+          projectName: 'Наименование проектируемого объекта',
+          projectAddress: 'Адрес проектируемого объекта',
+          objectType: 'Тип объекта',
+          customer: 'Заказчик',
+          phone:'Телефон',
+          designer:'Проектировщик №ГСЛ, категория',
+          urbanId:'Главный архитектор проекта',
+          landArea:'Площадь земельного участка',
+          coverArea:'Площадь покрытия',
+          greenArea:'Площадь озеленения',
+          objectLevel:'Этажность',
+          commonArea:'Общая площадь ',
+          buildArea:'Площадь застройки',
+          basementFacade:'Цоколь здания (облицовка)',
+          basementColor:'Цоколь здания (цвет)',
+          wallsFacade:'Стены здания (облицовка)',
+          wallsColor:'Стены здания (цвет):',
+          personalIdFile: 'Уд.личности/Реквизиты',
+          sketchFile: 'Эскиз (эскизный проект)',
+          sketchFilePDF: 'Эскизный проект(pdf)',
+          apzFile:'Архитектурно-планировочное задание (копия)'
+
       };
 
       if(this.state.objectType == 'МЖК'){
@@ -557,6 +584,10 @@ export default class AddSketch extends React.Component {
                                             <div className="form-group">
                                                 <label htmlFor="Designer">Проектировщик №ГСЛ, категория</label>
                                                 <input data-rh="Проектировщик №ГСЛ, категория" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.designer} name="designer" />
+                                            </div>
+                                            <div className="form-group">
+                                                <label htmlFor="Urban">Главный архитектор проекта (ГАП)</label>
+                                                <input data-rh="Главный архитектор проекта (ГАП)" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.urbanId} name="urbanId" />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="ProjectName">Наименование проектируемого объекта</label>
