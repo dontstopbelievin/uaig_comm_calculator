@@ -79,6 +79,15 @@ import HeadAllPropertyAddress from "./routes/property_address/head/AllApplicatio
 import HeadShowPropertyAddress from "./routes/property_address/head/ShowApplication";
 import AllPropertyAddressHistory from "./routes/property_address/components/AllApplicationsHistory";
 
+import CitizenAllReligBuilding from "./routes/relig_building/citizen/AllApplications";
+import CitizenAddReligBuilding from "./routes/relig_building/citizen/AddApplication";
+import CitizenShowReligBuilding from "./routes/relig_building/citizen/ShowApplication";
+import UrbanAllReligBuilding from "./routes/relig_building/urban/AllApplications";
+import UrbanShowReligBuilding from "./routes/relig_building/urban/ShowApplication";
+import HeadAllReligBuilding from "./routes/relig_building/head/AllApplications";
+import HeadShowReligBuilding from "./routes/relig_building/head/ShowApplication";
+import AllReligBuildingHistory from "./routes/relig_building/components/AllApplicationsHistory";
+
 import Actions from "./routes/Actions";
 import LawyerAllApzs from "./routes/apz/lawyer/AllApzs";
 import LawyerShowApz from "./routes/apz/lawyer/ShowApz";
@@ -112,20 +121,20 @@ export default class Main extends React.Component {
     componentWillMount() {
         this.setLang();
 
-        window.url = 'https://api.uaig.kz:8843/';
+        // window.url = 'https://api.uaig.kz:8843/';
         // window.url = 'http://api.uaig.kz:8880/';
         // window.url = 'http://192.168.0.231/';
         // window.url = 'http://shymkentback.uaig.kz/';
-        window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
+        // window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
 
         // window.url = 'http://uaig/';
-        // window.url = 'http://uaig.local/';
+        window.url = 'http://uaig.local/';
         //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
         //window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
         // window.clientSecret = 'fuckaduckmotherfucker'; // aman
         // window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
         // window.clientSecret = '7zdU2XDblqORFq8wbQHlNRaIgEBR90qbMYnnVWDg'; // yernar
-        // window.clientSecret = 'TPzBTua5JvfgKAnhQiThXu03DWSh1xyiZ9T8VHDn'; // medet
+        window.clientSecret = 'TPzBTua5JvfgKAnhQiThXu03DWSh1xyiZ9T8VHDn'; // medet
     }
 
     breadCrumbs() {
@@ -299,6 +308,16 @@ export default class Main extends React.Component {
                                         <Route path="/panel/urban/propertyaddress/show/:id" exact render={(props) =>(<UrbanShowPropertyAddress {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/head/propertyaddress/status/:status/:page" render={(props) => ( <HeadAllPropertyAddress {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                                         <Route path="/panel/head/propertyaddress/show/:id" exact render={(props) =>(<HeadShowPropertyAddress {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+
+                                        <Route path="/panel/religbuilding/all_history/:user_id/:page" exact render={(props) =>(<AllReligBuildingHistory {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/religbuilding/status/:status/:page" render={(props) => ( <CitizenAllReligBuilding {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/citizen/religbuilding/show/:id" exact render={(props) =>(<CitizenShowReligBuilding {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/religbuilding/add" exact render={(props) =>(<CitizenAddReligBuilding {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/religbuilding/edit/:id" exact render={(props) =>(<CitizenAddReligBuilding {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/urban/religbuilding/status/:status/:page" render={(props) => ( <UrbanAllReligBuilding {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/urban/religbuilding/show/:id" exact render={(props) =>(<UrbanShowReligBuilding {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/head/religbuilding/status/:status/:page" render={(props) => ( <HeadAllReligBuilding {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/head/religbuilding/show/:id" exact render={(props) =>(<HeadShowReligBuilding {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
                                         <Redirect from="/" to="/panel/base-page" />
                                     </Switch>
