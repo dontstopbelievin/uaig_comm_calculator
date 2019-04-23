@@ -227,6 +227,51 @@ export default class ShowApz extends React.Component {
       }
     }
 
+    viewOrDownloadFile(isAccept, apzId, progbarId = null) {
+        var token = sessionStorage.getItem('tokenInfo');
+        var xhr = new XMLHttpRequest();
+        if(isAccept){
+          xhr.open("get", window.url + "api/print/apz/" + apzId, true);
+        }else{
+          xhr.open("get", window.url + "api/print/region/" + apzId, true);
+        }
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
+        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+        var vision = $('.text-info[data-category='+progbarId+']');
+        var progressbar = $('.progress[data-category='+progbarId+']');
+        vision.css('display', 'none');
+        progressbar.css('display', 'flex');
+        xhr.onprogress = function(event) {
+            $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
+        }
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText);
+                var objbuilder = '';
+                objbuilder += ('<object width="100%" height="100%" data="data:application/pdf;base64,');
+                objbuilder += (data.file );
+                objbuilder += ('" type="application/pdf" class="internal">');
+                objbuilder += ('<embed src="data:application/pdf;base64,');
+                objbuilder += (data.file );
+                objbuilder += ('" type="application/pdf"  />');
+                objbuilder += ('</object>');
+
+                var win = window.open("#","_blank");
+                var title = data.file_name;
+                win.document.write('<html><title>'+ title +'</title><body style="margin-top:0px; margin-left: 0px; margin-right: 0px; margin-bottom: 0px;">');
+                win.document.write(objbuilder);
+                win.document.write('</body></html>');
+                var layer = $(win.document);
+            } else {
+                alert('Не удалось загрузить файл');
+            }
+            $('div', progressbar).css('width', 0);
+            progressbar.css('display', 'none');
+            vision.css('display','inline');
+        }
+        xhr.send();
+    }
+
     render() {
       return (
             <div>
@@ -312,7 +357,7 @@ export default class ShowApz extends React.Component {
                     </div>
                 </div>
                 }
-              {(this.props.apz_status === 2 || this.props.apz_department_response) && this.props.lastDecisionIsMO == false &&
+              {(this.props.apz_department_response) && !this.props.lastDecisionIsMO  &&
                 <div>
                   <h5 className="block-title-2 mb-3">Решение</h5>
                   <table className="table table-bordered table-striped">
@@ -321,25 +366,37 @@ export default class ShowApz extends React.Component {
                         <td style={{width: '22%'}}><b>Сформированный АПЗ</b></td>
                         <td>
                           <a className="text-info pointer" data-category="13" onClick={this.printApz.bind(this, this.props.apz_id, this.props.p_name, 13)}>Скачать</a>
-                          <div className="progress mb-2" data-category="13" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                              <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
+                            <div className="progress mb-2" data-category="13" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </td>
+                        <td>
+                          <a className="text-info pointer" data-category="14" onClick={this.viewOrDownloadFile.bind(this, true, this.props.apz_id, 1)}>Просмотр</a>
+                            <div className="progress mb-2" data-category="14" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
                         </td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
               }
-              {(this.props.apz_status === 1 || this.props.lastDecisionIsMO == true) &&
+              { this.props.lastDecisionIsMO &&
                 <table className="table table-bordered">
                   <tbody>
                     <tr>
                       <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
                       <td>
-                        <a className="text-info pointer" data-category="14" onClick={this.printRegionAnswer.bind(this, this.props.apz_id, 14)}>Скачать</a>
-                        <div className="progress mb-2" data-category="14" style={{height: '20px', display: 'none', marginTop:'5px'}}>
-                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
+                        <a className="text-info pointer" data-category="15" onClick={this.printRegionAnswer.bind(this, this.props.apz_id, 14)}>Скачать</a>
+                          <div className="progress mb-2" data-category="15" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                              <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                      </td>
+                      <td>
+                        <a className="text-info pointer" data-category="16" onClick={this.viewOrDownloadFile.bind(this, false, this.props.apz_id, 1)}>Просмотр</a>
+                          <div className="progress mb-2" data-category="16" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                              <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
                       </td>
                     </tr>
                   </tbody>

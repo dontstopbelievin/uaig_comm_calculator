@@ -125,6 +125,51 @@ export default class AllInfo extends React.Component {
       }
   }
 
+  viewOrDownloadFile(isAccept, sketchId, progbarId = null) {
+        var token = sessionStorage.getItem('tokenInfo');
+        var xhr = new XMLHttpRequest();
+        if(isAccept){
+            xhr.open("get", window.url + "api/print/sketch/" + sketchId, true);
+        }else{
+            xhr.open("get", window.url + "api/print/region/sketch/" + sketchId, true);
+        }
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
+        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+        var vision = $('.text-info[data-category='+progbarId+']');
+        var progressbar = $('.progress[data-category='+progbarId+']');
+        vision.css('display', 'none');
+        progressbar.css('display', 'flex');
+        xhr.onprogress = function(event) {
+            $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
+        }
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText);
+                var objbuilder = '';
+                objbuilder += ('<object width="100%" height="100%" data="data:application/pdf;base64,');
+                objbuilder += (data.file );
+                objbuilder += ('" type="application/pdf" class="internal">');
+                objbuilder += ('<embed src="data:application/pdf;base64,');
+                objbuilder += (data.file );
+                objbuilder += ('" type="application/pdf"  />');
+                objbuilder += ('</object>');
+
+                var win = window.open("#","_blank");
+                var title = data.file_name;
+                win.document.write('<html><title>'+ title +'</title><body style="margin-top:0px; margin-left: 0px; margin-right: 0px; margin-bottom: 0px;">');
+                win.document.write(objbuilder);
+                win.document.write('</body></html>');
+                var layer = $(win.document);
+            } else {
+                alert('Не удалось загрузить файл');
+            }
+            $('div', progressbar).css('width', 0);
+            progressbar.css('display', 'none');
+            vision.css('display','inline');
+        }
+        xhr.send();
+    }
+
   render(){
     return (
         <div className="col-sm-12">
@@ -146,6 +191,7 @@ export default class AllInfo extends React.Component {
               <tr>
                   <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
                   <td><a className="text-info pointer" onClick={this.printRegionAnswer.bind(this, this.props.sketch_id)}>Скачать</a></td>
+                  <td><a className="text-info pointer" data-category="1" onClick={this.viewOrDownloadFile.bind(this, false, this.props.sketch_id, 1)}>Просмотр</a></td>
               </tr>
               </tbody>
           </table>
@@ -156,8 +202,8 @@ export default class AllInfo extends React.Component {
                       <tbody>
                       <tr>
                           <td style={{width: '22%'}}><b>Согласование</b></td>
-                          <td><a className="text-info pointer"
-                                 onClick={this.printSketchAnswer.bind(this, this.props.sketch_id)}>Скачать</a></td>
+                          <td><a className="text-info pointer"  onClick={this.printSketchAnswer.bind(this, this.props.sketch_id)}>Скачать</a></td>
+                          <td><a className="text-info pointer" data-category="1" onClick={this.viewOrDownloadFile.bind(this, true, this.props.sketch_id, 1)}>Просмотр</a></td>
                       </tr>
                       </tbody>
                   </table>
