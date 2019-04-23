@@ -77,7 +77,7 @@ export default class Answers extends React.Component {
       var token = sessionStorage.getItem('tokenInfo');
       if (token) {
         var xhr = new XMLHttpRequest();
-        xhr.open("get", window.url + "api/print/region/propertyaddress/" + applicationId, true);
+        xhr.open("get", window.url + "api/print/region/religbuilding/" + applicationId, true);
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         var vision = $('.text-info[data-category='+progbarId+']');
         var progressbar = $('.progress[data-category='+progbarId+']');
@@ -153,18 +153,17 @@ export default class Answers extends React.Component {
             <div>
               {this.props.backFromHead &&
                 <div className="alert alert-danger">
-                    Комментарий главного архитектора: {this.props.backFromHead.comment}
+                  Комментарий главного архитектора: {this.props.backFromHead.comment}
                 </div>
-                  }
-                {(this.props.propertyaddress_status === 2 || this.props.actChooseLandFile) && !this.props.lastDecisionIsMO &&
+              }
+              {(this.props.religbuilding_status === 2 || this.props.actChooseLandFile) && !this.props.lastDecisionIsMO &&
                 <div>
-                    <h5 className="block-title-2 mb-3">Решение</h5>
-                    <table className="table table-bordered table-striped">
-                        <tbody>
+                  <h5 className="block-title-2 mb-3">Решение</h5>
+                  <table className="table table-bordered table-striped">
+                    <tbody>
                       <tr>
-                        <td style={{width: '22%'}}><b>Cправка по определению адреса объектов недвижимости</b></td>
+                        <td style={{width: '22%'}}><b>Решение о строительстве культовых зданий </b></td>
                         <td>
-                            {console.log(this.props.actChooseLandFile.id)}
                           <a className="text-info pointer" data-category="43" onClick={this.downloadFile.bind(this, this.props.actChooseLandFile.id, 43)}><b>Скачать</b></a>
                           <div className="progress mb-2" data-category="43" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                               <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
@@ -175,13 +174,13 @@ export default class Answers extends React.Component {
                   </table>
                 </div>
               }{console.log(this.props.lastDecisionIsMO)}
-              {(this.props.propertyaddress_status === 1 || this.props.lastDecisionIsMO) &&
+              {(this.props.religbuilding_status === 1 || this.props.lastDecisionIsMO) &&
                 <table className="table table-bordered">
                   <tbody>
                     <tr>
                       <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
                       <td>
-                        <a className="text-info pointer" data-category="14" onClick={this.printRegionAnswer.bind(this, this.props.propertyaddress_id, 14)}>Скачать</a>
+                        <a className="text-info pointer" data-category="14" onClick={this.printRegionAnswer.bind(this, this.props.religbuilding_id, 14)}>Скачать</a>
                         <div className="progress mb-2" data-category="14" style={{height: '20px', display: 'none', marginTop:'5px'}}>
                             <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
