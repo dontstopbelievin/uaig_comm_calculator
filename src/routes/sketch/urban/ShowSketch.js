@@ -38,7 +38,8 @@ export default class ShowSketch extends React.Component {
             xmlFile: false,
             loaderHiddenSign:true,
             isSent:false,
-            lastDecisionIsMO:false
+            lastDecisionIsMO:false,
+            isBack:false
         };
 
         this.onCommentChange = this.onCommentChange.bind(this);
@@ -133,6 +134,9 @@ export default class ShowSketch extends React.Component {
                             break;
                         case 3:
                             this.setState({lastDecisionIsMO: true});
+                            break;
+                        case 17:
+                            this.setState({isBack: true});
                             break;
                         default:
                             continue;
@@ -331,7 +335,7 @@ export default class ShowSketch extends React.Component {
                               </select>
                           </div>
                           }
-                          {!this.state.response ?
+                          {(!this.state.response || this.state.isBack )?
                                <div className="text-center">
                                   <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled="disabled">Одобрить</button>
                                   <button className="btn btn-raised btn-danger" data-toggle="modal"  data-target="#ReturnApzForm">
@@ -340,7 +344,7 @@ export default class ShowSketch extends React.Component {
                               </div>
                               :
                               <div>
-                                  {!this.state.needSign ?
+                                  {(!this.state.needSign || this.state.isBack )?
                                       <div style={{margin: 'auto', display: 'table'}}>
                                           <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled={!this.state.docNumber} onClick={this.sendToApz.bind(this,true)}>Одобрить</button>
                                           <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnApzForm">

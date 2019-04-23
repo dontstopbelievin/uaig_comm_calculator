@@ -45,7 +45,7 @@ export default class ShowApplication extends React.Component {
         if (xhr.status === 200) {
           var propertyaddress = JSON.parse(xhr.responseText);
           this.setState({propertyaddress: propertyaddress});
-          console.log(propertyaddress);
+          // console.log(propertyaddress);
           this.setState({personalIdFile: propertyaddress.files.filter(function(obj) { return obj.category_id === 3 })[0]});
           this.setState({landLocationSchemeFile: propertyaddress.files.filter(function(obj) { return obj.category_id === 42 })[0]});
           this.setState({actChooseLandFile: propertyaddress.files.filter(function(obj) { return obj.category_id === 43 })[0]});
