@@ -357,7 +357,7 @@ export default class ShowApz extends React.Component {
                     </div>
                 </div>
                 }
-              {(this.props.apz_department_response) && !this.props.lastDecisionIsMO  &&
+              {(this.props.apz_status === 2 || this.props.apz_department_response) && !this.props.lastDecisionIsMO  &&
                 <div>
                   <h5 className="block-title-2 mb-3">Решение</h5>
                   <table className="table table-bordered table-striped">

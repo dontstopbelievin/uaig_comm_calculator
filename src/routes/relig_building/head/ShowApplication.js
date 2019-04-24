@@ -30,7 +30,8 @@ export default class ShowApplication extends React.Component {
             loaderHidden: false,
             xmlFile: false,
             lastDecisionIsMO: false,
-            isSigned: false
+            isSigned: false,
+            isAccept: false
         };
 
         this.onDescriptionChange = this.onDescriptionChange.bind(this);
@@ -78,6 +79,9 @@ export default class ShowApplication extends React.Component {
                             break;
                         case 3:
                             this.setState({lastDecisionIsMO: true});
+                            break;
+                        case 5:
+                            this.setState({isAccept: true});
                             break;
                         default:
                             continue;
@@ -280,9 +284,9 @@ export default class ShowApplication extends React.Component {
                  <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                      {this.state.showMapText}
                  </button>
-
+                    {console.log("isAccept = " + this.state.isAccept)}
                  <Answers religbuilding_id={this.state.religbuilding.id} religbuilding_status={this.state.religbuilding.status_id}
-                          actChooseLandFile={this.state.actChooseLandFile} lastDecisionIsMO={this.state.lastDecisionIsMO} />
+                          actChooseLandFile={this.state.actChooseLandFile} lastDecisionIsMO={this.state.lastDecisionIsMO} isAccept = {this.state.isAccept}/>
 
                   <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                     {this.state.showSignButtons && !this.state.isSigned &&

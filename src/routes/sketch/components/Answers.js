@@ -196,19 +196,19 @@ export default class AllInfo extends React.Component {
               </tbody>
           </table>
           :
-              <div>
-              {(this.props.urban_response || this.props.isSent) &&
-                  <table className="table table-bordered">
-                      <tbody>
-                      <tr>
-                          <td style={{width: '22%'}}><b>Согласование</b></td>
-                          <td><a className="text-info pointer"  onClick={this.printSketchAnswer.bind(this, this.props.sketch_id)}>Скачать</a></td>
-                          <td><a className="text-info pointer" data-category="1" onClick={this.viewOrDownloadFile.bind(this, true, this.props.sketch_id, 1)}>Просмотр</a></td>
-                      </tr>
-                      </tbody>
-                  </table>
-              }
-              </div>
+          <div>
+          {(this.props.urban_response || this.props.isSent) &&
+              <table className="table table-bordered">
+                  <tbody>
+                  <tr>
+                      <td style={{width: '22%'}}><b>Согласование</b></td>
+                      <td><a className="text-info pointer"  onClick={this.printSketchAnswer.bind(this, this.props.sketch_id)}>Скачать</a></td>
+                      <td><a className="text-info pointer" data-category="1" onClick={this.viewOrDownloadFile.bind(this, true, this.props.sketch_id, 1)}>Просмотр</a></td>
+                  </tr>
+                  </tbody>
+              </table>
+          }
+          </div>
           }
         </div>
     )}
