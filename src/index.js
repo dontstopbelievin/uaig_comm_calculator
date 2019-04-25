@@ -88,6 +88,15 @@ import HeadAllReligBuilding from "./routes/relig_building/head/AllApplications";
 import HeadShowReligBuilding from "./routes/relig_building/head/ShowApplication";
 import AllReligBuildingHistory from "./routes/relig_building/components/AllApplicationsHistory";
 
+import CitizenAllReshapeToRelig from "./routes/reshape_to_relig/citizen/AllApplications";
+import CitizenAddReshapeToRelig from "./routes/reshape_to_relig/citizen/AddApplication";
+import CitizenShowReshapeToRelig from "./routes/reshape_to_relig/citizen/ShowApplication";
+import UrbanAllReshapeToRelig from "./routes/reshape_to_relig/urban/AllApplications";
+import UrbanShowReshapeToRelig from "./routes/reshape_to_relig/urban/ShowApplication";
+import HeadAllReshapeToRelig from "./routes/reshape_to_relig/head/AllApplications";
+import HeadShowReshapeToRelig from "./routes/reshape_to_relig/head/ShowApplication";
+import AllReshapeToReligHistory from "./routes/reshape_to_relig/components/AllApplicationsHistory";
+
 import Actions from "./routes/Actions";
 import LawyerAllApzs from "./routes/apz/lawyer/AllApzs";
 import LawyerShowApz from "./routes/apz/lawyer/ShowApz";
@@ -318,6 +327,16 @@ export default class Main extends React.Component {
                                         <Route path="/panel/urban/religbuilding/show/:id" exact render={(props) =>(<UrbanShowReligBuilding {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/head/religbuilding/status/:status/:page" render={(props) => ( <HeadAllReligBuilding {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                                         <Route path="/panel/head/religbuilding/show/:id" exact render={(props) =>(<HeadShowReligBuilding {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+
+                                        <Route path="/panel/reshapetorelig/all_history/:user_id/:page" exact render={(props) =>(<AllReshapeToReligHistory {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/reshapetorelig/status/:status/:page" render={(props) => ( <CitizenAllReshapeToRelig {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/citizen/reshapetorelig/show/:id" exact render={(props) =>(<CitizenShowReshapeToRelig {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/reshapetorelig/add" exact render={(props) =>(<CitizenAddReshapeToRelig {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/reshapetorelig/edit/:id" exact render={(props) =>(<CitizenAddReshapeToRelig {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/urban/reshapetorelig/status/:status/:page" render={(props) => ( <UrbanAllReshapeToRelig {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/urban/reshapetorelig/show/:id" exact render={(props) =>(<UrbanShowReshapeToRelig {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/head/reshapetorelig/status/:status/:page" render={(props) => ( <HeadAllReshapeToRelig {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/head/reshapetorelig/show/:id" exact render={(props) =>(<HeadShowReshapeToRelig {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
                                         <Redirect from="/" to="/panel/base-page" />
                                     </Switch>
