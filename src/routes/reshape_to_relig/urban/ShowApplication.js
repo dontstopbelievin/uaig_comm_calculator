@@ -89,19 +89,32 @@ export default class ShowApplication extends React.Component {
           this.setState({personalIdFile: response.files.filter(function(obj) { return obj.category_id === 3 })[0]});
           this.setState({landLocationSchemeFile: response.files.filter(function(obj) { return obj.category_id === 42 })[0]});
           this.setState({actChooseLandFile: response.files.filter(function(obj) { return obj.category_id === 43 })[0]});
-          this.setState({backFromHead: response.state_history.filter(function(obj) { return obj.state_id === 9 })[0]});
           this.setState({showButtons: false});
+
           for(var data_index = response.state_history.length-1; data_index >= 0; data_index--){
-            switch (response.state_history[data_index].state_id) {
-              case 2:
-                break;
-              case 3:
-                this.setState({lastDecisionIsMO: true});
-                break;
-              default:
-                continue;
+              switch (response.state_history[data_index].state_id) {
+                case 2:
+                  break;
+                case 3:
+                  this.setState({lastDecisionIsMO: true});
+                  break;
+                default:
+                  continue;
             }
             break;
+          }
+
+          let index=0;
+
+          for(let data_index = 0; data_index < response.state_history.length; data_index++){
+              switch (response.state_history[data_index].state_id) {
+                  case 9:
+                    index ++;
+                    break;
+                  default:
+                    break;
+              }
+              this.setState({backFromHead: response.state_history.filter(function(obj) { return obj.state_id === 9 })[index - 1]});
           }
 
           if(response.head_id){this.setState({head_id: response.head_id});}
@@ -328,7 +341,7 @@ export default class ShowApplication extends React.Component {
                           </div>
                         }
                         <div className="file_buttons btn-group btn-group-justified d-table mt-0">
-                          <label><h6>Акт выбора земельного участка</h6></label>
+                          <label><h6>Решения о перепрофилировании в культовые здания</h6></label>
                           <label htmlFor="actChooseLandFile" className="btn btn-success" style={{marginLeft: '5px'}}>Загрузить</label>
                           <input type="file" id="actChooseLandFile" name="actChooseLandFile" className="form-control" onChange={this.uploadFile.bind(this, 43)} style={{display: 'none'}} />
                         </div>

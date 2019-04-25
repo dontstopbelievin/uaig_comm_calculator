@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../uaigBack/.idea/uaigBack.iml" filepath="$PROJECT_DIR$/../uaigBack/.idea/uaigBack.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/userfivefront.iml" filepath="$PROJECT_DIR$/.idea/userfivefront.iml" />
     </modules>
   </component>
