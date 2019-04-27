@@ -109,12 +109,13 @@ export default class AllLand_in_locality extends React.Component {
                 <h4 className="mb-0 mt-2 col-sm-7" style={{paddingLeft:'0px', paddingBottom:'5px'}}>Предоставление земельного участка для строительства объекта в черте населенного пункта</h4>
               </div>
               <div className="row">
-                <div className="col-sm-7">
+                <div className="col-sm-5">
                   <Link className="btn btn-outline-primary mb-3" to="/panel/citizen/landinlocality/add">Создать заявление</Link>
                 </div>
-                <div className="col-sm-5 statusActive">
+                <div className="col-sm-7 statusActive">
                   <ul className="nav nav-tabs mb-2 pull-right">
                     <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => this.props.match.params.status === 'active'} activeStyle={{color:"black"}} to="/panel/citizen/landinlocality/status/active/1" replace>Активные</NavLink></li>
+                    <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => this.props.match.params.status === 'payment'} activeStyle={{color:"black"}} to="/panel/citizen/landinlocality/status/payment/1" replace>На оплату</NavLink></li>
                     <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => this.props.match.params.status === 'draft'} activeStyle={{color:"black"}} to="/panel/citizen/landinlocality/status/draft/1" replace>Черновики</NavLink></li>
                     <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => this.props.match.params.status === 'accepted'} activeStyle={{color:"black"}} to="/panel/citizen/landinlocality/status/accepted/1" replace>Принятые</NavLink></li>
                     <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" isActive={(match, location) => this.props.match.params.status === 'declined'} activeStyle={{color:"black"}} to="/panel/citizen/landinlocality/status/declined/1" replace>Отказанные</NavLink></li>

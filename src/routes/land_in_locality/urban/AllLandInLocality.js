@@ -128,6 +128,8 @@ export default class AllLandInLocality extends React.Component {
             </td><td>
               <ul className="nav nav-tabs mb-2 pull-right">
                 <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => this.props.match.params.status === 'active'} to="/panel/urban/landinlocality/status/active/1" replace>Активные</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => this.props.match.params.status === 'payment'} to="/panel/urban/landinlocality/status/payment/1" replace>На оплату(у заявителя)</NavLink></li>
+                <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => this.props.match.params.status === 'payment_done'} to="/panel/urban/landinlocality/status/payment_done/1" replace>Оплачено</NavLink></li>
                 <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => this.props.match.params.status === 'accepted'} to="/panel/urban/landinlocality/status/accepted/1" replace>Принятые</NavLink></li>
                 <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" activeStyle={{color:"black"}} isActive={(match, location) => this.props.match.params.status === 'declined'} to="/panel/urban/landinlocality/status/declined/1" replace>Отказанные</NavLink></li>
               </ul>

@@ -24,6 +24,8 @@ export default class ShowLandInLocality extends React.Component {
             personalIdFile: false,
             landLocationSchemeFile: false,
             actChooseLandFile: false,
+            paymentFile: false,
+            rightLandInLocalityFile: false,
             showMapText: 'Показать карту',
             headResponse: null,
             response: false,
@@ -71,6 +73,8 @@ export default class ShowLandInLocality extends React.Component {
                 this.setState({personalIdFile: data.files.filter(function(obj) { return obj.category_id === 3 })[0]});
                 this.setState({landLocationSchemeFile: data.files.filter(function(obj) { return obj.category_id === 42 })[0]});
                 this.setState({actChooseLandFile: data.files.filter(function(obj) { return obj.category_id === 43 })[0]});
+                this.setState({paymentFile: data.files.filter(function(obj) { return obj.category_id === 44 })[0]});
+                this.setState({rightLandInLocalityFile: data.files.filter(function(obj) { return obj.category_id === 45 })[0]});
 
                 for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
                     switch (data.state_history[data_index].state_id) {
@@ -224,6 +228,11 @@ export default class ShowLandInLocality extends React.Component {
         var formData = new FormData();
         formData.append('Response', status);
         formData.append('message', comment);
+        if(this.state.rightLandInLocalityFile){
+          formData.append('Payment', true);
+        }else{
+          formData.append('Payment', false);
+        }
 
         var xhr = new XMLHttpRequest();
         xhr.open("post", window.url + "api/land_in_locality/head/status/" + landinlocalityId, true);
@@ -282,7 +291,8 @@ export default class ShowLandInLocality extends React.Component {
                  </button>
 
                  <Answers landinlocality_id={this.state.landinlocality.id} landinlocality_status={this.state.landinlocality.status_id}
-                          actChooseLandFile={this.state.actChooseLandFile} lastDecisionIsMO={this.state.lastDecisionIsMO} />
+                          actChooseLandFile={this.state.actChooseLandFile} lastDecisionIsMO={this.state.lastDecisionIsMO}
+                          paymentFile={this.state.paymentFile} rightLandInLocalityFile={this.state.rightLandInLocalityFile} />
 
                   <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                     {this.state.showSignButtons && !this.state.isSigned &&

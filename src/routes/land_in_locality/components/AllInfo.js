@@ -238,7 +238,7 @@ export default class AllInfo extends React.Component {
               <table className="table table-bordered table-striped" id="printTable">
                 <tbody>
                   <tr>
-                    <td style={{width: '22%'}}><b>ИД заявки</b></td>
+                    <td style={{width: '35%'}}><b>ИД заявки</b></td>
                     <td>{this.props.landinlocality.id}</td>
                   </tr>
                   <tr>

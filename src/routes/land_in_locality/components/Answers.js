@@ -162,7 +162,7 @@ export default class Answers extends React.Component {
                   <table className="table table-bordered table-striped">
                     <tbody>
                       <tr>
-                        <td style={{width: '22%'}}><b>Акт выбора земельного участка</b></td>
+                        <td style={{width: '35%'}}><b>Акт выбора земельного участка</b></td>
                         <td>
                           <a className="text-info pointer" data-category="43" onClick={this.downloadFile.bind(this, this.props.actChooseLandFile.id, 43)}><b>Скачать</b></a>
                           <div className="progress mb-2" data-category="43" style={{height: '20px', display: 'none', marginTop:'5px'}}>
@@ -170,6 +170,28 @@ export default class Answers extends React.Component {
                           </div>
                         </td>
                       </tr>
+                      {this.props.paymentFile &&
+                        <tr>
+                          <td><b>Оплата за услуги земельно-кадастровых работ</b></td>
+                          <td>
+                            <a className="text-info pointer" data-category="44" onClick={this.downloadFile.bind(this, this.props.paymentFile.id, 44)}><b>Скачать</b></a>
+                            <div className="progress mb-2" data-category="44" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                          </td>
+                        </tr>
+                      }
+                      {this.props.rightLandInLocalityFile &&
+                        <tr>
+                          <td><b>Права землепользования на земельный участок</b></td>
+                          <td>
+                            <a className="text-info pointer" data-category="45" onClick={this.downloadFile.bind(this, this.props.rightLandInLocalityFile.id, 45)}><b>Скачать</b></a>
+                            <div className="progress mb-2" data-category="45" style={{height: '20px', display: 'none', marginTop:'5px'}}>
+                                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                          </td>
+                        </tr>
+                      }
                     </tbody>
                   </table>
                 </div>
