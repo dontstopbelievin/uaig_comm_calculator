@@ -423,7 +423,7 @@ export default class ShowApz extends React.Component {
                       </div>
                       <div className="form-group">
                         <label>Причина отказа</label>
-                        <ReactQuill value={this.state.comment} onChange={this.onCommentChange} />
+                        <ReactQuill value={this.state.comment} onChange={this.onCommentChange} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                       </div>
                     </div>
                     <div className="modal-footer">

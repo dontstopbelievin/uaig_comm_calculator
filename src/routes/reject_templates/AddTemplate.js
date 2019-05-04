@@ -87,7 +87,8 @@ export default class AddTemplate extends React.Component{
           </div>
           <div className="form-group">
             <label htmlFor="text">Текст</label>
-            <ReactQuill value={this.state.text} onChange={this.onTextChange} />
+            <ReactQuill value={this.state.text} onChange={this.onTextChange}
+                        formats={['formats/em','formats/hr', 'em', 'hr']}  />
           </div>
           <input type="submit" className="btn btn-outline-success" value="Создать" />
         </form>

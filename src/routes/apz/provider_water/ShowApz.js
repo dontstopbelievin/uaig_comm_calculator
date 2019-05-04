@@ -1121,19 +1121,19 @@ export default class ShowApz extends React.Component {
                     <div>
                       <div className="form-group">
                         <label><b>1. Водопотребление</b></label>
-                        <ReactQuill value={this.state.tab_tcTextWater} onChange={this.onTcTextWaterChange} />
+                        <ReactQuill value={this.state.tab_tcTextWater} onChange={this.onTcTextWaterChange} formats={['formats/em','formats/hr', 'em', 'hr']} />
                       </div>
                       <div className="form-group">
                         <label><b>2. Водоотведение</b></label>
-                        <ReactQuill value={this.state.tab_tcTextSewage} onChange={this.onTcTextSewageChange} />
+                        <ReactQuill value={this.state.tab_tcTextSewage} onChange={this.onTcTextSewageChange} formats={['formats/em','formats/hr', 'em', 'hr']} />
                       </div>
                       <div className="form-group">
                         <label><b>3. Другие требования</b></label>
-                        <ReactQuill value={this.state.tab_tcTextWaterRequirements} onChange={this.onTcTextWaterRequirementsChange} />
+                        <ReactQuill value={this.state.tab_tcTextWaterRequirements} onChange={this.onTcTextWaterRequirementsChange} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                       </div>
                       <div className="form-group">
                         <label><b>4. Общие положения</b></label>
-                        <ReactQuill value={this.state.tab_tcTextWaterGeneral} onChange={this.onTcTextWaterGeneralChange} />
+                        <ReactQuill value={this.state.tab_tcTextWaterGeneral} onChange={this.onTcTextWaterGeneralChange} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                       </div>
                     </div>
                   }
