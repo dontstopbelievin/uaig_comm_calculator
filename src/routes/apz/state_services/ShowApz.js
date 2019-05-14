@@ -316,6 +316,7 @@ export default class ShowApz extends React.Component {
     onInputChange(state, value) {
       // const { value, name } = e.target
       // this.setState({ [name] : value })
+      // ReactQuill.format('color','red');
       value = value.replace(/(style=")([a-zA-Z0-9:;.\s()-,]*)(")/gi, '');
       this.setState({ [state] : value })
     }
@@ -667,34 +668,34 @@ export default class ShowApz extends React.Component {
                   <h5>{counter++}. Характеристика участка</h5>
                   <div className="form-group">
                     <label>Основание для разработки архитектурно-планировочного задания (АПЗ)</label>
-                    <ReactQuill value={this.state.basisForDevelopmentApz} onChange={this.onInputChange.bind(this, 'basisForDevelopmentApz')} />
+                    <ReactQuill value={this.state.basisForDevelopmentApz} onChange={this.onInputChange.bind(this, 'basisForDevelopmentApz')} formats={['formats/em','formats/hr', 'em', 'hr']} />
                   </div>
                   <div className="form-group">
                     <label>Наличие застройки</label>
-                    <ReactQuill value={this.state.buildingPresence} onChange={this.onInputChange.bind(this, 'buildingPresence')} />
+                    <ReactQuill value={this.state.buildingPresence} onChange={this.onInputChange.bind(this, 'buildingPresence')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                   </div>
                   <div className="form-group">
                     <label>Местонахождение участка</label>
-                    <ReactQuill value={this.state.address} onChange={this.onInputChange.bind(this, 'address')} />
+                    <ReactQuill value={this.state.address} onChange={this.onInputChange.bind(this, 'address')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                   </div>
 
                   {this.state.geodeticStudy !== '@hide' &&
                     <div className="form-group">
                       <label>Геодезическая изученность</label>
-                      <ReactQuill value={this.state.geodeticStudy} onChange={this.onInputChange.bind(this, 'geodeticStudy')} />
+                      <ReactQuill value={this.state.geodeticStudy} onChange={this.onInputChange.bind(this, 'geodeticStudy')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                     </div>
                   }
 
                   {this.state.engineeringGeologicalStudy !== '@hide' &&
                     <div className="form-group">
                       <label>Инженерно-геологическая изученность</label>
-                      <ReactQuill value={this.state.engineeringGeologicalStudy} onChange={this.onInputChange.bind(this, 'engineeringGeologicalStudy')} />
+                      <ReactQuill value={this.state.engineeringGeologicalStudy} onChange={this.onInputChange.bind(this, 'engineeringGeologicalStudy')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                     </div>
                   }
 
                   <div className="form-group">
                     <label>Планировочная система</label>
-                    <ReactQuill value={this.state.planningSystem} onChange={this.onInputChange.bind(this, 'planningSystem')} />
+                    <ReactQuill value={this.state.planningSystem} onChange={this.onInputChange.bind(this, 'planningSystem')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                   </div>
                 </div>
 
@@ -702,32 +703,32 @@ export default class ShowApz extends React.Component {
                   <h5>{counter++}. Характеристика проектируемого объекта</h5>
                   <div className="form-group">
                     <label>Функциональное значение объекта</label>
-                    <ReactQuill value={this.state.functionalValueOfObject} onChange={this.onInputChange.bind(this, 'functionalValueOfObject')} />
+                    <ReactQuill value={this.state.functionalValueOfObject} onChange={this.onInputChange.bind(this, 'functionalValueOfObject')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                   </div>
 
                   {this.state.floorSum !== '@hide' &&
                     <div className="form-group">
                       <label>Этажность</label>
-                      <ReactQuill value={this.state.floorSum} onChange={this.onInputChange.bind(this, 'floorSum')} />
+                      <ReactQuill value={this.state.floorSum} onChange={this.onInputChange.bind(this, 'floorSum')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                     </div>
                   }
 
                   {this.state.structuralScheme !== '@hide' &&
                     <div className="form-group">
                       <label>Конструктивная схема</label>
-                      <ReactQuill value={this.state.structuralScheme} onChange={this.onInputChange.bind(this, 'structuralScheme')} />
+                      <ReactQuill value={this.state.structuralScheme} onChange={this.onInputChange.bind(this, 'structuralScheme')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                     </div>
                   }
 
                   <div className="form-group">
                     <label>Инженерное обеспечение</label>
-                    <ReactQuill value={this.state.engineeringSupport} onChange={this.onInputChange.bind(this, 'engineeringSupport')} />
+                    <ReactQuill value={this.state.engineeringSupport} onChange={this.onInputChange.bind(this, 'engineeringSupport')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                   </div>
 
                   {this.state.energyEfficiencyClass !== '@hide' &&
                     <div className="form-group">
                       <label>Класс энергоэффективности</label>
-                      <ReactQuill value={this.state.energyEfficiencyClass} onChange={this.onInputChange.bind(this, 'energyEfficiencyClass')} />
+                      <ReactQuill value={this.state.energyEfficiencyClass} onChange={this.onInputChange.bind(this, 'energyEfficiencyClass')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                     </div>
                   }
                 </div>
@@ -739,56 +740,56 @@ export default class ShowApz extends React.Component {
                     {this.state.spatialSolution !== '@hide' &&
                       <div className="form-group">
                         <label>Объемно-пространственное решение</label>
-                        <ReactQuill value={this.state.spatialSolution} onChange={this.onInputChange.bind(this, 'spatialSolution')} />
+                        <ReactQuill value={this.state.spatialSolution} onChange={this.onInputChange.bind(this, 'spatialSolution')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                       </div>
                     }
 
                     {this.state.draftMasterPlan !== '@hide' &&
                       <div className="form-group">
                         <label>Проект генерального плана</label>
-                        <ReactQuill value={this.state.draftMasterPlan} onChange={this.onInputChange.bind(this, 'draftMasterPlan')} />
+                        <ReactQuill value={this.state.draftMasterPlan} onChange={this.onInputChange.bind(this, 'draftMasterPlan')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                       </div>
                     }
 
                     {this.state.verticalLayout !== '@hide' &&
                       <div className="form-group">
                         <label>Вертикальная планировка</label>
-                        <ReactQuill value={this.state.verticalLayout} onChange={this.onInputChange.bind(this, 'verticalLayout')} />
+                        <ReactQuill value={this.state.verticalLayout} onChange={this.onInputChange.bind(this, 'verticalLayout')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                       </div>
                     }
 
                     {this.state.landscapingAndGardening !== '@hide' &&
                       <div className="form-group">
                         <label>Благоустройство и озеленение</label>
-                        <ReactQuill value={this.state.landscapingAndGardening} onChange={this.onInputChange.bind(this, 'landscapingAndGardening')} />
+                        <ReactQuill value={this.state.landscapingAndGardening} onChange={this.onInputChange.bind(this, 'landscapingAndGardening')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                       </div>
                     }
 
                     {this.state.parking !== '@hide' &&
                       <div className="form-group">
                         <label>Парковка автомобилей</label>
-                        <ReactQuill value={this.state.parking} onChange={this.onInputChange.bind(this, 'parking')} />
+                        <ReactQuill value={this.state.parking} onChange={this.onInputChange.bind(this, 'parking')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                       </div>
                     }
 
                     {this.state.useOfFertileSoilLayer !== '@hide' &&
                       <div className="form-group">
                         <label>Использование плодородного слоя почвы</label>
-                        <ReactQuill value={this.state.useOfFertileSoilLayer} onChange={this.onInputChange.bind(this, 'useOfFertileSoilLayer')} />
+                        <ReactQuill value={this.state.useOfFertileSoilLayer} onChange={this.onInputChange.bind(this, 'useOfFertileSoilLayer')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                       </div>
                     }
 
                     {this.state.smallArchitecturalForms !== '@hide' &&
                       <div className="form-group">
                         <label>Малые архитектурные формы</label>
-                        <ReactQuill value={this.state.smallArchitecturalForms} onChange={this.onInputChange.bind(this, 'smallArchitecturalForms')} />
+                        <ReactQuill value={this.state.smallArchitecturalForms} onChange={this.onInputChange.bind(this, 'smallArchitecturalForms')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                       </div>
                     }
 
                     {this.state.lighting !== '@hide' &&
                       <div className="form-group">
                         <label>Освещение</label>
-                        <ReactQuill value={this.state.lighting} onChange={this.onInputChange.bind(this, 'lighting')} />
+                        <ReactQuill value={this.state.lighting} onChange={this.onInputChange.bind(this, 'lighting')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                       </div>
                     }
                   </div>
@@ -798,52 +799,52 @@ export default class ShowApz extends React.Component {
                   <h5>{counter++}. Архитектурные требования</h5>
                   <div className="form-group">
                     <label>Стилистика архитектурного образа</label>
-                    <ReactQuill value={this.state.stylisticsOfArchitecture} onChange={this.onInputChange.bind(this, 'stylisticsOfArchitecture')} />
+                    <ReactQuill value={this.state.stylisticsOfArchitecture} onChange={this.onInputChange.bind(this, 'stylisticsOfArchitecture')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                   </div>
                   <div className="form-group">
                     <label>Характер сочетания с окружающей застройкой</label>
-                    <ReactQuill value={this.state.natureCombination} onChange={this.onInputChange.bind(this, 'natureCombination')} />
+                    <ReactQuill value={this.state.natureCombination} onChange={this.onInputChange.bind(this, 'natureCombination')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                   </div>
 
                   {this.state.colorSolution !== '@hide' &&
                     <div className="form-group">
                       <label>Цветовое решение</label>
-                      <ReactQuill value={this.state.colorSolution} onChange={this.onInputChange.bind(this, 'colorSolution')} />
+                      <ReactQuill value={this.state.colorSolution} onChange={this.onInputChange.bind(this, 'colorSolution')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                     </div>
                   }
 
                   {this.state.advertisingAndInformationSolution !== '@hide' &&
                     <div className="form-group">
                       <label>Рекламно-информационное решение</label>
-                      <ReactQuill value={this.state.advertisingAndInformationSolution} onChange={this.onInputChange.bind(this, 'advertisingAndInformationSolution')} />
+                      <ReactQuill value={this.state.advertisingAndInformationSolution} onChange={this.onInputChange.bind(this, 'advertisingAndInformationSolution')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                     </div>
                   }
 
                   {this.state.nightLighting !== '@hide' &&
                     <div className="form-group">
                       <label>Ночное световое оформление</label>
-                      <ReactQuill value={this.state.nightLighting} onChange={this.onInputChange.bind(this, 'nightLighting')} />
+                      <ReactQuill value={this.state.nightLighting} onChange={this.onInputChange.bind(this, 'nightLighting')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                     </div>
                   }
 
                   {this.state.inputNodes !== '@hide' &&
                     <div className="form-group">
                       <label>Входные узлы</label>
-                      <ReactQuill value={this.state.inputNodes} onChange={this.onInputChange.bind(this, 'inputNodes')} />
+                      <ReactQuill value={this.state.inputNodes} onChange={this.onInputChange.bind(this, 'inputNodes')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                     </div>
                   }
 
                   {this.state.conditionsForLowMobileGroups !== '@hide' &&
                     <div className="form-group">
                       <label>Создание условий для жизнедеятельности маломобильных групп населения</label>
-                      <ReactQuill value={this.state.conditionsForLowMobileGroups} onChange={this.onInputChange.bind(this, 'conditionsForLowMobileGroups')} />
+                      <ReactQuill value={this.state.conditionsForLowMobileGroups} onChange={this.onInputChange.bind(this, 'conditionsForLowMobileGroups')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                     </div>
                   }
 
                   {this.state.complianceNoiseConditions !== '@hide' &&
                     <div className="form-group">
                       <label>Соблюдение условий по звукошумовым показателям</label>
-                      <ReactQuill value={this.state.complianceNoiseConditions} onChange={this.onInputChange.bind(this, 'complianceNoiseConditions')} />
+                      <ReactQuill value={this.state.complianceNoiseConditions} onChange={this.onInputChange.bind(this, 'complianceNoiseConditions')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                     </div>
                   }
                 </div>
@@ -855,14 +856,14 @@ export default class ShowApz extends React.Component {
                     {this.state.plinth !== '@hide' &&
                       <div className="form-group">
                         <label>Цоколь</label>
-                        <ReactQuill value={this.state.plinth} onChange={this.onInputChange.bind(this, 'plinth')} />
+                        <ReactQuill value={this.state.plinth} onChange={this.onInputChange.bind(this, 'plinth')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                       </div>
                     }
 
                     {this.state.facade !== '@hide' &&
                       <div className="form-group">
                         <label>Фасад. Ограждающие конструкций</label>
-                        <ReactQuill value={this.state.facade} onChange={this.onInputChange.bind(this, 'facade')} />
+                        <ReactQuill value={this.state.facade} onChange={this.onInputChange.bind(this, 'facade')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                       </div>
                     }
                   </div>
@@ -872,40 +873,40 @@ export default class ShowApz extends React.Component {
                   <h5>{counter++}. Требования к инженерным сетям</h5>
                   <div className="form-group">
                     <label>Теплоснабжение</label>
-                    <ReactQuill value={this.state.heatSupply} onChange={this.onInputChange.bind(this, 'heatSupply')} />
+                    <ReactQuill value={this.state.heatSupply} onChange={this.onInputChange.bind(this, 'heatSupply')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                   </div>
                   <div className="form-group">
                     <label>Водоснабжение</label>
-                    <ReactQuill value={this.state.waterSupply} onChange={this.onInputChange.bind(this, 'waterSupply')} />
+                    <ReactQuill value={this.state.waterSupply} onChange={this.onInputChange.bind(this, 'waterSupply')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                   </div>
                   <div className="form-group">
                     <label>Канализация</label>
-                    <ReactQuill value={this.state.sewerage} onChange={this.onInputChange.bind(this, 'sewerage')} />
+                    <ReactQuill value={this.state.sewerage} onChange={this.onInputChange.bind(this, 'sewerage')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                   </div>
                   <div className="form-group">
                     <label>Электроснабжение</label>
-                    <ReactQuill value={this.state.powerSupply} onChange={this.onInputChange.bind(this, 'powerSupply')} />
+                    <ReactQuill value={this.state.powerSupply} onChange={this.onInputChange.bind(this, 'powerSupply')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                   </div>
                   <div className="form-group">
                     <label>Газоснабжение</label>
-                    <ReactQuill value={this.state.gasSupply} onChange={this.onInputChange.bind(this, 'gasSupply')} />
+                    <ReactQuill value={this.state.gasSupply} onChange={this.onInputChange.bind(this, 'gasSupply')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                   </div>
                   <div className="form-group">
                     <label>Телекоммуникация и телерадиовещания</label>
-                    <ReactQuill value={this.state.phoneSupply} onChange={this.onInputChange.bind(this, 'phoneSupply')} />
+                    <ReactQuill value={this.state.phoneSupply} onChange={this.onInputChange.bind(this, 'phoneSupply')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                   </div>
 
                   {this.state.drainage !== '@hide' &&
                     <div className="form-group">
                       <label>Дренаж (при необходимости) и ливневая канализация</label>
-                      <ReactQuill value={this.state.drainage} onChange={this.onInputChange.bind(this, 'drainage')} />
+                      <ReactQuill value={this.state.drainage} onChange={this.onInputChange.bind(this, 'drainage')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                     </div>
                   }
 
                   {this.state.irrigationSystems !== '@hide' &&
                     <div className="form-group">
                       <label>Стационарные поливочные системы</label>
-                      <ReactQuill value={this.state.irrigationSystems} onChange={this.onInputChange.bind(this, 'irrigationSystems')} />
+                      <ReactQuill value={this.state.irrigationSystems} onChange={this.onInputChange.bind(this, 'irrigationSystems')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                     </div>
                   }
                 </div>
@@ -916,33 +917,33 @@ export default class ShowApz extends React.Component {
                   {this.state.engineeringSurveysObligation !== '@hide' &&
                     <div className="form-group">
                       <label>По инженерным изысканиям</label>
-                      <ReactQuill value={this.state.engineeringSurveysObligation} onChange={this.onInputChange.bind(this, 'engineeringSurveysObligation')} />
+                      <ReactQuill value={this.state.engineeringSurveysObligation} onChange={this.onInputChange.bind(this, 'engineeringSurveysObligation')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                     </div>
                   }
 
                   {this.state.demolitionObligation !== '@hide' &&
                     <div className="form-group">
                       <label>По сносу (переносу) существующих строений и сооружений</label>
-                      <ReactQuill value={this.state.demolitionObligation} onChange={this.onInputChange.bind(this, 'demolitionObligation')} />
+                      <ReactQuill value={this.state.demolitionObligation} onChange={this.onInputChange.bind(this, 'demolitionObligation')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                     </div>
                   }
 
                   <div className="form-group">
                     <label>По переносу существующих подземных и надземных коммуникаций</label>
-                    <ReactQuill value={this.state.transferCommunicationsObligation} onChange={this.onInputChange.bind(this, 'transferCommunicationsObligation')} />
+                    <ReactQuill value={this.state.transferCommunicationsObligation} onChange={this.onInputChange.bind(this, 'transferCommunicationsObligation')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                   </div>
 
                   {this.state.conservationPlantObligation !== '@hide' &&
                     <div className="form-group">
                       <label>По сохранению и/или пересадке зеленых насаждений</label>
-                      <ReactQuill value={this.state.conservationPlantObligation} onChange={this.onInputChange.bind(this, 'conservationPlantObligation')} />
+                      <ReactQuill value={this.state.conservationPlantObligation} onChange={this.onInputChange.bind(this, 'conservationPlantObligation')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                     </div>
                   }
 
                   {this.state.temporaryFencingConstructionObligation !== '@hide' &&
                     <div className="form-group">
                       <label>По строительству временного ограждения участка</label>
-                      <ReactQuill value={this.state.temporaryFencingConstructionObligation} onChange={this.onInputChange.bind(this, 'temporaryFencingConstructionObligation')} />
+                      <ReactQuill value={this.state.temporaryFencingConstructionObligation} onChange={this.onInputChange.bind(this, 'temporaryFencingConstructionObligation')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                     </div>
                   }
                 </div>
@@ -951,7 +952,7 @@ export default class ShowApz extends React.Component {
                   <div>
                     <h5>{counter++}. Дополнительные требования</h5>
                     <div className="form-group">
-                      <ReactQuill value={this.state.additionalRequirements} onChange={this.onInputChange.bind(this, 'additionalRequirements')} />
+                      <ReactQuill value={this.state.additionalRequirements} onChange={this.onInputChange.bind(this, 'additionalRequirements')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                     </div>
                   </div>
                 }
@@ -959,14 +960,14 @@ export default class ShowApz extends React.Component {
                 <div>
                   <h5>{counter++}. Общие требования</h5>
                   <div className="form-group">
-                    <ReactQuill value={this.state.generalRequirements} onChange={this.onInputChange.bind(this, 'generalRequirements')} />
+                    <ReactQuill value={this.state.generalRequirements} onChange={this.onInputChange.bind(this, 'generalRequirements')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                   </div>
                 </div>
 
                 <div>
                   <h5>Примечания</h5>
                   <div className="form-group">
-                    <ReactQuill value={this.state.notes} onChange={this.onInputChange.bind(this, 'notes')} />
+                    <ReactQuill value={this.state.notes} onChange={this.onInputChange.bind(this, 'notes')} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                   </div>
                 </div>
 
@@ -1040,7 +1041,7 @@ export default class ShowApz extends React.Component {
                   </div>
                   <div className="form-group">
                     <label>Причина отказа</label>
-                    <ReactQuill value={this.state.comment} onChange={this.onCommentChange} />
+                    <ReactQuill value={this.state.comment} onChange={this.onCommentChange} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                   </div>
                 </div>
                 <div className="modal-footer">

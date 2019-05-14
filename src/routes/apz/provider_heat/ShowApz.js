@@ -82,7 +82,7 @@ export default class ShowApz extends React.Component {
             negotiation: "После предварительного согласования с ЦЭР/СВЭР/ЮЭР ТОО «АлТС» проектную документацию (чертежи марки ОВ, ТС, сводный план инженерных сетей) согласовать с Техническим отделом ТОО «АлТС» (тел.: 378-07-00, вн. 1023). \n\nСогласованный проект на бумажном и электронном носителях предоставить в ТОО «АлТС».",
             technicalConditionsTerms: "нормативный период проектирования и строительства, предусмотренный в проектно-сметной документации.",
             isPerformer: (roles.indexOf('PerformerHeat') != -1),
-            isHead: (roles.indexOf('HeadHeatOPR') != -1 || roles.indexOf('HeadHeatPTU') != -1 || roles.indexOf('HeadHeatOR') != -1 || roles.indexOf('HeadHeatERn') != -1),
+            isHead: (roles.indexOf('HeadHeatOPR') != -1 || roles.indexOf('HeadHeatPTU') != -1 || roles.indexOf('HeadHeatOR') != -1 || roles.indexOf('HeadHeatER') != -1),
             isDirector: (roles.indexOf('DirectorHeat') != -1),
             heads_responses: [],
             head_accepted: true,
@@ -91,7 +91,7 @@ export default class ShowApz extends React.Component {
             fileDescription: "",
             heat_directors_id: [],
             customTcFile: null,
-            loaderHidden:true
+            loaderHidden:true,
         };
 
         this.onHeatResourceChange = this.onHeatResourceChange.bind(this);
@@ -602,10 +602,47 @@ export default class ShowApz extends React.Component {
                     this.setState({isSigned: true});
                 }
 
-                this.setState({heads_responses: data.apz_provider_head_response.filter(function(obj) { return obj.role_id === 33 || obj.role_id === 50 || obj.role_id === 51 || obj.role_id === 52 || obj.role_id === 53})});
+                var roles = JSON.parse(sessionStorage.getItem('userRoles'));
+
+                console.log('roles = ' + roles[2]);
+
+                switch (roles[2]){
+                    case 'HeadHeatOPR':
+                        this.setState({heads_responses: data.apz_provider_head_response.filter(function(obj) { return obj.role_id === 50 })});
+                        // console.log('heads_responses = ' + this.state.heads_responses);
+                        break;
+                    case 'HeadHeatPTU':
+                        this.setState({heads_responses: data.apz_provider_head_response.filter(function(obj) { return obj.role_id === 51 })});
+                        break;
+                    case 'HeadHeatOR':
+                        this.setState({heads_responses: data.apz_provider_head_response.filter(function(obj) { return obj.role_id === 52 })});
+                        break;
+                    case 'HeadHeatER':
+                        this.setState({heads_responses: data.apz_provider_head_response.filter(function(obj) { return obj.role_id === 53 })});
+                        break;
+
+                }
+
+
+
+                // this.setState({heads_responses: data.apz_provider_head_response.filter(function(obj) { return obj.role_id === 33 || obj.role_id === 50 || obj.role_id === 51 || obj.role_id === 52 || obj.role_id === 53})});
 
                 if (this.state.isHead && data.apz_provider_head_response.filter(function(obj) { return obj.role_id === 33 && obj.user_id === userId }).length === 0) {
                     this.setState({head_accepted: false});
+                }
+
+                for(var data_index = data.state_history.length-1; data_index >= 0; data_index--){
+                    switch (data.state_history[data_index].state_id) {
+                        case 16:
+                            this.setState({isHead: true});
+                            break;
+                        case 3:
+                            this.setState({lastDecisionIsMO: true});
+                            break;
+                        default:
+                            continue;
+                    }
+                    break;
                 }
             }
         }.bind(this)
@@ -837,14 +874,20 @@ export default class ShowApz extends React.Component {
 
         var formData = new FormData();
         formData.append('status', status);
-        formData.append('comment', comment);
+        formData.append('message', comment);
 
-        xhr.open("post", window.url + "api/apz/provider/headheat/" + apzId + '/response', true);
+        var roles = JSON.parse(sessionStorage.getItem('userRoles'));
+
+        console.log('roles = ' + roles[2]);
+
+        xhr.open("post", window.url + "api/apz/provider/" + roles[2] + "/" + apzId + '/' + status + '/response', true);
+
         xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.onload = function () {
             if (xhr.status === 200) {
                 var data = JSON.parse(xhr.responseText);
                 alert('Комментарий успешно добавлен');
+                console.log('data =  ' + data.head_responses);
                 this.setState({head_accepted: true});
                 this.setState({heads_responses: data.head_responses});
             } else if (xhr.status === 401) {
@@ -1045,7 +1088,7 @@ export default class ShowApz extends React.Component {
             <div className="row">
                 <div className="col-sm-12">
                     <AllInfo toggleMap={this.toggleMap.bind(this, true)} apz={this.state.apz} personalIdFile={this.state.personalIdFile} confirmedTaskFile={this.state.confirmedTaskFile} titleDocumentFile={this.state.titleDocumentFile}
-                             historygoBack={this.props.history.goBack} additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification}/>
+                             historygoBack={this.props.history.goBack} additionalFile={this.state.additionalFile} claimedCapacityJustification={this.state.claimedCapacityJustification} isHead={this.state.isHead}/>
                     {apz.apz_heat.heatDistribution && apz.apz_heat.blocks &&
                     <div>
                         <div>Разделение нагрузки</div>
@@ -1098,6 +1141,7 @@ export default class ShowApz extends React.Component {
                     </div>
                     }
 
+                    {console.log('heads_responses = ' + this.state.heads_responses)}
                     {(!this.state.isHead && !this.state.isDirector) && this.state.heads_responses.length > 0 &&
                     <div style={{marginBottom: '50px'}}>
                         <h5 className="block-title-2 mt-4 mb-3">Комментарии:</h5>
@@ -1127,10 +1171,10 @@ export default class ShowApz extends React.Component {
                     }
 
                     <div className="row provider_answer_top" style={{margin: '16px 0 0'}}>
-                        {(this.state.isPerformer === true || this.state.responseId != 0) &&
-                        <div className="col-sm-6 pl-0">
-                            <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ</h5>
-                        </div>
+                        {(this.state.isPerformer || this.state.responseId != 0) &&
+                            <div className="col-sm-6 pl-0">
+                                <h5 className="block-title-2 mt-3 mb-3" style={{display: 'inline'}}>Ответ</h5>
+                            </div>
                         }
                         <div className="col-sm-6 pr-0">
                             {this.state.showButtons && !this.state.isSigned && this.state.isPerformer &&
@@ -1632,7 +1676,7 @@ export default class ShowApz extends React.Component {
                         </tbody>
                     </table>
                     }
-
+                    {console.log(this.state.heads_responses)}
                     {this.state.heads_responses.length > 0 &&
                     <div>
                         <h5 className="block-title-2 mt-4 mb-3">Комментарии:</h5>
@@ -1661,7 +1705,7 @@ export default class ShowApz extends React.Component {
                     </div>
                     }
 
-                    {this.state.isHead &&
+                    {this.state.isHead && this.state.heads_responses.length === 0 &&
                     <div className={this.state.showButtons ? '' : 'invisible'}>
                         <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                             <textarea style={{marginBottom: '10px'}} placeholder="Комментарий" rows="7" cols="50" className="form-control" value={this.state.headComment} onChange={this.onHeadCommentChange}></textarea>

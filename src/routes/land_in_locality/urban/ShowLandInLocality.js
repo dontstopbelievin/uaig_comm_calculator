@@ -24,6 +24,8 @@ export default class ShowLandInLocality extends React.Component {
         personalIdFile: false,
         landLocationSchemeFile: false,
         actChooseLandFile: false,
+        paymentFile: false,
+        rightLandInLocalityFile: false,
         needSign: false,
         lastDecisionIsMO: false,
         backFromHead: false,
@@ -89,6 +91,8 @@ export default class ShowLandInLocality extends React.Component {
           this.setState({personalIdFile: response.files.filter(function(obj) { return obj.category_id === 3 })[0]});
           this.setState({landLocationSchemeFile: response.files.filter(function(obj) { return obj.category_id === 42 })[0]});
           this.setState({actChooseLandFile: response.files.filter(function(obj) { return obj.category_id === 43 })[0]});
+          this.setState({paymentFile: response.files.filter(function(obj) { return obj.category_id === 44 })[0]});
+          this.setState({rightLandInLocalityFile: response.files.filter(function(obj) { return obj.category_id === 45 })[0]});
           this.setState({backFromHead: response.state_history.filter(function(obj) { return obj.state_id === 9 })[0]});
           this.setState({showButtons: false});
           for(var data_index = response.state_history.length-1; data_index >= 0; data_index--){
@@ -105,7 +109,7 @@ export default class ShowLandInLocality extends React.Component {
           }
 
           if(response.head_id){this.setState({head_id: response.head_id});}
-          if(response.status_id === 3) {
+          if(response.status_id === 3 || response.status_id === 6 || response.status_id === 7) {
             this.setState({showButtons: true});
           }
 
@@ -147,10 +151,10 @@ export default class ShowLandInLocality extends React.Component {
       this.setState({ theme: e.target.value });
     }
 
-    acceptDeclineForm(applicationId, status, comment) {
+    acceptDeclineForm(applicationId, status, comment, filetype) {
       var token = sessionStorage.getItem('tokenInfo');
 
-      if (status && !this.state.actChooseLandFile) {
+      if ((filetype == 'act' && status && !this.state.actChooseLandFile) || (filetype == 'right' && status && !this.state.rightLandInLocalityFile)) {
         alert('Закрепите файл!');
         return false;
       }
@@ -165,8 +169,13 @@ export default class ShowLandInLocality extends React.Component {
         message: comment,
         head_id: this.state.head_id,
         theme: this.state.theme,
-        file: this.state.actChooseLandFile
       };
+
+      if(filetype == 'act'){
+        registerData['file'] = this.state.actChooseLandFile
+      }else{
+        registerData['file'] = this.state.rightLandInLocalityFile
+      }
 
       var data = JSON.stringify(registerData);
 
@@ -248,6 +257,9 @@ export default class ShowLandInLocality extends React.Component {
               case 43:
                 this.setState({actChooseLandFile: data});
                 break;
+              case 45:
+                this.setState({rightLandInLocalityFile: data});
+                break;
               default:
             }
             alert("Файл успешно загружен");
@@ -261,8 +273,8 @@ export default class ShowLandInLocality extends React.Component {
     }
 
     showSignBtns() {
-      if(!this.state.actChooseLandFile){
-        alert("Загрузите файл акта выбора земельного участка");
+      if((this.state.landinlocality.status_id == 3 && !this.state.actChooseLandFile) || (this.state.landinlocality.status_id == 7 && !this.state.rightLandInLocalityFile)){
+        alert("Загрузите файл");
         return false;
       }
       this.setState({needSign: true });
@@ -307,33 +319,58 @@ export default class ShowLandInLocality extends React.Component {
               </button>
 
               <Answers backFromHead={this.state.backFromHead} landinlocality_id={this.state.landinlocality.id} lastDecisionIsMO={this.state.lastDecisionIsMO}
-                       actChooseLandFile={this.state.actChooseLandFile} landinlocality_status={this.state.landinlocality.status_id}/>
+                       actChooseLandFile={this.state.actChooseLandFile} rightLandInLocalityFile={this.state.rightLandInLocalityFile} landinlocality_status={this.state.landinlocality.status_id}
+                       paymentFile={this.state.paymentFile}/>
 
               <div className={this.state.showButtons ? '' : 'invisible'}>
                 <div className="btn-group" role="group" aria-label="acceptOrDecline" style={{margin: 'auto', marginTop: '20px', display: 'table'}}>
                   {!this.state.needSign ?
                     <div style={{margin: 'auto', display: 'table'}}>
-                      <div className="file_container">
-                        <div className="col-md-12">
-                          <div className="progress mb-2" data-category="43" style={{height: '20px', display: 'none'}}>
-                            <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
-                        </div>
-                        {this.state.actChooseLandFile &&
-                          <div className="file_block mb-2">
-                            <div>
-                              {this.state.actChooseLandFile.name}
-                              <a className="pointer" onClick={(e) => this.setState({actChooseLandFile: false}) }>×</a>
+                      {this.state.landinlocality.status_id == 3 ?
+                        <div className="file_container">
+                          <div className="col-md-12">
+                            <div className="progress mb-2" data-category="43" style={{height: '20px', display: 'none'}}>
+                              <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                           </div>
-                        }
-                        <div className="file_buttons btn-group btn-group-justified d-table mt-0">
-                          <label><h6>Акт выбора земельного участка</h6></label>
-                          <label htmlFor="actChooseLandFile" className="btn btn-success" style={{marginLeft: '5px'}}>Загрузить</label>
-                          <input type="file" id="actChooseLandFile" name="actChooseLandFile" className="form-control" onChange={this.uploadFile.bind(this, 43)} style={{display: 'none'}} />
+                          {this.state.actChooseLandFile &&
+                            <div className="file_block mb-2">
+                              <div>
+                                {this.state.actChooseLandFile.name}
+                                <a className="pointer" onClick={(e) => this.setState({actChooseLandFile: false}) }>×</a>
+                              </div>
+                            </div>
+                          }
+                          <div className="file_buttons btn-group btn-group-justified d-table mt-0">
+                            <label><h6>Акт выбора земельного участка</h6></label>
+                            <label htmlFor="actChooseLandFile" className="btn btn-success" style={{marginLeft: '5px'}}>Загрузить</label>
+                            <input type="file" id="actChooseLandFile" name="actChooseLandFile" className="form-control" onChange={this.uploadFile.bind(this, 43)} style={{display: 'none'}} />
+                          </div>
+                          <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
                         </div>
-                        <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
-                      </div>
+                        :
+                        <div className="file_container">
+                          <div className="col-md-12">
+                            <div className="progress mb-2" data-category="45" style={{height: '20px', display: 'none'}}>
+                              <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{width: '0%'}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                          </div>
+                          {this.state.rightLandInLocalityFile &&
+                            <div className="file_block mb-2">
+                              <div>
+                                {this.state.rightLandInLocalityFile.name}
+                                <a className="pointer" onClick={(e) => this.setState({rightLandInLocalityFile: false}) }>×</a>
+                              </div>
+                            </div>
+                          }
+                          <div className="file_buttons btn-group btn-group-justified d-table mt-0">
+                            <label><h6>Права землепользования на земельный участок</h6></label>
+                            <label htmlFor="rightLandInLocalityFile" className="btn btn-success" style={{marginLeft: '5px'}}>Загрузить</label>
+                            <input type="file" id="rightLandInLocalityFile" name="rightLandInLocalityFile" className="form-control" onChange={this.uploadFile.bind(this, 45)} style={{display: 'none'}} />
+                          </div>
+                          <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
+                        </div>
+                      }
                       <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.showSignBtns.bind(this)}>Поставить подпись</button>
                       <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnForm">
                           Вернуть на доработку
@@ -350,7 +387,7 @@ export default class ShowLandInLocality extends React.Component {
                               {this.state.head_ids}
                             </select>
                             <div>
-                              <button type="button" className="btn btn-raised btn-success" onClick={this.acceptDeclineForm.bind(this, this.state.landinlocality.id, true, "")}>Отправить главному архитектору</button>
+                              <button type="button" className="btn btn-raised btn-success" onClick={this.acceptDeclineForm.bind(this, this.state.landinlocality.id, true, this.state.landinlocality.status_id == 3 ? 'act': 'right')}>Отправить главному архитектору</button>
                             </div>
                           </div>
                       }

@@ -43,7 +43,7 @@ export default class ReturnBack extends React.Component {
                     </div>
                     <div className="form-group">
                       <label>Причина отказа</label>
-                      <ReactQuill value={this.props.comment || ''} onChange={this.props.onCommentChange} />
+                      <ReactQuill value={this.props.comment || ''} onChange={this.props.onCommentChange} formats={['formats/em','formats/hr', 'em', 'hr']}  />
                     </div>
                   </div>
                   <div className="modal-footer">
