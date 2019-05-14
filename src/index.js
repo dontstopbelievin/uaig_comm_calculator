@@ -97,6 +97,15 @@ import HeadAllReshapeToRelig from "./routes/reshape_to_relig/head/AllApplication
 import HeadShowReshapeToRelig from "./routes/reshape_to_relig/head/ShowApplication";
 import AllReshapeToReligHistory from "./routes/reshape_to_relig/components/AllApplicationsHistory";
 
+import CitizenAllPhotoReport from "./routes/photo_report/citizen/AllApplications";
+import CitizenAddPhotoReport from "./routes/photo_report/citizen/AddApplication";
+import CitizenShowPhotoReport from "./routes/photo_report/citizen/ShowApplication";
+import UrbanAllPhotoReport from "./routes/photo_report/urban/AllApplications";
+import UrbanShowPhotoReport from "./routes/photo_report/urban/ShowApplication";
+import HeadAllPhotoReport from "./routes/photo_report/head/AllApplications";
+import HeadShowPhotoReport from "./routes/photo_report/head/ShowApplication";
+import AllPhotoReportHistory from "./routes/photo_report/components/AllApplicationsHistory";
+
 import Actions from "./routes/Actions";
 import LawyerAllApzs from "./routes/apz/lawyer/AllApzs";
 import LawyerShowApz from "./routes/apz/lawyer/ShowApz";
@@ -130,20 +139,20 @@ export default class Main extends React.Component {
     componentWillMount() {
         this.setLang();
 
-        window.url = 'https://api.uaig.kz:8843/';
+        // window.url = 'https://api.uaig.kz:8843/';
         // window.url = 'http://api.uaig.kz:8880/';
         // window.url = 'http://192.168.0.231/';
         // window.url = 'http://shymkentback.uaig.kz/';
-        window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
+        // window.clientSecret = 'bQ9kWmn3Fq51D6bfh7pLkuju0zYqTELQnzeKuQM4'; // SERVER
 
         // window.url = 'http://uaig/';
-        // window.url = 'http://uaig.local/';
+        window.url = 'http://uaig.local/';
         //window.clientSecret = 'cYwXsxzsXtmca6BfALhYtDfGXIQy3PxdXIhY9ZxP'; // dimash
         //window.clientSecret = 'G0TMZKoKPW4hXZ9hXUCfq7KYxENEqB6AaQgzmIt9'; // zhalgas
         // window.clientSecret = 'fuckaduckmotherfucker'; // aman
         // window.clientSecret = 'saJNJSmE3nUg22fThaUuQfCChKFeYjLE8cscRTfu'; // taiyr
         // window.clientSecret = '7zdU2XDblqORFq8wbQHlNRaIgEBR90qbMYnnVWDg'; // yernar
-        // window.clientSecret = 'TPzBTua5JvfgKAnhQiThXu03DWSh1xyiZ9T8VHDn'; // medet
+        window.clientSecret = 'TPzBTua5JvfgKAnhQiThXu03DWSh1xyiZ9T8VHDn'; // medet
     }
 
     breadCrumbs() {
@@ -337,6 +346,16 @@ export default class Main extends React.Component {
                                         <Route path="/panel/urban/reshapetorelig/show/:id" exact render={(props) =>(<UrbanShowReshapeToRelig {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/head/reshapetorelig/status/:status/:page" render={(props) => ( <HeadAllReshapeToRelig {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                                         <Route path="/panel/head/reshapetorelig/show/:id" exact render={(props) =>(<HeadShowReshapeToRelig {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+
+                                        <Route path="/panel/photoreport/all_history/:user_id/:page" exact render={(props) =>(<AllPhotoReportHistory {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/photoreport/status/:status/:page" render={(props) => ( <CitizenAllPhotoReport {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/citizen/photoreport/show/:id" exact render={(props) =>(<CitizenShowPhotoReport {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/photoreport/add" exact render={(props) =>(<CitizenAddPhotoReport {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/photoreport/edit/:id" exact render={(props) =>(<CitizenAddPhotoReport {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/urban/photoreport/status/:status/:page" render={(props) => ( <UrbanAllPhotoReport {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/urban/photoreport/show/:id" exact render={(props) =>(<UrbanShowPhotoReport {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/head/photoreport/status/:status/:page" render={(props) => ( <HeadAllPhotoReport {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/head/photoreport/show/:id" exact render={(props) =>(<HeadShowPhotoReport {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
                                         <Redirect from="/" to="/panel/base-page" />
                                     </Switch>
