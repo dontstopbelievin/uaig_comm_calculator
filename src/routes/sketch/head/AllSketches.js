@@ -122,7 +122,9 @@ export default class AllSketches extends React.Component {
           return (
               <div>
                   <div className="card-header">
-                      <h4 className="mb-0">Эскизные проекты</h4>
+                      <h4 className="mb-0">Эскизные проекты
+                        <NavLink to="/panel/common/export_to_excel"><img title="Экспорт в excel" src='/images/excelicon.png' className="export_image" alt="export excel"/></NavLink>
+                      </h4>
                   </div>
                   {this.state.loaderHidden &&
                   <div>
