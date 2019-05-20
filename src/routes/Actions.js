@@ -213,10 +213,36 @@ export default class CitizenActions extends React.Component {
               </div>
             }
             {this.state.welcome_texts[2] &&
-              <div className="apzinfo1">
-                <div className="time1">
-                  <h4>{service3.name}</h4>
-                  <p>{service3.description}</p>
+              <div className="apzinfo">
+                <div className = "time">
+                   <p>{service3.description}</p>
+                </div>
+                <div className="packages">
+                   <p><strong>Срок рассмотрения заявления:</strong></p>
+                   <li>{service3.period}</li>
+                   <br></br>
+                   <p><strong>Необходимый перечень документов для получения услуги:</strong></p>
+                   {service3.list_of_documents[0].split(';').map(function(item, index) {
+                       return(
+                         <li key={index}>{index+1}) {item};</li>
+                       )
+                   })}
+                </div>
+                <div className="apzinfo-bottom">
+                    <div className="card-button">
+                    {/*<button type="button" onClick={this.InProcess} className="btn btn-secondary">Перейти к заявке</button>*/}
+                    {/*{this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/panel/citizen/photoreport/status/active/1"} replace className="btn btn-primary">Подать заявку</NavLink>}*/}
+                    {/*{this.state.tokenExists && this.state.rolename === 'Region' && <NavLink to={"/panel/urban/photoreport/status/active/1"} replace className="btn btn-primary">Просмотр заявок</NavLink>}*/}
+                    {/*{this.state.tokenExists && this.state.rolename === 'Head' && <NavLink to={"/panel/head/photoreport/status/active/1"} replace className="btn btn-primary">Просмотр заявок</NavLink>}*/}
+                    {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/panel/citizen/photoreport/status/active/1"} replace className="btn btn-primary">Подать заявку</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Region' && <NavLink to={"/panel/urban/photoreport/status/active/1"} replace className="btn btn-primary">Просмотр заявок</NavLink>}
+                    {this.state.tokenExists && this.state.rolename === 'Head' && <NavLink to={"/panel/head/photoreport/status/active/1"} replace className="btn btn-primary">Просмотр заявок</NavLink>}
+                    {!this.state.tokenExists && <AlertModal />}
+                    <div className="reglament">
+                        <a href="http://adilet.zan.kz/rus/docs/V14S0002879">Регламент Гос. услуги</a>
+                        <a href="http://adilet.zan.kz/rus/docs/V1500011183">Стандарт Гос. услуги</a>
+                      </div>
+                    </div>
                 </div>
               </div>
             }
@@ -300,6 +326,7 @@ export default class CitizenActions extends React.Component {
                       {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/panel/citizen/propertyaddress/status/active/1"} replace className="btn btn-primary">Подать заявку</NavLink>}
                       {this.state.tokenExists && this.state.rolename === 'Region' && <NavLink to={"/panel/urban/propertyaddress/status/active/1"} replace className="btn btn-primary">Просмотр заявок</NavLink>}
                       {this.state.tokenExists && this.state.rolename === 'Head' && <NavLink to={"/panel/head/propertyaddress/status/active/1"} replace className="btn btn-primary">Просмотр заявок</NavLink>}
+                      {!this.state.tokenExists && <AlertModal />}
                       <div className="reglament">
                         <a href="http://adilet.zan.kz/rus/docs/V13K0002400">Регламент Гос. услуги</a>
                         <a href="http://adilet.zan.kz/rus/docs/V1500011018">Стандарт Гос. услуги</a>
@@ -330,6 +357,7 @@ export default class CitizenActions extends React.Component {
                     {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/panel/citizen/religbuilding/status/active/1"} replace className="btn btn-primary">Подать заявку</NavLink>}
                     {this.state.tokenExists && this.state.rolename === 'Region' && <NavLink to={"/panel/urban/religbuilding/status/active/1"} replace className="btn btn-primary">Просмотр заявок</NavLink>}
                     {this.state.tokenExists && this.state.rolename === 'Head' && <NavLink to={"/panel/head/religbuilding/status/active/1"} replace className="btn btn-primary">Просмотр заявок</NavLink>}
+                    {!this.state.tokenExists && <AlertModal />}
                     <div className="reglament">
                         <a href="http://adilet.zan.kz/rus/docs/V14S0002879">Регламент Гос. услуги</a>
                         <a href="http://adilet.zan.kz/rus/docs/V1500011183">Стандарт Гос. услуги</a>
@@ -360,6 +388,7 @@ export default class CitizenActions extends React.Component {
                         {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/panel/citizen/reshapetorelig/status/active/1"} replace className="btn btn-primary">Подать заявку</NavLink>}
                         {this.state.tokenExists && this.state.rolename === 'Region' && <NavLink to={"/panel/urban/reshapetorelig/status/active/1"} replace className="btn btn-primary" >Просмотр заявок</NavLink>}
                         {this.state.tokenExists && this.state.rolename === 'Head' && <NavLink to={"/panel/head/reshapetorelig/status/active/1"} replace className="btn btn-primary" >Просмотр заявок</NavLink>}
+                        {!this.state.tokenExists && <AlertModal />}
                       <div className="reglament">
                         <a href="">Регламент Гос. услуги</a>
                         <a href="">Стандарт Гос. услуги</a>

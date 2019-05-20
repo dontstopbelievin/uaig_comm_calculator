@@ -97,6 +97,15 @@ import HeadAllReshapeToRelig from "./routes/reshape_to_relig/head/AllApplication
 import HeadShowReshapeToRelig from "./routes/reshape_to_relig/head/ShowApplication";
 import AllReshapeToReligHistory from "./routes/reshape_to_relig/components/AllApplicationsHistory";
 
+import CitizenAllPhotoReport from "./routes/photo_report/citizen/AllApplications";
+import CitizenAddPhotoReport from "./routes/photo_report/citizen/AddApplication";
+import CitizenShowPhotoReport from "./routes/photo_report/citizen/ShowApplication";
+import UrbanAllPhotoReport from "./routes/photo_report/urban/AllApplications";
+import UrbanShowPhotoReport from "./routes/photo_report/urban/ShowApplication";
+import HeadAllPhotoReport from "./routes/photo_report/head/AllApplications";
+import HeadShowPhotoReport from "./routes/photo_report/head/ShowApplication";
+import AllPhotoReportHistory from "./routes/photo_report/components/AllApplicationsHistory";
+
 import Actions from "./routes/Actions";
 import LawyerAllApzs from "./routes/apz/lawyer/AllApzs";
 import LawyerShowApz from "./routes/apz/lawyer/ShowApz";
@@ -337,6 +346,16 @@ export default class Main extends React.Component {
                                         <Route path="/panel/urban/reshapetorelig/show/:id" exact render={(props) =>(<UrbanShowReshapeToRelig {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
                                         <Route path="/panel/head/reshapetorelig/status/:status/:page" render={(props) => ( <HeadAllReshapeToRelig {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
                                         <Route path="/panel/head/reshapetorelig/show/:id" exact render={(props) =>(<HeadShowReshapeToRelig {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+
+                                        <Route path="/panel/photoreport/all_history/:user_id/:page" exact render={(props) =>(<AllPhotoReportHistory {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/photoreport/status/:status/:page" render={(props) => ( <CitizenAllPhotoReport {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/citizen/photoreport/show/:id" exact render={(props) =>(<CitizenShowPhotoReport {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/photoreport/add" exact render={(props) =>(<CitizenAddPhotoReport {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/citizen/photoreport/edit/:id" exact render={(props) =>(<CitizenAddPhotoReport {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/urban/photoreport/status/:status/:page" render={(props) => ( <UrbanAllPhotoReport {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/urban/photoreport/show/:id" exact render={(props) =>(<UrbanShowPhotoReport {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
+                                        <Route path="/panel/head/photoreport/status/:status/:page" render={(props) => ( <HeadAllPhotoReport {...props} breadCrumbs={this.breadCrumbs.bind(this)}/> )} />
+                                        <Route path="/panel/head/photoreport/show/:id" exact render={(props) =>(<HeadShowPhotoReport {...props} breadCrumbs={this.breadCrumbs.bind(this)} />)} />
 
                                         <Redirect from="/" to="/panel/base-page" />
                                     </Switch>
