@@ -312,7 +312,7 @@ export default class ShowSketch extends React.Component {
                 <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                     {this.state.showMapText}
                 </button>
-
+                    {console.log(this.state.sketch)}
                 <Answers  isSent={this.state.isSent} engineerReturnedState={this.state.engineerReturnedState} apzReturnedState={this.state.apzReturnedState}
                 sketch_id={this.state.sketch.id} urban_response={this.state.sketch.urban_response} lastDecisionIsMO = {this.state.lastDecisionIsMO} />
 
@@ -337,7 +337,7 @@ export default class ShowSketch extends React.Component {
                           }
                           {(!this.state.response || this.state.isBack )?
                                <div className="text-center">
-                                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled="disabled">Одобрить</button>
+                                  <button className="btn btn-raised btn-success" style={{marginRight: '5px'}} disabled="disabled">Одобрить123</button>
                                   <button className="btn btn-raised btn-danger" data-toggle="modal"  data-target="#ReturnApzForm">
                                       Отклонить
                                   </button>

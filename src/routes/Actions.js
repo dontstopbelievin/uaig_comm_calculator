@@ -324,7 +324,7 @@ export default class CitizenActions extends React.Component {
                     <div className="card-button">
                       {/*<button type="button" onClick={this.InProcess} className="btn btn-secondary">Перейти к заявке</button>*/}
                       {this.state.tokenExists && this.state.rolename === 'Citizen' && <NavLink to={"/panel/citizen/propertyaddress/status/active/1"} replace className="btn btn-primary">Подать заявку</NavLink>}
-                      {this.state.tokenExists && this.state.rolename === 'Region' && <NavLink to={"/panel/urban/propertyaddress/status/active/1"} replace className="btn btn-primary">Просмотр заявок</NavLink>}
+                      {this.state.tokenExists && this.state.rolename === 'HeadPropertyAddress' && <NavLink to={"/panel/urban/propertyaddress/status/active/1"} replace className="btn btn-primary">Просмотр заявок</NavLink>}
                       {this.state.tokenExists && this.state.rolename === 'Head' && <NavLink to={"/panel/head/propertyaddress/status/active/1"} replace className="btn btn-primary">Просмотр заявок</NavLink>}
                       {!this.state.tokenExists && <AlertModal />}
                       <div className="reglament">

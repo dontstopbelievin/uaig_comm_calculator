@@ -45,10 +45,12 @@ export default class ShowApplication extends React.Component {
         if (xhr.status === 200) {
           var propertyaddress = JSON.parse(xhr.responseText);
           this.setState({propertyaddress: propertyaddress});
-          // console.log(propertyaddress);
           this.setState({personalIdFile: propertyaddress.files.filter(function(obj) { return obj.category_id === 3 })[0]});
           this.setState({landLocationSchemeFile: propertyaddress.files.filter(function(obj) { return obj.category_id === 42 })[0]});
           this.setState({actChooseLandFile: propertyaddress.files.filter(function(obj) { return obj.category_id === 43 })[0]});
+
+          console.log(this.state.actChooseLandFile);
+
           this.setState({loaderHidden: true});
         } else if (xhr.status === 401) {
           sessionStorage.clear();
@@ -296,7 +298,7 @@ export default class ShowApplication extends React.Component {
               <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
                 {this.state.showMapText}
               </button>
-
+                {console.log(this.state.actChooseLandFile)}
               <Answers backFromHead={this.state.backFromHead} propertyaddress_id={this.state.propertyaddress.id}
                        actChooseLandFile={this.state.actChooseLandFile} propertyaddress_status={this.state.propertyaddress.status_id}/>
 

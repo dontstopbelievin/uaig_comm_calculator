@@ -60,6 +60,7 @@ export default class ShowSketch extends React.Component {
         this.setState({sketchFilePDF: sketch.files.filter(function(obj) { return obj.category_id === 40 })[0]});
         this.setState({engineerReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 6})[0]});
         this.setState({apzReturnedState: sketch.state_history.filter(function(obj) { return obj.state_id === 17})[0]});
+
         for(var data_index = sketch.state_history.length-1; data_index >= 0; data_index--){
             switch (sketch.state_history[data_index].state_id) {
                 case 2:

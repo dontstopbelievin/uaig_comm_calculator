@@ -77,7 +77,7 @@ export default class ShowApplication extends React.Component {
       var id = this.props.match.params.id;
       var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/property_address/region/detail/" + id, true);
+      xhr.open("get", window.url + "api/property_address/headpropertyaddress/detail/" + id, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
@@ -171,7 +171,7 @@ export default class ShowApplication extends React.Component {
       var data = JSON.stringify(registerData);
 
       var xhr = new XMLHttpRequest();
-      xhr.open("post", window.url + "api/property_address/region/status/" + applicationId, true);
+      xhr.open("post", window.url + "api/property_address/headpropertyaddress/status/" + applicationId, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function () {
@@ -335,14 +335,12 @@ export default class ShowApplication extends React.Component {
                         <span className="help-block text-muted">документ в формате pdf, doc, docx</span>
                       </div>
                       <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.showSignBtns.bind(this)}>Поставить подпись</button>
-                      <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnForm">
-                          Вернуть на доработку
-                      </button>
+                      <button className="btn btn-raised btn-danger" data-toggle="modal" data-target="#ReturnForm">Отказать</button>
                     </div>
                     :
                       <div>
                       { !this.state.xmlFile ?
-                          <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="region" id={this.state.propertyaddress.id} serviceName='property_address'/>
+                          <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="headpropertyaddress" id={this.state.propertyaddress.id} serviceName='property_address'/>
                         :
                           <div style={{paddingLeft:'5px', fontSize: '18px', textAlign:'center'}}>
                             <b>Выберите главного архитектора:</b>

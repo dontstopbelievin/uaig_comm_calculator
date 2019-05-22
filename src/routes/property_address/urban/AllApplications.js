@@ -39,7 +39,7 @@ export default class AllApplications extends React.Component {
 
     var token = sessionStorage.getItem('tokenInfo');
     var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/property_address/region/all/" + status + '?page=' + page, true);
+    xhr.open("get", window.url + "api/property_address/headpropertyaddress/all/" + status + '?page=' + page, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onload = function () {
