@@ -77,7 +77,7 @@ export default class ShowApplication extends React.Component {
       var id = this.props.match.params.id;
       var token = sessionStorage.getItem('tokenInfo');
       var xhr = new XMLHttpRequest();
-      xhr.open("get", window.url + "api/photo_report/region/detail/" + id, true);
+      xhr.open("get", window.url + "api/photo_report/specialistadvertising/detail/" + id, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function() {
@@ -171,7 +171,7 @@ export default class ShowApplication extends React.Component {
       var data = JSON.stringify(registerData);
 
       var xhr = new XMLHttpRequest();
-      xhr.open("post", window.url + "api/photo_report/region/status/" + applicationId, true);
+      xhr.open("post", window.url + "api/photo_report/specialistadvertising/status/" + applicationId, true);
       xhr.setRequestHeader("Authorization", "Bearer " + token);
       xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
       xhr.onload = function () {
@@ -342,7 +342,7 @@ export default class ShowApplication extends React.Component {
                     :
                       <div>
                       { !this.state.xmlFile ?
-                          <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="region" id={this.state.photoreport.id} serviceName='photo_report'/>
+                          <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="specialistadvertising" id={this.state.photoreport.id} serviceName='photo_report'/>
                         :
                           <div style={{paddingLeft:'5px', fontSize: '18px', textAlign:'center'}}>
                             <b>Выберите главного архитектора:</b>
