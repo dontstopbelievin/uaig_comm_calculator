@@ -49,11 +49,15 @@ import ProviderPhoneAllApzs from "./routes/apz/provider_phone/AllApzs";
 import ProviderPhoneShowApz from "./routes/apz/provider_phone/ShowApz";
 import ProviderWaterAllApzs from "./routes/apz/provider_water/AllApzs";
 import ProviderWaterShowApz from "./routes/apz/provider_water/ShowApz";
-import AdminAllApzs from "./routes/admin/AllApzs";
-import AdminShowApz from "./routes/admin/ShowApz";
-import AdminUpdateApz from "./routes/admin/UpdateApz";
-import Admin from './routes/admin/Admin';
-import AddUsers from "./routes/admin/AddUsers";
+
+import { 
+    AllApzs as AdminAllApzs,
+    ShowApz as AdminShowApz,
+    UpdateApz as AdminUpdateApz,
+    Admin,
+    AddUsers
+} from './routes/admin';
+
 import OfficeAllApzs from "./routes/office/AllApzs";
 import OfficeShowApz from "./routes/office/ShowApz";
 import FilesAll from "./routes/files/AllFiles";

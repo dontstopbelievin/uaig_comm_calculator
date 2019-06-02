@@ -4,7 +4,7 @@ import 'jquery-serializejson';
 import Loader from 'react-loader-spinner';
 import ShowMap from "./ShowMap";
 
-export default class ShowApz extends React.Component {
+class ShowApz extends React.Component {
   constructor(props) {
     super(props);
 
@@ -51,58 +51,58 @@ export default class ShowApz extends React.Component {
     xhr.open("get", window.url + "api/apz/admin/detail/" + id, true);
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function() {
+    xhr.onload = function () {
       if (xhr.status === 200) {
         var apz = JSON.parse(xhr.responseText);
         var commission = apz.commission;
         //console.log(apz.files);
-        this.setState({apz: apz});
-        this.setState({personalIdFile: apz.files.filter(function(obj) { return obj.category_id === 3 })[0]});
-        this.setState({confirmedTaskFile: apz.files.filter(function(obj) { return obj.category_id === 9 })[0]});
-        this.setState({titleDocumentFile: apz.files.filter(function(obj) { return obj.category_id === 10 })[0]});
-        this.setState({additionalFile: apz.files.filter(function(obj) { return obj.category_id === 27 })[0]});
-        this.setState({paymentPhotoFile: apz.files.filter(function(obj) { return obj.category_id === 20 })[0]});
-        var pack2IdFile = apz.files.filter(function(obj) { return obj.category_id === 25 }) ?
-          apz.files.filter(function(obj) { return obj.category_id === 25 }) : [];
-        if ( pack2IdFile.length > 0 ) {
-          this.setState({pack2IdFile: pack2IdFile[0]});
+        this.setState({ apz: apz });
+        this.setState({ personalIdFile: apz.files.filter(function (obj) { return obj.category_id === 3 })[0] });
+        this.setState({ confirmedTaskFile: apz.files.filter(function (obj) { return obj.category_id === 9 })[0] });
+        this.setState({ titleDocumentFile: apz.files.filter(function (obj) { return obj.category_id === 10 })[0] });
+        this.setState({ additionalFile: apz.files.filter(function (obj) { return obj.category_id === 27 })[0] });
+        this.setState({ paymentPhotoFile: apz.files.filter(function (obj) { return obj.category_id === 20 })[0] });
+        var pack2IdFile = apz.files.filter(function (obj) { return obj.category_id === 25 }) ?
+          apz.files.filter(function (obj) { return obj.category_id === 25 }) : [];
+        if (pack2IdFile.length > 0) {
+          this.setState({ pack2IdFile: pack2IdFile[0] });
         }
 
         if (apz.status_id === 1 || apz.status_id === 2) {
 
           if (commission) {
             if (commission.apz_water_response && commission.apz_water_response.files) {
-              this.setState({waterResponseFile: commission.apz_water_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-              this.setState({waterCustomTcFile: commission.apz_water_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
+              this.setState({ waterResponseFile: commission.apz_water_response.files.filter(function (obj) { return obj.category_id === 11 || obj.category_id === 12 })[0] });
+              this.setState({ waterCustomTcFile: commission.apz_water_response.files.filter(function (obj) { return obj.category_id === 23 })[0] });
             }
 
             if (commission.apz_electricity_response && commission.apz_electricity_response.files) {
-              this.setState({electroResponseFile: commission.apz_electricity_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-              this.setState({electroCustomTcFile: commission.apz_electricity_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
+              this.setState({ electroResponseFile: commission.apz_electricity_response.files.filter(function (obj) { return obj.category_id === 11 || obj.category_id === 12 })[0] });
+              this.setState({ electroCustomTcFile: commission.apz_electricity_response.files.filter(function (obj) { return obj.category_id === 23 })[0] });
             }
 
             if (commission.apz_phone_response && commission.apz_phone_response.files) {
-              this.setState({phoneResponseFile: commission.apz_phone_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-              this.setState({phoneCustomTcFile: commission.apz_phone_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
+              this.setState({ phoneResponseFile: commission.apz_phone_response.files.filter(function (obj) { return obj.category_id === 11 || obj.category_id === 12 })[0] });
+              this.setState({ phoneCustomTcFile: commission.apz_phone_response.files.filter(function (obj) { return obj.category_id === 23 })[0] });
             }
 
             if (commission.apz_heat_response && commission.apz_heat_response.files) {
-              this.setState({heatResponseFile: commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-              this.setState({heatCustomTcFile: commission.apz_heat_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
+              this.setState({ heatResponseFile: commission.apz_heat_response.files.filter(function (obj) { return obj.category_id === 11 || obj.category_id === 12 })[0] });
+              this.setState({ heatCustomTcFile: commission.apz_heat_response.files.filter(function (obj) { return obj.category_id === 23 })[0] });
             }
 
             if (commission.apz_gas_response && commission.apz_gas_response.files) {
-              this.setState({gasResponseFile: commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
-              this.setState({gasCustomTcFile: commission.apz_gas_response.files.filter(function(obj) { return obj.category_id === 23 })[0]});
+              this.setState({ gasResponseFile: commission.apz_gas_response.files.filter(function (obj) { return obj.category_id === 11 || obj.category_id === 12 })[0] });
+              this.setState({ gasCustomTcFile: commission.apz_gas_response.files.filter(function (obj) { return obj.category_id === 23 })[0] });
             }
           }
 
           if (apz.apz_head_response && apz.apz_head_response.files) {
-            this.setState({headResponseFile: apz.apz_head_response.files.filter(function(obj) { return obj.category_id === 11 || obj.category_id === 12 })[0]});
+            this.setState({ headResponseFile: apz.apz_head_response.files.filter(function (obj) { return obj.category_id === 11 || obj.category_id === 12 })[0] });
           }
         }
 
-        this.setState({loaderHidden: true});
+        this.setState({ loaderHidden: true });
       } else if (xhr.status === 401) {
         sessionStorage.clear();
         alert("Время сессии истекло. Пожалуйста войдите заново!");
@@ -118,49 +118,49 @@ export default class ShowApz extends React.Component {
 
     var xhr = new XMLHttpRequest();
     xhr.open("get", url, true);
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-      xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          var data = JSON.parse(xhr.responseText);
-          var base64ToArrayBuffer = (function () {
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        var base64ToArrayBuffer = (function () {
 
-            return function (base64) {
-              var binaryString =  window.atob(base64);
-              var binaryLen = binaryString.length;
-              var bytes = new Uint8Array(binaryLen);
+          return function (base64) {
+            var binaryString = window.atob(base64);
+            var binaryLen = binaryString.length;
+            var bytes = new Uint8Array(binaryLen);
 
-              for (var i = 0; i < binaryLen; i++) {
-                var ascii = binaryString.charCodeAt(i);
-                bytes[i] = ascii;
-              }
-
-              return bytes;
+            for (var i = 0; i < binaryLen; i++) {
+              var ascii = binaryString.charCodeAt(i);
+              bytes[i] = ascii;
             }
 
-          }());
+            return bytes;
+          }
 
-          var saveByteArray = (function () {
-            var a = document.createElement("a");
-            document.body.appendChild(a);
-            a.style = "display: none";
+        }());
 
-            return function (data, name) {
-              var blob = new Blob(data, {type: "octet/stream"}),
-                  url = window.URL.createObjectURL(blob);
-              a.href = url;
-              a.download = name;
-              a.click();
-              setTimeout(function() {window.URL.revokeObjectURL(url);},0);
-            };
+        var saveByteArray = (function () {
+          var a = document.createElement("a");
+          document.body.appendChild(a);
+          a.style = "display: none";
 
-          }());
+          return function (data, name) {
+            var blob = new Blob(data, { type: "octet/stream" }),
+              url = window.URL.createObjectURL(blob);
+            a.href = url;
+            a.download = name;
+            a.click();
+            setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+          };
 
-          saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
-        } else {
-          alert('Не удалось скачать файл');
-        }
+        }());
+
+        saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
+      } else {
+        alert('Не удалось скачать файл');
       }
+    }
     xhr.send();
   }
 
@@ -186,7 +186,7 @@ export default class ShowApz extends React.Component {
             var base64ToArrayBuffer = (function () {
 
               return function (base64) {
-                var binaryString =  window.atob(base64);
+                var binaryString = window.atob(base64);
                 var binaryLen = binaryString.length;
                 var bytes = new Uint8Array(binaryLen);
 
@@ -206,12 +206,12 @@ export default class ShowApz extends React.Component {
               a.style = "display: none";
 
               return function (data, name) {
-                var blob = new Blob(data, {type: "octet/stream"}),
-                    url = window.URL.createObjectURL(blob);
+                var blob = new Blob(data, { type: "octet/stream" }),
+                  url = window.URL.createObjectURL(blob);
                 a.href = url;
                 a.download = name;
                 a.click();
-                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+                setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
               };
 
             }());
@@ -245,7 +245,7 @@ export default class ShowApz extends React.Component {
   }
 
   toDate(date) {
-    if(date === null) {
+    if (date === null) {
       return date;
     }
 
@@ -277,7 +277,7 @@ export default class ShowApz extends React.Component {
             var base64ToArrayBuffer = (function () {
 
               return function (base64) {
-                var binaryString =  window.atob(base64);
+                var binaryString = window.atob(base64);
                 var binaryLen = binaryString.length;
                 var bytes = new Uint8Array(binaryLen);
 
@@ -297,12 +297,12 @@ export default class ShowApz extends React.Component {
               a.style = "display: none";
 
               return function (data, name) {
-                var blob = new Blob(data, {type: "octet/stream"}),
-                    url = window.URL.createObjectURL(blob);
+                var blob = new Blob(data, { type: "octet/stream" }),
+                  url = window.URL.createObjectURL(blob);
                 a.href = url;
                 a.download = name;
                 a.click();
-                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+                setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
               };
 
             }());
@@ -342,7 +342,7 @@ export default class ShowApz extends React.Component {
             var base64ToArrayBuffer = (function () {
 
               return function (base64) {
-                var binaryString =  window.atob(base64);
+                var binaryString = window.atob(base64);
                 var binaryLen = binaryString.length;
                 var bytes = new Uint8Array(binaryLen);
 
@@ -362,12 +362,12 @@ export default class ShowApz extends React.Component {
               a.style = "display: none";
 
               return function (data, name) {
-                var blob = new Blob(data, {type: "octet/stream"}),
-                    url = window.URL.createObjectURL(blob);
+                var blob = new Blob(data, { type: "octet/stream" }),
+                  url = window.URL.createObjectURL(blob);
                 a.href = url;
                 a.download = name;
                 a.click();
-                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+                setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
               };
 
             }());
@@ -407,7 +407,7 @@ export default class ShowApz extends React.Component {
             var base64ToArrayBuffer = (function () {
 
               return function (base64) {
-                var binaryString =  window.atob(base64);
+                var binaryString = window.atob(base64);
                 var binaryLen = binaryString.length;
                 var bytes = new Uint8Array(binaryLen);
 
@@ -427,12 +427,12 @@ export default class ShowApz extends React.Component {
               a.style = "display: none";
 
               return function (data, name) {
-                var blob = new Blob(data, {type: "octet/stream"}),
-                    url = window.URL.createObjectURL(blob);
+                var blob = new Blob(data, { type: "octet/stream" }),
+                  url = window.URL.createObjectURL(blob);
                 a.href = url;
                 a.download = name;
                 a.click();
-                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+                setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
               };
 
             }());
@@ -472,7 +472,7 @@ export default class ShowApz extends React.Component {
             var base64ToArrayBuffer = (function () {
 
               return function (base64) {
-                var binaryString =  window.atob(base64);
+                var binaryString = window.atob(base64);
                 var binaryLen = binaryString.length;
                 var bytes = new Uint8Array(binaryLen);
 
@@ -492,12 +492,12 @@ export default class ShowApz extends React.Component {
               a.style = "display: none";
 
               return function (data, name) {
-                var blob = new Blob(data, {type: "octet/stream"}),
-                    url = window.URL.createObjectURL(blob);
+                var blob = new Blob(data, { type: "octet/stream" }),
+                  url = window.URL.createObjectURL(blob);
                 a.href = url;
                 a.download = name;
                 a.click();
-                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+                setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
               };
 
             }());
@@ -537,7 +537,7 @@ export default class ShowApz extends React.Component {
             var base64ToArrayBuffer = (function () {
 
               return function (base64) {
-                var binaryString =  window.atob(base64);
+                var binaryString = window.atob(base64);
                 var binaryLen = binaryString.length;
                 var bytes = new Uint8Array(binaryLen);
 
@@ -557,12 +557,12 @@ export default class ShowApz extends React.Component {
               a.style = "display: none";
 
               return function (data, name) {
-                var blob = new Blob(data, {type: "octet/stream"}),
-                    url = window.URL.createObjectURL(blob);
+                var blob = new Blob(data, { type: "octet/stream" }),
+                  url = window.URL.createObjectURL(blob);
                 a.href = url;
                 a.download = name;
                 a.click();
-                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+                setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
               };
 
             }());
@@ -602,7 +602,7 @@ export default class ShowApz extends React.Component {
             var base64ToArrayBuffer = (function () {
 
               return function (base64) {
-                var binaryString =  window.atob(base64);
+                var binaryString = window.atob(base64);
                 var binaryLen = binaryString.length;
                 var bytes = new Uint8Array(binaryLen);
 
@@ -622,12 +622,12 @@ export default class ShowApz extends React.Component {
               a.style = "display: none";
 
               return function (data, name) {
-                var blob = new Blob(data, {type: "octet/stream"}),
-                    url = window.URL.createObjectURL(blob);
+                var blob = new Blob(data, { type: "octet/stream" }),
+                  url = window.URL.createObjectURL(blob);
                 a.href = url;
                 a.download = name;
                 a.click();
-                setTimeout(function() {window.URL.revokeObjectURL(url);},0);
+                setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
               };
 
             }());
@@ -651,7 +651,7 @@ export default class ShowApz extends React.Component {
       return (
         <div>
           {!this.state.loaderHidden &&
-            <div style={{textAlign: 'center'}}>
+            <div style={{ textAlign: 'center' }}>
               <Loader type="Oval" color="#46B3F2" height="200" width="200" />
             </div>
           }
@@ -668,7 +668,7 @@ export default class ShowApz extends React.Component {
             <table className="table table-bordered table-striped">
               <tbody>
                 <tr>
-                  <td style={{width: '22%'}}><b>ИД заявки</b></td>
+                  <td style={{ width: '22%' }}><b>ИД заявки</b></td>
                   <td>{apz.id}</td>
                 </tr>
                 <tr>
@@ -759,7 +759,7 @@ export default class ShowApz extends React.Component {
 
             {this.state.showMap && <ShowMap coordinates={apz.project_address_coordinates} />}
 
-            <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{margin: '20px auto 10px'}}>
+            <button className="btn btn-raised btn-info" onClick={this.toggleMap.bind(this, !this.state.showMap)} style={{ margin: '20px auto 10px' }}>
               {this.state.showMapText}
             </button>
 
@@ -772,13 +772,13 @@ export default class ShowApz extends React.Component {
                     <tbody>
                       {this.state.headResponseFile &&
                         <tr>
-                          <td style={{width: '22%'}}><b>Загруженный АПЗ</b></td>
+                          <td style={{ width: '22%' }}><b>Загруженный АПЗ</b></td>
                           <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.headResponseFile.id)}>Скачать</a></td>
                         </tr>
                       }
 
                       <tr>
-                        <td style={{width: '22%'}}><b>Сформированный АПЗ</b></td>
+                        <td style={{ width: '22%' }}><b>Сформированный АПЗ</b></td>
                         <td><a className="text-info pointer" onClick={this.printApz.bind(this, apz.id, apz.project_name)}>Скачать</a></td>
                       </tr>
                     </tbody>
@@ -789,12 +789,12 @@ export default class ShowApz extends React.Component {
                   <table className="table table-bordered">
                     <tbody>
                       <tr>
-                        <td style={{width: '22%'}}><b>Мотивированный отказ</b></td>
-                          {this.state.headResponseFile ?
-                            <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.headResponseFile.id)}>Скачать</a></td>
+                        <td style={{ width: '22%' }}><b>Мотивированный отказ</b></td>
+                        {this.state.headResponseFile ?
+                          <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.headResponseFile.id)}>Скачать</a></td>
                           :
-                            <td><a className="text-info pointer" onClick={this.printRegionAnswer.bind(this, apz.id)}>Скачать</a></td>
-                          }
+                          <td><a className="text-info pointer" onClick={this.printRegionAnswer.bind(this, apz.id)}>Скачать</a></td>
+                        }
                       </tr>
                     </tbody>
                   </table>
@@ -806,7 +806,7 @@ export default class ShowApz extends React.Component {
                       <tbody>
                         {apz.commission.apz_water_response &&
                           <tr>
-                            <td style={{width: '22%'}}>
+                            <td style={{ width: '22%' }}>
                               <b>Водоснабжение</b>
                             </td>
                             <td><a className="text-info pointer" data-toggle="modal" data-target="#water_provider_modal">Просмотр</a></td>
@@ -851,9 +851,9 @@ export default class ShowApz extends React.Component {
                       </tbody>
                     </table>
 
-                    {apz.commission &&  apz.commission.apz_water_response &&
+                    {apz.commission && apz.commission.apz_water_response &&
                       <div className="modal fade" id="water_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                        <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                        <div className="modal-dialog" role="document" style={{ maxWidth: '600px' }}>
                           <div className="modal-content">
                             <div className="modal-header">
                               <h5 className="modal-title">Решение водоснабжения</h5>
@@ -866,7 +866,7 @@ export default class ShowApz extends React.Component {
                                 {this.state.waterCustomTcFile && apz.commission.apz_water_response.response &&
                                   <tbody>
                                     <tr>
-                                      <td style={{width: '50%'}}><b>Техническое условие</b></td>
+                                      <td style={{ width: '50%' }}><b>Техническое условие</b></td>
                                       <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.waterCustomTcFile.id)}>Скачать</a></td>
                                     </tr>
                                   </tbody>
@@ -875,7 +875,7 @@ export default class ShowApz extends React.Component {
                                 {!this.state.waterCustomTcFile && apz.commission.apz_water_response.response &&
                                   <tbody>
                                     <tr>
-                                      <td style={{width: '50%'}}><b>Общая потребность (м<sup>3</sup>/сутки)</b></td>
+                                      <td style={{ width: '50%' }}><b>Общая потребность (м<sup>3</sup>/сутки)</b></td>
                                       <td>{apz.commission.apz_water_response.gen_water_req}</td>
                                     </tr>
                                     <tr>
@@ -924,7 +924,7 @@ export default class ShowApz extends React.Component {
                                 {!apz.commission.apz_water_response.response && this.state.waterResponseFile &&
                                   <tbody>
                                     <tr>
-                                      <td style={{width: '50%'}}><b>МО Вода</b></td>
+                                      <td style={{ width: '50%' }}><b>МО Вода</b></td>
                                       <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.waterResponseFile.id)}>Скачать</a></td>
                                     </tr>
                                   </tbody>
@@ -941,7 +941,7 @@ export default class ShowApz extends React.Component {
 
                     {apz.commission && apz.commission.apz_heat_response &&
                       <div className="modal fade" id="heat_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                        <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                        <div className="modal-dialog" role="document" style={{ maxWidth: '600px' }}>
                           <div className="modal-content">
                             <div className="modal-header">
                               <h5 className="modal-title">Решение теплоснабжения</h5>
@@ -954,7 +954,7 @@ export default class ShowApz extends React.Component {
                                 {this.state.heatCustomTcFile && apz.commission.apz_heat_response.response &&
                                   <tbody>
                                     <tr>
-                                      <td style={{width: '50%'}}><b>Техническое условие</b></td>
+                                      <td style={{ width: '50%' }}><b>Техническое условие</b></td>
                                       <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.heatCustomTcFile.id)}>Скачать</a></td>
                                     </tr>
                                   </tbody>
@@ -963,7 +963,7 @@ export default class ShowApz extends React.Component {
                                 {!this.state.heatCustomTcFile && apz.commission.apz_heat_response.response &&
                                   <tbody>
                                     <tr>
-                                      <td style={{width: '50%'}}><b>Источник теплоснабжения</b></td>
+                                      <td style={{ width: '50%' }}><b>Источник теплоснабжения</b></td>
                                       <td>{apz.commission.apz_heat_response.resource}</td>
                                     </tr>
                                     <tr>
@@ -1016,7 +1016,7 @@ export default class ShowApz extends React.Component {
                                 {!apz.commission.apz_heat_response.response && this.state.heatResponseFile &&
                                   <tbody>
                                     <tr>
-                                      <td style={{width: '50%'}}><b>МО Тепло</b></td>
+                                      <td style={{ width: '50%' }}><b>МО Тепло</b></td>
                                       <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.heatResponseFile.id)}>Скачать</a></td>
                                     </tr>
                                   </tbody>
@@ -1025,8 +1025,8 @@ export default class ShowApz extends React.Component {
 
                               {!this.state.heatCustomTcFile && apz.commission.apz_heat_response.response && apz.commission.apz_heat_response.blocks &&
                                 <div>
-                                  {apz.commission.apz_heat_response.blocks.map(function(item, index) {
-                                    return(
+                                  {apz.commission.apz_heat_response.blocks.map(function (item, index) {
+                                    return (
                                       <div key={index}>
                                         {apz.commission.apz_heat_response.blocks.length > 1 &&
                                           <h5>Здание №{index + 1}</h5>
@@ -1035,7 +1035,7 @@ export default class ShowApz extends React.Component {
                                         <table className="table table-bordered table-striped">
                                           <tbody>
                                             <tr>
-                                              <td style={{width: '50%'}}><b>Отопление (Гкал/ч)</b></td>
+                                              <td style={{ width: '50%' }}><b>Отопление (Гкал/ч)</b></td>
                                               <td>{item.main}</td>
                                             </tr>
                                             <tr>
@@ -1068,7 +1068,7 @@ export default class ShowApz extends React.Component {
 
                     {apz.commission && apz.commission.apz_electricity_response &&
                       <div className="modal fade" id="electricity_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                        <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                        <div className="modal-dialog" role="document" style={{ maxWidth: '600px' }}>
                           <div className="modal-content">
                             <div className="modal-header">
                               <h5 className="modal-title">Решение электроснабжения</h5>
@@ -1081,7 +1081,7 @@ export default class ShowApz extends React.Component {
                                 {this.state.electroCustomTcFile && apz.commission.apz_electricity_response.response &&
                                   <tbody>
                                     <tr>
-                                      <td style={{width: '50%'}}><b>Техническое условие</b></td>
+                                      <td style={{ width: '50%' }}><b>Техническое условие</b></td>
                                       <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.electroCustomTcFile.id)}>Скачать</a></td>
                                     </tr>
                                   </tbody>
@@ -1090,7 +1090,7 @@ export default class ShowApz extends React.Component {
                                 {!this.state.electroCustomTcFile && apz.commission.apz_electricity_response.response &&
                                   <tbody>
                                     <tr>
-                                      <td style={{width: '50%'}}><b>Требуемая мощность (кВт)</b></td>
+                                      <td style={{ width: '50%' }}><b>Требуемая мощность (кВт)</b></td>
                                       <td>{apz.commission.apz_electricity_response.req_power}</td>
                                     </tr>
                                     <tr>
@@ -1131,7 +1131,7 @@ export default class ShowApz extends React.Component {
                                 {!apz.commission.apz_electricity_response.response && this.state.electroResponseFile &&
                                   <tbody>
                                     <tr>
-                                      <td style={{width: '50%'}}><b>МО Электро</b></td>
+                                      <td style={{ width: '50%' }}><b>МО Электро</b></td>
                                       <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.electroResponseFile.id)}>Скачать</a></td>
                                     </tr>
                                   </tbody>
@@ -1148,7 +1148,7 @@ export default class ShowApz extends React.Component {
 
                     {apz.commission && apz.commission.apz_gas_response &&
                       <div className="modal fade" id="gas_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                        <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                        <div className="modal-dialog" role="document" style={{ maxWidth: '600px' }}>
                           <div className="modal-content">
                             <div className="modal-header">
                               <h5 className="modal-title">Решение газоснабжения</h5>
@@ -1161,7 +1161,7 @@ export default class ShowApz extends React.Component {
                                 {this.state.gasCustomTcFile && apz.commission.apz_gas_response.response &&
                                   <tbody>
                                     <tr>
-                                      <td style={{width: '50%'}}><b>Техническое условие</b></td>
+                                      <td style={{ width: '50%' }}><b>Техническое условие</b></td>
                                       <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.gasCustomTcFile.id)}>Скачать</a></td>
                                     </tr>
                                   </tbody>
@@ -1170,7 +1170,7 @@ export default class ShowApz extends React.Component {
                                 {!this.state.gasCustomTcFile && apz.commission.apz_gas_response.response &&
                                   <tbody>
                                     <tr>
-                                      <td style={{width: '50%'}}><b>Точка подключения</b></td>
+                                      <td style={{ width: '50%' }}><b>Точка подключения</b></td>
                                       <td>{apz.commission.apz_gas_response.connection_point}</td>
                                     </tr>
                                     <tr>
@@ -1207,7 +1207,7 @@ export default class ShowApz extends React.Component {
                                 {!apz.commission.apz_gas_response.response && this.state.gasResponseFile &&
                                   <tbody>
                                     <tr>
-                                      <td style={{width: '50%'}}><b>МО Газ</b></td>
+                                      <td style={{ width: '50%' }}><b>МО Газ</b></td>
                                       <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.gasResponseFile.id)}>Скачать</a></td>
                                     </tr>
                                   </tbody>
@@ -1224,7 +1224,7 @@ export default class ShowApz extends React.Component {
 
                     {apz.commission && apz.commission.apz_phone_response &&
                       <div className="modal fade" id="phone_provider_modal" tabIndex="-1" role="dialog" aria-hidden="true">
-                        <div className="modal-dialog" role="document" style={{maxWidth: '600px'}}>
+                        <div className="modal-dialog" role="document" style={{ maxWidth: '600px' }}>
                           <div className="modal-content">
                             <div className="modal-header">
                               <h5 className="modal-title">Решение телефонизации</h5>
@@ -1237,7 +1237,7 @@ export default class ShowApz extends React.Component {
                                 {this.state.phoneCustomTcFile && apz.commission.apz_phone_response.response &&
                                   <tbody>
                                     <tr>
-                                      <td style={{width: '50%'}}><b>Техническое условие</b></td>
+                                      <td style={{ width: '50%' }}><b>Техническое условие</b></td>
                                       <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.phoneCustomTcFile.id)}>Скачать</a></td>
                                     </tr>
                                   </tbody>
@@ -1246,7 +1246,7 @@ export default class ShowApz extends React.Component {
                                 {!this.state.phoneCustomTcFile && apz.commission.apz_phone_response.response &&
                                   <tbody>
                                     <tr>
-                                      <td style={{width: '50%'}}><b>Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</b></td>
+                                      <td style={{ width: '50%' }}><b>Количество ОТА и услуг в разбивке физ.лиц и юр.лиц</b></td>
                                       <td>{apz.commission.apz_phone_response.service_num}</td>
                                     </tr>
                                     <tr>
@@ -1283,7 +1283,7 @@ export default class ShowApz extends React.Component {
                                 {!apz.commission.apz_phone_response.response && this.state.phoneResponseFile &&
                                   <tbody>
                                     <tr>
-                                      <td style={{width: '50%'}}><b>МО Газ</b></td>
+                                      <td style={{ width: '50%' }}><b>МО Газ</b></td>
                                       <td><a className="text-info pointer" onClick={this.downloadFile.bind(this, this.state.phoneResponseFile.id)}>Скачать</a></td>
                                     </tr>
                                   </tbody>
@@ -1306,8 +1306,8 @@ export default class ShowApz extends React.Component {
               <div>
                 <h5 className="block-title-2 mb-3 mt-3">Логи</h5>
                 <div className="border px-3 py-2">
-                  {apz.state_history.map(function(state, index) {
-                    return(
+                  {apz.state_history.map(function (state, index) {
+                    return (
                       <div key={index}>
                         <p className="mb-0">{state.created_at}&emsp;{state.state.name}</p>
                       </div>
@@ -1328,11 +1328,13 @@ export default class ShowApz extends React.Component {
         }
 
         {!this.state.loaderHidden &&
-          <div style={{textAlign: 'center'}}>
+          <div style={{ textAlign: 'center' }}>
             <Loader type="Oval" color="#46B3F2" height="200" width="200" />
           </div>
         }
       </div>
     )
   }
-}
+};
+
+export { ShowApz }
