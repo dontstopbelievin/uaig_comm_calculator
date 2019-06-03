@@ -98,7 +98,7 @@ export default class AllLandInLocality extends React.Component {
     }
 
     sortData(column){
-      if(this.state.sortState == 'ASC'){
+      if(this.state.sortState === 'ASC'){
         this.setState({ sortState: 'DESC'});
         this.setState({ data: this.state.data.sort(function(a, b){
             if(a[column] > b[column]) { return -1; }

@@ -115,7 +115,6 @@ import AllApzsHistory from './apz/components/AllApzsHistory';
 const breadCrumbs = () => {
   document.body.scrollTop = 0;
   document.documentElement.scrollTop = 0;
-  let fullLoc = window.location.href.split('/');
   let breadCrumbs = document.getElementById('breadCrumbs');
   breadCrumbs.innerHTML = '';
 }
