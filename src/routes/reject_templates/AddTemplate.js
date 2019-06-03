@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactQuill from 'react-quill';
 
-export default class AddTemplate extends React.Component{
+class AddTemplate extends React.Component{
   constructor(props) {
     super(props);
 
@@ -100,4 +100,6 @@ export default class AddTemplate extends React.Component{
       </div>
     )
   }
-}
+};
+
+export { AddTemplate }

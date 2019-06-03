@@ -2,7 +2,7 @@ import React from 'react';
 import Loader from 'react-loader-spinner';
 import ReactQuill from 'react-quill';
 
-export default class ShowTemplate extends React.Component{
+class ShowTemplate extends React.Component{
   constructor(props) {
     super(props);
 
@@ -121,4 +121,6 @@ export default class ShowTemplate extends React.Component{
       </div>
     )
   }
-}
+};
+
+export { ShowTemplate }

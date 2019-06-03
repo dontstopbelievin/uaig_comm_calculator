@@ -1,24 +1,24 @@
 import React from 'react';
 
-export default class KeepSession extends React.Component {
-  constructor(props){
+class KeepSession extends React.Component {
+  constructor(props) {
     super(props)
     window.addEventListener('storage', (event) => {
       const credentials = sessionStorage.getItem('tokenInfo');
-      if(event.key === 'REQUESTING_SHARED_CREDENTIALS' && credentials) {
+      if (event.key === 'REQUESTING_SHARED_CREDENTIALS' && credentials) {
         localStorage.setItem('CREDENTIALS_SHARING',
-        JSON.stringify({
-          token: sessionStorage.getItem('tokenInfo'),
-          id: sessionStorage.getItem('userId'),
-          name: sessionStorage.getItem('userName'),
-          iin: sessionStorage.getItem('userIin'),
-          bin: sessionStorage.getItem('userBin'),
-          roles: sessionStorage.getItem('userRoles')
-        }));
+          JSON.stringify({
+            token: sessionStorage.getItem('tokenInfo'),
+            id: sessionStorage.getItem('userId'),
+            name: sessionStorage.getItem('userName'),
+            iin: sessionStorage.getItem('userIin'),
+            bin: sessionStorage.getItem('userBin'),
+            roles: sessionStorage.getItem('userRoles')
+          }));
         localStorage.removeItem('CREDENTIALS_SHARING');
       }
 
-      if(event.key === 'CREDENTIALS_SHARING' && !credentials){
+      if (event.key === 'CREDENTIALS_SHARING' && !credentials) {
         sessionStorage.setItem("tokenInfo", JSON.parse(event.newValue).token);
         sessionStorage.setItem("userId", JSON.parse(event.newValue).id);
         sessionStorage.setItem("userName", JSON.parse(event.newValue).name);
@@ -31,7 +31,7 @@ export default class KeepSession extends React.Component {
         this.props.forceUpdatePage();
       }
 
-      if(event.key === 'CREDENTIALS_FLUSH' && credentials){
+      if (event.key === 'CREDENTIALS_FLUSH' && credentials) {
         sessionStorage.removeItem('tokenInfo');
         sessionStorage.removeItem('userId');
         sessionStorage.removeItem('userName');
@@ -49,9 +49,11 @@ export default class KeepSession extends React.Component {
     localStorage.removeItem('REQUESTING_SHARED_CREDENTIALS');
   }
 
-  render(){
-    return(
+  render() {
+    return (
       <React.Fragment></React.Fragment>
     )
   }
-}
+};
+
+export { KeepSession }

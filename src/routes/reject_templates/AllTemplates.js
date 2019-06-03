@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 
-export default class AllTemplates extends React.Component{
+class AllTemplates extends React.Component{
   constructor(props) {
     super(props);
 
@@ -163,4 +163,6 @@ export default class AllTemplates extends React.Component{
       </div>
     )
   }
-}
+};
+
+export { AllTemplates }
