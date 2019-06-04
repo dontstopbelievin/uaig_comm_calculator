@@ -147,6 +147,8 @@ export default class AllSketch extends React.Component {
                                     <td>{this.toDate(sketch.created_at)}</td>
                                     <td>
                                         <Link className="btn btn-outline-info" to={'/panel/urban/sketch/show/' + sketch.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр</Link>
+                                        <Link className="btn btn-outline-info" to={'/panel/urban/sketch/edit/' +  sketch.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Просмотр123123</Link>
+                                        <Link style={{marginLeft: '5px' }}  className="btn btn-outline-info" to={'/panel/urban/sketch/save/' + sketch.id}><i className="glyphicon glyphicon-eye-open mr-2"></i> Редактировать</Link>
                                     </td>
                                 </tr>
                             );

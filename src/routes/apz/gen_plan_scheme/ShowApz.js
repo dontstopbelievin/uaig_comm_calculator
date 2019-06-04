@@ -280,12 +280,12 @@ export default class ShowApz extends React.Component {
                 </div>
               </div>
 
-              {this.state.showSendButtons &&
+              {/*{this.state.showSendButtons &&*/}
                 <div style={{margin: 'auto', display: 'table'}}>
                   <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, this.state.apz.id, true, this.state.description, "calculation")}>Отправить для расчетов</button>
                   <button type="button" className="btn btn-raised btn-success" style={{marginRight: '5px'}} onClick={this.acceptDeclineApzForm.bind(this, this.state.apz.id, true, this.state.description, "reglament")}>Отправить для регламента</button>
                 </div>
-              }
+              {/*}*/}
 
               {this.state.showSignButtons && !this.state.isSigned &&
                 <EcpSign ecpSignSuccess={this.ecpSignSuccess.bind(this)} hideSignBtns={this.hideSignBtns.bind(this)} rolename="generalplanscheme" id={this.state.apz.id} serviceName='apz'/>
