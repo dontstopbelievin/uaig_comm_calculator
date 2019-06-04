@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import FilesForm from './FilesForm';
 
-export default class AllFiles extends React.Component {
+class AllFiles extends React.Component {
   constructor(props) {
     super(props);
 
@@ -169,4 +169,6 @@ export default class AllFiles extends React.Component {
       </div>
     )
   }
-}
+};
+
+export { AllFiles }

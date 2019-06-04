@@ -3,13 +3,9 @@ import LocalizedStrings from 'react-localization';
 import {ru, kk} from '../../languages/header.json';
 import $ from 'jquery';
 import Loader from 'react-loader-spinner';
-
-
 let e = new LocalizedStrings({ru,kk});
 
-
-
-export default class EditPassword extends React.Component{
+class EditPassword extends React.Component{
 
   constructor() {
     super();
@@ -201,4 +197,6 @@ export default class EditPassword extends React.Component{
       </div>
     )
   }
-}
+};
+
+export { EditPassword }

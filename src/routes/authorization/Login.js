@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 import $ from 'jquery';
 
-export default class Login extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
     this.webSocket = new WebSocket('wss://127.0.0.1:13579/');
@@ -644,4 +644,6 @@ export default class Login extends Component {
       </div>
     )
   }
-}
+};
+
+export { Login }

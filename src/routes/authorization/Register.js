@@ -4,7 +4,7 @@ import PreloaderIcon, {ICON_TYPE} from 'react-preloader-icon';
 import $ from 'jquery';
 import Loader from 'react-loader-spinner';
 
-export default class Register extends React.Component {
+class Register extends React.Component {
   constructor() {
     super();
     this.webSocket = new WebSocket('wss://127.0.0.1:13579/');
@@ -577,3 +577,5 @@ class Loading extends Component {
       )
   }
 }
+
+export { Register };
