@@ -381,7 +381,7 @@ export default class ShowApz extends React.Component {
                   </table>
                 </div>
               }
-              { this.props.lastDecisionIsMO &&
+              { this.props.lastDecisionIsMO && !this.props.otkazFile &&
                 <table className="table table-bordered">
                   <tbody>
                     <tr>
