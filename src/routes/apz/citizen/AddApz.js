@@ -3,7 +3,6 @@ import $ from 'jquery';
 import 'jquery-validation';
 import 'jquery-serializejson';
 import Loader from 'react-loader-spinner';
-import ShowMap from './ShowMap';
 import AddHeatBlock from './AddHeatBlock';
 import ReactHintFactory from 'react-hint'
 const ReactHint = ReactHintFactory(React)
@@ -83,7 +82,6 @@ class AddApz extends React.Component {
       need_heat_provider: false,
       need_gas_provider: false,
 
-      showMap: false,
       hasCoordinates: false,
       loaderHidden: true,
       blocks: [{ num: 1, heatMain: '', heatVentilation: '', heatWater: '', heatWaterMax: '' }],
@@ -105,7 +103,6 @@ class AddApz extends React.Component {
 
     this.saveApz = this.saveApz.bind(this);
     this.hasCoordinates = this.hasCoordinates.bind(this);
-    this.toggleMap = this.toggleMap.bind(this);
     this.deleteBlock = this.deleteBlock.bind(this);
     this.companySearch = this.companySearch.bind(this);
     this.onApplicantChange = this.onApplicantChange.bind(this);
@@ -151,190 +148,9 @@ class AddApz extends React.Component {
   }
 
   componentDidMount() {
-    console.log(sessionStorage.getItem('userId'));
-    var userId = sessionStorage.getItem('userId');
-    var token = sessionStorage.getItem('tokenInfo');
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/personalData/edit/" + userId, true);
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
-        data = data.userData;
-        //console.log(data);
-        this.setState({ first_name: data.first_name });
-        this.setState({ last_name: data.last_name });
-        this.setState({ middle_name: data.middle_name ? data.middle_name : " " });
-        this.setState({ company_name: data.company_name ? data.company_name : " " });
-        if (data.bin !== null) {
-          this.setState({ bin: data.bin });
-        } else {
-          this.setState({ bin: false });
-          this.setState({ iin: data.iin });
-        }
-        this.setState({ loaderHidden: true });
-      } else if (xhr.status === 401) {
-        sessionStorage.clear();
-        alert("Время сессии истекло. Пожалуйста войдите заново!");
-        this.props.history.replace("/login");
-      } else if (xhr.status === 500) {
-        alert('Пользователь не найден в базе данных. Попробуйте еще раз!')
-      }
-    }.bind(this);
-    xhr.send();
-    this.props.breadCrumbs();
   }
 
   componentWillMount() {
-    if (this.props.match.params.id) {
-      this.getApzInfo();
-    }
-  }
-
-  getApzInfo() {
-    this.setState({ loaderHidden: false });
-
-    var id = this.props.match.params.id;
-    var token = sessionStorage.getItem('tokenInfo');
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/apz/citizen/detail/" + id, true);
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        var apz = JSON.parse(xhr.responseText);
-
-        this.setState({ applicant: apz.applicant ? apz.applicant : '' });
-        this.setState({ need_gas_provider: apz.need_gas_provider ? apz.need_gas_provider : false });
-        this.setState({ need_heat_provider: apz.need_heat_provider ? apz.need_heat_provider : false });
-        this.setState({ need_water_provider: apz.need_water_provider ? apz.need_water_provider : false });
-        this.setState({ need_phone_provider: apz.need_phone_provider ? apz.need_phone_provider : false });
-        this.setState({ need_electro_provider: apz.need_electro_provider ? apz.need_electro_provider : false });
-        this.setState({ applicantAddress: apz.address ? apz.address : '' });
-        this.setState({ phone: apz.phone ? apz.phone : '' });
-        this.setState({ region: apz.region ? apz.region : '' });
-        //this.setState({designer: apz.designer ? apz.designer : '' });
-        this.setState({ type: apz.type ? apz.type : '' });
-        this.setState({ projectName: apz.project_name ? apz.project_name : '' });
-        this.setState({ projectAddress: apz.project_address ? apz.project_address : '' });
-        this.setState({ projectAddressCoordinates: apz.project_address_coordinates ? apz.project_address_coordinates : '' });
-        this.setState({ hasCoordinates: apz.project_address_coordinates ? true : false });
-
-        this.setState({ personalIdFile: apz.files.filter(function (obj) { return obj.category_id === 3 })[0] });
-        this.setState({ confirmedTaskFile: apz.files.filter(function (obj) { return obj.category_id === 9 })[0] });
-        this.setState({ titleDocumentFile: apz.files.filter(function (obj) { return obj.category_id === 10 })[0] });
-        this.setState({ additionalFile: apz.files.filter(function (obj) { return obj.category_id === 27 })[0] });
-        this.setState({ paymentPhotoFile: apz.files.filter(function (obj) { return obj.category_id === 20 })[0] });
-        this.setState({ survey: apz.files.filter(function (obj) { return obj.category_id === 22 })[0] });
-        this.setState({ claimedCapacityJustification: apz.files.filter(function (obj) { return obj.category_id === 24 })[0] });
-
-        this.setState({ objectType: apz.object_type ? apz.object_type : '' });
-        this.setState({ customer: apz.customer ? apz.customer : '' });
-        this.setState({ cadastralNumber: apz.cadastral_number ? apz.cadastral_number : '' });
-        this.setState({ objectTerm: apz.object_term ? apz.object_term : '' });
-        this.setState({ objectLevel: apz.object_level ? apz.object_level : '' });
-        this.setState({ objectArea: apz.object_area ? apz.object_area : '' });
-        this.setState({ objectRooms: apz.object_rooms ? apz.object_rooms : '' });
-        this.setState({ status: apz.status_id ? apz.status_id : '' });
-        console.log('status ' + this.state.status);
-        if (apz.apz_electricity) {
-          this.setState({ n_lamp: apz.apz_electricity.number_lamps ? apz.apz_electricity.number_lamps : '' });
-          this.setState({ n_rozetka: apz.apz_electricity.number_sockets ? apz.apz_electricity.number_sockets : '' });
-          this.setState({ electricRequiredPower: apz.apz_electricity.required_power ? apz.apz_electricity.required_power : '' });
-          this.setState({ electricAllowedPower: apz.apz_electricity.allowed_power ? apz.apz_electricity.allowed_power : '' });
-          this.setState({ electricityPhase: apz.apz_electricity.phase ? apz.apz_electricity.phase : '' });
-          this.setState({ electricSafetyCategory: apz.apz_electricity.safety_category ? apz.apz_electricity.safety_category : '' });
-        }
-
-        if (apz.apz_water) {
-          this.setState({ peopleCount: apz.apz_water.people_count ? apz.apz_water.people_count : '' });
-          this.setState({ waterRequirement: apz.apz_water.requirement ? apz.apz_water.requirement : '' });
-          this.setState({ waterProduction: apz.apz_water.production ? apz.apz_water.production : '' });
-          this.setState({ waterDrinking: apz.apz_water.drinking ? apz.apz_water.drinking : '' });
-          this.setState({ waterFireFighting: apz.apz_water.fire_fighting ? apz.apz_water.fire_fighting : '' });
-          this.setState({ waterFireFightingIn: apz.apz_water.fire_fighting_in ? apz.apz_water.fire_fighting_in : '' });
-        }
-
-        if (apz.apz_sewage) {
-          this.setState({ sewageAmount: apz.apz_sewage.amount ? apz.apz_sewage.amount : '' });
-          this.setState({ sewageFeksal: apz.apz_sewage.feksal ? apz.apz_sewage.feksal : '' });
-          this.setState({ sewageProduction: apz.apz_sewage.production ? apz.apz_sewage.production : '' });
-          this.setState({ sewageToCity: apz.apz_sewage.to_city ? apz.apz_sewage.to_city : '' });
-          this.setState({ sewageClientWishes: apz.apz_sewage.client_wishes ? apz.apz_sewage.client_wishes : '' });
-        }
-
-        if (apz.apz_heat) {
-          this.setState({ udelnayaNorma: apz.apz_heat.udelnayaNorma ? apz.apz_heat.udelnayaNorma : '' });
-          this.setState({ tempVnutri: apz.apz_heat.tempVnutri ? apz.apz_heat.tempVnutri : '' });
-          this.setState({ obshayaPloshad: apz.apz_heat.obshayaPloshad ? apz.apz_heat.obshayaPloshad : '' });
-          this.setState({ heatGeneral: apz.apz_heat.general ? apz.apz_heat.general : '' });
-          this.setState({ heatTech: apz.apz_heat.tech ? apz.apz_heat.tech : '' });
-          this.setState({ mainHeatMain: apz.apz_heat.main_heat ? apz.apz_heat.main_heat : '' });
-          this.setState({ mainHeatVen: apz.apz_heat.main_ven ? apz.apz_heat.main_ven : '' });
-          this.setState({ mainHeatWater: apz.apz_heat.main_water ? apz.apz_heat.main_water : '' });
-          this.setState({ mainHeatWaterMax: apz.apz_heat.main_water_max ? apz.apz_heat.main_water_max : '' });
-          if (apz.apz_heat.distribution !== 0 && apz.apz_heat.distribution !== null) {
-            this.setState({ heatDistribution: true });
-          } else {
-            this.setState({ heatDistribution: false });
-          }
-          this.setState({ heatSaving: apz.apz_heat.saving ? apz.apz_heat.saving : '' });
-          this.setState({ contractNum: apz.apz_heat.contract_num ? apz.apz_heat.contract_num : '' });
-          this.setState({ heatGeneralInContract: apz.apz_heat.general_in_contract ? apz.apz_heat.general_in_contract : '' });
-          this.setState({ heatTechInContract: apz.apz_heat.tech_in_contract ? apz.apz_heat.tech_in_contract : '' });
-          this.setState({ heatMainInContract: apz.apz_heat.main_in_contract ? apz.apz_heat.main_in_contract : '' });
-          this.setState({ heatVenInContract: apz.apz_heat.ven_in_contract ? apz.apz_heat.ven_in_contract : '' });
-          this.setState({ heatWaterInContract: apz.apz_heat.water_in_contract ? apz.apz_heat.water_in_contract : '' });
-          this.setState({ heatWaterMaxInContract: apz.apz_heat.water_in_contract_max ? apz.apz_heat.water_in_contract_max : '' });
-          this.setState({ TCNumber: apz.apz_heat.tc_number ? apz.apz_heat.tc_number : '' });
-          if (apz.apz_heat.blocks) {
-            for (var i = 0; i < apz.apz_heat.blocks.length; i++) {
-              var blocks = this.state.blocks;
-
-              blocks[i] = {
-                num: i + 1,
-                heatMain: apz.apz_heat.blocks[i].main,
-                heatVentilation: apz.apz_heat.blocks[i].ventilation,
-                heatWater: apz.apz_heat.blocks[i].water,
-                heatWaterMax: apz.apz_heat.blocks[i].water_max
-              };
-
-              this.setState({ blocks: blocks });
-            }
-          }
-
-          if (this.state.heatMainInContract || this.state.heatVenInContract || this.state.heatWaterInContract || this.state.heatWaterMaxInContract
-            || this.state.heatTechInContract || this.state.heatGeneralInContract) {
-            this.setState({ hasHeatContract: true });
-          }
-
-          if (this.state.TCNumber) {
-            this.setState({ hasTCNumber: true });
-          }
-        }
-
-        if (apz.apz_phone) {
-          this.setState({ phoneServiceNum: apz.apz_phone.service_num ? apz.apz_phone.service_num : '' });
-          this.setState({ phoneCapacity: apz.apz_phone.capacity ? apz.apz_phone.capacity : '' });
-          this.setState({ phoneSewage: apz.apz_phone.sewage ? apz.apz_phone.sewage : '' });
-          this.setState({ phoneClientWishes: apz.apz_phone.client_wishes ? apz.apz_phone.client_wishes : '' });
-        }
-
-        if (apz.apz_gas) {
-          this.setState({ gasGeneral: apz.apz_gas.general ? apz.apz_gas.general : '' });
-          this.setState({ gasCooking: apz.apz_gas.cooking ? apz.apz_gas.cooking : '' });
-          this.setState({ gasHeat: apz.apz_gas.heat ? apz.apz_gas.heat : '' });
-          this.setState({ gasVentilation: apz.apz_gas.ventilation ? apz.apz_gas.ventilation : '' });
-          this.setState({ gasConditioner: apz.apz_gas.conditioner ? apz.apz_gas.conditioner : '' });
-          this.setState({ gasWater: apz.apz_gas.water ? apz.apz_gas.water : '' });
-        }
-      }
-
-      this.setState({ loaderHidden: true });
-    }.bind(this)
-    xhr.send();
   }
 
   hasCoordinates(value) {
@@ -349,125 +165,9 @@ class AddApz extends React.Component {
     this.setState({ hasCoordinates: value });
   }
 
-  toggleMap(value) {
-    this.setState({
-      showMap: value
-    })
-
-    if (value) {
-      $('#tab0-form').slideUp();
-    } else {
-      $('#tab0-form').slideDown();
-    }
-  }
-
   saveApz(publish, elem) {
     elem.preventDefault();
-
-    // if((this.state.heatGeneral == parseFloat(this.state.mainHeatMain) + parseFloat(this.state.mainHeatVen) + parseFloat(this.state.mainHeatWater)) ||
-    //     (this.state.heatGeneral == parseFloat(this.state.mainHeatMain) + parseFloat(this.state.mainHeatVen) + parseFloat(this.state.mainHeatWaterMax))) {
-    // }else{
-    //   alert("Сумма нагрузки отопления, вентиляции и горячего водоснабженияне не совпадает с общей тепловой нагрузкой");
-    //   return;
-    // }
-
-    if (publish) {
-      var requiredFields = {
-        applicant: 'Заявитель',
-        applicantAddress: 'Адрес жительства',
-        projectName: 'Наименование проектируемого объекта',
-        projectAddress: 'Адрес проектируемого объекта',
-        projectAddressCoordinates: 'Отметить на карте',
-        confirmedTaskFile: 'Утвержденное задание на проектирование',
-        titleDocumentFile: 'Госакт и правоустанавливающий документ на земельный участок, договор о купли-продажи',
-        objectType: 'Тип объекта',
-        customer: 'Заказчик'
-      };
-
-      if (this.state.need_water_provider) {
-        requiredFields['waterRequirement'] = 'Общая потребность в воде';
-      }
-      if (this.state.need_electro_provider) {
-        requiredFields['electricRequiredPower'] = 'Требуемая мощность (кВт)';
-        requiredFields['personalIdFile'] = 'Уд.личности/Реквизиты';
-      }
-      if (this.state.need_heat_provider) {
-        requiredFields['heatGeneral'] = 'Тепловая нагрузка (Гкал/ч)';
-      }
-      if (this.state.need_phone_provider) {
-        requiredFields['phoneCapacity'] = 'Телефонная емкость';
-      }
-      if (this.state.need_gas_provider) {
-        requiredFields['gasGeneral'] = 'Общая потребность (м3/час)';
-      }
-      if (this.state.phoneServiceNum || this.state.phoneSewage || this.state.phoneCapacity || this.state.phoneClientWishes) {
-        requiredFields['paymentPhotoFile'] = 'Сканированный файл оплаты';
-      }
-
-      var errors = 0;
-      var err_msgs = "";
-      Object.keys(requiredFields).forEach(function (key) {
-        if (!this.state[key]) {
-          err_msgs += 'Заполните поле ' + requiredFields[key] + '\n';
-          errors++;
-          return false;
-        }
-      }.bind(this));
-
-      if (errors > 0) {
-        alert(err_msgs);
-        return false;
-      }
-    }
-
-    var apzId = this.props.match.params.id;
-
-    switch (this.state.status) {
-      case 1://declined
-        var link = "api/apz/citizen/save";
-        break;
-      default:
-        var link = apzId > 0 ? ("api/apz/citizen/save/" + apzId) : "api/apz/citizen/save";
-        break;
-    }
-    console.log(link);
-
-    var data = {
-      publish: publish ? true : false,
-    }
-
-    Object.keys(this.state).forEach(function (k) {
-      data[k] = this.state[k]
-    }.bind(this));
-
-    this.setState({ loaderHidden: false });
-    // console.log(data);
-    var token = sessionStorage.getItem('tokenInfo');
-    var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + link, true);
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function () {
-      this.setState({ loaderHidden: true });
-
-      if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
-
-        if (publish) {
-          alert("Заявка успешно подана.\nЗаявка будет рассматриваться завтра.");
-          this.props.history.replace('/panel/citizen/apz/status/active/1');
-        } else {
-          alert('Заявка успешно сохранена');
-
-          if (!apzId) {
-            this.props.history.push('/panel/citizen/apz/edit/' + data.id);
-          }
-        }
-      } else {
-        alert("При сохранении заявки произошла ошибка!");
-      }
-    }.bind(this);
-    xhr.send(JSON.stringify(data));
+    alert('Успешно отправлено!')
   }
 
   addBlock() {
@@ -532,24 +232,6 @@ class AddApz extends React.Component {
   }
 
   companySearch() {
-    var token = sessionStorage.getItem('tokenInfo');
-    var bin = sessionStorage.getItem('userBin');
-    var xhr = new XMLHttpRequest();
-    xhr.open("post", window.url + "api/apz/citizen/company_search", true);
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        if (!xhr.responseText) {
-          alert('Поиск не дал результатов');
-          return false;
-        }
-
-        var data = JSON.parse(xhr.responseText);
-        this.setState({ companyList: data.list });
-      }
-    }.bind(this)
-    xhr.send(JSON.stringify({ bin: bin }));
   }
 
   //правила вкладки Объект/Газоснабжение
@@ -648,211 +330,19 @@ class AddApz extends React.Component {
   }
 
   downloadFile(id, progbarId = null) {
-    var token = sessionStorage.getItem('tokenInfo');
-    var url = window.url + 'api/file/download/' + id;
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", url, true);
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    var vision = $('.text-info[data-category=' + progbarId + ']');
-    var progressbar = $('.progress[data-category=' + progbarId + ']');
-    vision.css('display', 'none');
-    progressbar.css('display', 'flex');
-    xhr.onprogress = function (event) {
-      $('div', progressbar).css('width', parseInt(event.loaded / parseInt(event.target.getResponseHeader('Last-Modified'), 10) * 100, 10) + '%');
-    }
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
-        var base64ToArrayBuffer = (function () {
-
-          return function (base64) {
-            var binaryString = window.atob(base64);
-            var binaryLen = binaryString.length;
-            var bytes = new Uint8Array(binaryLen);
-
-            for (var i = 0; i < binaryLen; i++) {
-              var ascii = binaryString.charCodeAt(i);
-              bytes[i] = ascii;
-            }
-
-            return bytes;
-          }
-
-        }());
-
-        var saveByteArray = (function () {
-          var a = document.createElement("a");
-          document.body.appendChild(a);
-          a.style = "display: none";
-
-          return function (data, name) {
-            var blob = new Blob(data, { type: "octet/stream" }),
-              url = window.URL.createObjectURL(blob);
-            a.href = url;
-            a.download = name;
-            a.click();
-            setTimeout(function () {
-              window.URL.revokeObjectURL(url);
-              $('div', progressbar).css('width', 0);
-              progressbar.css('display', 'none');
-              vision.css('display', 'inline');
-              alert("Файлы успешно загружены");
-            }, 1000);
-          };
-
-        }());
-
-        saveByteArray([base64ToArrayBuffer(data.file)], data.file_name);
-      } else {
-        $('div', progressbar).css('width', 0);
-        progressbar.css('display', 'none');
-        vision.css('display', 'inline');
-        alert('Не удалось скачать файл');
-      }
-    }
-    xhr.send();
+    alert('Сервис не доступен.')
   }
 
   uploadFile(category, e) {
-    var file = e.target.files[0];
-    var name = file.name.replace(/\.[^/.]+$/, "");
-    var progressbar = $('.progress[data-category=' + category + ']');
-
-    if (!file || !category) {
-      alert('Не удалось загрузить файл');
-
-      return false;
-    }
-
-    var formData = new FormData();
-    formData.append('file', file);
-    formData.append('name', name);
-    formData.append('category', category);
-    progressbar.css('display', 'flex');
-    $.ajax({
-      type: 'POST',
-      url: window.url + 'api/file/upload',
-      contentType: false,
-      beforeSend: function (xhr) {
-        xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('tokenInfo'));
-      },
-      processData: false,
-      data: formData,
-      xhr: function () {
-        var xhr = new window.XMLHttpRequest();
-
-        xhr.upload.addEventListener("progress", function (evt) {
-          if (evt.lengthComputable) {
-            var percentComplete = evt.loaded / evt.total;
-            percentComplete = parseInt(percentComplete * 100, 10);
-            $('div', progressbar).css('width', percentComplete + '%');
-          }
-        }, false);
-
-        return xhr;
-      },
-      success: function (response) {
-        var data = { id: response.id, name: response.name };
-
-        setTimeout(function () {
-          progressbar.css('display', 'none');
-          switch (category) {
-            case 3:
-              this.setState({ personalIdFile: data });
-              break;
-
-            case 9:
-              this.setState({ confirmedTaskFile: data });
-              break;
-
-            case 10:
-              this.setState({ titleDocumentFile: data });
-              break;
-
-            case 27:
-              this.setState({ additionalFile: data });
-              break;
-
-            case 20:
-              this.setState({ paymentPhotoFile: data });
-              break;
-
-            case 22:
-              this.setState({ survey: data });
-              break;
-
-            case 24:
-              this.setState({ claimedCapacityJustification: data });
-              break;
-            default:
-          }
-          alert("Файл успешно загружен");
-        }.bind(this), '1000')
-      }.bind(this),
-      error: function (response) {
-        progressbar.css('display', 'none');
-        alert("Не удалось загрузить файл");
-      }
-    });
+    alert('Сервис не доступен.')
   }
 
   selectFromList(category, e) {
-    var token = sessionStorage.getItem('tokenInfo');
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", window.url + "api/file/category/" + category, true);
-    xhr.setRequestHeader("Authorization", "Bearer " + token);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
-        this.setState({ categoryFiles: data });
-
-        $('#selectFileModal').modal('show');
-      }
-    }.bind(this)
-    xhr.send();
+    alert('Сервис не доступен.')
   }
 
   selectFile(e) {
-    var fileName = e.target.dataset.name;
-    var id = e.target.dataset.id;
-    var category = e.target.dataset.category;
-    var data = { id: id, name: fileName };
-
-    switch (category) {
-      case '3':
-        this.setState({ personalIdFile: data });
-        break;
-
-      case '9':
-        this.setState({ confirmedTaskFile: data });
-        break;
-
-      case '10':
-        this.setState({ titleDocumentFile: data });
-        break;
-
-      case '27':
-        this.setState({ additionalFile: data });
-        break;
-
-      case '20':
-        this.setState({ paymentPhotoFile: data });
-        break;
-
-      case '22':
-        this.setState({ survey: data });
-        break;
-
-      case '24':
-        this.setState({ claimedCapacityJustification: data });
-        break;
-      default:
-    }
-
-    $('#selectFileModal').modal('hide');
+    alert('Сервис не доступен.')
   }
 
   Calculate_lamp(e) {
@@ -1162,14 +652,6 @@ class AddApz extends React.Component {
                               <div className="col-sm-7">
                                 <input data-rh="Кадастровый номер:" data-rh-at="right" type="text" className="form-control" onChange={this.onInputChange} value={this.state.cadastralNumber} name="cadastralNumber" placeholder="" />
                               </div>
-                              <div className="col-sm-5 p-0">
-                                <a className="btn btn-secondary btn-sm mark_btn" onClick={() => this.toggleMap(true)}>
-                                  {this.state.hasCoordinates &&
-                                    <i className="glyphicon glyphicon-ok coordinateIcon mr-1"></i>
-                                  }
-                                  Отметить на карте
-                                  </a>
-                              </div>
                             </div>
                           </div>
                           <div className="form-group">
@@ -1201,12 +683,6 @@ class AddApz extends React.Component {
                         <input type="submit" value="Сохранить" className="btn btn-outline-secondary" />
                       </div>
                     </form>
-
-                    {this.state.showMap &&
-                      <div className="mb-4">
-                        <ShowMap point={true} kadastr_number={this.state.cadastralNumber} changeFunction={this.onInputChange} mapFunction={this.toggleMap} hasCoordinates={this.hasCoordinates} />
-                      </div>
-                    }
                     <button onClick={this.saveApz.bind(this, true)} className="btn btn-outline-success">Отправить заявку</button>
                   </div>
                   <div className="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-link">
@@ -1781,7 +1257,6 @@ class AddApz extends React.Component {
 
         <div>
           <hr />
-          <button className="btn btn-outline-secondary pull-right" onClick={this.props.history.goBack}><i className="glyphicon glyphicon-chevron-left"></i> Назад</button>
         </div>
       </div>
     )

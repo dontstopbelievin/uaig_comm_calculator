@@ -16,6 +16,7 @@ export default class AddHeatBlock extends React.Component {
     this.props.onBlockChange(e, this.props.num);
   }
 
+
   render() {
     return (
       <div className="col-md-12">
